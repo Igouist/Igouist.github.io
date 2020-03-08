@@ -103,13 +103,13 @@
 <p>目標：使用 Python 及 Selenium 連線到訂便當網站，自動輸入帳號密碼登入後，取回網站上的訂單資訊</p>
 </blockquote>
 
-<p>最近在公司的時候有個莫大的煩惱，就是關於辦公室團購這回事兒。現在待著的公司主要是從 <a href="https://dinbendon.net/">Dinbendon</a> 這套系統來揪團購，舉凡品客、火鍋等都在上面訂過，據我觀察最受歡迎出現最多次的當屬雞排了。但是！煩惱就在於，每次都會錯過雞排的團購，光在辦公室聞著四面八方傳來的雞排香味，就令人無法忍受！因此趁著這個機會，來嘗試能不能像之前的 <a href="https://hackmd.io/@IgouistBlog/ptt_crawler_and_listener">PTT</a> 一樣來弄出一個通知，順便玩玩最近看到的工具。這系列的文章會分成多個部分，主要是以使用的工具來分集。</p>
+<p>最近在公司的時候有個莫大的煩惱，就是關於辦公室團購這回事兒。現在待著的公司主要是從 <a href="https://dinbendon.net/">Dinbendon</a> 這套系統來揪團購，舉凡品客、火鍋等都在上面訂過，據我觀察最受歡迎出現最多次的當屬雞排了。煩惱就在於，每次都會錯過雞排的團購，光在辦公室聞著四面八方傳來的雞排香味，就令人無法忍受！因此趁著這個機會，來嘗試能不能像之前的 <a href="https://hackmd.io/@IgouistBlog/ptt_crawler_and_listener">PTT</a> 一樣來弄出一個通知，順便玩玩最近看到的工具。這系列的文章會分成多個部分，主要是以使用的工具來分集。</p>
 
 <p>由於在從團購網取得訂單的過程中需要跟網頁進行互動，因此這次要使用的工具是 <strong><a href="https://www.selenium.dev/">Selenium</a></strong>。</p>
 
 <p>Selenium 是一個對網頁做自動化測試的工具，並且也支援相當多語言可以使用，例如我同事便使用 C# 和 Hangfire 來完成訂便當的目標（對，這麼無聊的人不只我一個），而我則用相對比較熟悉的 Python 來實作。</p>
 
-<p>關於本篇主要的操作和步驟，主要參考 <strong><a href="https://medium.com/@NorthBei/%E5%9C%A8windows%E4%B8%8A%E5%AE%89%E8%A3%9Dpython-selenium-%E7%B0%A1%E6%98%93%E6%95%99%E5%AD%B8-eade1cd2d12d">在 Windows 上安裝 Python &amp; Selenium 簡易教學</a></strong> 這篇文章，在此感謝；而各語言的語法等等，可以翻閱<a href="https://selenium-python-zh.readthedocs.io/en/latest/index.html">教學文檔</a>。</p>
+<p>關於本篇主要的操作和步驟，主要參考<a href="https://medium.com/@NorthBei/%E5%9C%A8windows%E4%B8%8A%E5%AE%89%E8%A3%9Dpython-selenium-%E7%B0%A1%E6%98%93%E6%95%99%E5%AD%B8-eade1cd2d12d">在 Windows 上安裝 Python &amp; Selenium 簡易教學</a>這篇文章，在此感謝；而各語言的語法等等，可以翻閱<a href="https://selenium-python-zh.readthedocs.io/en/latest/index.html">教學文檔</a>。</p>
 
 <h2 id="準備工作">準備工作</h2>
 
@@ -119,9 +119,12 @@
 
 <p><img src="https://i.imgur.com/z0BGk4z.png" alt="" /></p>
 
-<p>下載完解壓縮應該會有一個 chromedriver.exe 檔案，這個檔案的用法有兩種
-- 放置於 Python.exe 所在的位置，即當初的安裝位置，如此所有的腳本都可以使用
-- 放置於現在專案的 py 檔同一個資料夾，就只有這個資料夾中的腳本可以使用。</p>
+<p>下載完解壓縮應該會有一個 chromedriver.exe 檔案，這個檔案的用法有兩種</p>
+
+<ul>
+<li>放置於 Python.exe 所在的位置，即當初的安裝位置，如此所有的腳本都可以使用</li>
+<li>放置於現在專案的 py 檔同一個資料夾，就只有這個資料夾中的腳本可以使用。</li>
+</ul>
 
 <p>當然前者放一次就都可以用比較方便，不過這邊只打算迅速地讓這個腳本動起來，因此可以直接放置在等等要寫 Python 檔的資料夾就可以了。</p>
 
@@ -144,7 +147,7 @@ driver.get(url)  # 連線到訂便當頁面
 
 <p><img src="https://i.imgur.com/741auju.png" alt="" /></p>
 
-<p>接著想要看到訂單內容，還必須要輸入帳號密碼和驗證碼才行。這也就是前面提到的需要互動的部分。這邊就要先使用 F12 的使用者工具觀察欄位的名稱，以利後續 Selenium 的抓取 <del>，爬蟲的基本就在於拆人家的房子</del></p>
+<p>接著想要看到訂單內容，還必須要輸入帳號密碼和驗證碼才行，這也就是前面提到的需要互動的部分。先使用 F12 的使用者工具觀察欄位的名稱，以利後續 Selenium 的抓取 <del>，爬蟲的基本就在於拆人家的房子</del></p>
 
 <p><img src="https://i.imgur.com/3SWOJtJ.png" alt="" /></p>
 
@@ -179,9 +182,9 @@ driver.find_element_by_name(&quot;result&quot;).send_keys(c)
 
 <p><img src="https://i.imgur.com/J4IXXCx.png" alt="" /></p>
 
-<p>題外話：如果遇到麻煩點的驗證碼怎麼辦？
-可以先用<a href="https://www.youtube.com/watch?v=hF-dJj559ug">大數軟體 - 如何使用Selenium 抓取驗證碼?</a>
-再試試看<a href="https://www.largitdata.com/course/37/">大數學堂 - 如何透過OpenCV 破解台灣證券交易所買賣日報表的驗證碼(Captcha)</a>
+<p>題外話：如果遇到麻煩點的驗證碼怎麼辦？<br/>
+可以先用<a href="https://www.youtube.com/watch?v=hF-dJj559ug">大數軟體 - 如何使用Selenium 抓取驗證碼?</a><br/>
+再試試看<a href="https://www.largitdata.com/course/37/">大數學堂 - 如何透過OpenCV 破解台灣證券交易所買賣日報表的驗證碼(Captcha)</a><br/>
 也許能有效，先記錄下來。</p>
 
 <p>接著就可以測試是否能夠登入了，將帳號密碼設定為測試用的訪客帳號 guest，並在指令最後添加按下按鈕的動作</p>
@@ -196,8 +199,9 @@ driver.find_element_by_name(&quot;submit&quot;).click()
 
 <h2 id="整理及包裝">整理及包裝</h2>
 
-<p>接著流程一如前部分，觀察網頁結構並且將目標取出。
-這邊先將左半部分的 Table 拿出來，接著針對表格的每一列取出該元素之後取文字。</p>
+<p>接著流程一如前部分，觀察網頁結構並且將目標取出。</p>
+
+<p>這邊先將左半部分的 Table 拿出來，接著針對表格的每一列取出該元素之後取文字。</p>
 
 <pre><code class="language-python">from selenium import webdriver
 import re
@@ -272,17 +276,20 @@ if __name__ == '__main__':
 <p>抓回來的樣子如下
 <img src="https://i.imgur.com/jp1lQlr.png" alt="" /></p>
 
-<p>另外每次執行的時候都還會有瀏覽器票出來操作，但我們在這邊已經確認可以成功取回資料了，因此瀏覽器的顯示也不是那麼必要。
-這邊就可以考慮加上無頭模式讓瀏覽器不要顯示，而是在背景執行。只需要在一開始宣告瀏覽器的部分加上選項，就可以不要跳視窗囉。</p>
+<p>另外每次執行的時候都還會有瀏覽器票出來操作，但我們在這邊已經確認可以成功取回資料了，因此瀏覽器的顯示也不是那麼必要。</p>
+
+<p>這邊就可以考慮加上無頭模式讓瀏覽器不要顯示，而是在背景執行。只需要在一開始宣告瀏覽器的部分加上選項，就可以不要跳視窗囉。</p>
 
 <pre><code class="language-python">options = webdriver.ChromeOptions()
 options.add_argument('headless')
 driver = webdriver.Chrome(options=options)
 </code></pre>
 
-<p>到此為止我們已經成功控制瀏覽器幫我們打開網頁，填帳號密碼登入，也取得了想要的訂單列表內容，完成了訂便當野心的第一步！
-然而，接著還有相當多的部分必須處理。如何判斷有沒有新訂單？又要怎麼通知我有新訂單呢？
-欲知後續如何，且待下回分曉！</p>
+<p>到此為止我們已經成功控制瀏覽器幫我們打開網頁，填帳號密碼登入，也取得了想要的訂單列表內容，完成了訂便當野心的第一步！</p>
+
+<p>然而，接著還有相當多的部分必須處理。如何判斷有沒有新訂單？又要怎麼通知我有新訂單呢？</p>
+
+<p>欲知後續如何，且待下回分曉！</p>
 
 <h2 id="參考資料">參考資料</h2>
 
@@ -301,13 +308,9 @@ driver = webdriver.Chrome(options=options)
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/python-ptt-%E7%88%AC%E8%9F%B2%E7%9B%A3%E8%81%BD%E9%97%9C%E9%8D%B5%E5%AD%97%E4%B8%A6%E5%AF%84%E9%80%9A%E7%9F%A5%E4%BF%A1/">[Python] PTT 爬蟲監聽關鍵字並寄通知信</a></li>
+        <li><a href="/post/201912-ptt-crawler-and-listener/">Python：用爬蟲在 PTT 上監聽關鍵字並寄通知信</a></li>
         
-        <li><a href="/post/android-mysql-%E9%80%A3%E7%B7%9A%E7%AD%86%E8%A8%98%E4%BD%BF%E7%94%A8xampp/">[Android] MySQL 連線筆記（使用XAMPP）</a></li>
-        
-        <li><a href="/post/asp.net-mvc-%E5%9C%9F%E6%B3%95%E7%85%89%E9%8B%BC-%E9%80%A3%E7%B7%9A%E8%B3%87%E6%96%99%E5%BA%AB/">[Asp.net MVC] 土法煉鋼 連線資料庫</a></li>
-        
-        <li><a href="/post/asp.net-mvc-entity-framework-%E9%80%A3%E7%B7%9A%E8%B3%87%E6%96%99%E5%BA%AB/">[Asp.net MVC] Entity Framework 連線資料庫</a></li>
+        <li><a href="/about/">關於我</a></li>
         
         <li><a href="/archives/">archives</a></li>
         
@@ -365,19 +368,19 @@ driver = webdriver.Chrome(options=options)
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/python-ptt-%E7%88%AC%E8%9F%B2%E7%9B%A3%E8%81%BD%E9%97%9C%E9%8D%B5%E5%AD%97%E4%B8%A6%E5%AF%84%E9%80%9A%E7%9F%A5%E4%BF%A1/" title="[Python] PTT 爬蟲監聽關鍵字並寄通知信">[Python] PTT 爬蟲監聽關鍵字並寄通知信</a>
+        <a href="https://igouist.github.io/post/201912-ptt-crawler-and-listener/" title="Python：用爬蟲在 PTT 上監聽關鍵字並寄通知信">Python：用爬蟲在 PTT 上監聽關鍵字並寄通知信</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/android-mysql-%E9%80%A3%E7%B7%9A%E7%AD%86%E8%A8%98%E4%BD%BF%E7%94%A8xampp/" title="[Android] MySQL 連線筆記（使用XAMPP）">[Android] MySQL 連線筆記（使用XAMPP）</a>
+        <a href="https://igouist.github.io/post/201912-android-fetch-mysql-using-xampp/" title="Android：MySQL 連線筆記（使用XAMPP）">Android：MySQL 連線筆記（使用XAMPP）</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/asp.net-mvc-%E5%9C%9F%E6%B3%95%E7%85%89%E9%8B%BC-%E9%80%A3%E7%B7%9A%E8%B3%87%E6%96%99%E5%BA%AB/" title="[Asp.net MVC] 土法煉鋼 連線資料庫">[Asp.net MVC] 土法煉鋼 連線資料庫</a>
+        <a href="https://igouist.github.io/post/201912-aspnet-connect-db/" title="Asp.net MVC：連線資料庫、簡單實作 CRUD">Asp.net MVC：連線資料庫、簡單實作 CRUD</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/asp.net-mvc-entity-framework-%E9%80%A3%E7%B7%9A%E8%B3%87%E6%96%99%E5%BA%AB/" title="[Asp.net MVC] Entity Framework 連線資料庫">[Asp.net MVC] Entity Framework 連線資料庫</a>
+        <a href="https://igouist.github.io/post/201912-aspnet-connect-db-ef/" title="Asp.net MVC：Entity Framework 連線資料庫">Asp.net MVC：Entity Framework 連線資料庫</a>
     </li>
     
 </ul>
@@ -416,8 +419,6 @@ driver = webdriver.Chrome(options=options)
     
     <a href="https://igouist.github.io/tags/c/">C#</a>
     
-    <a href="https://igouist.github.io/tags/crud/">CRUD</a>
-    
     <a href="https://igouist.github.io/tags/crawler/">Crawler</a>
     
     <a href="https://igouist.github.io/tags/database/">Database</a>
@@ -447,7 +448,7 @@ driver = webdriver.Chrome(options=options)
     <ul class="widget-list">
         
         <li>
-            <a target="_blank" href="https://medium.com/iamkinglong" title="KingLong - Medium">KingLong - Medium</a>
+            <a target="_blank" href="https://ithelp.ithome.com.tw/users/20112224/articles" title="KingLong - iT邦幫忙">KingLong - iT邦幫忙</a>
         </li>
         
     </ul>
