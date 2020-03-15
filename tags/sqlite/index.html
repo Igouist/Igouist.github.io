@@ -7,22 +7,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Android | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="Android - 伊果的沒人看筆記本">
+    <title>Sqlite | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="Sqlite - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
         
     <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
-    <meta name="description" content="Android">
+    <meta name="description" content="Sqlite">
         
     <meta name="author" content="Igouist">
-    <meta property="og:url" content="https://igouist.github.io/tags/android/">
+    <meta property="og:url" content="https://igouist.github.io/tags/sqlite/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/normalize.css">
     
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="alternate" type="application/rss+xml+xml" href="https://igouist.github.io/tags/android/index.xml" title="伊果的沒人看筆記本" />
+    <link rel="alternate" type="application/rss+xml+xml" href="https://igouist.github.io/tags/sqlite/index.xml" title="伊果的沒人看筆記本" />
     <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 
     
@@ -73,7 +73,7 @@
                     
                     <h3 class="archive-title">
                         包含標籤
-                        <span class="keyword">Android</span>
+                        <span class="keyword">Sqlite</span>
                         的文章
                     </h3>
                     
@@ -82,39 +82,34 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/201912-android-fetch-mysql-using-xampp/">Android：MySQL 連線筆記（使用XAMPP）</a>
+                                    <a href="https://igouist.github.io/post/202003-bandon-2-sqlite/">我要訂便當(2) —— 用 Python &#43; Sqlite 儲存訂單</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
-                                2019-12-9,
+                                2020-3-15,
                             </date>
                             
                             <div class="post-meta meta-category">
                                 
-                                    <a href="https://igouist.github.io/categories/android">Android</a>
+                                    <a href="https://igouist.github.io/categories/python">Python</a>
+                                
+                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
                                 
                             </div>
                             
                             <div class="post-content">
-                                <p>之前做給學弟妹參考的簡單筆記，順手放上來，以後遇到的時候可以回來參考。</p>
+                                <p>前情回顧：上一集在<a href="https://hackmd.io/@IgouistBlog/202003-bandon-1-selenium">我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單</a>中，我們藉由自動化套件 Selenium 控制 Chrome 成功從訂便當網站裡取得訂單資訊了。但只能夠取得現在的訂單，和原本有新訂單的時候才通知的目標仍然有點差距，那麼，如何判斷有沒有新訂單呢？只要和上一次讀取時的訂單相比就能知道了。</p>
 
 <blockquote>
-<p>目標：利用 XAMPP 簡單地架設一個伺服器環境，建立資料庫，並且能在 Android 上取得資料庫的資料。</p>
+<p>目標：將訂單儲存起來，判斷有沒有新訂單。</p>
 </blockquote>
 
-<h2 id="架設伺服器環境">架設伺服器環境</h2>
+<p>這一篇主要的做法主要參考自<a href="https://www.youtube.com/watch?v=pI3FDACJFAs">大數軟體 - 如何透過 Line 發送最新一集的漫畫</a>中，關於如何判斷是否有最新一集漫畫的部分。這系列的影片步驟明瞭，說明直接，同時標題也很對我胃口（我就喜歡把工具拿來生活周遭玩的感覺），因此這邊也推薦一下，有興趣的可以去看看。</p>
 
-<p>在電腦架設伺服器環境的工具有很多種，例如 <a href="https://ithelp.ithome.com.tw/articles/10190366">Windows 內建就有的 IIS</a>（通常拿來搭配 ASP.net）以及微軟的 <a href="https://snippetinfo.net/media/1869">WAMP</a> 等等，或是直接用 <a href="https://ithelp.ithome.com.tw/articles/10075496">Node.js</a> 跑環境兼後端，不勝枚舉。今天要拿來實作的是 <strong>XAMPP</strong> 這一款。XAMPP 嚴格說起來並不算是一個軟體，而是一個<strong>架站懶人包</strong>，它的名字是由這些東西組成的：</p>
+<p>回歸正題，這篇的第一部分就是要使用 Sqlite 將抓到的訂單儲存起來。Sqlite 顧名思義就是 SQL + Lite 的感覺，主打小巧輕便。它會將資料儲存在一個檔案中，並且支援精簡的 SQL 指令，可以說是相當方便。</p>
 
-<ul>
-<li>X = 跨平台</li>
-<li>A = Apache：網頁伺服器軟體</li>
-<li>M = MySQL：資料庫軟體</li>
-<li>P = PHP：程式語言，可以閱覽 <a href="http://www.w3school.com.cn/php/">w3school：PHP</a> 和 <a href="http://www.runoob.com/php/php-tutorial.html">菜鳥教程：PHP</a></li>
-<li>P = Perl：程式語言，可以閱覽 <a href="http://www.runoob.com/perl/perl-tutorial.html">菜鳥教程：Perl</a>
-<br /></li>
-</ul>……
-                                <p class="readmore"><a href="https://igouist.github.io/post/201912-android-fetch-mysql-using-xampp/">閱讀全文</a></p>
+<p>在 Python 要對 Sqlite 做操作主要是藉由 sqlite3 這個包，因此在接下來的步驟前，請先安裝這個包。關於 Sqlite3 的基本操作，可以參閱<a href="https://www.runoob.com/sqlite/sqlite-python.html">菜鳥教程的 SQLite - Python</a>教學。</p>……
+                                <p class="readmore"><a href="https://igouist.github.io/post/202003-bandon-2-sqlite/">閱讀全文</a></p>
                             </div>
                         </article>
                         <hr color="#D9D9D9" />
