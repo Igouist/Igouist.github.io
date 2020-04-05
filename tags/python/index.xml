@@ -6,10 +6,32 @@
     <description>Recent content in Python on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Sun, 22 Mar 2020 13:11:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 05 Apr 2020 19:36:00 +0800</lastBuildDate>
     
 	<atom:link href="https://igouist.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>我要訂便當(3) —— 用 Python &#43; Line Notify 傳送通知</title>
+      <link>https://igouist.github.io/post/202004-python-line-notify/</link>
+      <pubDate>Sun, 05 Apr 2020 19:36:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/202004-python-line-notify/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;前情提要：
+在 &lt;a href=&#34;https://igouist.github.io/post/202003-bandon-1-selenium/&#34;&gt;我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單&lt;/a&gt; 中，我們嘗試了用 Selenium 控制瀏覽器去取回訂便當團購網的訂單內容&lt;br/&gt;
+而在 &lt;a href=&#34;https://igouist.github.io/post/202003-bandon-2-sqlite/&#34;&gt;我要訂便當(2) —— 用 Python + Sqlite 儲存訂單&lt;/a&gt; 中，我們使用 Sqlite 達到將訂單儲存起來以判斷是否有新的訂單，因此這邊的下一步就是需要進行通知。&lt;br/&gt;
+目標：&lt;strong&gt;使用 Line Notify，當有新訂單的時候就發送通知&lt;/strong&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://notify-bot.line.me/zh_TW/&#34;&gt;Line Notify&lt;/a&gt;&lt;/strong&gt; 是 Line 上面的通知服務，不像 Line@ 一樣可以有品牌有互動等等，Line Notify 純粹就是訊息通知；但同時對比 Line@ 最近吵得沸沸揚揚的收費和大量跳槽，Line Notify 則是免費的服務。&lt;/p&gt;
+
+&lt;p&gt;Line Notify 的運作上分為發送訊息和接受訊息。當我們使用 Line 帳號申請 Line Notify 的服務後就可以得到一個 Access Token，藉由這組 Access Token 就能夠讓我們的程式和服務去發送通知。這些通知會由一個叫做 LINE Notify 的官方帳號發送給有訂閱這個通知的人。&lt;/p&gt;
+
+&lt;p&gt;基於這個工作原理，像是需要經營品牌的服務就不太適合 Line Notify，反之像是&lt;strong&gt;伺服器斷線、設備超載等等這些個人通知性質比較高的服務就很適合使用 Line Notify&lt;/strong&gt;。這點從 &lt;a href=&#34;https://notify-bot.line.me/zh_TW/&#34;&gt;Line Notify 網頁&lt;/a&gt;下方的示意圖也可以略知一二。&lt;/p&gt;
+
+&lt;p&gt;當然像我們這次的需求是「如果有新的團購便當 就 通知我」，相當符合使用場景，因此這邊就嘗試使用看看並記錄下來。如果需要更多 Line Notify 的說明，保哥的這篇 &lt;a href=&#34;https://blog.miniasp.com/post/2020/02/17/Go-Through-LINE-Notify-Without-Any-Code&#34;&gt;上手 LINE Notify 不求人：一行代碼都不用寫的推播通知方法&lt;/a&gt; 介紹的更為完整，推薦參閱。當然，也可以閱讀 &lt;a href=&#34;https://notify-bot.line.me/doc/en/&#34;&gt;Line Notify 官方文件&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>SikuliX —— 針對圖形介面寫自動化腳本的小幫手</title>
@@ -19,7 +41,7 @@
       <guid>https://igouist.github.io/post/202003-sikulix/</guid>
       <description>&lt;p&gt;最近因緣際會下開始玩一些自動化測試的小工具，發現即使不是用在正規的測試時也相當實用，畢竟我們這行能讓電腦自動幫我們省事就是一種樂趣嘛。正巧這禮拜比較忙，無法準時推出訂便當系列的續集，因此決定直接紀錄一下試玩 Sikulix 的過程，以後有需要自動化的時候也方便回來參考。&lt;/p&gt;
 
-&lt;p&gt;Sikulix 是一款針對&lt;strong&gt;圖形介面編寫腳本達到自動操作&lt;/strong&gt;的軟體，操作上相當方便。主要是將目標的圖示等畫面擷取下來，再編寫程式對目標進行操作。它編寫腳本時使用的語言是 &lt;a href=&#34;https://www.jython.org/&#34;&gt;Jython&lt;/a&gt; —— 用 Java 實現的 Python，關於 Jython 的基本操作可以參見 &lt;a href=&#34;https://iowiki.com/jython/jython_overview.html&#34;&gt;Wiki 教程：Jyhton&lt;/a&gt;，對於「實現 Python？」有疑惑的朋友可以參見 &lt;a href=&#34;https://zhuanlan.zhihu.com/p/58492338&#34;&gt;知乎：各種 Python 實現的簡單介绍與比較&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Sikulix 是一款針對圖形介面編寫腳本達到自動操作&lt;/strong&gt;的軟體，操作上相當方便。主要是將目標的圖示等畫面擷取下來，再編寫程式對目標進行操作。它編寫腳本時使用的語言是 &lt;a href=&#34;https://www.jython.org/&#34;&gt;Jython&lt;/a&gt; —— 用 Java 實現的 Python，關於 Jython 的基本操作可以參見 &lt;a href=&#34;https://iowiki.com/jython/jython_overview.html&#34;&gt;Wiki 教程：Jyhton&lt;/a&gt;，對於「實現 Python？」這句話感到疑惑的朋友可以參見 &lt;a href=&#34;https://zhuanlan.zhihu.com/p/58492338&#34;&gt;知乎：各種 Python 實現的簡單介绍與比較&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;此外，本篇對於 Sikulix 的參考主要來自於&lt;a href=&#34;https://ypwalter.blogspot.com/2018/06/sikuli-sikulix.html?view=classic&#34;&gt;【測試】圖形化的自動測試 Sikuli / SikuliX 的相關技巧&lt;/a&gt;以及&lt;a href=&#34;https://tpu.thinkpower.com.tw/tpu/articleDetails/876&#34;&gt; Sikulix 圖形辨識自動化測試開發工具&lt;/a&gt;兩篇，特此感謝。&lt;/p&gt;</description>
     </item>
