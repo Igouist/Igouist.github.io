@@ -260,6 +260,26 @@
 
 <p>XAMPP 的網站資料夾預設在 C:\xampp\htdocs，我們在此新增一個 PHP 檔案命名為 GetData.php 並開啟。</p>
 
+<pre><code class="language-php">&lt;?php
+    // 設定 MySQL 的連線資訊並開啟連線
+    // 資料庫位置、使用者名稱、使用者密碼、資料庫名稱
+    $link = mysqli_connect(&quot;localhost&quot;, &quot;admin&quot;, &quot;******&quot;, &quot;newdatabase&quot;);
+    $link -&gt; set_charset(&quot;UTF8&quot;); // 設定語系避免亂碼
+
+    // SQL 指令
+    $result = $link -&gt; query(&quot;SELECT * FROM `newtable`&quot;);
+    while ($row = $result-&gt;fetch_assoc()) // 當該指令執行有回傳
+    {
+        $output[] = $row; // 就逐項將回傳的東西放到陣列中
+    }
+
+    // 將資料陣列轉成 Json 並顯示在網頁上，並要求不把中文編成 UNICODE
+    print(json_encode($output, JSON_UNESCAPED_UNICODE));
+    $link -&gt; close(); // 關閉資料庫連線
+
+?&gt;
+</code></pre>
+
 <p><img src="https://i.imgur.com/TDwalqp.png" alt="" /></p>
 
 <p>完成連線至資料庫的程式後，請實際開啟瀏覽器輸入 localhost/GetData.php 測試看看能不能抓到資料。（如果是一片空白，請先確認資料表是否已經有新增資料，接著確認是否有成功連線）</p>
@@ -340,6 +360,8 @@
 </code></pre>
 
 <p>接著在裡面撰寫處理 HTTP 相關的部分：</p>
+
+<p>（註：先用圖片說明，程式碼將放於最後）</p>
 
 <p><img src="https://i.imgur.com/gN7AxTX.png" alt="" /></p>
 
@@ -461,7 +483,7 @@
 <li>Android 向 PHP 取得資料時，在 PHP 端實做資料驗證，令 Android 端必須傳遞一個符合的 token 才能取得資料</li>
 <li>Android 向 PHP 取得資料時，使資料在 PHP 端進行加密，而在 Android 端進行解密。</li>
 <li>Android 取得資料後，嘗試使用 json 儲存取得的資料</li>
-<li>Android 取得資料後，使用 ListView 按照格式顯示每一筆資料（可以依序參考<a href="http://learnexp.tw/[android]listview-教學-從-4到5/">這篇</a>、<a href="http://huli.logdown.com/posts/280137-android-custom-listview">這篇</a>和<a href="https://codemango.blogspot.com/2017/04/android-studio-listview-filter.html">這篇</a>）</li>
+<li>Android 取得資料後，使用 ListView 按照格式顯示每一筆資料（可以依序參考<a href="http://learnexp.tw/%e3%80%90android%e3%80%91listview-%e6%95%99%e5%ad%b8-%e5%be%9e-4%e5%88%b05/">這篇</a>、<a href="http://huli.logdown.com/posts/280137-android-custom-listview">這篇</a>和<a href="https://codemango.blogspot.com/2017/04/android-studio-listview-filter.html">這篇</a>）</li>
 </ul>
 </blockquote>
                         </div>
