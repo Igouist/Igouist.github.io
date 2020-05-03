@@ -7,20 +7,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>我要訂便當(3) —— 用 Python &#43; Line Notify 傳送通知 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="我要訂便當(3) —— 用 Python &#43; Line Notify 傳送通知 - 伊果的沒人看筆記本">
+    <title>我要訂便當(Ex1) -- 將 Python 腳本部署上 Heroku | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="我要訂便當(Ex1) -- 將 Python 腳本部署上 Heroku - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2020-04-05T19:36:00&#43;08:00">
+    <meta property="article:published_time" content="2020-05-03T23:55:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2020-04-05T19:36:00&#43;08:00">
+    <meta property="article:modified_time" content="2020-05-03T23:55:00&#43;08:00">
         
     <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
-    <meta name="description" content="使用 Line Notify 及 Python，當有新訂單的時候就發送推播通知給我">
+    <meta name="description" content="簡單地紀錄如何將 Python 腳本放上 Heroku">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/post/202004-bandon-3-line-notify/">
+    <meta property="og:url" content="https://igouist.github.io/post/202005-bandon-ex1-heroku/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/normalize.css">
@@ -76,10 +76,10 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">我要訂便當(3) —— 用 Python &#43; Line Notify 傳送通知</h1>
+                            <h1 class="post-title">我要訂便當(Ex1) -- 將 Python 腳本部署上 Heroku</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2020-4-5,
+                            2020-5-3,
                         </date>
                         
                         <div class="post-meta">
@@ -99,114 +99,173 @@
                         </div>
                         
                         <div class="post-content">
-                            <p>前情提要：<br/>
-在 <a href="https://igouist.github.io/post/202003-bandon-1-selenium/">我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單</a> 中，我們嘗試了用 Selenium 控制瀏覽器去取回訂便當團購網的訂單內容<br/>
-而在 <a href="https://igouist.github.io/post/202003-bandon-2-sqlite/">我要訂便當(2) —— 用 Python + Sqlite 儲存訂單</a> 中，我們使用 Sqlite 達到將訂單儲存起來以判斷是否有新的訂單，因此這邊的下一步就是需要進行通知。<br/></p>
-
-<blockquote>
-<p>目標：<strong>使用 Line Notify，當有新訂單的時候就發送通知</strong>。</p>
+                            <blockquote>
+<p>目標：紀錄一下如何將 Python 寫好的東西丟上 <a href="https://www.heroku.com/home">Heroku</a></p>
 </blockquote>
 
-<p><strong><a href="https://notify-bot.line.me/zh_TW/">Line Notify</a></strong> 是 Line 上面的通知服務，不像 Line@ 一樣可以有品牌有互動等等，Line Notify 純粹就是訊息通知；但同時對比 Line@ 最近吵得沸沸揚揚的收費和大量跳槽，Line Notify 則是免費的服務。</p>
+<p>在先前的 <a href="https://igouist.github.io/post/202003-bandon-1-selenium/">訂便當系列</a> 中已經建立了一個替我們去爬便當網並通知我們的小工具，但還存在一個相當大的問題：要在哪跑？總不能就只放在家裡電腦有開機就跑、沒開機就算了吧？因此我們必須找個主機把它放上去。而在上一篇做 Line Notify 的時候所參考的 <a href="https://www.evanlin.com/go-line-notify/">如何快速建置一個 LINE Notify 的服務</a> 中提到了將服務放上 Heroku 的部分，因此馬上嘗試看看。</p>
 
-<p>Line Notify 的運作上分為發送訊息和接受訊息。當我們使用 Line 帳號申請 Line Notify 的服務後就可以得到一個 Access Token，藉由這組 Access Token 就能夠讓我們的程式和服務去發送通知。這些通知會由一個叫做 LINE Notify 的官方帳號發送給有訂閱這個通知的人。</p>
+<p>結果過程中碰了不少壁，因此特地紀錄下來。</p>
 
-<p>基於這個工作原理，像是需要經營品牌的服務就不太適合 Line Notify，反之像是<strong>伺服器斷線、設備超載等等這些個人通知性質比較高的服務就很適合使用 Line Notify</strong>。這點從 <a href="https://notify-bot.line.me/zh_TW/">Line Notify 網頁</a>下方的示意圖也可以略知一二。</p>
+<p><strong>Heroku 是一個雲端平台</strong>，讓使用者可以把服務丟上去跑，同時最讚的部分是，免費用戶就提供了每月 450 小時可以使用（但有每半小時會進入休眠的限制），詳情可以參閱 <a href="https://www.heroku.com/pricing">Heroku 的計費頁面</a>。</p>
 
-<p>當然像我們這次的需求是「如果有新的團購便當 就 通知我」，相當符合使用場景，因此這邊就嘗試使用看看並記錄下來。如果需要更多 Line Notify 的說明，保哥的這篇 <a href="https://blog.miniasp.com/post/2020/02/17/Go-Through-LINE-Notify-Without-Any-Code">上手 LINE Notify 不求人：一行代碼都不用寫的推播通知方法</a> 介紹的更為完整，推薦參閱。當然，也可以閱讀 <a href="https://notify-bot.line.me/doc/en/">Line Notify 官方文件</a></p>
+<p>本系列最後一階段的目標就是要將訂便當爬蟲整套丟上去雲端上運行，達到被動接收通知的效果。但由於訂便當爬蟲還牽涉到用 Selenium 開瀏覽器互動，以及使用 Sqlite 儲存的部分，轉移到 Heroku 的環境上還需要進行一些調整。因此<strong>這一階段將會分成兩篇（或以上）文章進行，上篇會先簡單地紀錄如何將服務放上 Heroku，下篇開始則著重於紀錄將訂便當系統放上 Heroku 時遇到的問題和解決過程</strong>。</p>
 
-<h2 id="申請-line-notify">申請 Line Notify</h2>
+<p>本篇主要的參考來源來自於 <a href="https://medium.com/enjoy-life-enjoy-coding/heroku-%E6%90%AD%E9%85%8D-git-%E5%9C%A8-heroku-%E4%B8%8A%E9%83%A8%E7%BD%B2%E7%B6%B2%E7%AB%99%E7%9A%84%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E5%AD%B8-bf4fd6f998b8">搭配 Git 在 Heroku 上部署網站的手把手教學</a>、<a href="https://ithelp.ithome.com.tw/articles/10196129">發布網站到 Heroku</a> 以及 <a href="https://railsbook.tw/chapters/32-deployment-with-heroku.html">網站部署（使用 Heroku）</a> 這幾篇，其餘參考將附於文末，感謝各位前人大大留下的優質文。</p>
 
-<p>首先先到 <a href="https://notify-bot.line.me/zh_TW/">Line Notify</a> 的頁面右上角登入</p>
+<h2 id="註冊及安裝">註冊及安裝</h2>
 
-<p><img src="https://i.imgur.com/VAJV0X1.png" alt="" /></p>
+<p>Heroku 的 <a href="https://signup.heroku.com/login">註冊</a> 相當簡單，這邊就略過不提，需要說明可以參考 <a href="https://ithelp.ithome.com.tw/articles/10196129">這篇</a>。</p>
 
-<p>登入之後，從右上角選擇 個人頁面</p>
+<p>註冊完畢就會回到個人頁面，底部有 Heroku Dev Center，也能選自己慣用的程式語言進去教學說明，有興趣的可以逛個一圈。
+<img src="https://i.imgur.com/2Q02pgx.png" alt="" /></p>
 
-<p><img src="https://i.imgur.com/Rizyl5e.png" alt="" /></p>
+<p>這邊我們就先新增一個應用程式，點選畫面中間左側的 <code>Create a new app</code></p>
 
-<p>接著可以看到下面這個畫面：如果已經有申請過權杖或服務，就會顯示在上半部分的「已連動的服務」
-而我們現在需要的是下方的發行權杖
-<img src="https://i.imgur.com/zNivpLD.png" alt="" /></p>
+<p><img src="https://i.imgur.com/BhCYXCY.png" alt="" /></p>
 
-<p>接著進到選擇通知視窗的畫面，在這邊可以選擇是直接通知你自己 或是將通知傳送到某個群組
-<img src="https://i.imgur.com/zt2JUrI.png" alt="" /></p>
+<p>接著輸入應用程式名稱，注意只能使用小寫，並且不能重複。如果已經使用後續會提到的 CLI 的朋友，也可以直接使用 <code>heroku create</code> 的指令來建立應用程式。</p>
 
-<p>選擇通知對象之後，就會顯示存取用的 Token。由於<strong>這組 Token 只會顯示一次，請自己複製下來存好！</strong>
-<img src="https://i.imgur.com/Mob0tR6.png" alt="" /></p>
+<p>建立完成之後就會進到專案的頁面：</p>
 
-<p>存取完畢後就可以看到這次申請的服務已經加到已連動的服務囉
-<img src="https://i.imgur.com/cT5omou.png" alt="" /></p>
+<p><img src="https://i.imgur.com/OR5Sf14.png" alt="" /></p>
 
-<p>並且 Line 也會跳出已連動的通知
-<img src="https://i.imgur.com/NegLeh6.png" alt="" /></p>
+<p>可以看見 Heroku 提供了幾種方法來將應用程式推送到 Heroku 上，例如連接到 Github。我們這邊用 Heroku CLI 試試，頁面上也已經提供了步驟說明。</p>
 
-<p>到這邊就算是申請完畢了，接下來就要來測試一下是否能發送。</p>
+<p><a href="https://devcenter.heroku.com/articles/heroku-cli">Heroku CLI 的安裝說明頁面</a>，在這邊挑選自己的系統下載並安裝。</p>
 
-<h2 id="發送-line-notify">發送 Line Notify</h2>
+<p>安裝過程也相當簡易，會有將 Heroku 加到環境變數和路徑等選項，一路下一步即可。</p>
 
-<p>這邊測試的 Code 主要參考 <a href="https://bustlec.github.io/note/2018/07/10/line-notify-using-python/">使用 Python 實作發送 LINE Notify 訊息 - Bustle C.</a>，感謝前人的足跡。</p>
+<p>裝完之後，打開命令列輸入 Heroku，如果有跳出指令列表就代表安裝已經成功</p>
 
-<pre><code class="language-python">import requests
+<p><img src="https://i.imgur.com/nGlmGiJ.png" alt="" /></p>
+
+<h2 id="連接至-heroku">連接至 Heroku</h2>
+
+<blockquote>
+<p>備註：由於 Heroku 傳送檔案的方式是使用 Git 進行，因此在後續的操作之前，<code>必須先確保電腦中已經安裝 Git</code></p>
+</blockquote>
+
+<p>接著我們就按照說明頁面（<code>https://dashboard.heroku.com/apps/你的應用程式名稱/deploy/heroku-git</code>）上的步驟開始操作。</p>
+
+<p>首先要先登入，輸入 <code>heroku login</code> 之後，便會開啟瀏覽器進行登入驗證，如果成功會看見登入訊息</p>
+
+<p><img src="https://i.imgur.com/fOifmbs.png" alt="" /></p>
+
+<p>接著就可以移到專案的資料夾，將專案和 Heroku 做連接</p>
+
+<pre><code>$ cd my-project/
+$ git init
+$ heroku git:remote -a Heroku的APP名稱
+</code></pre>
+
+<p><img src="https://i.imgur.com/TumTYwP.png" alt="" /></p>
+
+<h2 id="環境設定及測試">環境設定及測試</h2>
+
+<p>這邊由於前面提到訂便當系統有部分要調整的關係，因此只使用 <a href="https://igouist.github.io/post/202004-bandon-3-line-notify/">我要訂便當(3) 的 Lint Notify 測試版</a> 的 Line Notify 上去試試看。上一集的簡單 Line Notify 程式碼如下：</p>
+
+<pre><code>import requests
 
 def lineNotifyMessage(token, msg):
     headers = {
-        &quot;Authorization&quot;: &quot;Bearer &quot; + token, # 權杖，Bearer 的空格不要刪掉呦
+        &quot;Authorization&quot;: &quot;Bearer &quot; + token,
         &quot;Content-Type&quot;: &quot;application/x-www-form-urlencoded&quot;
     }
 
     payload = {'message': msg}
-    
-    # Post 封包出去給 Line Notify
     r = requests.post(
         &quot;https://notify-api.line.me/api/notify&quot;,
-        headers=headers, 
+        headers=headers,
         params=payload)
     return r.status_code
 
-message = 'Line Notify 測試'
-token = '把你的 Token 放在這'
+
+message = 'Line Notify + Heroku 測試'
+token = 'YOUR TOKEN'
 result = lineNotifyMessage(token, message)
-print(result) # 印一下回傳代碼
+ 
 </code></pre>
 
-<p>執行 py 檔之後就可以收到訊息囉！
-<img src="https://i.imgur.com/v32rItf.png" alt="" /></p>
+<p>接著除了主要的 py 檔以外，還需要一些檔案去告訴 Heroku 怎麼處理我們的服務。</p>
 
-<p>如果回傳成功，<code>r.status_code</code> 就會顯示 <code>200</code>；而如果像是 Token 已經被撤銷等，則會得到 <code>401</code></p>
+<p>事實上我第一次是直接就把 py 傳上去 Heroku 然後建置大失敗，還好 Google 了一陣有前人指點，這邊的設定部份參照自 <a href="https://blog.techbridge.cc/2020/03/08/how-to-use-heroku-to-deploy-clear-mysql-db-web-app-tutorial/">如何使用 Heroku 部屬一個 Web App 網頁應用程式</a>，特此感謝。</p>
 
-<p>另外當然也可以傳送圖片或貼圖，請參閱 <a href="https://www.oxxostudio.tw/articles/201806/line-notify.html">自建 LINE Notify 訊息通知 - Oxxo studio</a></p>
+<p>這邊需要新增幾個設定的檔案：</p>
 
-<h2 id="和訂便當腳本結合">和訂便當腳本結合</h2>
+<p><code>Procfile</code> 用來告訴 Heroku 怎麼運行我們的服務</p>
 
-<p>接著我們就將這個寄發 Line Notify 的 Function 給放回我們之前的訂便當腳本中。並在發現訂單異動的部分去呼叫 <code>lineNotifyMessage</code> 來通知我們</p>
-
-<pre><code class="language-python=47"># ...
-print(&quot;偵測到訂單變動！&quot;)
-# 做點通知的事
-message = &quot;訂單已變動，請到 https://dinbendon.net/ 確認！&quot;
-result = lineNotifyMessage(token, message)
-print_order(order)
-# ...
+<pre><code>web: python LineNotify.py
 </code></pre>
 
-<p><img src="https://i.imgur.com/j6bkIHg.png" alt="" /></p>
+<p>以上的意思是：下達 <code>python LineNotify.py</code> 這行命令來運行 <code>web</code>。而像上面附的文章在建置 Flask 時就將運行 web 的命令設定為 <code>gunicorn flask_app:app</code> 讓 <a href="https://www.jianshu.com/p/52d8e3deaa16">Gunicorn</a> 去起網站來跑。</p>
 
-<p>打完收工！接著不管是要 比對新舊訂單並發送這次新的訂單資訊；或者是要順便發送目前的訂單數量等等，都是只差在訊息內容的修改而已（我是直接發送 <code>&quot;,&quot;.join(orderList)</code> 來看目前有哪些訂單）屆此已經可以宣告收工囉。</p>
+<p><code>requirements.txt</code> 用來標示需要安裝的套件，這邊我們需要的是</p>
 
-<h2 id="心得">心得</h2>
+<pre><code>gunicorn
+flask
+requests
+</code></pre>
 
-<p>在像這種單純通知的場合中，Line Notify 有架設簡單、即時方便的特性。並且也已經提供了和 Github 等連接的服務，因此像是伺服器斷線或是有新的提取要求、甚至是爬蟲去看手遊有沒有新活動時，都可以考慮建立一個群組並用 Line Notify 來達到低成本推播的要求，可謂相當方便！希望將來能再回來抄自己這篇把各種推播提醒都拉到 Line Notify 集中管理，<del>不然除了機器人也不會有人 Line 我…</del></p>
+<p><code>runtime.txt</code> 用來標示 Python 的版本，這篇文當下的版本為</p>
+
+<pre><code>python-3.7.6
+</code></pre>
+
+<p>到目前為止沒意外的話應該會包含這些東西
+<img src="https://i.imgur.com/Uwb12MD.png" alt="" /></p>
+
+<p>這邊可以嘗試在本機測試看看，打開命令列輸入 <code>heroku local web</code> 就可以在 localhost Run 起來看看囉</p>
+
+<p><img src="https://i.imgur.com/7nfsEB0.png" alt="" />
+<img src="https://i.imgur.com/UOfqN2J.png" alt="" /></p>
+
+<p>如果一切安好，就可以開始嘗試部署囉</p>
+
+<h2 id="部署至-heroku">部署至 Heroku</h2>
+
+<p>Heroku 的部署只需要用 Git 推送上去就可以了，也就是只需要</p>
+
+<pre><code># 把所有檔案都加到這次變更
+$ git add .
+
+# Commit 所有變動（記得標註解，養成好習慣）
+$ git commit -am &quot;這是Commit註解&quot;
+
+# 推送
+$ git push heroku master
+</code></pre>
+
+<p>就可以發到 Heroku 進行部署了，推送時也能看見建置的過程，如安裝的包和建置是否成功等資訊都會顯示</p>
+
+<p>而在 Heroku 的 APP 頁面裡</p>
+
+<p><img src="https://i.imgur.com/9aJyKLQ.png" alt="" /></p>
+
+<p><code>Activity</code> 可以看見最近的活動，例如部署失敗也會顯示在這；而 <code>Settings</code> 則是一些專案設定，例如名稱和建置包都要到這裡調整，其中最重要的就是 Domains 的部份，可以從這裡連到你的服務，如果你放的是網頁或 API 的話就可以從這裡進入。</p>
+
+<p><img src="https://i.imgur.com/p9ZAWei.png" alt="" /></p>
+
+<p>另外要看最近的 Log，則在命令列輸入 <code>Heroku log</code> 就會顯示了（建議搭配 <code>--tail</code> 等方法使用，詳請可見 <a href="https://devcenter.heroku.com/articles/logging#view-logs">官方文檔</a>）</p>
+
+<h2 id="後記">後記</h2>
+
+<p>其實原本打算部署的部分一篇解決的，沒想到牆就這樣撞了上來，將便當放到 Heroku 上時實在遇到挺多問題，例如第一次使用時直接把整坨檔案直接推上去也沒設定結果建置失敗，或是發現 Heroku 不給用 Sqlite，或是 Selenium 要另外找建置包等等，因此最後決定切成兩篇，一篇好好記 Heroku 的流程，剩下的部份再按照問題做紀錄。</p>
+
+<p>同時因為原本的訂便當已經在家裡電腦跑著了，部屬上雲似乎是額外再戰的部份，因此就下了 Ex 的外傳性質。待到剩下問題處理好了，抓緊下班時間再寫上來記著，希望以後能派上用場吧。</p>
 
 <h2 id="參考資料">參考資料</h2>
 
 <ul>
-<li><a href="https://blog.miniasp.com/post/2020/02/17/Go-Through-LINE-Notify-Without-Any-Code">上手 LINE Notify 不求人：一行代碼都不用寫的推播通知方法 - The Will Will Web</a></li>
-<li><a href="https://www.oxxostudio.tw/articles/201806/line-notify.html">自建 LINE Notify 訊息通知 - Oxxo studio</a></li>
-<li><a href="https://blogger.jackkuo.org/2019/01/line-notify.html">LINE Notify 初嚐心得 - JackKuo&rsquo;s Blog</a></li>
+<li><a href="https://medium.com/enjoy-life-enjoy-coding/heroku-%E6%90%AD%E9%85%8D-git-%E5%9C%A8-heroku-%E4%B8%8A%E9%83%A8%E7%BD%B2%E7%B6%B2%E7%AB%99%E7%9A%84%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E5%AD%B8-bf4fd6f998b8">搭配 Git 在 Heroku 上部署網站的手把手教學 - 神Q超人</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10196129">第十八天：發布網站到 Heroku - 只要有心，人人都可以做卡米狗</a></li>
+<li><a href="https://railsbook.tw/chapters/32-deployment-with-heroku.html">網站部署（使用 Heroku） - 為你自己學 Ruby on Rails</a></li>
+<li><a href="https://blog.techbridge.cc/2020/03/08/how-to-use-heroku-to-deploy-clear-mysql-db-web-app-tutorial/">如何使用 Heroku 部屬一個 Web App 網頁應用程式 - TechBridge 技術共筆部落格</a></li>
 <li><a href="https://www.evanlin.com/go-line-notify/">[Golang][LINE][教學] 如何快速建置一個 LINE Notify 的服務 - KKDAI.GITHUB.IO</a></li>
-<li><a href="https://bustlec.github.io/note/2018/07/10/line-notify-using-python/">使用 Python 實作發送 LINE Notify 訊息 - Bustle C.</a></li>
-<li><a href="https://ithelp.ithome.com.tw/articles/10223413">Day15-Python Line 整合應用 &ndash; Line Notify</a></li>
+<li><a href="https://ivanjo39191.pixnet.net/blog/post/179102363-python-django-%E5%AD%B8%E7%BF%92%E7%B4%80%E9%8C%84%28%E4%B9%9D%29-%E9%83%A8%E5%B1%AC%E7%B6%B2%E7%AB%99%E5%88%B0-heroku">Python Django 學習紀錄(九) 部屬網站到 Heroku - IvanKao的部落格</a></li>
+<li><a href="https://djangogirlstaipei.herokuapp.com/tutorials/deploy-to-heroku/?os=windows">用 Heroku 部署網站 - Django Girls Taipei</a></li>
+<li><a href="https://elements.heroku.com/buildpacks/heroku/heroku-buildpack-python">Heroku-buildpack-python</a></li>
+<li><a href="https://devcenter.heroku.com/categories/heroku-architecture">Heroku devcenter</a></li>
 </ul>
                         </div>
 
@@ -216,15 +275,15 @@ print_order(order)
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/202003-sikulix/">SikuliX —— 針對圖形介面寫自動化腳本的小幫手</a></li>
+        <li><a href="/post/202004-bandon-3-line-notify/">我要訂便當(3) —— 用 Python &#43; Line Notify 傳送通知</a></li>
         
-        <li><a href="/post/202003-bandon-1-selenium/">我要訂便當(1) —— 用 Python &#43; Selenium 控制瀏覽器取得訂單</a></li>
+        <li><a href="/post/202003-sikulix/">SikuliX —— 針對圖形介面寫自動化腳本的小幫手</a></li>
         
         <li><a href="/post/202003-bandon-2-sqlite/">我要訂便當(2) —— 用 Python &#43; Sqlite 儲存訂單</a></li>
         
-        <li><a href="/post/202003-visualstudio/">Visual studio 環境筆記：字型、套件、快捷鍵</a></li>
+        <li><a href="/post/202003-bandon-1-selenium/">我要訂便當(1) —— 用 Python &#43; Selenium 控制瀏覽器取得訂單</a></li>
         
-        <li><a href="/post/201912-ptt-crawler-and-listener/">Python：用爬蟲在 PTT 上監聽關鍵字並寄通知信</a></li>
+        <li><a href="/post/202004-css-variables/">隨手記：CSS 變數</a></li>
         
     </ul>
 </div>
@@ -236,9 +295,11 @@ print_order(order)
                                 
                                 <li><a href="https://igouist.github.io/tags/python">Python</a></li>
                                 
-                                <li><a href="https://igouist.github.io/tags/automation">Automation</a></li>
-                                
                                 <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/heroku">Heroku</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/bandon">Bandon</a></li>
                                 
                             </ul>
                             
