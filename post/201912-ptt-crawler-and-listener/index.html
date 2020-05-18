@@ -3,7 +3,7 @@
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.60.1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -99,277 +99,238 @@
                         <div class="post-content">
                             <blockquote>
 <p>前陣子很想跟 Netflix 的團購，三不五時就上 PTT 看一下團購板，但看到的時候大多已經截止，還有填單填到一半發現已經收滿的，氣得七竅生煙。故嘗試寫了一個通知，在這邊記錄下來。</p>
-
 <p><strong>目標：當團購板上新發了一篇 Netflix 的文，馬上寄信告訴我。</strong></p>
 </blockquote>
-
 <p>為了這個目標，我們基本上需要：</p>
-
 <ul>
 <li>用爬蟲取得團購板的文章標題</li>
 <li>能夠寄信（使用 Gmail）</li>
 <li>持續監視，也就是重複執行</li>
 </ul>
-
-<h3 id="爬蟲">爬蟲</h3>
-
+<h3 id="heading">爬蟲</h3>
 <p>所謂的爬蟲就是傳送 HTTP 去瀏覽網頁，並把網頁的內容（像 HTML 等）打包回來分析使用。</p>
-
 <p>這部分，我是參考這篇 <a href="https://github.com/leVirve/CrawlerTutorial">爬蟲極簡教學</a> 來寫的，主要是使用 <strong>requests</strong> 來取得 HTML，再使用 <strong>requests_html</strong> 解析，裡面的說明非常詳盡。</p>
-
-<p>除了這兩個，其他常用到的工具還有：解析 HTML 架構的 <strong>Beautiful Soup</strong>（<a href="https://blog.gtwang.org/programming/python-beautiful-soup-module-scrape-web-pages-tutorial/">教學</a>）、模擬瀏覽器的 <strong>Selenium</strong> 等。一些常用的工具可以參考這篇 <a href="https://blog.v123582.tw/2018/09/03/學習-Python-爬蟲的最佳路徑/">爬蟲的工具鍊</a> 的介紹。</p>
-
+<p>除了這兩個，其他常用到的工具還有：解析 HTML 架構的 <strong>Beautiful Soup</strong>（<a href="https://blog.gtwang.org/programming/python-beautiful-soup-module-scrape-web-pages-tutorial/">教學</a>）、模擬瀏覽器的 <strong>Selenium</strong> 等。一些常用的工具可以參考這篇 <a href="https://blog.v123582.tw/2018/09/03/%E5%AD%B8%E7%BF%92-Python-%E7%88%AC%E8%9F%B2%E7%9A%84%E6%9C%80%E4%BD%B3%E8%B7%AF%E5%BE%91/">爬蟲的工具鍊</a> 的介紹。</p>
 <p>接著開始跟隨教學走吧。首先確認目標網站的 HTML，可以發現在 PTT 上每一篇文章都是放在 r-ent 的 div 裡的。</p>
-
-<p><img src="https://i.imgur.com/DAbF4NX.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/DAbF4NX.png" alt=""></p>
 <p>首先就是要先到目標網頁將 HTML 打包回來。此外，PTT 再初次進入時，會跳出視窗詢問是否已經滿十八歲，因此這邊也必須要先處理。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> requests
 
-<pre><code class="language-python">import requests
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fetch</span>(url):
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">傳入網址，向 PTT 回答已經滿 18 歲，回傳網頁內容</span><span style="color:#e6db74">&#39;</span>
+    response <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(url)
+    response <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(url, cookies<span style="color:#f92672">=</span>{<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">over18</span><span style="color:#e6db74">&#39;</span>:<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">1</span><span style="color:#e6db74">&#39;</span>})
+    <span style="color:#66d9ef">return</span> response
+</code></pre></div><p>接下來利用 requests_html 將 div.r-ent 拆出來，也可以用其他的 HTML 解析模組（例如比較熟悉用 Beautiful Soup 之類的時候）來替代：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> requests_html <span style="color:#f92672">import</span> HTML
 
-def fetch(url):
-    '傳入網址，向 PTT 回答已經滿 18 歲，回傳網頁內容'
-    response = requests.get(url)
-    response = requests.get(url, cookies={'over18':'1'})
-    return response
-</code></pre>
-
-<p>接下來利用 requests_html 將 div.r-ent 拆出來，也可以用其他的 HTML 解析模組（例如比較熟悉用 Beautiful Soup 之類的時候）來替代：</p>
-
-<pre><code class="language-python">from requests_html import HTML
-
-def parse_article_entries(doc):
-    '傳入網頁內容，利用 requests_html 取出 div.r-ent 的元素內容並回傳'
-    html = HTML( html = doc )
-    post_entries = html.find('div.r-ent')
-    return post_entries
-</code></pre>
-
-<p>最後將拆出來的資料做成字典，方便之後操作。但這邊要注意，被刪除的文章會缺少作者和連結，直接拿會產生錯誤，因此必須要篩掉：</p>
-
-<pre><code class="language-python">def parse_article_meta(entry):
-    '將 r-ent 元素的內容格式化成 dict 再回傳'
-    meta = {
-        'title': entry.find('div.title', first=True).text,
-        'push': entry.find('div.nrec', first=True).text,
-        'date': entry.find('div.date', first=True).text
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse_article_entries</span>(doc):
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">傳入網頁內容，利用 requests_html 取出 div.r-ent 的元素內容並回傳</span><span style="color:#e6db74">&#39;</span>
+    html <span style="color:#f92672">=</span> HTML( html <span style="color:#f92672">=</span> doc )
+    post_entries <span style="color:#f92672">=</span> html<span style="color:#f92672">.</span>find(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">div.r-ent</span><span style="color:#e6db74">&#39;</span>)
+    <span style="color:#66d9ef">return</span> post_entries
+</code></pre></div><p>最後將拆出來的資料做成字典，方便之後操作。但這邊要注意，被刪除的文章會缺少作者和連結，直接拿會產生錯誤，因此必須要篩掉：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse_article_meta</span>(entry):
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">將 r-ent 元素的內容格式化成 dict 再回傳</span><span style="color:#e6db74">&#39;</span>
+    meta <span style="color:#f92672">=</span> {
+        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">title</span><span style="color:#e6db74">&#39;</span>: entry<span style="color:#f92672">.</span>find(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">div.title</span><span style="color:#e6db74">&#39;</span>, first<span style="color:#f92672">=</span>True)<span style="color:#f92672">.</span>text,
+        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">push</span><span style="color:#e6db74">&#39;</span>: entry<span style="color:#f92672">.</span>find(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">div.nrec</span><span style="color:#e6db74">&#39;</span>, first<span style="color:#f92672">=</span>True)<span style="color:#f92672">.</span>text,
+        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">date</span><span style="color:#e6db74">&#39;</span>: entry<span style="color:#f92672">.</span>find(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">div.date</span><span style="color:#e6db74">&#39;</span>, first<span style="color:#f92672">=</span>True)<span style="color:#f92672">.</span>text
     }
-    try:
-        # 正常的文章可以取得作者和連結
-        meta['author'] = entry.find('div.author', first=True).text
-        meta['link'] = entry.find('div.title &gt; a', first=True).attrs['href']
-    except AttributeError:
-        # 被刪除的文章我們就不要了
-        meta['author'] = '[Deleted]'
-        meta['link'] = '[Deleted]'
-    return meta
-</code></pre>
-
-<p>到這邊應該能取得首頁上目前的文章了。由於我們做的是監聽團購的目標是不是有人發文，因此我們並不需要再進連結取得內文、或是翻頁繼續爬等更複雜的操作，只需要第一頁的資料就足夠了。（如果想要翻頁，例如說需要爬前一百頁的時候，上面的爬蟲極簡教學有使用抓翻頁按鈕的連結來達成的做法可以參考。）</p>
-
-<h3 id="寄信">寄信</h3>
-
+    <span style="color:#66d9ef">try</span>:
+        <span style="color:#75715e"># 正常的文章可以取得作者和連結</span>
+        meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">author</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> entry<span style="color:#f92672">.</span>find(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">div.author</span><span style="color:#e6db74">&#39;</span>, first<span style="color:#f92672">=</span>True)<span style="color:#f92672">.</span>text
+        meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">link</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> entry<span style="color:#f92672">.</span>find(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">div.title &gt; a</span><span style="color:#e6db74">&#39;</span>, first<span style="color:#f92672">=</span>True)<span style="color:#f92672">.</span>attrs[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">href</span><span style="color:#e6db74">&#39;</span>]
+    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">AttributeError</span>:
+        <span style="color:#75715e"># 被刪除的文章我們就不要了</span>
+        meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">author</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">[Deleted]</span><span style="color:#e6db74">&#39;</span>
+        meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">link</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">[Deleted]</span><span style="color:#e6db74">&#39;</span>
+    <span style="color:#66d9ef">return</span> meta
+</code></pre></div><p>到這邊應該能取得首頁上目前的文章了。由於我們做的是監聽團購的目標是不是有人發文，因此我們並不需要再進連結取得內文、或是翻頁繼續爬等更複雜的操作，只需要第一頁的資料就足夠了。（如果想要翻頁，例如說需要爬前一百頁的時候，上面的爬蟲極簡教學有使用抓翻頁按鈕的連結來達成的做法可以參考。）</p>
+<h3 id="heading1">寄信</h3>
 <p>寄信部分利用 smtplib 來做 <a href="http://learn-web-hosting-domain-name.mygreatname.com/how-mail-server-works/how-smtp-pop3-mail-servers-works.html">SMTP</a> 。使用方式相當簡單，可以參考 <a href="http://www.runoob.com/python/python-email.html">菜鳥教程的說明</a> 。這邊為了方便，直接使用 Gmail 來寄件。<em>（註：要讓 Gmail 可以用這種程式登入的方法來寄信，需要先開啟允許安全性較低的應用程式設定）</em></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">send_mail_for_me</span>(meta):
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">利用 Gmail 的服務寄發通知信</span><span style="color:#e6db74">&#39;</span>
+    send_gmail_user <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">寄送者@gmail.com</span><span style="color:#e6db74">&#39;</span>
+    send_gmail_password <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">********</span><span style="color:#e6db74">&#39;</span>
+    rece_gmail_user <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">接收者@gmail.com</span><span style="color:#e6db74">&#39;</span>
 
-<pre><code class="language-python">def send_mail_for_me(meta):
-    '利用 Gmail 的服務寄發通知信'
-    send_gmail_user = '寄送者@gmail.com'
-    send_gmail_password = '********'
-    rece_gmail_user = '接收者@gmail.com'
+    msg <span style="color:#f92672">=</span> MIMEText(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">您所追蹤的 </span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">+</span> KEYWORD <span style="color:#f92672">+</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74"> 已經出現在板上！</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74"> 文章：</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">+</span> meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">title</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">+</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74"> </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">https://www.ptt.cc</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">+</span> meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">link</span><span style="color:#e6db74">&#39;</span>])
+    msg[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Subject</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">PTT 監聽通知信</span><span style="color:#e6db74">&#39;</span>
+    msg[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">From</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> send_gmail_user
+    msg[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">To</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> rece_gmail_user
 
-    msg = MIMEText('您所追蹤的 ' + KEYWORD + ' 已經出現在板上！\n 文章：' + meta['title'] + ' \nhttps://www.ptt.cc' + meta['link'])
-    msg['Subject'] = 'PTT 監聽通知信'
-    msg['From'] = send_gmail_user
-    msg['To'] = rece_gmail_user
-
-    # 使用 SSL 加密 連線到 gmail 提供的 smtp
-    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-    server.ehlo()
-    server.login(send_gmail_user, send_gmail_password)
-    server.send_message(msg)
-    server.quit()
-</code></pre>
-
-<p>這邊目標是將爬到的那一項傳進來寄出去。可以先稍微測試，寄一點垃圾信試試看（找不到的時候記得找一下垃圾信件）。確定收得到之後就可以整合進去了。</p>
-
-<h3 id="本體">本體</h3>
-
+    <span style="color:#75715e"># 使用 SSL 加密 連線到 gmail 提供的 smtp</span>
+    server <span style="color:#f92672">=</span> smtplib<span style="color:#f92672">.</span>SMTP_SSL(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">smtp.gmail.com</span><span style="color:#e6db74">&#39;</span>, <span style="color:#ae81ff">465</span>)
+    server<span style="color:#f92672">.</span>ehlo()
+    server<span style="color:#f92672">.</span>login(send_gmail_user, send_gmail_password)
+    server<span style="color:#f92672">.</span>send_message(msg)
+    server<span style="color:#f92672">.</span>quit()
+</code></pre></div><p>這邊目標是將爬到的那一項傳進來寄出去。可以先稍微測試，寄一點垃圾信試試看（找不到的時候記得找一下垃圾信件）。確定收得到之後就可以整合進去了。</p>
+<h3 id="heading2">本體</h3>
 <p>接著將上面的兩個部分整合起來：爬蟲，然後如果爬到目標就寄信，沒爬到就準備重爬。這邊先放一個 flog 來準備之後判斷要不要繼續爬的部分。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">ptt_alert</span>(url, keyword):
+    url <span style="color:#f92672">=</span> url <span style="color:#75715e"># 網址</span>
+    resp <span style="color:#f92672">=</span> fetch(url) <span style="color:#75715e"># 取得網頁內容</span>
+    post_entries <span style="color:#f92672">=</span> parse_article_entries(resp<span style="color:#f92672">.</span>text) <span style="color:#75715e"># 取得各列標題</span>
 
-<pre><code class="language-python">def ptt_alert(url, keyword):
-    url = url # 網址
-    resp = fetch(url) # 取得網頁內容
-    post_entries = parse_article_entries(resp.text) # 取得各列標題
+    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">[</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">] 連線成功，開始搜尋目標「</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">」</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span>(t<span style="color:#f92672">.</span>now(), KEYWORD))
 
-    print('[%s] 連線成功，開始搜尋目標「%s」\n' %(t.now(), KEYWORD))
-
-    for entry in post_entries:
-        meta = parse_article_meta(entry)
-        # 如果找到關鍵字，而且還沒截止，寄信通知我
-        # 記得先試著轉小寫，否則大小寫視作不同
-        if keyword in meta['title'].lower() and not &quot;截止&quot; in meta['title']:
+    <span style="color:#66d9ef">for</span> entry <span style="color:#f92672">in</span> post_entries:
+        meta <span style="color:#f92672">=</span> parse_article_meta(entry)
+        <span style="color:#75715e"># 如果找到關鍵字，而且還沒截止，寄信通知我</span>
+        <span style="color:#75715e"># 記得先試著轉小寫，否則大小寫視作不同</span>
+        <span style="color:#66d9ef">if</span> keyword <span style="color:#f92672">in</span> meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">title</span><span style="color:#e6db74">&#39;</span>]<span style="color:#f92672">.</span>lower() <span style="color:#f92672">and</span> <span style="color:#f92672">not</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">截止</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">in</span> meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">title</span><span style="color:#e6db74">&#39;</span>]:
             print_meta(meta)
             send_mail_for_me(meta)
-            print('[%s] 已發現監聽目標！通知信已寄出' %t.now())
-            flog = True # 用來紀錄找到了沒
-            break
-        # 沒找到的時候就正常顯示
-        else:
+            <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">[</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">] 已發現監聽目標！通知信已寄出</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span>t<span style="color:#f92672">.</span>now())
+            flog <span style="color:#f92672">=</span> True <span style="color:#75715e"># 用來紀錄找到了沒</span>
+            <span style="color:#66d9ef">break</span>
+        <span style="color:#75715e"># 沒找到的時候就正常顯示</span>
+        <span style="color:#66d9ef">else</span>:
             print_meta(meta)
 
-    else:
-        print('\n[%s] 搜尋完畢，並未發現目標。正在休眠 %s 毫秒並等待下一輪搜尋……' %(t.now(), SLEEPTIME))
-</code></pre>
+    <span style="color:#66d9ef">else</span>:
+        <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">[</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">] 搜尋完畢，並未發現目標。正在休眠 </span><span style="color:#e6db74">%s</span><span style="color:#e6db74"> 毫秒並等待下一輪搜尋……</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span>(t<span style="color:#f92672">.</span>now(), SLEEPTIME))
+</code></pre></div><p>接著就是重複執行的部分。抱著嘗試的精神試過 Win內建的工作排程器、<a href="https://zhuanlan.zhihu.com/p/46948464">apscheduler</a> 等，最後還是簡單最好，用傳統的 while 和 break 解決。另外，這邊用 time.sleep 做延遲，延遲的時間需要自己衡量一下。例如說團購板的發文速度並不算快，五分鐘爬一次已經差不多；但若是發文速度較快的板，則可能需要向 縮短每輪間隔時間 或是 一次爬比較多頁 這兩個方向去做處理。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    <span style="color:#66d9ef">try</span>:
+        <span style="color:#66d9ef">while</span> True:
+            <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">[</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">] 開始執行監聽</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span>t<span style="color:#f92672">.</span>now())
 
-<p>接著就是重複執行的部分。抱著嘗試的精神試過 Win內建的工作排程器、<a href="https://zhuanlan.zhihu.com/p/46948464">apscheduler</a> 等，最後還是簡單最好，用傳統的 while 和 break 解決。另外，這邊用 time.sleep 做延遲，延遲的時間需要自己衡量一下。例如說團購板的發文速度並不算快，五分鐘爬一次已經差不多；但若是發文速度較快的板，則可能需要向 縮短每輪間隔時間 或是 一次爬比較多頁 這兩個方向去做處理。</p>
+            ptt_alert(URL, KEYWORD) <span style="color:#75715e"># 開始執行</span>
 
-<pre><code class="language-python">def main():
-    try:
-        while True:
-            print('[%s] 開始執行監聽' %t.now())
-
-            ptt_alert(URL, KEYWORD) # 開始執行
-
-            if  flog: # 如果執行後有找到目標
-                print('[%s] 已發現目標，停止監聽' %t.now())
-                break
-            else:
-                time.sleep(SLEEPTIME)
+            <span style="color:#66d9ef">if</span>  flog: <span style="color:#75715e"># 如果執行後有找到目標</span>
+                <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">[</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">] 已發現目標，停止監聽</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span>t<span style="color:#f92672">.</span>now())
+                <span style="color:#66d9ef">break</span>
+            <span style="color:#66d9ef">else</span>:
+                time<span style="color:#f92672">.</span>sleep(SLEEPTIME)
                 
-    except Exception as e:
-        print('[%s] 執行期間錯誤：%s' %(t.now(), e))
-</code></pre>
-
-<p>嘗試搜尋看看：</p>
-
-<p><img src="https://i.imgur.com/K2h43ZZ.png" alt="" /></p>
-
+    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+        <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">[</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">] 執行期間錯誤：</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span>(t<span style="color:#f92672">.</span>now(), e))
+</code></pre></div><p>嘗試搜尋看看：</p>
+<p><img src="https://i.imgur.com/K2h43ZZ.png" alt=""></p>
 <p>稍微改個關鍵字來測試找到的狀況：</p>
-
-<p><img src="https://i.imgur.com/xfGkMFo.png" alt="" /></p>
-
-<p><img src="https://i.imgur.com/nkvRBnj.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/xfGkMFo.png" alt=""></p>
+<p><img src="https://i.imgur.com/nkvRBnj.png" alt=""></p>
 <p>大功告成！</p>
-
 <p>雖然還有一些可以拿來玩的地方，例如說呼叫時能輸入關鍵字，或是連接 Line 機器人做通知等等，但算是大致完工了。下面附上完整程式碼：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 爬蟲相關套件</span>
+<span style="color:#f92672">import</span> requests
+<span style="color:#f92672">from</span> requests_html <span style="color:#f92672">import</span> HTML
 
-<pre><code class="language-python"># 爬蟲相關套件
-import requests
-from requests_html import HTML
+<span style="color:#75715e"># 寄信相關套件</span>
+<span style="color:#f92672">import</span> smtplib
+<span style="color:#f92672">from</span> email.mime.text <span style="color:#f92672">import</span> MIMEText
 
-# 寄信相關套件
-import smtplib
-from email.mime.text import MIMEText
+<span style="color:#75715e"># 計時器相關套件</span>
+<span style="color:#f92672">import</span> time
+<span style="color:#f92672">import</span> datetime <span style="color:#f92672">as</span> dt
 
-# 計時器相關套件
-import time
-import datetime as dt
+<span style="color:#75715e"># ===== 參數 =====</span>
+URL <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">https://www.ptt.cc/bbs/BuyTogether/index.html</span><span style="color:#e6db74">&#39;</span> <span style="color:#75715e"># 目標看板網址</span>
+KEYWORD <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">netflix</span><span style="color:#e6db74">&#39;</span> <span style="color:#75715e"># 搜尋關鍵字</span>
+SLEEPTIME <span style="color:#f92672">=</span> <span style="color:#ae81ff">60</span> <span style="color:#75715e"># 每輪搜尋休眠時間</span>
+<span style="color:#75715e"># ===== 參數 =====</span>
 
-# ===== 參數 =====
-URL = 'https://www.ptt.cc/bbs/BuyTogether/index.html' # 目標看板網址
-KEYWORD = 'netflix' # 搜尋關鍵字
-SLEEPTIME = 60 # 每輪搜尋休眠時間
-# ===== 參數 =====
+flog <span style="color:#f92672">=</span> False <span style="color:#75715e"># 判斷是否已尋找到目標用的</span>
+t <span style="color:#f92672">=</span> dt<span style="color:#f92672">.</span>datetime <span style="color:#75715e"># 顯示時間用的</span>
 
-flog = False # 判斷是否已尋找到目標用的
-t = dt.datetime # 顯示時間用的
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fetch</span>(url):
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">傳入網址，向 PTT 回答已經滿 18 歲，回傳網頁內容</span><span style="color:#e6db74">&#39;</span>
+    response <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(url)
+    response <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>get(url, cookies<span style="color:#f92672">=</span>{<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">over18</span><span style="color:#e6db74">&#39;</span>:<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">1</span><span style="color:#e6db74">&#39;</span>})
+    <span style="color:#66d9ef">return</span> response
 
-def fetch(url):
-    '傳入網址，向 PTT 回答已經滿 18 歲，回傳網頁內容'
-    response = requests.get(url)
-    response = requests.get(url, cookies={'over18':'1'})
-    return response
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse_article_entries</span>(doc):
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">傳入網頁內容，利用 requests_html 取出 div.r-ent 的元素內容並回傳</span><span style="color:#e6db74">&#39;</span>
+    html <span style="color:#f92672">=</span> HTML( html <span style="color:#f92672">=</span> doc )
+    post_entries <span style="color:#f92672">=</span> html<span style="color:#f92672">.</span>find(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">div.r-ent</span><span style="color:#e6db74">&#39;</span>)
+    <span style="color:#66d9ef">return</span> post_entries
 
-def parse_article_entries(doc):
-    '傳入網頁內容，利用 requests_html 取出 div.r-ent 的元素內容並回傳'
-    html = HTML( html = doc )
-    post_entries = html.find('div.r-ent')
-    return post_entries
-
-def parse_article_meta(entry):
-    '將 r-ent 元素的內容格式化成 dict 再回傳'
-    meta = {
-        'title': entry.find('div.title', first=True).text,
-        'push': entry.find('div.nrec', first=True).text,
-        'date': entry.find('div.date', first=True).text
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">parse_article_meta</span>(entry):
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">將 r-ent 元素的內容格式化成 dict 再回傳</span><span style="color:#e6db74">&#39;</span>
+    meta <span style="color:#f92672">=</span> {
+        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">title</span><span style="color:#e6db74">&#39;</span>: entry<span style="color:#f92672">.</span>find(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">div.title</span><span style="color:#e6db74">&#39;</span>, first<span style="color:#f92672">=</span>True)<span style="color:#f92672">.</span>text,
+        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">push</span><span style="color:#e6db74">&#39;</span>: entry<span style="color:#f92672">.</span>find(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">div.nrec</span><span style="color:#e6db74">&#39;</span>, first<span style="color:#f92672">=</span>True)<span style="color:#f92672">.</span>text,
+        <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">date</span><span style="color:#e6db74">&#39;</span>: entry<span style="color:#f92672">.</span>find(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">div.date</span><span style="color:#e6db74">&#39;</span>, first<span style="color:#f92672">=</span>True)<span style="color:#f92672">.</span>text
     }
-    try:
-        # 正常的文章可以取得作者和連結
-        meta['author'] = entry.find('div.author', first=True).text
-        meta['link'] = entry.find('div.title &gt; a', first=True).attrs['href']
-    except AttributeError:
-        # 被刪除的文章我們就不要了
-        meta['author'] = '[Deleted]'
-        meta['link'] = '[Deleted]'
-    return meta
+    <span style="color:#66d9ef">try</span>:
+        <span style="color:#75715e"># 正常的文章可以取得作者和連結</span>
+        meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">author</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> entry<span style="color:#f92672">.</span>find(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">div.author</span><span style="color:#e6db74">&#39;</span>, first<span style="color:#f92672">=</span>True)<span style="color:#f92672">.</span>text
+        meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">link</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> entry<span style="color:#f92672">.</span>find(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">div.title &gt; a</span><span style="color:#e6db74">&#39;</span>, first<span style="color:#f92672">=</span>True)<span style="color:#f92672">.</span>attrs[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">href</span><span style="color:#e6db74">&#39;</span>]
+    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">AttributeError</span>:
+        <span style="color:#75715e"># 被刪除的文章我們就不要了</span>
+        meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">author</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">[Deleted]</span><span style="color:#e6db74">&#39;</span>
+        meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">link</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">[Deleted]</span><span style="color:#e6db74">&#39;</span>
+    <span style="color:#66d9ef">return</span> meta
 
-def send_mail_for_me(meta):
-    '利用 Gmail 的服務寄發通知信'
-    send_gmail_user = '***@gmail.com'
-    send_gmail_password = '********'
-    rece_gmail_user = '*****@gmail.com'
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">send_mail_for_me</span>(meta):
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">利用 Gmail 的服務寄發通知信</span><span style="color:#e6db74">&#39;</span>
+    send_gmail_user <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">***@gmail.com</span><span style="color:#e6db74">&#39;</span>
+    send_gmail_password <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">********</span><span style="color:#e6db74">&#39;</span>
+    rece_gmail_user <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">*****@gmail.com</span><span style="color:#e6db74">&#39;</span>
 
-    msg = MIMEText('您所追蹤的 ' + KEYWORD + ' 已經出現在板上！\n 文章：' + meta['title'] + ' \nhttps://www.ptt.cc' + meta['link'])
-    msg['Subject'] = 'PTT 監聽通知信'
-    msg['From'] = send_gmail_user
-    msg['To'] = rece_gmail_user
+    msg <span style="color:#f92672">=</span> MIMEText(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">您所追蹤的 </span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">+</span> KEYWORD <span style="color:#f92672">+</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74"> 已經出現在板上！</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74"> 文章：</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">+</span> meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">title</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">+</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74"> </span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">https://www.ptt.cc</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">+</span> meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">link</span><span style="color:#e6db74">&#39;</span>])
+    msg[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Subject</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">PTT 監聽通知信</span><span style="color:#e6db74">&#39;</span>
+    msg[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">From</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> send_gmail_user
+    msg[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">To</span><span style="color:#e6db74">&#39;</span>] <span style="color:#f92672">=</span> rece_gmail_user
 
-    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-    server.ehlo()
-    server.login(send_gmail_user, send_gmail_password)
-    server.send_message(msg)
-    server.quit()
+    server <span style="color:#f92672">=</span> smtplib<span style="color:#f92672">.</span>SMTP_SSL(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">smtp.gmail.com</span><span style="color:#e6db74">&#39;</span>, <span style="color:#ae81ff">465</span>)
+    server<span style="color:#f92672">.</span>ehlo()
+    server<span style="color:#f92672">.</span>login(send_gmail_user, send_gmail_password)
+    server<span style="color:#f92672">.</span>send_message(msg)
+    server<span style="color:#f92672">.</span>quit()
 
-def print_meta(meta):
-    '列印文章資料，看起來整齊一點'
-    print('{push:&lt;3s}{date:&lt;5s}{author:&lt;15s}{title:&lt;40s}'\
-        .format(push = meta['push'], date = meta['date'], author = meta['author'], title = meta['title']))
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">print_meta</span>(meta):
+    <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">列印文章資料，看起來整齊一點</span><span style="color:#e6db74">&#39;</span>
+    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">{push:&lt;3s}{date:&lt;5s}{author:&lt;15s}{title:&lt;40s}</span><span style="color:#e6db74">&#39;</span>\
+        <span style="color:#f92672">.</span>format(push <span style="color:#f92672">=</span> meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">push</span><span style="color:#e6db74">&#39;</span>], date <span style="color:#f92672">=</span> meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">date</span><span style="color:#e6db74">&#39;</span>], author <span style="color:#f92672">=</span> meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">author</span><span style="color:#e6db74">&#39;</span>], title <span style="color:#f92672">=</span> meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">title</span><span style="color:#e6db74">&#39;</span>]))
 
-# 程式本體
-def ptt_alert(url, keyword):
-    url = url # 團購版
-    resp = fetch(url) # 取得網頁內容
-    post_entries = parse_article_entries(resp.text) # 取得各列標題
+<span style="color:#75715e"># 程式本體</span>
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">ptt_alert</span>(url, keyword):
+    url <span style="color:#f92672">=</span> url <span style="color:#75715e"># 團購版</span>
+    resp <span style="color:#f92672">=</span> fetch(url) <span style="color:#75715e"># 取得網頁內容</span>
+    post_entries <span style="color:#f92672">=</span> parse_article_entries(resp<span style="color:#f92672">.</span>text) <span style="color:#75715e"># 取得各列標題</span>
 
-    print('[%s] 連線成功，開始搜尋目標「%s」\n' %(t.now(), KEYWORD))
+    <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">[</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">] 連線成功，開始搜尋目標「</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">」</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span>(t<span style="color:#f92672">.</span>now(), KEYWORD))
 
-    for entry in post_entries:
-        meta = parse_article_meta(entry)
-        # 如果找到關鍵字，寄信通知我
-        if keyword in meta['title'].lower() and not &quot;截止&quot; in meta['title']:
+    <span style="color:#66d9ef">for</span> entry <span style="color:#f92672">in</span> post_entries:
+        meta <span style="color:#f92672">=</span> parse_article_meta(entry)
+        <span style="color:#75715e"># 如果找到關鍵字，寄信通知我</span>
+        <span style="color:#66d9ef">if</span> keyword <span style="color:#f92672">in</span> meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">title</span><span style="color:#e6db74">&#39;</span>]<span style="color:#f92672">.</span>lower() <span style="color:#f92672">and</span> <span style="color:#f92672">not</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">截止</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">in</span> meta[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">title</span><span style="color:#e6db74">&#39;</span>]:
             print_meta(meta)
             send_mail_for_me(meta)
-            print('[%s] 已發現監聽目標！通知信已寄出' %t.now())
-            flog = True
-            break
-        # 沒找到的時候就正常顯示
-        else:
+            <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">[</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">] 已發現監聽目標！通知信已寄出</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span>t<span style="color:#f92672">.</span>now())
+            flog <span style="color:#f92672">=</span> True
+            <span style="color:#66d9ef">break</span>
+        <span style="color:#75715e"># 沒找到的時候就正常顯示</span>
+        <span style="color:#66d9ef">else</span>:
             print_meta(meta)
 
-    else:
-        print('\n[%s] 搜尋完畢，並未發現目標。正在休眠 %s 毫秒並等待下一輪搜尋……' %(t.now(), SLEEPTIME))
+    <span style="color:#66d9ef">else</span>:
+        <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">[</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">] 搜尋完畢，並未發現目標。正在休眠 </span><span style="color:#e6db74">%s</span><span style="color:#e6db74"> 毫秒並等待下一輪搜尋……</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span>(t<span style="color:#f92672">.</span>now(), SLEEPTIME))
     
-# 主流程部分
-def main():
-    try:
-        while True:
-            print('[%s] 開始執行監聽' %t.now())
+<span style="color:#75715e"># 主流程部分</span>
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    <span style="color:#66d9ef">try</span>:
+        <span style="color:#66d9ef">while</span> True:
+            <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">[</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">] 開始執行監聽</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span>t<span style="color:#f92672">.</span>now())
 
-            ptt_alert(URL, KEYWORD) # 開始執行主流程
+            ptt_alert(URL, KEYWORD) <span style="color:#75715e"># 開始執行主流程</span>
 
-            if  flog:
-                print('[%s] 已發現目標，停止監聽' %t.now())
-                break
-            else:
-                time.sleep(SLEEPTIME)
+            <span style="color:#66d9ef">if</span>  flog:
+                <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">[</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">] 已發現目標，停止監聽</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span>t<span style="color:#f92672">.</span>now())
+                <span style="color:#66d9ef">break</span>
+            <span style="color:#66d9ef">else</span>:
+                time<span style="color:#f92672">.</span>sleep(SLEEPTIME)
                 
-    except Exception as e:
-        print('[%s] 執行期間錯誤：%s' %(t.now(), e))
+    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+        <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">[</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">] 執行期間錯誤：</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">%</span>(t<span style="color:#f92672">.</span>now(), e))
     
-if __name__ == '__main__':
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">__main__</span><span style="color:#e6db74">&#39;</span>:
     main()
-</code></pre>
+</code></pre></div>
                         </div>
 
                         
@@ -378,9 +339,9 @@ if __name__ == '__main__':
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/about/">關於我</a></li>
-        
         <li><a href="/archives/">archives</a></li>
+        
+        <li><a href="/about/">關於我</a></li>
         
     </ul>
 </div>
@@ -481,39 +442,39 @@ if __name__ == '__main__':
 <ul class="widget-list">
     
     <li>
-        <a href="https://igouist.github.io/categories/android/">Android (1)</a>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/automation/">Automation (2)</a>
+        <a href="https://igouist.github.io/categories/automation/">automation (2)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/c/">C# (3)</a>
+        <a href="https://igouist.github.io/categories/c/">c# (3)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/css/">CSS (1)</a>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/dotnet/">Dotnet (3)</a>
+        <a href="https://igouist.github.io/categories/dotnet/">dotnet (3)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/ide/">IDE (1)</a>
+        <a href="https://igouist.github.io/categories/ide/">ide (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/python/">Python (6)</a>
+        <a href="https://igouist.github.io/categories/python/">python (6)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">Tools (3)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (3)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/w3hexschool/">w3HexSchool (11)</a>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (11)</a>
     </li>
     
 </ul>
@@ -523,49 +484,49 @@ if __name__ == '__main__':
         <h3 class="widget-title">標籤</h3>
 <div class="tagcloud">
     
-    <a href="https://igouist.github.io/tags/android/">Android</a>
+    <a href="https://igouist.github.io/tags/android/">android</a>
     
-    <a href="https://igouist.github.io/tags/automation/">Automation</a>
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
     
-    <a href="https://igouist.github.io/tags/bandon/">Bandon</a>
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
     
-    <a href="https://igouist.github.io/tags/c/">C#</a>
+    <a href="https://igouist.github.io/tags/c/">c#</a>
     
-    <a href="https://igouist.github.io/tags/css/">CSS</a>
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
     
-    <a href="https://igouist.github.io/tags/crawler/">Crawler</a>
+    <a href="https://igouist.github.io/tags/css/">css</a>
     
-    <a href="https://igouist.github.io/tags/database/">Database</a>
+    <a href="https://igouist.github.io/tags/database/">database</a>
     
-    <a href="https://igouist.github.io/tags/dotnet/">Dotnet</a>
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">Entity Framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
     
-    <a href="https://igouist.github.io/tags/excel/">Excel</a>
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
     
-    <a href="https://igouist.github.io/tags/heroku/">Heroku</a>
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
     
-    <a href="https://igouist.github.io/tags/ide/">IDE</a>
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
     
-    <a href="https://igouist.github.io/tags/mysql/">MySQL</a>
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
     
-    <a href="https://igouist.github.io/tags/php/">PHP</a>
+    <a href="https://igouist.github.io/tags/php/">php</a>
     
-    <a href="https://igouist.github.io/tags/ptt/">PTT</a>
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
     
-    <a href="https://igouist.github.io/tags/python/">Python</a>
+    <a href="https://igouist.github.io/tags/python/">python</a>
     
-    <a href="https://igouist.github.io/tags/selenium/">Selenium</a>
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
     
-    <a href="https://igouist.github.io/tags/sqlite/">Sqlite</a>
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
     
-    <a href="https://igouist.github.io/tags/tools/">Tools</a>
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
     
-    <a href="https://igouist.github.io/tags/visualstudio/">VisualStudio</a>
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
     
-    <a href="https://igouist.github.io/tags/xampp/">XAMPP</a>
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
     
-    <a href="https://igouist.github.io/tags/w3hexschool/">w3HexSchool</a>
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
     
 </div>
     </section>
