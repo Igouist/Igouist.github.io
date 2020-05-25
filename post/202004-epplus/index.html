@@ -3,7 +3,7 @@
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.60.1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -102,212 +102,182 @@
                         
                         <div class="post-content">
                             <p>前陣子工作需要匯出一些資料表，因此用到了 <a href="https://github.com/EPPlusSoftware/EPPlus">EPPlus</a> 這套工具來把資料匯出成 Excel。由於這需求似乎會挺常遇到的，決定記一下。</p>
-
 <blockquote>
 <p>目標：稍微紀錄一下這次碰到 EPPlus 的用法。</p>
 </blockquote>
-
 <p><strong>EPPlus 是在 .NET Framework 或 .NET Core 上提供控制 Excel 的元件，操作簡單好懂</strong>，當有需要在網頁上讓人將表格資料下載成 Excel 的功能時就可以試著使用。常常一併被提起的還有另一個一樣老牌的相似功能元件 NPOI，不過我個人只用過 EPPlus 便不再贅述。關於更詳細的介紹，可以參閱黑暗執行緒的這篇 <a href="https://blog.darkthread.net/blog/epplus/">比 NPOI 更討喜的 Excel 元件 - EPPlus!</a>，儘管是有些久遠的文章但仍能迅速了解 EEplus 的賣點和差異。</p>
-
-<p>我在使用 EPPlus 時主要的參考來自於 <a href="https://github.com/EPPlusSoftware/EPPlus/wiki">EPPlus 的 Wiki</a>，每個功能都有說明及範例，同時也有範例專案可以下載，寫得相當詳細。另外還找了如 <a href="https://www.cnblogs.com/rumeng/p/3785748.html">導出 Excel 之 Epplus 使用教程 - Wico&rsquo;s Blog</a>、<a href="https://dotblogs.com.tw/malonestudyrecord/2018/03/21/103124">使用 EPPLUS 操控 Excel - 碼農的學習日誌</a> 這些有逐步說明的文章，在此感謝。</p>
-
-<h2 id="建立-excel">建立 Excel</h2>
-
+<p>我在使用 EPPlus 時主要的參考來自於 <a href="https://github.com/EPPlusSoftware/EPPlus/wiki">EPPlus 的 Wiki</a>，每個功能都有說明及範例，同時也有範例專案可以下載，寫得相當詳細。另外還找了如 <a href="https://www.cnblogs.com/rumeng/p/3785748.html">導出 Excel 之 Epplus 使用教程 - Wico's Blog</a>、<a href="https://dotblogs.com.tw/malonestudyrecord/2018/03/21/103124">使用 EPPLUS 操控 Excel - 碼農的學習日誌</a> 這些有逐步說明的文章，在此感謝。</p>
+<h2 id="-excel">建立 Excel</h2>
 <p>首先從建立一個 Excel 開始；要注意的是開啟檔案之後也要記得建分頁出來。後續的寫入資料等都是對分頁去做動作。</p>
-
 <p>我們使用 <code>new ExcelPackage()</code> 來開一個新的 Excel 的處理工作，而結束之後一定要記得 <code>SaveAs</code>。</p>
-
-<p>備註 (2020/4/12): 由於 EPPlus 升版和一些改變，如果直接使用會跳出 <code>LicenseException</code> 用來通知你這件事，因此現在需要先加上 <code>
-ExcelPackage.LicenseContext = LicenseContext.NonCommercial;</code> 來叫它閉嘴。另外也有在 <code>App.config</code> 中設定的作法，可參閱 <a href="https://epplussoftware.com/developers/licenseexception">LicenseException - EPPlus</a>。</p>
-
-<pre><code class="language-csharp">
-ExcelPackage.LicenseContext = LicenseContext.NonCommercial; // 關閉新許可模式通知
-
-var file = new FileInfo(@&quot;D:\ExampleExcel.xlsx&quot;); // 檔案路徑
-using (var excel = new ExcelPackage())
+<p>備註 (2020/4/12): 由於 EPPlus 升版和一些改變，如果直接使用會跳出 <code>LicenseException</code> 用來通知你這件事，因此現在需要先加上 <code>ExcelPackage.LicenseContext = LicenseContext.NonCommercial;</code> 來叫它閉嘴。另外也有在 <code>App.config</code> 中設定的作法，可參閱 <a href="https://epplussoftware.com/developers/licenseexception">LicenseException - EPPlus</a>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial; <span style="color:#75715e">// 關閉新許可模式通知
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">var</span> file = <span style="color:#66d9ef">new</span> FileInfo(<span style="color:#e6db74">@&#34;D:\ExampleExcel.xlsx&#34;</span>); <span style="color:#75715e">// 檔案路徑
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> excel = <span style="color:#66d9ef">new</span> ExcelPackage())
 {
-    // 建立分頁
-    var ws = excel.Workbook.Worksheets.Add(&quot;MySheet&quot;);
+    <span style="color:#75715e">// 建立分頁
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> ws = excel.Workbook.Worksheets.Add(<span style="color:#e6db74">&#34;MySheet&#34;</span>);
 
-    // 寫入資料試試
-    ws.Cells[2, 1].Value = &quot;測試測試&quot;;
+    <span style="color:#75715e">// 寫入資料試試
+</span><span style="color:#75715e"></span>    ws.Cells[<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>].Value = <span style="color:#e6db74">&#34;測試測試&#34;</span>;
 
-    // 儲存 Excelㄋ
-    excel.SaveAs(file);
+    <span style="color:#75715e">// 儲存 Excelㄋ
+</span><span style="color:#75715e"></span>    excel.SaveAs(file);
 }
 
-</code></pre>
-
-<p>執行之後就可以看到檔案已經被建立囉
-<img src="https://i.imgur.com/gHEE7OZ.png" alt="" /></p>
-
+</code></pre></div><p>執行之後就可以看到檔案已經被建立囉
+<img src="https://i.imgur.com/gHEE7OZ.png" alt=""></p>
 <p>並且也出現了測試用的內容
-<img src="https://i.imgur.com/LObC4zj.png" alt="" /></p>
-
+<img src="https://i.imgur.com/LObC4zj.png" alt=""></p>
 <p>從這邊也可以認出 <code>ws.Cells[2, 1].Value</code> 的第一個數字是<code>從 ↓ 數下來</code>的，第二個是<code>往 → 數過去</code>的（很抱歉這樣表示，因為我常弄反行跟列，這樣之後參考比較好理解）</p>
-
 <p>另外眼尖的朋友也可以察覺到一個重點，<strong>儲存格是從 1 開始數的：不是 0 ！</strong> 也就是說 <code>A1</code> 這一格是 <code>[1, 1]</code>，不要打成 <code>[0, 0]</code> 了。當然，對於困擾的朋友，EEPlus 也提供了 <code>ws.Cells[&quot;B1&quot;]</code> 的寫法，可以用字串傳入的方式直接指定在 Excel 的儲存格位置，比起數格子方便多了，後續也會在示範標註。</p>
-
-<h2 id="編輯-excel">編輯 Excel</h2>
-
+<h2 id="-excel1">編輯 Excel</h2>
 <p>編輯時和建立一樣，從 <code>ExcelPackage()</code> 開始動作，這次我們將檔案直接傳入，如此 Save 的時候就可以不用再傳一次。關於各種操作直接在程式碼上的註解進行說明。</p>
-
-<pre><code class="language-csharp">// 特別注意，頁籤和儲存格等操作 是由 1 開始而非 0
-// 打開存在的 Excel 檔案
-var excelFile = new FileInfo(@&quot;D:\ExampleExcel.xlsx&quot;);
-using (var excel = new ExcelPackage(excelFile))
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 特別注意，頁籤和儲存格等操作 是由 1 開始而非 0
+</span><span style="color:#75715e"></span><span style="color:#75715e">// 打開存在的 Excel 檔案
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> excelFile = <span style="color:#66d9ef">new</span> FileInfo(<span style="color:#e6db74">@&#34;D:\ExampleExcel.xlsx&#34;</span>);
+<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> excel = <span style="color:#66d9ef">new</span> ExcelPackage(excelFile))
 {
-    // 指定頁籤
-    //ExcelWorksheet sheet1 = excel.Workbook.Worksheets[1]; // 這邊用是 1 在 Core 用是 0 = =
-    ExcelWorksheet sheet1 = excel.Workbook.Worksheets[&quot;MySheet&quot;]; // 可以使用頁籤名稱
+    <span style="color:#75715e">// 指定頁籤
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//ExcelWorksheet sheet1 = excel.Workbook.Worksheets[1]; // 這邊用是 1 在 Core 用是 0 = =
+</span><span style="color:#75715e"></span>    ExcelWorksheet sheet1 = excel.Workbook.Worksheets[<span style="color:#e6db74">&#34;MySheet&#34;</span>]; <span style="color:#75715e">// 可以使用頁籤名稱
+</span><span style="color:#75715e"></span>
+    <span style="color:#75715e">#region -- 儲存格讀寫 --
+</span><span style="color:#75715e"></span>
+    <span style="color:#75715e">// 寫入資料，[行－，列｜] 或直接指定 [&#34;儲存格&#34;]
+</span><span style="color:#75715e"></span>    sheet1.Cells[<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>].Value = <span style="color:#e6db74">&#34;開啟測試&#34;</span>; <span style="color:#75715e">// 嚴謹一點可以用 GetValue 和 SetValue 來操作
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//sheet1.Cells[&#34;B1&#34;].Value = &#34;開啟測試&#34;; // 此兩行等價
+</span><span style="color:#75715e"></span>
+    sheet1.Cells[<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">5</span>].Value = <span style="color:#e6db74">&#34;多格操作測試&#34;</span>; <span style="color:#75715e">// 從 (3, 3) 一路框到 (5, 5)，包含頭尾
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//sheet1.Cells[&#34;C3:E5&#34;].Value = &#34;多格操作測試&#34;; // 此兩行等價
+</span><span style="color:#75715e"></span>
+    sheet1.Cells[<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>].LoadFromText(<span style="color:#e6db74">&#34;LoadFromText Test&#34;</span>); <span style="color:#75715e">// 從字串讀入資料，可用於寫入 CSV 之類的場合
+</span><span style="color:#75715e"></span>
+    <span style="color:#66d9ef">var</span> coll = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt; { <span style="color:#e6db74">&#34;LoadFromCollTest1&#34;</span>, <span style="color:#e6db74">&#34;LoadFromCollTest2&#34;</span>, <span style="color:#e6db74">&#34;LoadFromCollTest3&#34;</span> };
+    sheet1.Cells[<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">1</span>].LoadFromCollection(coll); <span style="color:#75715e">// 從集合類型的參數讀入資料，會按照行（＝ D1 E1 F1...）依序排列
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 可從 LoadFromCollection 推測 LoadFromDataReader, LoadFromDataTable, LoadFromArrays 等函式的行為，故省略
+</span><span style="color:#75715e"></span>
+    <span style="color:#75715e">#endregion -- 儲存格讀寫 --
+</span><span style="color:#75715e"></span>
+    <span style="color:#75715e">#region -- 儲存格樣式 --
+</span><span style="color:#75715e"></span>
+    <span style="color:#75715e">// 可以用宣告的方式一併操作指定區域內的儲存格
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> range = sheet1.Cells[<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">5</span>])  <span style="color:#75715e">// 直接選取 A1 到 A5
+</span><span style="color:#75715e"></span>    {
+        range.Value = <span style="color:#e6db74">&#34;樣式測試&#34;</span>;
+        range.Style.Font.Bold = <span style="color:#66d9ef">true</span>; <span style="color:#75715e">// 粗體
+</span><span style="color:#75715e"></span>        range.Style.Font.Color.SetColor(Color.White); <span style="color:#75715e">// 字體顏色
+</span><span style="color:#75715e"></span>
+        range.Style.Fill.PatternType = ExcelFillStyle.Solid; <span style="color:#75715e">// 設定背景填色方法，沒有這一行就上背景色會報錯
+</span><span style="color:#75715e"></span>                                                             <span style="color:#75715e">// Solid = 填滿；另外還有斜線、交叉線、條紋等
+</span><span style="color:#75715e"></span>        range.Style.Fill.BackgroundColor.SetColor(Color.DarkBlue); <span style="color:#75715e">// 儲存格顏色
+</span><span style="color:#75715e"></span>    }
 
-    #region -- 儲存格讀寫 --
-
-    // 寫入資料，[行－，列｜] 或直接指定 [&quot;儲存格&quot;]
-    sheet1.Cells[2, 1].Value = &quot;開啟測試&quot;; // 嚴謹一點可以用 GetValue 和 SetValue 來操作
-    //sheet1.Cells[&quot;B1&quot;].Value = &quot;開啟測試&quot;; // 此兩行等價
-
-    sheet1.Cells[3, 3, 5, 5].Value = &quot;多格操作測試&quot;; // 從 (3, 3) 一路框到 (5, 5)，包含頭尾
-    //sheet1.Cells[&quot;C3:E5&quot;].Value = &quot;多格操作測試&quot;; // 此兩行等價
-
-    sheet1.Cells[3, 1].LoadFromText(&quot;LoadFromText Test&quot;); // 從字串讀入資料，可用於寫入 CSV 之類的場合
-
-    var coll = new List&lt;string&gt; { &quot;LoadFromCollTest1&quot;, &quot;LoadFromCollTest2&quot;, &quot;LoadFromCollTest3&quot; };
-    sheet1.Cells[4, 1].LoadFromCollection(coll); // 從集合類型的參數讀入資料，會按照行（＝ D1 E1 F1...）依序排列
-    // 可從 LoadFromCollection 推測 LoadFromDataReader, LoadFromDataTable, LoadFromArrays 等函式的行為，故省略
-
-    #endregion -- 儲存格讀寫 --
-
-    #region -- 儲存格樣式 --
-
-    // 可以用宣告的方式一併操作指定區域內的儲存格
-    using (var range = sheet1.Cells[1, 1, 1, 5])  // 直接選取 A1 到 A5
-    {
-        range.Value = &quot;樣式測試&quot;;
-        range.Style.Font.Bold = true; // 粗體
-        range.Style.Font.Color.SetColor(Color.White); // 字體顏色
-
-        range.Style.Fill.PatternType = ExcelFillStyle.Solid; // 設定背景填色方法，沒有這一行就上背景色會報錯
-                                                             // Solid = 填滿；另外還有斜線、交叉線、條紋等
-        range.Style.Fill.BackgroundColor.SetColor(Color.DarkBlue); // 儲存格顏色
-    }
-
-    #endregion -- 儲存格樣式 --
-
-    excel.Save(); // 儲存變更
-}
-</code></pre>
-
-<p>執行完的結果會像這樣，可以和上面的程式碼對照看是哪一部份的效果</p>
-
-<p><img src="https://i.imgur.com/dENLdol.png" alt="" /></p>
-
+    <span style="color:#75715e">#endregion -- 儲存格樣式 --
+</span><span style="color:#75715e"></span>
+    excel.Save(); <span style="color:#75715e">// 儲存變更
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>執行完的結果會像這樣，可以和上面的程式碼對照看是哪一部份的效果</p>
+<p><img src="https://i.imgur.com/dENLdol.png" alt=""></p>
 <p>以上部份嘗試了 資料的讀寫（如寫入單格的資料內容、寫入一個串列等）以及樣式的設定（字體顏色、儲存格顏色等）等。由於其中的操作能選擇的樣式相當繁多，例如背景填色就有好幾種，因此列出來並不是明智的做法，竊以為知道基本的語法之後再自己開編譯器看有哪些選項、或是將對應的操作拿到官方文檔找看有哪些會是比較實際的做法。</p>
-
 <p>這篇只示範資料的寫入，當然 Excel 的處理沒有那麼簡單，可以參照 官方Wiki 的這兩個部份：<a href="https://github.com/EPPlusSoftware/EPPlus/wiki/Formula-Calculation">公式的計算</a> 及 <a href="https://github.com/EPPlusSoftware/EPPlus/wiki/Shapes,-Pictures-and-Charts">圖表的處理</a></p>
-
-<h2 id="泛型串列匯出-excel">泛型串列匯出 Excel</h2>
-
+<h2 id="-excel2">泛型串列匯出 Excel</h2>
 <p>這邊紀錄一下工作需求時用到的做法，由於匯出資料的型別繁多，唯一的共通點就是都很多筆。為了方便寫了一個針對多筆的泛型匯出函式，特別在這裡記錄下來。
 其實這篇也是為了把這個部份記錄下來方便以後可以回來抄才開的坑…</p>
-
-<pre><code class="language-csharp">void Main()
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
 {
-    var data = new List&lt;testClass&gt;
-    {
-        new testClass{ name = &quot;香蕉&quot; },
-        new testClass{ name = &quot;番茄&quot; },
-        new testClass{ name = &quot;蘋果&quot; },
-        new testClass{ name = &quot;鳳梨&quot; }
-    };
-    var excel = ExportExcel(data);
-    excel.Dump();
+	<span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">new</span> List&lt;testClass&gt;
+	{
+		<span style="color:#66d9ef">new</span> testClass{ name = <span style="color:#e6db74">&#34;香蕉&#34;</span> },
+		<span style="color:#66d9ef">new</span> testClass{ name = <span style="color:#e6db74">&#34;番茄&#34;</span> },
+		<span style="color:#66d9ef">new</span> testClass{ name = <span style="color:#e6db74">&#34;蘋果&#34;</span> },
+		<span style="color:#66d9ef">new</span> testClass{ name = <span style="color:#e6db74">&#34;鳳梨&#34;</span> }
+	};
+	<span style="color:#66d9ef">var</span> excel = ExportExcel(data);
+	excel.Dump();
 }
 
-public FileInfo ExportExcel&lt;T&gt;(IEnumerable&lt;T&gt; data) where T: class
+<span style="color:#66d9ef">public</span> FileInfo ExportExcel&lt;T&gt;(IEnumerable&lt;T&gt; data) <span style="color:#66d9ef">where</span> T: <span style="color:#66d9ef">class</span>
 {
-    //var output = new MemoryStream();
-    var output = new FileInfo(&quot;D:\\ExportExcelTest-&quot; + DateTime.Now.ToString(&quot;yyyy-MM-dd-hh-mm-ss&quot;) + &quot;.xlsx&quot;);
-    using (var excel = new ExcelPackage(output))
-    {
-        var ws = excel.Workbook.Worksheets.Add(&quot;Sheet1&quot;); // 建立分頁
-
-        // 用反射拿出有 DisplayName 的屬性
-        var properties = typeof(T)
+	<span style="color:#75715e">//var output = new MemoryStream();
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> output = <span style="color:#66d9ef">new</span> FileInfo(<span style="color:#e6db74">&#34;D:\\ExportExcelTest-&#34;</span> + DateTime.Now.ToString(<span style="color:#e6db74">&#34;yyyy-MM-dd-hh-mm-ss&#34;</span>) + <span style="color:#e6db74">&#34;.xlsx&#34;</span>);
+	<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> excel = <span style="color:#66d9ef">new</span> ExcelPackage(output))
+	{
+		<span style="color:#66d9ef">var</span> ws = excel.Workbook.Worksheets.Add(<span style="color:#e6db74">&#34;Sheet1&#34;</span>); <span style="color:#75715e">// 建立分頁
+</span><span style="color:#75715e"></span>
+		<span style="color:#75715e">// 用反射拿出有 DisplayName 的屬性
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">var</span> properties = <span style="color:#66d9ef">typeof</span>(T)
             .GetProperties()
-            .Where(prop =&gt; prop.IsDefined(typeof(DisplayNameAttribute)));
+            .Where(prop =&gt; prop.IsDefined(<span style="color:#66d9ef">typeof</span>(DisplayNameAttribute)));
 
-        var rows = data.Count() + 1;   // 直：資料筆數（記得加標題列）
-        var cols = properties.Count(); // 橫：類別中有別名的屬性數量
+		<span style="color:#66d9ef">var</span> rows = data.Count() + <span style="color:#ae81ff">1</span>;   <span style="color:#75715e">// 直：資料筆數（記得加標題列）
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">var</span> cols = properties.Count(); <span style="color:#75715e">// 橫：類別中有別名的屬性數量
+</span><span style="color:#75715e"></span>
+		<span style="color:#66d9ef">if</span>(rows &gt; <span style="color:#ae81ff">0</span> &amp;&amp; cols &gt; <span style="color:#ae81ff">0</span>)
+		{
+			ws.Cells[<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>].LoadFromCollection(data, <span style="color:#66d9ef">true</span>); <span style="color:#75715e">// 寫入資料
+</span><span style="color:#75715e"></span>
+			<span style="color:#75715e">// 儲存格格式
+</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">var</span> colNumber = <span style="color:#ae81ff">1</span>;
+			<span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> prop <span style="color:#66d9ef">in</span> properties)
+			{
+				<span style="color:#75715e">// 時間處理，如果沒指定儲存格格式會變成 通用格式，就會以 int＝時間戳 的方式顯示
+</span><span style="color:#75715e"></span>				<span style="color:#66d9ef">if</span> (prop.PropertyType.Equals(<span style="color:#66d9ef">typeof</span>(DateTime)) ||
+				   prop.PropertyType.Equals(<span style="color:#66d9ef">typeof</span>(DateTime?)))
+				{
+					ws.Cells[<span style="color:#ae81ff">2</span>, colNumber, rows, colNumber].Style.Numberformat.Format = <span style="color:#e6db74">&#34;mm-dd-yy hh:mm:ss&#34;</span>;
+				}
+				colNumber += <span style="color:#ae81ff">1</span>;
+			}
 
-        if(rows &gt; 0 &amp;&amp; cols &gt; 0)
-        {
-            ws.Cells[1, 1].LoadFromCollection(data, true); // 寫入資料
+			<span style="color:#75715e">// 樣式準備
+</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> range = ws.Cells[<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, rows, cols])
+			{
+				ws.Cells.Style.Font.Name = <span style="color:#e6db74">&#34;新細明體&#34;</span>;
+				ws.Cells.Style.Font.Size = <span style="color:#ae81ff">1</span><span style="color:#ae81ff">2</span>;
+				ws.Cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center; <span style="color:#75715e">// 置中
+</span><span style="color:#75715e"></span>				ws.Cells.AutoFitColumns(); <span style="color:#75715e">// 欄寬
+</span><span style="color:#75715e"></span>
+				<span style="color:#75715e">// 框線
+</span><span style="color:#75715e"></span>				range.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+				range.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+				range.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+				range.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
 
-            // 儲存格格式
-            var colNumber = 1;
-            foreach (var prop in properties)
-            {
-                // 時間處理，如果沒指定儲存格格式會變成 通用格式，就會以 int＝時間戳 的方式顯示
-                if (prop.PropertyType.Equals(typeof(DateTime)) ||
-                   prop.PropertyType.Equals(typeof(DateTime?)))
-                {
-                    ws.Cells[2, colNumber, rows, colNumber].Style.Numberformat.Format = &quot;mm-dd-yy hh:mm:ss&quot;;
-                }
-                colNumber += 1;
-            }
-
-            // 樣式準備
-            using (var range = ws.Cells[1, 1, rows, cols])
-            {
-                ws.Cells.Style.Font.Name = &quot;新細明體&quot;;
-                ws.Cells.Style.Font.Size = 12;
-                ws.Cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center; // 置中
-                ws.Cells.AutoFitColumns(); // 欄寬
-
-                // 框線
-                range.Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                range.Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                range.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                range.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-
-                // 標題列
-                var title = ws.Cells[1, 1, 1, cols];
-                title.Style.Fill.PatternType = ExcelFillStyle.Solid; // 設定背景填色方法
-                title.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
-            }
-        }
-        else
-        {
-            Debug.WriteLine(&quot;未列印資料，請檢查是否傳入資料為空，或指定類別未具有公開且加上 DisplayName 的屬性。&quot;);
-        }
-        excel.Save(); // 儲存 Excel
-    }
-    //output.Position = 0; // 如果是使用 stream 的方式讓人下載，請記得將指標移回資料起始
-
-    return output;
+				<span style="color:#75715e">// 標題列
+</span><span style="color:#75715e"></span>				<span style="color:#66d9ef">var</span> title = ws.Cells[<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, cols];
+				title.Style.Fill.PatternType = ExcelFillStyle.Solid; <span style="color:#75715e">// 設定背景填色方法
+</span><span style="color:#75715e"></span>				title.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+			}
+		}
+		<span style="color:#66d9ef">else</span>
+		{
+			Debug.WriteLine(<span style="color:#e6db74">&#34;未列印資料，請檢查是否傳入資料為空，或指定類別未具有公開且加上 DisplayName 的屬性。&#34;</span>);
+		}
+		excel.Save(); <span style="color:#75715e">// 儲存 Excel
+</span><span style="color:#75715e"></span>	}
+	<span style="color:#75715e">//output.Position = 0; // 如果是使用 stream 的方式讓人下載，請記得將指標移回資料起始
+</span><span style="color:#75715e"></span>
+	<span style="color:#66d9ef">return</span> output;
 }
 
-public class testClass
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">testClass</span>
 {
-    [DisplayName(&quot;編號&quot;)]
-    public Guid id { set; get; } = Guid.NewGuid();
-
-    [DisplayName(&quot;名稱&quot;)]
-    public string name { set; get; }
+<span style="color:#a6e22e">	[DisplayName(&#34;編號&#34;)]</span>
+	<span style="color:#66d9ef">public</span> Guid id { <span style="color:#66d9ef">set</span>; <span style="color:#66d9ef">get</span>; } = Guid.NewGuid();
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">	[DisplayName(&#34;名稱&#34;)]</span>
+	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> name { <span style="color:#66d9ef">set</span>; <span style="color:#66d9ef">get</span>; }
 }
-</code></pre>
-
-<h2 id="結語">結語</h2>
-
+</code></pre></div><h2 id="heading">結語</h2>
 <p>這次是為了把小工具記下來，方便以後在外可以直接開網站起來左手抄右手所以硬是丟了一篇出來；關於基本操作的部份說明實在有點偷懶，以後有機會再進行補充和功能示範。現在還請海涵，幸虧官方的 Github 頁面 Wiki 實在相當完善，對操作有疑問的朋友可以先按照官方 Wiki 跑一次，相信可以非常快上手。</p>
-
-<h2 id="參考資料">參考資料</h2>
-
+<h2 id="heading1">參考資料</h2>
 <ul>
 <li><a href="https://github.com/EPPlusSoftware/EPPlus/wiki">EPPlus Wiki</a></li>
 <li><a href="https://blog.darkthread.net/blog/epplus/">比 NPOI 更討喜的 Excel 元件 - EPPlus! - 黑暗執行緒</a></li>
-<li><a href="https://www.cnblogs.com/rumeng/p/3785748.html">導出 Excel 之 Epplus 使用教程 - Wico&rsquo;s Blog</a></li>
+<li><a href="https://www.cnblogs.com/rumeng/p/3785748.html">導出 Excel 之 Epplus 使用教程 - Wico's Blog</a></li>
 <li><a href="https://dotblogs.com.tw/malonestudyrecord/2018/03/21/103124">使用 EPPLUS 操控 Excel - 碼農的學習日誌</a></li>
 <li><a href="https://www.itread01.com/content/1543037183.html">.Net Excel 匯出圖表Demo(柱狀圖，多標籤頁) - IT閱讀</a></li>
 </ul>
@@ -430,39 +400,39 @@ public class testClass
 <ul class="widget-list">
     
     <li>
-        <a href="https://igouist.github.io/categories/android/">Android (1)</a>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/automation/">Automation (2)</a>
+        <a href="https://igouist.github.io/categories/automation/">automation (2)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/c/">C# (3)</a>
+        <a href="https://igouist.github.io/categories/c/">c# (3)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/css/">CSS (1)</a>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/dotnet/">Dotnet (3)</a>
+        <a href="https://igouist.github.io/categories/dotnet/">dotnet (3)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/ide/">IDE (1)</a>
+        <a href="https://igouist.github.io/categories/ide/">ide (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/python/">Python (6)</a>
+        <a href="https://igouist.github.io/categories/python/">python (6)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">Tools (3)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (3)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/w3hexschool/">w3HexSchool (11)</a>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (11)</a>
     </li>
     
 </ul>
@@ -472,49 +442,49 @@ public class testClass
         <h3 class="widget-title">標籤</h3>
 <div class="tagcloud">
     
-    <a href="https://igouist.github.io/tags/android/">Android</a>
+    <a href="https://igouist.github.io/tags/android/">android</a>
     
-    <a href="https://igouist.github.io/tags/automation/">Automation</a>
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
     
-    <a href="https://igouist.github.io/tags/bandon/">Bandon</a>
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
     
-    <a href="https://igouist.github.io/tags/c/">C#</a>
+    <a href="https://igouist.github.io/tags/c/">c#</a>
     
-    <a href="https://igouist.github.io/tags/css/">CSS</a>
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
     
-    <a href="https://igouist.github.io/tags/crawler/">Crawler</a>
+    <a href="https://igouist.github.io/tags/css/">css</a>
     
-    <a href="https://igouist.github.io/tags/database/">Database</a>
+    <a href="https://igouist.github.io/tags/database/">database</a>
     
-    <a href="https://igouist.github.io/tags/dotnet/">Dotnet</a>
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">Entity Framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
     
-    <a href="https://igouist.github.io/tags/excel/">Excel</a>
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
     
-    <a href="https://igouist.github.io/tags/heroku/">Heroku</a>
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
     
-    <a href="https://igouist.github.io/tags/ide/">IDE</a>
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
     
-    <a href="https://igouist.github.io/tags/mysql/">MySQL</a>
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
     
-    <a href="https://igouist.github.io/tags/php/">PHP</a>
+    <a href="https://igouist.github.io/tags/php/">php</a>
     
-    <a href="https://igouist.github.io/tags/ptt/">PTT</a>
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
     
-    <a href="https://igouist.github.io/tags/python/">Python</a>
+    <a href="https://igouist.github.io/tags/python/">python</a>
     
-    <a href="https://igouist.github.io/tags/selenium/">Selenium</a>
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
     
-    <a href="https://igouist.github.io/tags/sqlite/">Sqlite</a>
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
     
-    <a href="https://igouist.github.io/tags/tools/">Tools</a>
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
     
-    <a href="https://igouist.github.io/tags/visualstudio/">VisualStudio</a>
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
     
-    <a href="https://igouist.github.io/tags/xampp/">XAMPP</a>
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
     
-    <a href="https://igouist.github.io/tags/w3hexschool/">w3HexSchool</a>
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
     
 </div>
     </section>
