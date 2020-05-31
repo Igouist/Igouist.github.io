@@ -3,7 +3,7 @@
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.60.1" />
+    <meta name="generator" content="Hugo 0.53" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -105,156 +105,214 @@
 <p>前言：
 這是參加<a href="https://www.hexschool.com/2019/11/14/2019-11-14-w3Hexschool-2020-challenge/">六角鼠年全馬</a>的第一篇，主要是希望能夠養成寫部落格的習慣。由於我本身並沒有主要技能，因此這次參賽文章會以我最近玩的玩具、使用的套件或是遇到的問題做紀錄。
 希望能夠派上用場。</p>
+
 <p>目標：使用 <strong>Python</strong> 及 <strong>Selenium</strong> 連線到訂便當網站，自動輸入帳號密碼登入後，取回網站上的訂單資訊</p>
 </blockquote>
+
 <p>最近在公司的時候有個莫大的煩惱，就是關於辦公室團購這回事兒。現在待著的公司主要是從 <a href="https://dinbendon.net/">Dinbendon</a> 這套系統來揪團購，舉凡品客、火鍋等都在上面訂過，據我觀察最受歡迎出現最多次的當屬雞排了。煩惱就在於，每次都會錯過雞排的團購，光在辦公室聞著四面八方傳來的雞排香味，就令人無法忍受！因此趁著這個機會，來嘗試能不能像之前的 <a href="https://hackmd.io/@IgouistBlog/ptt_crawler_and_listener">PTT</a> 一樣來弄出一個通知，順便玩玩最近看到的工具。這系列的文章會分成多個部分，主要是以使用的工具來分集。</p>
+
 <p>由於在從團購網取得訂單的過程中需要跟網頁進行互動，因此這次要使用的工具是 <strong><a href="https://www.selenium.dev/">Selenium</a></strong>。</p>
+
 <p><strong>Selenium 是一個對網頁做自動化測試的工具</strong>，並且也支援相當多語言可以使用，能夠經由腳本或錄製的方式對瀏覽器進行操作。例如我同事便使用 C# 和 Hangfire 來完成訂便當的目標（對，這麼無聊的人不只我一個），而我則用相對比較熟悉的 Python 來實作。</p>
+
 <p>關於本篇主要的操作和步驟，主要參考 <a href="https://medium.com/@NorthBei/%E5%9C%A8windows%E4%B8%8A%E5%AE%89%E8%A3%9Dpython-selenium-%E7%B0%A1%E6%98%93%E6%95%99%E5%AD%B8-eade1cd2d12d">在 Windows 上安裝 Python &amp; Selenium 簡易教學</a> 這篇文章，在此感謝；而各語言的語法等等，可以翻閱 <a href="https://selenium-python-zh.readthedocs.io/en/latest/index.html">教學文檔</a>。</p>
-<h2 id="heading">準備工作</h2>
+
+<h2 id="準備工作">準備工作</h2>
+
 <p>開始寫腳本之前，確保 Python 已經安裝完畢，並且先下載好 <a href="https://pypi.org/project/selenium/">Selenium 套件包</a>。</p>
+
 <p>另外 <strong>Selenium 是使用各個 Web Driver 來對瀏覽器做操作的</strong>，因此這邊也需要先下載 Chrome 的 Driver 來使用。進入 <a href="http://chromedriver.chromium.org/downloads">ChromeDriver 的下載頁面</a> ，通常挑選最新版的下載，如果 Chrome 版本有需求再選擇對應的版本即可。</p>
-<p><img src="https://i.imgur.com/z0BGk4z.png" alt=""></p>
+
+<p><img src="https://i.imgur.com/z0BGk4z.png" alt="" /></p>
+
 <blockquote>
 <p>4/ 2 補充：關於<strong>其他瀏覽器的 Driver</strong>，可以參考 iT 邦幫忙的 <a href="https://ithelp.ithome.com.tw/articles/10229959/">鼠年全馬鐵人挑戰 WEEK 06：Selenium 自動化測試工具</a> 這篇，裡面有詳細的介紹以及各瀏覽器的 Driver 下載整理。</p>
+
 <p>此外除了用腳本控制 Driver 的用法以外，<strong>Selenium 也提供了 IDE</strong> 可以直接使用，需要先安裝 Chrome 和 Firefox 的擴充套件，詳情可以參閱同系列的 <a href="https://ithelp.ithome.com.tw/articles/10230427">鼠年全馬鐵人挑戰 WEEK 07：Selenium IDE</a> 內有使用說明。</p>
+
 <p>發完之後才看到這個系列，對測試的種類和 Selenium 的操作說明得清楚多了，值得推薦，故在此補上。</p>
 </blockquote>
+
 <p>下載完解壓縮應該會有一個 chromedriver.exe 檔案，這個檔案的用法有兩種</p>
+
 <ul>
 <li>放置於 Python.exe 所在的位置，即當初的安裝位置，如此所有的腳本都可以使用</li>
 <li>放置於現在專案的 py 檔同一個資料夾，就只有這個資料夾中的腳本可以使用。</li>
 </ul>
+
 <p>當然前者放一次就都可以用比較方便，不過這邊只打算迅速地讓這個腳本動起來，因此可以直接放置在等等要寫 Python 檔的資料夾就可以了。</p>
-<p><img src="https://i.imgur.com/7m1RKc8.png" alt=""></p>
+
+<p><img src="https://i.imgur.com/7m1RKc8.png" alt="" /></p>
+
 <p>那麼準備工作完成之後，就可以開始來寫 Code 讓它動起來囉！</p>
-<h2 id="heading1">取得訂單</h2>
+
+<h2 id="取得訂單">取得訂單</h2>
+
 <p>首先測試是否能夠順利連線上便當網，這邊先撰寫最簡單的連線。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> selenium <span style="color:#f92672">import</span> webdriver
 
-url <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">https://dinbendon.net/do/login</span><span style="color:#e6db74">&#39;</span>
-driver <span style="color:#f92672">=</span> webdriver<span style="color:#f92672">.</span>Chrome()
-driver<span style="color:#f92672">.</span>get(url)  <span style="color:#75715e"># 連線到訂便當頁面</span>
-</code></pre></div><p>執行之後應該就能看到 Chrome 自動開啟連線到指定的網頁，同時也可以注意到 Chrome 上有標明「正在受到自動測試軟體控制」</p>
-<p><img src="https://i.imgur.com/741auju.png" alt=""></p>
+<pre><code class="language-python">from selenium import webdriver
+
+url = 'https://dinbendon.net/do/login'
+driver = webdriver.Chrome()
+driver.get(url)  # 連線到訂便當頁面
+</code></pre>
+
+<p>執行之後應該就能看到 Chrome 自動開啟連線到指定的網頁，同時也可以注意到 Chrome 上有標明「正在受到自動測試軟體控制」</p>
+
+<p><img src="https://i.imgur.com/741auju.png" alt="" /></p>
+
 <p>接著想要看到訂單內容，還必須要輸入帳號密碼和驗證碼才行，這也就是前面提到的需要互動的部分。先使用 F12 的使用者工具觀察欄位的名稱，以利後續 Selenium 的抓取 <del>，爬蟲的基本就在於拆人家的房子</del></p>
-<p><img src="https://i.imgur.com/3SWOJtJ.png" alt=""></p>
+
+<p><img src="https://i.imgur.com/3SWOJtJ.png" alt="" /></p>
+
 <p>確認名稱之後就可以添加指令，讓 Selenium 幫我們輸入看看</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">2</span>) <span style="color:#75715e"># 演一下</span>
 
-username <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Hello</span><span style="color:#e6db74">&#34;</span>
-password <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">password</span><span style="color:#e6db74">&#34;</span>
+<pre><code class="language-python">time.sleep(2) # 演一下
 
-<span style="color:#75715e"># 輸入帳密</span>
-driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">username</span><span style="color:#e6db74">&#34;</span>)<span style="color:#f92672">.</span>send_keys(username)
-driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">password</span><span style="color:#e6db74">&#34;</span>)<span style="color:#f92672">.</span>send_keys(password)
-</code></pre></div><p>可以看到它會自動幫我們輸入內容，看著帳密自己跳出來實在是相當療癒</p>
-<p><img src="https://i.imgur.com/WvY9vco.png" alt=""></p>
+username = &quot;Hello&quot;
+password = &quot;password&quot;
+
+# 輸入帳密
+driver.find_element_by_name(&quot;username&quot;).send_keys(username)
+driver.find_element_by_name(&quot;password&quot;).send_keys(password)
+</code></pre>
+
+<p>可以看到它會自動幫我們輸入內容，看著帳密自己跳出來實在是相當療癒</p>
+
+<p><img src="https://i.imgur.com/WvY9vco.png" alt="" /></p>
+
 <p>在這一步去抓取網頁上的元素時，可以看見我使用了 <code>driver.find_element_by_name</code> 去按照網頁上 HTML 標籤的 name 去抓到目標的元件。這就是 <strong>Selenium 的定位器</strong>，它提供了許多方法去取得目標元件，例如 Id、Name 等等。</p>
+
 <p>關於定位器的操作可以參閱 <a href="https://matthung0807.blogspot.com/2017/12/selenium-html-element-locator.html">Selenium HTML element locator 定位器</a> 以及 <a href="https://ithelp.ithome.com.tw/articles/10194253">Selenium webdriver 定位物件方法比較 xpath v.s. css selector</a> 這兩篇。接下來的介紹會以使用為主。</p>
+
 <p>回到我們的便當網，這網頁的友善就在於它的驗證碼是顯示數字讓你計算，每次的變化只有中間的「+」可能會變成「加」和全形的「＋」。但這並不妨礙我們去把它的值剝取出來。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 輸入驗證碼</span>
-ques <span style="color:#f92672">=</span> driver<span style="color:#f92672">.</span>find_elements_by_class_name(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">alignRight</span><span style="color:#e6db74">&#34;</span>)[<span style="color:#ae81ff">2</span>]<span style="color:#f92672">.</span>text <span style="color:#75715e"># 有點強硬地拿到整串問題</span>
-temp <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>findall(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">\</span><span style="color:#e6db74">d+</span><span style="color:#e6db74">\</span><span style="color:#e6db74">.?</span><span style="color:#e6db74">\</span><span style="color:#e6db74">d*</span><span style="color:#e6db74">&#34;</span>, ques) <span style="color:#75715e"># 用正規表達式把數字取出</span>
-a <span style="color:#f92672">=</span> int(temp[<span style="color:#ae81ff">0</span>])
-b <span style="color:#f92672">=</span> int(temp[<span style="color:#ae81ff">1</span>])
-c <span style="color:#f92672">=</span> a <span style="color:#f92672">+</span> b
-driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">result</span><span style="color:#e6db74">&#34;</span>)<span style="color:#f92672">.</span>send_keys(c)
-</code></pre></div><p>可以看見它自動幫我們輸入了計算結果</p>
-<p><img src="https://i.imgur.com/J4IXXCx.png" alt=""></p>
+
+<pre><code class="language-python"># 輸入驗證碼
+ques = driver.find_elements_by_class_name(&quot;alignRight&quot;)[2].text # 有點強硬地拿到整串問題
+temp = re.findall(r&quot;\d+\.?\d*&quot;, ques) # 用正規表達式把數字取出
+a = int(temp[0])
+b = int(temp[1])
+c = a + b
+driver.find_element_by_name(&quot;result&quot;).send_keys(c)
+</code></pre>
+
+<p>可以看見它自動幫我們輸入了計算結果</p>
+
+<p><img src="https://i.imgur.com/J4IXXCx.png" alt="" /></p>
+
 <blockquote>
-<p>題外話：如果遇到麻煩點的驗證碼怎麼辦？<!-- raw HTML omitted -->
-可以先用<a href="https://www.youtube.com/watch?v=hF-dJj559ug">大數軟體 - 如何使用 Selenium 抓取驗證碼?</a><!-- raw HTML omitted -->
-再試試看<a href="https://www.largitdata.com/course/37/">大數學堂 - 如何透過 OpenCV 破解台灣證券交易所買賣日報表的驗證碼(Captcha)</a><!-- raw HTML omitted -->
+<p>題外話：如果遇到麻煩點的驗證碼怎麼辦？<br/>
+可以先用<a href="https://www.youtube.com/watch?v=hF-dJj559ug">大數軟體 - 如何使用 Selenium 抓取驗證碼?</a><br/>
+再試試看<a href="https://www.largitdata.com/course/37/">大數學堂 - 如何透過 OpenCV 破解台灣證券交易所買賣日報表的驗證碼(Captcha)</a><br/>
 也許能有效，先記錄下來。</p>
 </blockquote>
-<p>接著就可以測試是否能夠登入了，將帳號密碼設定為測試用的訪客帳號 guest，並在指令最後添加按下按鈕的動作</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 提交表單</span>
-driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">submit</span><span style="color:#e6db74">&#34;</span>)<span style="color:#f92672">.</span>click() 
-</code></pre></div><p>到這一步已經順利登入，並且可以看到訂單列表了。</p>
-<p><img src="https://i.imgur.com/PQyd9FW.png" alt=""></p>
-<h2 id="heading2">整理及包裝</h2>
-<p>接著流程一如前部分，觀察網頁結構並且將目標取出。</p>
-<p>這邊先將左半部分的 Table 拿出來，接著針對表格的每一列取出該元素之後取文字。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> selenium <span style="color:#f92672">import</span> webdriver
-<span style="color:#f92672">import</span> re
-<span style="color:#f92672">import</span> time
-<span style="color:#f92672">import</span> pandas
 
-<span style="color:#75715e"># 自動檢查團購便當網</span>
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
-    url <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">https://dinbendon.net/do/login</span><span style="color:#e6db74">&#39;</span>
-    order <span style="color:#f92672">=</span> fetch_bandon(url)
+<p>接著就可以測試是否能夠登入了，將帳號密碼設定為測試用的訪客帳號 guest，並在指令最後添加按下按鈕的動作</p>
+
+<pre><code class="language-python"># 提交表單
+driver.find_element_by_name(&quot;submit&quot;).click() 
+</code></pre>
+
+<p>到這一步已經順利登入，並且可以看到訂單列表了。</p>
+
+<p><img src="https://i.imgur.com/PQyd9FW.png" alt="" /></p>
+
+<h2 id="整理及包裝">整理及包裝</h2>
+
+<p>接著流程一如前部分，觀察網頁結構並且將目標取出。</p>
+
+<p>這邊先將左半部分的 Table 拿出來，接著針對表格的每一列取出該元素之後取文字。</p>
+
+<pre><code class="language-python">from selenium import webdriver
+import re
+import time
+import pandas
+
+# 自動檢查團購便當網
+def main():
+    url = 'https://dinbendon.net/do/login'
+    order = fetch_bandon(url)
     print_order(order)
 
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fetch_bandon</span>(url, username<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">guest</span><span style="color:#e6db74">&#34;</span>, password<span style="color:#f92672">=</span><span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">guest</span><span style="color:#e6db74">&#34;</span>):
-    <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;&#39;&#39;</span><span style="color:#e6db74"> 開啟瀏覽器並連線到便當網取得資料 </span><span style="color:#e6db74">&#39;&#39;&#39;</span>
+def fetch_bandon(url, username=&quot;guest&quot;, password=&quot;guest&quot;):
+    ''' 開啟瀏覽器並連線到便當網取得資料 '''
 
-    driver <span style="color:#f92672">=</span> webdriver<span style="color:#f92672">.</span>Chrome()
-    driver<span style="color:#f92672">.</span>get(url)  <span style="color:#75715e"># 連線到訂便當頁面</span>
-    time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1</span>) <span style="color:#75715e"># 演一下</span>
+    driver = webdriver.Chrome()
+    driver.get(url)  # 連線到訂便當頁面
+    time.sleep(1) # 演一下
 
-    <span style="color:#75715e"># 輸入帳密</span>
-    driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">username</span><span style="color:#e6db74">&#34;</span>)<span style="color:#f92672">.</span>send_keys(username)
-    driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">password</span><span style="color:#e6db74">&#34;</span>)<span style="color:#f92672">.</span>send_keys(password)
+    # 輸入帳密
+    driver.find_element_by_name(&quot;username&quot;).send_keys(username)
+    driver.find_element_by_name(&quot;password&quot;).send_keys(password)
 
-    <span style="color:#75715e"># 輸入驗證碼</span>
-    ques <span style="color:#f92672">=</span> driver<span style="color:#f92672">.</span>find_elements_by_class_name(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">alignRight</span><span style="color:#e6db74">&#34;</span>)[<span style="color:#ae81ff">2</span>]<span style="color:#f92672">.</span>text
-    temp <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>findall(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">\</span><span style="color:#e6db74">d+</span><span style="color:#e6db74">\</span><span style="color:#e6db74">.?</span><span style="color:#e6db74">\</span><span style="color:#e6db74">d*</span><span style="color:#e6db74">&#34;</span>, ques)
-    answer <span style="color:#f92672">=</span> int(temp[<span style="color:#ae81ff">0</span>]) <span style="color:#f92672">+</span> int(temp[<span style="color:#ae81ff">1</span>])
-    driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">result</span><span style="color:#e6db74">&#34;</span>)<span style="color:#f92672">.</span>send_keys(answer)
+    # 輸入驗證碼
+    ques = driver.find_elements_by_class_name(&quot;alignRight&quot;)[2].text
+    temp = re.findall(r&quot;\d+\.?\d*&quot;, ques)
+    answer = int(temp[0]) + int(temp[1])
+    driver.find_element_by_name(&quot;result&quot;).send_keys(answer)
 
-    <span style="color:#75715e"># 提交表單</span>
-    driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">submit</span><span style="color:#e6db74">&#34;</span>)<span style="color:#f92672">.</span>click()
-    time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1</span>)
+    # 提交表單
+    driver.find_element_by_name(&quot;submit&quot;).click()
+    time.sleep(1)
 
-    <span style="color:#75715e"># 取出訂單表格列</span>
-    rows <span style="color:#f92672">=</span> driver<span style="color:#f92672">.</span>find_elements_by_css_selector(
-        <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">div#inProgressBox&gt;table&gt;tbody&gt;tr</span><span style="color:#e6db74">&#34;</span>)
+    # 取出訂單表格列
+    rows = driver.find_elements_by_css_selector(
+        &quot;div#inProgressBox&gt;table&gt;tbody&gt;tr&quot;)
 
-    <span style="color:#66d9ef">if</span> len(rows) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-        driver<span style="color:#f92672">.</span>close()
-        <span style="color:#66d9ef">return</span> list()
+    if len(rows) == 0:
+        driver.close()
+        return list()
         
-    <span style="color:#75715e"># 取出每一列資料的文字</span>
-    bandons <span style="color:#f92672">=</span> [list(map(getText, row<span style="color:#f92672">.</span>find_elements_by_css_selector(
-        <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">td&gt;div&gt;a&gt;span</span><span style="color:#e6db74">&#34;</span>))) <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> rows]  
-    driver<span style="color:#f92672">.</span>close()
+    # 取出每一列資料的文字
+    bandons = [list(map(getText, row.find_elements_by_css_selector(
+        &quot;td&gt;div&gt;a&gt;span&quot;))) for row in rows]  
+    driver.close()
 
-    <span style="color:#75715e"># 做成一張表</span>
-    tableHeader <span style="color:#f92672">=</span> [<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">人數</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">發起人</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">目標</span><span style="color:#e6db74">&#39;</span>]
-    bandons_df <span style="color:#f92672">=</span> pandas<span style="color:#f92672">.</span>DataFrame(bandons, columns<span style="color:#f92672">=</span>tableHeader)
+    # 做成一張表
+    tableHeader = ['人數', '發起人', '目標']
+    bandons_df = pandas.DataFrame(bandons, columns=tableHeader)
 
-    <span style="color:#66d9ef">return</span> bandons_df
-
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">print_order</span>(data):
-    <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;&#39;&#39;</span><span style="color:#e6db74">列印訂單資料，看起來整齊一點</span><span style="color:#e6db74">&#39;&#39;&#39;</span>
-    <span style="color:#66d9ef">for</span> index, row <span style="color:#f92672">in</span> data<span style="color:#f92672">.</span>iterrows():
-        <span style="color:#66d9ef">if</span> row <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> None:
-            <span style="color:#66d9ef">print</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">({hcount:&gt;4s}) {orderer}: {order:&lt;40s}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(
-                orderer <span style="color:#f92672">=</span> str(row[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">發起人</span><span style="color:#e6db74">&#39;</span>]),
-                order <span style="color:#f92672">=</span> str(row[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">目標</span><span style="color:#e6db74">&#39;</span>]),
-                hcount <span style="color:#f92672">=</span> str(row[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">人數</span><span style="color:#e6db74">&#39;</span>])))
+    return bandons_df
 
 
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">getText</span>(x):
-    <span style="color:#66d9ef">return</span> x<span style="color:#f92672">.</span>text
+def print_order(data):
+    '''列印訂單資料，看起來整齊一點'''
+    for index, row in data.iterrows():
+        if row is not None:
+            print('({hcount:&gt;4s}) {orderer}: {order:&lt;40s}'.format(
+                orderer = str(row['發起人']),
+                order = str(row['目標']),
+                hcount = str(row['人數'])))
 
 
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">__main__</span><span style="color:#e6db74">&#39;</span>:
+def getText(x):
+    return x.text
+
+
+if __name__ == '__main__':
     main()
-</code></pre></div><p>抓回來的樣子如下
-<img src="https://i.imgur.com/jp1lQlr.png" alt=""></p>
+</code></pre>
+
+<p>抓回來的樣子如下
+<img src="https://i.imgur.com/jp1lQlr.png" alt="" /></p>
+
 <p>另外每次執行的時候都還會有瀏覽器票出來操作，但我們在這邊已經確認可以成功取回資料了，因此瀏覽器的顯示也不是那麼必要。</p>
+
 <p>這邊就可以考慮加上無頭模式讓瀏覽器不要顯示，而是在背景執行。只需要在一開始宣告瀏覽器的部分加上選項，就可以不要跳視窗囉。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">options <span style="color:#f92672">=</span> webdriver<span style="color:#f92672">.</span>ChromeOptions()
-options<span style="color:#f92672">.</span>add_argument(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">headless</span><span style="color:#e6db74">&#39;</span>)
-driver <span style="color:#f92672">=</span> webdriver<span style="color:#f92672">.</span>Chrome(options<span style="color:#f92672">=</span>options)
-</code></pre></div><p>到此為止我們已經成功控制瀏覽器幫我們打開網頁，填帳號密碼登入，也取得了想要的訂單列表內容，完成了訂便當野心的第一步！</p>
+
+<pre><code class="language-python">options = webdriver.ChromeOptions()
+options.add_argument('headless')
+driver = webdriver.Chrome(options=options)
+</code></pre>
+
+<p>到此為止我們已經成功控制瀏覽器幫我們打開網頁，填帳號密碼登入，也取得了想要的訂單列表內容，完成了訂便當野心的第一步！</p>
+
 <p>然而，接著還有相當多的部分必須處理。如何判斷有沒有新訂單？又要怎麼通知我有新訂單呢？</p>
+
 <p>欲知後續如何，且待 <a href="https://igouist.github.io/post/202003-bandon-2-sqlite/">下回</a> 分曉！</p>
-<h2 id="heading3">參考資料</h2>
+
+<h2 id="參考資料">參考資料</h2>
+
 <ul>
 <li><a href="https://medium.com/@NorthBei/%E5%9C%A8windows%E4%B8%8A%E5%AE%89%E8%A3%9Dpython-selenium-%E7%B0%A1%E6%98%93%E6%95%99%E5%AD%B8-eade1cd2d12d">在Windows上安裝Python &amp; Selenium + 簡易教學</a></li>
 <li><a href="https://freelancerlife.info/zh/blog/python%E7%B6%B2%E8%B7%AF%E7%88%AC%E8%9F%B2%E6%95%99%E5%AD%B8-selenium%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/">Python網路爬蟲教學-Selenium基本操作</a></li>
@@ -278,9 +336,9 @@ driver <span style="color:#f92672">=</span> webdriver<span style="color:#f92672"
         
         <li><a href="/post/201912-ptt-crawler-and-listener/">Python：用爬蟲在 PTT 上監聽關鍵字並寄通知信</a></li>
         
-        <li><a href="/archives/">archives</a></li>
-        
         <li><a href="/about/">關於我</a></li>
+        
+        <li><a href="/archives/">archives</a></li>
         
     </ul>
 </div>
@@ -338,6 +396,10 @@ driver <span style="color:#f92672">=</span> webdriver<span style="color:#f92672"
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/202005-bandon-ex2-heroku-debug/" title="我要訂便當(4-2) —— Heroku 填坑小記">我要訂便當(4-2) —— Heroku 填坑小記</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/202005-jsonview/" title="Json View —— 用 Chrome 看 Json 的必備擴充套件">Json View —— 用 Chrome 看 Json 的必備擴充套件</a>
     </li>
     
@@ -346,7 +408,7 @@ driver <span style="color:#f92672">=</span> webdriver<span style="color:#f92672"
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202005-bandon-ex1-heroku/" title="我要訂便當(Ex1) —— 將 Python 腳本部署上 Heroku">我要訂便當(Ex1) —— 將 Python 腳本部署上 Heroku</a>
+        <a href="https://igouist.github.io/post/202005-bandon-ex1-heroku/" title="我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku">我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku</a>
     </li>
     
     <li>
@@ -373,10 +435,6 @@ driver <span style="color:#f92672">=</span> webdriver<span style="color:#f92672"
         <a href="https://igouist.github.io/post/202003-sikulix/" title="SikuliX —— 針對圖形介面寫自動化腳本的小幫手">SikuliX —— 針對圖形介面寫自動化腳本的小幫手</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/202003-bandon-2-sqlite/" title="我要訂便當(2) —— 用 Python &#43; Sqlite 儲存訂單">我要訂便當(2) —— 用 Python &#43; Sqlite 儲存訂單</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -387,39 +445,39 @@ driver <span style="color:#f92672">=</span> webdriver<span style="color:#f92672"
 <ul class="widget-list">
     
     <li>
-        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+        <a href="https://igouist.github.io/categories/android/">Android (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/automation/">automation (2)</a>
+        <a href="https://igouist.github.io/categories/automation/">Automation (3)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/c/">c# (3)</a>
+        <a href="https://igouist.github.io/categories/c/">C# (3)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+        <a href="https://igouist.github.io/categories/css/">CSS (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/dotnet/">dotnet (3)</a>
+        <a href="https://igouist.github.io/categories/dotnet/">Dotnet (3)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/ide/">ide (1)</a>
+        <a href="https://igouist.github.io/categories/ide/">IDE (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/python/">python (6)</a>
+        <a href="https://igouist.github.io/categories/python/">Python (7)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (3)</a>
+        <a href="https://igouist.github.io/categories/tools/">Tools (3)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (11)</a>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3HexSchool (12)</a>
     </li>
     
 </ul>
@@ -429,49 +487,49 @@ driver <span style="color:#f92672">=</span> webdriver<span style="color:#f92672"
         <h3 class="widget-title">標籤</h3>
 <div class="tagcloud">
     
-    <a href="https://igouist.github.io/tags/android/">android</a>
+    <a href="https://igouist.github.io/tags/android/">Android</a>
     
-    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    <a href="https://igouist.github.io/tags/automation/">Automation</a>
     
-    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    <a href="https://igouist.github.io/tags/bandon/">Bandon</a>
     
-    <a href="https://igouist.github.io/tags/c/">c#</a>
+    <a href="https://igouist.github.io/tags/c/">C#</a>
     
-    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    <a href="https://igouist.github.io/tags/css/">CSS</a>
     
-    <a href="https://igouist.github.io/tags/css/">css</a>
+    <a href="https://igouist.github.io/tags/crawler/">Crawler</a>
     
-    <a href="https://igouist.github.io/tags/database/">database</a>
+    <a href="https://igouist.github.io/tags/database/">Database</a>
     
-    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    <a href="https://igouist.github.io/tags/dotnet/">Dotnet</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">Entity Framework</a>
     
-    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    <a href="https://igouist.github.io/tags/excel/">Excel</a>
     
-    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    <a href="https://igouist.github.io/tags/heroku/">Heroku</a>
     
-    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    <a href="https://igouist.github.io/tags/ide/">IDE</a>
     
-    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    <a href="https://igouist.github.io/tags/mysql/">MySQL</a>
     
-    <a href="https://igouist.github.io/tags/php/">php</a>
+    <a href="https://igouist.github.io/tags/php/">PHP</a>
     
-    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    <a href="https://igouist.github.io/tags/ptt/">PTT</a>
     
-    <a href="https://igouist.github.io/tags/python/">python</a>
+    <a href="https://igouist.github.io/tags/python/">Python</a>
     
-    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    <a href="https://igouist.github.io/tags/selenium/">Selenium</a>
     
-    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    <a href="https://igouist.github.io/tags/sqlite/">Sqlite</a>
     
-    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    <a href="https://igouist.github.io/tags/tools/">Tools</a>
     
-    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    <a href="https://igouist.github.io/tags/visualstudio/">VisualStudio</a>
     
-    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    <a href="https://igouist.github.io/tags/xampp/">XAMPP</a>
     
-    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3HexSchool</a>
     
 </div>
     </section>

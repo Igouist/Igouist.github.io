@@ -3,12 +3,12 @@
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.60.1" />
+    <meta name="generator" content="Hugo 0.53" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>我要訂便當(Ex1) —— 將 Python 腳本部署上 Heroku | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="我要訂便當(Ex1) —— 將 Python 腳本部署上 Heroku - 伊果的沒人看筆記本">
+    <title>我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
     <meta property="article:published_time" content="2020-05-03T23:55:00&#43;08:00">
@@ -76,7 +76,7 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">我要訂便當(Ex1) —— 將 Python 腳本部署上 Heroku</h1>
+                            <h1 class="post-title">我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku</h1>
                         </header>
                         <date class="post-meta meta-date">
                             2020-5-3,
@@ -102,33 +102,58 @@
                             <blockquote>
 <p>目標：紀錄一下如何將 Python 寫好的東西丟上 <a href="https://www.heroku.com/home">Heroku</a></p>
 </blockquote>
+
 <p>在先前的 <a href="https://igouist.github.io/post/202003-bandon-1-selenium/">訂便當系列</a> 中已經建立了一個替我們去爬便當網並通知我們的小工具，但還存在一個相當大的問題：要在哪跑？總不能就只放在家裡電腦有開機就跑、沒開機就算了吧？因此我們必須找個主機把它放上去。而在上一篇做 Line Notify 的時候所參考的 <a href="https://www.evanlin.com/go-line-notify/">如何快速建置一個 LINE Notify 的服務</a> 中提到了將服務放上 Heroku 的部分，因此馬上嘗試看看。</p>
+
 <p>結果過程中碰了不少壁，因此特地紀錄下來。</p>
+
 <p><strong>Heroku 是一個雲端平台</strong>，讓使用者可以把服務丟上去跑，同時最讚的部分是，免費用戶就提供了每月 450 小時可以使用（但有每半小時會進入休眠的限制），詳情可以參閱 <a href="https://www.heroku.com/pricing">Heroku 的計費頁面</a>。</p>
+
 <p>本系列最後一階段的目標就是要將訂便當爬蟲整套丟上去雲端上運行，達到被動接收通知的效果。但由於訂便當爬蟲還牽涉到用 Selenium 開瀏覽器互動，以及使用 Sqlite 儲存的部分，轉移到 Heroku 的環境上還需要進行一些調整。因此<strong>這一階段將會分成兩篇（或以上）文章進行，上篇會先簡單地紀錄如何將服務放上 Heroku，下篇開始則著重於紀錄將訂便當系統放上 Heroku 時遇到的問題和解決過程</strong>。</p>
+
 <p>本篇主要的參考來源來自於 <a href="https://medium.com/enjoy-life-enjoy-coding/heroku-%E6%90%AD%E9%85%8D-git-%E5%9C%A8-heroku-%E4%B8%8A%E9%83%A8%E7%BD%B2%E7%B6%B2%E7%AB%99%E7%9A%84%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E5%AD%B8-bf4fd6f998b8">搭配 Git 在 Heroku 上部署網站的手把手教學</a>、<a href="https://ithelp.ithome.com.tw/articles/10196129">發布網站到 Heroku</a> 以及 <a href="https://railsbook.tw/chapters/32-deployment-with-heroku.html">網站部署（使用 Heroku）</a> 這幾篇，其餘參考將附於文末，感謝各位前人大大留下的優質文。</p>
-<h2 id="heading">註冊及安裝</h2>
+
+<h2 id="註冊及安裝">註冊及安裝</h2>
+
 <p>Heroku 的 <a href="https://signup.heroku.com/login">註冊</a> 相當簡單，這邊就略過不提，需要說明可以參考 <a href="https://ithelp.ithome.com.tw/articles/10196129">這篇</a>。</p>
+
 <p>註冊完畢就會回到個人頁面，底部有 Heroku Dev Center，也能選自己慣用的程式語言進去教學說明，有興趣的可以逛個一圈。
-<img src="https://i.imgur.com/2Q02pgx.png" alt=""></p>
+<img src="https://i.imgur.com/2Q02pgx.png" alt="" /></p>
+
 <p>這邊我們就先新增一個應用程式，點選畫面中間左側的 <code>Create a new app</code></p>
-<p><img src="https://i.imgur.com/BhCYXCY.png" alt=""></p>
+
+<p><img src="https://i.imgur.com/BhCYXCY.png" alt="" /></p>
+
 <p>接著輸入應用程式名稱，注意只能使用小寫，並且不能重複。如果已經使用後續會提到的 CLI 的朋友，也可以直接使用 <code>heroku create</code> 的指令來建立應用程式。</p>
+
 <p>建立完成之後就會進到專案的頁面：</p>
-<p><img src="https://i.imgur.com/OR5Sf14.png" alt=""></p>
+
+<p><img src="https://i.imgur.com/OR5Sf14.png" alt="" /></p>
+
 <p>可以看見 Heroku 提供了幾種方法來將應用程式推送到 Heroku 上，例如連接到 Github。我們這邊用 Heroku CLI 試試，頁面上也已經提供了步驟說明。</p>
+
 <p><a href="https://devcenter.heroku.com/articles/heroku-cli">Heroku CLI 的安裝說明頁面</a>，在這邊挑選自己的系統下載並安裝。</p>
+
 <p>安裝過程也相當簡易，會有將 Heroku 加到環境變數和路徑等選項，一路下一步即可。</p>
+
 <p>裝完之後，打開命令列輸入 Heroku，如果有跳出指令列表就代表安裝已經成功</p>
-<p><img src="https://i.imgur.com/nGlmGiJ.png" alt=""></p>
-<h2 id="-heroku">連接至 Heroku</h2>
+
+<p><img src="https://i.imgur.com/nGlmGiJ.png" alt="" /></p>
+
+<h2 id="連接至-heroku">連接至 Heroku</h2>
+
 <blockquote>
 <p>備註：由於 Heroku 傳送檔案的方式是使用 Git 進行，因此在後續的操作之前，<strong>必須先確保電腦中已經安裝 Git</strong></p>
 </blockquote>
+
 <p>接著我們就按照上面 Heroku CLI 說明頁面的步驟開始操作。</p>
+
 <p>首先要先登入，輸入 <code>heroku login</code> 之後，便會開啟瀏覽器進行登入驗證，如果成功會看見登入訊息</p>
-<p><img src="https://i.imgur.com/fOifmbs.png" alt=""></p>
+
+<p><img src="https://i.imgur.com/fOifmbs.png" alt="" /></p>
+
 <p>接著就可以移到專案的資料夾，將專案和 Heroku 做連接</p>
+
 <pre><code># 先移動到專案的資料夾
 $ cd my-project/
 
@@ -137,55 +162,90 @@ $ git init
 
 # 和 Heroku 專案連接
 $ heroku git:remote -a Heroku的APP名稱
-</code></pre><p><img src="https://i.imgur.com/TumTYwP.png" alt=""></p>
-<h2 id="heading1">環境設定及測試</h2>
-<p>這邊由於前面提到訂便當系統有部分要調整的關係，因此只使用 <a href="https://igouist.github.io/post/202004-bandon-3-line-notify/">我要訂便當(3) 的 Lint Notify 測試版</a> 的 Line Notify 上去試試看。上一集的簡單 Line Notify 程式碼如下，這邊命名為 <code>myApp.py</code>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> requests
+</code></pre>
 
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">lineNotifyMessage</span>(token, msg):
-    headers <span style="color:#f92672">=</span> {
-        <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Authorization</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Bearer </span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">+</span> token,
-        <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Content-Type</span><span style="color:#e6db74">&#34;</span>: <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">application/x-www-form-urlencoded</span><span style="color:#e6db74">&#34;</span>
+<p><img src="https://i.imgur.com/TumTYwP.png" alt="" /></p>
+
+<h2 id="環境設定及測試">環境設定及測試</h2>
+
+<p>這邊由於前面提到訂便當系統有部分要調整的關係，因此只使用 <a href="https://igouist.github.io/post/202004-bandon-3-line-notify/">我要訂便當(3) 的 Lint Notify 測試版</a> 的 Line Notify 上去試試看。上一集的簡單 Line Notify 程式碼如下，這邊命名為 <code>myApp.py</code>：</p>
+
+<pre><code class="language-python">import requests
+
+def lineNotifyMessage(token, msg):
+    headers = {
+        &quot;Authorization&quot;: &quot;Bearer &quot; + token,
+        &quot;Content-Type&quot;: &quot;application/x-www-form-urlencoded&quot;
     }
 
-    payload <span style="color:#f92672">=</span> {<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">message</span><span style="color:#e6db74">&#39;</span>: msg}
-    r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>post(
-        <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">https://notify-api.line.me/api/notify</span><span style="color:#e6db74">&#34;</span>,
-        headers<span style="color:#f92672">=</span>headers,
-        params<span style="color:#f92672">=</span>payload)
-    <span style="color:#66d9ef">return</span> r<span style="color:#f92672">.</span>status_code
+    payload = {'message': msg}
+    r = requests.post(
+        &quot;https://notify-api.line.me/api/notify&quot;,
+        headers=headers,
+        params=payload)
+    return r.status_code
 
 
-message <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">Line Notify + Heroku 測試</span><span style="color:#e6db74">&#39;</span>
-token <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">YOUR TOKEN</span><span style="color:#e6db74">&#39;</span>
-result <span style="color:#f92672">=</span> lineNotifyMessage(token, message)
-</code></pre></div><p>接著除了主要的 py 檔以外，還需要一些檔案去告訴 Heroku 怎麼處理我們的服務。</p>
+message = 'Line Notify + Heroku 測試'
+token = 'YOUR TOKEN'
+result = lineNotifyMessage(token, message)
+</code></pre>
+
+<p>接著除了主要的 py 檔以外，還需要一些檔案去告訴 Heroku 怎麼處理我們的服務。</p>
+
 <p>事實上我第一次是直接就把 py 傳上去 Heroku 然後建置大失敗，還好 Google 了一陣有前人指點，這邊的設定部份參照自 <a href="https://blog.techbridge.cc/2020/03/08/how-to-use-heroku-to-deploy-clear-mysql-db-web-app-tutorial/">如何使用 Heroku 部屬一個 Web App 網頁應用程式</a>，特此感謝。</p>
+
 <p>不過 Heroku 還不知道怎麼建我們的服務，因此這邊還需要新增幾個設定的檔案：</p>
+
 <h3 id="procfile">Procfile</h3>
+
 <p>用來告訴 Heroku 怎麼運行我們的服務</p>
+
 <pre><code>worker: python myApp.py
-</code></pre><p>這行的意思是：<code>worker</code> 的運行方式是 <code>python myApp.py</code> 這行命令，<strong>Heroku 會根據這個文件的內容去建 dynos 容器來運行我們的應用服務</strong>。</p>
+</code></pre>
+
+<p>這行的意思是：<code>worker</code> 的運行方式是 <code>python myApp.py</code> 這行命令，<strong>Heroku 會根據這個文件的內容去建 dynos 容器來運行我們的應用服務</strong>。</p>
+
 <p>像上面的參考文章在建置 Flask 時，就將運行 <code>web</code> 的命令設定為 <code>gunicorn flask_app:app</code> 讓 <a href="https://www.jianshu.com/p/52d8e3deaa16">Gunicorn</a> 去起網站來跑。</p>
+
 <p>由於這次的示範組只是個小腳本，因此我們宣告個 worker 而不是網站方便之後處理。當宣告的運行是 <code>web</code> 時，Heroku 還會幫忙接 HTTP 的內容，當然想包裝成 Web APP 的朋友，也可以參考上面的文章將腳本包裝成簡單的 Flask。</p>
+
 <p>關於 Procfile 和 dynos，可以參見 <a href="https://andyyou.github.io/2016/10/31/process-types-and-profile/">Heroku 運行類別、 Procfile、常用指令筆記</a> 以及 Heroku 官方的 <a href="https://devcenter.heroku.com/categories/dynos">Dynos (app containers)</a></p>
+
 <p>這邊另外要注意的地方有兩個：這個檔案是不需要副檔名的，而且大小寫請正確。我在碰壁的過程中有遇到本機測試可以但推送上去就不行的情況，後來發現是打成全小寫了，改成字首大寫就正常，因此這邊提醒一下大家。</p>
-<h3 id="requirementstxt">requirements.txt</h3>
+
+<h3 id="requirements-txt">requirements.txt</h3>
+
 <p>用來標示需要安裝的套件，逐行列出套件即可，也可以用 <code>套件名稱==版本號</code> 的方式指定套件版本。由於測試的程式碼只用到 requests，因此這邊列上 requests 就可以了。</p>
+
 <pre><code>requests
-</code></pre><h3 id="runtimetxt">runtime.txt</h3>
+</code></pre>
+
+<h3 id="runtime-txt">runtime.txt</h3>
+
 <p>用來標示 Python 的版本，這篇文當下的版本為</p>
+
 <pre><code>python-3.7.6
-</code></pre><h3 id="heading2">本機測試</h3>
+</code></pre>
+
+<h3 id="本機測試">本機測試</h3>
+
 <p>到目前為止沒意外的話應該會包含這些東西
-<img src="https://i.imgur.com/cinuyWc.png" alt=""></p>
+<img src="https://i.imgur.com/cinuyWc.png" alt="" /></p>
+
 <p>這邊可以嘗試在本機測試看看，打開命令列輸入 <code>heroku local worker</code> 就可以在 localhost Run 起來看看囉。注意這是在本機啟動 worker 這個 dynos 的意思，所以如果前面的 <code>Procfile</code> 是使用 web 的朋友，這邊就要輸入 <code>heroku local web</code> 囉。</p>
-<p><img src="https://i.imgur.com/7nfsEB0.png" alt="">
-<img src="https://i.imgur.com/UOfqN2J.png" alt=""></p>
+
+<p><img src="https://i.imgur.com/7nfsEB0.png" alt="" />
+<img src="https://i.imgur.com/UOfqN2J.png" alt="" /></p>
+
 <p>想要全面啟動，可以直接輸入 <code>heroku local</code>；想要指定 Port 的也可使用 <code>heroku local -p 7000</code> 等等，可以參見 <a href="https://andyyou.github.io/2016/10/31/process-types-and-profile/">Heroku 運行類別、 Procfile、常用指令筆記</a> 的啟動段落有比較常用的用法。</p>
+
 <p>如果一切安好，就可以開始嘗試部署囉</p>
-<h2 id="-heroku1">部署至 Heroku</h2>
+
+<h2 id="部署至-heroku">部署至 Heroku</h2>
+
 <p>Heroku 的部署只需要用 Git 推送上去就可以了，也就是只需要</p>
+
 <pre><code># 把所有檔案都加到這次變更
 $ git add .
 
@@ -194,24 +254,44 @@ $ git commit -am &quot;這是Commit註解&quot;
 
 # 推送
 $ git push heroku master
-</code></pre><p>就可以發到 Heroku 進行部署了，推送時也能看見建置的過程，如安裝的包和建置是否成功等資訊都會顯示</p>
+</code></pre>
+
+<p>就可以發到 Heroku 進行部署了，推送時也能看見建置的過程，如安裝的包和建置是否成功等資訊都會顯示</p>
+
 <p>如果前面架上去的是網站，也就是 <code>Procfile</code> 使用 Web 的朋友，Heroku 應該會幫忙把服務建起來。<strong>而像我是另外定義 <code>worker</code> 的朋友，這邊還需要多一個把 dynos 建起來的動作</strong></p>
+
 <p>命令列中輸入 <code>heroku ps</code> 就可以看到現在正在運行的服務，如果沒有任何服務運行，或是想擴展服務，可以使用 <code>heroku ps:scale Procfile裡定義的服務=服務數</code> 來操作。</p>
+
 <p>例如我是使用 worker，這邊就輸入 <code>heroku ps:scale worker=1</code> 就會開啟一個 worker 來運行；反過來說，輸入 <code>heroku ps:scale worker=0</code> 就可以停止 worker 的服務囉。</p>
-<p><img src="https://i.imgur.com/04TWfuB.png" alt=""></p>
+
+<p><img src="https://i.imgur.com/04TWfuB.png" alt="" /></p>
+
 <p>如果這邊部屬和運行有問題的朋友，可以查看 Heroku 的 Log：在命令列輸入 <code>Heroku log</code> 就會顯示了（建議搭配 <code>--tail</code> 等方法使用，詳請可見 <a href="https://devcenter.heroku.com/articles/logging#view-logs">官方文檔</a>）</p>
+
 <p>此外，若是跟我初嘗試一樣跑出 <code>Couldn't find that process type</code> 請參照 <a href="https://help.heroku.com/W23OAFGK/why-am-i-seeing-couldn-t-find-that-process-type-when-trying-to-scale-dynos">這篇</a>，我個人是修改 <code>Procfile</code> 檔名的大小寫就解決了</p>
+
 <p>若是建置時無法成功的朋友，可能是沒抓到你的服務的語言（例如 Python），需要自己去拉一下 buildpacks，例如 Python 的建置包就是 <a href="https://elements.heroku.com/buildpacks/heroku/heroku-buildpack-python">heroku-buildpack-python</a></p>
+
 <p>最後我們回來看一下 Heroku 的 APP 頁面</p>
-<p><img src="https://i.imgur.com/9aJyKLQ.png" alt=""></p>
+
+<p><img src="https://i.imgur.com/9aJyKLQ.png" alt="" /></p>
+
 <p><code>Activity</code> 可以看見最近的活動，例如部署失敗也會顯示在這；而 <code>Settings</code> 則是一些專案設定，例如名稱和建置包都要到這裡調整</p>
-<p><img src="https://i.imgur.com/p9ZAWei.png" alt=""></p>
+
+<p><img src="https://i.imgur.com/p9ZAWei.png" alt="" /></p>
+
 <p>其中可以從 <code>Domains</code> 這裡連到你的服務，如果你放的是網頁或 API 的話就可以從這裡進入。不過更快進入自己服務的方法，是在命令列中直接下 <code>Heroku open</code> 就行啦。</p>
-<p><img src="https://i.imgur.com/XhqJvxH.png" alt=""></p>
-<h2 id="heading3">後記</h2>
+
+<p><img src="https://i.imgur.com/XhqJvxH.png" alt="" /></p>
+
+<h2 id="後記">後記</h2>
+
 <p>其實原本打算部署的部分一篇解決的，沒想到牆就這樣撞了上來，將便當放到 Heroku 上時實在遇到挺多問題，例如第一次使用時直接把整坨檔案直接推上去也沒設定結果建置失敗，或是發現 Heroku 不給用 Sqlite，或是 Selenium 要另外找建置包等等，因此最後決定切成兩篇，一篇好好記 Heroku 的流程，剩下的部份再按照問題做紀錄。</p>
-<p>同時因為原本的訂便當已經在家裡電腦跑著了，部屬上雲似乎是額外再戰的部份，因此就當成外傳處理囉。待到剩下問題解決了，抓緊下班時間再寫上來記著，希望以後能派上用場吧。</p>
-<h2 id="heading4">參考資料</h2>
+
+<p>同時因為原本的訂便當已經在家裡電腦跑著了，部屬上雲似乎是額外再戰的部份。待到剩下問題解決了，抓緊下班時間再寫上來記著，希望以後能派上用場吧。</p>
+
+<h2 id="參考資料">參考資料</h2>
+
 <ul>
 <li><a href="https://medium.com/enjoy-life-enjoy-coding/heroku-%E6%90%AD%E9%85%8D-git-%E5%9C%A8-heroku-%E4%B8%8A%E9%83%A8%E7%BD%B2%E7%B6%B2%E7%AB%99%E7%9A%84%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E5%AD%B8-bf4fd6f998b8">搭配 Git 在 Heroku 上部署網站的手把手教學 - 神Q超人</a></li>
 <li><a href="https://ithelp.ithome.com.tw/articles/10196129">第十八天：發布網站到 Heroku - 只要有心，人人都可以做卡米狗</a></li>
@@ -297,6 +377,10 @@ $ git push heroku master
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/202005-bandon-ex2-heroku-debug/" title="我要訂便當(4-2) —— Heroku 填坑小記">我要訂便當(4-2) —— Heroku 填坑小記</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/202005-jsonview/" title="Json View —— 用 Chrome 看 Json 的必備擴充套件">Json View —— 用 Chrome 看 Json 的必備擴充套件</a>
     </li>
     
@@ -305,7 +389,7 @@ $ git push heroku master
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202005-bandon-ex1-heroku/" title="我要訂便當(Ex1) —— 將 Python 腳本部署上 Heroku">我要訂便當(Ex1) —— 將 Python 腳本部署上 Heroku</a>
+        <a href="https://igouist.github.io/post/202005-bandon-ex1-heroku/" title="我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku">我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku</a>
     </li>
     
     <li>
@@ -332,10 +416,6 @@ $ git push heroku master
         <a href="https://igouist.github.io/post/202003-sikulix/" title="SikuliX —— 針對圖形介面寫自動化腳本的小幫手">SikuliX —— 針對圖形介面寫自動化腳本的小幫手</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/202003-bandon-2-sqlite/" title="我要訂便當(2) —— 用 Python &#43; Sqlite 儲存訂單">我要訂便當(2) —— 用 Python &#43; Sqlite 儲存訂單</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -346,39 +426,39 @@ $ git push heroku master
 <ul class="widget-list">
     
     <li>
-        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+        <a href="https://igouist.github.io/categories/android/">Android (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/automation/">automation (2)</a>
+        <a href="https://igouist.github.io/categories/automation/">Automation (3)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/c/">c# (3)</a>
+        <a href="https://igouist.github.io/categories/c/">C# (3)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+        <a href="https://igouist.github.io/categories/css/">CSS (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/dotnet/">dotnet (3)</a>
+        <a href="https://igouist.github.io/categories/dotnet/">Dotnet (3)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/ide/">ide (1)</a>
+        <a href="https://igouist.github.io/categories/ide/">IDE (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/python/">python (6)</a>
+        <a href="https://igouist.github.io/categories/python/">Python (7)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (3)</a>
+        <a href="https://igouist.github.io/categories/tools/">Tools (3)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (11)</a>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3HexSchool (12)</a>
     </li>
     
 </ul>
@@ -388,49 +468,49 @@ $ git push heroku master
         <h3 class="widget-title">標籤</h3>
 <div class="tagcloud">
     
-    <a href="https://igouist.github.io/tags/android/">android</a>
+    <a href="https://igouist.github.io/tags/android/">Android</a>
     
-    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    <a href="https://igouist.github.io/tags/automation/">Automation</a>
     
-    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    <a href="https://igouist.github.io/tags/bandon/">Bandon</a>
     
-    <a href="https://igouist.github.io/tags/c/">c#</a>
+    <a href="https://igouist.github.io/tags/c/">C#</a>
     
-    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    <a href="https://igouist.github.io/tags/css/">CSS</a>
     
-    <a href="https://igouist.github.io/tags/css/">css</a>
+    <a href="https://igouist.github.io/tags/crawler/">Crawler</a>
     
-    <a href="https://igouist.github.io/tags/database/">database</a>
+    <a href="https://igouist.github.io/tags/database/">Database</a>
     
-    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    <a href="https://igouist.github.io/tags/dotnet/">Dotnet</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">Entity Framework</a>
     
-    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    <a href="https://igouist.github.io/tags/excel/">Excel</a>
     
-    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    <a href="https://igouist.github.io/tags/heroku/">Heroku</a>
     
-    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    <a href="https://igouist.github.io/tags/ide/">IDE</a>
     
-    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    <a href="https://igouist.github.io/tags/mysql/">MySQL</a>
     
-    <a href="https://igouist.github.io/tags/php/">php</a>
+    <a href="https://igouist.github.io/tags/php/">PHP</a>
     
-    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    <a href="https://igouist.github.io/tags/ptt/">PTT</a>
     
-    <a href="https://igouist.github.io/tags/python/">python</a>
+    <a href="https://igouist.github.io/tags/python/">Python</a>
     
-    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    <a href="https://igouist.github.io/tags/selenium/">Selenium</a>
     
-    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    <a href="https://igouist.github.io/tags/sqlite/">Sqlite</a>
     
-    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    <a href="https://igouist.github.io/tags/tools/">Tools</a>
     
-    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    <a href="https://igouist.github.io/tags/visualstudio/">VisualStudio</a>
     
-    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    <a href="https://igouist.github.io/tags/xampp/">XAMPP</a>
     
-    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3HexSchool</a>
     
 </div>
     </section>

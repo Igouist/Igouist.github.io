@@ -7,20 +7,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Json View —— 用 Chrome 看 Json 的必備擴充套件 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="Json View —— 用 Chrome 看 Json 的必備擴充套件 - 伊果的沒人看筆記本">
+    <title>我要訂便當(4-2) —— Heroku 填坑小記 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="我要訂便當(4-2) —— Heroku 填坑小記 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2020-05-17T15:39:00&#43;08:00">
+    <meta property="article:published_time" content="2020-05-31T23:24:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2020-05-17T15:39:00&#43;08:00">
+    <meta property="article:modified_time" content="2020-05-31T23:24:00&#43;08:00">
         
     <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
-    <meta name="description" content="Json View 是一款 Chrome 的擴充套件，能幫忙打 Json 格式的資料重新排版，保護你我的眼睛">
+    <meta name="description" content="紀錄把 Python 腳本部屬上 Heroku 遇到的問題及解決方法。包括：將 SQLite 要改成用 PostgreSQL、在 Heroku 上執行 Selenium 等等，將這些問題和找到的前人解決文記錄在這一篇，將來再遇到的時候就可以參考。">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/post/202005-jsonview/">
+    <meta property="og:url" content="https://igouist.github.io/post/202005-bandon-ex2-heroku-debug/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/normalize.css">
@@ -76,17 +76,19 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">Json View —— 用 Chrome 看 Json 的必備擴充套件</h1>
+                            <h1 class="post-title">我要訂便當(4-2) —— Heroku 填坑小記</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2020-5-17,
+                            2020-5-31,
                         </date>
                         
                         <div class="post-meta">
                             
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/tools">Tools</a></span>
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/python">Python</a></span>
                             
                                 <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/automation">Automation</a></span>
                             
                         </div>
                         
@@ -99,28 +101,85 @@
                         </div>
                         
                         <div class="post-content">
-                            <p>本來這週已經沒梗了，不過同學來問了個接 API 的問題還附了照片，頓時決定順手推一下好用的瀏覽器插件：<a href="https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc">Json View</a>。</p>
+                            <p>在上一集的<a href="https://igouist.github.io/post/202005-bandon-ex1-heroku/"> 將 Python 腳本部署上 Heroku</a> 中，記錄了將 Python 腳本放上 Heroku 的過程，但仍然沒有將我們的 <a href="https://igouist.github.io/tags/bandon/">訂便當小幫手</a> 給放上去。之前有稍微提到是因為過程中遇到了一些問題，最後決定將這些問題和找到的前人解決文記錄在這一篇，將來再遇到的時候就可以參考。</p>
 
-<p>Json View 是一款 Chrome 的擴充套件，能幫忙把 Json 格式的資料重新排版，保護妳我的眼睛。</p>
+<ol>
+<li>SQLite 要改成用 PostgreSQL</li>
+<li>在 Heroku 上執行 Selenium</li>
+</ol>
 
-<p>照慣例來張效果圖鎮樓
-<img src="https://i.imgur.com/VYg1Siy.png" alt="" /></p>
+<h3 id="一-sqlite-要改成用-postgresql">一、SQLite 要改成用 PostgreSQL</h3>
 
-<p>該同學傳來的圖片是長這樣的（示意圖，非當事 API，用 UBike 開放資源臨演）
-<img src="https://i.imgur.com/kaoOwTt.png" alt="" /></p>
+<p>在之前的 <a href="https://igouist.github.io/post/202003-bandon-2-sqlite/">我要訂便當(2) —— 用 Python + Sqlite 儲存訂單</a> 中，為了方便及簡單性，選擇了較輕便的 SQLite 來儲存我們爬回來的訂單資訊。然而，SQLite 將資料儲存在小檔案以便於攜帶的做法，在 Heroku 上將會遭遇像是各個 dyno 的資料不同步等許多問題，因此 Heroku 是不建議使用 SQLite 的。</p>
 
-<p>突然還以為咱們要玩威利在哪裡，這不是欺負我眼睛不好嘛。</p>
+<p>在 Heroku 的開發文件中的 <a href="https://devcenter.heroku.com/articles/sqlite3">SQLite on Heroku</a> 有關於這部分的詳細說明，並直接提到「*If you were to use SQLite on Heroku, you would lose your entire database at least once every 24 hours.*」同時，官方也提供了他們的建議：<strong>PostgreSQL</strong>。相較於輕便但只能同時單一寫入而且還會在 dyno 炸掉的 SQLite，PostgreSQL 的完整性更符合 Heroku 對服務的要求。</p>
 
-<p>但畢竟只是小問題，不能開口就要人家給 Swagger 或用個 Postman（API測試神器，之後也來推薦一篇），用圖片描述也是無可厚非，但還是必須顧眼睛。因此現場直接就推薦同學安裝這款 chrome 插件：<a href="https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc">Json View</a></p>
+<p>關於在 Heroku 上使用 PostgreSQL 的做法，這篇 <a href="https://swf.com.tw/?p=1327">佈署 Python Flask 網站留言板應用程式到 Heroku + PostgreSQL 資料庫系統</a> 說明得相當詳細。</p>
 
-<p>安裝之後再度使用瀏覽器打開 API，就會是長這樣的：
-<img src="https://i.imgur.com/TgKKIUK.png" alt="" /></p>
+<p>這邊簡述一下操作過程（當然，還是建議進入上面推薦的網頁直接照圖操作）</p>
 
-<p>經過自動排版之後，這不是好看多了！</p>
+<p>首先，先進到專案的頁面，選擇 Resources 分頁並往下到 Add-on，擴充套件基本上都從這裡開始安裝，事實上遇到的許多問題都會到這裡用擴充套件解決。在此就先輸入 Postgres 並安裝 Heroku Postgres，並且選擇免費方案。</p>
 
-<p>這邊真心推薦用 Chrome 的朋友，就先裝下來吧；至於火狐似乎原本就會幫忙整理排版了；用 IE 的話，就當我沒說。另外也要感謝親愛的同學，<del>又讓我水了一篇</del></p>
+<p>安裝完畢之後，可以點選 Heroku Postgres 進入擴充套件管理的頁面，這邊進去 Setting 就可以進行相關的設定，也能從這邊取得帳號、密碼及資料庫URL。</p>
 
-<p>ps: 最後效果跟鎮樓圖有差別？因為我是黑色主題的愛好者，所以這就再推一個擴充套件囉：<a href="https://chrome.google.com/webstore/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh">Dark Reader</a>。謝謝觀看，咱們下次見～</p>
+<p>Heroku 部分設定完畢之後，就要回來改我們便當的程式碼。相對於當初 SQLite 時使用的 sqlite3 包，這次要操作 PostgreSQL 則是要使用 python-psycopg2 這個包。</p>
+
+<p>相關的操作可以參考 Gitbook.net 的這篇 <a href="http://tw.gitbook.net/postgresql/2013080998.html">PostgreSQL 連接 Python</a>。可以發現整體的操作方式和之前使用 sqlite3 並沒有什麼太大的不同，因此略做修改之後就可以使用囉。</p>
+
+<h4 id="本區段的參考資料">本區段的參考資料</h4>
+
+<ul>
+<li><a href="https://swf.com.tw/?p=1327">佈署 Python Flask 網站留言板應用程式到 Heroku + PostgreSQL 資料庫系統</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10199016">[Ting&rsquo;s筆記Day5] 在部署到Heroku之前，將Rails專案從SQLite設定為PostgreSQL - iT邦幫忙</a></li>
+<li><a href="http://tw.gitbook.net/postgresql/2013080998.html">PostgreSQL 連接 Pytho - Gitbook</a></li>
+<li><a href="https://devcenter.heroku.com/articles/sqlite3">SQLite on Heroku - Heroku Dev Center</a></li>
+</ul>
+
+<h3 id="二-在-heroku-上執行-selenium">二、在 Heroku 上執行 Selenium</h3>
+
+<p>前面的 <a href="https://igouist.github.io/post/202003-bandon-1-selenium/">我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單</a> 中，能取得訂單內容主要都是依賴於 Selenium 控 chrome 上。然而我們丟上 Heroku 後… 哪來的瀏覽器啊！因此遭遇到了這整個專案最大的存在危機（？）</p>
+
+<p>幸好後來有找到這篇 <a href="https://medium.com/@mikelcbrowne/running-chromedriver-with-python-selenium-on-heroku-acc1566d161c">Running ChromeDriver with Python Selenium on Heroku</a>，裡面有說明如何順利在 Heroku 上跑 Selenium，實在是相當感謝，這邊也記錄一下。</p>
+
+<p>我們在前面 <a href="https://igouist.github.io/post/202005-bandon-ex1-heroku/">我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku</a> 有提到，Heroku 有建置包這東西來協助建置專案，也提到 Python 是 heroku-buildpack-python。這邊就是建置包去建出 webdriver，因此使用 <code>heroku buildpacks:add</code> 的指令去加入 <code>heroku-buildpack-chromedriver
+heroku buildpa</code> 這個建置包。</p>
+
+<p>加入完畢之後，要設定 heroku 的 config 去指定 chrome 和 chrome driver 的路徑</p>
+
+<pre><code>heroku config:set GOOGLE_CHROME_BIN=/app/.apt/usr/bin/google_chrome
+heroku config:set CHROMEDRIVER_PATH=/app/.chromedriver/bin/chromedriver
+</code></pre>
+
+<p>最後只要修改程式就可以囉，一樣先指定好路徑</p>
+
+<pre><code class="language-python">GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
+CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
+</code></pre>
+
+<p>並且在設定 selenium 的部份加上一些 chrome 的參數</p>
+
+<pre><code class="language-python">chrome_options.add_argument('--disable-gpu')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.binary_location = GOOGLE_CHROME_PATH
+</code></pre>
+
+<p>在初始化 <code>webdriver.Chrome</code> 一併傳入就可以囉！說起來之前 chrome 被我改壞時，也是靠 -no-sandbox 才開起來的，關於 sandbox ，可以看 Google 的 <a href="https://www.google.com/googlebooks/chrome/med_26.html">這篇漫畫</a>，或是這篇 <a href="https://www.inside.com.tw/article/14031-google-chrome-browser-10-years-history">Inside 的簡單介紹</a>。</p>
+
+<h4 id="本區段的參考資料-1">本區段的參考資料</h4>
+
+<ul>
+<li><a href="https://medium.com/@mikelcbrowne/running-chromedriver-with-python-selenium-on-heroku-acc1566d161c">Running ChromeDriver with Python Selenium on Heroku - Michael Browne - Medium</a></li>
+<li><a href="http://b0212066.pixnet.net/blog/post/213602412-heroku-%E4%BD%BF%E7%94%A8-selenium-%E7%9A%84-webdriver">Heroku 上使用 webdriver 爬蟲抓資料 - Kevin的部落格</a></li>
+<li><a href="https://stackoverflow.com/questions/41059144/running-chromedriver-with-python-selenium-on-heroku">Running ChromeDriver with Python selenium on Heroku - Stackoverflow</a></li>
+</ul>
+
+<h2 id="結語">結語</h2>
+
+<p>訂便當系列到這邊也告一段落了。事實上到了中後期，為了配合公司環境已經把爬蟲放在公司跑，並改成拿去接公司指定的通訊軟體，Line notify 這邊就比較少繼續碰了。中間遇到的一些問題也是有空加減解的程度，因此暫時沒有繼續更新訂便當的打算了。</p>
+
+<p>但 Heroku 實在是挺方便，之後應該還是會嘗試把其他東西丟上來跑看看，也因此還是覺得要把這些小問題記錄下來，之後如果遇到別的相關問題，也比較方便集中起來，因此就有了這兩篇的紀錄。</p>
+
+<p>那麼本週就到這裡，之後還會找新的坑來跳，畢竟菜雞就是不斷地踩坑嘛！感謝收看～</p>
                         </div>
 
                         
@@ -129,15 +188,15 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/202005-carbon/">Carbon —— 把 Code 轉成圖片小工具</a></li>
-        
-        <li><a href="/post/202004-feedly/">Feedly —— 我的資訊，我來掌握</a></li>
-        
         <li><a href="/post/202005-bandon-ex1-heroku/">我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku</a></li>
         
-        <li><a href="/post/202004-css-variables/">隨手記: CSS 變數</a></li>
+        <li><a href="/post/202004-bandon-3-line-notify/">我要訂便當(3) —— 用 Python &#43; Line Notify 傳送通知</a></li>
         
-        <li><a href="/post/202004-epplus/">.Net 工具箱: 用 EPPlus 輕鬆匯出 Excel</a></li>
+        <li><a href="/post/202003-bandon-2-sqlite/">我要訂便當(2) —— 用 Python &#43; Sqlite 儲存訂單</a></li>
+        
+        <li><a href="/post/202003-bandon-1-selenium/">我要訂便當(1) —— 用 Python &#43; Selenium 控制瀏覽器取得訂單</a></li>
+        
+        <li><a href="/post/202003-sikulix/">SikuliX —— 針對圖形介面寫自動化腳本的小幫手</a></li>
         
     </ul>
 </div>
@@ -147,9 +206,17 @@
                             
                             <ul class="clearfix">
                                 
-                                <li><a href="https://igouist.github.io/tags/tools">Tools</a></li>
+                                <li><a href="https://igouist.github.io/tags/python">Python</a></li>
                                 
                                 <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/heroku">Heroku</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/bandon">Bandon</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/automation">Automation</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/sqlite">Sqlite</a></li>
                                 
                             </ul>
                             
