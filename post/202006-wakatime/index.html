@@ -7,20 +7,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>我要訂便當(3) —— 用 Python &#43; Line Notify 傳送通知 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="我要訂便當(3) —— 用 Python &#43; Line Notify 傳送通知 - 伊果的沒人看筆記本">
+    <title>WakaTime —— 我 Coding 了多久？ | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="WakaTime —— 我 Coding 了多久？ - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2020-04-05T19:36:00&#43;08:00">
+    <meta property="article:published_time" content="2020-06-07T22:10:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2020-04-05T19:36:00&#43;08:00">
+    <meta property="article:modified_time" content="2020-06-07T22:10:00&#43;08:00">
         
     <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
-    <meta name="description" content="使用 Line Notify 及 Python，當有新訂單的時候就發送推播通知給我。Line Notify 是 Line 上面的通知服務，不像 Line@ 一樣可以有品牌有互動等等，Line Notify 純粹就是訊息通知；但同時對比 Line@ 最近吵得沸沸揚揚的收費和大量跳槽，Line Notify 則是免費的服務。Line Notify 的運作上分為發送訊息和接受訊息。當我們使用 Line 帳號申請 Line Notify 的服務後就可以得到一個 Access Token，藉由這組 Access Token 就能夠讓我們的程式和服務去發送通知。這些通知會由一個叫做 LINE Notify 的官方帳號發送給有訂閱這個通知的人。">
+    <meta name="description" content="WakaTime 能夠幫你自動記錄寫程式的時間、常用語言及專案，只要簡單地在常用的 IDE 設定好擴充套件就可以達成">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/post/202004-bandon-3-line-notify/">
+    <meta property="og:url" content="https://igouist.github.io/post/202006-wakatime/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/normalize.css">
@@ -76,15 +76,17 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">我要訂便當(3) —— 用 Python &#43; Line Notify 傳送通知</h1>
+                            <h1 class="post-title">WakaTime —— 我 Coding 了多久？</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2020-4-5,
+                            2020-6-7,
                         </date>
                         
                         <div class="post-meta">
                             
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/python">Python</a></span>
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/tools">Tools</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/ide">IDE</a></span>
                             
                                 <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
                             
@@ -99,114 +101,68 @@
                         </div>
                         
                         <div class="post-content">
-                            <p>前情提要：<br/>
-在 <a href="https://igouist.github.io/post/202003-bandon-1-selenium/">我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單</a> 中，我們嘗試了用 Selenium 控制瀏覽器去取回訂便當團購網的訂單內容<br/>
-而在 <a href="https://igouist.github.io/post/202003-bandon-2-sqlite/">我要訂便當(2) —— 用 Python + Sqlite 儲存訂單</a> 中，我們使用 Sqlite 達到將訂單儲存起來以判斷是否有新的訂單，因此這邊的下一步就是需要進行通知。<br/></p>
+                            <p>這一周又是 <del>偷懶週</del> 繁忙週，因此就跟大家分享一個有趣的網站：<a href="https://wakatime.com/">WakaTime</a></p>
 
-<blockquote>
-<p>目標：<strong>使用 Line Notify，當有新訂單的時候就發送通知</strong>。</p>
-</blockquote>
+<p>WakaTime 能夠幫你自動記錄寫程式的時間、常用語言及專案，只要簡單地在常用的 IDE 設定好擴充套件就可以達成。 WakaTime 支援的 IDE 可以參閱 <a href="https://wakatime.com/plugins">WakaTime - Plugin</a></p>
 
-<p><strong><a href="https://notify-bot.line.me/zh_TW/">Line Notify</a></strong> 是 Line 上面的通知服務，不像 Line@ 一樣可以有品牌有互動等等，Line Notify 純粹就是訊息通知；但同時對比 Line@ 最近吵得沸沸揚揚的收費和大量跳槽，Line Notify 則是免費的服務。</p>
+<p><img src="https://i.imgur.com/MRAbzZE.png" alt="" />
+（等時數比較好看之後就回來把這張圖偷偷給換掉…）</p>
 
-<p>Line Notify 的運作上分為發送訊息和接受訊息。當我們使用 Line 帳號申請 Line Notify 的服務後就可以得到一個 Access Token，藉由這組 Access Token 就能夠讓我們的程式和服務去發送通知。這些通知會由一個叫做 LINE Notify 的官方帳號發送給有訂閱這個通知的人。</p>
+<p>註冊相當簡單，此處就不贅述。稍微介紹一下儀表板的各區塊的功能：</p>
 
-<p>基於這個工作原理，像是需要經營品牌的服務就不太適合 Line Notify，反之像是<strong>伺服器斷線、設備超載等等這些個人通知性質比較高的服務就很適合使用 Line Notify</strong>。這點從 <a href="https://notify-bot.line.me/zh_TW/">Line Notify 網頁</a>下方的示意圖也可以略知一二。</p>
+<p>左上會有最近的專案及花費時間，每個色塊都是一個專案，滑鼠移上去就會顯示專案名稱。點擊其中一天更會顯示當天的時間軸，可說是無所遁形。至於判斷專案的方法是看你編輯的檔案所在的資料夾名稱。</p>
 
-<p>當然像我們這次的需求是「如果有新的團購便當 就 通知我」，相當符合使用場景，因此這邊就嘗試使用看看並記錄下來。如果需要更多 Line Notify 的說明，保哥的這篇 <a href="https://blog.miniasp.com/post/2020/02/17/Go-Through-LINE-Notify-Without-Any-Code">上手 LINE Notify 不求人：一行代碼都不用寫的推播通知方法</a> 介紹的更為完整，推薦參閱。當然，也可以閱讀 <a href="https://notify-bot.line.me/doc/en/">Line Notify 官方文件</a></p>
+<p>正左則是當天的時間軸和某幾段時間正在處理的專案。</p>
 
-<h2 id="申請-line-notify">申請 Line Notify</h2>
+<p>左下則是最近常使用的語言和比例，主要是抓取編輯中檔案的副檔名自動判定。另外也能到 <code>Settings -&gt; Custom Rules</code> 去設定個人化的規則，例如我個人就會將 .ipynb 計時到 Python 中。</p>
 
-<p>首先先到 <a href="https://notify-bot.line.me/zh_TW/">Line Notify</a> 的頁面右上角登入</p>
+<p>右上是編寫和測試的所佔時間，不過我在使用的時候常常抓不到測試和建置的時間，因此沒在意過。</p>
 
-<p><img src="https://i.imgur.com/VAJV0X1.png" alt="" /></p>
+<p>正右則是達到目標的比例，WakaTime 可以到左側選單的 <code>Goal</code> 設定個人目標，例如每週幾個小時，就可以在這邊看自己當天的達成率如何。</p>
 
-<p>登入之後，從右上角選擇 個人頁面</p>
+<p>右下就很直覺，就是紀錄常用的 IDE 的時間，像我個人挺偏食的，就不常看到這裡。</p>
 
-<p><img src="https://i.imgur.com/Rizyl5e.png" alt="" /></p>
+<p>除了上面這些區塊，往下拉也可以看到最近的專案耗費的時間，可以看看最近耗費比較多的專案有哪些。</p>
 
-<p>接著可以看到下面這個畫面：如果已經有申請過權杖或服務，就會顯示在上半部分的「已連動的服務」
-而我們現在需要的是下方的發行權杖
-<img src="https://i.imgur.com/zNivpLD.png" alt="" /></p>
+<h3 id="環境設定">環境設定</h3>
 
-<p>接著進到選擇通知視窗的畫面，在這邊可以選擇是直接通知你自己 或是將通知傳送到某個群組
-<img src="https://i.imgur.com/zt2JUrI.png" alt="" /></p>
+<p>WakaTime 主打的就是輕便、自動計時。因此設定步驟也相當簡單，各 IDE 的設定步驟可以從 <a href="https://wakatime.com/plugins">WakaTime - Plugin</a> 裡點選自己用的 IDE 進去看安裝介紹。這邊就以我最常用的 Visual Studio 做示範。</p>
 
-<p>選擇通知對象之後，就會顯示存取用的 Token。由於<strong>這組 Token 只會顯示一次，請自己複製下來存好！</strong>
-<img src="https://i.imgur.com/Mob0tR6.png" alt="" /></p>
+<p>首先點選 Wakatime 右上角的 個人頭像，進入 Settings，確認左側在 Account，這時應該能看到自己的 API Key，點選顯示之後先複製下來。</p>
 
-<p>存取完畢後就可以看到這次申請的服務已經加到已連動的服務囉
-<img src="https://i.imgur.com/cT5omou.png" alt="" /></p>
+<p><img src="https://i.imgur.com/pvbaKAT.png" alt="" /></p>
 
-<p>並且 Line 也會跳出已連動的通知
-<img src="https://i.imgur.com/NegLeh6.png" alt="" /></p>
+<p>之後打開你的 Visual Studio，上方工具列點選 <code>延伸模組 -&gt; 管理延伸模組</code>，開啟模組管理員之後選擇 線上，搜尋 Wakatime 並安裝。</p>
 
-<p>到這邊就算是申請完畢了，接下來就要來測試一下是否能發送。</p>
+<p><img src="https://i.imgur.com/Aj6q2XL.png" alt="" /></p>
 
-<h2 id="發送-line-notify">發送 Line Notify</h2>
+<p>重啟 Visual studio 並安裝完畢後，再度打開時應該會自動跳出設定畫面；如果沒有跳出來，也可以從上方工具列點選 <code>工具 -&gt; WakaTime -&gt; Settings</code> 進入設定畫面</p>
 
-<p>這邊測試的 Code 主要參考 <a href="https://bustlec.github.io/note/2018/07/10/line-notify-using-python/">使用 Python 實作發送 LINE Notify 訊息 - Bustle C.</a>，感謝前人的足跡。</p>
+<p><img src="https://i.imgur.com/Agrd4QS.png" alt="" /></p>
 
-<pre><code class="language-python">import requests
+<p>設定畫面如下，將剛剛複製的 API Key 貼上。如果是在公司或是有需要設定 Proxy 的地方記得也順便填一下</p>
 
-def lineNotifyMessage(token, msg):
-    headers = {
-        &quot;Authorization&quot;: &quot;Bearer &quot; + token, # 權杖，Bearer 的空格不要刪掉呦
-        &quot;Content-Type&quot;: &quot;application/x-www-form-urlencoded&quot;
-    }
+<p><img src="https://i.imgur.com/eFCfNv4.png" alt="" /></p>
 
-    payload = {'message': msg}
-    
-    # Post 封包出去給 Line Notify
-    r = requests.post(
-        &quot;https://notify-api.line.me/api/notify&quot;,
-        headers=headers, 
-        params=payload)
-    return r.status_code
+<p>這樣就設定完囉！是不是很簡單呢？之後當使用 Visual Studio 寫程式的時候，就會自動記下 時間、程式類型、資料夾名稱並傳到 Wakatime 做統計囉</p>
 
-message = 'Line Notify 測試'
-token = '把你的 Token 放在這'
-result = lineNotifyMessage(token, message)
-print(result) # 印一下回傳代碼
-</code></pre>
+<p>當然，對於背景紀錄資料有疑慮的朋友，也可以直接翻 <a href="https://github.com/wakatime">WakaTime 的 Github</a>。這個套件是完全開源的。如果嫌使用擴充太無聊或是想自己開發個比較好看的儀表板的朋友，也可以參閱 <a href="https://wakatime.com/developers">Wakatime 的開發者頁面</a>呦。</p>
 
-<p>執行 py 檔之後就可以收到訊息囉！
-<img src="https://i.imgur.com/v32rItf.png" alt="" /></p>
+<p>最後關於紀錄的部分，之前有看到實測說單純掛網走人是不會算時數的。不過會這樣做的人，本來也就沒什麼動機去用這類時間記錄的工具吧！</p>
 
-<p>如果回傳成功，<code>r.status_code</code> 就會顯示 <code>200</code>；而如果像是 Token 已經被撤銷等，則會得到 <code>401</code></p>
+<h3 id="後記">後記</h3>
 
-<p>另外當然也可以傳送圖片或貼圖，請參閱 <a href="https://www.oxxostudio.tw/articles/201806/line-notify.html">自建 LINE Notify 訊息通知 - Oxxo studio</a></p>
+<p>要注意，免費用戶只能看最近 14 天的紀錄，要看完整紀錄就必須<a href="https://wakatime.com/pricing?utm_source=magic-panda-engineer">付費</a>，我個人因為是看心情愉快的，因此免費版已經很符合我的需求。若是使用多個 IDE 或想當成時數管理的朋友，又或者是想戰<a href="https://wakatime.com/leaders">排行榜</a>的朋友，可以使用一陣子再考慮囉。但要強調，紀錄時間只是做為參考使用，並非工作的標準喲！畢竟弄文件跟查 Bug 更花時間嘛。</p>
 
-<h2 id="和訂便當腳本結合">和訂便當腳本結合</h2>
+<p>雖然又水了一篇，不過也是挺想把這東西介紹給大家用用看。雖然我個人做時間紀錄大多是使用 <a href="https://www.playpcesor.com/2016/11/toggl-time-track.html">Toggl</a> 來計時，不過偶而開 WakaTime 看看自己最近花多少時間在 Coding？都在寫什麼？專案之間的時間分配得如何？就有種更能掌握自己最近都在忙些什麼的感覺。有時看到柱狀圖一排高聳，或是連續幾周達成目標，就會更有戰鬥力的感覺；若是發現最近時數低落，也會心虛想要彌補一點。如此也是挺有一番趣味，畢竟時數什麼的都只是參考、是浮雲，最終還是把這些用來精進自己才是真的。共勉之。</p>
 
-<p>接著我們就將這個寄發 Line Notify 的 Function 給放回我們之前的訂便當腳本中。並在發現訂單異動的部分去呼叫 <code>lineNotifyMessage</code> 來通知我們</p>
-
-<pre><code class="language-python=47"># ...
-print(&quot;偵測到訂單變動！&quot;)
-# 做點通知的事
-message = &quot;訂單已變動，請到 https://dinbendon.net/ 確認！&quot;
-result = lineNotifyMessage(token, message)
-print_order(order)
-# ...
-</code></pre>
-
-<p><img src="https://i.imgur.com/j6bkIHg.png" alt="" /></p>
-
-<p>打完收工！接著不管是要 比對新舊訂單並發送這次新的訂單資訊；或者是要順便發送目前的訂單數量等等，都是只差在訊息內容的修改而已（我是直接發送 <code>&quot;,&quot;.join(orderList)</code> 來看目前有哪些訂單）屆此已經可以宣告收工囉。</p>
-
-<h2 id="心得">心得</h2>
-
-<p>在像這種單純通知的場合中，Line Notify 有架設簡單、即時方便的特性。並且也已經提供了和 Github 等連接的服務，因此像是伺服器斷線或是有新的提取要求、甚至是爬蟲去看手遊有沒有新活動時，都可以考慮建立一個群組並用 Line Notify 來達到低成本推播的要求，可謂相當方便！希望將來能再回來抄自己這篇把各種推播提醒都拉到 Line Notify 集中管理，<del>不然除了機器人也不會有人 Line 我…</del></p>
-
-<h2 id="參考資料">參考資料</h2>
+<h2 id="延伸閱讀">延伸閱讀</h2>
 
 <ul>
-<li><a href="https://blog.miniasp.com/post/2020/02/17/Go-Through-LINE-Notify-Without-Any-Code">上手 LINE Notify 不求人：一行代碼都不用寫的推播通知方法 - The Will Will Web</a></li>
-<li><a href="https://www.oxxostudio.tw/articles/201806/line-notify.html">自建 LINE Notify 訊息通知 - Oxxo studio</a></li>
-<li><a href="https://blogger.jackkuo.org/2019/01/line-notify.html">LINE Notify 初嚐心得 - JackKuo&rsquo;s Blog</a></li>
-<li><a href="https://www.evanlin.com/go-line-notify/">[Golang][LINE][教學] 如何快速建置一個 LINE Notify 的服務 - KKDAI.GITHUB.IO</a></li>
-<li><a href="https://bustlec.github.io/note/2018/07/10/line-notify-using-python/">使用 Python 實作發送 LINE Notify 訊息 - Bustle C.</a></li>
-<li><a href="https://ithelp.ithome.com.tw/articles/10223413">Day15-Python Line 整合應用 &ndash; Line Notify</a></li>
+<li><a href="https://medium.com/code-and-me/%E7%94%A8-wakatime-%E8%87%AA%E6%88%91%E7%9B%A3%E6%8E%A7-f59599144e28">用 WakaTime 自我監控</a></li>
+<li><a href="https://magic-panda-engineer.github.io/tools/wakatime-for-time-management">利用 Wakatime 來掌握寫程式的時間</a></li>
+<li><a href="https://demo.tc/post/visual%20studio%20%E5%B7%A5%E4%BD%9C%E6%99%82%E9%96%93%E8%A8%98%E9%8C%84%E5%A5%97%E4%BB%B6%20-%20codealike">Visual Studio 工作時間記錄套件 - Codealike</a></li>
+<li><a href="https://www.playpcesor.com/2018/11/rescuetime.html">RescueTime 拯救時間利器上手教學，自動時間記錄與生產力評分</a></li>
 </ul>
                         </div>
 
@@ -216,15 +172,15 @@ print_order(order)
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/202003-bandon-1-selenium/">我要訂便當(1) —— 用 Python &#43; Selenium 控制瀏覽器取得訂單</a></li>
+        <li><a href="/post/202005-jsonview/">Json View —— 用 Chrome 看 Json 的必備擴充套件</a></li>
         
-        <li><a href="/post/202003-sikulix/">SikuliX —— 針對圖形介面寫自動化腳本的小幫手</a></li>
+        <li><a href="/post/202005-carbon/">Carbon —— 把 Code 轉成圖片小工具</a></li>
         
-        <li><a href="/post/202003-bandon-2-sqlite/">我要訂便當(2) —— 用 Python &#43; Sqlite 儲存訂單</a></li>
+        <li><a href="/post/202004-feedly/">Feedly —— 我的資訊，我來掌握</a></li>
         
         <li><a href="/post/202003-visualstudio/">Visual studio: 字型、套件、快捷鍵</a></li>
         
-        <li><a href="/post/201912-ptt-crawler-and-listener/">Python：用爬蟲在 PTT 上監聽關鍵字並寄通知信</a></li>
+        <li><a href="/post/202005-bandon-ex2-heroku-debug/">我要訂便當(4-2) —— Heroku 填坑小記</a></li>
         
     </ul>
 </div>
@@ -234,13 +190,11 @@ print_order(order)
                             
                             <ul class="clearfix">
                                 
-                                <li><a href="https://igouist.github.io/tags/python">Python</a></li>
+                                <li><a href="https://igouist.github.io/tags/tools">Tools</a></li>
                                 
-                                <li><a href="https://igouist.github.io/tags/automation">Automation</a></li>
+                                <li><a href="https://igouist.github.io/tags/ide">IDE</a></li>
                                 
                                 <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
-                                
-                                <li><a href="https://igouist.github.io/tags/bandon">Bandon</a></li>
                                 
                             </ul>
                             
