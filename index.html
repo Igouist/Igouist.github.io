@@ -72,6 +72,61 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/202006-bit-flags-and-enum/" title="隨手記: 位元旗標與列舉" >隨手記: 位元旗標與列舉</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-6-14,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/dotnet">Dotnet</a></span>
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/c">C#</a></span>
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p>前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。</p>
+
+<p>平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告布林 Bool 來處理。但這次遇到的是同時有多個「有／沒有」的狀況，但我遇到的程式碼並沒有分成多個布林去做處理，而是直接儲存成一個數值。</p>
+
+<p><strong>由於「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列，如此只需要一個數字就可以紀錄或傳遞給其他系統了</strong>。例如最常見的用處是在權限系統，若有「讀」、「寫」、「執行」等權限，那麼我們按照這個順序去排列，當 <code>讀＝可、寫＝不可、執行＝可</code> 的時候，就記做 <code>101</code> = <code>5</code>。這種直接用一組位元表示狀態的方式就叫做<strong>位元旗標（Bit flag）</strong></p>
+
+<p>假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。</p>
+
+<p>於是我們建立了一個列舉（Enum），並且按照上面說明的，將每個技能會不會用一個位元來表示。</p>
+
+<pre><code class="language-csharp">public enum SkillEnum
+{
+    C          = 1,   // 0000000001
+    CSharp     = 2,   // 0000000010
+    Golang     = 4,   // 0000000100
+    Java       = 8,   // 0000001000
+    JavaScript = 16,  // 0000010000 
+    PHP        = 32,  // 0000100000
+    Python     = 64,  // 0001000000
+    R          = 128, // 0010000000
+    Ruby       = 256, // 0100000000
+    SQL        = 512  // 1000000000
+}
+</code></pre>
+
+<blockquote>
+<p>註：C# 有提供專給位元運算用的 Enum，請參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.flagsattribute?view=netcore-3.1">FlagsAttribute</a>。只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用　ToString() 也能更方便看見旗標內容</p>
+</blockquote>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/202006-bit-flags-and-enum/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/202006-wakatime/" title="WakaTime —— 我 Coding 了多久？" >WakaTime —— 我 Coding 了多久？</a>
                                 </h1>
                             </header>
@@ -396,46 +451,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/202003-visualstudio/" title="Visual studio: 字型、套件、快捷鍵" >Visual studio: 字型、套件、快捷鍵</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-3-28,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/ide">IDE</a></span>
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <blockquote>
-<p>目標：整理一下自己用的<strong>字型、插件和快捷鍵</strong></p>
-</blockquote>
-
-<p>今天在工作時寫到一半突然藍屏，重開機之後俺的地表最強編譯器 Visual Studio 整個就開始鬧脾氣，打開專案整排都是 Error，連 System.Object 都找不到，差點往生。還好用了修復功能之後一切恢復正常，但是載入的插件和一些個人設定就這樣重置了……</p>
-
-<p>為了之後可能還會遇到相同的事情，這邊就先將平常的 Visual Studio 環境用到的設定做一份紀錄，之後遇到新插件或是什麼功能也可以回來更新這篇文，如此一來下次又被洗白的時候就可以回來參考了。</p>
-
-<p>這邊主要會記錄三個部分，並隨時可能更新。主要是字型、使用的插件以及常用的快捷鍵。</p>
-
-<p><del>不過我的 Visual Studio 也被洗白了所以這篇會跟著找回失落插件的歷程慢慢補上QQ</del></p>
-
-<p>目前已補：<br/>
-字型：<strong>Consolas</strong>, <strong>Fira Code</strong>, <strong>更紗黑體</strong>, <strong>Ink Free</strong> <br/>
-插件：<strong>CodeMaid</strong>, <strong>Editor Guidelines</strong>, <strong>CodeBlockEndTag</strong>, <strong>SmartPaster</strong>, <strong>Time Savers</strong>, <strong>ClaudiaIDE</strong></p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/202003-visualstudio/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -480,6 +495,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/202006-bit-flags-and-enum/" title="隨手記: 位元旗標與列舉">隨手記: 位元旗標與列舉</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/202006-wakatime/" title="WakaTime —— 我 Coding 了多久？">WakaTime —— 我 Coding 了多久？</a>
     </li>
     
@@ -515,10 +534,6 @@
         <a href="https://igouist.github.io/post/202004-bandon-3-line-notify/" title="我要訂便當(3) —— 用 Python &#43; Line Notify 傳送通知">我要訂便當(3) —— 用 Python &#43; Line Notify 傳送通知</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/202003-visualstudio/" title="Visual studio: 字型、套件、快捷鍵">Visual studio: 字型、套件、快捷鍵</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -537,7 +552,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/c/">C# (3)</a>
+        <a href="https://igouist.github.io/categories/c/">C# (4)</a>
     </li>
     
     <li>
@@ -545,7 +560,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/dotnet/">Dotnet (3)</a>
+        <a href="https://igouist.github.io/categories/dotnet/">Dotnet (4)</a>
     </li>
     
     <li>
@@ -561,7 +576,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/w3hexschool/">w3HexSchool (13)</a>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3HexSchool (14)</a>
     </li>
     
 </ul>
@@ -588,6 +603,8 @@
     <a href="https://igouist.github.io/tags/dotnet/">Dotnet</a>
     
     <a href="https://igouist.github.io/tags/entity-framework/">Entity Framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">Enum</a>
     
     <a href="https://igouist.github.io/tags/excel/">Excel</a>
     

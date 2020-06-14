@@ -6,10 +6,46 @@
     <description>Recent content in Dotnet on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Sun, 12 Apr 2020 10:19:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 14 Jun 2020 21:27:00 +0800</lastBuildDate>
     
 	<atom:link href="https://igouist.github.io/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>隨手記: 位元旗標與列舉</title>
+      <link>https://igouist.github.io/post/202006-bit-flags-and-enum/</link>
+      <pubDate>Sun, 14 Jun 2020 21:27:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/202006-bit-flags-and-enum/</guid>
+      <description>&lt;p&gt;前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。&lt;/p&gt;
+
+&lt;p&gt;平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告布林 Bool 來處理。但這次遇到的是同時有多個「有／沒有」的狀況，但我遇到的程式碼並沒有分成多個布林去做處理，而是直接儲存成一個數值。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;由於「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列，如此只需要一個數字就可以紀錄或傳遞給其他系統了&lt;/strong&gt;。例如最常見的用處是在權限系統，若有「讀」、「寫」、「執行」等權限，那麼我們按照這個順序去排列，當 &lt;code&gt;讀＝可、寫＝不可、執行＝可&lt;/code&gt; 的時候，就記做 &lt;code&gt;101&lt;/code&gt; = &lt;code&gt;5&lt;/code&gt;。這種直接用一組位元表示狀態的方式就叫做&lt;strong&gt;位元旗標（Bit flag）&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。&lt;/p&gt;
+
+&lt;p&gt;於是我們建立了一個列舉（Enum），並且按照上面說明的，將每個技能會不會用一個位元來表示。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-csharp&#34;&gt;public enum SkillEnum
+{
+    C          = 1,   // 0000000001
+    CSharp     = 2,   // 0000000010
+    Golang     = 4,   // 0000000100
+    Java       = 8,   // 0000001000
+    JavaScript = 16,  // 0000010000 
+    PHP        = 32,  // 0000100000
+    Python     = 64,  // 0001000000
+    R          = 128, // 0010000000
+    Ruby       = 256, // 0100000000
+    SQL        = 512  // 1000000000
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;註：C# 有提供專給位元運算用的 Enum，請參見 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/api/system.flagsattribute?view=netcore-3.1&#34;&gt;FlagsAttribute&lt;/a&gt;。只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用　ToString() 也能更方便看見旗標內容&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
     
     <item>
       <title>.Net 工具箱: 用 EPPlus 輕鬆匯出 Excel</title>

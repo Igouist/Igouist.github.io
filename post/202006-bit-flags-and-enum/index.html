@@ -7,20 +7,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Json View —— 用 Chrome 看 Json 的必備擴充套件 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="Json View —— 用 Chrome 看 Json 的必備擴充套件 - 伊果的沒人看筆記本">
+    <title>隨手記: 位元旗標與列舉 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="隨手記: 位元旗標與列舉 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2020-05-17T15:39:00&#43;08:00">
+    <meta property="article:published_time" content="2020-06-14T21:27:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2020-05-17T15:39:00&#43;08:00">
+    <meta property="article:modified_time" content="2020-06-14T21:27:00&#43;08:00">
         
     <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
-    <meta name="description" content="Json View 是一款 Chrome 的擴充套件，能幫忙打 Json 格式的資料重新排版，保護你我的眼睛">
+    <meta name="description" content="位元運算的旗標搭配列舉常用於權限設定或紀錄資訊等處理，本篇對 C# 的實現做個紀錄">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/post/202005-jsonview/">
+    <meta property="og:url" content="https://igouist.github.io/post/202006-bit-flags-and-enum/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/normalize.css">
@@ -76,15 +76,17 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">Json View —— 用 Chrome 看 Json 的必備擴充套件</h1>
+                            <h1 class="post-title">隨手記: 位元旗標與列舉</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2020-5-17,
+                            2020-6-14,
                         </date>
                         
                         <div class="post-meta">
                             
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/tools">Tools</a></span>
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/dotnet">Dotnet</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/c">C#</a></span>
                             
                                 <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
                             
@@ -99,28 +101,76 @@
                         </div>
                         
                         <div class="post-content">
-                            <p>本來這週已經沒梗了，不過同學來問了個接 API 的問題還附了照片，頓時決定順手推一下好用的瀏覽器插件：<a href="https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc">Json View</a>。</p>
+                            <p>前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。</p>
 
-<p>Json View 是一款 Chrome 的擴充套件，能幫忙把 Json 格式的資料重新排版，保護妳我的眼睛。</p>
+<p>平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告布林 Bool 來處理。但這次遇到的是同時有多個「有／沒有」的狀況，但我遇到的程式碼並沒有分成多個布林去做處理，而是直接儲存成一個數值。</p>
 
-<p>照慣例來張效果圖鎮樓
-<img src="https://i.imgur.com/VYg1Siy.png" alt="" /></p>
+<p><strong>由於「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列，如此只需要一個數字就可以紀錄或傳遞給其他系統了</strong>。例如最常見的用處是在權限系統，若有「讀」、「寫」、「執行」等權限，那麼我們按照這個順序去排列，當 <code>讀＝可、寫＝不可、執行＝可</code> 的時候，就記做 <code>101</code> = <code>5</code>。這種直接用一組位元表示狀態的方式就叫做<strong>位元旗標（Bit flag）</strong></p>
 
-<p>該同學傳來的圖片是長這樣的（示意圖，非當事 API，用 UBike 開放資源臨演）
-<img src="https://i.imgur.com/kaoOwTt.png" alt="" /></p>
+<p>假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。</p>
 
-<p>突然還以為咱們要玩威利在哪裡，這不是欺負我眼睛不好嘛。</p>
+<p>於是我們建立了一個列舉（Enum），並且按照上面說明的，將每個技能會不會用一個位元來表示。</p>
 
-<p>但畢竟只是小問題，不能開口就要人家給 Swagger 或用個 Postman（API測試神器，之後也來推薦一篇），用圖片描述也是無可厚非，但還是必須顧眼睛。因此現場直接就推薦同學安裝這款 chrome 插件：<a href="https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc">Json View</a></p>
+<pre><code class="language-csharp">public enum SkillEnum
+{
+    C          = 1,   // 0000000001
+    CSharp     = 2,   // 0000000010
+    Golang     = 4,   // 0000000100
+    Java       = 8,   // 0000001000
+    JavaScript = 16,  // 0000010000 
+    PHP        = 32,  // 0000100000
+    Python     = 64,  // 0001000000
+    R          = 128, // 0010000000
+    Ruby       = 256, // 0100000000
+    SQL        = 512  // 1000000000
+}
+</code></pre>
 
-<p>安裝之後再度使用瀏覽器打開 API，就會是長這樣的：
-<img src="https://i.imgur.com/TgKKIUK.png" alt="" /></p>
+<blockquote>
+<p>註：C# 有提供專給位元運算用的 Enum，請參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.flagsattribute?view=netcore-3.1">FlagsAttribute</a>。只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用　ToString() 也能更方便看見旗標內容</p>
+</blockquote>
 
-<p>經過自動排版之後，這不是好看多了！</p>
+<p>那麼假使今天來的新人 Bob，他總共會 C, Java, PHP, R, SQL 五種語言，那麼只要將這五種語言做 <code>OR</code> 運算，就可以得到 <code>101010101001</code> = <code>2729</code> 了</p>
 
-<p>這邊真心推薦用 Chrome 的朋友，就先裝下來吧；至於火狐似乎原本就會幫忙整理排版了；用 IE 的話，就當我沒說。另外也要感謝親愛的同學，<del>又讓我水了一篇</del></p>
+<p>當要使用的時候，就將 Bob 的數值和目標數值做 <code>AND</code> 運算。例如說我們想知道 Bob 會不會 Java，就可以將 <code>2719</code> 和 <code>8</code> 做 <code>&amp;</code>，即可知道 Bob 會不會 Java。在做權限檢查時也是如此去確認對象是否有對應的權限</p>
 
-<p>ps: 最後效果跟鎮樓圖有差別？因為我是黑色主題的愛好者，所以這就再推一個擴充套件囉：<a href="https://chrome.google.com/webstore/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh">Dark Reader</a>。謝謝觀看，咱們下次見～</p>
+<pre><code class="language-csharp">var BobsSkills = 2729;
+var IsBobSkilledJava = BobsSkills &amp; (int)SkillEnum.Java;
+$&quot;Bob 會 Java 嗎？{Convert.ToBoolean(IsBobSkilledJava)}&quot;.Dump();
+// Bob 會 Java 嗎？True
+</code></pre>
+
+<p>從上面我們可以看到：<strong>賦予內容用 OR 去結合起來、檢查的時候則用 AND 去找出目標的位置是否為 1</strong></p>
+
+<p>而當我們要確認 Bob 會哪些程式語言的時候，只要將列舉和位元逐一 AND 出來，就可以還原 Bob 的列表囉</p>
+
+<pre><code class="language-csharp">var BobsSkills = 2729;
+var enumCount = Enum.GetNames(typeof(SkillEnum)).Count();
+var BobsSkillsList = new List&lt;string&gt;();
+
+for (var i = 0; i &lt; enumCount; i++)
+    if(Convert.ToBoolean(BobsSkills &amp; (int)Math.Pow(2, i))) // AND 運算
+        BobsSkillsList.Add(((SkillEnum)Math.Pow(2, i)).ToString());
+$&quot;Bob 會的語言有：{String.Join(&quot;, &quot;, BobsSkillsList)}&quot;.Dump();
+// Bob 會的語言有：C, Java, PHP, R, SQL
+</code></pre>
+
+<p>整理來說概念並不困難，只是一個位元對應一個對象，再視情況進行運算而已。但能應用的範圍相當廣泛，除了最常用的權限管理，其他諸如活動月份、門鎖狀況等等只要符合條件的情形都可以借這個方法來處理。這邊稍作紀錄，希望以後能派上用場。</p>
+
+<h2 id="延伸閱讀及參考資料">延伸閱讀及參考資料</h2>
+
+<ul>
+<li><a href="https://medium.com/@kazafchen/%E4%B8%80%E4%BB%B6intent%E6%95%99%E6%88%91%E7%9A%84%E4%BA%8B-bitwise-operation-dd3a388ae34e">一件Intent教我的事： Bitwise Operation</a></li>
+<li><a href="https://codertw.com/%E7%A8%8B%E5%BC%8F%E8%AA%9E%E8%A8%80/700165/">JavaScript中的位運算和權限設計</a></li>
+<li>補一下原出處： <a href="https://juejin.im/post/5dc36f39e51d4529ed292910">JavaScript 中的位运算和权限设计 - 掘金</a></li>
+<li><a href="https://shunnien.github.io/2017/06/27/byte-operator-auth/">位元運算與權限控制 - ShunNien&rsquo;s Blog</a></li>
+<li><a href="https://matthung0807.blogspot.com/2019/02/java-bit-flag.html">Java bit flag - 菜鳥工程師肉豬</a></li>
+<li><a href="https://www.zhihu.com/question/34021773">在写代码的过程中使用位运算的好处？ - 知乎</a></li>
+<li><a href="https://www.jianshu.com/p/262652908eb8">位运算和权限管理系统 - 簡書</a></li>
+<li><a href="http://blogs.uuu.com.tw/Articles/post/2017/06/14/%E4%BD%BF%E7%94%A8%E5%88%97%E8%88%89%E8%88%87%E6%97%97%E6%A8%99%E8%A8%AD%E8%A8%88%E5%A4%9A%E9%81%B8.aspx">使用列舉與旗標設計多選 - ProgrammerXDB Blog</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/Chmod">Chmod - 維基百科</a></li>
+<li><a href="https://blog.podkalicki.com/bit-level-operations-bit-flags-and-bit-masks/">Bit-level operations – bit flags and bit masks</a></li>
+</ul>
                         </div>
 
                         
@@ -129,15 +179,15 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/202005-carbon/">Carbon —— 把 Code 轉成圖片小工具</a></li>
-        
-        <li><a href="/post/202004-feedly/">Feedly —— 我的資訊，我來掌握</a></li>
-        
-        <li><a href="/post/202005-bandon-ex1-heroku/">我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku</a></li>
-        
-        <li><a href="/post/202004-css-variables/">隨手記: CSS 變數</a></li>
-        
         <li><a href="/post/202004-epplus/">.Net 工具箱: 用 EPPlus 輕鬆匯出 Excel</a></li>
+        
+        <li><a href="/post/202006-wakatime/">WakaTime —— 我 Coding 了多久？</a></li>
+        
+        <li><a href="/post/202005-bandon-ex2-heroku-debug/">我要訂便當(4-2) —— Heroku 填坑小記</a></li>
+        
+        <li><a href="/post/202005-jsonview/">Json View —— 用 Chrome 看 Json 的必備擴充套件</a></li>
+        
+        <li><a href="/post/202005-carbon/">Carbon —— 把 Code 轉成圖片小工具</a></li>
         
     </ul>
 </div>
@@ -147,7 +197,11 @@
                             
                             <ul class="clearfix">
                                 
-                                <li><a href="https://igouist.github.io/tags/tools">Tools</a></li>
+                                <li><a href="https://igouist.github.io/tags/dotnet">Dotnet</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/c">C#</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/enum">Enum</a></li>
                                 
                                 <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
                                 
