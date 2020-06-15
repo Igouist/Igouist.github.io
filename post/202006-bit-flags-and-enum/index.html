@@ -130,11 +130,11 @@
 <p>註：C# 有提供專給位元運算用的 Enum，請參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.flagsattribute?view=netcore-3.1">FlagsAttribute</a>。只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用　ToString() 也能更方便看見旗標內容</p>
 </blockquote>
 
-<p>那麼假使今天來的新人 Bob，他總共會 C, Java, PHP, R, SQL 五種語言，那麼只要將這五種語言做 <code>OR</code> 運算，就可以得到 <code>101010101001</code> = <code>2729</code> 了</p>
+<p>那麼假使今天來的新人 Bob，他總共會 C, Java, PHP, R, SQL 五種語言，那麼只要將這五種語言做 <code>OR</code> 運算，就可以得到 <code>1010101001</code> = <code>681</code> 了</p>
 
-<p>當要使用的時候，就將 Bob 的數值和目標數值做 <code>AND</code> 運算。例如說我們想知道 Bob 會不會 Java，就可以將 <code>2719</code> 和 <code>8</code> 做 <code>&amp;</code>，即可知道 Bob 會不會 Java。在做權限檢查時也是如此去確認對象是否有對應的權限</p>
+<p>當要使用的時候，就將 Bob 的數值和目標數值做 <code>AND</code> 運算。例如說我們想知道 Bob 會不會 Java，就可以將 <code>681</code> 和 <code>8</code> 做 <code>&amp;</code>，即可知道 Bob 會不會 Java。在做權限檢查時也是如此去確認對象是否有對應的權限</p>
 
-<pre><code class="language-csharp">var BobsSkills = 2729;
+<pre><code class="language-csharp">var BobsSkills = 681;
 var IsBobSkilledJava = BobsSkills &amp; (int)SkillEnum.Java;
 $&quot;Bob 會 Java 嗎？{Convert.ToBoolean(IsBobSkilledJava)}&quot;.Dump();
 // Bob 會 Java 嗎？True
@@ -144,7 +144,7 @@ $&quot;Bob 會 Java 嗎？{Convert.ToBoolean(IsBobSkilledJava)}&quot;.Dump();
 
 <p>而當我們要確認 Bob 會哪些程式語言的時候，只要將列舉和位元逐一 AND 出來，就可以還原 Bob 的列表囉</p>
 
-<pre><code class="language-csharp">var BobsSkills = 2729;
+<pre><code class="language-csharp">var BobsSkills = 681;
 var enumCount = Enum.GetNames(typeof(SkillEnum)).Count();
 var BobsSkillsList = new List&lt;string&gt;();
 
@@ -153,6 +153,13 @@ for (var i = 0; i &lt; enumCount; i++)
         BobsSkillsList.Add(((SkillEnum)Math.Pow(2, i)).ToString());
 $&quot;Bob 會的語言有：{String.Join(&quot;, &quot;, BobsSkillsList)}&quot;.Dump();
 // Bob 會的語言有：C, Java, PHP, R, SQL
+</code></pre>
+
+<p>如果有像上面提到的，替 Enum 加上 <code>[Flags]</code> 標籤的話，用起來就更簡單了：</p>
+
+<pre><code class="language-csharp">var BobsSkills = 681;
+((SkillEnum)BobsSkills).Dump();
+// C, Java, PHP, R, SQL
 </code></pre>
 
 <p>整理來說概念並不困難，只是一個位元對應一個對象，再視情況進行運算而已。但能應用的範圍相當廣泛，除了最常用的權限管理，其他諸如活動月份、門鎖狀況等等只要符合條件的情形都可以借這個方法來處理。這邊稍作紀錄，希望以後能派上用場。</p>
