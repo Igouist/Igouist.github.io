@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CSharp on 伊果的沒人看筆記本</title>
+    <link>https://igouist.github.io/tags/csharp/</link>
+    <description>Recent content in CSharp on 伊果的沒人看筆記本</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hant-TW</language>
+    <lastBuildDate>Sun, 14 Jun 2020 21:27:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://igouist.github.io/tags/csharp/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>隨手記: 位元旗標與列舉</title>
+      <link>https://igouist.github.io/post/202006-bit-flags-and-enum/</link>
+      <pubDate>Sun, 14 Jun 2020 21:27:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/202006-bit-flags-and-enum/</guid>
+      <description>&lt;p&gt;前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。&lt;/p&gt;
+
+&lt;p&gt;平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告個 Boolean 來處理。但這次遇到的是同時有多個「有／沒有」的狀況，但我遇到的程式碼並沒有分成多個 Bool 去做處理，而是直接儲存成一個數值。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;由於「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列，如此只需要一個數字就可以紀錄或傳遞給其他系統了&lt;/strong&gt;。例如最常見的用處是在權限系統，若有「讀」、「寫」、「執行」等權限，那麼我們按照這個順序去排列，當 &lt;code&gt;讀＝可、寫＝不可、執行＝可&lt;/code&gt; 的時候，就記做 &lt;code&gt;101&lt;/code&gt; = &lt;code&gt;5&lt;/code&gt;。這種直接用一組位元表示狀態的方式就叫做&lt;strong&gt;位元旗標（Bit flag）&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。&lt;/p&gt;
+
+&lt;p&gt;於是我們建立了一個列舉（Enum），並且按照上面說明的，將每個技能會不會用一個位元來表示。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-csharp&#34;&gt;public enum SkillEnum
+{
+    C          = 1,   // 0000000001
+    CSharp     = 2,   // 0000000010
+    Golang     = 4,   // 0000000100
+    Java       = 8,   // 0000001000
+    JavaScript = 16,  // 0000010000 
+    PHP        = 32,  // 0000100000
+    Python     = 64,  // 0001000000
+    R          = 128, // 0010000000
+    Ruby       = 256, // 0100000000
+    SQL        = 512  // 1000000000
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;註：C# 有提供專給位元運算用的 Enum，請參見 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/api/system.flagsattribute?view=netcore-3.1&#34;&gt;FlagsAttribute&lt;/a&gt;。只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用　ToString() 也能更方便看見旗標內容&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> EPPlus —— 輕鬆匯出 Excel</title>
+      <link>https://igouist.github.io/post/202004-epplus/</link>
+      <pubDate>Sun, 12 Apr 2020 10:19:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/202004-epplus/</guid>
+      <description>&lt;p&gt;前陣子工作需要匯出一些資料表，因此用到了 &lt;a href=&#34;https://github.com/EPPlusSoftware/EPPlus&#34;&gt;EPPlus&lt;/a&gt; 這套工具來把資料匯出成 Excel。由於這需求似乎會挺常遇到的，決定記一下。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;目標：稍微紀錄一下這次碰到 EPPlus 的用法。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;EPPlus 是在 .NET Framework 或 .NET Core 上提供控制 Excel 的元件，操作簡單好懂&lt;/strong&gt;，當有需要在網頁上讓人將表格資料下載成 Excel 的功能時就可以試著使用。常常一併被提起的還有另一個一樣老牌的相似功能元件 NPOI，不過我個人只用過 EPPlus 便不再贅述。關於更詳細的介紹，可以參閱黑暗執行緒的這篇 &lt;a href=&#34;https://blog.darkthread.net/blog/epplus/&#34;&gt;比 NPOI 更討喜的 Excel 元件 - EPPlus!&lt;/a&gt;，儘管是有些久遠的文章但仍能迅速了解 EEplus 的賣點和差異。&lt;/p&gt;
+
+&lt;p&gt;我在使用 EPPlus 時主要的參考來自於 &lt;a href=&#34;https://github.com/EPPlusSoftware/EPPlus/wiki&#34;&gt;EPPlus 的 Wiki&lt;/a&gt;，每個功能都有說明及範例，同時也有範例專案可以下載，寫得相當詳細。另外還找了如 &lt;a href=&#34;https://www.cnblogs.com/rumeng/p/3785748.html&#34;&gt;導出 Excel 之 Epplus 使用教程 - Wico&amp;rsquo;s Blog&lt;/a&gt;、&lt;a href=&#34;https://dotblogs.com.tw/malonestudyrecord/2018/03/21/103124&#34;&gt;使用 EPPLUS 操控 Excel - 碼農的學習日誌&lt;/a&gt; 這些有逐步說明的文章，在此感謝。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Asp.net MVC：連線資料庫、簡單實作 CRUD</title>
+      <link>https://igouist.github.io/post/201912-aspnet-connect-db/</link>
+      <pubDate>Mon, 09 Dec 2019 00:09:09 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/201912-aspnet-connect-db/</guid>
+      <description>&lt;p&gt;在教學時直接使用 EF 對資料庫跑繫結的方式產生各頁面，但得到了「點一點東西就跑出來了搞不懂呀」的回饋，心想有道理。因此從頭開始實作一遍，並記錄下來。&lt;s&gt;（雖然做完還是覺得，直接用 EF 跑的話果然比較安全方便啊）&lt;/s&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;目標：&lt;strong&gt;實作一個 MVC 架構，具資料庫基本操作功能的網站&lt;/strong&gt;，其中包含連線至資料庫的 model、對其進行調用的 controller 以及顯示的 view。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;註：本文預設已在本地電腦上安裝了 &lt;a href=&#34;https://www.microsoft.com/zh-tw/sql-server/sql-server-editions-express&#34;&gt;SQL Server&lt;/a&gt;，並且建立了測試用的資料庫 Test 及表 card，詳情會在文章內述。另外，由於在寫這邊的時候是為了練習手動從編碼開始嘗試連線，故將不使用 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/aspnet/mvc/overview/getting-started/getting-started-with-ef-using-mvc/creating-an-entity-framework-data-model-for-an-asp-net-mvc-application&#34;&gt;EF 連線產生 Edmx&lt;/a&gt; 的方式，而是直接手工編寫程式碼進行操作。&lt;/p&gt;
+
+&lt;p&gt;另外，關於直接從資料表自動產生可操作的頁面，亦即使用 Entity Framework 做資料繫結的方式，請見 &lt;a href=&#34;https://igouist.github.io/post/201912-aspnet-connect-db-ef/&#34;&gt;Asp.net MVC 筆記：Entity Framework 連線資料庫&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Asp.net MVC：Entity Framework 連線資料庫</title>
+      <link>https://igouist.github.io/post/201912-aspnet-connect-db-ef/</link>
+      <pubDate>Mon, 09 Dec 2019 00:09:08 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/201912-aspnet-connect-db-ef/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;目標：將 &lt;a href=&#34;https://igouist.github.io/post/201912-aspnet-connect-db/&#34;&gt;上一篇的 Asp.net MVC：連線資料庫、簡單實作 CRUD&lt;/a&gt; 的資料庫基礎功能改成以 &lt;strong&gt;Entity Framework&lt;/strong&gt; 產生的方式跑一遍&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;既然上一篇介紹了土法煉鋼動手做的資料庫取值方式，就覺得不順手把從 EF 建立出基本功能介面的方式記錄下來似乎是有點奇怪。實際上開始寫成筆記之後才發現對內容尚不是很了解，例如一直用 Data First 產生頁面但對 Code First 以程式碼產生架構的方式很不熟。儘管如此仍稍微紀錄一下，之後有更深的了解（例如 ASP.NET Identity 或 Code First 等部分）再進一步做成筆記。另外也可參考較詳細的&lt;a href=&#34;https://docs.microsoft.com/zh-tw/aspnet/mvc/overview/getting-started/getting-started-with-ef-using-mvc/creating-an-entity-framework-data-model-for-an-asp-net-mvc-application&#34;&gt;官方文檔&lt;/a&gt;。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

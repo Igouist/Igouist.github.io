@@ -7,22 +7,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Tools | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="Tools - 伊果的沒人看筆記本">
+    <title>CSharp | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="CSharp - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
         
     <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
-    <meta name="description" content="Tools">
+    <meta name="description" content="CSharp">
         
     <meta name="author" content="Igouist">
-    <meta property="og:url" content="https://igouist.github.io/tags/tools/">
+    <meta property="og:url" content="https://igouist.github.io/categories/csharp/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/normalize.css">
     
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="alternate" type="application/rss+xml+xml" href="https://igouist.github.io/tags/tools/index.xml" title="伊果的沒人看筆記本" />
+    <link rel="alternate" type="application/rss+xml+xml" href="https://igouist.github.io/categories/csharp/index.xml" title="伊果的沒人看筆記本" />
     <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 
     
@@ -51,7 +51,7 @@
                     
                     <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
                     
-                    <a  href="https://igouist.github.io/categories/csharp/" title="CSharp">CSharp</a>
+                    <a class="current" href="https://igouist.github.io/categories/csharp/" title="CSharp">CSharp</a>
                     
                     <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
                     
@@ -74,9 +74,9 @@
                 <div class="res-cons">
                     
                     <h3 class="archive-title">
-                        包含標籤
-                        <span class="keyword">Tools</span>
-                        的文章
+                        分類
+                        <span class="keyword">CSharp</span>
+                        中的文章
                     </h3>
                     
 
@@ -84,35 +84,51 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/202006-wakatime/">WakaTime —— 我 Coding 了多久？</a>
+                                    <a href="https://igouist.github.io/post/202006-bit-flags-and-enum/">隨手記: 位元旗標與列舉</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
-                                2020-6-7,
+                                2020-6-14,
                             </date>
                             
                             <div class="post-meta meta-category">
                                 
-                                    <a href="https://igouist.github.io/categories/tools">Tools</a>
-                                
-                                    <a href="https://igouist.github.io/categories/ide">IDE</a>
+                                    <a href="https://igouist.github.io/categories/csharp">CSharp</a>
                                 
                                     <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
                                 
                             </div>
                             
                             <div class="post-content">
-                                <p>這一周又是 <del>偷懶週</del> 繁忙週，因此就跟大家分享一個有趣的網站：<a href="https://wakatime.com/">WakaTime</a></p>
+                                <p>前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。</p>
 
-<p>WakaTime 能夠幫你自動記錄寫程式的時間、常用語言及專案，只要簡單地在常用的 IDE 設定好擴充套件就可以達成。 WakaTime 支援的 IDE 可以參閱 <a href="https://wakatime.com/plugins">WakaTime - Plugin</a></p>
+<p>平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告個 Boolean 來處理。但這次遇到的是同時有多個「有／沒有」的狀況，但我遇到的程式碼並沒有分成多個 Bool 去做處理，而是直接儲存成一個數值。</p>
 
-<p>註冊相當簡單，此處就不贅述。稍微介紹一下儀表板的各區塊的功能：</p>
+<p><strong>由於「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列，如此只需要一個數字就可以紀錄或傳遞給其他系統了</strong>。例如最常見的用處是在權限系統，若有「讀」、「寫」、「執行」等權限，那麼我們按照這個順序去排列，當 <code>讀＝可、寫＝不可、執行＝可</code> 的時候，就記做 <code>101</code> = <code>5</code>。這種直接用一組位元表示狀態的方式就叫做<strong>位元旗標（Bit flag）</strong></p>
 
-<p><img src="https://i.imgur.com/wd1LZLr.png" alt="" />
-左上會有最近的專案及花費時間，每個色塊都是一個專案，滑鼠移上去就會顯示專案名稱。</p>
+<p>假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。</p>
 
-<p>點擊其中一天更會顯示當天的時間軸，可說是無所遁形。至於它判斷專案名稱的方法是看你編輯的檔案所在的資料夾名稱。</p>……
-                                <p class="readmore"><a href="https://igouist.github.io/post/202006-wakatime/">閱讀全文</a></p>
+<p>於是我們建立了一個列舉（Enum），並且按照上面說明的，將每個技能會不會用一個位元來表示。</p>
+
+<pre><code class="language-csharp">public enum SkillEnum
+{
+    C          = 1,   // 0000000001
+    CSharp     = 2,   // 0000000010
+    Golang     = 4,   // 0000000100
+    Java       = 8,   // 0000001000
+    JavaScript = 16,  // 0000010000 
+    PHP        = 32,  // 0000100000
+    Python     = 64,  // 0001000000
+    R          = 128, // 0010000000
+    Ruby       = 256, // 0100000000
+    SQL        = 512  // 1000000000
+}
+</code></pre>
+
+<blockquote>
+<p>註：C# 有提供專給位元運算用的 Enum，請參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.flagsattribute?view=netcore-3.1">FlagsAttribute</a>。只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用　ToString() 也能更方便看見旗標內容</p>
+</blockquote>……
+                                <p class="readmore"><a href="https://igouist.github.io/post/202006-bit-flags-and-enum/">閱讀全文</a></p>
                             </div>
                         </article>
                         <hr color="#D9D9D9" />
@@ -120,29 +136,32 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/202005-jsonview/">Json View —— 用 Chrome 看 Json 的必備擴充套件</a>
+                                    <a href="https://igouist.github.io/post/202004-epplus/"> EPPlus —— 輕鬆匯出 Excel</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
-                                2020-5-17,
+                                2020-4-12,
                             </date>
                             
                             <div class="post-meta meta-category">
                                 
-                                    <a href="https://igouist.github.io/categories/tools">Tools</a>
+                                    <a href="https://igouist.github.io/categories/csharp">CSharp</a>
                                 
                                     <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
                                 
                             </div>
                             
                             <div class="post-content">
-                                <p>本來這週已經沒梗了，不過同學來問了個接 API 的問題還附了照片，頓時決定順手推一下好用的瀏覽器插件：<a href="https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc">Json View</a>。</p>
+                                <p>前陣子工作需要匯出一些資料表，因此用到了 <a href="https://github.com/EPPlusSoftware/EPPlus">EPPlus</a> 這套工具來把資料匯出成 Excel。由於這需求似乎會挺常遇到的，決定記一下。</p>
 
-<p>Json View 是一款 Chrome 的擴充套件，能幫忙把 Json 格式的資料重新排版，保護妳我的眼睛。</p>
+<blockquote>
+<p>目標：稍微紀錄一下這次碰到 EPPlus 的用法。</p>
+</blockquote>
 
-<p>照慣例來張效果圖鎮樓
-<img src="https://i.imgur.com/VYg1Siy.png" alt="" /></p>……
-                                <p class="readmore"><a href="https://igouist.github.io/post/202005-jsonview/">閱讀全文</a></p>
+<p><strong>EPPlus 是在 .NET Framework 或 .NET Core 上提供控制 Excel 的元件，操作簡單好懂</strong>，當有需要在網頁上讓人將表格資料下載成 Excel 的功能時就可以試著使用。常常一併被提起的還有另一個一樣老牌的相似功能元件 NPOI，不過我個人只用過 EPPlus 便不再贅述。關於更詳細的介紹，可以參閱黑暗執行緒的這篇 <a href="https://blog.darkthread.net/blog/epplus/">比 NPOI 更討喜的 Excel 元件 - EPPlus!</a>，儘管是有些久遠的文章但仍能迅速了解 EEplus 的賣點和差異。</p>
+
+<p>我在使用 EPPlus 時主要的參考來自於 <a href="https://github.com/EPPlusSoftware/EPPlus/wiki">EPPlus 的 Wiki</a>，每個功能都有說明及範例，同時也有範例專案可以下載，寫得相當詳細。另外還找了如 <a href="https://www.cnblogs.com/rumeng/p/3785748.html">導出 Excel 之 Epplus 使用教程 - Wico&rsquo;s Blog</a>、<a href="https://dotblogs.com.tw/malonestudyrecord/2018/03/21/103124">使用 EPPLUS 操控 Excel - 碼農的學習日誌</a> 這些有逐步說明的文章，在此感謝。</p>……
+                                <p class="readmore"><a href="https://igouist.github.io/post/202004-epplus/">閱讀全文</a></p>
                             </div>
                         </article>
                         <hr color="#D9D9D9" />
@@ -150,31 +169,30 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/202005-carbon/">Carbon —— 把 Code 轉成圖片小工具</a>
+                                    <a href="https://igouist.github.io/post/201912-aspnet-connect-db/">Asp.net MVC：連線資料庫、簡單實作 CRUD</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
-                                2020-5-10,
+                                2019-12-9,
                             </date>
                             
                             <div class="post-meta meta-category">
                                 
-                                    <a href="https://igouist.github.io/categories/tools">Tools</a>
-                                
-                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                    <a href="https://igouist.github.io/categories/csharp">CSharp</a>
                                 
                             </div>
                             
                             <div class="post-content">
-                                <p>開始挑戰每週寫文之後，發現最大的敵人根本不是寫文這件事，而是自己的惰性啊。像這次母親節假期過太爽，差點兒就忘記發文…… 所以這週就還是 <del>偷懶</del> 工具介紹囉。</p>
+                                <p>在教學時直接使用 EF 對資料庫跑繫結的方式產生各頁面，但得到了「點一點東西就跑出來了搞不懂呀」的回饋，心想有道理。因此從頭開始實作一遍，並記錄下來。<s>（雖然做完還是覺得，直接用 EF 跑的話果然比較安全方便啊）</s></p>
 
-<p>今天要分享的是 <a href="https://carbon.now.sh/">Carbon</a> 這個工具，它能夠<strong>將貼上的程式碼輸出成圖片，並且支援程式碼上色</strong>，還可以自選字型、背景色等等，產出的圖可以說相當有質感。</p>
+<blockquote>
+<p>目標：<strong>實作一個 MVC 架構，具資料庫基本操作功能的網站</strong>，其中包含連線至資料庫的 model、對其進行調用的 controller 以及顯示的 view。</p>
+</blockquote>
 
-<p>當傳送圖片比較快或排版比較好的場合（例如Line, Facebook..），或是在部落格和文件中想直接放漂亮圖片，以及<strong>需要示範給對方看可是又不想要對方直接複製貼上</strong>的時候可謂是相當實用。</p>
+<p>註：本文預設已在本地電腦上安裝了 <a href="https://www.microsoft.com/zh-tw/sql-server/sql-server-editions-express">SQL Server</a>，並且建立了測試用的資料庫 Test 及表 card，詳情會在文章內述。另外，由於在寫這邊的時候是為了練習手動從編碼開始嘗試連線，故將不使用 <a href="https://docs.microsoft.com/zh-tw/aspnet/mvc/overview/getting-started/getting-started-with-ef-using-mvc/creating-an-entity-framework-data-model-for-an-asp-net-mvc-application">EF 連線產生 Edmx</a> 的方式，而是直接手工編寫程式碼進行操作。</p>
 
-<p>先來一張成果圖鎮樓
-<img src="https://i.imgur.com/jM07HAC.png" alt="" /></p>……
-                                <p class="readmore"><a href="https://igouist.github.io/post/202005-carbon/">閱讀全文</a></p>
+<p>另外，關於直接從資料表自動產生可操作的頁面，亦即使用 Entity Framework 做資料繫結的方式，請見 <a href="https://igouist.github.io/post/201912-aspnet-connect-db-ef/">Asp.net MVC 筆記：Entity Framework 連線資料庫</a></p>……
+                                <p class="readmore"><a href="https://igouist.github.io/post/201912-aspnet-connect-db/">閱讀全文</a></p>
                             </div>
                         </article>
                         <hr color="#D9D9D9" />
@@ -182,31 +200,26 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/202004-feedly/">Feedly —— 我的資訊，我來掌握</a>
+                                    <a href="https://igouist.github.io/post/201912-aspnet-connect-db-ef/">Asp.net MVC：Entity Framework 連線資料庫</a>
                                 </h1>
                             </header>
                             <date class="post-meta meta-date">
-                                2020-4-19,
+                                2019-12-9,
                             </date>
                             
                             <div class="post-meta meta-category">
                                 
-                                    <a href="https://igouist.github.io/categories/tools">Tools</a>
-                                
-                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                    <a href="https://igouist.github.io/categories/csharp">CSharp</a>
                                 
                             </div>
                             
                             <div class="post-content">
                                 <blockquote>
-<p>「你看，我認為人的腦子本來就像一間空空的小閣樓，應該有選擇地把傢俱放進去，傻瓜才會把他見到的所有破爛一古腦兒的裝進去。這樣一來，那些對他有用的知識反而被擠了出來；或者，最多不過是和許多其他的東西摻雜在一起，在取用的時候也會很困難。所以一個會工作的人，在要把一些東西裝進他那間小閣樓似的頭腦中的時候，確實是非常小心謹慎的。」<br/>
- 　　——《福爾摩斯探案記：血字的研究》</p>
+<p>目標：將 <a href="https://igouist.github.io/post/201912-aspnet-connect-db/">上一篇的 Asp.net MVC：連線資料庫、簡單實作 CRUD</a> 的資料庫基礎功能改成以 <strong>Entity Framework</strong> 產生的方式跑一遍</p>
 </blockquote>
 
-<p>在咱們寫程式這行中，幾乎所有人都必須要在網路上找尋資料；而就算非這一行的朋友們，也會在網路上多方攝取資源。隨著時間的累積，都會開始有一份列表，諸如一些崇拜的大神或是固定追蹤的部落格，又或是文風比較喜歡、素質感覺比較高的新聞或評論等等。然而列表越來越長，就算加到書籤也總不能沒事就逛一大圈。因此把多個資訊來源集中起來整理就成了面對資訊爆炸的關鍵一步。</p>
-
-<p><strong><a href="https://feedly.com/">Feedly</a> 就是一個協助資訊來源管理的工具，可以很方便地把不同訂閱來源整理在一起</strong>，例如你可能追隨了五六個大神的部落格，只要這些大神都有提供 RSS 訂閱，Feedly 就會將大神更新的文章收集到平台上。每天只需要上去 Feedly 看一下有沒有哪位大神更新，就可以化主動為被動，穩定接收新資訊。並且由於集中管理的關係，也可以檢視是否有哪個資料來源，如新聞網站，實際上更新的文章並不太合你胃口，或是哪些已經停止更新了，就可以進行剪枝的動作，建立自己的篩選機制。</p>……
-                                <p class="readmore"><a href="https://igouist.github.io/post/202004-feedly/">閱讀全文</a></p>
+<p>既然上一篇介紹了土法煉鋼動手做的資料庫取值方式，就覺得不順手把從 EF 建立出基本功能介面的方式記錄下來似乎是有點奇怪。實際上開始寫成筆記之後才發現對內容尚不是很了解，例如一直用 Data First 產生頁面但對 Code First 以程式碼產生架構的方式很不熟。儘管如此仍稍微紀錄一下，之後有更深的了解（例如 ASP.NET Identity 或 Code First 等部分）再進一步做成筆記。另外也可參考較詳細的<a href="https://docs.microsoft.com/zh-tw/aspnet/mvc/overview/getting-started/getting-started-with-ef-using-mvc/creating-an-entity-framework-data-model-for-an-asp-net-mvc-application">官方文檔</a>。</p>……
+                                <p class="readmore"><a href="https://igouist.github.io/post/201912-aspnet-connect-db-ef/">閱讀全文</a></p>
                             </div>
                         </article>
                         <hr color="#D9D9D9" />
