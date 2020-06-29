@@ -107,7 +107,7 @@
 
 <p>因緣際會下想要弄出一些單機小工具來跑，這時候正巧接觸到 <a href="https://github.com/ElectronNET/Electron.NET">Electron.net</a> 這個神器，特別紀錄一下以免忘記。這是 <a href="https://www.electronjs.org/">Electron</a> 搭配 .net Core 的框架， <strong>Electron 是用 Chromium 和 Node.js 將網頁封裝成桌面應用程式</strong>，像是 Visual Studio Code、Slack 也都有使用到 Electron。而 <a href="https://github.com/ElectronNET/Electron.NET">Electron.net</a> 顧名思義就是 .net 用的 Electron 框架囉。</p>
 
-<p>這邊記錄一下自己嘗試時載入套件和建置的流程，主要參考自黑大的 <a href="https://blog.darkthread.net/blog/electron-net/">用 ASP.NET Core 寫桌面 GUI 應用程式 - Electron.NET</a>，特此感謝。</p>
+<p>這邊記錄一下自己嘗試時載入套件和建置的流程，主要參考自黑大的 <a href="https://blog.darkthread.net/blog/electron-net/">用 ASP.NET Core 寫桌面 GUI 應用程式 - Electron.NET</a> 和 <a href="https://blog.darkthread.net/blog/electron-api-brief/">Electron.NET API 快速巡覽</a> 這兩篇文章，以及官方的 <a href="https://github.com/ElectronNET/electron.net-api-demos">API DEMO</a>，特此感謝。</p>
 
 <h3 id="建立新專案">建立新專案</h3>
 
@@ -145,13 +145,74 @@
 
 <p><img src="https://i.imgur.com/HoSdpvU.png" alt="" /></p>
 
+<p>另外除了 <code>electronize start</code>，環境設置完畢後也可以直接從 Visual Studio 偵錯囉～</p>
+
+<p><img src="https://i.imgur.com/iFqkq6d.png" alt="" /></p>
+
 <p>成功從桌面應用開起來了！</p>
 
 <p><img src="https://i.imgur.com/Y89i3HK.png" alt="" /></p>
 
+<h3 id="前後端傳值">前後端傳值</h3>
+
+<p>在 Electron 中，會分成<strong>跑應用程式的主處理序 (main process)</strong>、和<strong>處理網頁畫面的渲染處理序 (renderer process)</strong>。而兩者之間的<strong>溝通則經由 <code>Ipc</code> 開啟頻道傳遞訊息來實現</strong></p>
+
+<p>這邊簡單嘗試一次，首先，我們先在 <code>Views/Home/index.cshtml</code> 加上一個簡單的按鈕</p>
+
+<p>並且加上 JavaScript 發送訊息和接收訊息的方法</p>
+
+<p><img src="https://i.imgur.com/DaNlQgS.png" alt="" /></p>
+
+<pre><code class="language-javascript">const { ipcRenderer } = require(&quot;electron&quot;);
+
+// 發送訊息，這邊傳送一個 Hello
+function sendMessageToServer() {
+    ipcRenderer.send('channelToServer', 'Hello');
+}
+
+// 接收訊息
+ipcRenderer.on('channelToClient', (event, arg) =&gt; {
+    document.getElementById(&quot;Welcome&quot;).innerText = arg
+});
+</code></pre>
+
+<p>接著到對應的 <code>Controllers/HomeController</code> 的 <code>Index()</code> 也加上接受到訊息之後加工並發出訊息的處理</p>
+
+<p><img src="https://i.imgur.com/Xw3AX8r.png" alt="" /></p>
+
+<pre><code class="language-csharp">public IActionResult Index()
+{
+    // 接收訊息
+    Electron.IpcMain.On(&quot;channelToServer&quot;, (args) =&gt;
+    {
+        // 傳送訊息，把接收到的訊息再加上 World
+        var mainWindow = Electron.WindowManager.BrowserWindows.First(); // 現在只有一個視窗所以直接拿
+        Electron.IpcMain.Send(mainWindow, &quot;channelToClient&quot;, $&quot;{args}, world!&quot;);
+    });
+
+    return View();
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>接著就讓我們執行看看，當我們按下按鈕&hellip;</p>
+
+<p><img src="https://i.imgur.com/qdkrpQ5.png" alt="" /></p>
+
+<p><img src="https://i.imgur.com/HYo0DUp.png" alt="" /></p>
+
+<p>這樣就能成功在前後端之間傳值了！但要注意，它是建立一個 Channel 來傳遞訊息，所以<strong>兩邊的 channel 名稱可不能錯了</strong>。</p>
+
+<p>另外也有提供同步版本的 <code>ipcRendered.sendSync()</code> 與 <code>Electron.IpcMain.OnSync()</code> 等等方法，相關的操作可以參照官方的 <a href="https://github.com/ElectronNET/electron.net-api-demos">API DEMO</a> 中的 <code>Controllers/IpcController.cs</code> 及 <code>Views/Ipc/Index.cshtml</code></p>
+
+<p>而關於 IPC 的說明，可以參考這篇 <a href="https://medium.com/@terracotta_ko/electron-ipc-%E6%A9%9F%E5%88%B6-2a1b087c9ae5">[Electron] IPC 機制</a>，以及官方文件：<a href="https://www.electronjs.org/docs/api/ipc-main">ipcMain</a>、<a href="https://www.electronjs.org/docs/api/ipc-renderer">ipcRenderer</a></p>
+
 <h3 id="後記">後記</h3>
 
-<p>目前只做到專案成功跑起來而已，幸虧黑大跟網路上的文章相當完整，並沒有花費太多時間。但是畢竟約好了要玩玩看這個框架，且許多功能沒有試過，例如 <a href="https://blog.darkthread.net/blog/electron-api-brief/">Electron.NET API 快速巡覽</a> 提到的大多功能，因此還在煩惱後續的紀錄要集中在這一篇還是另外開成系列文，這部分等下週更新再說囉。</p>
+<p>目前只做到專案成功跑起來和一些簡單的測試而已，幸虧黑大的文章跟網路上的一些教學相當完整，並沒有花費太多時間。但是畢竟約好了要玩玩看這個框架，且許多功能沒有試過，例如 <a href="https://blog.darkthread.net/blog/electron-api-brief/">Electron.NET API 快速巡覽</a> 提到的大多功能，<del>因此還在煩惱後續的紀錄要集中在這一篇還是另外開成系列文，這部分等下週更新再說囉。</del></p>
+
+<p><sup>6</sup>&frasl;<sub>29</sub> 更新: 最後還是決定把最近嘗試的都集中在這一篇了，畢竟我還是挺懶的，這樣比較好找嘛～</p>
 
 <p>另外有興趣自己試試的朋友，也可以參閱 <a href="https://www.electronjs.org/docs">官方文檔</a> 其實相當完整。基本上只要會寫網頁，就能夠寫桌面 GUI，真是有夠賺。</p>
 
@@ -163,6 +224,7 @@
 <li><a href="https://blog.darkthread.net/blog/electron-net/">用 ASP.NET Core 寫桌面 GUI 應用程式 - Electron.NET - 黑暗執行緒</a></li>
 <li><a href="https://blog.darkthread.net/blog/electron-api-brief/">Electron.NET API 快速巡覽 - 黑暗執行緒</a></li>
 <li><a href="https://ithelp.ithome.com.tw/articles/10200819">ElectronNET : .NET Core+NodeJS做跨平台桌面程式 - iT邦幫忙</a></li>
+<li><a href="https://medium.com/@terracotta_ko/electron-ipc-%E6%A9%9F%E5%88%B6-2a1b087c9ae5">[Electron] IPC 機制</a></li>
 <li><a href="https://www.electronjs.org/docs">Electronjs - Docs</a></li>
 </ul>
                         </div>
