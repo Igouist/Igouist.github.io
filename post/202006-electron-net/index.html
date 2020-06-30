@@ -109,7 +109,13 @@
 
 <p>這邊記錄一下自己嘗試時載入套件和建置的流程，主要參考自黑大的 <a href="https://blog.darkthread.net/blog/electron-net/">用 ASP.NET Core 寫桌面 GUI 應用程式 - Electron.NET</a> 和 <a href="https://blog.darkthread.net/blog/electron-api-brief/">Electron.NET API 快速巡覽</a> 這兩篇文章，以及官方的 <a href="https://github.com/ElectronNET/electron.net-api-demos">API DEMO</a>，特此感謝。</p>
 
-<h3 id="建立新專案">建立新專案</h3>
+<p>本篇小節：</p>
+
+<ul>
+<li><a href="#安裝套件及環境設置">安裝套件及環境設置</a></li>
+<li><a href="#前後端傳值-ipcmain-ipcrenderer">前後端傳值 (IpcMain, IpcRenderer)</a></li>
+<li><a href="#打包成執行檔-exe">打包成執行檔（.exe）</a></li>
+</ul>
 
 <p>那麼首先從建立新專案開始，這邊用 .net Core MVC 來測試</p>
 
@@ -117,11 +123,11 @@
 
 <p><img src="https://i.imgur.com/O0jwPZF.png" alt="" /></p>
 
+<h3 id="安裝套件及環境設置">安裝套件及環境設置</h3>
+
 <p>建立專案之後，前往 Nuget 先把 <strong>ElectronNET API</strong> 安裝下來</p>
 
 <p><img src="https://i.imgur.com/hT5JZu0.png" alt="" /></p>
-
-<h3 id="環境設定">環境設定</h3>
 
 <p>安裝完畢之後，開始做一些前置動作，首先：</p>
 
@@ -153,7 +159,7 @@
 
 <p><img src="https://i.imgur.com/Y89i3HK.png" alt="" /></p>
 
-<h3 id="前後端傳值">前後端傳值</h3>
+<h3 id="前後端傳值-ipcmain-ipcrenderer">前後端傳值 (IpcMain, IpcRenderer)</h3>
 
 <p>在 Electron 中，會分成<strong>跑應用程式的主處理序 (main process)</strong>、和<strong>處理網頁畫面的渲染處理序 (renderer process)</strong>。而兩者之間的<strong>溝通則經由 <code>Ipc</code> 開啟頻道傳遞訊息來實現</strong></p>
 
@@ -207,6 +213,26 @@ ipcRenderer.on('channelToClient', (event, arg) =&gt; {
 <p>另外也有提供同步版本的 <code>ipcRendered.sendSync()</code> 與 <code>Electron.IpcMain.OnSync()</code> 等等方法，相關的操作可以參照官方的 <a href="https://github.com/ElectronNET/electron.net-api-demos">API DEMO</a> 中的 <code>Controllers/IpcController.cs</code> 及 <code>Views/Ipc/Index.cshtml</code></p>
 
 <p>而關於 IPC 的說明，可以參考這篇 <a href="https://medium.com/@terracotta_ko/electron-ipc-%E6%A9%9F%E5%88%B6-2a1b087c9ae5">[Electron] IPC 機制</a>，以及官方文件：<a href="https://www.electronjs.org/docs/api/ipc-main">ipcMain</a>、<a href="https://www.electronjs.org/docs/api/ipc-renderer">ipcRenderer</a></p>
+
+<h3 id="打包成執行檔-exe">打包成執行檔（.exe）</h3>
+
+<p>既然是桌面軟體，當然是要包裝成 exe 直接執行囉。畢竟總不能做了個小工具分享給朋友，還要「欸你自己開專案建置一下」吧 XD</p>
+
+<p>在專案資料夾下用命令列輸入指令 <code>electronize build /target win</code> ，其中 <code>/target</code> 除了 win 也可以指定 osx, liunx 等等</p>
+
+<p><img src="https://i.imgur.com/4iSSuCC.png" alt="" /></p>
+
+<p>編譯需要一段時間，直到看見 <code>done</code> 就可以了</p>
+
+<p>編出來的安裝包和執行檔會在 <code>bin\Desktop</code> 和 <code>bin\Desktop\win-unpacked</code></p>
+
+<p><img src="https://i.imgur.com/JKqNsVl.png" alt="" /></p>
+
+<p>稍微打開看看</p>
+
+<p><img src="https://i.imgur.com/Ywg2CoQ.png" alt="" /></p>
+
+<p>可以正常執行！</p>
 
 <h3 id="後記">後記</h3>
 
