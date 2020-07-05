@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.53" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>AutoMapper —— 類別轉換超省力 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="AutoMapper —— 類別轉換超省力 - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2020-07-05T23:40:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2020-07-05T23:40:00&#43;08:00">
+        
+    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="description" content="當我們要把一個類別的資料倒進另一個類別時，總免不了一番折騰。AutoMapper 會自動將指定類別間同樣名稱的屬性內容做轉換，省卻不必要的枯燥乏味又占空間的轉換過程。">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/post/202007-automapper/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">AutoMapper —— 類別轉換超省力</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2020-7-5,
+                        </date>
+                        
+                        <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp">CSharp</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/tools">Tools</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+                        <div class="post-content">
+                            <p>類別間的轉換幾乎是每個專案每個工程師都會碰到的動作，舉凡是分層架構每層之間的轉換，如 Dto 轉換成 ViewModel；或是接收到資料要塞進自定義的類別時也需要進行轉換。但<strong>在遠古時代，當我們要把一個類別的資料倒進另一個類別時，總免不了一番折騰</strong>。</p>
+
+<p>例如一個卡片對戰遊戲的資料庫，光是要先把卡片資料讀取出來就需要：</p>
+
+<p><img src="https://i.imgur.com/c81Hx5I.png" alt="" /></p>
+
+<p>有些時候也會看見用 Foreach 然後逐一傳值的場景，或是各種差不多的變種情況。同樣的是，光是將一個簡單的卡片資訊轉換成 ViewModel，就花了一大段在做對映的處理。這個過程本身枯燥乏味又占空間，更可怕的是，<strong>如果有個陳年資料表，動不動就上百個欄位，那這個轉換過程的恐怖程度可想而知</strong>。</p>
+
+<p>幸好！天無絕人之路，這種時候就是本日的主角 AutoMapper —— 出場的時候了。</p>
+
+<p>當 AutoMapper 一出手，轉換的過程瞬間就變成：</p>
+
+<p><img src="https://i.imgur.com/KxHAKpi.png" alt="" /></p>
+
+<p>是不是精簡很多呢？接著就讓我們來看看怎麼開始使用吧！</p>
+
+<h2 id="安裝與使用">安裝與使用</h2>
+
+<p>首先，當然要先到 NuGet 把 AutoMapper 給裝下來。</p>
+
+<p><img src="https://i.imgur.com/TEAZwU7.png" alt="" /></p>
+
+<p><img src="https://i.imgur.com/3ADyJXv.png" alt="" /></p>
+
+<p>確認安裝之後，就開始基本的使用吧。</p>
+
+<p>只需要<strong>先註冊好 Mapper 的設定內容，也就是哪些類別之間可以互相對映；再實體化 Mapper 出來使用就可以了</strong>。直接看程式碼應該就能理解：</p>
+
+<pre><code class="language-csharp">public IEnumerable&lt;CardViewModel&gt; GetCard()
+{
+    var data = this.GetCardFromRepositoryMock();
+    
+    var config = new MapperConfiguration(cfg =&gt; 
+        cfg.CreateMap&lt;Card, CardViewModel&gt;()); // 註冊Model間的對映
+    var mapper = config.CreateMapper(); // 建立 Mapper
+    var result = mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data); // 轉換型別
+
+    return result;
+}
+</code></pre>
+
+<p><br/>
+沒錯，只需要簡簡單單幾步， <strong>AutoMapper 會自動將指定類別間同樣名稱的屬性內容做轉換</strong> ，因此能夠省下相當多的功夫，也能夠隱藏類別本身的內容，專心在處理功能本身。</p>
+
+<blockquote>
+<p>註：網路上挺多 AutoMapper 的文章會直接使用 <code>Mapper.CreateMap()</code> 這類靜態方法，然而這些方法已經在 AutoMapper 5 的時候被廢除，改成現在由 <code>MapperConfiguration</code> 產生 Mapper 的方法。</p>
+
+<p>然而整體的使用方式仍然大同小異，這些文章仍能稍微調整並使用，惟使用過程中需自己注意語法的差異和多加測試。</p>
+</blockquote>
+
+<h3 id="客製化轉換">客製化轉換</h3>
+
+<p>但當然實際上我們並不一定每個欄位的名稱都是一模一樣的，總是會有遇到同個資料在不同層的 Model 裡名稱不一樣的時候，又或者是某個欄位是由兩三個欄位組成的時候。對於這種需要客製化的轉換，這時候我們就可以在註冊對映時對欄位內容的對映方式做指定：</p>
+
+<pre><code class="language-csharp">var config = new MapperConfiguration(cfg =&gt;
+    cfg.CreateMap&lt;Card, CardViewModel&gt;()
+        .ForMember(x =&gt; x.Id, y =&gt; y.MapFrom(o =&gt; o.CardId))
+        .ForMember(x =&gt; x.Name, y =&gt; y.MapFrom(o =&gt; $&quot;{o.Id}: {o.Name}&quot;))
+    ); // 註冊Model間的對映 建立設定檔
+</code></pre>
+
+<p><br/>
+可以看到 <strong>我們能用 <code>ForMember</code> 去對類別成員做操作，並傳入目標的類別成員，以及該成員對應的操作，像這邊就使用 <code>MapFrom</code> 來指定目標類別成員的轉換來源</strong>，這樣就可以達到轉換時的客製化了。</p>
+
+<blockquote>
+<p>註：對於欄位之間有使用 <code>ForMember</code> 來處理過內容再轉換的型別，建議在轉換型別時，也就是實際 mapper.Map() 的時候，稍做註解提醒一下。</p>
+
+<p>尤其是會將 Mapper 的 Config 集中整理的架構裡更應該要對額外的操作做揭露，這樣對彼此都好。真的。</p>
+</blockquote>
+
+<h3 id="忽略指定的欄位">忽略指定的欄位</h3>
+
+<p>除了會有欄位名稱和來源的不同以外，最常遇到的應該就是兩個類別之間大多數欄位雖然對映，但某幾個欄位是沒有對映的。例如傳送給前端使用時一併送出其他來源的資料，但資料由資料表取出時並沒有這個欄位，必須轉換以後再呼叫別的方法去補上資料。<strong>如果直接使用 Map 來進行轉換，就會發生找不到對映欄位的錯誤。這時候就可以使用 <code>Ignore</code> 來忽略掉指定的欄位</strong>。</p>
+
+<pre><code class="language-csharp">var config = new MapperConfiguration(cfg =&gt;
+    cfg.CreateMap&lt;Card, CardViewModel&gt;()
+       .ForMember(x =&gt; x.ImgUri, y =&gt; y.Ignore())
+    );
+}
+</code></pre>
+
+<p><br/>
+如上述程式碼，可能卡片的圖像位置必須由別的方式取得，這種情況我們在 <code>ForMember</code> 的時候就可以將其指定為 <code>Ignore</code> 讓 AutoMapper 不要去嘗試轉換它。除了 <code>Ignore</code> 以外，AutoMapper 還有配備像是 <code>IgnoreAllPropertiesWithAnInaccessibleSetter</code> 這種光方法名稱長度就有點強的大殺器，也還有像是 <code>AllowNull</code> 等更多對欄位操作的方法，這部份請各位在使用時按照需求自行摸索。</p>
+
+<blockquote>
+<p>註(1)：上述舉的例子中有需要從多個來源轉換為一個類別的場合，可以參照<br/> <a href="https://kevintsengtw.blogspot.com/2014/03/automapper.html">AutoMapper 兩個物件對映到一個類別 - mrkt 的程式學習筆記</a></p>
+
+<p>註(2)：上面使用到的 Ignore 方法還是有些眉角需要注意，可以參照<br/> <a href="https://dotblogs.com.tw/supershowwei/2016/07/17/162815">[料理佳餚] AutoMapper 中不容忽視的 Ignore() Mapping 的順序 - 軟體主廚的程式料理廚房</a></p>
+</blockquote>
+
+<p>最後還要補充的一個方法是 <code>ReverseMap</code> ，它能夠反轉對映，建立一個反方向的對映表。當你的類別之間可能需要往回轉型，又或是想要忽略來源類別的欄位時，<code>ReverseMap</code> 就會顯得相當有用。通常為了避免轉來轉去轉出意外，建議註冊時還是補上一個 <code>ReverseMap</code> 為佳。</p>
+
+<pre><code class="language-csharp">var config = new MapperConfiguration(cfg =&gt;
+    cfg.CreateMap&lt;Card, CardViewModel&gt;()
+       .ForMember(x =&gt; x.Id, y =&gt; y.MapFrom(o =&gt; o.CardId))
+       .ForMember(x =&gt; x.ImgUri, y =&gt; y.Ignore())
+       .ReverseMap() // 反轉
+    );
+</code></pre>
+
+<p><br/></p>
+
+<p>到目前為止，程式碼可能會變成如下：</p>
+
+<pre><code class="language-csharp">public IEnumerable&lt;CardViewModel&gt; GetCard()
+{
+    var data = this.GetCardFromRepositoryMock();
+    
+    var config = new MapperConfiguration(cfg =&gt;
+        cfg.CreateMap&lt;Card, CardViewModel&gt;()
+           .ForMember(x =&gt; x.Id, y =&gt; y.MapFrom(o =&gt; o.CardId))
+           .ForMember(x =&gt; x.Name, y =&gt; y.MapFrom(o =&gt; $&quot;{o.Id}: {o.Name}&quot;))
+           .ForMember(x =&gt; x.ImgUri, y =&gt; y.Ignore())
+           .ReverseMap());
+
+    var mapper = config.CreateMapper(); // 建立 Mapper
+    var result = mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data); // 轉換型別
+
+    return result;
+}
+</code></pre>
+
+<h2 id="簡化整理">簡化整理</h2>
+
+<p>可能看到這裡有些讀者就開始疑惑了：這好像跟一開始簡介不太一樣啊，詐欺？又或者是：我每個方法裡面都要重新建一個 Mapper？這不太對吧？</p>
+
+<p>的確是這樣沒錯，AutoMapper 要達到更簡潔，還需要再做一些整理。例如使用 Profile 將對映關係集中起來，以及把 Mapper 的建構抽取出來，例如在建構式建立共用的 Mapper 或是以依賴注入 (Dependency Injection) 的方式來注入 Mapper 等等。以下就逐步進行介紹。</p>
+
+<h3 id="profile">Profile</h3>
+
+<p>首先我們先建立一個用來放對映關係的 Profile。我個人習慣會另開一個 Mappings 資料夾，並按照轉換所在的分層 + Mappings 來命名。</p>
+
+<pre><code class="language-csharp">public class ServiceMappings : Profile
+{
+    public ServiceMappings()
+    {
+        CreateMap&lt;Card, CardViewModel&gt;()
+            .ForMember(x =&gt; x.Id, y =&gt; y.MapFrom(o =&gt; o.CardId))
+            .ForMember(x =&gt; x.Name, y =&gt; y.MapFrom(o =&gt; $&quot;{o.Id}: {o.Name}&quot;))
+            .ForMember(x =&gt; x.ImgUri, y =&gt; y.AllowNull())
+            .ReverseMap(); 
+
+        // ...其他的對映內容 (使用 CreateMap&lt;&gt; 建立下一組)
+    }
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>從上面可以看到，我們<strong>繼承 AutoMapper 提供的 Profile 類，接著在建構式裡面將需要的轉換關係組都建立起來</strong>。接著當我們建立 Mapper 時，就可以直接用 <code>AddProfile</code> 和建立好的 Profile 來直接讀入對映關係：</p>
+
+<pre><code class="language-csharp">public IEnumerable&lt;CardViewModel&gt; GetCard()
+{
+    var data = this.GetCardFromRepositoryMock();
+    var config = new MapperConfiguration(cfg =&gt; cfg.AddProfile&lt;ServiceMappings&gt;());
+    var mapper = config.CreateMapper(); // 用設定檔建立 Mapper
+    var result = mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data); // 轉換型別
+
+    return result;
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>當然，<strong>在 <code>MapperConfiguration</code> 的時候是可以對 cfg 去做多次 <code>AddProfile</code> 的</strong>，既然可以載入多組對映關係，就代表可以按照實務上的運用去將對映關係做分類和整理。</p>
+
+<p>這邊還是要再度提醒一下，將 <code>CreateMap</code> 都整理到 Profile 之後，若是有些類別之間的轉換有對欄位做額外的處理，例如 DateTime 去除時間只留下年月日，又或是某幾個欄位銜接成一個欄位等等，<strong>在實際進行類別轉換的時候需要註記一下，請後續的維護人員或團隊夥伴記得先確認過 Profile，避免造成一些隱藏重要資訊挖洞給人跳的問題</strong>。</p>
+
+<h3 id="整理到建構式">整理到建構式</h3>
+
+<p>接著由於一個處理資料或商業邏輯的部分通常會有許多方法都用到 Mapper，因此將建立 Mapper 的過程取出來避免重複絕對是必要的。故整理的第一步就是將 Mapper 的建立拆分出來，不再等每次用到的時候才建，而是先建立好一個 Mapper，需要的時候再來使用它。</p>
+
+<p>這邊就先嘗試將其挪到私有變數和建構式處理：</p>
+
+<pre><code class="language-csharp">private IMapper _mapper;
+
+public MapSimpleService() // 建構式
+{
+    var config = new MapperConfiguration(cfg =&gt; cfg.AddProfile&lt;ServiceMappings&gt;());
+    this._mapper = config.CreateMapper();
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>那麼我們實際上的方法就會變成：</p>
+
+<pre><code class="language-csharp">public IEnumerable&lt;CardViewModel&gt; GetCard()
+{
+    var data = this.GetCardFromRepositoryMock();
+    var result = this._mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data);
+    return result;
+}
+</code></pre>
+
+<p><br/></p>
+
+<h3 id="走向注入">走向注入</h3>
+
+<p>由於本篇篇幅無法說明好 DI 的概念，因此 DI 和實作將會在之後的文章中說明，這邊就以 .net Core 為示範來記錄一下步驟，提供給已經會 DI 的朋友參考。</p>
+
+<p>在開始之前，我們會需要再前往 NuGet 安裝 AutoMapper DI 用的套件：
+<img src="https://i.imgur.com/hae1zfj.png" alt="" /></p>
+
+<p>接著在 <code>Startup.cs</code> 裡的 <code>ConfigureServices</code> 加上 <code>services.AddAutoMapper(typeof(Startup))</code> 來註冊我們的 Mapper：</p>
+
+<pre><code class="language-csharp">public void ConfigureServices(IServiceCollection services)
+{
+    services.AddControllers();
+    services.AddScoped&lt;IMapSimpleService, MapSimpleService&gt;(); // Demo 用的 Service
+
+    services.AddAutoMapper(typeof(Startup)); // 註冊 Mapper &lt;---
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>接著我們將剛剛的示範部分更改為使用注入：</p>
+
+<pre><code class="language-csharp">private IMapper _mapper;
+
+public MapSimpleService(IMapper mapper) // 建構式
+{
+    this._mapper = mapper;
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>接著就可以使用了！實際上使用的部分保持不變如下</p>
+
+<pre><code class="language-csharp">public IEnumerable&lt;CardViewModel&gt; GetCard()
+{
+    var data = this.GetCardFromRepositoryMock();
+    var result = this._mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data);
+    return result;
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>執行之後就能確認確實有轉換到值。可能有些人會有點疑惑：前面還需要 <code>MapperConfiguration</code> 怎麼這次不用了呢？那是因為 <code>AddAutoMapper</code> 的時候就會用反射去取得專案中的 <code>Profile</code> 來載入了，這部分就可以不用擔心，只要專心在使用上就好。</p>
+
+<h2 id="結語">結語</h2>
+
+<p>到這邊算是把 AutoMapper 基本的用法介紹過一遍了，當然還有很多進階的用法和需要注意的部分並沒有說明完全，但相信這樣的紀錄已經能夠幫助我在將來需要的時候回想起怎麼使用，和解決大部分需要做類別轉換的場景了。剩餘的延伸閱讀將會補充在參考資料裡，那麼下週見～</p>
+
+<h2 id="參考資料及延伸閱讀">參考資料及延伸閱讀</h2>
+
+<ul>
+<li><a href="https://dotblogs.com.tw/yc421206/2016/07/15/automapper_version_5_MapperConfiguration">[AutoMapper] AutoMapper 5.0.2 的新寫法 - 余小章 @ 大內殿堂</a></li>
+<li><a href="https://kevintsengtw.blogspot.com/2013/04/automapper.html">使用 AutoMapper 處理類別之間的對映轉換 - mrkt 的程式學習筆記</a></li>
+<li><a href="https://kevintsengtw.blogspot.com/2014/03/automapper.html">AutoMapper 兩個物件對映到一個類別 - mrkt 的程式學習筆記</a></li>
+<li><a href="https://kevintsengtw.blogspot.com/2013/04/automapper-configuration.html">AutoMapper 的設定 (Configuration) - mrkt 的程式學習筆記</a></li>
+<li><a href="https://dotblogs.com.tw/yc421206/2014/12/12/147619">[C#.NET] 使用 AutoMapper.Profile 簡化對應設定 - 余小章 @ 大內殿堂</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10157130">AutoMapper 介紹 - 簡單化Entity和ViewModel之間的轉換</a></li>
+<li><a href="https://dotblogs.com.tw/keigen/2017/06/28/151917">AutoMapper 初體驗 - 中年大叔的鹹魚翻身作戰計畫</a></li>
+<li><a href="https://iter01.com/155318.html">.NET Core 中依賴注入 AutoMapper 小記 - IT人</a></li>
+<li><a href="https://dotblogs.com.tw/supershowwei/2016/07/17/162815">[料理佳餚] AutoMapper 中不容忽視的 Ignore() Mapping 的順序 - 軟體主廚的程式料理廚房</a></li>
+</ul>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/202006-electron-net/">Electron.net —— 把網頁包成桌面應用吧</a></li>
+        
+        <li><a href="/post/202006-bit-flags-and-enum/">隨手記: 位元旗標與列舉</a></li>
+        
+        <li><a href="/post/202006-wakatime/">WakaTime —— 我 Coding 了多久？</a></li>
+        
+        <li><a href="/post/202005-jsonview/">Json View —— 用 Chrome 看 Json 的必備擴充套件</a></li>
+        
+        <li><a href="/post/202005-carbon/">Carbon —— 把 Code 轉成圖片小工具</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/tools">Tools</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/automapper">AutoMapper</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-automapper/" title="AutoMapper —— 類別轉換超省力">AutoMapper —— 類別轉換超省力</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202006-electron-net/" title="Electron.net —— 把網頁包成桌面應用吧">Electron.net —— 把網頁包成桌面應用吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202006-darkhorse/" title="讀《黑馬思維》">讀《黑馬思維》</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202006-bit-flags-and-enum/" title="隨手記: 位元旗標與列舉">隨手記: 位元旗標與列舉</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202006-wakatime/" title="WakaTime —— 我 Coding 了多久？">WakaTime —— 我 Coding 了多久？</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202005-bandon-ex2-heroku-debug/" title="我要訂便當(4-2) —— Heroku 填坑小記">我要訂便當(4-2) —— Heroku 填坑小記</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202005-jsonview/" title="Json View —— 用 Chrome 看 Json 的必備擴充套件">Json View —— 用 Chrome 看 Json 的必備擴充套件</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202005-carbon/" title="Carbon —— 把 Code 轉成圖片小工具">Carbon —— 把 Code 轉成圖片小工具</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202005-bandon-ex1-heroku/" title="我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku">我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202004-css-variables/" title="隨手記: CSS 變數">隨手記: CSS 變數</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">Android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">Automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">CSS (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp/">CSharp (6)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">IDE (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">Python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">Reading (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">Tools (6)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3HexSchool (17)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/android/">Android</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">AutoMapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">Automation</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">Bandon</a>
+    
+    <a href="https://igouist.github.io/tags/css/">CSS</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">CSharp</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">Crawler</a>
+    
+    <a href="https://igouist.github.io/tags/database/">Database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">Dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">Electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">Entity Framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">Enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">Excel</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">Heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">IDE</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">MySQL</a>
+    
+    <a href="https://igouist.github.io/tags/php/">PHP</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">PTT</a>
+    
+    <a href="https://igouist.github.io/tags/python/">Python</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">Reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">Selenium</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">Sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">Tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">VisualStudio</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">XAMPP</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3HexSchool</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">推薦友站</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://ithelp.ithome.com.tw/users/20112224/articles" title="KingLong">KingLong - iT邦幫忙</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        
+        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-92586970-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+</body>
+</html>
