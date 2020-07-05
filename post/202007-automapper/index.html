@@ -111,7 +111,7 @@
 
 <p>有些時候也會看見用 Foreach 然後逐一傳值的場景，或是各種差不多的變種情況。同樣的是，光是將一個簡單的卡片資訊轉換成 ViewModel，就花了一大段在做對映的處理。這個過程本身枯燥乏味又占空間，更可怕的是，<strong>如果有個陳年資料表，動不動就上百個欄位，那這個轉換過程的恐怖程度可想而知</strong>。</p>
 
-<p>幸好！天無絕人之路，這種時候就是本日的主角 AutoMapper —— 出場的時候了。</p>
+<p>幸好！天無絕人之路，這種時候就是本日的主角 —— AutoMapper 出場的時候了。</p>
 
 <p>當 AutoMapper 一出手，轉換的過程瞬間就變成：</p>
 
@@ -229,7 +229,7 @@
 
 <p>可能看到這裡有些讀者就開始疑惑了：這好像跟一開始簡介不太一樣啊，詐欺？又或者是：我每個方法裡面都要重新建一個 Mapper？這不太對吧？</p>
 
-<p>的確是這樣沒錯，AutoMapper 要達到更簡潔，還需要再做一些整理。例如使用 Profile 將對映關係集中起來，以及把 Mapper 的建構抽取出來，例如在建構式建立共用的 Mapper 或是以依賴注入 (Dependency Injection) 的方式來注入 Mapper 等等。以下就逐步進行介紹。</p>
+<p>的確是這樣沒錯，AutoMapper 要達到更簡潔，還需要再做一些整理。例如使用 Profile 將對映關係集中起來，以及把 Mapper 的建構抽取出來。可能是在建構式建立共用的 Mapper ，或是以依賴注入 (Dependency Injection) 的方式來注入 Mapper 等等。以下就逐步進行介紹。</p>
 
 <h3 id="profile">Profile</h3>
 
@@ -320,7 +320,7 @@ public MapSimpleService() // 建構式
 
 <p><br/></p>
 
-<p>接著我們將剛剛的示範部分更改為使用注入：</p>
+<p>註冊好之後，我們就能將剛剛的示範部分更改為使用注入的方式來取得 Mapper：</p>
 
 <pre><code class="language-csharp">private IMapper _mapper;
 
@@ -332,7 +332,32 @@ public MapSimpleService(IMapper mapper) // 建構式
 
 <p><br/></p>
 
-<p>接著就可以使用了！實際上使用的部分保持不變如下</p>
+<p>執行之後就能確認確實有轉換到值。可能有些人會有點疑惑：前面還需要 <code>MapperConfiguration</code> 怎麼這次不用了呢？那是因為 <code>AddAutoMapper</code> 的時候就會用反射去取得專案中的 <code>Profile</code> 來載入了，這部分就可以不用擔心，只要專心在使用上就好。</p>
+
+<p>最後再來對照一下商業邏輯的部份</p>
+
+<p>瘦身前</p>
+
+<pre><code class="language-csharp">public IEnumerable&lt;CardViewModel&gt; GetCard()
+{
+    var data = this.GetCardFromRepositoryMock();
+    var result = data.Select(x =&gt;
+        new CardViewModel
+        {
+            Id = x.Id,
+            Name = x.Name,
+            Cost = x.Cost,
+            Attack = x.Attack,
+            Health = x.Health,
+            Note = x.Note // ...etc
+        });
+    return result;
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>瘦身後</p>
 
 <pre><code class="language-csharp">public IEnumerable&lt;CardViewModel&gt; GetCard()
 {
@@ -344,9 +369,9 @@ public MapSimpleService(IMapper mapper) // 建構式
 
 <p><br/></p>
 
-<p>執行之後就能確認確實有轉換到值。可能有些人會有點疑惑：前面還需要 <code>MapperConfiguration</code> 怎麼這次不用了呢？那是因為 <code>AddAutoMapper</code> 的時候就會用反射去取得專案中的 <code>Profile</code> 來載入了，這部分就可以不用擔心，只要專心在使用上就好。</p>
-
 <h2 id="結語">結語</h2>
+
+<p>當我們把類別轉換的區段利用 AutoMapper 擷取出來，就能<strong>讓原本的程式碼更著重在該方法本身的邏輯和功能</strong>，而不會被冗長的轉換過程洗版，使用 Mapper 的方法只要知道這兩個類別能夠互相轉換即可。除了看起來更舒服、更能將焦點放在方法本身以外，也能夠讓維護時的修改更加直覺，若是轉換的過程需要修改，就去變更 Profile，不需要去變動實現商業邏輯的方法本身，這樣就能朝單一職責的目標更前進一點。</p>
 
 <p>到這邊算是把 AutoMapper 基本的用法介紹過一遍了，當然還有很多進階的用法和需要注意的部分並沒有說明完全，但相信這樣的紀錄已經能夠幫助我在將來需要的時候回想起怎麼使用，和解決大部分需要做類別轉換的場景了。剩餘的延伸閱讀將會補充在參考資料裡，那麼下週見～</p>
 
