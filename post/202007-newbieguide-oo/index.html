@@ -1,0 +1,1045 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.53" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>菜雞新訓記(-2) —— 菜雞與物件導向 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞新訓記(-2) —— 菜雞與物件導向 - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2020-07-11T23:00:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2020-07-11T23:00:00&#43;08:00">
+        
+    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="description" content="菜雞新訓記(-2) —— 菜雞與物件導向">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/post/202007-newbieguide-oo/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">菜雞新訓記(-2) —— 菜雞與物件導向</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2020-7-11,
+                        </date>
+                        
+                        <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/newbieguide">NewbieGuide</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp">CSharp</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/tools">Tools</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+                        <div class="post-content">
+                            <p>在訂便當告一段落之後，其實就已經和同事約好要來整理公司新訓的筆記。但因為範圍有點大水有點深，一直是挺畏懼的。但幸虧同事的鼓勵和以身作則，最終還是開啟了這個新系列，用寫給自己看的健康心態開工。如果你是真心希望弄懂物件導向的朋友，這邊推薦<a href="https://www.tenlong.com.tw/products/9789866761799">《大話設計模式》</a>的附錄，內容對物件導向的介紹清晰易懂且循序漸進，非常適合作為了解物件導向的起頭。</p>
+
+<p>由於我個人之前瘋過爐石戰記和殺戮尖塔這種卡牌遊戲，<del>而且也想不出別的例子了</del>，因此這篇會以卡牌為主要範例，這樣我之後回來 <del>抄自己</del> 複習的時候也比較好進狀況。對於那些沒有接觸過相關遊戲的朋友只能先說聲抱歉。</p>
+
+<p>本篇的段落將會分成以下幾個部份，同時至少需要先知道怎麼 Hello world 和寫過函式。由於只是簡單介紹一下，因此會附上一些知識點的參考資料，看見的時候可以先行閱讀；末尾也會附上有關的參考資料及文章，對於這類概念性的東西，一向是推薦多方閱讀以增強理解，就像保哥寫的：「<strong>如果你問 100 個人這個問題，可能會得到 200 個答案，所以你一定要有自己獨到、有自信、精闢的見解或描述方式</strong>。」如果有寫得不錯的文章想推薦給我，或是有地方需要補充和指證，還請不吝指教。共勉之。</p>
+
+<ul>
+<li><a href="#類別-物件">類別、物件</a></li>
+<li><a href="#建構式">建構式</a></li>
+<li><a href="#多載">多載</a></li>
+<li><a href="#封裝">封裝</a></li>
+<li><a href="#繼承">繼承</a></li>
+<li><a href="#多型-抽象-覆寫">多型、抽象、覆寫</a></li>
+<li><a href="#介面">介面</a></li>
+<li><a href="#結語">結語</a></li>
+<li><a href="#參考資料及延伸閱讀">參考資料及延伸閱讀</a></li>
+</ul>
+
+<h2 id="類別-物件">類別、物件</h2>
+
+<blockquote>
+<p>直覺上你當然知道什麼是物件；物件就在你的身邊。汽車、iPhone、收音機、吐司機、廚房用具等等，你說得出來的都是。　　——《深入淺出學會編寫程式》</p>
+</blockquote>
+
+<p>如果要問什麼是物件，我會說一切都是物件；如果要問物件是什麼，我會說物件是一個概念的表達。</p>
+
+<p>物件導向試圖讓程式碼的理解方式更貼近於我們的實際生活，因此有了物件這個共通、最基本的概念。同時，<strong>使用物件導向也意味著認同比起 <code>EatFood(dog, food)</code> 而言，<code>Dog.Eat(food)</code> 更直覺和易於理解。</strong></p>
+
+<p>現在我們已經知道物件就是我們知道的某個東西，且可以是任何東西，例如說狗就是一個物件，食物就是一個物件。而這些物件之間會彼此互動，例如說狗會吃東西，我們能夠讓狗吃食物；同時物件也會有一些專屬於它的特徵，例如說狗可能有名字、毛色等等。</p>
+
+<pre><code class="language-csharp">Dog afu = new Dog(); // 阿福是一隻狗
+Console.Write(afu.Color); // black
+afu.Eat(food);
+</code></pre>
+
+<p><br/></p>
+
+<p>理解物件的概念是相當直覺且迅速的，畢竟你我身邊有著數不清的東西，它們都是一件一件的物品，但這樣的理解還不夠明確。例如說單位的大小，如果有一棵樹，那麼樹是一個物件，樹葉也是物件嗎？如果是，角質層呢？木質部呢？又或者是完整度，如果冰箱是一個物件，那麼這個物件到底有多少內容？難道要我標明每一條電線嗎？事實上，要我們極其完整地描述一台冰箱，是近乎不可能的。當我們要實際上運用物件的概念時，必然會遇到這些問題。</p>
+
+<p>而這些問題可以歸納成：我要怎麼定義我的物件？這時候類別就出現了。</p>
+
+<pre><code class="language-csharp">public class Dog
+{
+    public string color;
+    public void Eat(IFood food) { /* 進食與消化之類的 */ };
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>藉由我們定義的類別，就可以從類別中實例化（＝建立）出物件。</p>
+
+<p>類別最常看到的比喻，就是物件的設計圖。我們藉由類別去定義我們要的物件有什麼特徵、有什麼功能，再從類別中實例化（也就是根據設計圖產生）物件出來使用。但就我來說，<strong>類別實際上就是我們認知中對這個物件的定義，我們篩選出我們需要的、我們認為這個物件具有的這些特徵和功能，按照我們的認知去設計了類別，接著我們再利用這個類別告訴程式如何建立出我們認為的這個物件，最終我們才能在程式中使用我們需要的這個物件</strong>。</p>
+
+<p>也就是說，<strong>當我們定義了一個狗的類別，我們實際上是在描述我們眼中的、我們歸納出來的、我們需要的「狗」</strong>，我們認為狗就是會吃東西。接著，<strong>我們再從我們設計好的這份定義，去實例化出我們需要的狗：阿福</strong>，於是阿福就有了吃東西的能力。</p>
+
+<p>我們有了抽象化的設計圖之後，就可以利用這個設計圖去建立多個符合這個設計的物件。例如說前面的狗，我們就可以建立出黑色的阿福，黃色的阿黃等等。在現實中，我們將阿福、阿黃等等歸類為狗這個概念，而到了程式裡，我們利用這個狗的概念定義出類別，進而產生阿福、阿黃。從這邊也能察覺到：類別是一個歸納好的概念，這概念中包含許多獨立的個體，也就是物件，而這些物件之間的差異則從我們定義類別時選擇的特徵去區分。</p>
+
+<p>因此，一個人設計的類別，和他使用物件的方式，反映了他對於這個物件的看法和他覺得需要的內容。</p>
+
+<p>關於這個把概念抽象化成類別和物件的過程，可以參考 <a href="https://ithelp.ithome.com.tw/articles/10201905">一個語言如果不改變你的思考方式，就不值得學？談程式語言的本質</a> 這篇，對於抽象化的過程我認為描述得很好。</p>
+
+<p>那麼這邊就讓我們回到卡牌遊戲上，理所當然卡牌遊戲不能沒有卡牌。</p>
+
+<p>對我來說卡牌通常都需要這些特徵，我們在物件裡稱為屬性：
+- 卡片名稱
+- 攻擊力
+- 防禦力
+- 卡牌描述
+等等，另外卡牌也應該能作出某些動作，也就是這個物件的方法：
+- 攻擊</p>
+
+<p>我們確認了這些要素以後，就可以把它設計成一個類別 <code>Card</code> 如下</p>
+
+<pre><code class="language-csharp">public class Card
+{
+    public string Name;
+    public int Level;
+    public int Attack;
+    public int Health;
+    public string Description;
+
+    public void Hit(Card target)
+    {
+        target.Health -= this.Attack;
+        if (target.Health &lt;= 0) { /* 可能呼叫死翹翹方法？ */ }
+        /* 一些後續操作 */
+    }
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>抱歉我菜，如果有真的設計卡牌遊戲的工程師經過拜託不要打我。</p>
+
+<p>接著我們就能在需要的時候藉由這個類別來實例化我們的卡牌：</p>
+
+<pre><code class="language-csharp">var goblin = new Card();
+var warrior = new Card();
+warrior.Hit(goblin);
+</code></pre>
+
+<p><br/></p>
+
+<p>再提醒一次：</p>
+
+<ul>
+<li>類別是定義、是設計圖、是描述；物件是類別產生的實體、是實際上的執行者。</li>
+<li>類別用來告訴程式什麼是狗；物件則是程式根據我們的指示建立出來的狗。</li>
+<li>類別不會動，你家電視的說明書也不會；物件會動，你家的電視也應該要會。</li>
+</ul>
+
+<p>到此應該能夠初步掌握物件和類別的概念了。這邊推薦一下可以閱讀保哥的這篇 <a href="https://blog.miniasp.com/post/2009/08/27/OOP-Basis-What-is-class-and-object">物件導向基礎：何謂類別(Class)？何謂物件(Object)？</a>，裡面除了對物件和類別有更易懂的介紹和舉例以外，還有十題概念題可以幫助你搞懂物件和類別的意義與差異，相當值得一看。另外，也可以參考這幾篇的說明：</p>
+
+<ul>
+<li><a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-1_%E9%A1%9E%E5%88%A5class%E8%88%87%E5%AF%A6%E9%AB%94object/">Object Oriented物件導向-1:類別(Class)與實體(Object) - Sian</a></li>
+<li><a href="https://ytyubox.github.io/posts/2020/02/29/oop-discussion/">有物件導向的世界與沒有物件導向的世界</a></li>
+<li><a href="https://matthung0807.blogspot.com/2017/10/java_24.html">Java 物件導向的概念 - 菜鳥工程師肉豬</a></li>
+</ul>
+
+<p>物件的部份由於是最初的概念，不免多廢話了一些。接下來就讓我們快速看過物件的幾項功能和特性。</p>
+
+<h2 id="建構式">建構式</h2>
+
+<p>我就直接說了，有用前面的程式碼區塊的人，絕對執行不了。因為我們建立哥布林和戰士這兩張卡片的時候，根本就沒有給他們數值呀！</p>
+
+<p>雖然可以先呼叫出來再賦值…</p>
+
+<pre><code class="language-csharp">var goblin = new Card();
+goblin.Name = &quot;哥布林&quot;;
+goblin.Attack = 3;
+goblin.Health = 2;
+/* ...其他賦值 */
+</code></pre>
+
+<p><br/></p>
+
+<p>但實在相當占空間，我們可以藉由<strong>建構式</strong>的方式，在建立物件時就進行一些我們想要的操作。事實上，當我們呼叫 <code>new Card()</code> 的時候（不覺得這個 () 很有呼叫方法的感覺嗎？）我們就是正在調用 Card 的建構式。當我們沒有特別去定義建構式的時候，就會直接使用內建的建構式去幫我們產生物件。</p>
+
+<p>現在我們替 Card 新增一個建構式：</p>
+
+<pre><code class="language-csharp">public class Card
+{
+    public Card (string name, int attack, int health)
+    {
+        this.Name = name;
+        this.Attack = attack;
+        this.Health = health;
+    }
+    /* ... 其他屬性和方法 */
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>在 C# 的時候，建構式必須和類別同名，且不需要定義回傳類型。當我們有了建構式，剛剛的例子就可以改寫成：</p>
+
+<pre><code class="language-csharp">var goblin = new Card(name: &quot;哥布林&quot;, attack: 3, health: 2);
+var warrior = new Card(name: &quot;戰士&quot; , attack: 4, health: 3);
+warrior.Hit(goblin);
+</code></pre>
+
+<p><br/></p>
+
+<p><strong>建構式也就是建立這個物件時執行的函式</strong>，通常會用來進行初始化，也就是做一些建立物件必要的準備。例如傳遞必要屬性或是建構需要的其他物件、或是給予私有屬性初始值等等，例如說我們的卡牌一建立，就會需要知道它的名字和戰鬥力，這樣才有卡牌的感覺，而不該像一些壞決鬥者邊打牌邊偷偷印卡。</p>
+
+<p><em>註：當然有建立時執行的，也就會有消滅時執行的。請參見<a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/destructors">解構式</a>，由於較少用到，此處先按下不表。</em></p>
+
+<h2 id="多載">多載</h2>
+
+<p>當然，有了建構式就會有更多問題。現在我們只有一個方法可以建立卡牌了，這無疑是相當不彈性的，例如說我希望預設的攻擊力和血量就是四呢？實際上我們經常會遇到需要用不同素材去建立一個物件的場合，這時候就必須得提到另一個要點：多載了。</p>
+
+<p>多載指的就是可以有很多個同名字的方法，去接受不同的參數。例如說我們的 Card 建構式就可以利用多載來改造一下：</p>
+
+<pre><code class="language-csharp">public class Card
+{
+    public Card (string name, int attack, int health)
+    {
+        this.Name = name;
+        this.Attack = attack;
+        this.Health = health;
+    }
+
+    public Card (string name)
+    {
+        this.Name = name;
+        this.Attack = this.Level;
+        this.Health = this.Level;
+    }
+
+    public Card ()
+    {
+        this.Name = &quot;Noname&quot;;
+        this.Attack = this.Level;
+        this.Health = this.Level;
+    }
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>如此一來，我們在建立卡片的時候就能夠有更多選擇了，現在我們可以根據狀況給予需要的參數，剩下的就交給建構式去處理就好。</p>
+
+<p>實務上，如果規則或是建立的步驟一致的話，為了能夠把規則集中到一個地方方便修改，並且減少多餘的程式碼。我們通常會試著讓其他的建構式去呼叫主要的建構式，在 C# 中，呼叫自己的建構式是使用 <code>: this()</code> 來進行的，例如：</p>
+
+<pre><code class="language-csharp">public Card (string name, int attack, int health)
+{
+    this.Name = name;
+    this.Attack = attack;
+    this.Health = health;
+}
+
+// 會呼叫上面那個建構式
+public Card (string name) : this(name: name, attack: 5, health: 5)
+{
+    // 呼叫完 Card(name, attack, health) 之後做的事
+}
+
+// 會呼叫上面那一個建構式
+public Card () : this(name: &quot;Nomame&quot;) 
+{
+    // 呼叫完 Card(name) 之後做的事   
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>如此一來只要建構的方式有變更，我們只需要集中修改第一個建構式就好了。這部份的流程也可以參照 <a href="https://dotblogs.com.tw/yc421206/2011/07/25/32097">[C#.NET] 為建構子建立正確的初始化 - 余小章 @ 大內殿堂</a> 這篇的說明。</p>
+
+<p>當然隨著時代演進，多載也不只是用在建構子，而是大多數人都會用到的一個寫法了。因此時至今日，我們只要使用<strong>選擇性參數</strong>就可以輕鬆達到一樣的效果囉：</p>
+
+<pre><code class="language-csharp">public Card (string name = &quot;Noname&quot;, int attack = 5, int health = 5)
+{
+    this.Name = name;
+    this.Attack = attack;
+    this.Health = health;
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>當有預設值的時候，該參數就會變成可選的，這時候就可以輕鬆決定要傳進來的內容了。當然，如果傳進來的並非只是數量上的差別，而是整個型別都不一樣的話，還是要回歸到多載的做法，建立兩個同名但不同傳入參數類型的方法，可讀性會比較高呦。</p>
+
+<p><strong>多載提供的好處在於，能夠不變動原本的方法就可以增加功能，以及同個目標的函式可以根據傳入的參數不同做不一樣的處理</strong>。例如當我們寫了一個連線取資料的方法，可以分為 (1) 傳入連線的話，就使用連線取得資料 和 (2) 傳入連線字串的話，就先用連線字串開啟連線，再使用連線取得資料等等，根據參數的場合來進行處理。</p>
+
+<h2 id="封裝">封裝</h2>
+
+<p>封裝和繼承、多型並稱物件導向三大特性，同時這個順序也是當然的，因為有了封裝才會需要繼承，因為繼承了才會有了多型，因此我們這一小節也按照這個順序快速地看過。</p>
+
+<p>所謂的封裝，咱同事在他整理的文章 <a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-3_%E5%B0%81%E8%A3%9Dencapsulation%E7%B9%BC%E6%89%BFinheritance%E8%88%87%E5%A4%9A%E5%9E%8Bpolymorphism/">Object Oriented物件導向-3:封裝(Encapsulation)、繼承(Inheritance)與多型(polymorphism)</a> 中的例子就舉得不錯：當你按下鍵盤的Ａ鍵，螢幕隨即出現了Ａ，你不必知道中間發生了什麼事，你只需要知道怎麼操作和最後得到什麼就可以了。此外我也看到過販賣機的例子，當你去販賣機買飲料，你也不需要知道裡面的構造，只要知道你選了飲料投了錢，飲料就會跑出來就行</p>
+
+<p>因此<strong>封裝的概念很直覺，將實作內容隱藏起來，讓使用者只需要知道怎麼使用即可。</strong>（相似的思路，我們後續的介面會再提到）如果封裝做得夠好，除了可以將程式碼整理得井井有條以外，也能讓物件內部的修改不會影響到使用物件的地方，並且讓物件的使用者直覺地知道如何使用，最終達到降耦合的目標</p>
+
+<p>關於封裝的概念，或是會問「什麼是耦合？」的朋友，建議可以看看這篇：<a href="https://ithelp.ithome.com.tw/articles/10203659">實務上的高內聚與低耦合</a></p>
+
+<p>而從上面的敘述中我們可以察覺到要實現封裝，最重要的就是：對外開放程度的控制。</p>
+
+<p>在 C# 之中，類別裡控制可見度是使用修飾子來定義存取範圍，也就是當我們替類別宣告欄位時使用的 <code>Public</code> 和 <code>Private</code>。<code>Public</code> 代表所有人都看得到，而 <code>private</code> 則是私有的，只有自己看得到。</p>
+
+<p>之所以要如此宣告，是為了將控制權掌握在物件本身，就像大話設計模式比喻的：物件就像間房子，我們不希望被看光光，可以看見的 <code>Public</code> 就像門和窗，而不該看見的 <code>Private</code> 則是用牆壁隱藏起來，而對於這間房子而言，門窗是可以控制的。</p>
+
+<blockquote>
+<p>註：當然，控制的程度也不會只有公開和私有兩個選項而已，另外還有限同一個組件才能取用、限定衍生類別才能取用等等，但現在的例子較為單調，暫且按下不表。有興趣的朋友可以參照 <a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/accessibility-levels">存取範圍層級</a> 的說明。</p>
+</blockquote>
+
+<p>對於這部分的範例，我覺得 <a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/using-properties">微軟文件的範例</a> 裡設定月份的區塊已經能很清楚表達了。但為了這篇文章的一致性，還是硬擠著一個範例出來：</p>
+
+<p>某一天，我們突然決定讓使用者可以傳入卡牌敘述了，但是卡牌上能顯示的字數有限，只能顯示 30 個字，因此首先我們先把卡牌敘述改成私有的：</p>
+
+<pre><code class="language-csharp">public class Card
+{
+    public string Name;
+    public int Level;
+    public int Attack;
+    public int Health;
+    private string _description; // 更改為私有的
+
+    /* 一些其他方法 */
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>呃可能第一步就會讓人有些疑惑：「啊你要給人家傳東西進來還改私有？」但等等，且聽我娓娓道來：C# 中的屬性，是用 <code>Set</code> 和 <code>Get</code> 兩個方法去存取的，因此我們將進一步規劃出我們的門和窗：</p>
+
+<pre><code class="language-csharp">public class Card
+{
+    // 略
+    private string _description;
+
+    public string Description
+    {
+        set
+        {
+            if (value.Length &gt; 0 &amp;&amp; value.Length &lt; 30)
+            {
+                this._description = value;
+            }
+        }
+        get
+        {
+            return this._description;
+        }
+    }
+    /* 一些其他方法 */
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>如此一來我們就能對存取屬性時的行為進行管控囉。</p>
+
+<p>而在 C# 裡，如果你並沒有要特別針對存取另做額外處理，可以直接使用自動實作：</p>
+
+<pre><code class="language-csharp">public string Description { set; get; }
+</code></pre>
+
+<p><br/></p>
+
+<p>這樣 C# 就會自動幫你建立一個私有屬性，並且只能經由 set 和 get 進行存取。</p>
+
+<p>簡化寫法之後，例如唯讀就可以這樣寫：</p>
+
+<pre><code class="language-csharp">public string Description { get; }
+</code></pre>
+
+<p><br/></p>
+
+<p>要加上預設值也能這樣寫</p>
+
+<pre><code class="language-csharp">public string Description { get; } = &quot;這是一張卡牌。&quot;;
+</code></pre>
+
+<p><br/></p>
+
+<p>可以說是方便很多。當然，封裝的概念並不僅僅只是對屬性做存取管控如此而已，提高類別內的內聚性，降低對外的耦合性，隱藏複雜資訊才是最重要的方針，然而這只能在設計時，或是維護到頭痛才能親自體會了。例如說：當你需要處理一長串的商業邏輯，以至於需要將他們切割成數個小函式時，將它們宣告成 <code>Private</code> 就是相當好的選擇，這意味著這些工具僅讓你的物件內部使用，外面的人不應該直接調用其中的任何功能，同時又能幫助你的主要流程變得更簡潔。</p>
+
+<p>封裝的部分就講到這裡，並不是很難理解，但是要封裝得好，或是說知道怎樣才算封裝得好，還是需要經驗，不是我這種菜雞一時半刻能說得清的。這邊只能先筆記一下存取範圍的控制，接著我們就繼續看下一個部份。</p>
+
+<h2 id="繼承">繼承</h2>
+
+<p>接著要介紹的是繼承 aka 物件導向三大特性之王 aka 濫用榜 Ko.1 ，繼承的強大幾乎和它的惡名一樣可怕，給一個從 <a href="https://dotblogs.com.tw/initials/2016/06/10/171117">[心得整理] c# 物件導向程式 - 2.封裝、繼承、多型的三大特性</a> 這篇摘過來的例子就可以略知一二了：</p>
+
+<p><img src="https://i.imgur.com/IFV4xjr.png" alt="" /></p>
+
+<p>什麼也不做，僅僅只是繼承而已，就取得了繼承對象（C# 中稱為基底類別）近乎全部的內容，真是太可怕了。在 C# 中，繼承可以取得基底類別除了 <code>Private</code> 以外所有的內容，例如 <code>Protected</code> 更是表明就是只給繼承使用的。</p>
+
+<p>由此可見，在減少重複程式碼的路上，繼承無疑達到了全新的高度。</p>
+
+<p>那麼繼承代表的是什麼意思呢？大多的網站都能直接說明：<strong>繼承是一種「is-a」的關係。當你能說出Ａ是一個Ｂ的時候，就代表你認為Ａ可以繼承自Ｂ</strong>。</p>
+
+<p>最直覺的繼承例子就是物種的分類。舉例來說，狗跟貓都是哺乳類，因此他們都可以繼承到一些哺乳類共通的特徵（例如哺乳、用肺呼吸）。藉由繼承，我們可以把這些哺乳類共有的特徵全部放在哺乳類這個物件，再由狗和貓分別去繼承哺乳類，藉此讓他們都能得到哺乳類的特徵，再進一步發展出自己的特徵和行為，甚至重新定義基底類別的方法為自己所用。因此，像大話設計模式就將繼承說明如：繼承者是對於被繼承者的一種特殊化。</p>
+
+<p>如此一來，當我們需要修改哺乳類的定義的時候，<strong>只需要修改一個地方，而繼承了哺乳類的這些物件（C# 中稱為衍生類別）全都能夠一起修改到，大大地減少了跑來跑去修改的次數，也讓程式碼的重複大幅度地減少</strong>。</p>
+
+<p>然而也因為如此，繼承最大的惡名出現了：<strong>繼承享受了取用基底類別內容的好處，卻也必須背負牽一髮動全身的風險</strong>。</p>
+
+<p>繼承的特性和封裝有天生的衝突。為了從封裝好的物件之中取得內容，減少程式碼的重複，我們有了繼承，然而這樣無疑破壞了基底類別的封裝，完整地暴露給了衍生類別，兩者之間形成了強耦合的關係，對於衍生類別而言，它必須依賴著基底類別，倘若哪天基底類別的屬性變更了，例如型別或名稱有變動，那麼所有衍生類別使用到的地方都會受到影響，這時候在程式碼裡的修改規模，將會隨著繼承的濫用程度提升，達到一個相當龐大的地步。</p>
+
+<p>事實上，這是相當好理解的。我們藉由哺乳類去繼承出了狗科跟貓科兩個類別；那麼假設我們時光回溯，重新改變了哺乳類的演化過程，今天的哺乳類變成了三隻腳而且還有翅膀，那麼後面演化出來的狗跟貓又會怎麼樣呢？<strong>直接修改源頭，對後續的衍生者而言無疑是相當大的災難</strong>。</p>
+
+<p>同時由於繼承的方便和概念實在相當廣泛，因此也經常被胡亂使用。我個人就遇過專案之中，前人為了讓某個類別擁有各式各樣的方法，先後繼承了數學運算、連線至資料庫、字串處理等等數個類別，形成一條既長又龐大的繼承鏈，最終達到了無法修改的地步。像這樣的物件甚至無法通過芹菜測試，沒有人知道這個合成怪獸是來做什麼的，這種<a href="https://en.wikipedia.org/wiki/God_object">神之物件</a>搖身一變就變成滅世主宰，實在是相當恐怖。</p>
+
+<p>因此對於繼承，前輩們通常只有一種叮囑：<strong>謹慎使用，或是乾脆不要用</strong>。</p>
+
+<p>對於繼承的概念，這邊推薦可以看看，<a href="https://milikao.pixnet.net/blog/post/543592">到底誰該去繼承誰？ 物件導向初學者應該要知道的事情(三)</a> 這篇從圓和橢圓的各種繼承方式切入，很仔細地講解了不同思路使用繼承遇到的問題，尤其是示範完直覺的做法之後展示經典的段落相當重要。</p>
+
+<p>那麼我們就回到卡牌的例子：</p>
+
+<p>假使我們的卡牌現在有了功能卡，這類卡牌在遊戲王叫做魔法卡，而在爐石稱之為法術，雖然這也是一種卡片，但和前面提過的戰士和怪獸等等顯然完全不同。</p>
+
+<pre><code class="language-csharp">public class MagicCard
+{
+    public string Name;
+    public int Cost; // 資源花費
+    public Magic Effect; // 法術效果
+    private string _description;
+
+    public MagicCard() { /* 建構式 */}
+    public string Description { /* set; get; */} 
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>魔法卡並沒有攻擊力和生命值，只有對應的法術效果。同時，我們發現卡牌有資源花費的需要，像是爐石戰記或是殺戮尖塔這類有資源的遊戲，打出卡片的時候會需要花費水晶等資源，藉此限制玩家一回合內能使用的策略。</p>
+
+<p>現在我們明顯可以發現兩個問題：這兩個種類的卡片，都是卡片呀！而且，內容有一半都是重複的。這是我們該使用繼承的時機了。</p>
+
+<p>首先我們將原本的卡片更改為 怪獸卡。</p>
+
+<pre><code class="language-csharp">public class MonsterCard
+{
+    public string Name;
+    public int Cost;
+    public int Attack;
+    public int Health;
+    private string _description;
+
+    public MonsterCard() { /* 建構式 */}
+    public string Description { /* set; get; */} 
+    public void Hit(MonsterCard target) { /* 一些痛揍其他怪獸卡的方法 */ }
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>接著我們開始設計基底類別：卡片。我們可以觀察到，怪獸卡和魔法卡相同的部分有：名稱、敘述和卡片花費。</p>
+
+<pre><code class="language-csharp">public class Card
+{
+    public int Cost;
+    private string _description;
+
+    public string Description { /* set; get; */} 
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>將原本的怪獸卡和魔法卡改成繼承自卡片類別，並且將重複的部份移除，直接取用基底類別的內容就好。</p>
+
+<pre><code class="language-csharp">public class MonsterCard : Card
+{
+    public int Attack;
+    public int Health;
+    public MonsterCard() { /* 建構式 */ }
+    public void Hit(MonsterCard target) { /* 一些痛揍其他怪獸卡的方法 */ }
+}
+
+public class MagicCard : Card
+{
+    public int Cost;
+    public Magic Effect;
+    public MagicCard() { /* 建構式 */}
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>可以看到我們在 C# 的繼承方式是使用 <code>類別 : 基底類別</code> 的方式來宣告。並且也能發現，怪獸卡的內容變簡潔了。</p>
+
+<pre><code class="language-csharp">var goblin = new MonsterCard(name: &quot;哥布林&quot;, attack: 3, health: 2);
+var warrior = new MonsterCard(name: &quot;戰士&quot;, attack: 4, health: 3);
+warrior.Description = &quot;他是一個專殺哥布林的戰士！&quot;;
+warrior.Hit(goblin);
+</code></pre>
+
+<p><br/></p>
+
+<p>並且在使用上也沒有任何差錯，我們仍然能給予怪獸卡名字和敘述。</p>
+
+<p>當然在實際的卡牌遊戲中，魔法卡還能細分出更多種類，因此魔法卡類別還能再被一些更細的分類，例如指向法術等等去繼承，形成如同樹狀的繼承關係，如同物種演化一般。</p>
+
+<p>繼承的段落也快結束了，這邊再次叮嚀一番：除非你很確定，否則請不要使用繼承。繼承帶來了相當大的好處，減少的重複程式碼量號稱三特性之冠；但同時他帶來的後果也是最嚴重的，堪稱三特性中的擊墜之王，鏖殺了數以萬計濫用和誤用的工程師…和維護他們系統的工程師，不可不慎。但如果已經看到了這裡，還請你先記著繼承的概念，在不遠處的將來你將會遇到他那不太像又有點像的兄弟：介面。這邊就先打住。</p>
+
+<h2 id="多型-抽象-覆寫">多型、抽象、覆寫</h2>
+
+<p>多型算是比較三特性之中給人感覺比較溫和的了，不如說只要有了繼承，那麼多型的到來就是必然的。多型的定義是：不同的物件能夠做出一樣的行為，但必須由他們自己的程式碼來實作。</p>
+
+<p>白話一點說就是：<strong>一樣的事，不同做法</strong>。</p>
+
+<p>多型相對是比較好理解的，畢竟每個人做同一件事的方法本來就不太一樣。例如一樣是泡奶茶，英國就正常地泡，<a href="https://www.ettoday.net/news/20200707/1754177.htm">美國就會用微波爐</a>，到了程式的世界裡也相當簡單，即使繼承了同一個物件，實現這個行為的方式也可以不同。</p>
+
+<p>在此可以先推這篇 <a href="https://matthung0807.blogspot.com/2018/02/java-overload.html">Java 什麼是多載(Overload), 覆寫(Override), 多型(Polymorphism) - 菜鳥工程師肉豬</a> 中的說明。其中可以從例子看到儘管狗跟鳥都是繼承自動物這個類別，但對於「移動」這個方法，他們實作的方式並不一樣。這就是多型的範例。</p>
+
+<p>雖然我這邊也有準備多型的範例，但平時介面用慣了，不小心就和介面的段落寫在一起了，待到介面章節的小明和小華的例子時，各位自然就會明瞭。但在那之前，先讓我提一下抽象和覆寫。<del>絕對不是寫到這裡開始有點煩躁了所以趕火車。</del></p>
+
+<p>抽象的概念很直接，請回想一下前面的例子就可以了。當我們在用卡牌的例子時，雖然怪獸卡跟魔法卡都繼承了 Card 這個類別，但是我們仍然能 <code>new Card()</code> 來建立一張新卡牌，那…怪怪的吧，這張卡牌到底是什麼呀，空白的卡片嗎？又或是動物的例子，我們的狗跟貓都繼承了哺乳類，那我們能實例化一個哺乳類嗎？我們的狗跟鳥都是動物，那我們能實例化一個動物嗎？</p>
+
+<p>有些類別就是這樣，它們負責定義共通的那些特性，<strong>然而它們本身不應該被實體化成一個物件，這種類別我們就應該把它們標記為抽象類別</strong>。</p>
+
+<p><strong>抽象類別在 C# 裡用 <code>abstract</code> 這個修飾詞來表示</strong>，可以加在類別或方法上。例如 <code>abstract class Animal</code> 就代表動物這個類別是個抽象類別，它不能被實例化。</p>
+
+<p>而當加在方法上時，例如 <code>public abstract void Eat()</code> 就是代表這個進食的方法無法被叫用，只能由繼承者去重新定義這個方法。但有時候我們只是希望秉持著多型的精神，讓子類別有可以重新定義的彈性，這時候我們就會使用 <strong>虛擬 <code>virtual</code></strong> 的方式去標記這個方法，例如可能狗有 <code>public virtual void Eat()</code> 這個進食的方法，並且已實作且可以被調用。但是我們有了 <code>RobotDog</code> 這個類別，它就可以繼承並且重新改寫掉 <code>Eat()</code> 這個方法，從吃肉變成喝汽油。</p>
+
+<p>那麼繼承者們，也就是衍生類別如何去重新定義父類別的方法呢？這時候就必須使用<strong>覆寫 <code>override</code></strong>。覆寫是指對於像是前述的抽象、虛擬的方法時，在同名的方法前加上 <code>override</code> 關鍵字就可以讓程式知道你要覆寫這個方法（甚至有抽象方法的時候你不覆寫，編譯器還會生氣）。例如前述的 Eat，機器狗就可以用 <code>public override void Eat()</code> 的方式去覆寫吃東西這個方法。</p>
+
+<p>關於抽象和覆寫這部份的範例，唯恐我的舉例不夠深入，這邊再附上幾個不錯的範例，可以作為參考：<a href="https://medium.com/@ad57475747/c-%E9%9B%9C%E8%A8%98-%E4%BB%8B%E9%9D%A2-interface-%E6%8A%BD%E8%B1%A1-abstract-%E8%99%9B%E6%93%AC-virtual-%E4%B9%8B%E6%88%91%E8%A6%8B-dc3c5878bb80">C#雜記 — 介面(interface)、抽象( abstract)、虛擬(virtual)之我見 - Medium</a>、<a href="https://exfast.me/2016/09/c-sharp-use-interface-abstract-override-inheritance-implements-a-simple-example/">[C#] 利用 interface(介面) abstract(抽象) override(覆寫) inherit(繼承) 實作簡單範例 - 從入門到放棄</a></p>
+
+<p>我個人認為，繼承的戰力最強但危險度最高，大概就有一種強大自信的戰士的感覺(?)。但多型感覺起來最為平淡，卻是影響最深遠的特性，就有一種牧師默默地在背後支撐著整個隊伍的感覺(???)。整個多型的概念必須要到抽象、覆寫甚至是介面才能夠完全體現，但只要掌握了，就會發現物件的世界裡，多型就是如此稀鬆平常、理所當然的事兒。為了多了解多型一點，我們就接著看最後一片拼圖：介面吧！</p>
+
+<h2 id="介面">介面</h2>
+
+<p>如果說繼承是用來表明物件「由何而來」，那麼介面就是用來表明物件「能做什麼」。如果說多型是指子類別可以用不同方式去實作父類別的方法，父類別藉著實作有擴展的彈性，介面就是這個概念的發揮。</p>
+
+<p>介面就像是針對類別的行為去做規定的一個契約書，會先定義好要實作這個介面的類別所必須要有的方法，而當我們建立符合這個介面的類別時，就必須實作出所有介面中定義好方法才可以。……這樣說起來實在太繞口，總而言之介面的核心概念只有一條：</p>
+
+<p>我不在乎你是誰，我只在乎你能做什麼。</p>
+
+<p>我個人更喜歡用公司徵人的方式去理解介面。介面就像是老闆開出來的要求列表，例如說：要會寫 C#、要會寫 SQL、要會 VB…等等，於是老闆就貼出了徵人啟示，要求新來的員工必須要有 <code>IProgrammer</code> 寫的能力：</p>
+
+<pre><code class="language-csharp">public interface IProgrammer
+{
+    void WriteCSharp();
+    void WriteSQL();
+    void WriteVB();
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>於是今天小華就來面試了，但是他其實並不會寫 C#：</p>
+
+<pre><code class="language-csharp">public class Hua : IProgrammer
+{
+    // Error: Hua 未實作 IProgrammer.WriteCSharp()
+
+    public void WriteSQL() { /* Work */ }
+    public void WriteVB() { /* Work */ }
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>這時候編譯器就會跳出錯誤了：很抱歉，你不符合我們 <code>IProgrammer</code> 的規定，請你實作完之後再來。否則你就不能掛上我們 <code>: IProgrammer</code> 的頭銜。不過至少小華幫我們示範了，類別要標上介面的方法就和繼承一樣，在類別名稱後面加上 <code>:</code></p>
+
+<p>而小華走了之後，馬上就輪到小明開開心心地來應徵了，他不只會寫 C#、SQL 和 VB，甚至還會泡英式奶茶：</p>
+
+<pre><code class="language-csharp">public class Ming : IProgrammer
+{
+    public void WriteCSharp() { /* Work */ }
+    public void WriteSQL() { /* Work */ }
+    public void WriteVB() { /* Work */ }
+    public Tea MakeTea() { return new Tea(teaName: &quot;MilkTea&quot;); }
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>火速通過面試之後，老闆就讓小明上工了：</p>
+
+<pre><code class="language-csharp">public void Work()
+{
+    IProgrammer programmer = new Ming();
+    programmer.WriteCSharp();
+    programmer.WriteCSharp();
+    programmer.WriteCSharp();
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>在這個時候，小明已經不再只是小明，對老闆而言他就是一個符合應徵要求的工程師，這裡只需要「我（老闆）要求能做這些事的人」而不是「小明」，是 <code>IProgrammer</code> 而不是 <code>Ming</code>。在呼叫 <code>IProgrammer programmer = new Ming()</code> 的同時，這裡就只剩下一個無情的寫程式機器，再也沒有小明。</p>
+
+<p>當然，小明也不准在上班時間泡英式奶茶，我們不是請你來做這個的！</p>
+
+<pre><code class="language-csharp">public void Work()
+{
+    IProgrammer programmer = new Ming();
+    programmer.WriteCSharp();
+    programmer.MakeTea(); // Error: IProgrammer 未包含 MakeTea 的定義
+}
+</code></pre>
+
+<p><br/></p>
+
+<p>這樣只會讓編譯器尷尬地說：請你照我們契約書上面走好嗎？畢竟這裡只剩下 <code>IProgrammer</code> 而不是 <code>Ming</code> 了，一個無情的寫程式機器是不需要，也不會知道怎麼泡英式奶茶的。</p>
+
+<p>這邊我們就能知道：<strong>當子類別被以父類別的名義建立出來時，他就只能夠表現出父類別的樣子</strong>。換句話說，我們宣告的是什麼，他就只會做什麼。這裡也就是多型的核心概念，藉由子類別實作出各式各樣不同的方法，藉此讓父類別的方法藉此達到延伸和多樣化的效果。例如說一樣是 <code>IProgrammer</code> 的 <code>WriteVB()</code> 這個方法，可能小明的實現就是 <code>return shitCode;</code> 而小華的實作方式則是 <code>return cleanCode;</code>。</p>
+
+<p>雖然這樣似乎扼殺了子類別的獨特性，可能會讓寫的人陷入除了規範好的方法以外其他都不重要的迷思，但這只是關注點分離和職責分離中必經的道路，習慣之後對於公開方法和私有方法也會有更進一步的心得。上面的例子我將多型和介面一倂展現了，畢竟我個人在實務上接觸時幾乎都是一起使用的，後續就讓我多說點介面的概念。</p>
+
+<p>介面的核心概念在於提供了更多的彈性，更精確地說是<strong>變更的彈性</strong>。</p>
+
+<p>原本是連線到 MySQL 取得資料，哪天突然就必須更改成要連線到 MongoDB 取得資料；原本是只要實作出使用者儲存訂單的操作，突然接到指令說使用者必須區分成一般使用者和尊爵用戶並且實作出不同的操作流程等等。</p>
+
+<p>變更總是來得又急又快，而這也讓我們靜下來想，當我們把關注點放在整個邏輯的時候－－</p>
+
+<p>我需要的是「連線到 MySQL 取得資料」的工具嗎？並不是，只要是「能連線到資料庫、能取得資料」就好了。</p>
+
+<p>我需要的是「以ＯＯＯ技術替使用者建立訂單並儲存」的工具嗎？並不是，「替使用者建立訂單並儲存」才是最重要的。</p>
+
+<p>資料庫是可以替換的，儲存訂單到資料庫的工具也是可以替換的，甚至替使用者建立訂單的過程也是可以替換的。因此，從介面開始設計時最重要的是釐清「我需要的是什麼」並且把實作切離成可替換的部件，用介面定義好的方法把使用對象和實作接起來。而最後還是回到了關注點分離的議題：主流程、商業邏輯專心做好自己的事，他們只需要知道這個物件能夠提供拿到資料的方法就好，實際上怎麼拿則由實作的物件內部去處理。</p>
+
+<p>介面相對於我們開頭介紹的物件，將其理解概念的方式改成更集中在功能的角度。我們在理解物件的時候，可以知道冰箱是一個物件、冰櫃是一個物件、保冷袋是一個物件；但當我們在海邊釣到魚，想要找個地方保存的時候，我們需要的是冰箱嗎？是冰櫃嗎？是保冷袋嗎？都不是，我們需要的是「能低溫保存食物的東西」而已，今天你能用冰箱從海邊運到你家也沒關係，只要你實作得出來，並且魚是新鮮的就好。於是我們把觀看物件的角度集中在它的功能上，我們針對我們的需求去定義好我們需要的功能，這就是介面。</p>
+
+<p>我們定義好什麼叫做飛行，於是鴿子跟烏鴉都算是實作了飛行；我們定義好什麼叫做游泳，於是海豚跟鯨魚都算是實作了游泳。</p>
+
+<p><strong>只要你符合我需要的功能，達到我要的目的，不論你是誰，你如何實作，我都無所謂。</strong></p>
+
+<p>如此我們既達到了關注點分離，也保留了定好規則，將來可以使用不同實作的彈性；甚至將來接手的是另一個人，他看你的介面就能知道如何替換，替換時對象至少要能做到哪些事，今天他接到需求是上頭覺得保冷袋太 Low 了，我們要改用冰櫃車，他也有個接口指示他修改的方向。而在兩個系統，或是兩個分層之間要介接的時候，只需要提供我這個功能需要的接口／介面給對方，就能讓對方知道他必須實作哪些功能，如果我們要把運魚的需求託付給貨運公司，他看介面就知道我們要的是「低溫保存食物」，便可以提供對應的服務／實做給我們。如此豈不美哉！</p>
+
+<blockquote>
+<p>備註：一些有寫過前後端銜接的，或是做過一些小工具的到這邊可能會覺得有點熟悉。例如說：程式和使用者銜接的點，叫做使用者介面；前端跟後端交換資料的 API，叫做應用程式介面。所謂的介面／接口就是這麼一回事，這裡也不例外。</p>
+</blockquote>
+
+<p>當然有些讀者看到這裡可能也會有點疑惑：像上面的例子中 <code>IProgrammer programmer = new Ming();</code> 當我們宣告的當下不就還是知道了我們實作的對象了嗎？這樣並沒有完全分離呀？又或者是：我的東西都寫在 Controller/Model 裡，實際上都直接宣告出來就要使用了，不知道替換的好處在哪？等等諸如此類，都是我有過的想法，在接下來的新訓系列也將會逐漸說明。</p>
+
+<p>至於那些說：你不是都用卡牌當範例，怎麼介面突然多了個應徵？我只能說抱歉，洗澡的時候突然想到的，不寫不舒服。</p>
+
+<h2 id="結語">結語</h2>
+
+<p>一開始的時候，都是寫著義大利麵程式，不管什麼東西進來就是一條龍包到好。然而隨著專案變大，時間過去，內容越發複雜，於是就開始有了整理的念頭：想要把重複做的動作整理出來，想要把流程簡化，想要把同性質、較有關聯的東西放在一起，想要讓程式好懂一點，想要讓程式更符合我們對於真實世界的理解，想要能夠歸納一些抽象的概念，想要讓程式碼更有彈性面對更多狀況。於是我們一步一步跟著物件導向的腳步；於是我們去理解什麼是物件、什麼是類別；於是有了這篇。</p>
+
+<p>這應該是開部落格以來最長的文章了，我甚至懷疑真的有人會看到這裡嗎？（我猜是沒有，如果真的有那這讀者也太厲害）原先也有考慮像同事和網路上的前輩一樣，把每一節分開成不同文章，既能比較深入的去介紹，<del>也能一次水比較多篇</del>。但最後還是決定整理在一起，一來是新訓的內容相當龐大，再來是對我而言這些概念都是連貫下來的。從類別到封裝是在說明一個物件的觀點，從繼承到介面則是多個物件互動的觀點，而從介面蘊含了前面的所有特性之後，就要進入物件導向的五大原則了，之後就能再進一步邁向設計模式。隨著物件導向的路徑，看見問題的規模也將越來越大。</p>
+
+<p>我認為，從物件踏入到功能甚至系統之間的銜接點就在於介面，介面不同於前面各項特性是告訴我們物件應當如何，而是假設了我們前面已然掌握，是介面要求我們用功能之間對接時該怎麼處理的角度去看待問題。介面也是我新訓時第一個碰到的坑，因此我私心希望能在介面作為一個段落。</p>
+
+<p>除了這些最重要的是，寫在一起這樣我要自己整理還是丟給人家也是比較方便啦（懶成這樣）人家寫義大利麵程式，我寫義大利麵文章咩。</p>
+
+<p>最後，儘管這篇的篇幅有點長，但我仍覺得並不能仔細地說完，<del>畢竟也是只花一天壓線趕工出來的</del>。因此往後如果有想到什麼地方必須修正，或是找到什麼更好的表達方式，還是會回來修改這一篇文章，希望能逐漸修訂成讓我自己都能輕鬆看懂的物件導向入門文。而關於菜雞新訓記這個系列，如同和同事約好的那樣將會把入職時新人訓練的內容逐步整理出來，不過我這個人也是懶了點，應該會慢慢地逐篇整理，過程當然還是會介紹幾個套件水一下，還請見諒。那麼，我們下周見！</p>
+
+<h2 id="參考資料及延伸閱讀">參考資料及延伸閱讀</h2>
+
+<ul>
+<li><a href="https://ithelp.ithome.com.tw/articles/10201905">一個語言如果不改變你的思考方式，就不值得學？談程式語言的本質</a></li>
+<li><a href="https://blog.miniasp.com/post/2009/08/27/OOP-Basis-What-is-class-and-object">物件導向基礎：何謂類別(Class)？何謂物件(Object)？ - The Will Will Web</a></li>
+<li><a href="https://ytyubox.github.io/posts/2020/02/29/oop-discussion/">有物件導向的世界與沒有物件導向的世界</a></li>
+<li><a href="https://matthung0807.blogspot.com/2017/10/java_24.html">Java 物件導向的概念 - 菜鳥工程師肉豬</a></li>
+<li><a href="https://matthung0807.blogspot.com/2018/02/java-overload.html">Java 什麼是多載(Overload), 覆寫(Override), 多型(Polymorphism) - 菜鳥工程師肉豬</a></li>
+<li><a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-1_%E9%A1%9E%E5%88%A5class%E8%88%87%E5%AF%A6%E9%AB%94object/">Object Oriented物件導向-1:類別(Class)與實體(Object) - Sian</a></li>
+<li><a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-2_%E5%BB%BA%E6%A7%8B%E5%BC%8Fconstructor%E5%A4%9A%E8%BC%89overloading%E8%88%87%E8%A6%86%E5%AF%ABoverriding/">Object Oriented物件導向-2:建構式(Constructor)、多載(Overloading)與覆寫(Overriding) - Sian</a></li>
+<li><a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-3_%E5%B0%81%E8%A3%9Dencapsulation%E7%B9%BC%E6%89%BFinheritance%E8%88%87%E5%A4%9A%E5%9E%8Bpolymorphism/">Object Oriented物件導向-3:封裝(Encapsulation)、繼承(Inheritance)與多型(polymorphism)</a></li>
+<li><a href="https://medium.com/@ChunYeung/%E4%BB%80%E9%BA%BC%E6%98%AFoo-%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E8%88%87%E5%B0%81%E8%A3%9D-80379c24e62">什麼是OO？物件導向與封裝 - Chun Yeung - Medium</a></li>
+<li><a href="https://medium.com/@ChunYeung/%E4%BB%80%E9%BA%BC%E6%98%AFoo-%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E8%88%87%E7%B9%BC%E6%89%BF-6955239576af">什麼是OO？物件導向與繼承 - Chun Yeung - Medium</a></li>
+<li><a href="http://notepad.yehyeh.net/Content/CSharp/CH01/03ObjectOrient/1ObjectAndClass/index.php">[C#] 物件與類別 - Yehyen&rsquo;s Notepad</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10203659">實務上的高內聚與低耦合 - 可不可以不要寫糙 code</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10204633">不要造神 (神一般的物件) - 可不可以不要寫糙 code</a></li>
+<li><a href="https://milikao.pixnet.net/blog/post/543592">到底誰該去繼承誰？ 物件導向初學者應該要知道的事情(三)</a></li>
+<li><a href="https://dotblogs.com.tw/initials/2016/06/10/171117">[心得整理] c# 物件導向程式 - 2.封裝、繼承、多型的三大特性 - 聊聊程式</a></li>
+<li><a href="https://www.ithome.com.tw/node/45903">思考物件導向(1)物件導向與封裝 - 蔡學鏞</a></li>
+<li><a href="https://medium.com/@totoroLiu/%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-object-oriented-programming-%E6%A6%82%E5%BF%B5-5f205d437fd6">物件導向(Object Oriented Programming)概念 - Po-Ching Liu - Medium</a></li>
+<li><a href="https://medium.com/@ad57475747/c-%E9%9B%9C%E8%A8%98-%E4%BB%8B%E9%9D%A2-interface-%E6%8A%BD%E8%B1%A1-abstract-%E8%99%9B%E6%93%AC-virtual-%E4%B9%8B%E6%88%91%E8%A6%8B-dc3c5878bb80">C#雜記 — 介面(interface)、抽象(abstract)、虛擬(virtual)之我見 - Medium</a></li>
+<li><a href="https://exfast.me/2016/09/c-sharp-use-interface-abstract-override-inheritance-implements-a-simple-example/">[C#] 利用 interface(介面) abstract(抽象) override(覆寫) inherit(繼承) 實作簡單範例 - 從入門到放棄</a></li>
+<li><a href="https://dotblogs.com.tw/yc421206/2011/07/25/32097">[C#.NET] 為建構子建立正確的初始化 - 余小章 @ 大內殿堂</a></li>
+<li><a href="https://adon988.logdown.com/posts/1185453-c-destructors-teaching-notes-using-visual-studio">C# 解構子 Destructors - 教學筆記</a></li>
+<li><a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/concepts/object-oriented-programming">物件導向程式設計（C#）- MSDN</a></li>
+<li><a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/tutorials/inheritance">C# 和 .NET 中的繼承 - MSDN</a></li>
+<li><a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/accessibility-levels">存取範圍層級 - MSDN</a></li>
+<li><a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/abstract">abstract - MSDN</a></li>
+<li><a href="https://www.tenlong.com.tw/products/9789866761799">《大話設計模式》附錄：物件導向基礎</a></li>
+<li><a href="https://www.books.com.tw/products/0010824582">《深入淺出學會編寫程式》Ch7：模組、方法、類別以及物件</a></li>
+</ul>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/202007-automapper/">AutoMapper —— 類別轉換超省力</a></li>
+        
+        <li><a href="/post/202006-electron-net/">Electron.net —— 把網頁包成桌面應用吧</a></li>
+        
+        <li><a href="/post/202006-darkhorse/">讀《黑馬思維》</a></li>
+        
+        <li><a href="/post/202006-bit-flags-and-enum/">隨手記: 位元旗標與列舉</a></li>
+        
+        <li><a href="/post/202006-wakatime/">WakaTime —— 我 Coding 了多久？</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/newbieguide">NewbieGuide</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/object-oriented">Object-Oriented</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/automapper">AutoMapper</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-newbieguide-oo/" title="菜雞新訓記(-2) —— 菜雞與物件導向">菜雞新訓記(-2) —— 菜雞與物件導向</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-automapper/" title="AutoMapper —— 類別轉換超省力">AutoMapper —— 類別轉換超省力</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202006-electron-net/" title="Electron.net —— 把網頁包成桌面應用吧">Electron.net —— 把網頁包成桌面應用吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202006-darkhorse/" title="讀《黑馬思維》">讀《黑馬思維》</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202006-bit-flags-and-enum/" title="隨手記: 位元旗標與列舉">隨手記: 位元旗標與列舉</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202006-wakatime/" title="WakaTime —— 我 Coding 了多久？">WakaTime —— 我 Coding 了多久？</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202005-bandon-ex2-heroku-debug/" title="我要訂便當(4-2) —— Heroku 填坑小記">我要訂便當(4-2) —— Heroku 填坑小記</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202005-jsonview/" title="Json View —— 用 Chrome 看 Json 的必備擴充套件">Json View —— 用 Chrome 看 Json 的必備擴充套件</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202005-carbon/" title="Carbon —— 把 Code 轉成圖片小工具">Carbon —— 把 Code 轉成圖片小工具</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202005-bandon-ex1-heroku/" title="我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku">我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">Android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">Automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">CSS (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp/">CSharp (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">IDE (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/newbieguide/">NewbieGuide (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">Python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">Reading (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">Tools (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3HexSchool (18)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/android/">Android</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">AutoMapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">Automation</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">Bandon</a>
+    
+    <a href="https://igouist.github.io/tags/css/">CSS</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">CSharp</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">Crawler</a>
+    
+    <a href="https://igouist.github.io/tags/database/">Database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">Dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">Electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">Entity Framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">Enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">Excel</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">Heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">IDE</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">MySQL</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">NewbieGuide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">Object-Oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">PHP</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">PTT</a>
+    
+    <a href="https://igouist.github.io/tags/python/">Python</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">Reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">Selenium</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">Sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">Tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">VisualStudio</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">XAMPP</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3HexSchool</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">推薦友站</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://ithelp.ithome.com.tw/users/20112224/articles" title="KingLong">KingLong - iT邦幫忙</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        
+        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-92586970-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+</body>
+</html>
