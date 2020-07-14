@@ -140,8 +140,6 @@ Console.Write(afu.Color); // black
 afu.Eat(food);
 </code></pre>
 
-<p><br/></p>
-
 <p>理解物件的概念是相當直覺且迅速的，畢竟你我身邊有著數不清的東西，它們都是一件一件的物品，但這樣的理解還不夠明確。例如說單位的大小，如果有一棵樹，那麼樹是一個物件，樹葉也是物件嗎？如果是，角質層呢？木質部呢？又或者是完整度，如果冰箱是一個物件，那麼這個物件到底有多少內容？難道要我標明每一條電線嗎？事實上，要我們極其完整地描述一台冰箱，是近乎不可能的。當我們要實際上運用物件的概念時，必然會遇到這些問題。</p>
 
 <p>而這些問題可以歸納成：我要怎麼定義我的物件？這時候類別就出現了。</p>
@@ -152,8 +150,6 @@ afu.Eat(food);
     public void Eat(IFood food) { /* 進食與消化之類的 */ };
 }
 </code></pre>
-
-<p><br/></p>
 
 <p>藉由我們定義的類別，就可以從類別中實例化（＝建立）出物件。</p>
 
@@ -205,8 +201,6 @@ afu.Eat(food);
 }
 </code></pre>
 
-<p><br/></p>
-
 <p>抱歉我菜，如果有真的設計卡牌遊戲的工程師經過拜託不要打我。</p>
 
 <p>接著我們就能在需要的時候藉由這個類別來實例化我們的卡牌：</p>
@@ -215,8 +209,6 @@ afu.Eat(food);
 var warrior = new Card();
 warrior.Hit(goblin);
 </code></pre>
-
-<p><br/></p>
 
 <p>再提醒一次：</p>
 
@@ -249,8 +241,6 @@ goblin.Health = 2;
 /* ...其他賦值 */
 </code></pre>
 
-<p><br/></p>
-
 <p>但實在相當占空間，我們可以藉由<strong>建構式</strong>的方式，在建立物件時就進行一些我們想要的操作。事實上，當我們呼叫 <code>new Card()</code> 的時候（不覺得這個 () 很有呼叫方法的感覺嗎？）我們就是正在調用 Card 的建構式。當我們沒有特別去定義建構式的時候，就會直接使用內建的建構式去幫我們產生物件。</p>
 
 <p>現在我們替 Card 新增一個建構式：</p>
@@ -267,16 +257,12 @@ goblin.Health = 2;
 }
 </code></pre>
 
-<p><br/></p>
-
 <p>在 C# 的時候，建構式必須和類別同名，且不需要定義回傳類型。當我們有了建構式，剛剛的例子就可以改寫成：</p>
 
 <pre><code class="language-csharp">var goblin = new Card(name: &quot;哥布林&quot;, attack: 3, health: 2);
 var warrior = new Card(name: &quot;戰士&quot; , attack: 4, health: 3);
 warrior.Hit(goblin);
 </code></pre>
-
-<p><br/></p>
 
 <p><strong>建構式也就是建立這個物件時執行的函式</strong>，通常會用來進行初始化，也就是做一些建立物件必要的準備。例如傳遞必要屬性或是建構需要的其他物件、或是給予私有屬性初始值等等，例如說我們的卡牌一建立，就會需要知道它的名字和戰鬥力，這樣才有卡牌的感覺，而不該像一些壞決鬥者邊打牌邊偷偷印卡。</p>
 
@@ -315,8 +301,6 @@ warrior.Hit(goblin);
 }
 </code></pre>
 
-<p><br/></p>
-
 <p>如此一來，我們在建立卡片的時候就能夠有更多選擇了，現在我們可以根據狀況給予需要的參數，剩下的就交給建構式去處理就好。</p>
 
 <p>實務上，如果規則或是建立的步驟一致的話，為了能夠把規則集中到一個地方方便修改，並且減少多餘的程式碼。我們通常會試著讓其他的建構式去呼叫主要的建構式，在 C# 中，呼叫自己的建構式是使用 <code>: this()</code> 來進行的，例如：</p>
@@ -341,8 +325,6 @@ public Card () : this(name: &quot;Nomame&quot;)
 }
 </code></pre>
 
-<p><br/></p>
-
 <p>如此一來只要建構的方式有變更，我們只需要集中修改第一個建構式就好了。這部份的流程也可以參照 <a href="https://dotblogs.com.tw/yc421206/2011/07/25/32097">[C#.NET] 為建構子建立正確的初始化 - 余小章 @ 大內殿堂</a> 這篇的說明。</p>
 
 <p>當然隨著時代演進，多載也不只是用在建構子，而是大多數人都會用到的一個寫法了。因此時至今日，我們只要使用<strong>選擇性參數</strong>就可以輕鬆達到一樣的效果囉：</p>
@@ -354,8 +336,6 @@ public Card () : this(name: &quot;Nomame&quot;)
     this.Health = health;
 }
 </code></pre>
-
-<p><br/></p>
 
 <p>當有預設值的時候，該參數就會變成可選的，這時候就可以輕鬆決定要傳進來的內容了。當然，如果傳進來的並非只是數量上的差別，而是整個型別都不一樣的話，還是要回歸到多載的做法，建立兩個同名但不同傳入參數類型的方法，可讀性會比較高呦。</p>
 
@@ -399,8 +379,6 @@ public Card () : this(name: &quot;Nomame&quot;)
 }
 </code></pre>
 
-<p><br/></p>
-
 <p>呃可能第一步就會讓人有些疑惑：「啊你要給人家傳東西進來還改私有？」但等等，且聽我娓娓道來：C# 中的屬性，是用 <code>Set</code> 和 <code>Get</code> 兩個方法去存取的，因此我們將進一步規劃出我們的門和窗：</p>
 
 <pre><code class="language-csharp">public class Card
@@ -426,16 +404,12 @@ public Card () : this(name: &quot;Nomame&quot;)
 }
 </code></pre>
 
-<p><br/></p>
-
 <p>如此一來我們就能對存取屬性時的行為進行管控囉。</p>
 
 <p>而在 C# 裡，如果你並沒有要特別針對存取另做額外處理，可以直接使用自動實作：</p>
 
 <pre><code class="language-csharp">public string Description { set; get; }
 </code></pre>
-
-<p><br/></p>
 
 <p>這樣 C# 就會自動幫你建立一個私有屬性，並且只能經由 set 和 get 進行存取。</p>
 
@@ -444,14 +418,10 @@ public Card () : this(name: &quot;Nomame&quot;)
 <pre><code class="language-csharp">public string Description { get; }
 </code></pre>
 
-<p><br/></p>
-
 <p>要加上預設值也能這樣寫</p>
 
 <pre><code class="language-csharp">public string Description { get; } = &quot;這是一張卡牌。&quot;;
 </code></pre>
-
-<p><br/></p>
 
 <p>可以說是方便很多。當然，封裝的概念並不僅僅只是對屬性做存取管控如此而已，提高類別內的內聚性，降低對外的耦合性，隱藏複雜資訊才是最重要的方針，然而這只能在設計時，或是維護到頭痛才能親自體會了。例如說：當你需要處理一長串的商業邏輯，以至於需要將他們切割成數個小函式時，將它們宣告成 <code>Private</code> 就是相當好的選擇，這意味著這些工具僅讓你的物件內部使用，外面的人不應該直接調用其中的任何功能，同時又能幫助你的主要流程變得更簡潔。</p>
 
@@ -501,8 +471,6 @@ public Card () : this(name: &quot;Nomame&quot;)
 }
 </code></pre>
 
-<p><br/></p>
-
 <p>魔法卡並沒有攻擊力和生命值，只有對應的法術效果。同時，我們發現卡牌有資源花費的需要，像是爐石戰記或是殺戮尖塔這類有資源的遊戲，打出卡片的時候會需要花費水晶等資源，藉此限制玩家一回合內能使用的策略。</p>
 
 <p>現在我們明顯可以發現兩個問題：這兩個種類的卡片，都是卡片呀！而且，內容有一半都是重複的。這是我們該使用繼承的時機了。</p>
@@ -523,8 +491,6 @@ public Card () : this(name: &quot;Nomame&quot;)
 }
 </code></pre>
 
-<p><br/></p>
-
 <p>接著我們開始設計基底類別：卡片。我們可以觀察到，怪獸卡和魔法卡相同的部分有：名稱、敘述和卡片花費。</p>
 
 <pre><code class="language-csharp">public class Card
@@ -535,8 +501,6 @@ public Card () : this(name: &quot;Nomame&quot;)
     public string Description { /* set; get; */} 
 }
 </code></pre>
-
-<p><br/></p>
 
 <p>將原本的怪獸卡和魔法卡改成繼承自卡片類別，並且將重複的部份移除，直接取用基底類別的內容就好。</p>
 
@@ -556,8 +520,6 @@ public class MagicCard : Card
 }
 </code></pre>
 
-<p><br/></p>
-
 <p>可以看到我們在 C# 的繼承方式是使用 <code>類別 : 基底類別</code> 的方式來宣告。並且也能發現，怪獸卡的內容變簡潔了。</p>
 
 <pre><code class="language-csharp">var goblin = new MonsterCard(name: &quot;哥布林&quot;, attack: 3, health: 2);
@@ -565,8 +527,6 @@ var warrior = new MonsterCard(name: &quot;戰士&quot;, attack: 4, health: 3);
 warrior.Description = &quot;他是一個專殺哥布林的戰士！&quot;;
 warrior.Hit(goblin);
 </code></pre>
-
-<p><br/></p>
 
 <p>並且在使用上也沒有任何差錯，我們仍然能給予怪獸卡名字和敘述。</p>
 
@@ -624,8 +584,6 @@ warrior.Hit(goblin);
 }
 </code></pre>
 
-<p><br/></p>
-
 <p>於是今天小華就來面試了，但是他其實並不會寫 C#：</p>
 
 <pre><code class="language-csharp">public class Hua : IProgrammer
@@ -636,8 +594,6 @@ warrior.Hit(goblin);
     public void WriteVB() { /* Work */ }
 }
 </code></pre>
-
-<p><br/></p>
 
 <p>這時候編譯器就會跳出錯誤了：很抱歉，你不符合我們 <code>IProgrammer</code> 的規定，請你實作完之後再來。否則你就不能掛上我們 <code>: IProgrammer</code> 的頭銜。不過至少小華幫我們示範了，類別要標上介面的方法就和繼承一樣，在類別名稱後面加上 <code>:</code></p>
 
@@ -652,8 +608,6 @@ warrior.Hit(goblin);
 }
 </code></pre>
 
-<p><br/></p>
-
 <p>火速通過面試之後，老闆就讓小明上工了：</p>
 
 <pre><code class="language-csharp">public void Work()
@@ -664,8 +618,6 @@ warrior.Hit(goblin);
     programmer.WriteCSharp();
 }
 </code></pre>
-
-<p><br/></p>
 
 <p>在這個時候，小明已經不再只是小明，對老闆而言他就是一個符合應徵要求的工程師，這裡只需要「我（老闆）要求能做這些事的人」而不是「小明」，是 <code>IProgrammer</code> 而不是 <code>Ming</code>。在呼叫 <code>IProgrammer programmer = new Ming()</code> 的同時，這裡就只剩下一個無情的寫程式機器，再也沒有小明。</p>
 
@@ -678,8 +630,6 @@ warrior.Hit(goblin);
     programmer.MakeTea(); // Error: IProgrammer 未包含 MakeTea 的定義
 }
 </code></pre>
-
-<p><br/></p>
 
 <p>這樣只會讓編譯器尷尬地說：請你照我們契約書上面走好嗎？畢竟這裡只剩下 <code>IProgrammer</code> 而不是 <code>Ming</code> 了，一個無情的寫程式機器是不需要，也不會知道怎麼泡英式奶茶的。</p>
 
