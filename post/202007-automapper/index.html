@@ -144,8 +144,7 @@
 }
 </code></pre>
 
-<p><br/>
-沒錯，只需要簡簡單單幾步， <strong>AutoMapper 會自動將指定類別間同樣名稱的屬性內容做轉換</strong> ，因此能夠省下相當多的功夫，也能夠隱藏類別本身的內容，專心在處理功能本身。</p>
+<p>沒錯，只需要簡簡單單幾步， <strong>AutoMapper 會自動將指定類別間同樣名稱的屬性內容做轉換</strong> ，因此能夠省下相當多的功夫，也能夠隱藏類別本身的內容，專心在處理功能本身。</p>
 
 <blockquote>
 <p>註：網路上挺多 AutoMapper 的文章會直接使用 <code>Mapper.CreateMap()</code> 這類靜態方法，然而這些方法已經在 AutoMapper 5 的時候被廢除，改成現在由 <code>MapperConfiguration</code> 產生 Mapper 的方法。</p>
@@ -164,8 +163,7 @@
     ); // 註冊Model間的對映 建立設定檔
 </code></pre>
 
-<p><br/>
-可以看到 <strong>我們能用 <code>ForMember</code> 去對類別成員做操作，並傳入目標的類別成員，以及該成員對應的操作，像這邊就使用 <code>MapFrom</code> 來指定目標類別成員的轉換來源</strong>，這樣就可以達到轉換時的客製化了。</p>
+<p>可以看到 <strong>我們能用 <code>ForMember</code> 去對類別成員做操作，並傳入目標的類別成員，以及該成員對應的操作，像這邊就使用 <code>MapFrom</code> 來指定目標類別成員的轉換來源</strong>，這樣就可以達到轉換時的客製化了。</p>
 
 <blockquote>
 <p>註：對於欄位之間有使用 <code>ForMember</code> 來處理過內容再轉換的型別，建議在轉換型別時，也就是實際 mapper.Map() 的時候，稍做註解提醒一下。</p>
@@ -184,8 +182,7 @@
 }
 </code></pre>
 
-<p><br/>
-如上述程式碼，可能卡片的圖像位置必須由別的方式取得，這種情況我們在 <code>ForMember</code> 的時候就可以將其指定為 <code>Ignore</code> 讓 AutoMapper 不要去嘗試轉換它。除了 <code>Ignore</code> 以外，AutoMapper 還有配備像是 <code>IgnoreAllPropertiesWithAnInaccessibleSetter</code> 這種光方法名稱長度就有點強的大殺器，也還有像是 <code>AllowNull</code> 等更多對欄位操作的方法，這部份請各位在使用時按照需求自行摸索。</p>
+<p>如上述程式碼，可能卡片的圖像位置必須由別的方式取得，這種情況我們在 <code>ForMember</code> 的時候就可以將其指定為 <code>Ignore</code> 讓 AutoMapper 不要去嘗試轉換它。除了 <code>Ignore</code> 以外，AutoMapper 還有配備像是 <code>IgnoreAllPropertiesWithAnInaccessibleSetter</code> 這種光方法名稱長度就有點強的大殺器，也還有像是 <code>AllowNull</code> 等更多對欄位操作的方法，這部份請各位在使用時按照需求自行摸索。</p>
 
 <blockquote>
 <p>註(1)：上述舉的例子中有需要從多個來源轉換為一個類別的場合，可以參照<br/> <a href="https://kevintsengtw.blogspot.com/2014/03/automapper.html">AutoMapper 兩個物件對映到一個類別 - mrkt 的程式學習筆記</a></p>
@@ -202,8 +199,6 @@
        .ReverseMap() // 反轉
     );
 </code></pre>
-
-<p><br/></p>
 
 <p>到目前為止，程式碼可能會變成如下：</p>
 
@@ -250,8 +245,6 @@
 }
 </code></pre>
 
-<p><br/></p>
-
 <p>從上面可以看到，我們<strong>繼承 AutoMapper 提供的 Profile 類，接著在建構式裡面將需要的轉換關係組都建立起來</strong>。接著當我們建立 Mapper 時，就可以直接用 <code>AddProfile</code> 和建立好的 Profile 來直接讀入對映關係：</p>
 
 <pre><code class="language-csharp">public IEnumerable&lt;CardViewModel&gt; GetCard()
@@ -264,8 +257,6 @@
     return result;
 }
 </code></pre>
-
-<p><br/></p>
 
 <p>當然，<strong>在 <code>MapperConfiguration</code> 的時候是可以對 cfg 去做多次 <code>AddProfile</code> 的</strong>，既然可以載入多組對映關係，就代表可以按照實務上的運用去將對映關係做分類和整理。</p>
 
@@ -286,8 +277,6 @@ public MapSimpleService() // 建構式
 }
 </code></pre>
 
-<p><br/></p>
-
 <p>那麼我們實際上的方法就會變成：</p>
 
 <pre><code class="language-csharp">public IEnumerable&lt;CardViewModel&gt; GetCard()
@@ -297,8 +286,6 @@ public MapSimpleService() // 建構式
     return result;
 }
 </code></pre>
-
-<p><br/></p>
 
 <h3 id="走向注入">走向注入</h3>
 
@@ -318,8 +305,6 @@ public MapSimpleService() // 建構式
 }
 </code></pre>
 
-<p><br/></p>
-
 <p>註冊好之後，我們就能將剛剛的示範部分更改為使用注入的方式來取得 Mapper：</p>
 
 <pre><code class="language-csharp">private IMapper _mapper;
@@ -329,8 +314,6 @@ public MapSimpleService(IMapper mapper) // 建構式
     this._mapper = mapper;
 }
 </code></pre>
-
-<p><br/></p>
 
 <p>執行之後就能確認確實有轉換到值。可能有些人會有點疑惑：前面還需要 <code>MapperConfiguration</code> 怎麼這次不用了呢？那是因為 <code>AddAutoMapper</code> 的時候就會用反射去取得專案中的 <code>Profile</code> 來載入了，這部分就可以不用擔心，只要專心在使用上就好。</p>
 
@@ -355,8 +338,6 @@ public MapSimpleService(IMapper mapper) // 建構式
 }
 </code></pre>
 
-<p><br/></p>
-
 <p>瘦身後</p>
 
 <pre><code class="language-csharp">public IEnumerable&lt;CardViewModel&gt; GetCard()
@@ -366,8 +347,6 @@ public MapSimpleService(IMapper mapper) // 建構式
     return result;
 }
 </code></pre>
-
-<p><br/></p>
 
 <h2 id="結語">結語</h2>
 
