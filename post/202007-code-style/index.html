@@ -7,8 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>隨手記: 程式碼風格備忘 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="隨手記: 程式碼風格備忘 - 伊果的沒人看筆記本">
+    <title>C#: 程式碼風格備忘 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="C#: 程式碼風格備忘 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
     <meta property="article:published_time" content="2020-07-25T00:16:00&#43;08:00">
@@ -17,7 +17,7 @@
     <meta property="article:modified_time" content="2020-07-25T00:16:00&#43;08:00">
         
     <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
-    <meta name="description" content="隨手記: 程式碼風格備忘">
+    <meta name="description" content="C#: 程式碼風格備忘">
         <meta name="author" content="Igouist">
         
     <meta property="og:url" content="https://igouist.github.io/post/202007-code-style/">
@@ -78,7 +78,7 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">隨手記: 程式碼風格備忘</h1>
+                            <h1 class="post-title">C#: 程式碼風格備忘</h1>
                         </header>
                         <date class="post-meta meta-date">
                             2020-7-25,
@@ -225,7 +225,7 @@ Nothing is true, everything is permitted. —— Assassin&rsquo;s creed.</p>
 <li>變數存活的範圍越大，就必須記越久
 
 <ul>
-<li>盡量<strong>避免使用全域變數</strong>，縮限並控制所有變數的範圍ㄋ</li>
+<li>盡量<strong>避免使用全域變數</strong>，縮限並控制所有變數的範圍</li>
 </ul></li>
 <li>變數越常改變越難記得目前的數值和意義
 
@@ -247,8 +247,8 @@ Nothing is true, everything is permitted. —— Assassin&rsquo;s creed.</p>
 <li><code>Get</code>：從資料庫抓回資料</li>
 <li><code>Search</code>：頁面或定義為搜尋時</li>
 <li><code>Find</code>：在既有的資料集合找資料</li>
-<li><code>Fetch</code>：從遠端 (透過API) 獲取資料，例如：fetchUsers()</li>
-<li><code>load</code>：從本地端加載資料，例如：loadFile()</li>
+<li><code>Fetch</code>：從遠端 (透過API) 獲取資料，例如：`FetchUsers()</li>
+<li><code>load</code>：從本地端加載資料，例如：<code>LoadFile()</code></li>
 </ul></li>
 <li><strong>修改</strong>
 
@@ -273,10 +273,10 @@ Nothing is true, everything is permitted. —— Assassin&rsquo;s creed.</p>
 
 <ul>
 <li><code>Convert</code>：代碼轉文字／編碼之間的轉換</li>
-<li><code>calculate/calc</code>：通過計算獲取資料，例如：calcBMI()</li>
-<li><code>show</code>：顯示物件，例如：showDialog()</li>
-<li><code>on</code>：定義 event 的時候使用，像是 onClick, onChange</li>
-<li><code>handle</code>：當 onClick 之類的 event 發生時所觸發的 function</li>
+<li><code>calculate/calc</code>：通過計算獲取資料，例如：<code>CalcBMI()</code></li>
+<li><code>show</code>：顯示物件，例如：<code>ShowDialog()</code></li>
+<li><code>on</code>：定義 event 的時候使用，像是 <code>OnClick()</code>, <code>OnChange()</code></li>
+<li><code>handle</code>：當 <code>OnClick</code> 之類的 event 發生時所觸發的 function</li>
 </ul></li>
 </ul>
 
@@ -291,6 +291,16 @@ Nothing is true, everything is permitted. —— Assassin&rsquo;s creed.</p>
 <li>輸入參數應該越少越好，如果參數高於三個以上，試著<strong>換個思路</strong>重構這個方法</li>
 <li>輸入參數<strong>不要使用傳入 Boolean 來改變類別和函式的行為</strong>（違反單一職責）</li>
 <li>有多載的需求時，將輸入參數最多的宣告設為 virtual，其他較少輸入參數的則以呼叫最多輸入參數的函式來完成建構</li>
+<li>如果<strong>類別的名稱已經有足夠的說明，則方法名稱就不需要再複誦一次</strong>
+
+<ul>
+<li>例如 <code>ProductService.GetProduct()</code> 就是贅詞，可以 <code>ProductService.Get()</code> 就好</li>
+</ul></li>
+<li>呼叫方法時，如果傳入參數無法直接識別內容，則應使用具名傳遞
+
+<ul>
+<li>例如 <code>Get(productId, true)</code> 很難看出來 true 代表的意思，則可以 <code>Get(productId, isInStock: true)</code></li>
+</ul></li>
 <li>回傳值除了單純的運算式以外，一律回傳變數</li>
 </ul>
 
@@ -321,6 +331,12 @@ Nothing is true, everything is permitted. —— Assassin&rsquo;s creed.</p>
 <li>參數按照傳入的順序排列</li>
 <li>相似方法之間的傳入參數順序盡可能一致</li>
 <li>相關的宣告和操作放在一起</li>
+</ul></li>
+<li>當因為參數過多的時候必須斷到下一行時，從第一個參數之前就開始斷行
+
+<ul>
+<li>因本條規則斷行後，則一個參數獨立一行，必要時具名，使閱讀時能直接往下閱讀</li>
+<li>不過如果方法參數過多，應先考慮是否重構該方法，極可能違反單一職責</li>
 </ul></li>
 <li><strong>風格一致、風格一致、風格一致</strong></li>
 </ul>
@@ -565,7 +581,7 @@ public class DatabaseConstants : IDatabaseConstants
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202007-code-style/" title="隨手記: 程式碼風格備忘">隨手記: 程式碼風格備忘</a>
+        <a href="https://igouist.github.io/post/202007-code-style/" title="C#: 程式碼風格備忘">C#: 程式碼風格備忘</a>
     </li>
     
     <li>
