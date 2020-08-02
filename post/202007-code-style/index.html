@@ -230,7 +230,7 @@ Nothing is true, everything is permitted. —— Assassin&rsquo;s creed.</p>
 <li>變數越常改變越難記得目前的數值和意義
 
 <ul>
-<li><strong>偏好單次寫入變數</strong>，盡量不要過度重複使用造成混亂</li>
+<li><strong>偏好單次寫入變數</strong>，盡量不要過度重複寫入造成混亂</li>
 <li>當變數內容改變，就可以考慮宣告成新的變數</li>
 <li>變數的宣告和其命名都是為了讓閱讀者<strong>能直接看出改變的差異或當下變數的狀態</strong></li>
 </ul></li>
@@ -294,12 +294,14 @@ Nothing is true, everything is permitted. —— Assassin&rsquo;s creed.</p>
 <li>如果<strong>類別的名稱已經有足夠的說明，則方法名稱就不需要再複誦一次</strong>
 
 <ul>
-<li>例如 <code>ProductService.GetProduct()</code> 就是贅詞，可以 <code>ProductService.Get()</code> 就好</li>
+<li>例如 <code>ProductService.GetProduct()</code> 就是贅詞</li>
+<li>可以改為 <code>ProductService.Get()</code> 就好</li>
 </ul></li>
 <li>呼叫方法時，如果傳入參數無法直接識別內容，則應使用具名傳遞
 
 <ul>
-<li>例如 <code>Get(productId, true)</code> 很難看出來 true 代表的意思，則可以 <code>Get(productId, isInStock: true)</code></li>
+<li>例如 <code>Get(productId, true)</code> 很難看出來 true 代表的意思</li>
+<li>可以改為 <code>Get(productId, isInStock: true)</code> 就好</li>
 </ul></li>
 <li>回傳值除了單純的運算式以外，一律回傳變數</li>
 </ul>
@@ -341,66 +343,6 @@ Nothing is true, everything is permitted. —— Assassin&rsquo;s creed.</p>
 <li><strong>風格一致、風格一致、風格一致</strong></li>
 </ul>
 
-<h3 id="實質型別">實質型別</h3>
-
-<p>包含所有的數字型別、布林、字元和日期，以及結構和列舉</p>
-
-<ul>
-<li><strong>傳值</strong></li>
-<li>不允許 Null （除非特別指派 Nullable）</li>
-<li>有隱含的預設建構式，不需要用 new</li>
-<li>初始化之後才能使用</li>
-<li>資料傳遞時是將<strong>資料</strong>複製到另一個變數</li>
-</ul>
-
-<h3 id="參考型別">參考型別</h3>
-
-<p>能進一步分為陣列和類別型別，其中包含字串、所有陣列、類別、委派和介面。以及匿名和通用型別</p>
-
-<ul>
-<li><strong>傳址</strong></li>
-<li>必須要使用 new 建立實體，並將該實體的參考記在變數</li>
-<li>資料傳遞時是將<strong>參考</strong>複製到另一個變數</li>
-</ul>
-
-<blockquote>
-<p>註記：<strong>字串比較特別</strong>，實際上比較像一個結構。可以試著當成字元的串列比較好記，可以從 <code>char[] letters = {'H','e','l','l','o'};</code> 和 <code>string a = new string(letters);</code> 的實驗中感覺到一絲端倪。字串建立後也不允許直接變更，可能是藉此閃避一些更改時的問題。</p>
-</blockquote>
-
-<h3 id="轉型">轉型</h3>
-
-<ul>
-<li><strong>隱含轉換</strong>
-
-<ul>
-<li>屬於安全的轉換，所以不用使用特殊語法</li>
-<li>小型到大型整數型別的轉換（如 int -&gt; long）</li>
-<li>衍生型別 (Derived Class) 到基底型別 (Base Class) 的轉換</li>
-<li>例如 <code>int num = 2147483647; long bigNum = num;</code></li>
-</ul></li>
-<li><strong>明確轉換</strong>
-
-<ul>
-<li>資料可能在轉換中遺失或失敗時，需要使用轉型運算子</li>
-<li>往精確度較低或範圍較小的型別進行的數值轉換（如 double -&gt; int）</li>
-<li>基底類別往衍生類別的轉換</li>
-<li>例如 <code>double x = 1234.7; int y= (int)x</code></li>
-</ul></li>
-<li><strong>使用 Helper 類別轉換</strong>
-
-<ul>
-<li>在不相容型別間進行轉換時使用（如 int -&gt; System.DateTime）</li>
-<li>使用 Helper 進行轉換（如 Int32.Parse），例如
-
-<ul>
-<li>System.BitConverter 類別</li>
-<li>System.Convert 類別</li>
-<li>內建數字型別 (Numeric Type) 的 Parse 方法</li>
-</ul></li>
-<li>例如 <code>string x = &quot;2016-04-08&quot;; DateTime z = System.DateTime.Parse(x)</code></li>
-</ul></li>
-</ul>
-
 <h3 id="邏輯運算">邏輯運算</h3>
 
 <ul>
@@ -423,15 +365,12 @@ Nothing is true, everything is permitted. —— Assassin&rsquo;s creed.</p>
 
 <p>簡單卻繁瑣的時候使用，但是複雜的時候就乖乖用 if else。例如：</p>
 
-<pre><code>string gender = (&quot;M&quot; == &quot;F&quot;) ? &quot;女性&quot; : &quot;男性&quot;;
+<pre><code class="language-csharp">string gender = (&quot;M&quot; == &quot;F&quot;) ? &quot;女性&quot; : &quot;男性&quot;; 
+// 很棒
+
+int result = (exponent &gt;= 0)? mantissa * (1 &lt;&lt; exponent): mantissa / (1 &lt;&lt; -exponent)
+// ？？？
 </code></pre>
-
-<p>　↑ = 很棒</p>
-
-<pre><code>int result = (exponent &gt;= 0)? mantissa * (1 &lt;&lt; exponent): mantissa / (1 &lt;&lt; -exponent)
-</code></pre>
-
-<p>　↑ = ？？？</p>
 
 <h3 id="迴圈">迴圈</h3>
 
@@ -508,6 +447,68 @@ public class DatabaseConstants : IDatabaseConstants
 <li>函式可以加上範例 <code>&lt;example&gt; Strip(&quot;aba&quot;,&quot;ab&quot;) return &quot;a&quot; &lt;/example&gt;</code></li>
 <li>移除不需要的註解，例如日誌、署名、重複資訊、被註解掉的 code 之類</li>
 <li>使用註解標籤：Todo = 待辦事項； Fixme = 需修復；可搭配 VS 內建的<a href="https://reurl.cc/rl1Kab">工作清單</a></li>
+</ul>
+
+<h3 id="附錄-協別">附錄：協別</h3>
+
+<h4 id="實質型別">實質型別</h4>
+
+<p>包含所有的數字型別、布林、字元和日期，以及結構和列舉</p>
+
+<ul>
+<li><strong>傳值</strong></li>
+<li>不允許 Null （除非特別指派 Nullable）</li>
+<li>有隱含的預設建構式，不需要用 new</li>
+<li>初始化之後才能使用</li>
+<li>資料傳遞時是將<strong>資料</strong>複製到另一個變數</li>
+</ul>
+
+<h4 id="參考型別">參考型別</h4>
+
+<p>能進一步分為陣列和類別型別，其中包含字串、所有陣列、類別、委派和介面。以及匿名和通用型別</p>
+
+<ul>
+<li><strong>傳址</strong></li>
+<li>必須要使用 new 建立實體，並將該實體的參考記在變數</li>
+<li>資料傳遞時是將<strong>參考</strong>複製到另一個變數</li>
+</ul>
+
+<blockquote>
+<p>註記：<strong>字串比較特別</strong>，實際上比較像一個結構。可以試著當成字元的串列比較好記，可以從 <code>char[] letters = {'H','e','l','l','o'};</code> 和 <code>string a = new string(letters);</code> 的實驗中感覺到一絲端倪。字串建立後也不允許直接變更，可能是藉此閃避一些更改時的問題。</p>
+</blockquote>
+
+<h4 id="轉型">轉型</h4>
+
+<ul>
+<li><strong>隱含轉換</strong>
+
+<ul>
+<li>屬於安全的轉換，所以不用使用特殊語法</li>
+<li>小型到大型整數型別的轉換（如 int -&gt; long）</li>
+<li>衍生型別 (Derived Class) 到基底型別 (Base Class) 的轉換</li>
+<li>例如 <code>int num = 2147483647; long bigNum = num;</code></li>
+</ul></li>
+<li><strong>明確轉換</strong>
+
+<ul>
+<li>資料可能在轉換中遺失或失敗時，需要使用轉型運算子</li>
+<li>往精確度較低或範圍較小的型別進行的數值轉換（如 double -&gt; int）</li>
+<li>基底類別往衍生類別的轉換</li>
+<li>例如 <code>double x = 1234.7; int y= (int)x</code></li>
+</ul></li>
+<li><strong>使用 Helper 類別轉換</strong>
+
+<ul>
+<li>在不相容型別間進行轉換時使用（如 int -&gt; System.DateTime）</li>
+<li>使用 Helper 進行轉換（如 Int32.Parse），例如
+
+<ul>
+<li>System.BitConverter 類別</li>
+<li>System.Convert 類別</li>
+<li>內建數字型別 (Numeric Type) 的 Parse 方法</li>
+</ul></li>
+<li>例如 <code>string x = &quot;2016-04-08&quot;; DateTime z = System.DateTime.Parse(x)</code></li>
+</ul></li>
 </ul>
                         </div>
 
