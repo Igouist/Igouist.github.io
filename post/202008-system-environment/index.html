@@ -7,22 +7,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Excel | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="Excel - 伊果的沒人看筆記本">
+    <title>C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
+    <meta property="article:published_time" content="2020-08-02T13:31:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2020-08-02T13:31:00&#43;08:00">
         
     <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
-    <meta name="description" content="Excel">
+    <meta name="description" content="C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑">
+        <meta name="author" content="Igouist">
         
-    <meta name="author" content="Igouist">
-    <meta property="og:url" content="https://igouist.github.io/tags/excel/">
+    <meta property="og:url" content="https://igouist.github.io/post/202008-system-environment/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/normalize.css">
     
+        <link rel="stylesheet" href="/css/prism.css">
+    
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="alternate" type="application/rss+xml+xml" href="https://igouist.github.io/tags/excel/index.xml" title="伊果的沒人看筆記本" />
     <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 
     
@@ -31,7 +36,6 @@
     
     
 </head>
-
 
 <body>
 <header id="header" class="clearfix">
@@ -47,7 +51,7 @@
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://igouist.github.io/">Home</a>
+                    <a class="current" href="https://igouist.github.io/">Home</a>
                     
                     <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
                     
@@ -72,57 +76,108 @@
 
             <div class="col-8" id="main">
                 <div class="res-cons">
-                    
-                    <h3 class="archive-title">
-                        包含標籤
-                        <span class="keyword">Excel</span>
-                        的文章
-                    </h3>
-                    
-
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/202004-epplus/"> EPPlus —— 輕鬆匯出 Excel</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-4-12,
-                            </date>
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2020-8-2,
+                        </date>
+                        
+                        <div class="post-meta">
                             
-                            <div class="post-meta meta-category">
-                                
-                                    <a href="https://igouist.github.io/categories/csharp">CSharp</a>
-                                
-                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                
-                            </div>
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp">CSharp</a></span>
                             
-                            <div class="post-content">
-                                <p>前陣子工作需要匯出一些資料表，因此用到了 <a href="https://github.com/EPPlusSoftware/EPPlus">EPPlus</a> 這套工具來把資料匯出成 Excel。由於這需求似乎會挺常遇到的，決定記一下。</p>
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+                        <div class="post-content">
+                            <p>有時候我們會需要取得一些系統資訊，例如說取得設備和當前使用者等資料來寫 Log，或是取得特殊資料夾路徑、讀取環境變數等等。這些時候就可以使用 <code>System.Environment</code> ，這邊就稍微紀錄一下用法。</p>
 
-<blockquote>
-<p>目標：稍微紀錄一下這次碰到 EPPlus 的用法。</p>
-</blockquote>
+<p>先列出幾個常用的<strong>環境資訊</strong>，詳細可查詢的內容可以到 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.environment?view=netcore-3.1">Environment Class</a> 查詢：</p>
 
-<p><strong>EPPlus 是在 .NET Framework 或 .NET Core 上提供控制 Excel 的元件，操作簡單好懂</strong>，當有需要在網頁上讓人將表格資料下載成 Excel 的功能時就可以試著使用。常常一併被提起的還有另一個一樣老牌的相似功能元件 NPOI，不過我個人只用過 EPPlus 便不再贅述。關於更詳細的介紹，可以參閱黑暗執行緒的這篇 <a href="https://blog.darkthread.net/blog/epplus/">比 NPOI 更討喜的 Excel 元件 - EPPlus!</a>，儘管是有些久遠的文章但仍能迅速了解 EEplus 的賣點和差異。</p>
+<p><img src="https://i.imgur.com/8L67T46.png" alt="" /></p>
 
-<p>我在使用 EPPlus 時主要的參考來自於 <a href="https://github.com/EPPlusSoftware/EPPlus/wiki">EPPlus 的 Wiki</a>，每個功能都有說明及範例，同時也有範例專案可以下載，寫得相當詳細。另外還找了如 <a href="https://www.cnblogs.com/rumeng/p/3785748.html">導出 Excel 之 Epplus 使用教程 - Wico&rsquo;s Blog</a>、<a href="https://dotblogs.com.tw/malonestudyrecord/2018/03/21/103124">使用 EPPLUS 操控 Excel - 碼農的學習日誌</a> 這些有逐步說明的文章，在此感謝。</p>……
-                                <p class="readmore"><a href="https://igouist.github.io/post/202004-epplus/">閱讀全文</a></p>
-                            </div>
-                        </article>
-                        <hr color="#D9D9D9" />
+<p><strong>資料夾路徑</strong>則需要用 <code>Environment.GetFolderPath</code> 搭配 <code>Environment.SpecialFolder</code> 列舉使用，該列舉包含資料夾可以到 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.environment.specialfolder?view=netcore-3.1">Environment.SpecialFolder Enum</a> 查詢。</p>
+
+<p><img src="https://i.imgur.com/aOQ30KB.png" alt="" /></p>
+
+<p>除此之外還有一些實用的方法，例如用 <code>GetEnvironmentVariable</code> 取得<strong>環境變數</strong>，如此就可以將部分資訊交由環境變數來決定：</p>
+
+<p><img src="https://i.imgur.com/pRj4yEA.png" alt="" /></p>
+
+<p>而最常用的應該就是 NewLine 了，畢竟不同環境的<strong>換行符號</strong>可能會不同，養成用 NewLine 的習慣總是好的：</p>
+
+<p><img src="https://i.imgur.com/jvjNnJK.png" alt="" /></p>
+
+<h2 id="參考資料">參考資料</h2>
+
+<ul>
+<li><a href="https://jjnnykimo.pixnet.net/blog/post/21585496">C# 取得系統特殊目錄及環境變數 - 狼翔天地</a></li>
+<li><a href="http://apmtechtony.blogspot.com/2017/09/c-environmentspecialfolder.html">C# 取得系統特殊目錄及環境變數 Environment.SpecialFolder 與 Environment.GetEnvironmentVariable 差別</a></li>
+</ul>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/202007-code-style/">隨手記: 程式碼風格備忘</a></li>
+        
+        <li><a href="/post/202006-bit-flags-and-enum/">隨手記: 位元旗標與列舉</a></li>
+        
+        <li><a href="/post/202004-epplus/"> EPPlus —— 輕鬆匯出 Excel</a></li>
+        
+        <li><a href="/post/202007-automapper/">AutoMapper —— 類別轉換超省力</a></li>
+        
+        <li><a href="/post/202006-electron-net/">Electron.net —— 把網頁包成桌面應用吧</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/dotnet">Dotnet</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
                     
+    
 
-                    
-
-
-
-
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
                 </div>
             </div>
-
             <div id="secondary">
     <section class="widget">
         <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
@@ -333,6 +388,22 @@
 </footer>
 
 
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
 <a id="rocket" href="#top"></a>
 <script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
 
@@ -350,7 +421,6 @@ if (!doNotTrack) {
 
 
 <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
-
 
 
 
