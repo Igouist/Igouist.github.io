@@ -217,7 +217,7 @@ warrior.Hit(goblin);
 </blockquote>
 <h2 id="多載">多載</h2>
 <p>當然，有了建構式就會有更多問題。現在我們只有一個方法可以建立卡牌了，這無疑是相當不彈性的，例如說我希望預設的攻擊力和血量就是四呢？實際上我們經常會遇到需要用不同素材去建立一個物件的場合，這時候就必須得提到另一個要點：多載了。</p>
-<p>多載指的就是可以有很多個同名字的方法，去接受不同的參數。例如說我們的 Card 建構式就可以利用多載來改造一下：</p>
+<p><strong>多載指的就是可以有很多個同樣名字的方法，各自去接不同的參數</strong>。例如說我們的 Card 建構式就可以利用多載來改造一下：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
 {
     <span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">int</span> attack, <span style="color:#66d9ef">int</span> health)
@@ -295,7 +295,7 @@ warrior.Hit(goblin);
 </span><span style="color:#75715e"></span>
     <span style="color:#75715e">/* 一些其他方法 */</span>
 }
-</code></pre></div><p>呃可能第一步就會讓人有些疑惑：「啊你要給人家傳東西進來還改私有？」但等等，且聽我娓娓道來：C# 中的屬性，是用 <code>Set</code> 和 <code>Get</code> 兩個方法去存取的，因此我們將進一步規劃出我們的門和窗：</p>
+</code></pre></div><p>呃可能第一步就會讓人有些疑惑：「啊你要給人家傳東西進來還改私有？」但等等，且聽我娓娓道來：<strong>C# 中的屬性，是用 <code>Set</code> 和 <code>Get</code> 兩個方法去存取的</strong>，因此我們將進一步規劃出我們的門和窗：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
 {
     <span style="color:#75715e">// 略
@@ -318,7 +318,7 @@ warrior.Hit(goblin);
     <span style="color:#75715e">/* 一些其他方法 */</span>
 }
 </code></pre></div><p>如此一來我們就能對存取屬性時的行為進行管控囉。</p>
-<p>而在 C# 裡，如果你並沒有要特別針對存取另做額外處理，可以直接使用自動實作：</p>
+<p>而在 C# 裡，如果你並沒有要特別針對存取另做額外處理，可以直接使用<strong>自動實作</strong>：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">set</span>; <span style="color:#66d9ef">get</span>; }
 </code></pre></div><p>這樣 C# 就會自動幫你建立一個私有屬性，並且只能經由 set 和 get 進行存取。</p>
 <p>簡化寫法之後，例如唯讀就可以這樣寫：</p>
