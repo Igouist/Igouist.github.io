@@ -3,7 +3,7 @@
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.74.3" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -103,147 +103,88 @@
                         </div>
                         
                         <div class="post-content">
-                            <p><img src="https://github.com/ElectronNET/Electron.NET/raw/master/assets/images/electron.net-logo.png" alt="" /></p>
-
+                            <p><img src="https://github.com/ElectronNET/Electron.NET/raw/master/assets/images/electron.net-logo.png" alt=""></p>
 <p>因緣際會下想要弄出一些單機小工具來跑，這時候正巧接觸到 <a href="https://github.com/ElectronNET/Electron.NET">Electron.net</a> 這個神器，特別紀錄一下以免忘記。這是 <a href="https://www.electronjs.org/">Electron</a> 搭配 .net Core 的框架， <strong>Electron 是用 Chromium 和 Node.js 將網頁封裝成桌面應用程式</strong>，像是 Visual Studio Code、Slack 也都有使用到 Electron。而 <a href="https://github.com/ElectronNET/Electron.NET">Electron.net</a> 顧名思義就是 .net 用的 Electron 框架囉。</p>
-
 <p>這邊記錄一下自己嘗試時載入套件和建置的流程，主要參考自黑大的 <a href="https://blog.darkthread.net/blog/electron-net/">用 ASP.NET Core 寫桌面 GUI 應用程式 - Electron.NET</a> 和 <a href="https://blog.darkthread.net/blog/electron-api-brief/">Electron.NET API 快速巡覽</a> 這兩篇文章，以及官方的 <a href="https://github.com/ElectronNET/electron.net-api-demos">API DEMO</a>，特此感謝。</p>
-
 <p>本篇小節：</p>
-
 <ul>
-<li><a href="#安裝套件及環境設置">安裝套件及環境設置</a></li>
-<li><a href="#前後端傳值-ipcmain-ipcrenderer">前後端傳值 (IpcMain, IpcRenderer)</a></li>
-<li><a href="#打包成執行檔-exe">打包成執行檔（.exe）</a></li>
+<li><a href="#%E5%AE%89%E8%A3%9D%E5%A5%97%E4%BB%B6%E5%8F%8A%E7%92%B0%E5%A2%83%E8%A8%AD%E7%BD%AE">安裝套件及環境設置</a></li>
+<li><a href="#%E5%89%8D%E5%BE%8C%E7%AB%AF%E5%82%B3%E5%80%BC-ipcmain-ipcrenderer">前後端傳值 (IpcMain, IpcRenderer)</a></li>
+<li><a href="#%E6%89%93%E5%8C%85%E6%88%90%E5%9F%B7%E8%A1%8C%E6%AA%94-exe">打包成執行檔（.exe）</a></li>
 </ul>
-
 <p>那麼首先從建立新專案開始，這邊用 .net Core MVC 來測試</p>
-
-<p><img src="https://i.imgur.com/xf2fOwT.png" alt="" /></p>
-
-<p><img src="https://i.imgur.com/O0jwPZF.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/xf2fOwT.png" alt=""></p>
+<p><img src="https://i.imgur.com/O0jwPZF.png" alt=""></p>
 <h3 id="安裝套件及環境設置">安裝套件及環境設置</h3>
-
 <p>建立專案之後，前往 Nuget 先把 <strong>ElectronNET API</strong> 安裝下來</p>
-
-<p><img src="https://i.imgur.com/hT5JZu0.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/hT5JZu0.png" alt=""></p>
 <p>安裝完畢之後，開始做一些前置動作，首先：</p>
-
 <p><code>Program.cs</code> 的部分，加上 <code>.UseElectron(args)</code></p>
-
-<p><img src="https://i.imgur.com/Vm7P1ds.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/Vm7P1ds.png" alt=""></p>
 <p><code>Startup.cs</code> 的部分，加上 <code>Task.Run(async () =&gt; await Electron.WindowManager.CreateWindowAsync()</code>，讓專案啟動時一併啟動 Electron</p>
-
-<p><img src="https://i.imgur.com/gvsXNx4.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/gvsXNx4.png" alt=""></p>
 <p>接著打開命令提示字元或 Powershell ，輸入 <code>dotnet tool install ElectronNET.CLI -g</code> 安裝 ElectronNET 工具。如果有安裝成功應該會看到下圖的回傳。如果已經安裝，就可以直接進到下一步。</p>
-
-<p><img src="https://i.imgur.com/hf4mg6u.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/hf4mg6u.png" alt=""></p>
 <p>接著移動到專案資料夾，並輸入 <code>electronize init</code> 進行初始化，將會建立資料夾和必需檔案，這一步一定要確認成功並顯示 <code>Everything done</code>，否則後面怎麼跑也起不來。</p>
-
-<p><img src="https://i.imgur.com/q6RdjDm.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/q6RdjDm.png" alt=""></p>
 <p>最後輸入 <code>electronize start</code> 就可以準備看專案 On 起來囉！</p>
-
-<p><img src="https://i.imgur.com/HoSdpvU.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/HoSdpvU.png" alt=""></p>
 <p>另外除了 <code>electronize start</code>，環境設置完畢後也可以直接從 Visual Studio 偵錯囉～</p>
-
-<p><img src="https://i.imgur.com/iFqkq6d.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/iFqkq6d.png" alt=""></p>
 <p>成功從桌面應用開起來了！</p>
-
-<p><img src="https://i.imgur.com/Y89i3HK.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/Y89i3HK.png" alt=""></p>
 <h3 id="前後端傳值-ipcmain-ipcrenderer">前後端傳值 (IpcMain, IpcRenderer)</h3>
-
 <p>在 Electron 中，會分成<strong>跑應用程式的主處理序 (main process)</strong>、和<strong>處理網頁畫面的渲染處理序 (renderer process)</strong>。而兩者之間的<strong>溝通則經由 <code>Ipc</code> 開啟頻道傳遞訊息來實現</strong></p>
-
 <p>這邊簡單嘗試一次，首先，我們先在 <code>Views/Home/index.cshtml</code> 加上一個簡單的按鈕</p>
-
 <p>並且加上 JavaScript 發送訊息和接收訊息的方法</p>
+<p><img src="https://i.imgur.com/DaNlQgS.png" alt=""></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">ipcRenderer</span> } <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#34;electron&#34;</span>);
 
-<p><img src="https://i.imgur.com/DaNlQgS.png" alt="" /></p>
-
-<pre><code class="language-javascript">const { ipcRenderer } = require(&quot;electron&quot;);
-
-// 發送訊息，這邊傳送一個 Hello
-function sendMessageToServer() {
-    ipcRenderer.send('channelToServer', 'Hello');
+<span style="color:#75715e">// 發送訊息，這邊傳送一個 Hello
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">sendMessageToServer</span>() {
+    <span style="color:#a6e22e">ipcRenderer</span>.<span style="color:#a6e22e">send</span>(<span style="color:#e6db74">&#39;channelToServer&#39;</span>, <span style="color:#e6db74">&#39;Hello&#39;</span>);
 }
 
-// 接收訊息
-ipcRenderer.on('channelToClient', (event, arg) =&gt; {
-    document.getElementById(&quot;Welcome&quot;).innerText = arg
+<span style="color:#75715e">// 接收訊息
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">ipcRenderer</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;channelToClient&#39;</span>, (<span style="color:#a6e22e">event</span>, <span style="color:#a6e22e">arg</span>) =&gt; {
+    document.<span style="color:#a6e22e">getElementById</span>(<span style="color:#e6db74">&#34;Welcome&#34;</span>).<span style="color:#a6e22e">innerText</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">arg</span>
 });
-</code></pre>
-
-<p>接著到對應的 <code>Controllers/HomeController</code> 的 <code>Index()</code> 也加上接受到訊息之後加工並發出訊息的處理</p>
-
-<p><img src="https://i.imgur.com/Xw3AX8r.png" alt="" /></p>
-
-<pre><code class="language-csharp">public IActionResult Index()
+</code></pre></div><p>接著到對應的 <code>Controllers/HomeController</code> 的 <code>Index()</code> 也加上接受到訊息之後加工並發出訊息的處理</p>
+<p><img src="https://i.imgur.com/Xw3AX8r.png" alt=""></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> IActionResult Index()
 {
-    // 接收訊息
-    Electron.IpcMain.On(&quot;channelToServer&quot;, (args) =&gt;
+    <span style="color:#75715e">// 接收訊息
+</span><span style="color:#75715e"></span>    Electron.IpcMain.On(<span style="color:#e6db74">&#34;channelToServer&#34;</span>, (args) =&gt;
     {
-        // 傳送訊息，把接收到的訊息再加上 World
-        var mainWindow = Electron.WindowManager.BrowserWindows.First(); // 現在只有一個視窗所以直接拿
-        Electron.IpcMain.Send(mainWindow, &quot;channelToClient&quot;, $&quot;{args}, world!&quot;);
+        <span style="color:#75715e">// 傳送訊息，把接收到的訊息再加上 World
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">var</span> mainWindow = Electron.WindowManager.BrowserWindows.First(); <span style="color:#75715e">// 現在只有一個視窗所以直接拿
+</span><span style="color:#75715e"></span>        Electron.IpcMain.Send(mainWindow, <span style="color:#e6db74">&#34;channelToClient&#34;</span>, <span style="color:#e6db74">$&#34;{args}, world!&#34;</span>);
     });
 
-    return View();
+    <span style="color:#66d9ef">return</span> View();
 }
-</code></pre>
-
-<p>接著就讓我們執行看看，當我們按下按鈕&hellip;</p>
-
-<p><img src="https://i.imgur.com/qdkrpQ5.png" alt="" /></p>
-
-<p><img src="https://i.imgur.com/HYo0DUp.png" alt="" /></p>
-
+</code></pre></div><p>接著就讓我們執行看看，當我們按下按鈕&hellip;</p>
+<p><img src="https://i.imgur.com/qdkrpQ5.png" alt=""></p>
+<p><img src="https://i.imgur.com/HYo0DUp.png" alt=""></p>
 <p>這樣就能成功在前後端之間傳值了！但要注意，它是建立一個 Channel 來傳遞訊息，所以<strong>兩邊的 channel 名稱可不能錯了</strong>。</p>
-
 <p>另外也有提供同步版本的 <code>ipcRendered.sendSync()</code> 與 <code>Electron.IpcMain.OnSync()</code> 等等方法，相關的操作可以參照官方的 <a href="https://github.com/ElectronNET/electron.net-api-demos">API DEMO</a> 中的 <code>Controllers/IpcController.cs</code> 及 <code>Views/Ipc/Index.cshtml</code></p>
-
 <p>而關於 IPC 的說明，可以參考這篇 <a href="https://medium.com/@terracotta_ko/electron-ipc-%E6%A9%9F%E5%88%B6-2a1b087c9ae5">[Electron] IPC 機制</a>，以及官方文件：<a href="https://www.electronjs.org/docs/api/ipc-main">ipcMain</a>、<a href="https://www.electronjs.org/docs/api/ipc-renderer">ipcRenderer</a></p>
-
-<h3 id="打包成執行檔-exe">打包成執行檔（.exe）</h3>
-
+<h3 id="打包成執行檔exe">打包成執行檔（.exe）</h3>
 <p>既然是桌面軟體，當然是要包裝成 exe 直接執行囉。畢竟總不能做了個小工具分享給朋友，還要「欸你自己開專案建置一下」吧 XD</p>
-
 <p>在專案資料夾下用命令列輸入指令 <code>electronize build /target win</code> ，其中 <code>/target</code> 除了 win 也可以指定 osx, liunx 等等</p>
-
-<p><img src="https://i.imgur.com/4iSSuCC.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/4iSSuCC.png" alt=""></p>
 <p>編譯需要一段時間，直到看見 <code>done</code> 就可以了</p>
-
 <p>編出來的安裝包和執行檔會在 <code>bin\Desktop</code> 和 <code>bin\Desktop\win-unpacked</code></p>
-
-<p><img src="https://i.imgur.com/JKqNsVl.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/JKqNsVl.png" alt=""></p>
 <p>稍微打開看看</p>
-
-<p><img src="https://i.imgur.com/Ywg2CoQ.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/Ywg2CoQ.png" alt=""></p>
 <p>可以正常執行！</p>
-
 <h3 id="後記">後記</h3>
-
 <p>目前只做到專案成功跑起來和一些簡單的測試而已，幸虧黑大的文章跟網路上的一些教學相當完整，並沒有花費太多時間。但是畢竟約好了要玩玩看這個框架，且許多功能沒有試過，例如 <a href="https://blog.darkthread.net/blog/electron-api-brief/">Electron.NET API 快速巡覽</a> 提到的大多功能，<del>因此還在煩惱後續的紀錄要集中在這一篇還是另外開成系列文，這部分等下週更新再說囉。</del></p>
-
-<p><sup>6</sup>&frasl;<sub>29</sub> 更新: 最後還是決定把最近嘗試的都集中在這一篇了，畢竟我還是挺懶的，這樣比較好找嘛～</p>
-
+<p>6/29 更新: 最後還是決定把最近嘗試的都集中在這一篇了，畢竟我還是挺懶的，這樣比較好找嘛～</p>
 <p>另外有興趣自己試試的朋友，也可以參閱 <a href="https://www.electronjs.org/docs">官方文檔</a> 其實相當完整。基本上只要會寫網頁，就能夠寫桌面 GUI，真是有夠賺。</p>
-
 <p>最後要特別感謝一下，當我開 Visual Studio 預設的範本時，赫然發現只有 Angular 和 React 的模板可以直接用，竟然沒有 Vue！真是嚇傻我了，幸好最後有找到 <a href="https://marketplace.visualstudio.com/items?itemName=alexandredotnet.netcorevuejs&amp;ssr=false#overview">VueJS with Asp.Net Core 3.1 Web API Template</a> 才不致落得自造輪子的下場，感謝前輩們和社群的貢獻，南無南無。</p>
-
 <h2 id="參考資料">參考資料</h2>
-
 <ul>
 <li><a href="https://blog.darkthread.net/blog/electron-net/">用 ASP.NET Core 寫桌面 GUI 應用程式 - Electron.NET - 黑暗執行緒</a></li>
 <li><a href="https://blog.darkthread.net/blog/electron-api-brief/">Electron.NET API 快速巡覽 - 黑暗執行緒</a></li>
@@ -259,7 +200,7 @@ ipcRenderer.on('channelToClient', (event, arg) =&gt; {
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/202006-bit-flags-and-enum/">隨手記: 位元旗標與列舉</a></li>
+        <li><a href="/post/202006-bit-flags-and-enum/">C#: 位元旗標 (Bit flag) 與列舉</a></li>
         
         <li><a href="/post/202006-wakatime/">WakaTime —— 我 Coding 了多久？</a></li>
         
@@ -329,11 +270,11 @@ ipcRenderer.on('channelToClient', (event, arg) =&gt; {
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202007-pocket/" title="Pocket —— 稍後閱讀，讓你想看的時候再看">Pocket —— 稍後閱讀，讓你想看的時候再看</a>
+        <a href="https://igouist.github.io/post/202007-pocket/" title="Pocket —— 稍後閱讀，想看再看">Pocket —— 稍後閱讀，想看再看</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202007-newbieguide-oo/" title="菜雞新訓記(-2) —— 菜雞與物件導向">菜雞新訓記(-2) —— 菜雞與物件導向</a>
+        <a href="https://igouist.github.io/post/202007-newbieguide-oo/" title="菜雞與物件導向 (0): 前言">菜雞與物件導向 (0): 前言</a>
     </li>
     
     <li>
@@ -349,7 +290,7 @@ ipcRenderer.on('channelToClient', (event, arg) =&gt; {
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202006-bit-flags-and-enum/" title="隨手記: 位元旗標與列舉">隨手記: 位元旗標與列舉</a>
+        <a href="https://igouist.github.io/post/202006-bit-flags-and-enum/" title="C#: 位元旗標 (Bit flag) 與列舉">C#: 位元旗標 (Bit flag) 與列舉</a>
     </li>
     
     <li>
@@ -357,7 +298,7 @@ ipcRenderer.on('channelToClient', (event, arg) =&gt; {
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202005-bandon-ex2-heroku-debug/" title="我要訂便當(4-2) —— Heroku 填坑小記">我要訂便當(4-2) —— Heroku 填坑小記</a>
+        <a href="https://igouist.github.io/post/202005-bandon-ex2-heroku-debug/" title="我要訂便當 (5): Heroku 填坑小記">我要訂便當 (5): Heroku 填坑小記</a>
     </li>
     
 </ul>
@@ -370,43 +311,43 @@ ipcRenderer.on('channelToClient', (event, arg) =&gt; {
 <ul class="widget-list">
     
     <li>
-        <a href="https://igouist.github.io/categories/android/">Android (1)</a>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/automation/">Automation (3)</a>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/css/">CSS (1)</a>
+        <a href="https://igouist.github.io/categories/csharp/">csharp (9)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp/">CSharp (9)</a>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/ide/">IDE (2)</a>
+        <a href="https://igouist.github.io/categories/ide/">ide (2)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/newbieguide/">NewbieGuide (1)</a>
+        <a href="https://igouist.github.io/categories/newbieguide/">newbieguide (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/python/">Python (7)</a>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/reading/">Reading (1)</a>
+        <a href="https://igouist.github.io/categories/reading/">reading (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">Tools (7)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (7)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/w3hexschool/">w3HexSchool (21)</a>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (21)</a>
     </li>
     
 </ul>
@@ -416,61 +357,61 @@ ipcRenderer.on('channelToClient', (event, arg) =&gt; {
         <h3 class="widget-title">標籤</h3>
 <div class="tagcloud">
     
-    <a href="https://igouist.github.io/tags/android/">Android</a>
+    <a href="https://igouist.github.io/tags/android/">android</a>
     
-    <a href="https://igouist.github.io/tags/automapper/">AutoMapper</a>
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
     
-    <a href="https://igouist.github.io/tags/automation/">Automation</a>
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
     
-    <a href="https://igouist.github.io/tags/bandon/">Bandon</a>
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
     
-    <a href="https://igouist.github.io/tags/css/">CSS</a>
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
     
-    <a href="https://igouist.github.io/tags/csharp/">CSharp</a>
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
     
-    <a href="https://igouist.github.io/tags/crawler/">Crawler</a>
+    <a href="https://igouist.github.io/tags/css/">css</a>
     
-    <a href="https://igouist.github.io/tags/database/">Database</a>
+    <a href="https://igouist.github.io/tags/database/">database</a>
     
-    <a href="https://igouist.github.io/tags/dotnet/">Dotnet</a>
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
     
-    <a href="https://igouist.github.io/tags/electron/">Electron</a>
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">Entity Framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
     
-    <a href="https://igouist.github.io/tags/enum/">Enum</a>
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
     
-    <a href="https://igouist.github.io/tags/excel/">Excel</a>
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
     
-    <a href="https://igouist.github.io/tags/heroku/">Heroku</a>
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
     
-    <a href="https://igouist.github.io/tags/ide/">IDE</a>
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
     
-    <a href="https://igouist.github.io/tags/mysql/">MySQL</a>
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
     
-    <a href="https://igouist.github.io/tags/newbieguide/">NewbieGuide</a>
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
     
-    <a href="https://igouist.github.io/tags/object-oriented/">Object-Oriented</a>
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
     
-    <a href="https://igouist.github.io/tags/php/">PHP</a>
+    <a href="https://igouist.github.io/tags/php/">php</a>
     
-    <a href="https://igouist.github.io/tags/ptt/">PTT</a>
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
     
-    <a href="https://igouist.github.io/tags/python/">Python</a>
+    <a href="https://igouist.github.io/tags/python/">python</a>
     
-    <a href="https://igouist.github.io/tags/reading/">Reading</a>
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
     
-    <a href="https://igouist.github.io/tags/selenium/">Selenium</a>
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
     
-    <a href="https://igouist.github.io/tags/sqlite/">Sqlite</a>
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
     
-    <a href="https://igouist.github.io/tags/tools/">Tools</a>
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
     
-    <a href="https://igouist.github.io/tags/visualstudio/">VisualStudio</a>
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
     
-    <a href="https://igouist.github.io/tags/xampp/">XAMPP</a>
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
     
-    <a href="https://igouist.github.io/tags/w3hexschool/">w3HexSchool</a>
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
     
 </div>
     </section>

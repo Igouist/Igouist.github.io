@@ -3,7 +3,7 @@
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.74.3" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -104,89 +104,53 @@
                         
                         <div class="post-content">
                             <p>最近因緣際會下開始玩一些自動化測試的小工具，發現即使不是用在正規的測試時也相當實用，畢竟我們這行能讓電腦自動幫我們省事就是一種樂趣嘛。正巧這禮拜比較忙，無法準時推出訂便當系列的續集，因此決定直接紀錄一下試玩 Sikulix 的過程，以後有需要自動化的時候也方便回來參考。</p>
-
 <p><strong>Sikulix 是一款針對圖形介面編寫腳本達到自動操作</strong>的軟體，操作上相當方便。主要是將目標的圖示等畫面擷取下來，再編寫程式對目標進行操作。它編寫腳本時使用的語言是 <a href="https://www.jython.org/">Jython</a> —— 用 Java 實現的 Python，關於 Jython 的基本操作可以參見 <a href="https://iowiki.com/jython/jython_overview.html">Wiki 教程：Jyhton</a>，對於「實現 Python？」這句話感到疑惑的朋友可以參見 <a href="https://zhuanlan.zhihu.com/p/58492338">知乎：各種 Python 實現的簡單介绍與比較</a></p>
-
 <p>此外，本篇對於 Sikulix 的參考主要來自於<a href="https://ypwalter.blogspot.com/2018/06/sikuli-sikulix.html?view=classic">【測試】圖形化的自動測試 Sikuli / SikuliX 的相關技巧</a>以及<a href="https://tpu.thinkpower.com.tw/tpu/articleDetails/876"> Sikulix 圖形辨識自動化測試開發工具</a>兩篇，特此感謝。</p>
-
 <h2 id="下載與安裝">下載與安裝</h2>
-
 <p>首先必須先到 <a href="http://sikulix.com/">Sikulix.com</a> 下載；進去後直接點選 Latest stable version 就會進到下載頁面，接著直接下載 IDE 來使用。</p>
-
-<p><img src="https://i.imgur.com/d3LGYpJ.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/d3LGYpJ.png" alt=""></p>
 <p>如果沒有準備 Jython 環境，就需要再下載 <a href="https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.1/jython-standalone-2.7.1.jar">Jython 獨立包</a>。並放置在和 Sikulix 的 IDE 同個資料夾中。如果需要別的載入方式，可以參閱 <a href="https://github.com/RaiMan/SikuliX1/wiki/How-to-make-Jython-ready-in-the-IDE">How to make Jython ready in the IDE</a>。</p>
-
 <p>準備完畢之後，直接打開 IDE 應該就能看到操作介面囉！</p>
-
-<p><img src="https://i.imgur.com/0ciX1Ur.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/0ciX1Ur.png" alt=""></p>
 <h2 id="實作一個小測試">實作一個小測試</h2>
-
 <p>開啟 IDE 之後，可以看見左邊的程式區，右邊的輸出訊息，以及上面一排操作選單。我們先前提過 Sikulix 是一款以圖形操作的自動化工具，因此我們最常用到的會是上方的 螢幕截圖 和 插入圖片 這兩個能把圖放進去的功能。</p>
-
 <p>為了做基本的測試，這邊我打開 Windows 內建的小算盤，並且使用上方工具列的螢幕截圖功能。按下螢幕截圖後就可以圈選目標欄位，這邊我嘗試將計算機的按鈕框選起來。一框選起來之後它就會幫我們把圖放到左邊的程式區準備讓我們使用。（註：如果不想看見圖片的影像，而想要直接看圖的檔名，如圖片是使用插入圖片要以顯示檔案名稱為主的時候，可以從上面工具列的「檢視」中做切換。）</p>
-
-<p><img src="https://i.imgur.com/exsTGph.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/exsTGph.png" alt=""></p>
 <p>接著讓我們先存檔一次（養成好習慣！不過即使尚未存檔，在執行腳本前也會要求存檔），會跳出存檔畫面，這邊示範就先隨便取個名字試試。</p>
-
-<p><img src="https://i.imgur.com/tY2CcDr.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/tY2CcDr.png" alt=""></p>
 <p>接著該路徑就可以看見 .sikuli 資料夾。</p>
-
-<p><img src="https://i.imgur.com/vWYj0Ou.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/vWYj0Ou.png" alt=""></p>
 <p>可以看見裡面包含我們剛剛的圖片以及一個 py 檔，我們實際在 IDE 左側撰寫的腳本就是這個 py 檔。</p>
-
 <p>接著測試最簡單的 <code>click()</code> 方法，我們嘗試讓他按下按鈕試試。</p>
-
-<p><img src="https://i.imgur.com/s4TliuU.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/s4TliuU.png" alt=""></p>
 <p>使用 <code>click()</code> 將目標按鈕包起來之後按下執行，些微的停頓後就可以看見滑鼠直接滑向目標並按下去囉！整體的流程相當簡單，只需要目標的截圖和採用需要的方法就可以完成一個簡單的腳本。</p>
-
 <p>一些比較常用到的指令如下：</p>
-
-<p><code>click</code>：點擊<br/>
-<code>doubleClick</code>：點兩下<br/>
-<code>rightClick</code>：點兩下<br/>
-<code>dragDrop</code>：拖曳<br/>
-<code>hover</code>：懸浮<br/>
-<code>wait</code>：等到指定圖樣出現<br/>
-<code>waitVanish</code>：等到指定圖樣消失<br/>
-<code>exist</code>：指定圖樣是否存在<br/>
-<code>type</code>：輸入文字<br/>
-<code>paste</code>：貼上文字<br/></p>
-
+<p><code>click</code>：點擊<!-- raw HTML omitted -->
+<code>doubleClick</code>：點兩下<!-- raw HTML omitted -->
+<code>rightClick</code>：點兩下<!-- raw HTML omitted -->
+<code>dragDrop</code>：拖曳<!-- raw HTML omitted -->
+<code>hover</code>：懸浮<!-- raw HTML omitted -->
+<code>wait</code>：等到指定圖樣出現<!-- raw HTML omitted -->
+<code>waitVanish</code>：等到指定圖樣消失<!-- raw HTML omitted -->
+<code>exist</code>：指定圖樣是否存在<!-- raw HTML omitted -->
+<code>type</code>：輸入文字<!-- raw HTML omitted -->
+<code>paste</code>：貼上文字<!-- raw HTML omitted --></p>
 <p>此外，也能使用上方的工具列來圈選範圍，例如 <code>Show</code> 就能顯示指令將抓取的位置，藉此校正腳本內容。</p>
-
 <p>這些指令的組合已經足夠完成大部分的日常工作了，但其實 Sikulix 的潛力仍然還有許多，參考資料將附於本段末。</p>
-
 <p>我之所以體會到其強大處，是在前陣子在幫同學安裝 Python 環境時，就遇到需要說明「如何加入環境變數」的場合。像這種時候，我們就可以做一個自動打開環境變數設定頁面的腳本。（備註：系統操作需要用系統管理員身分執行 Sikulix 才能執行）</p>
-
-<p><img src="https://i.imgur.com/hpZ48n3.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/hpZ48n3.png" alt=""></p>
 <p>之後就可以丟給強者我同學讓他跑一次省得說明鬼撞牆。平常都丟影片，偶偶丟腳本也挺有工程師的感覺，哈。</p>
-
 <p>關於可以使用的方法和更深的進階操作，請參閱 <a href="https://blog.csdn.net/sinat_27980131/article/details/51684001">sikuli入门到进阶</a>、<a href="http://wyj-learning.blogspot.com/2018/06/sikuli_30.html">半工室：Sikuli 使用 - 重點教學</a> 以及 <a href="https://sikulix-2014.readthedocs.io/en/latest/toc.html">SikuliX 官方文件</a>。</p>
-
 <p>關於一些進一步會遇到的問題，例如怎麼傳值進來腳本，請參閱<a href="https://ypwalter.blogspot.com/2018/06/sikuli-sikulix.html?view=classic">【測試】圖形化的自動測試 Sikuli / SikuliX 的相關技巧</a>、<a href="https://yytan02.gitee.io/blog/2018/02/24/Sikuli_API_manual_cn/">Sikuli_API手册_中文版</a></p>
-
 <h2 id="心得">心得</h2>
-
 <p>之前在看自動化操作的時候，關於網頁這種能看見原始碼找到操作點的可以直接使用 <a href="https://igouist.github.io/post/202003-bandon-1-selenium">Selenium</a>，而像 APP 也可以用工具抓到 Layout 去執行 Appium。然而像操作 Windows 或是一些應用程式等等就無法仰賴前兩者，這時候就是 Sikulix 出場的時候了。由於其是使用辨識圖像的方式進行的，因此只要有圖形化介面的東西都難不倒他，可以說相當實用，尤其是像我偶而會重灌的，就可以把每次會需要經歷的系統經歷錄成腳本，縮短每次環境佈署的時間，像是 <a href="https://www.youtube.com/watch?v=FxDOlhysFcM">2010 年 Sikuli 的示範影片</a> 就是以設定 IP 為範例去操作呢。實際想一想，能用到的地方真的很多呢，例如</p>
-
-<p><img src="https://i.imgur.com/gr9DgeP.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/gr9DgeP.png" alt=""></p>
 <blockquote>
-<p>「你的遊戲怎麼自己在動？」<br/>
+<p>「你的遊戲怎麼自己在動？」<!-- raw HTML omitted -->
 「這、這是為了學術用途！」</p>
 </blockquote>
-
 <p>順便一提，原本的操作範例我是打算跑一次台鐵訂票等整個流程的操作介面，但是驗證碼的時候就卡關了，既然有了上次實作 Selenium 時看到 <a href="https://www.largitdata.com/course/37/">驗證碼的相關文章</a>，也許這種時候就是機器學習出場的時機吧！這樣想著，希望之後能有機會可以嘗試看看，屆時再將記錄放上來。</p>
-
 <h2 id="參考資料">參考資料</h2>
-
 <ul>
 <li><a href="https://tpu.thinkpower.com.tw/tpu/articleDetails/876">Sikulix圖形辨識自動化測試開發工具</a></li>
 <li><a href="https://ypwalter.blogspot.com/2018/06/sikuli-sikulix.html?view=classic">【測試】圖形化的自動測試 Sikuli / SikuliX 的相關技巧</a></li>
@@ -202,15 +166,15 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/202003-bandon-1-selenium/">我要訂便當(1) —— 用 Python &#43; Selenium 控制瀏覽器取得訂單</a></li>
+        <li><a href="/post/202003-bandon-1-selenium/">我要訂便當 (1): 用 Python &#43; Selenium 控制瀏覽器取得訂單</a></li>
         
-        <li><a href="/post/202003-bandon-2-sqlite/">我要訂便當(2) —— 用 Python &#43; Sqlite 儲存訂單</a></li>
+        <li><a href="/post/202003-bandon-2-sqlite/">我要訂便當 (2): 用 Python &#43; Sqlite 儲存訂單</a></li>
         
-        <li><a href="/post/201912-ptt-crawler-and-listener/">Python：用爬蟲在 PTT 上監聽關鍵字並寄通知信</a></li>
-        
-        <li><a href="/about/">關於我</a></li>
+        <li><a href="/post/201912-ptt-crawler-and-listener/">Python: 用爬蟲在 PTT 上監聽關鍵字並寄通知信</a></li>
         
         <li><a href="/archives/">archives</a></li>
+        
+        <li><a href="/about/">關於我</a></li>
         
     </ul>
 </div>
@@ -270,11 +234,11 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202007-pocket/" title="Pocket —— 稍後閱讀，讓你想看的時候再看">Pocket —— 稍後閱讀，讓你想看的時候再看</a>
+        <a href="https://igouist.github.io/post/202007-pocket/" title="Pocket —— 稍後閱讀，想看再看">Pocket —— 稍後閱讀，想看再看</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202007-newbieguide-oo/" title="菜雞新訓記(-2) —— 菜雞與物件導向">菜雞新訓記(-2) —— 菜雞與物件導向</a>
+        <a href="https://igouist.github.io/post/202007-newbieguide-oo/" title="菜雞與物件導向 (0): 前言">菜雞與物件導向 (0): 前言</a>
     </li>
     
     <li>
@@ -290,7 +254,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202006-bit-flags-and-enum/" title="隨手記: 位元旗標與列舉">隨手記: 位元旗標與列舉</a>
+        <a href="https://igouist.github.io/post/202006-bit-flags-and-enum/" title="C#: 位元旗標 (Bit flag) 與列舉">C#: 位元旗標 (Bit flag) 與列舉</a>
     </li>
     
     <li>
@@ -298,7 +262,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202005-bandon-ex2-heroku-debug/" title="我要訂便當(4-2) —— Heroku 填坑小記">我要訂便當(4-2) —— Heroku 填坑小記</a>
+        <a href="https://igouist.github.io/post/202005-bandon-ex2-heroku-debug/" title="我要訂便當 (5): Heroku 填坑小記">我要訂便當 (5): Heroku 填坑小記</a>
     </li>
     
 </ul>
@@ -311,43 +275,43 @@
 <ul class="widget-list">
     
     <li>
-        <a href="https://igouist.github.io/categories/android/">Android (1)</a>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/automation/">Automation (3)</a>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/css/">CSS (1)</a>
+        <a href="https://igouist.github.io/categories/csharp/">csharp (9)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp/">CSharp (9)</a>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/ide/">IDE (2)</a>
+        <a href="https://igouist.github.io/categories/ide/">ide (2)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/newbieguide/">NewbieGuide (1)</a>
+        <a href="https://igouist.github.io/categories/newbieguide/">newbieguide (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/python/">Python (7)</a>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/reading/">Reading (1)</a>
+        <a href="https://igouist.github.io/categories/reading/">reading (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">Tools (7)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (7)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/w3hexschool/">w3HexSchool (21)</a>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (21)</a>
     </li>
     
 </ul>
@@ -357,61 +321,61 @@
         <h3 class="widget-title">標籤</h3>
 <div class="tagcloud">
     
-    <a href="https://igouist.github.io/tags/android/">Android</a>
+    <a href="https://igouist.github.io/tags/android/">android</a>
     
-    <a href="https://igouist.github.io/tags/automapper/">AutoMapper</a>
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
     
-    <a href="https://igouist.github.io/tags/automation/">Automation</a>
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
     
-    <a href="https://igouist.github.io/tags/bandon/">Bandon</a>
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
     
-    <a href="https://igouist.github.io/tags/css/">CSS</a>
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
     
-    <a href="https://igouist.github.io/tags/csharp/">CSharp</a>
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
     
-    <a href="https://igouist.github.io/tags/crawler/">Crawler</a>
+    <a href="https://igouist.github.io/tags/css/">css</a>
     
-    <a href="https://igouist.github.io/tags/database/">Database</a>
+    <a href="https://igouist.github.io/tags/database/">database</a>
     
-    <a href="https://igouist.github.io/tags/dotnet/">Dotnet</a>
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
     
-    <a href="https://igouist.github.io/tags/electron/">Electron</a>
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">Entity Framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
     
-    <a href="https://igouist.github.io/tags/enum/">Enum</a>
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
     
-    <a href="https://igouist.github.io/tags/excel/">Excel</a>
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
     
-    <a href="https://igouist.github.io/tags/heroku/">Heroku</a>
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
     
-    <a href="https://igouist.github.io/tags/ide/">IDE</a>
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
     
-    <a href="https://igouist.github.io/tags/mysql/">MySQL</a>
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
     
-    <a href="https://igouist.github.io/tags/newbieguide/">NewbieGuide</a>
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
     
-    <a href="https://igouist.github.io/tags/object-oriented/">Object-Oriented</a>
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
     
-    <a href="https://igouist.github.io/tags/php/">PHP</a>
+    <a href="https://igouist.github.io/tags/php/">php</a>
     
-    <a href="https://igouist.github.io/tags/ptt/">PTT</a>
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
     
-    <a href="https://igouist.github.io/tags/python/">Python</a>
+    <a href="https://igouist.github.io/tags/python/">python</a>
     
-    <a href="https://igouist.github.io/tags/reading/">Reading</a>
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
     
-    <a href="https://igouist.github.io/tags/selenium/">Selenium</a>
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
     
-    <a href="https://igouist.github.io/tags/sqlite/">Sqlite</a>
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
     
-    <a href="https://igouist.github.io/tags/tools/">Tools</a>
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
     
-    <a href="https://igouist.github.io/tags/visualstudio/">VisualStudio</a>
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
     
-    <a href="https://igouist.github.io/tags/xampp/">XAMPP</a>
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
     
-    <a href="https://igouist.github.io/tags/w3hexschool/">w3HexSchool</a>
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
     
 </div>
     </section>

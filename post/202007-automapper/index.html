@@ -3,7 +3,7 @@
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.74.3" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -104,258 +104,180 @@
                         
                         <div class="post-content">
                             <p>類別間的轉換幾乎是每個專案每個工程師都會碰到的動作，舉凡是分層架構每層之間的轉換，如 Dto 轉換成 ViewModel；或是接收到資料要塞進自定義的類別時也需要進行轉換。但<strong>在遠古時代，當我們要把一個類別的資料倒進另一個類別時，總免不了一番折騰</strong>。</p>
-
 <p>例如一個卡片對戰遊戲的資料庫，光是要先把卡片資料讀取出來就需要：</p>
-
-<p><img src="https://i.imgur.com/c81Hx5I.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/c81Hx5I.png" alt=""></p>
 <p>有些時候也會看見用 Foreach 然後逐一傳值的場景，或是各種差不多的變種情況。同樣的是，光是將一個簡單的卡片資訊轉換成 ViewModel，就花了一大段在做對映的處理。這個過程本身枯燥乏味又占空間，更可怕的是，<strong>如果有個陳年資料表，動不動就上百個欄位，那這個轉換過程的恐怖程度可想而知</strong>。</p>
-
 <p>幸好！天無絕人之路，這種時候就是本日的主角 —— AutoMapper 出場的時候了。</p>
-
 <p>當 AutoMapper 一出手，轉換的過程瞬間就變成：</p>
-
-<p><img src="https://i.imgur.com/KxHAKpi.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/KxHAKpi.png" alt=""></p>
 <p>是不是精簡很多呢？接著就讓我們來看看怎麼開始使用吧！</p>
-
 <h2 id="安裝與使用">安裝與使用</h2>
-
 <p>首先，當然要先到 NuGet 把 AutoMapper 給裝下來。</p>
-
-<p><img src="https://i.imgur.com/TEAZwU7.png" alt="" /></p>
-
-<p><img src="https://i.imgur.com/3ADyJXv.png" alt="" /></p>
-
+<p><img src="https://i.imgur.com/TEAZwU7.png" alt=""></p>
+<p><img src="https://i.imgur.com/3ADyJXv.png" alt=""></p>
 <p>確認安裝之後，就開始基本的使用吧。</p>
-
 <p>只需要<strong>先註冊好 Mapper 的設定內容，也就是哪些類別之間可以互相對映；再實體化 Mapper 出來使用就可以了</strong>。直接看程式碼應該就能理解：</p>
-
-<pre><code class="language-csharp">public IEnumerable&lt;CardViewModel&gt; GetCard()
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
 {
-    var data = this.GetCardFromRepositoryMock();
+    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
     
-    var config = new MapperConfiguration(cfg =&gt; 
-        cfg.CreateMap&lt;Card, CardViewModel&gt;()); // 註冊Model間的對映
-    var mapper = config.CreateMapper(); // 建立 Mapper
-    var result = mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data); // 轉換型別
-
-    return result;
+    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt; 
+        cfg.CreateMap&lt;Card, CardViewModel&gt;()); <span style="color:#75715e">// 註冊Model間的對映
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> mapper = config.CreateMapper(); <span style="color:#75715e">// 建立 Mapper
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> result = mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data); <span style="color:#75715e">// 轉換型別
+</span><span style="color:#75715e"></span>
+    <span style="color:#66d9ef">return</span> result;
 }
-</code></pre>
-
-<p>沒錯，只需要簡簡單單幾步， <strong>AutoMapper 會自動將指定類別間同樣名稱的屬性內容做轉換</strong> ，因此能夠省下相當多的功夫，也能夠隱藏類別本身的內容，專心在處理功能本身。</p>
-
+</code></pre></div><p>沒錯，只需要簡簡單單幾步， <strong>AutoMapper 會自動將指定類別間同樣名稱的屬性內容做轉換</strong> ，因此能夠省下相當多的功夫，也能夠隱藏類別本身的內容，專心在處理功能本身。</p>
 <blockquote>
 <p>註：網路上挺多 AutoMapper 的文章會直接使用 <code>Mapper.CreateMap()</code> 這類靜態方法，然而這些方法已經在 AutoMapper 5 的時候被廢除，改成現在由 <code>MapperConfiguration</code> 產生 Mapper 的方法。</p>
-
 <p>然而整體的使用方式仍然大同小異，這些文章仍能稍微調整並使用，惟使用過程中需自己注意語法的差異和多加測試。</p>
 </blockquote>
-
 <h3 id="客製化轉換">客製化轉換</h3>
-
 <p>但當然實際上我們並不一定每個欄位的名稱都是一模一樣的，總是會有遇到同個資料在不同層的 Model 裡名稱不一樣的時候，又或者是某個欄位是由兩三個欄位組成的時候。對於這種需要客製化的轉換，這時候我們就可以在註冊對映時對欄位內容的對映方式做指定：</p>
-
-<pre><code class="language-csharp">var config = new MapperConfiguration(cfg =&gt;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
     cfg.CreateMap&lt;Card, CardViewModel&gt;()
         .ForMember(x =&gt; x.Id, y =&gt; y.MapFrom(o =&gt; o.CardId))
-        .ForMember(x =&gt; x.Name, y =&gt; y.MapFrom(o =&gt; $&quot;{o.Id}: {o.Name}&quot;))
-    ); // 註冊Model間的對映 建立設定檔
-</code></pre>
-
-<p>可以看到 <strong>我們能用 <code>ForMember</code> 去對類別成員做操作，並傳入目標的類別成員，以及該成員對應的操作，像這邊就使用 <code>MapFrom</code> 來指定目標類別成員的轉換來源</strong>，這樣就可以達到轉換時的客製化了。</p>
-
+        .ForMember(x =&gt; x.Name, y =&gt; y.MapFrom(o =&gt; <span style="color:#e6db74">$&#34;{o.Id}: {o.Name}&#34;</span>))
+    ); <span style="color:#75715e">// 註冊Model間的對映 建立設定檔
+</span></code></pre></div><p>可以看到 <strong>我們能用 <code>ForMember</code> 去對類別成員做操作，並傳入目標的類別成員，以及該成員對應的操作，像這邊就使用 <code>MapFrom</code> 來指定目標類別成員的轉換來源</strong>，這樣就可以達到轉換時的客製化了。</p>
 <blockquote>
 <p>註：對於欄位之間有使用 <code>ForMember</code> 來處理過內容再轉換的型別，建議在轉換型別時，也就是實際 mapper.Map() 的時候，稍做註解提醒一下。</p>
-
 <p>尤其是會將 Mapper 的 Config 集中整理的架構裡更應該要對額外的操作做揭露，這樣對彼此都好。真的。</p>
 </blockquote>
-
 <h3 id="忽略指定的欄位">忽略指定的欄位</h3>
-
 <p>除了會有欄位名稱和來源的不同以外，最常遇到的應該就是兩個類別之間大多數欄位雖然對映，但某幾個欄位是沒有對映的。例如傳送給前端使用時一併送出其他來源的資料，但資料由資料表取出時並沒有這個欄位，必須轉換以後再呼叫別的方法去補上資料。<strong>如果直接使用 Map 來進行轉換，就會發生找不到對映欄位的錯誤。這時候就可以使用 <code>Ignore</code> 來忽略掉指定的欄位</strong>。</p>
-
-<pre><code class="language-csharp">var config = new MapperConfiguration(cfg =&gt;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
     cfg.CreateMap&lt;Card, CardViewModel&gt;()
        .ForMember(x =&gt; x.ImgUri, y =&gt; y.Ignore())
     );
 }
-</code></pre>
-
-<p>如上述程式碼，可能卡片的圖像位置必須由別的方式取得，這種情況我們在 <code>ForMember</code> 的時候就可以將其指定為 <code>Ignore</code> 讓 AutoMapper 不要去嘗試轉換它。除了 <code>Ignore</code> 以外，AutoMapper 還有配備像是 <code>IgnoreAllPropertiesWithAnInaccessibleSetter</code> 這種光方法名稱長度就有點強的大殺器，也還有像是 <code>AllowNull</code> 等更多對欄位操作的方法，這部份請各位在使用時按照需求自行摸索。</p>
-
+</code></pre></div><p>如上述程式碼，可能卡片的圖像位置必須由別的方式取得，這種情況我們在 <code>ForMember</code> 的時候就可以將其指定為 <code>Ignore</code> 讓 AutoMapper 不要去嘗試轉換它。除了 <code>Ignore</code> 以外，AutoMapper 還有配備像是 <code>IgnoreAllPropertiesWithAnInaccessibleSetter</code> 這種光方法名稱長度就有點強的大殺器，也還有像是 <code>AllowNull</code> 等更多對欄位操作的方法，這部份請各位在使用時按照需求自行摸索。</p>
 <blockquote>
-<p>註(1)：上述舉的例子中有需要從多個來源轉換為一個類別的場合，可以參照<br/> <a href="https://kevintsengtw.blogspot.com/2014/03/automapper.html">AutoMapper 兩個物件對映到一個類別 - mrkt 的程式學習筆記</a></p>
-
-<p>註(2)：上面使用到的 Ignore 方法還是有些眉角需要注意，可以參照<br/> <a href="https://dotblogs.com.tw/supershowwei/2016/07/17/162815">[料理佳餚] AutoMapper 中不容忽視的 Ignore() Mapping 的順序 - 軟體主廚的程式料理廚房</a></p>
+<p>註(1)：上述舉的例子中有需要從多個來源轉換為一個類別的場合，可以參照<!-- raw HTML omitted --> <a href="https://kevintsengtw.blogspot.com/2014/03/automapper.html">AutoMapper 兩個物件對映到一個類別 - mrkt 的程式學習筆記</a></p>
 </blockquote>
-
+<blockquote>
+<p>註(2)：上面使用到的 Ignore 方法還是有些眉角需要注意，可以參照<!-- raw HTML omitted --> <a href="https://dotblogs.com.tw/supershowwei/2016/07/17/162815">[料理佳餚] AutoMapper 中不容忽視的 Ignore() Mapping 的順序 - 軟體主廚的程式料理廚房</a></p>
+</blockquote>
 <p>最後還要補充的一個方法是 <code>ReverseMap</code> ，它能夠反轉對映，建立一個反方向的對映表。當你的類別之間可能需要往回轉型，又或是想要忽略來源類別的欄位時，<code>ReverseMap</code> 就會顯得相當有用。通常為了避免轉來轉去轉出意外，建議註冊時還是補上一個 <code>ReverseMap</code> 為佳。</p>
-
-<pre><code class="language-csharp">var config = new MapperConfiguration(cfg =&gt;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
     cfg.CreateMap&lt;Card, CardViewModel&gt;()
        .ForMember(x =&gt; x.Id, y =&gt; y.MapFrom(o =&gt; o.CardId))
        .ForMember(x =&gt; x.ImgUri, y =&gt; y.Ignore())
-       .ReverseMap() // 反轉
-    );
-</code></pre>
-
-<p>到目前為止，程式碼可能會變成如下：</p>
-
-<pre><code class="language-csharp">public IEnumerable&lt;CardViewModel&gt; GetCard()
+       .ReverseMap() <span style="color:#75715e">// 反轉
+</span><span style="color:#75715e"></span>    );
+</code></pre></div><p>到目前為止，程式碼可能會變成如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
 {
-    var data = this.GetCardFromRepositoryMock();
+    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
     
-    var config = new MapperConfiguration(cfg =&gt;
+    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
         cfg.CreateMap&lt;Card, CardViewModel&gt;()
            .ForMember(x =&gt; x.Id, y =&gt; y.MapFrom(o =&gt; o.CardId))
-           .ForMember(x =&gt; x.Name, y =&gt; y.MapFrom(o =&gt; $&quot;{o.Id}: {o.Name}&quot;))
+           .ForMember(x =&gt; x.Name, y =&gt; y.MapFrom(o =&gt; <span style="color:#e6db74">$&#34;{o.Id}: {o.Name}&#34;</span>))
            .ForMember(x =&gt; x.ImgUri, y =&gt; y.Ignore())
            .ReverseMap());
 
-    var mapper = config.CreateMapper(); // 建立 Mapper
-    var result = mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data); // 轉換型別
-
-    return result;
+    <span style="color:#66d9ef">var</span> mapper = config.CreateMapper(); <span style="color:#75715e">// 建立 Mapper
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> result = mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data); <span style="color:#75715e">// 轉換型別
+</span><span style="color:#75715e"></span>
+    <span style="color:#66d9ef">return</span> result;
 }
-</code></pre>
-
-<h2 id="簡化整理">簡化整理</h2>
-
+</code></pre></div><h2 id="簡化整理">簡化整理</h2>
 <p>可能看到這裡有些讀者就開始疑惑了：這好像跟一開始簡介不太一樣啊，詐欺？又或者是：我每個方法裡面都要重新建一個 Mapper？這不太對吧？</p>
-
 <p>的確是這樣沒錯，AutoMapper 要達到更簡潔，還需要再做一些整理。例如使用 Profile 將對映關係集中起來，以及把 Mapper 的建構抽取出來。可能是在建構式建立共用的 Mapper ，或是以依賴注入 (Dependency Injection) 的方式來注入 Mapper 等等。以下就逐步進行介紹。</p>
-
 <h3 id="profile">Profile</h3>
-
 <p>首先我們先建立一個用來放對映關係的 Profile。我個人習慣會另開一個 Mappings 資料夾，並按照轉換所在的分層 + Mappings 來命名。</p>
-
-<pre><code class="language-csharp">public class ServiceMappings : Profile
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ServiceMappings</span> : Profile
 {
-    public ServiceMappings()
+    <span style="color:#66d9ef">public</span> ServiceMappings()
     {
         CreateMap&lt;Card, CardViewModel&gt;()
             .ForMember(x =&gt; x.Id, y =&gt; y.MapFrom(o =&gt; o.CardId))
-            .ForMember(x =&gt; x.Name, y =&gt; y.MapFrom(o =&gt; $&quot;{o.Id}: {o.Name}&quot;))
+            .ForMember(x =&gt; x.Name, y =&gt; y.MapFrom(o =&gt; <span style="color:#e6db74">$&#34;{o.Id}: {o.Name}&#34;</span>))
             .ForMember(x =&gt; x.ImgUri, y =&gt; y.AllowNull())
             .ReverseMap(); 
 
-        // ...其他的對映內容 (使用 CreateMap&lt;&gt; 建立下一組)
-    }
+        <span style="color:#75715e">// ...其他的對映內容 (使用 CreateMap&lt;&gt; 建立下一組)
+</span><span style="color:#75715e"></span>    }
 }
-</code></pre>
-
-<p>從上面可以看到，我們<strong>繼承 AutoMapper 提供的 Profile 類，接著在建構式裡面將需要的轉換關係組都建立起來</strong>。接著當我們建立 Mapper 時，就可以直接用 <code>AddProfile</code> 和建立好的 Profile 來直接讀入對映關係：</p>
-
-<pre><code class="language-csharp">public IEnumerable&lt;CardViewModel&gt; GetCard()
+</code></pre></div><p>從上面可以看到，我們<strong>繼承 AutoMapper 提供的 Profile 類，接著在建構式裡面將需要的轉換關係組都建立起來</strong>。接著當我們建立 Mapper 時，就可以直接用 <code>AddProfile</code> 和建立好的 Profile 來直接讀入對映關係：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
 {
-    var data = this.GetCardFromRepositoryMock();
-    var config = new MapperConfiguration(cfg =&gt; cfg.AddProfile&lt;ServiceMappings&gt;());
-    var mapper = config.CreateMapper(); // 用設定檔建立 Mapper
-    var result = mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data); // 轉換型別
-
-    return result;
+    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
+    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt; cfg.AddProfile&lt;ServiceMappings&gt;());
+    <span style="color:#66d9ef">var</span> mapper = config.CreateMapper(); <span style="color:#75715e">// 用設定檔建立 Mapper
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> result = mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data); <span style="color:#75715e">// 轉換型別
+</span><span style="color:#75715e"></span>
+    <span style="color:#66d9ef">return</span> result;
 }
-</code></pre>
-
-<p>當然，<strong>在 <code>MapperConfiguration</code> 的時候是可以對 cfg 去做多次 <code>AddProfile</code> 的</strong>，既然可以載入多組對映關係，就代表可以按照實務上的運用去將對映關係做分類和整理。</p>
-
+</code></pre></div><p>當然，<strong>在 <code>MapperConfiguration</code> 的時候是可以對 cfg 去做多次 <code>AddProfile</code> 的</strong>，既然可以載入多組對映關係，就代表可以按照實務上的運用去將對映關係做分類和整理。</p>
 <p>這邊還是要再度提醒一下，將 <code>CreateMap</code> 都整理到 Profile 之後，若是有些類別之間的轉換有對欄位做額外的處理，例如 DateTime 去除時間只留下年月日，又或是某幾個欄位銜接成一個欄位等等，<strong>在實際進行類別轉換的時候需要註記一下，請後續的維護人員或團隊夥伴記得先確認過 Profile，避免造成一些隱藏重要資訊挖洞給人跳的問題</strong>。</p>
-
 <h3 id="整理到建構式">整理到建構式</h3>
-
 <p>接著由於一個處理資料或商業邏輯的部分通常會有許多方法都用到 Mapper，因此將建立 Mapper 的過程取出來避免重複絕對是必要的。故整理的第一步就是將 Mapper 的建立拆分出來，不再等每次用到的時候才建，而是先建立好一個 Mapper，需要的時候再來使用它。</p>
-
 <p>這邊就先嘗試將其挪到私有變數和建構式處理：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> IMapper _mapper;
 
-<pre><code class="language-csharp">private IMapper _mapper;
-
-public MapSimpleService() // 建構式
-{
-    var config = new MapperConfiguration(cfg =&gt; cfg.AddProfile&lt;ServiceMappings&gt;());
-    this._mapper = config.CreateMapper();
+<span style="color:#66d9ef">public</span> MapSimpleService() <span style="color:#75715e">// 建構式
+</span><span style="color:#75715e"></span>{
+    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt; cfg.AddProfile&lt;ServiceMappings&gt;());
+    <span style="color:#66d9ef">this</span>._mapper = config.CreateMapper();
 }
-</code></pre>
-
-<p>那麼我們實際上的方法就會變成：</p>
-
-<pre><code class="language-csharp">public IEnumerable&lt;CardViewModel&gt; GetCard()
+</code></pre></div><p>那麼我們實際上的方法就會變成：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
 {
-    var data = this.GetCardFromRepositoryMock();
-    var result = this._mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data);
-    return result;
+    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
+    <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data);
+    <span style="color:#66d9ef">return</span> result;
 }
-</code></pre>
-
-<h3 id="走向注入">走向注入</h3>
-
+</code></pre></div><h3 id="走向注入">走向注入</h3>
 <p>由於本篇篇幅無法說明好 DI 的概念，因此 DI 和實作將會在之後的文章中說明，這邊就以 .net Core 為示範來記錄一下步驟，提供給已經會 DI 的朋友參考。</p>
-
 <p>在開始之前，我們會需要再前往 NuGet 安裝 AutoMapper DI 用的套件：
-<img src="https://i.imgur.com/hae1zfj.png" alt="" /></p>
-
+<img src="https://i.imgur.com/hae1zfj.png" alt=""></p>
 <p>接著在 <code>Startup.cs</code> 裡的 <code>ConfigureServices</code> 加上 <code>services.AddAutoMapper(typeof(Startup))</code> 來註冊我們的 Mapper：</p>
-
-<pre><code class="language-csharp">public void ConfigureServices(IServiceCollection services)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
 {
     services.AddControllers();
-    services.AddScoped&lt;IMapSimpleService, MapSimpleService&gt;(); // Demo 用的 Service
+    services.AddScoped&lt;IMapSimpleService, MapSimpleService&gt;(); <span style="color:#75715e">// Demo 用的 Service
+</span><span style="color:#75715e"></span>
+    services.AddAutoMapper(<span style="color:#66d9ef">typeof</span>(Startup)); <span style="color:#75715e">// 註冊 Mapper &lt;---
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>註冊好之後，我們就能將剛剛的示範部分更改為使用注入的方式來取得 Mapper：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> IMapper _mapper;
 
-    services.AddAutoMapper(typeof(Startup)); // 註冊 Mapper &lt;---
+<span style="color:#66d9ef">public</span> MapSimpleService(IMapper mapper) <span style="color:#75715e">// 建構式
+</span><span style="color:#75715e"></span>{
+    <span style="color:#66d9ef">this</span>._mapper = mapper;
 }
-</code></pre>
-
-<p>註冊好之後，我們就能將剛剛的示範部分更改為使用注入的方式來取得 Mapper：</p>
-
-<pre><code class="language-csharp">private IMapper _mapper;
-
-public MapSimpleService(IMapper mapper) // 建構式
-{
-    this._mapper = mapper;
-}
-</code></pre>
-
-<p>執行之後就能確認確實有轉換到值。可能有些人會有點疑惑：前面還需要 <code>MapperConfiguration</code> 怎麼這次不用了呢？那是因為 <code>AddAutoMapper</code> 的時候就會用反射去取得專案中的 <code>Profile</code> 來載入了，這部分就可以不用擔心，只要專心在使用上就好。</p>
-
+</code></pre></div><p>執行之後就能確認確實有轉換到值。可能有些人會有點疑惑：前面還需要 <code>MapperConfiguration</code> 怎麼這次不用了呢？那是因為 <code>AddAutoMapper</code> 的時候就會用反射去取得專案中的 <code>Profile</code> 來載入了，這部分就可以不用擔心，只要專心在使用上就好。</p>
 <p>最後再來對照一下商業邏輯的部份</p>
-
 <p>瘦身前</p>
-
-<pre><code class="language-csharp">public IEnumerable&lt;CardViewModel&gt; GetCard()
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
 {
-    var data = this.GetCardFromRepositoryMock();
-    var result = data.Select(x =&gt;
-        new CardViewModel
+    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
+    <span style="color:#66d9ef">var</span> result = data.Select(x =&gt;
+        <span style="color:#66d9ef">new</span> CardViewModel
         {
             Id = x.Id,
             Name = x.Name,
             Cost = x.Cost,
             Attack = x.Attack,
             Health = x.Health,
-            Note = x.Note // ...etc
-        });
-    return result;
+            Note = x.Note <span style="color:#75715e">// ...etc
+</span><span style="color:#75715e"></span>        });
+    <span style="color:#66d9ef">return</span> result;
 }
-</code></pre>
-
-<p>瘦身後</p>
-
-<pre><code class="language-csharp">public IEnumerable&lt;CardViewModel&gt; GetCard()
+</code></pre></div><p>瘦身後</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
 {
-    var data = this.GetCardFromRepositoryMock();
-    var result = this._mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data);
-    return result;
+    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
+    <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data);
+    <span style="color:#66d9ef">return</span> result;
 }
-</code></pre>
-
-<h2 id="結語">結語</h2>
-
+</code></pre></div><h2 id="結語">結語</h2>
 <p>當我們把類別轉換的區段利用 AutoMapper 擷取出來，就能<strong>讓原本的程式碼更著重在該方法本身的邏輯和功能</strong>，而不會被冗長的轉換過程洗版，使用 Mapper 的方法只要知道這兩個類別能夠互相轉換即可。除了看起來更舒服、更能將焦點放在方法本身以外，也能夠讓維護時的修改更加直覺，若是轉換的過程需要修改，就去變更 Profile，不需要去變動實現商業邏輯的方法本身，這樣就能朝單一職責的目標更前進一點。</p>
-
 <p>到這邊算是把 AutoMapper 基本的用法介紹過一遍了，當然還有很多進階的用法和需要注意的部分並沒有說明完全，但相信這樣的紀錄已經能夠幫助我在將來需要的時候回想起怎麼使用，和解決大部分需要做類別轉換的場景了。剩餘的延伸閱讀將會補充在參考資料裡，那麼下週見～</p>
-
 <h2 id="參考資料及延伸閱讀">參考資料及延伸閱讀</h2>
-
 <ul>
 <li><a href="https://dotblogs.com.tw/yc421206/2016/07/15/automapper_version_5_MapperConfiguration">[AutoMapper] AutoMapper 5.0.2 的新寫法 - 余小章 @ 大內殿堂</a></li>
 <li><a href="https://kevintsengtw.blogspot.com/2013/04/automapper.html">使用 AutoMapper 處理類別之間的對映轉換 - mrkt 的程式學習筆記</a></li>
@@ -377,7 +299,7 @@ public MapSimpleService(IMapper mapper) // 建構式
         
         <li><a href="/post/202006-electron-net/">Electron.net —— 把網頁包成桌面應用吧</a></li>
         
-        <li><a href="/post/202006-bit-flags-and-enum/">隨手記: 位元旗標與列舉</a></li>
+        <li><a href="/post/202006-bit-flags-and-enum/">C#: 位元旗標 (Bit flag) 與列舉</a></li>
         
         <li><a href="/post/202006-wakatime/">WakaTime —— 我 Coding 了多久？</a></li>
         
@@ -445,11 +367,11 @@ public MapSimpleService(IMapper mapper) // 建構式
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202007-pocket/" title="Pocket —— 稍後閱讀，讓你想看的時候再看">Pocket —— 稍後閱讀，讓你想看的時候再看</a>
+        <a href="https://igouist.github.io/post/202007-pocket/" title="Pocket —— 稍後閱讀，想看再看">Pocket —— 稍後閱讀，想看再看</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202007-newbieguide-oo/" title="菜雞新訓記(-2) —— 菜雞與物件導向">菜雞新訓記(-2) —— 菜雞與物件導向</a>
+        <a href="https://igouist.github.io/post/202007-newbieguide-oo/" title="菜雞與物件導向 (0): 前言">菜雞與物件導向 (0): 前言</a>
     </li>
     
     <li>
@@ -465,7 +387,7 @@ public MapSimpleService(IMapper mapper) // 建構式
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202006-bit-flags-and-enum/" title="隨手記: 位元旗標與列舉">隨手記: 位元旗標與列舉</a>
+        <a href="https://igouist.github.io/post/202006-bit-flags-and-enum/" title="C#: 位元旗標 (Bit flag) 與列舉">C#: 位元旗標 (Bit flag) 與列舉</a>
     </li>
     
     <li>
@@ -473,7 +395,7 @@ public MapSimpleService(IMapper mapper) // 建構式
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202005-bandon-ex2-heroku-debug/" title="我要訂便當(4-2) —— Heroku 填坑小記">我要訂便當(4-2) —— Heroku 填坑小記</a>
+        <a href="https://igouist.github.io/post/202005-bandon-ex2-heroku-debug/" title="我要訂便當 (5): Heroku 填坑小記">我要訂便當 (5): Heroku 填坑小記</a>
     </li>
     
 </ul>
@@ -486,43 +408,43 @@ public MapSimpleService(IMapper mapper) // 建構式
 <ul class="widget-list">
     
     <li>
-        <a href="https://igouist.github.io/categories/android/">Android (1)</a>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/automation/">Automation (3)</a>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/css/">CSS (1)</a>
+        <a href="https://igouist.github.io/categories/csharp/">csharp (9)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp/">CSharp (9)</a>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/ide/">IDE (2)</a>
+        <a href="https://igouist.github.io/categories/ide/">ide (2)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/newbieguide/">NewbieGuide (1)</a>
+        <a href="https://igouist.github.io/categories/newbieguide/">newbieguide (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/python/">Python (7)</a>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/reading/">Reading (1)</a>
+        <a href="https://igouist.github.io/categories/reading/">reading (1)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">Tools (7)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (7)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/w3hexschool/">w3HexSchool (21)</a>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (21)</a>
     </li>
     
 </ul>
@@ -532,61 +454,61 @@ public MapSimpleService(IMapper mapper) // 建構式
         <h3 class="widget-title">標籤</h3>
 <div class="tagcloud">
     
-    <a href="https://igouist.github.io/tags/android/">Android</a>
+    <a href="https://igouist.github.io/tags/android/">android</a>
     
-    <a href="https://igouist.github.io/tags/automapper/">AutoMapper</a>
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
     
-    <a href="https://igouist.github.io/tags/automation/">Automation</a>
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
     
-    <a href="https://igouist.github.io/tags/bandon/">Bandon</a>
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
     
-    <a href="https://igouist.github.io/tags/css/">CSS</a>
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
     
-    <a href="https://igouist.github.io/tags/csharp/">CSharp</a>
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
     
-    <a href="https://igouist.github.io/tags/crawler/">Crawler</a>
+    <a href="https://igouist.github.io/tags/css/">css</a>
     
-    <a href="https://igouist.github.io/tags/database/">Database</a>
+    <a href="https://igouist.github.io/tags/database/">database</a>
     
-    <a href="https://igouist.github.io/tags/dotnet/">Dotnet</a>
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
     
-    <a href="https://igouist.github.io/tags/electron/">Electron</a>
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">Entity Framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
     
-    <a href="https://igouist.github.io/tags/enum/">Enum</a>
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
     
-    <a href="https://igouist.github.io/tags/excel/">Excel</a>
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
     
-    <a href="https://igouist.github.io/tags/heroku/">Heroku</a>
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
     
-    <a href="https://igouist.github.io/tags/ide/">IDE</a>
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
     
-    <a href="https://igouist.github.io/tags/mysql/">MySQL</a>
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
     
-    <a href="https://igouist.github.io/tags/newbieguide/">NewbieGuide</a>
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
     
-    <a href="https://igouist.github.io/tags/object-oriented/">Object-Oriented</a>
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
     
-    <a href="https://igouist.github.io/tags/php/">PHP</a>
+    <a href="https://igouist.github.io/tags/php/">php</a>
     
-    <a href="https://igouist.github.io/tags/ptt/">PTT</a>
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
     
-    <a href="https://igouist.github.io/tags/python/">Python</a>
+    <a href="https://igouist.github.io/tags/python/">python</a>
     
-    <a href="https://igouist.github.io/tags/reading/">Reading</a>
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
     
-    <a href="https://igouist.github.io/tags/selenium/">Selenium</a>
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
     
-    <a href="https://igouist.github.io/tags/sqlite/">Sqlite</a>
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
     
-    <a href="https://igouist.github.io/tags/tools/">Tools</a>
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
     
-    <a href="https://igouist.github.io/tags/visualstudio/">VisualStudio</a>
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
     
-    <a href="https://igouist.github.io/tags/xampp/">XAMPP</a>
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
     
-    <a href="https://igouist.github.io/tags/w3hexschool/">w3HexSchool</a>
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
     
 </div>
     </section>
