@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>菜雞與物件導向 (3): 封裝 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞與物件導向 (3): 封裝 - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2020-07-12T23:53:03&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2020-07-12T23:53:03&#43;08:00">
+        
+    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="description" content="菜雞與物件導向 (3): 封裝">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/post/202007-oo-3-encapsulation/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">菜雞與物件導向 (3): 封裝</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2020-7-12,
+                        </date>
+                        
+                        <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/newbieguide">NewbieGuide</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp">CSharp</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+                        <div class="post-content">
+                            <p>這次我們要介紹的是傳說中的黑盒子：封裝。<strong>封裝和繼承、多型並稱物件導向三大特性</strong>，會是這個順序也是當然的，因為有了封裝才會需要繼承，因為繼承了才會有了多型，因此我們這幾節也按照這個順序快速地看過。</p>
+<p>所謂的封裝，咱同事在他整理的文章 <a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-3_%E5%B0%81%E8%A3%9Dencapsulation%E7%B9%BC%E6%89%BFinheritance%E8%88%87%E5%A4%9A%E5%9E%8Bpolymorphism/">Object Oriented物件導向-3:封裝(Encapsulation)、繼承(Inheritance)與多型(polymorphism)</a> 中的例子就舉得不錯：當你按下鍵盤的Ａ鍵，螢幕隨即出現了Ａ，你不必知道中間發生了什麼事，你只需要知道怎麼操作和最後得到什麼就可以了。</p>
+<p>此外我也看到過販賣機的例子，<strong>當你去販賣機買飲料，你也不需要知道裡面的構造，只要知道你選了飲料投了錢，飲料就會跑出來就行</strong>。</p>
+<p>因此<strong>封裝的概念很直覺：將物件視作一個整體，實作內容隱藏起來，讓使用者只需要知道怎麼使用即可。</strong>（相似的思路，我們後續的介面會再提到）大概就像懶人包的感覺。如果封裝做得夠好，除了可以將程式碼整理得井井有條以外，也能讓物件內部的修改不會影響到使用物件的地方，並且讓物件的使用者直覺地知道如何使用，最終達到降耦合的目標。</p>
+<p>關於封裝的概念，或是會問「什麼是耦合？」的朋友，建議可以看看這篇：<a href="https://ithelp.ithome.com.tw/articles/10203659">實務上的高內聚與低耦合</a></p>
+<p>而從上面的敘述中我們可以察覺到要實現封裝，最重要的就是：<strong>對外的開放程度（存取範圍）的控制</strong>。或是套一句前輩的說法：<strong>給程式碼隱私的空間</strong>。</p>
+<p>在 C# 之中，類別裡控制可見度是使用修飾子來定義存取範圍，也就是當我們替類別宣告欄位時使用的 <code>Public</code> 和 <code>Private</code>。<code>Public</code> 代表所有人都看得到，而 <code>private</code> 則是私有的，只有自己看得到。</p>
+<p>之所以要如此宣告，是為了將控制權掌握在物件本身，就像大話設計模式比喻的：物件就像間房子，我們不希望被看光光，可以看見的 <code>Public</code> 就像門和窗，而不該看見的 <code>Private</code> 則是用牆壁隱藏起來，而對於這間房子而言，門窗是可以控制的。</p>
+<blockquote>
+<p>註：當然，控制的程度也不會只有公開和私有兩個選項而已，另外還有限同一個組件才能取用、限定衍生類別才能取用等等，但現在的例子較為單調，暫且按下不表。有興趣的朋友可以參照 <a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/accessibility-levels">存取範圍層級</a> 的說明。</p>
+</blockquote>
+<p>對於這部分的範例，我覺得 <a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/using-properties">微軟文件的範例</a> 裡設定月份的區塊已經能很清楚表達了。但為了這篇文章的一致性，還是硬擠著一個範例出來：</p>
+<p>某一天，我們突然決定讓使用者可以傳入卡牌敘述了，但是卡牌上能顯示的字數有限，只能顯示 30 個字，因此首先我們先把卡牌敘述改成私有的：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name;
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Level;
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack;
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> _description; <span style="color:#75715e">// 更改為私有的
+</span><span style="color:#75715e"></span>
+    <span style="color:#75715e">/* 一些其他方法 */</span>
+}
+</code></pre></div><p>呃可能第一步就會讓人有些疑惑：「啊你要給人家傳東西進來還改私有？」但等等，且聽我娓娓道來：<strong>C# 中的屬性，是用 <code>Set</code> 和 <code>Get</code> 兩個方法去存取的</strong>，因此我們將進一步規劃出我們的門和窗：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+{
+    <span style="color:#75715e">// 略
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> _description;
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description
+    {
+        <span style="color:#66d9ef">set</span>
+        {
+            <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">value</span>.Length &gt; <span style="color:#ae81ff">0</span> &amp;&amp; <span style="color:#66d9ef">value</span>.Length &lt; <span style="color:#ae81ff">30</span>)
+            {
+                <span style="color:#66d9ef">this</span>._description = <span style="color:#66d9ef">value</span>;
+            }
+        }
+        <span style="color:#66d9ef">get</span>
+        {
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>._description;
+        }
+    }
+    <span style="color:#75715e">/* 一些其他方法 */</span>
+}
+</code></pre></div><p>如此一來我們就能對存取屬性時的行為進行管控囉。</p>
+<p>而在 C# 裡，如果你並沒有要特別針對存取另做額外處理，可以直接使用<strong>自動實作</strong>：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">set</span>; <span style="color:#66d9ef">get</span>; }
+</code></pre></div><p>這樣 C# 就會自動幫你建立一個私有屬性，並且只能經由 set 和 get 進行存取。</p>
+<p>簡化寫法之後，例如唯讀就可以這樣寫：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; }
+</code></pre></div><p>或是</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">set</span>; }
+</code></pre></div><p>要加上預設值也能這樣寫</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; } = <span style="color:#e6db74">&#34;這是一張卡牌。&#34;</span>;
+</code></pre></div><p>可以說是方便很多。甚至進一步說，我們就可以藉由公有和私有、存取子、自動實作這些工具，<strong>決定外部的使用者能看到哪些部份</strong>。</p>
+<p>當然，封裝的概念並不僅僅只是對屬性做存取管控如此而已，<strong>提高類別內的內聚性，降低對外的耦合性，隱藏複雜資訊才是最重要的方針</strong>，然而這只能在設計時，或是維護到頭痛才能親自體會了。例如說：<strong>當你需要處理一長串的商業邏輯，以至於需要將他們切割成數個小函式時，將它們宣告成 <code>Private</code> 就是相當好的選擇</strong>，這意味著這些工具僅讓你的物件內部使用，外面的人不應該直接調用其中的任何功能，同時又能幫助你的主要流程變得更簡潔。</p>
+<p>例如說，當我們有個連線到資料庫取得客戶資料的方法（可能是 <code>UserRepository.Get(int UserId)</code> 這種感覺），可能我們除了 <code>Public</code> 的 <code>Get</code> 方法以外，還有一些 <code>Private</code> 的 <code>ConnectDB</code> 等輔助方法。但<strong>呼叫這個函式的使用端不需要知道 這個函式是怎麼連線到資料庫的，又是怎麼搜尋出資料的，只需要知道呼叫了之後能拿到客戶資料就好</strong>。</p>
+<p>兩個物件之間「知道」得越多，其耦合就越高。替換和修改時互相牽連的機會和規模也越大，因此封裝可以說是物件導向的基石也不為過。封裝的好或不好（亦即物件是否足夠內聚，其職責是否單一，暴露內部資訊的多寡等等），直接關係到整個架構的優劣，不可謂不慎。</p>
+<p>封裝的部分就講到這裡，並不是很難理解，但是要封裝得好，或是說知道怎樣才算封裝得好，還是需要經驗，不是我這種菜雞一時半刻能理得白說得清的。這邊只能先筆記一下存取範圍的控制，接著<a href="/post/202007-oo-4-inheritance">下一篇</a>我們就繼續順著看繼承吧。</p>
+<h2 id="同系列文章">同系列文章</h2>
+<ul>
+<li><a href="/post/202007-newbieguide-oo">菜雞與物件導向 (0): 前言</a></li>
+<li><a href="/post/202007-oo-1-class-object">菜雞與物件導向 (1): 類別、物件</a></li>
+<li><a href="/post/202007-oo-2-constructor-overload">菜雞與物件導向 (2): 建構式、多載</a></li>
+<li><a href="/post/202007-oo-3-encapsulation">菜雞與物件導向 (3): 封裝</a></li>
+<li><a href="/post/202007-oo-4-inheritance">菜雞與物件導向 (4): 繼承</a></li>
+<li><a href="/post/202007-oo-5-polymorphism">菜雞與物件導向 (5): 多型</a></li>
+<li><a href="/post/202007-oo-6-abstract-override">菜雞與物件導向 (6): 抽象、覆寫</a></li>
+<li><a href="/post/202007-oo-7-interface">菜雞與物件導向 (7): 介面</a></li>
+</ul>
+<h2 id="參考資料">參考資料</h2>
+<ul>
+<li><a href="https://ithelp.ithome.com.tw/articles/10203659">實務上的高內聚與低耦合 - 可不可以不要寫糙 code</a></li>
+<li><a href="https://medium.com/@ChunYeung/%E4%BB%80%E9%BA%BC%E6%98%AFoo-%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E8%88%87%E5%B0%81%E8%A3%9D-80379c24e62">什麼是OO？物件導向與封裝 - Chun Yeung - Medium</a></li>
+<li><a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-3_%E5%B0%81%E8%A3%9Dencapsulation%E7%B9%BC%E6%89%BFinheritance%E8%88%87%E5%A4%9A%E5%9E%8Bpolymorphism/">Object Oriented物件導向-3:封裝(Encapsulation)、繼承(Inheritance)與多型(polymorphism) - Sian</a></li>
+<li><a href="https://dotblogs.com.tw/initials/2016/06/10/171117">[心得整理] c# 物件導向程式 - 2.封裝、繼承、多型的三大特性 - 聊聊程式</a></li>
+<li><a href="https://www.ithome.com.tw/node/45903">思考物件導向(1)物件導向與封裝 - 蔡學鏞</a></li>
+<li><a href="https://medium.com/@totoroLiu/%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-object-oriented-programming-%E6%A6%82%E5%BF%B5-5f205d437fd6">物件導向(Object Oriented Programming)概念 - Po-Ching Liu - Medium</a></li>
+<li><a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/accessibility-levels">存取範圍層級 - MSDN</a></li>
+<li><a href="https://www.tenlong.com.tw/products/9789866761799">《大話設計模式》附錄：物件導向基礎</a></li>
+</ul>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/202007-oo-2-constructor-overload/">菜雞與物件導向 (2): 建構式、多載</a></li>
+        
+        <li><a href="/post/202007-oo-1-class-object/">菜雞與物件導向 (1): 類別、物件</a></li>
+        
+        <li><a href="/post/202007-newbieguide-oo/">菜雞與物件導向 (0): 前言</a></li>
+        
+        <li><a href="/post/202007-automapper/">AutoMapper —— 類別轉換超省力</a></li>
+        
+        <li><a href="/post/202006-electron-net/">Electron.net —— 把網頁包成桌面應用吧</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/newbieguide">NewbieGuide</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/object-oriented">Object-Oriented</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/202008-system-environment/" title="C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑">C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-code-style/" title="C#: 程式碼風格備忘">C#: 程式碼風格備忘</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-pocket/" title="Pocket —— 稍後閱讀，想看再看">Pocket —— 稍後閱讀，想看再看</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-oo-7-interface/" title="菜雞與物件導向 (7): 介面">菜雞與物件導向 (7): 介面</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-oo-6-abstract-override/" title="菜雞與物件導向 (6): 抽象、覆寫">菜雞與物件導向 (6): 抽象、覆寫</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-oo-5-polymorphism/" title="菜雞與物件導向 (5): 多型、介面">菜雞與物件導向 (5): 多型、介面</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-oo-4-inheritance/" title="菜雞與物件導向 (4): 繼承">菜雞與物件導向 (4): 繼承</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-oo-3-encapsulation/" title="菜雞與物件導向 (3): 封裝">菜雞與物件導向 (3): 封裝</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-oo-2-constructor-overload/" title="菜雞與物件導向 (2): 建構式、多載">菜雞與物件導向 (2): 建構式、多載</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-oo-1-class-object/" title="菜雞與物件導向 (1): 類別、物件">菜雞與物件導向 (1): 類別、物件</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp/">csharp (16)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/newbieguide/">newbieguide (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (28)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">推薦友站</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://ithelp.ithome.com.tw/users/20112224/articles" title="KingLong">KingLong - iT邦幫忙</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        
+        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-92586970-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+</body>
+</html>

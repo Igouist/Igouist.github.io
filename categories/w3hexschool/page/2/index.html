@@ -84,6 +84,273 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/202007-newbieguide-oo/">菜雞與物件導向 (0): 前言</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-7-12,
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                
+                                    <a href="https://igouist.github.io/categories/newbieguide">NewbieGuide</a>
+                                
+                                    <a href="https://igouist.github.io/categories/csharp">CSharp</a>
+                                
+                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p>在訂便當告一段落之後，其實就已經和同事約好要來整理公司新訓的筆記。但因為範圍有點大水有點深，一直是挺畏懼的。但幸虧同事的鼓勵和以身作則，最終還是開啟了這個新系列，用寫給自己看的健康心態開工。如果你是真心希望弄懂物件導向的朋友，這邊推薦<a href="https://www.tenlong.com.tw/products/9789866761799">《大話設計模式》</a>的附錄，內容對物件導向的介紹清晰易懂且循序漸進，非常適合作為了解物件導向的起頭。</p>
+<p>由於我個人之前瘋過爐石戰記和殺戮尖塔這種卡牌遊戲，<del>而且也想不出別的例子了</del>，因此這篇會盡量以卡牌為主要範例，這樣我之後回來 <del>抄自己</del> 複習的時候也比較好進狀況。對於那些沒有接觸過相關遊戲的朋友只能先說聲抱歉，我會盡量加上其他例子，大概。</p>
+<p>本篇的段落將會分成以下幾個部份，同時至少需要先知道怎麼 Hello world 和寫過函式。由於只是簡單介紹一下，因此會附上一些知識點的參考資料，看見的時候可以先行閱讀；末尾也會附上有關的參考資料及文章，對於這類概念性的東西，一向是推薦多方閱讀以增強理解，就像保哥寫的：「<strong>如果你問 100 個人這個問題，可能會得到 200 個答案，所以你一定要有自己獨到、有自信、精闢的見解或描述方式</strong>。」如果有寫得不錯的文章想推薦給我，或是有地方需要補充和指證，還請不吝指教。共勉之。</p>
+<blockquote>
+<p>8/9 更新：和朋友們聊過之後，發現之前集中成一篇感覺太長了，更何況新訓的內容也是包山包海。因此將原先的內文拆解成多篇文章，做成系列文；由於一些大人的原因（例如不想打亂鼠年全馬、不想重註冊 URL 等等），本篇就留著作為目錄使用。以下附上目錄：</p>
+</blockquote>
+<p>菜雞與物件導向系列：</p>
+<ul>
+<li><a href="/post/202007-newbieguide-oo">菜雞與物件導向 (0): 前言</a></li>
+<li><a href="/post/202007-oo-1-class-object">菜雞與物件導向 (1): 類別、物件</a></li>
+<li><a href="/post/202007-oo-2-constructor-overload">菜雞與物件導向 (2): 建構式、多載</a></li>
+<li><a href="/post/202007-oo-3-encapsulation">菜雞與物件導向 (3): 封裝</a></li>
+<li><a href="/post/202007-oo-4-inheritance">菜雞與物件導向 (4): 繼承</a></li>
+<li><a href="/post/202007-oo-5-polymorphism">菜雞與物件導向 (5): 多型</a></li>
+<li><a href="/post/202007-oo-6-abstract-override">菜雞與物件導向 (6): 抽象、覆寫</a></li>
+<li><a href="/post/202007-oo-7-interface">菜雞與物件導向 (7): 介面</a></li>
+</ul>……
+                                <p class="readmore"><a href="https://igouist.github.io/post/202007-newbieguide-oo/">閱讀全文</a></p>
+                            </div>
+                        </article>
+                        <hr color="#D9D9D9" />
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/202007-automapper/">AutoMapper —— 類別轉換超省力</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-7-5,
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                
+                                    <a href="https://igouist.github.io/categories/csharp">CSharp</a>
+                                
+                                    <a href="https://igouist.github.io/categories/tools">Tools</a>
+                                
+                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p>類別間的轉換幾乎是每個專案每個工程師都會碰到的動作，舉凡是分層架構每層之間的轉換，如 Dto 轉換成 ViewModel；或是接收到資料要塞進自定義的類別時也需要進行轉換。但<strong>在遠古時代，當我們要把一個類別的資料倒進另一個類別時，總免不了一番折騰</strong>。</p>
+<p>例如一個卡片對戰遊戲的資料庫，光是要先把卡片資料讀取出來就需要：</p>
+<p><img src="https://i.imgur.com/c81Hx5I.png" alt=""></p>
+<p>有些時候也會看見用 Foreach 然後逐一傳值的場景，或是各種差不多的變種情況。同樣的是，光是將一個簡單的卡片資訊轉換成 ViewModel，就花了一大段在做對映的處理。這個過程本身枯燥乏味又占空間，更可怕的是，<strong>如果有個陳年資料表，動不動就上百個欄位，那這個轉換過程的恐怖程度可想而知</strong>。</p>
+<p>幸好！天無絕人之路，這種時候就是本日的主角 —— AutoMapper 出場的時候了。</p>
+<p>當 AutoMapper 一出手，轉換的過程瞬間就變成：</p>
+<p><img src="https://i.imgur.com/KxHAKpi.png" alt=""></p>
+<p>是不是精簡很多呢？接著就讓我們來看看怎麼開始使用吧！</p>……
+                                <p class="readmore"><a href="https://igouist.github.io/post/202007-automapper/">閱讀全文</a></p>
+                            </div>
+                        </article>
+                        <hr color="#D9D9D9" />
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/202006-electron-net/">Electron.net —— 把網頁包成桌面應用吧</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-6-28,
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                
+                                    <a href="https://igouist.github.io/categories/csharp">CSharp</a>
+                                
+                                    <a href="https://igouist.github.io/categories/tools">Tools</a>
+                                
+                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p><img src="https://github.com/ElectronNET/Electron.NET/raw/master/assets/images/electron.net-logo.png" alt=""></p>
+<p>因緣際會下想要弄出一些單機小工具來跑，這時候正巧接觸到 <a href="https://github.com/ElectronNET/Electron.NET">Electron.net</a> 這個神器，特別紀錄一下以免忘記。這是 <a href="https://www.electronjs.org/">Electron</a> 搭配 .net Core 的框架， <strong>Electron 是用 Chromium 和 Node.js 將網頁封裝成桌面應用程式</strong>，像是 Visual Studio Code、Slack 也都有使用到 Electron。而 <a href="https://github.com/ElectronNET/Electron.NET">Electron.net</a> 顧名思義就是 .net 用的 Electron 框架囉。</p>
+<p>這邊記錄一下自己嘗試時載入套件和建置的流程，主要參考自黑大的 <a href="https://blog.darkthread.net/blog/electron-net/">用 ASP.NET Core 寫桌面 GUI 應用程式 - Electron.NET</a> 和 <a href="https://blog.darkthread.net/blog/electron-api-brief/">Electron.NET API 快速巡覽</a> 這兩篇文章，以及官方的 <a href="https://github.com/ElectronNET/electron.net-api-demos">API DEMO</a>，特此感謝。</p>
+<p>本篇小節：</p>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%9D%E5%A5%97%E4%BB%B6%E5%8F%8A%E7%92%B0%E5%A2%83%E8%A8%AD%E7%BD%AE">安裝套件及環境設置</a></li>
+<li><a href="#%E5%89%8D%E5%BE%8C%E7%AB%AF%E5%82%B3%E5%80%BC-ipcmain-ipcrenderer">前後端傳值 (IpcMain, IpcRenderer)</a></li>
+<li><a href="#%E6%89%93%E5%8C%85%E6%88%90%E5%9F%B7%E8%A1%8C%E6%AA%94-exe">打包成執行檔（.exe）</a></li>
+</ul>……
+                                <p class="readmore"><a href="https://igouist.github.io/post/202006-electron-net/">閱讀全文</a></p>
+                            </div>
+                        </article>
+                        <hr color="#D9D9D9" />
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/202006-darkhorse/">讀《黑馬思維》</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-6-20,
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                
+                                    <a href="https://igouist.github.io/categories/reading">Reading</a>
+                                
+                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <blockquote>
+<p>每個人都是天才。但如果你用爬樹能力來斷定一條魚有多少才幹，牠整個人生都會相信自己愚蠢不堪。</p>
+</blockquote>
+<p>這邊整理一下這陣子讀<a href="https://www.books.com.tw/products/0010819494">《黑馬思維》</a>這本書的筆記，以及一些個人心得。直接破題說，我個人覺得值得一讀。</p>
+<p>本書的目的是研究那些橫空出世的<strong>黑馬</strong>。但在研究少數的黑馬之前，勢必先說明相對的多數，故本書前段著重在介紹何謂<strong>標準化</strong>。</p>
+<p>什麼是<strong>標準化協定</strong>呢？從工業革命至今，為了保證大量生產、品質穩定、抑或是降低成本、能夠「一致、有效」，制定流程和規定是最直接且有效的做法。不管是製造業，或者是教育，甚至是人生，群眾總是試圖找出一個固定的流程，鋪設一條筆直的道路，並且告訴大家：<strong>只要遵循這個路線，就能夠達到成功</strong>。</p>
+<p>的確，相較更早年代的階級區分，標準化的做法的確更加公平了。然而為了達到標準一致，勢必得重視群體、忽視個人。標準化的做法將所有人一視同仁，如同工廠的機器，或是程式的流程，認為設定好的輸入就該有期待的產出。為了達到標準，因此無法認為每個人是特別的，甚至那些過於特別的，反而對標準化而言是個麻煩。標準化的成功很直接：跟別人做一樣的事，但做得更好，如此就是最佳路線。</p>
+<p>但有一些人，並不遵循標準化建議的路線，仍然取得了成功，他們就是黑馬。在個人化崛起的這個時代，社群媒體、醫療、甚至教育都開始有了量身打造的選項，作者們提出了移出：那麼，什麼是你個人的成功？於是，他們開始研究這些黑馬。</p>
+<p>黑馬們的個性、背景和領域都不大一樣，然而他們有一部分是相似的。有些人說：我認為自己做的事情是值得的，有些人說他感覺到熱忱，也有人說這是他的天職。<strong>黑馬的共通點在於：他們都並非為了想要成功或是達到目標才努力前進，而是靠著追求自我實現而成就卓越</strong>。</p>
+<blockquote>
+<p>Chase Excellence, Success will follow. - 3 Idiots</p>
+</blockquote>
+<p>而對於這些黑馬如何追求自我實現，如何走出和標準化不同的路。本書提出以下四個重點：</p>
+<ul>
+<li>知道你的微動力</li>
+<li>清楚你的選擇</li>
+<li>了解你的策略</li>
+<li>忽略你的目的地</li>
+</ul>……
+                                <p class="readmore"><a href="https://igouist.github.io/post/202006-darkhorse/">閱讀全文</a></p>
+                            </div>
+                        </article>
+                        <hr color="#D9D9D9" />
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/202006-bit-flags-and-enum/">C#: 位元旗標 (Bit flag) 與列舉</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-6-14,
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                
+                                    <a href="https://igouist.github.io/categories/csharp">CSharp</a>
+                                
+                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p>前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。</p>
+<p>平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告個 Boolean 來處理。但這次遇到的是同時有多個「有／沒有」的狀況，但我遇到的程式碼並沒有分成多個 Bool 去做處理，而是直接儲存成一個數值。</p>
+<p><strong>由於「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列，如此只需要一個數字就可以紀錄或傳遞給其他系統了</strong>。例如最常見的用處是在權限系統，若有「讀」、「寫」、「執行」等權限，那麼我們按照這個順序去排列，當 <code>讀＝可、寫＝不可、執行＝可</code> 的時候，就記做 <code>101</code> = <code>5</code>。這種直接用一組位元表示狀態的方式就叫做<strong>位元旗標（Bit flag）</strong></p>
+<p>假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。</p>
+<p>於是我們建立了一個列舉（Enum），並且按照上面說明的，將每個技能會不會用一個位元來表示。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> SkillEnum
+{
+    C          = <span style="color:#ae81ff">1</span>,   <span style="color:#75715e">// 0000000001
+</span><span style="color:#75715e"></span>    CSharp     = <span style="color:#ae81ff">2</span>,   <span style="color:#75715e">// 0000000010
+</span><span style="color:#75715e"></span>    Golang     = <span style="color:#ae81ff">4</span>,   <span style="color:#75715e">// 0000000100
+</span><span style="color:#75715e"></span>    Java       = <span style="color:#ae81ff">8</span>,   <span style="color:#75715e">// 0000001000
+</span><span style="color:#75715e"></span>    JavaScript = <span style="color:#ae81ff">16</span>,  <span style="color:#75715e">// 0000010000 
+</span><span style="color:#75715e"></span>    PHP        = <span style="color:#ae81ff">32</span>,  <span style="color:#75715e">// 0000100000
+</span><span style="color:#75715e"></span>    Python     = <span style="color:#ae81ff">64</span>,  <span style="color:#75715e">// 0001000000
+</span><span style="color:#75715e"></span>    R          = <span style="color:#ae81ff">128</span>, <span style="color:#75715e">// 0010000000
+</span><span style="color:#75715e"></span>    Ruby       = <span style="color:#ae81ff">256</span>, <span style="color:#75715e">// 0100000000
+</span><span style="color:#75715e"></span>    SQL        = <span style="color:#ae81ff">512</span>  <span style="color:#75715e">// 1000000000
+</span><span style="color:#75715e"></span>}
+</code></pre></div><blockquote>
+<p>註：C# 有提供專給位元運算用的 Enum，請參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.flagsattribute?view=netcore-3.1">FlagsAttribute</a>。只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用　ToString() 也能更方便看見旗標內容</p>
+</blockquote>……
+                                <p class="readmore"><a href="https://igouist.github.io/post/202006-bit-flags-and-enum/">閱讀全文</a></p>
+                            </div>
+                        </article>
+                        <hr color="#D9D9D9" />
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/202006-wakatime/">WakaTime —— 我 Coding 了多久？</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-6-7,
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                
+                                    <a href="https://igouist.github.io/categories/tools">Tools</a>
+                                
+                                    <a href="https://igouist.github.io/categories/ide">IDE</a>
+                                
+                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p>這一周又是 <del>偷懶週</del> 繁忙週，因此就跟大家分享一個有趣的網站：<a href="https://wakatime.com/">WakaTime</a></p>
+<p>WakaTime 能夠幫你自動記錄寫程式的時間、常用語言及專案，只要簡單地在常用的 IDE 設定好擴充套件就可以達成。 WakaTime 支援的 IDE 可以參閱 <a href="https://wakatime.com/plugins">WakaTime - Plugin</a></p>
+<p>註冊相當簡單，此處就不贅述。稍微介紹一下儀表板的各區塊的功能：</p>
+<p><img src="https://i.imgur.com/wd1LZLr.png" alt="">
+左上會有最近的專案及花費時間，每個色塊都是一個專案，滑鼠移上去就會顯示專案名稱。</p>
+<p>點擊其中一天更會顯示當天的時間軸，可說是無所遁形。至於它判斷專案名稱的方法是看你編輯的檔案所在的資料夾名稱。</p>……
+                                <p class="readmore"><a href="https://igouist.github.io/post/202006-wakatime/">閱讀全文</a></p>
+                            </div>
+                        </article>
+                        <hr color="#D9D9D9" />
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/202005-bandon-ex2-heroku-debug/">我要訂便當 (5): Heroku 填坑小記</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-5-31,
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                
+                                    <a href="https://igouist.github.io/categories/python">Python</a>
+                                
+                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                
+                                    <a href="https://igouist.github.io/categories/automation">Automation</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p>在上一集的<a href="https://igouist.github.io/post/202005-bandon-ex1-heroku/"> 將 Python 腳本部署上 Heroku</a> 中，記錄了將 Python 腳本放上 Heroku 的過程，但仍然沒有將我們的 <a href="https://igouist.github.io/tags/bandon/">訂便當小幫手</a> 給放上去。之前有稍微提到是因為過程中遇到了一些問題，最後決定將這些問題和找到的前人解決文記錄在這一篇，將來再遇到的時候就可以參考。</p>
+<ol>
+<li>SQLite 要改成用 PostgreSQL</li>
+<li>在 Heroku 上執行 Selenium</li>
+</ol>
+<h3 id="一sqlite-要改成用-postgresql">一、SQLite 要改成用 PostgreSQL</h3>
+<p>在之前的 <a href="https://igouist.github.io/post/202003-bandon-2-sqlite/">我要訂便當(2) —— 用 Python + Sqlite 儲存訂單</a> 中，為了方便及簡單性，選擇了較輕便的 SQLite 來儲存我們爬回來的訂單資訊。然而，SQLite 將資料儲存在小檔案以便於攜帶的做法，在 Heroku 上將會遭遇像是各個 dyno 的資料不同步等許多問題，因此 Heroku 是不建議使用 SQLite 的。</p>
+<p>在 Heroku 的開發文件中的 <a href="https://devcenter.heroku.com/articles/sqlite3">SQLite on Heroku</a> 有關於這部分的詳細說明，並直接提到「<em>If you were to use SQLite on Heroku, you would lose your entire database at least once every 24 hours.</em>」同時，官方也提供了他們的建議：<strong>PostgreSQL</strong>。相較於輕便但只能同時單一寫入而且還會在 dyno 炸掉的 SQLite，PostgreSQL 的完整性更符合 Heroku 對服務的要求。</p>
+<p>關於在 Heroku 上使用 PostgreSQL 的做法，這篇 <a href="https://swf.com.tw/?p=1327">佈署 Python Flask 網站留言板應用程式到 Heroku + PostgreSQL 資料庫系統</a> 說明得相當詳細。</p>……
+                                <p class="readmore"><a href="https://igouist.github.io/post/202005-bandon-ex2-heroku-debug/">閱讀全文</a></p>
+                            </div>
+                        </article>
+                        <hr color="#D9D9D9" />
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/202005-jsonview/">Json View —— 用 Chrome 看 Json 的必備擴充套件</a>
                                 </h1>
                             </header>
@@ -170,229 +437,6 @@
                         </article>
                         <hr color="#D9D9D9" />
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/202004-css-variables/">CSS: 變數 (Variables)</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-4-26,
-                            </date>
-                            
-                            <div class="post-meta meta-category">
-                                
-                                    <a href="https://igouist.github.io/categories/css">CSS</a>
-                                
-                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p>這禮拜忙了些，只好先偷懶打張安牌。這邊就記一下前陣子同學弄主題切換時用到的 CSS 變數（Variables）功能用法</p>
-<p>原本使用 CSS 時就會有許多重複使用的部分，例如說網站的主色彩和副色彩等，然而在管理上，或是要修改的時候就會很麻煩，通常都要另外借助工具來處理。然而 CSS 其實原生就有變數可以使用，大大地增加了改動時的方便性。用法上也相當簡單。</p>
-<p>在 CSS 宣告變數時，建議放在 <code>:root</code> 裡，並使用 <code>--變數名</code> 的方式宣告。例如</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css">:<span style="color:#a6e22e">root</span>{
-    --color: <span style="color:#ae81ff">#000000</span>;
-}
-</code></pre></div><p>而使用的時候只要 <code>var(--變數名)</code> 就可以囉。例如</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#f92672">body</span> {
-  <span style="color:#66d9ef">background</span>: <span style="color:#a6e22e">var</span>(<span style="color:#f92672">--</span><span style="color:#66d9ef">color</span>);
-}
-</code></pre></div>……
-                                <p class="readmore"><a href="https://igouist.github.io/post/202004-css-variables/">閱讀全文</a></p>
-                            </div>
-                        </article>
-                        <hr color="#D9D9D9" />
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/202004-feedly/">Feedly —— 我的資訊，我來掌握</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-4-19,
-                            </date>
-                            
-                            <div class="post-meta meta-category">
-                                
-                                    <a href="https://igouist.github.io/categories/tools">Tools</a>
-                                
-                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <blockquote>
-<p>「你看，我認為人的腦子本來就像一間空空的小閣樓，應該有選擇地把傢俱放進去，傻瓜才會把他見到的所有破爛一古腦兒的裝進去。這樣一來，那些對他有用的知識反而被擠了出來；或者，最多不過是和許多其他的東西摻雜在一起，在取用的時候也會很困難。所以一個會工作的人，在要把一些東西裝進他那間小閣樓似的頭腦中的時候，確實是非常小心謹慎的。」<!-- raw HTML omitted -->
-　　——《福爾摩斯探案記：血字的研究》</p>
-</blockquote>
-<p>在咱們寫程式這行中，幾乎所有人都必須要在網路上找尋資料；而就算非這一行的朋友們，也會在網路上多方攝取資源。隨著時間的累積，都會開始有一份列表，諸如一些崇拜的大神或是固定追蹤的部落格，又或是文風比較喜歡、素質感覺比較高的新聞或評論等等。然而列表越來越長，就算加到書籤也總不能沒事就逛一大圈。因此把多個資訊來源集中起來整理就成了面對資訊爆炸的關鍵一步。</p>
-<p><strong><a href="https://feedly.com/">Feedly</a> 就是一個協助資訊來源管理的工具，可以很方便地把不同訂閱來源整理在一起</strong>，例如你可能追隨了五六個大神的部落格，只要這些大神都有提供 RSS 訂閱，Feedly 就會將大神更新的文章收集到平台上。每天只需要上去 Feedly 看一下有沒有哪位大神更新，就可以化主動為被動，穩定接收新資訊。並且由於集中管理的關係，也可以檢視是否有哪個資料來源，如新聞網站，實際上更新的文章並不太合你胃口，或是哪些已經停止更新了，就可以進行剪枝的動作，建立自己的篩選機制。</p>……
-                                <p class="readmore"><a href="https://igouist.github.io/post/202004-feedly/">閱讀全文</a></p>
-                            </div>
-                        </article>
-                        <hr color="#D9D9D9" />
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/202004-epplus/">EPPlus —— 輕鬆處理 Excel</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-4-12,
-                            </date>
-                            
-                            <div class="post-meta meta-category">
-                                
-                                    <a href="https://igouist.github.io/categories/csharp">CSharp</a>
-                                
-                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p>前陣子工作需要匯出一些資料表，因此用到了 <a href="https://github.com/EPPlusSoftware/EPPlus">EPPlus</a> 這套工具來把資料匯出成 Excel。由於這需求似乎會挺常遇到的，決定記一下。</p>
-<blockquote>
-<p>目標：稍微紀錄一下這次碰到 EPPlus 的用法。</p>
-</blockquote>
-<p><strong>EPPlus 是在 .NET Framework 或 .NET Core 上提供控制 Excel 的元件，操作簡單好懂</strong>，當有需要在網頁上讓人將表格資料下載成 Excel 的功能時就可以試著使用。常常一併被提起的還有另一個一樣老牌的相似功能元件 NPOI，不過我個人只用過 EPPlus 便不再贅述。關於更詳細的介紹，可以參閱黑暗執行緒的這篇 <a href="https://blog.darkthread.net/blog/epplus/">比 NPOI 更討喜的 Excel 元件 - EPPlus!</a>，儘管是有些久遠的文章但仍能迅速了解 EEplus 的賣點和差異。</p>
-<p>我在使用 EPPlus 時主要的參考來自於 <a href="https://github.com/EPPlusSoftware/EPPlus/wiki">EPPlus 的 Wiki</a>，每個功能都有說明及範例，同時也有範例專案可以下載，寫得相當詳細。另外還找了如 <a href="https://www.cnblogs.com/rumeng/p/3785748.html">導出 Excel 之 Epplus 使用教程 - Wico&rsquo;s Blog</a>、<a href="https://dotblogs.com.tw/malonestudyrecord/2018/03/21/103124">使用 EPPLUS 操控 Excel - 碼農的學習日誌</a> 這些有逐步說明的文章，在此感謝。</p>……
-                                <p class="readmore"><a href="https://igouist.github.io/post/202004-epplus/">閱讀全文</a></p>
-                            </div>
-                        </article>
-                        <hr color="#D9D9D9" />
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/202004-bandon-3-line-notify/">我要訂便當 (3): 用 Python &#43; Line Notify 傳送通知</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-4-5,
-                            </date>
-                            
-                            <div class="post-meta meta-category">
-                                
-                                    <a href="https://igouist.github.io/categories/python">Python</a>
-                                
-                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p>前情提要：<!-- raw HTML omitted -->
-在 <a href="https://igouist.github.io/post/202003-bandon-1-selenium/">我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單</a> 中，我們嘗試了用 Selenium 控制瀏覽器去取回訂便當團購網的訂單內容<!-- raw HTML omitted -->
-而在 <a href="https://igouist.github.io/post/202003-bandon-2-sqlite/">我要訂便當(2) —— 用 Python + Sqlite 儲存訂單</a> 中，我們使用 Sqlite 達到將訂單儲存起來以判斷是否有新的訂單，因此這邊的下一步就是需要進行通知。<!-- raw HTML omitted --></p>
-<blockquote>
-<p>目標：<strong>使用 Line Notify，當有新訂單的時候就發送通知</strong>。</p>
-</blockquote>
-<p><strong><a href="https://notify-bot.line.me/zh_TW/">Line Notify</a></strong> 是 Line 上面的通知服務，不像 Line@ 一樣可以有品牌有互動等等，Line Notify 純粹就是訊息通知；但同時對比 Line@ 最近吵得沸沸揚揚的收費和大量跳槽，Line Notify 則是免費的服務。</p>
-<p>Line Notify 的運作上分為發送訊息和接受訊息。當我們使用 Line 帳號申請 Line Notify 的服務後就可以得到一個 Access Token，藉由這組 Access Token 就能夠讓我們的程式和服務去發送通知。這些通知會由一個叫做 LINE Notify 的官方帳號發送給有訂閱這個通知的人。</p>
-<p>基於這個工作原理，像是需要經營品牌的服務就不太適合 Line Notify，反之像是<strong>伺服器斷線、設備超載等等這些個人通知性質比較高的服務就很適合使用 Line Notify</strong>。這點從 <a href="https://notify-bot.line.me/zh_TW/">Line Notify 網頁</a>下方的示意圖也可以略知一二。</p>
-<p>當然像我們這次的需求是「如果有新的團購便當 就 通知我」，相當符合使用場景，因此這邊就嘗試使用看看並記錄下來。如果需要更多 Line Notify 的說明，保哥的這篇 <a href="https://blog.miniasp.com/post/2020/02/17/Go-Through-LINE-Notify-Without-Any-Code">上手 LINE Notify 不求人：一行代碼都不用寫的推播通知方法</a> 介紹的更為完整，推薦參閱。當然，也可以閱讀 <a href="https://notify-bot.line.me/doc/en/">Line Notify 官方文件</a></p>……
-                                <p class="readmore"><a href="https://igouist.github.io/post/202004-bandon-3-line-notify/">閱讀全文</a></p>
-                            </div>
-                        </article>
-                        <hr color="#D9D9D9" />
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/202003-visualstudio/">Visual studio 環境設定 —— 字型、套件、快捷鍵</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-3-28,
-                            </date>
-                            
-                            <div class="post-meta meta-category">
-                                
-                                    <a href="https://igouist.github.io/categories/ide">IDE</a>
-                                
-                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <blockquote>
-<p>目標：整理一下自己用的<strong>字型、插件和快捷鍵</strong></p>
-</blockquote>
-<p>今天在工作時寫到一半突然藍屏，重開機之後俺的地表最強編譯器 Visual Studio 整個就開始鬧脾氣，打開專案整排都是 Error，連 System.Object 都找不到，差點往生。還好用了修復功能之後一切恢復正常，但是載入的插件和一些個人設定就這樣重置了……</p>
-<p>為了之後可能還會遇到相同的事情，這邊就先將平常的 Visual Studio 環境用到的設定做一份紀錄，之後遇到新插件或是什麼功能也可以回來更新這篇文，如此一來下次又被洗白的時候就可以回來參考了。</p>
-<p>這邊主要會記錄三個部分，並隨時可能更新。主要是字型、使用的插件以及常用的快捷鍵。</p>
-<p><del>不過我的 Visual Studio 也被洗白了所以這篇會跟著找回失落插件的歷程慢慢補上QQ</del></p>
-<p>目前已補：<!-- raw HTML omitted -->
-字型：<strong>Consolas</strong>, <strong>Fira Code</strong>, <strong>更紗黑體</strong>, <strong>Ink Free</strong> <!-- raw HTML omitted -->
-插件：<strong>CodeMaid</strong>, <strong>Editor Guidelines</strong>, <strong>CodeBlockEndTag</strong>, <strong>SmartPaster</strong>, <strong>Time Savers</strong>, <strong>ClaudiaIDE</strong></p>……
-                                <p class="readmore"><a href="https://igouist.github.io/post/202003-visualstudio/">閱讀全文</a></p>
-                            </div>
-                        </article>
-                        <hr color="#D9D9D9" />
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/202003-sikulix/">SikuliX —— 針對圖形介面寫自動化腳本的小幫手</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-3-22,
-                            </date>
-                            
-                            <div class="post-meta meta-category">
-                                
-                                    <a href="https://igouist.github.io/categories/python">Python</a>
-                                
-                                    <a href="https://igouist.github.io/categories/automation">Automation</a>
-                                
-                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p>最近因緣際會下開始玩一些自動化測試的小工具，發現即使不是用在正規的測試時也相當實用，畢竟我們這行能讓電腦自動幫我們省事就是一種樂趣嘛。正巧這禮拜比較忙，無法準時推出訂便當系列的續集，因此決定直接紀錄一下試玩 Sikulix 的過程，以後有需要自動化的時候也方便回來參考。</p>
-<p><strong>Sikulix 是一款針對圖形介面編寫腳本達到自動操作</strong>的軟體，操作上相當方便。主要是將目標的圖示等畫面擷取下來，再編寫程式對目標進行操作。它編寫腳本時使用的語言是 <a href="https://www.jython.org/">Jython</a> —— 用 Java 實現的 Python，關於 Jython 的基本操作可以參見 <a href="https://iowiki.com/jython/jython_overview.html">Wiki 教程：Jyhton</a>，對於「實現 Python？」這句話感到疑惑的朋友可以參見 <a href="https://zhuanlan.zhihu.com/p/58492338">知乎：各種 Python 實現的簡單介绍與比較</a></p>
-<p>此外，本篇對於 Sikulix 的參考主要來自於<a href="https://ypwalter.blogspot.com/2018/06/sikuli-sikulix.html?view=classic">【測試】圖形化的自動測試 Sikuli / SikuliX 的相關技巧</a>以及<a href="https://tpu.thinkpower.com.tw/tpu/articleDetails/876"> Sikulix 圖形辨識自動化測試開發工具</a>兩篇，特此感謝。</p>……
-                                <p class="readmore"><a href="https://igouist.github.io/post/202003-sikulix/">閱讀全文</a></p>
-                            </div>
-                        </article>
-                        <hr color="#D9D9D9" />
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/202003-bandon-2-sqlite/">我要訂便當 (2): 用 Python &#43; Sqlite 儲存訂單</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-3-15,
-                            </date>
-                            
-                            <div class="post-meta meta-category">
-                                
-                                    <a href="https://igouist.github.io/categories/python">Python</a>
-                                
-                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p>前情回顧：上一集在 <a href="https://igouist.github.io/post/202003-bandon-1-selenium/">我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單</a> 中，我們藉由自動化套件 Selenium 控制 Chrome 成功從訂便當網站裡取得訂單資訊了。但只能夠取得現在的訂單，和原本有新訂單的時候才通知的目標仍然有點差距，那麼，如何判斷有沒有新訂單呢？只要和上一次讀取時的訂單相比就能知道了。</p>
-<blockquote>
-<p>目標：將訂單儲存起來，判斷有沒有新訂單。</p>
-</blockquote>
-<p>這一篇主要的做法主要參考自 <a href="https://www.youtube.com/watch?v=pI3FDACJFAs">大數軟體 - 如何透過 Line 發送最新一集的漫畫</a> 中，關於如何判斷是否有最新一集漫畫的部分。這系列的影片步驟明瞭，說明直接，同時標題也很對我胃口（我就喜歡把工具拿來生活周遭玩的感覺），因此這邊也推薦一下，有興趣的可以去看看。</p>
-<p>回歸正題，這篇的第一部分就是要使用 Sqlite 將抓到的訂單儲存起來。Sqlite 顧名思義就是 SQL + Lite 的感覺，主打小巧輕便。它會將資料儲存在一個檔案中，並且支援精簡的 SQL 指令，可以說是相當方便。</p>
-<p>在 Python 要對 Sqlite 做操作主要是藉由 sqlite3 這個包，因此在接下來的步驟前，請先安裝這個包。關於 Sqlite3 的基本操作，可以參閱 <a href="https://www.runoob.com/sqlite/sqlite-python.html">菜鳥教程的 SQLite - Python</a> 教學。</p>……
-                                <p class="readmore"><a href="https://igouist.github.io/post/202003-bandon-2-sqlite/">閱讀全文</a></p>
-                            </div>
-                        </article>
-                        <hr color="#D9D9D9" />
-                    
 
                     
 
@@ -457,31 +501,31 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202007-newbieguide-oo/" title="菜雞與物件導向 (0): 前言">菜雞與物件導向 (0): 前言</a>
+        <a href="https://igouist.github.io/post/202007-oo-7-interface/" title="菜雞與物件導向 (7): 介面">菜雞與物件導向 (7): 介面</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202007-automapper/" title="AutoMapper —— 類別轉換超省力">AutoMapper —— 類別轉換超省力</a>
+        <a href="https://igouist.github.io/post/202007-oo-6-abstract-override/" title="菜雞與物件導向 (6): 抽象、覆寫">菜雞與物件導向 (6): 抽象、覆寫</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202006-electron-net/" title="Electron.net —— 把網頁包成桌面應用吧">Electron.net —— 把網頁包成桌面應用吧</a>
+        <a href="https://igouist.github.io/post/202007-oo-5-polymorphism/" title="菜雞與物件導向 (5): 多型、介面">菜雞與物件導向 (5): 多型、介面</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202006-darkhorse/" title="讀《黑馬思維》">讀《黑馬思維》</a>
+        <a href="https://igouist.github.io/post/202007-oo-4-inheritance/" title="菜雞與物件導向 (4): 繼承">菜雞與物件導向 (4): 繼承</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202006-bit-flags-and-enum/" title="C#: 位元旗標 (Bit flag) 與列舉">C#: 位元旗標 (Bit flag) 與列舉</a>
+        <a href="https://igouist.github.io/post/202007-oo-3-encapsulation/" title="菜雞與物件導向 (3): 封裝">菜雞與物件導向 (3): 封裝</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202006-wakatime/" title="WakaTime —— 我 Coding 了多久？">WakaTime —— 我 Coding 了多久？</a>
+        <a href="https://igouist.github.io/post/202007-oo-2-constructor-overload/" title="菜雞與物件導向 (2): 建構式、多載">菜雞與物件導向 (2): 建構式、多載</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/202005-bandon-ex2-heroku-debug/" title="我要訂便當 (5): Heroku 填坑小記">我要訂便當 (5): Heroku 填坑小記</a>
+        <a href="https://igouist.github.io/post/202007-oo-1-class-object/" title="菜雞與物件導向 (1): 類別、物件">菜雞與物件導向 (1): 類別、物件</a>
     </li>
     
 </ul>
@@ -502,7 +546,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp/">csharp (9)</a>
+        <a href="https://igouist.github.io/categories/csharp/">csharp (16)</a>
     </li>
     
     <li>
@@ -514,7 +558,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/newbieguide/">newbieguide (1)</a>
+        <a href="https://igouist.github.io/categories/newbieguide/">newbieguide (8)</a>
     </li>
     
     <li>
@@ -530,7 +574,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (21)</a>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (28)</a>
     </li>
     
 </ul>

@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>菜雞與物件導向 (4): 繼承 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞與物件導向 (4): 繼承 - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2020-07-12T23:53:04&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2020-07-12T23:53:04&#43;08:00">
+        
+    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="description" content="菜雞與物件導向 (4): 繼承">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/post/202007-oo-4-inheritance/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">菜雞與物件導向 (4): 繼承</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2020-7-12,
+                        </date>
+                        
+                        <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/newbieguide">NewbieGuide</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp">CSharp</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+                        <div class="post-content">
+                            <p>接著要介紹的是繼承 aka 物件導向三大特性之王 aka 濫用榜 Ko.1 ，繼承的強大幾乎和它的惡名一樣可怕，給一個從 <a href="https://dotblogs.com.tw/initials/2016/06/10/171117">[心得整理] c# 物件導向程式 - 2.封裝、繼承、多型的三大特性</a> 這篇摘過來的例子就可以略知一二了：</p>
+<p><img src="https://i.imgur.com/IFV4xjr.png" alt=""></p>
+<p>什麼也不做，僅僅只是繼承而已，就取得了繼承對象（C# 中稱為基底類別）近乎全部的內容，真是太可怕了。在 C# 中，繼承可以取得基底類別除了 <code>Private</code> 以外所有的內容，例如 <code>Protected</code> 更是表明就是只給繼承使用的。</p>
+<p>由此可見，在減少重複程式碼的路上，繼承無疑達到了全新的高度。</p>
+<p>那麼繼承代表的是什麼意思呢？大多的網站都能直接說明：<strong>繼承是一種「is-a」的關係。當你能說出Ａ是一個Ｂ的時候，就代表你認為Ａ可以繼承自Ｂ</strong>。</p>
+<p>最直覺的繼承例子就是物種的分類。舉例來說，狗跟貓都是哺乳類，因此他們都可以繼承到一些哺乳類共通的特徵（例如哺乳、用肺呼吸）。藉由繼承，我們可以把這些哺乳類共有的特徵全部放在哺乳類這個物件，再由狗和貓分別去繼承哺乳類，藉此讓他們都能得到哺乳類的特徵，再進一步發展出自己的特徵和行為，甚至重新定義基底類別的方法為自己所用。因此，像大話設計模式就將繼承說明如：繼承者是對於被繼承者的一種特殊化。</p>
+<p>如此一來，當我們需要修改哺乳類的定義的時候，<strong>只需要修改一個地方，而繼承了哺乳類的這些物件（C# 中稱為衍生類別）全都能夠一起修改到，大大地減少了跑來跑去修改的次數，也讓程式碼的重複大幅度地減少</strong>。</p>
+<p>然而也因為如此，繼承最大的惡名出現了：<strong>繼承享受了取用基底類別內容的好處，卻也必須背負牽一髮動全身的風險</strong>。</p>
+<p>繼承的特性和封裝有天生的衝突。為了從封裝好的物件之中取得內容，減少程式碼的重複，我們有了繼承，然而這樣無疑破壞了基底類別的封裝，完整地暴露給了衍生類別，兩者之間形成了強耦合的關係，對於衍生類別而言，它必須依賴著基底類別，倘若哪天基底類別的屬性變更了，例如型別或名稱有變動，那麼所有衍生類別使用到的地方都會受到影響，這時候在程式碼裡的修改規模，將會隨著繼承的濫用程度提升，達到一個相當龐大的地步。</p>
+<p>事實上，這是相當好理解的。我們藉由哺乳類去繼承出了狗科跟貓科兩個類別；那麼假設我們時光回溯，重新改變了哺乳類的演化過程，今天的哺乳類變成了三隻腳而且還有翅膀，那麼後面演化出來的狗跟貓又會怎麼樣呢？<strong>直接修改源頭，對後續的衍生者而言無疑是相當大的災難</strong>。</p>
+<p>同時由於繼承的方便和概念實在相當廣泛，因此也經常被胡亂使用。我個人就遇過專案之中，前人為了讓某個類別擁有各式各樣的方法，先後繼承了數學運算、連線至資料庫、字串處理等等數個類別，形成一條既長又龐大的繼承鏈，最終達到了無法修改的地步。像這樣的物件甚至無法通過芹菜測試，沒有人知道這個合成怪獸是來做什麼的，這種<a href="https://en.wikipedia.org/wiki/God_object">神之物件</a>搖身一變就變成滅世主宰，實在是相當恐怖。</p>
+<p>因此對於繼承，前輩們通常只有一種叮囑：<strong>謹慎使用，或是乾脆不要用</strong>。</p>
+<p>對於繼承的概念，這邊推薦可以看看，<a href="https://milikao.pixnet.net/blog/post/543592">到底誰該去繼承誰？ 物件導向初學者應該要知道的事情(三)</a> 這篇從圓和橢圓的各種繼承方式切入，很仔細地講解了不同思路使用繼承遇到的問題，尤其是示範完直覺的做法之後展示經典的段落相當重要。</p>
+<p>那麼我們就回到卡牌的例子：</p>
+<p>假使我們的卡牌現在有了功能卡，這類卡牌在遊戲王叫做魔法卡，而在爐石稱之為法術，雖然這也是一種卡片，但和前面提過的戰士和怪獸等等顯然完全不同。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MagicCard</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name;
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost; <span style="color:#75715e">// 資源花費
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> Magic Effect; <span style="color:#75715e">// 法術效果
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> _description;
+
+    <span style="color:#66d9ef">public</span> MagicCard() { <span style="color:#75715e">/* 建構式 */</span>}
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#75715e">/* set; get; */</span>} 
+}
+</code></pre></div><p>魔法卡並沒有攻擊力和生命值，只有對應的法術效果。同時，我們發現卡牌有資源花費的需要，像是爐石戰記或是殺戮尖塔這類有資源的遊戲，打出卡片的時候會需要花費水晶等資源，藉此限制玩家一回合內能使用的策略。</p>
+<p>現在我們明顯可以發現兩個問題：這兩個種類的卡片，都是卡片呀！而且，內容有一半都是重複的。這是我們該使用繼承的時機了。</p>
+<p>首先我們將原本的卡片更改為 怪獸卡。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MonsterCard</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name;
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost;
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack;
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> _description;
+
+    <span style="color:#66d9ef">public</span> MonsterCard() { <span style="color:#75715e">/* 建構式 */</span>}
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#75715e">/* set; get; */</span>} 
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Hit(MonsterCard target) { <span style="color:#75715e">/* 一些痛揍其他怪獸卡的方法 */</span> }
+}
+</code></pre></div><p>接著我們開始設計基底類別：卡片。我們可以觀察到，怪獸卡和魔法卡相同的部分有：名稱、敘述和卡片花費。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> _description;
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#75715e">/* set; get; */</span>} 
+}
+</code></pre></div><p>將原本的怪獸卡和魔法卡改成繼承自卡片類別，並且將重複的部份移除，直接取用基底類別的內容就好。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MonsterCard</span> : Card
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack;
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health;
+    <span style="color:#66d9ef">public</span> MonsterCard() { <span style="color:#75715e">/* 建構式 */</span> }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Hit(MonsterCard target) { <span style="color:#75715e">/* 一些痛揍其他怪獸卡的方法 */</span> }
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MagicCard</span> : Card
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost;
+    <span style="color:#66d9ef">public</span> Magic Effect;
+    <span style="color:#66d9ef">public</span> MagicCard() { <span style="color:#75715e">/* 建構式 */</span>}
+}
+</code></pre></div><p>可以看到我們在 C# 的繼承方式是使用 <code>類別 : 基底類別</code> 的方式來宣告。並且也能發現，怪獸卡的內容變簡潔了。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> MonsterCard(name: <span style="color:#e6db74">&#34;哥布林&#34;</span>, attack: <span style="color:#ae81ff">3</span>, health: <span style="color:#ae81ff">2</span>);
+<span style="color:#66d9ef">var</span> warrior = <span style="color:#66d9ef">new</span> MonsterCard(name: <span style="color:#e6db74">&#34;戰士&#34;</span>, attack: <span style="color:#ae81ff">4</span>, health: <span style="color:#ae81ff">3</span>);
+warrior.Description = <span style="color:#e6db74">&#34;他是一個專殺哥布林的戰士！&#34;</span>;
+warrior.Hit(goblin);
+</code></pre></div><p>並且在使用上也沒有任何差錯，我們仍然能給予怪獸卡名字和敘述。</p>
+<p>當然在實際的卡牌遊戲中，魔法卡還能細分出更多種類，因此魔法卡類別還能再被一些更細的分類，例如指向法術等等去繼承，形成如同樹狀的繼承關係，如同物種演化一般。</p>
+<p>繼承的段落也快結束了，這邊再次叮嚀一番：<strong>除非你很確定，否則請不要使用繼承</strong>。繼承帶來了相當大的好處，減少的重複程式碼量號稱三特性之冠；但同時他帶來的後果也是最嚴重的，堪稱三特性中的擊墜之王，鏖殺了數以萬計濫用和誤用的工程師…和維護他們系統的工程師，不可不慎。</p>
+<p>但如果已經看到了這裡，還請你先記著繼承的概念，在不遠處的將來你將會遇到他那不太像又有點像的兄弟：介面。這邊就先打住。<a href="/post/202007-oo-4-inheritance">下一篇</a>讓我們繼續來看三特性的末席：多型吧。</p>
+<h2 id="同系列文章">同系列文章</h2>
+<ul>
+<li><a href="/post/202007-newbieguide-oo">菜雞與物件導向 (0): 前言</a></li>
+<li><a href="/post/202007-oo-1-class-object">菜雞與物件導向 (1): 類別、物件</a></li>
+<li><a href="/post/202007-oo-2-constructor-overload">菜雞與物件導向 (2): 建構式、多載</a></li>
+<li><a href="/post/202007-oo-3-encapsulation">菜雞與物件導向 (3): 封裝</a></li>
+<li><a href="/post/202007-oo-4-inheritance">菜雞與物件導向 (4): 繼承</a></li>
+<li><a href="/post/202007-oo-5-polymorphism">菜雞與物件導向 (5): 多型</a></li>
+<li><a href="/post/202007-oo-6-abstract-override">菜雞與物件導向 (6): 抽象、覆寫</a></li>
+<li><a href="/post/202007-oo-7-interface">菜雞與物件導向 (7): 介面</a></li>
+</ul>
+<h2 id="參考資料">參考資料</h2>
+<ul>
+<li><a href="https://ithelp.ithome.com.tw/articles/10204633">不要造神 (神一般的物件) - 可不可以不要寫糙 code</a></li>
+<li><a href="https://milikao.pixnet.net/blog/post/543592">到底誰該去繼承誰？ 物件導向初學者應該要知道的事情(三)</a></li>
+<li><a href="https://medium.com/@ChunYeung/%E4%BB%80%E9%BA%BC%E6%98%AFoo-%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E8%88%87%E7%B9%BC%E6%89%BF-6955239576af">什麼是OO？物件導向與繼承 - Chun Yeung - Medium</a></li>
+<li><a href="https://dotblogs.com.tw/initials/2016/06/10/171117">[心得整理] c# 物件導向程式 - 2.封裝、繼承、多型的三大特性 - 聊聊程式</a></li>
+<li><a href="https://medium.com/@totoroLiu/%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-object-oriented-programming-%E6%A6%82%E5%BF%B5-5f205d437fd6">物件導向(Object Oriented Programming)概念 - Po-Ching Liu - Medium</a></li>
+<li><a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/tutorials/inheritance">C# 和 .NET 中的繼承 - MSDN</a></li>
+<li><a href="https://www.tenlong.com.tw/products/9789866761799">《大話設計模式》附錄：物件導向基礎</a></li>
+</ul>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/202007-oo-3-encapsulation/">菜雞與物件導向 (3): 封裝</a></li>
+        
+        <li><a href="/post/202007-oo-2-constructor-overload/">菜雞與物件導向 (2): 建構式、多載</a></li>
+        
+        <li><a href="/post/202007-oo-1-class-object/">菜雞與物件導向 (1): 類別、物件</a></li>
+        
+        <li><a href="/post/202007-newbieguide-oo/">菜雞與物件導向 (0): 前言</a></li>
+        
+        <li><a href="/post/202007-automapper/">AutoMapper —— 類別轉換超省力</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/newbieguide">NewbieGuide</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/object-oriented">Object-Oriented</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/202008-system-environment/" title="C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑">C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-code-style/" title="C#: 程式碼風格備忘">C#: 程式碼風格備忘</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-pocket/" title="Pocket —— 稍後閱讀，想看再看">Pocket —— 稍後閱讀，想看再看</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-oo-7-interface/" title="菜雞與物件導向 (7): 介面">菜雞與物件導向 (7): 介面</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-oo-6-abstract-override/" title="菜雞與物件導向 (6): 抽象、覆寫">菜雞與物件導向 (6): 抽象、覆寫</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-oo-5-polymorphism/" title="菜雞與物件導向 (5): 多型、介面">菜雞與物件導向 (5): 多型、介面</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-oo-4-inheritance/" title="菜雞與物件導向 (4): 繼承">菜雞與物件導向 (4): 繼承</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-oo-3-encapsulation/" title="菜雞與物件導向 (3): 封裝">菜雞與物件導向 (3): 封裝</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-oo-2-constructor-overload/" title="菜雞與物件導向 (2): 建構式、多載">菜雞與物件導向 (2): 建構式、多載</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/202007-oo-1-class-object/" title="菜雞與物件導向 (1): 類別、物件">菜雞與物件導向 (1): 類別、物件</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp/">csharp (16)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/newbieguide/">newbieguide (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (28)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">推薦友站</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://ithelp.ithome.com.tw/users/20112224/articles" title="KingLong">KingLong - iT邦幫忙</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        
+        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-92586970-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+</body>
+</html>
