@@ -102,7 +102,25 @@
                             <div class="post-content">
                                 <p>自從 C# 有了 <a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/tokens/interpolated">字串插值</a> 這東西之後，我就一直是愛用者。畢竟比起 <code>string.format</code> 這東西可是看起來優雅多了。例如：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> message = <span style="color:#e6db74">$&#34;哈囉，{userName} 您的點數將於 {cutoffTime} 到期。&#34;</span>;
-</code></pre></div><p>簡潔又明瞭，一眼就能理解字串內容。實在是挺方便，後來發現這東西還有一些延伸用法，這邊就稍加紀錄一下：</p>……
+</code></pre></div><p>簡潔又明瞭，一眼就能理解字串內容。實在是挺方便，後來發現這東西還有一些延伸用法，這邊就稍加紀錄一下：</p>
+<p>字串插值中能夠做<strong>簡易計算</strong>，例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> message = <span style="color:#e6db74">$&#34;您輸入的數值為：{a}、{b}。他們相加為：{a + b}&#34;</span>;
+</code></pre></div><p>同時，在字串插值時可以針對內容作格式化，只需要用 <code>:</code> 來區隔，妥善運用可以省下一堆 <code>ToString()</code> 的空間。</p>
+<p>例如當我們要將<strong>時間</strong>格式化的時候，就可以：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> date = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>);
+<span style="color:#66d9ef">var</span> message = <span style="color:#e6db74">$&#34;您的商品已於 {date:yyyy/MM/dd} 抵達。&#34;</span>;
+<span style="color:#75715e">// 您的商品已於 2020/08/09 抵達。
+</span></code></pre></div><p>另外，<strong>數值</strong>當然也可以格式化，不過數值的應用比較複雜，主要是用來定下小數點、百分比等符號的位置。
+可以參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/standard/base-types/custom-numeric-format-strings">自訂數值格式字串 - MSDN</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> cost = <span style="color:#ae81ff">2100</span>;
+<span style="color:#66d9ef">var</span> message1 = <span style="color:#e6db74">$&#34;您的商品一共是 {cost:#,###} 元&#34;</span>;
+<span style="color:#75715e">// 用 # 可以替數字預留位置
+</span><span style="color:#75715e">// 您的商品一共是 2,100 元
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">var</span> message2 = <span style="color:#e6db74">$&#34;您的商品一共是 {cost:#,###.00} 元&#34;</span>;
+<span style="color:#75715e">// 也可以用 0 來預留位置，若該數字有值就會顯示該數字，沒有就會自動補 0
+</span><span style="color:#75715e">// 您的商品一共是 2,100.00 元
+</span></code></pre></div>……
                                 <p class="readmore"><a href="https://igouist.github.io/post/202008-csharp-string-interpolation-/">閱讀全文</a></p>
                             </div>
                         </article>
@@ -552,6 +570,10 @@ warrior.Hit(goblin);
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/202008-powershell-beauty/" title="Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh">Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/202008-csharp-string-interpolation-/" title="C#: 字串插值的那些事兒">C#: 字串插值的那些事兒</a>
     </li>
     
@@ -585,10 +607,6 @@ warrior.Hit(goblin);
     
     <li>
         <a href="https://igouist.github.io/post/202007-oo-3-encapsulation/" title="菜雞與物件導向 (3): 封裝">菜雞與物件導向 (3): 封裝</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/202007-oo-2-constructor-overload/" title="菜雞與物件導向 (2): 建構式、多載">菜雞與物件導向 (2): 建構式、多載</a>
     </li>
     
 </ul>
@@ -633,11 +651,11 @@ warrior.Hit(goblin);
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (7)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (8)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (29)</a>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (30)</a>
     </li>
     
 </ul>
@@ -684,6 +702,8 @@ warrior.Hit(goblin);
     <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
     
     <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
     
     <a href="https://igouist.github.io/tags/ptt/">ptt</a>
     
