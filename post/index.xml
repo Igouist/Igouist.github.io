@@ -6,10 +6,48 @@
     <description>Recent content in Posts on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Sat, 15 Aug 2020 18:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 30 Aug 2020 11:58:00 +0800</lastBuildDate>
     
 	<atom:link href="https://igouist.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>C#: 使用 TimeZoneInfo 在各時區轉換時間</title>
+      <link>https://igouist.github.io/post/202008-csharp-timezone/</link>
+      <pubDate>Sun, 30 Aug 2020 11:58:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/202008-csharp-timezone/</guid>
+      <description>&lt;p&gt;聊到將時間從 UTC 轉到台灣時間，居然還是聽到朋友表示使用 +8 小時的做法，驚為天人。這種做法可能會造成後續的問題，例如時區並不會跟著變動，或是遇到日光節約等特殊狀況就容易出事。和西元民國轉換直接 -1911 一樣不穩定。&lt;/p&gt;
+&lt;p&gt;這篇就用來記錄一下之前看過比較優雅的時區轉換方式，順便將先前存著的時間處理相關資料整理一下，方便之後需要時可以馬上回來查詢。&lt;/p&gt;
+&lt;p&gt;轉換方式主要參考自 &lt;a href=&#34;https://dotblogs.com.tw/supershowwei/2016/10/17/141620&#34;&gt;[食譜好菜] DateTime 具有文化特性的格式化及時區的轉換&lt;/a&gt; 及 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/standard/datetime/converting-between-time-zones&#34;&gt;在各時區間轉換時間&lt;/a&gt;，感謝前人的指引。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 假設現在是要從標準時區 +00:00 轉換到台灣時區，故這邊使用 UtcNow 先取標準世界協調時間
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; nowDateTime = DateTime.UtcNow;
+
+nowDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yyyy/MM/dd H:mm:ss zzz&amp;#34;&lt;/span&gt;).Dump();
+&lt;span style=&#34;color:#75715e&#34;&gt;// 2020/08/30 15:56:05 +00:00
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;// ==================================================
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;// 傳統的 直接對時間做計算的方式…
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; addedDateTime = nowDateTime.AddHours(&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;);
+
+addedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yyyy/MM/dd H:mm:ss zzz&amp;#34;&lt;/span&gt;).Dump();
+&lt;span style=&#34;color:#75715e&#34;&gt;// 2020/08/30 23:56:05 +00:00
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 可以看到儘管時間變動了，時區仍然還在 +00:00
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;// ==================================================
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;span style=&#34;color:#75715e&#34;&gt;// 使用 TimeZoneInfo 先取得台北時區
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; timeZone = TimeZoneInfo.FindSystemTimeZoneById(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Taipei Standard Time&amp;#34;&lt;/span&gt;);
+
+&lt;span style=&#34;color:#75715e&#34;&gt;// 再使用 TimeZoneInfo 來變更時間
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; convertedDateTime = TimeZoneInfo.ConvertTime(nowDateTime, timeZone);
+
+convertedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yyyy/MM/dd H:mm:ss zzz&amp;#34;&lt;/span&gt;).Dump();
+&lt;span style=&#34;color:#75715e&#34;&gt;// 2020/08/30 23:56:05 +08:00
+&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 可以看到除了時間變更以外，時區也切換到 +08:00 了！
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面取得台北時區的步驟，可以參照 &lt;a href=&#34;https://docs.microsoft.com/en-us/previous-versions/windows/embedded/gg154758(v=winembedded.80)&#34;&gt;Time Zone IDs&lt;/a&gt; 來查詢想要的時區。這樣的時區切換方式，不僅副作用少，不會因為時區沒轉雷到後續接手的人，也省卻了擔心日光節約等等問題，這種事就交給微軟去煩惱吧！&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh</title>

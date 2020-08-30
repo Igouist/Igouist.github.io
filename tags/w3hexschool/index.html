@@ -84,6 +84,60 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/202008-csharp-timezone/">C#: 使用 TimeZoneInfo 在各時區轉換時間</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-8-30,
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                
+                                    <a href="https://igouist.github.io/categories/csharp">CSharp</a>
+                                
+                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p>聊到將時間從 UTC 轉到台灣時間，居然還是聽到朋友表示使用 +8 小時的做法，驚為天人。這種做法可能會造成後續的問題，例如時區並不會跟著變動，或是遇到日光節約等特殊狀況就容易出事。和西元民國轉換直接 -1911 一樣不穩定。</p>
+<p>這篇就用來記錄一下之前看過比較優雅的時區轉換方式，順便將先前存著的時間處理相關資料整理一下，方便之後需要時可以馬上回來查詢。</p>
+<p>轉換方式主要參考自 <a href="https://dotblogs.com.tw/supershowwei/2016/10/17/141620">[食譜好菜] DateTime 具有文化特性的格式化及時區的轉換</a> 及 <a href="https://docs.microsoft.com/zh-tw/dotnet/standard/datetime/converting-between-time-zones">在各時區間轉換時間</a>，感謝前人的指引。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 假設現在是要從標準時區 +00:00 轉換到台灣時區，故這邊使用 UtcNow 先取標準世界協調時間
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> nowDateTime = DateTime.UtcNow;
+
+nowDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
+<span style="color:#75715e">// 2020/08/30 15:56:05 +00:00
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// ==================================================
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// 傳統的 直接對時間做計算的方式…
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> addedDateTime = nowDateTime.AddHours(<span style="color:#ae81ff">8</span>);
+
+addedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
+<span style="color:#75715e">// 2020/08/30 23:56:05 +00:00
+</span><span style="color:#75715e">// 可以看到儘管時間變動了，時區仍然還在 +00:00
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// ==================================================
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// 使用 TimeZoneInfo 先取得台北時區
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> timeZone = TimeZoneInfo.FindSystemTimeZoneById(<span style="color:#e6db74">&#34;Taipei Standard Time&#34;</span>);
+
+<span style="color:#75715e">// 再使用 TimeZoneInfo 來變更時間
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> convertedDateTime = TimeZoneInfo.ConvertTime(nowDateTime, timeZone);
+
+convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
+<span style="color:#75715e">// 2020/08/30 23:56:05 +08:00
+</span><span style="color:#75715e">// 可以看到除了時間變更以外，時區也切換到 +08:00 了！
+</span></code></pre></div><p>上面取得台北時區的步驟，可以參照 <a href="https://docs.microsoft.com/en-us/previous-versions/windows/embedded/gg154758(v=winembedded.80)">Time Zone IDs</a> 來查詢想要的時區。這樣的時區切換方式，不僅副作用少，不會因為時區沒轉雷到後續接手的人，也省卻了擔心日光節約等等問題，這種事就交給微軟去煩惱吧！</p>……
+                                <p class="readmore"><a href="https://igouist.github.io/post/202008-csharp-timezone/">閱讀全文</a></p>
+                            </div>
+                        </article>
+                        <hr color="#D9D9D9" />
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/202008-powershell-beauty/">Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh</a>
                                 </h1>
                             </header>
@@ -469,43 +523,6 @@
                         </article>
                         <hr color="#D9D9D9" />
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/202007-oo-3-encapsulation/">菜雞與物件導向 (3): 封裝</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-7-12,
-                            </date>
-                            
-                            <div class="post-meta meta-category">
-                                
-                                    <a href="https://igouist.github.io/categories/newbieguide">NewbieGuide</a>
-                                
-                                    <a href="https://igouist.github.io/categories/csharp">CSharp</a>
-                                
-                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p>這次我們要介紹的是傳說中的黑盒子：封裝。<strong>封裝和繼承、多型並稱物件導向三大特性</strong>，會是這個順序也是當然的，因為有了封裝才會需要繼承，因為繼承了才會有了多型，因此我們這幾節也按照這個順序快速地看過。</p>
-<p>所謂的封裝，咱同事在他整理的文章 <a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-3_%E5%B0%81%E8%A3%9Dencapsulation%E7%B9%BC%E6%89%BFinheritance%E8%88%87%E5%A4%9A%E5%9E%8Bpolymorphism/">Object Oriented物件導向-3:封裝(Encapsulation)、繼承(Inheritance)與多型(polymorphism)</a> 中的例子就舉得不錯：當你按下鍵盤的Ａ鍵，螢幕隨即出現了Ａ，你不必知道中間發生了什麼事，你只需要知道怎麼操作和最後得到什麼就可以了。</p>
-<p>此外我也看到過販賣機的例子，<strong>當你去販賣機買飲料，你也不需要知道裡面的構造，只要知道你選了飲料投了錢，飲料就會跑出來就行</strong>。</p>
-<p>因此<strong>封裝的概念很直覺：將物件視作一個整體，實作內容隱藏起來，讓使用者只需要知道怎麼使用即可。</strong>（相似的思路，我們後續的介面會再提到）大概就像懶人包的感覺。如果封裝做得夠好，除了可以將程式碼整理得井井有條以外，也能讓物件內部的修改不會影響到使用物件的地方，並且讓物件的使用者直覺地知道如何使用，最終達到降耦合的目標。</p>
-<p>關於封裝的概念，或是會問「什麼是耦合？」的朋友，建議可以看看這篇：<a href="https://ithelp.ithome.com.tw/articles/10203659">實務上的高內聚與低耦合</a></p>
-<p>而從上面的敘述中我們可以察覺到要實現封裝，最重要的就是：<strong>對外的開放程度（存取範圍）的控制</strong>。或是套一句前輩的說法：<strong>給程式碼隱私的空間</strong>。</p>
-<p>在 C# 之中，類別裡控制可見度是使用修飾子來定義存取範圍，也就是當我們替類別宣告欄位時使用的 <code>Public</code> 和 <code>Private</code>。<code>Public</code> 代表所有人都看得到，而 <code>private</code> 則是私有的，只有自己看得到。</p>
-<p>之所以要如此宣告，是為了將控制權掌握在物件本身，就像大話設計模式比喻的：物件就像間房子，我們不希望被看光光，可以看見的 <code>Public</code> 就像門和窗，而不該看見的 <code>Private</code> 則是用牆壁隱藏起來，而對於這間房子而言，門窗是可以控制的。</p>
-<blockquote>
-<p>註：當然，控制的程度也不會只有公開和私有兩個選項而已，另外還有限同一個組件才能取用、限定衍生類別才能取用等等，但現在的例子較為單調，暫且按下不表。有興趣的朋友可以參照 <a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/accessibility-levels">存取範圍層級</a> 的說明。</p>
-</blockquote>……
-                                <p class="readmore"><a href="https://igouist.github.io/post/202007-oo-3-encapsulation/">閱讀全文</a></p>
-                            </div>
-                        </article>
-                        <hr color="#D9D9D9" />
-                    
 
                     
 
@@ -524,6 +541,10 @@
     
     <li >
         <a href="https://igouist.github.io/tags/w3hexschool/page/3/">3</a>
+    </li>
+    
+    <li >
+        <a href="https://igouist.github.io/tags/w3hexschool/page/4/">4</a>
     </li>
     
 
@@ -552,6 +573,10 @@
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/202008-csharp-timezone/" title="C#: 使用 TimeZoneInfo 在各時區轉換時間">C#: 使用 TimeZoneInfo 在各時區轉換時間</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/202008-powershell-beauty/" title="Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh">Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh</a>
@@ -589,10 +614,6 @@
         <a href="https://igouist.github.io/post/202007-oo-4-inheritance/" title="菜雞與物件導向 (4): 繼承">菜雞與物件導向 (4): 繼承</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/202007-oo-3-encapsulation/" title="菜雞與物件導向 (3): 封裝">菜雞與物件導向 (3): 封裝</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -611,7 +632,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp/">csharp (17)</a>
+        <a href="https://igouist.github.io/categories/csharp/">csharp (18)</a>
     </li>
     
     <li>
@@ -639,7 +660,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (30)</a>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (31)</a>
     </li>
     
 </ul>
