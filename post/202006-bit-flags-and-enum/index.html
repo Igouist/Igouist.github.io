@@ -103,9 +103,16 @@
                         <div class="post-content">
                             <p>前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。</p>
 <p>平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告個 Boolean 來處理。但這次遇到的是同時有多個「有／沒有」的狀況，但我遇到的程式碼並沒有分成多個 Bool 去做處理，而是直接儲存成一個數值。</p>
-<p><strong>由於「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列，如此只需要一個數字就可以紀錄或傳遞給其他系統了</strong>。例如最常見的用處是在權限系統，若有「讀」、「寫」、「執行」等權限，那麼我們按照這個順序去排列，當 <code>讀＝可、寫＝不可、執行＝可</code> 的時候，就記做 <code>101</code> = <code>5</code>。這種直接用一組位元表示狀態的方式就叫做<strong>位元旗標（Bit flag）</strong></p>
-<p>假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。</p>
-<p>於是我們建立了一個列舉（Enum），並且按照上面說明的，將每個技能會不會用一個位元來表示。</p>
+<p><strong>由於「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列的話，就只需要一個數字就可以紀錄或傳遞給其他系統了</strong>。例如最常見的用處是在權限系統，若有「讀」、「寫」、「執行」等權限，那麼我們按照這個順序去排列，當 <code>讀＝可、寫＝不可、執行＝可</code> 的時候，就記做 <code>101</code> = <code>5</code>。這種直接用一組位元表示狀態的方式就叫做<strong>位元旗標（Bit flag）</strong></p>
+<pre><code>1 讀   = 可
+0 寫   = 不可
+1 執行 = 可
+
+/* 橫放 */
+=&gt; 101 (2進位) 
+=&gt; 5 
+</code></pre><p>假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。</p>
+<p>在 C# 中已經有方便的工具可以處理數字列表，我們可以建立一個 <strong>列舉（Enum）</strong>，並且按照上面說明的，將每個技能各自用一個位元來表示。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> SkillEnum
 {
     C          = <span style="color:#ae81ff">1</span>,   <span style="color:#75715e">// 0000000001
@@ -122,14 +129,53 @@
 </code></pre></div><blockquote>
 <p>註：C# 有提供專給位元運算用的 Enum，請參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.flagsattribute?view=netcore-3.1">FlagsAttribute</a>。只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用　ToString() 也能更方便看見旗標內容</p>
 </blockquote>
-<p>那麼假使今天來的新人 Bob，他總共會 C, Java, PHP, R, SQL 五種語言，那麼只要將這五種語言做 <code>OR</code> 運算，就可以得到 <code>1010101001</code> = <code>681</code> 了</p>
-<p>當要使用的時候，就將 Bob 的數值和目標數值做 <code>AND</code> 運算。例如說我們想知道 Bob 會不會 Java，就可以將 <code>681</code> 和 <code>8</code> 做 <code>&amp;</code>，即可知道 Bob 會不會 Java。在做權限檢查時也是如此去確認對象是否有對應的權限</p>
+<p>那麼假使今天來的新人 Bob，他總共會 C, Java, PHP, R, SQL 五種語言，那現在他的資料欄位，就會是五種語言對應的位置為 1，其餘為 0，也就是 <code>1010101001</code> =  <code>681</code></p>
+<p>當 <strong>查詢</strong> 的時候，就將 Bob 的數值和目標數值做 <code>AND</code> 運算。例如說我們想知道 Bob 會不會 Java，就可以將 <code>681</code> 和 JAVA 的 <code>8</code> 做 <code>&amp;</code>，即可知道 Bob 會不會 Java。在做權限檢查時也是如此去確認對象是否有對應的權限：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> BobsSkills = <span style="color:#ae81ff">681</span>;
-<span style="color:#66d9ef">var</span> IsBobSkilledJava = BobsSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.Java;
+<span style="color:#75715e">// 也支援直接加上 0B 寫成二進位，例如：
+</span><span style="color:#75715e">// var BobsSkills = 0b1010101001;
+</span><span style="color:#75715e">// var BobsSkills = 0b_0010_1010_1001;
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// 用 &amp; (AND) 來確認 Bob 會不會 Java...
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> IsBobSkilledJava = BobsSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.Java;
 <span style="color:#e6db74">$&#34;Bob 會 Java 嗎？{Convert.ToBoolean(IsBobSkilledJava)}&#34;</span>.Dump();
 <span style="color:#75715e">// Bob 會 Java 嗎？True
-</span></code></pre></div><p>從上面我們可以看到：<strong>賦予內容用 OR 去結合起來、檢查的時候則用 AND 去找出目標的位置是否為 1</strong></p>
-<p>而當我們要確認 Bob 會哪些程式語言的時候，只要將列舉和位元逐一 AND 出來，就可以還原 Bob 的列表囉</p>
+</span></code></pre></div><p>從位元的方式來看 <code>AND</code> 會是這樣的</p>
+<pre><code>    0 0 1 1
+AND 0 1 0 1
+-----------
+    0 0 0 1
+</code></pre><p>也就是必須要 <strong>同個位置的值都是 1</strong>，在這邊也就是 Bob 的技能中 Java 的欄位，和 SkillEnum 中對應的欄位都要是 1 的時候，才會有數值。否則就會是 0 。</p>
+<p>那假設 Bob 經過一番苦練，又掌握了 JavaScript 這門語言呢？當我們要 <strong>賦予</strong> 的時候只要用 <code>OR</code> 就可以把新的部分賦予給他：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> IsBobSkilledJavaScript = BobsSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.JavaScript;
+<span style="color:#e6db74">$&#34;Bob 會 JavaScript 嗎？{Convert.ToBoolean(IsBobSkilledJavaScript)}&#34;</span>.Dump();
+<span style="color:#75715e">// Bob 會 JavaScript 嗎？False
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// 用 | (OR) 讓 Bob 去學習 JavaScript...
+</span><span style="color:#75715e"></span>BobsSkills = BobsSkills | (<span style="color:#66d9ef">int</span>)SkillEnum.JavaScript;
+
+IsBobSkilledJavaScript = BobsSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.JavaScript;
+<span style="color:#e6db74">$&#34;Bob 會 JavaScript 嗎？{Convert.ToBoolean(IsBobSkilledJavaScript)}&#34;</span>.Dump();
+<span style="color:#75715e">// Bob 會 JavaScript 嗎？True
+</span></code></pre></div><p>從位元的方式來看 <code>OR</code> 會是這樣的</p>
+<pre><code>    0 0 1 1
+ OR 0 1 0 1
+-----------
+    0 1 1 1
+</code></pre><p>也就是當 <strong>兩者之間任一為 1</strong> 的時候，在這邊也就是當 Bob 的技能和我們要求給他的 SkillEnum 同位置只要有一個是 1，那就會有數值。</p>
+<p>例如說原本 Bob 不會 JavaScript，所以 JavaScript 那一欄就會是 0 。而我們把它和 SkillEnum.JavaScript（也就是只有 JavaScript 那一欄是 1 ）做 OR 運算後，JavaScript 代表的欄位就會變成 1，而其他則不變。</p>
+<p>聰明的你應該能猜出如果要給予預設值的時候可以怎麼給囉，沒錯！只要把有的項目全部 OR 起來就可以了：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> BobsSkills = 
+    (<span style="color:#66d9ef">int</span>)SkillEnum.C    |
+    (<span style="color:#66d9ef">int</span>)SkillEnum.Java |
+    (<span style="color:#66d9ef">int</span>)SkillEnum.PHP  |
+    (<span style="color:#66d9ef">int</span>)SkillEnum.R    |
+    (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
+    
+<span style="color:#75715e">// C, Java, PHP, R, SQL
+</span></code></pre></div><p>從上面我們可以看到：<strong>賦予內容時用 OR 讓指定的位置變成 1、而檢查的時候則用 AND 去找出目標的位置是否為 1</strong></p>
+<p>那如果我想要確認現在有哪些欄位是開啟的呢？例如說，當我們要確認 Bob 會哪些程式語言的時候怎麼做呢？</p>
+<p>既然用 AND 可以查詢其中一個位置，那麼只要將列舉和位元用迴圈逐一 AND 出來，就可以還原 Bob 的列表囉</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> BobsSkills = <span style="color:#ae81ff">681</span>;
 <span style="color:#66d9ef">var</span> enumCount = Enum.GetNames(<span style="color:#66d9ef">typeof</span>(SkillEnum)).Count();
 <span style="color:#66d9ef">var</span> BobsSkillsList = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt;();
@@ -139,7 +185,7 @@
 </span><span style="color:#75715e"></span>        BobsSkillsList.Add(((SkillEnum)Math.Pow(<span style="color:#ae81ff">2</span>, i)).ToString());
 <span style="color:#e6db74">$&#34;Bob 會的語言有：{String.Join(&#34;</span>, <span style="color:#e6db74">&#34;, BobsSkillsList)}&#34;</span>.Dump();
 <span style="color:#75715e">// Bob 會的語言有：C, Java, PHP, R, SQL
-</span></code></pre></div><p>如果有像上面提到的，替 Enum 加上 <code>[Flags]</code> 標籤的話，用起來就更簡單了：</p>
+</span></code></pre></div><p>不過上面這個依序列印的方式還是太麻煩了。如果有像前半段提到的，<strong>替 Enum 加上 <code>[Flags]</code> 標籤</strong>的話，用起來就更簡單了：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> BobsSkills = <span style="color:#ae81ff">681</span>;
 ((SkillEnum)BobsSkills).Dump();
 <span style="color:#75715e">// C, Java, PHP, R, SQL
@@ -147,8 +193,11 @@
 <h2 id="延伸閱讀及參考資料">延伸閱讀及參考資料</h2>
 <ul>
 <li><a href="https://medium.com/@kazafchen/%E4%B8%80%E4%BB%B6intent%E6%95%99%E6%88%91%E7%9A%84%E4%BA%8B-bitwise-operation-dd3a388ae34e">一件Intent教我的事： Bitwise Operation</a></li>
-<li><a href="https://codertw.com/%E7%A8%8B%E5%BC%8F%E8%AA%9E%E8%A8%80/700165/">JavaScript中的位運算和權限設計</a></li>
+<li><a href="https://codertw.com/%E7%A8%8B%E5%BC%8F%E8%AA%9E%E8%A8%80/700165/">JavaScript中的位運算和權限設計</a>
+<ul>
 <li>補一下原出處： <a href="https://juejin.im/post/5dc36f39e51d4529ed292910">JavaScript 中的位运算和权限设计 - 掘金</a></li>
+</ul>
+</li>
 <li><a href="https://shunnien.github.io/2017/06/27/byte-operator-auth/">位元運算與權限控制 - ShunNien&rsquo;s Blog</a></li>
 <li><a href="https://matthung0807.blogspot.com/2019/02/java-bit-flag.html">Java bit flag - 菜鳥工程師肉豬</a></li>
 <li><a href="https://www.zhihu.com/question/34021773">在写代码的过程中使用位运算的好处？ - 知乎</a></li>
