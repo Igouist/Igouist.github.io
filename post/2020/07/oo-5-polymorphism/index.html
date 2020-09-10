@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>菜雞與物件導向 (5): 多型 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞與物件導向 (5): 多型 - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2020-07-12T23:53:05&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2020-07-12T23:53:05&#43;08:00">
+        
+    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="description" content="用 C# 的方式介紹何謂物件導向(Object Oriented) 三大特性中的多型(Polymorphism)。多型即是指一樣的事，不同做法，用子類別實作出各式各樣不同的方法，藉此讓父類別的方法藉此達到延伸和多樣化的效果">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/post/2020/07/oo-5-polymorphism/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">菜雞與物件導向 (5): 多型</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2020-7-12,
+                        </date>
+                        
+                        <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/newbieguide">NewbieGuide</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp">CSharp</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+                        <div class="post-content">
+                            <p>多型算是比較三特性之中給人感覺比較溫和的了，不如說只要有了繼承，那麼多型的到來就是必然的。多型的定義是：不同的物件能夠做出一樣的行為，但必須由他們自己的程式碼來實作。</p>
+<p>白話一點說就是：<strong>一樣的事，不同做法</strong>。</p>
+<p>多型相對是比較好理解的，畢竟每個人做同一件事的方法本來就不太一樣。例如一樣是泡奶茶，英國就正常地泡，<a href="https://www.ettoday.net/news/20200707/1754177.htm">美國就會用微波爐</a>；一樣是肉粽，有些人就是比較愛吃油飯；到了程式的世界裡也是，即使繼承了同一個物件，實現這個行為的方式也可以不同。</p>
+<p>在此可以先推這篇 <a href="https://matthung0807.blogspot.com/2018/02/java-overload.html">Java 什麼是多載(Overload), 覆寫(Override), 多型(Polymorphism) - 菜鳥工程師肉豬</a> 中的說明。其中可以從例子看到儘管狗跟鳥都是繼承自動物這個類別，但對於「移動」這個方法，他們實作的方式並不一樣。這就是多型的範例。</p>
+<p>我個人更喜歡用職位的方式去理解多型。</p>
+<p>被繼承者就像是該職位的工作，例如說：<code>Programmer</code> 要會寫 C#、要會寫 SQL、要會 VB…等等，於是老闆就貼出了徵人啟示，要求新來的員工必須要有 <code>Programmer</code> 寫的能力：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Programmer</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> WriteCSharp()
+    {
+        <span style="color:#75715e">/* 努力地寫 C# */</span>
+    }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> WriteSQL()
+    {
+        <span style="color:#75715e">/* 努力地寫 SQL */</span>
+    }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> WriteVB()
+    {
+        <span style="color:#75715e">/* 努力地寫 VB */</span>
+    }
+}
+</code></pre></div><p>於是今天小華就來面試了，不過他寫的程式碼品質…不怎麼樣。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Hua</span> : Programmer
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> WriteCSharp()
+    {
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;ShitCode&#34;</span>;
+    }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> WriteSQL()
+    {
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;ShitCode&#34;</span>;
+    }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> WriteVB()
+    {
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;ShitCode&#34;</span>;
+    }
+}
+</code></pre></div><p>而小華應徵的隔天，小明也開開心心地來應徵了，他不只 C#、SQL 和 VB 都寫得很好，甚至還會泡英式奶茶：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Ming</span> : Programmer
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteCSharp()
+    {
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;CleanCode&#34;</span>;
+    }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteSQL()
+    {
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;CleanCode&#34;</span>;
+    }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteVB()
+    {
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;CleanCode&#34;</span>;
+    }
+    <span style="color:#66d9ef">public</span> Tea MakeTea() 
+    { 
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Tea(teaName: <span style="color:#e6db74">&#34;MilkTea&#34;</span>); 
+    }
+}
+</code></pre></div><p>火速通過面試之後，老闆就讓小明上工了：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Work()
+{
+    Programmer programmer = <span style="color:#66d9ef">new</span> Ming();
+    programmer.WriteCSharp(); <span style="color:#75715e">// &#34;CleanCode&#34;
+</span><span style="color:#75715e"></span>    programmer.WriteCSharp(); <span style="color:#75715e">// &#34;CleanCode&#34;
+</span><span style="color:#75715e"></span>    programmer.WriteCSharp(); <span style="color:#75715e">// &#34;CleanCode&#34;
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>過了幾天後，老闆決定讓小明和小華一起寫同個專案：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> newProject()
+{
+    Programmer programmer001 = <span style="color:#66d9ef">new</span> Ming();
+    Programmer programmer002 = <span style="color:#66d9ef">new</span> Hua();
+
+    programmer001.WriteCSharp(); <span style="color:#75715e">// &#34;CleanCode&#34;
+</span><span style="color:#75715e"></span>    programmer002.WriteCSharp(); <span style="color:#75715e">// &#34;ShitCode&#34;
+</span><span style="color:#75715e"></span>
+    programmer001.WriteCSharp(); <span style="color:#75715e">// &#34;CleanCode&#34;
+</span><span style="color:#75715e"></span>    programmer002.WriteCSharp(); <span style="color:#75715e">// &#34;ShitCode&#34;
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>這裡也就是多型的核心概念，<strong>用子類別實作出各式各樣不同的方法，藉此讓父類別的方法藉此達到延伸和多樣化的效果</strong>。例如說一樣是 <code>Programmer</code> 的 <code>WriteCSharp()</code> 這個方法，小明的實現就是 <code>return &quot;CleanCode&quot;;</code> 而小華的實作方式則是 <code>return &quot;ShitCode&quot;;</code>。</p>
+<p>同樣地，最常被舉的例子就是動物。當有動物這個類別時，儘管狗跟貓都繼承了這個類別，但他們都可以對「叫聲」做出不同的實作。再藉由多型的方式，動物這個父類別，就能夠<strong>藉由子類別來完成擴展</strong>。更進一步來說，藉由子類別的擴展，我們能夠讓父類別做出各式各樣的事，而不需要更動父類別本身。</p>
+<p>最有可能碰到的例子就是資料庫連線。例如說，我們可以讓 <code>MySqlDBConnect</code> 和 <code>MongoDBConnect</code> 都繼承 <code>DBConnect</code>，但各自保有對應不同資料庫的實作。如果一來，<code>DBConnect</code> 就獲得了用不同方法連線到不同資料庫的擴展，得到了對應狀況靈活使用的彈性。同時，使用 <code>DBConnect</code> 物件的其他物件也可以不用管現在的 <code>DBConnect</code> 連線是哪個子類別來工作的，只要知道能夠連線並取得資料就好，也達到了以封裝降低耦合的要求。</p>
+<p>以上就是多型的核心，但當我們把子類別塞到父類別的殼裡面使用的時候，還需要注意以下這個部分：</p>
+<p>當我們<strong>將小明宣告成工程師</strong>這一瞬間，小明已經不再只是小明，對老闆而言他就只是一個工程師，<strong>這裡只剩下「工程師」而不是「小明」</strong>，是 <code>Programmer</code> 而不是 <code>Ming</code>。在呼叫 <code>Programmer programmer = new Ming()</code> 的同時，這裡就只剩下一個無情的寫程式機器，再也沒有小明。</p>
+<p>當然，小明也不准在上班時間泡英式奶茶，我們不是請你來做這個的！</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Work()
+{
+    Programmer programmer = <span style="color:#66d9ef">new</span> Ming();
+    programmer.WriteCSharp();
+    programmer.MakeTea(); <span style="color:#75715e">// Error: Programmer 未包含 MakeTea 的定義
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>這樣只會讓編譯器尷尬地說：請你照我們契約書上面走好嗎？畢竟這裡只剩下 <code>Programmer</code> 而不是 <code>Ming</code> 了，一個無情的寫程式機器是不需要，也不會知道怎麼泡英式奶茶的。</p>
+<p>這邊我們就能知道：<strong>當子類別被以父類別的名義建立出來時，他就只能夠表現出父類別的樣子</strong>。換句話說，我們宣告的是什麼，他就只會做什麼，但要怎麼做倒是沒關係。雖然是一個令人悲傷的故事，但為了物件界的秩序，這也是莫可奈何。</p>
+<p>最後再說一聲，大話設計模式用兒子代替爸爸上台表演京劇的例子實在舉得很不錯，有興趣的可以去看看，這例子很能表現出那種披著父親的皮，用著自己的技術，但遮著臉不能被發現的感覺。如此傳神！</p>
+<hr>
+<p>到這邊三大特性就說明完了，雖然我說明的相當模糊籠統，但希望概念能夠傳達到。</p>
+<p>畢竟，就像我開頭引用的，我很喜歡這句「<strong>如果你問 100 個人這個問題，可能會得到 200 個答案，所以你一定要有自己獨到、有自信、精闢的見解或描述方式</strong>。」像我女友，當我問他物件導向的時候，她（大致上）是這樣說明的：</p>
+<ul>
+<li>封裝：醬包跟麵的工作都在泡麵工廠做完了，我們只要拿來泡就好</li>
+<li>繼承：我們可以買了泡麵之後，再自己加蛋加料</li>
+<li>多型：一樣是泡麵，實作出來的口味都不一樣</li>
+</ul>
+<p>說得我都要去買一碗來煮了。但是，物件是為了貼近我們的現實世界，而每個人的世界觀本來就不一樣。<strong>你必須自己體會，然後才會有自己的觀點</strong>。</p>
+<p>至於那些說：你不是說要用卡牌當範例，怎麼突然多了個工程師小明小華？我只能說抱歉，洗澡的時候突然想到的，不寫不舒服。卡牌就想到再補吧，耶嘿。</p>
+<p>下一篇開始就要進入抽象等等更模糊籠統的部分了，希望還能穩住哪。</p>
+<blockquote>
+<p>本系列下一篇：<a href="/post/202007-oo-6-abstract-override">菜雞與物件導向 (6): 抽象、覆寫</a></p>
+</blockquote>
+<h2 id="同系列文章">同系列文章</h2>
+<ul>
+<li><a href="/post/202007-newbieguide-oo">菜雞與物件導向 (0): 前言</a></li>
+<li><a href="/post/202007-oo-1-class-object">菜雞與物件導向 (1): 類別、物件</a></li>
+<li><a href="/post/202007-oo-2-constructor-overload">菜雞與物件導向 (2): 建構式、多載</a></li>
+<li><a href="/post/202007-oo-3-encapsulation">菜雞與物件導向 (3): 封裝</a></li>
+<li><a href="/post/202007-oo-4-inheritance">菜雞與物件導向 (4): 繼承</a></li>
+<li><a href="/post/202007-oo-5-polymorphism">菜雞與物件導向 (5): 多型</a></li>
+<li><a href="/post/202007-oo-6-abstract-override">菜雞與物件導向 (6): 抽象、覆寫</a></li>
+<li><a href="/post/202007-oo-7-interface">菜雞與物件導向 (7): 介面</a></li>
+</ul>
+<h2 id="參考資料">參考資料</h2>
+<ul>
+<li><a href="https://dotblogs.com.tw/initials/2016/06/10/171117">[心得整理] c# 物件導向程式 - 2.封裝、繼承、多型的三大特性 - 聊聊程式</a></li>
+<li><a href="https://medium.com/@totoroLiu/%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-object-oriented-programming-%E6%A6%82%E5%BF%B5-5f205d437fd6">物件導向(Object Oriented Programming)概念 - Po-Ching Liu - Medium</a></li>
+<li><a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-3_%E5%B0%81%E8%A3%9Dencapsulation%E7%B9%BC%E6%89%BFinheritance%E8%88%87%E5%A4%9A%E5%9E%8Bpolymorphism/">Object Oriented物件導向-3:封裝(Encapsulation)、繼承(Inheritance)與多型(polymorphism)</a></li>
+<li><a href="https://matthung0807.blogspot.com/2018/02/java-overload.html">Java 什麼是多載(Overload), 覆寫(Override), 多型(Polymorphism) - 菜鳥工程師肉豬</a></li>
+<li><a href="https://www.tenlong.com.tw/products/9789866761799">《大話設計模式》附錄：物件導向基礎</a></li>
+</ul>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2020/07/oo-4-inheritance/">菜雞與物件導向 (4): 繼承</a></li>
+        
+        <li><a href="/post/2020/07/oo-3-encapsulation/">菜雞與物件導向 (3): 封裝</a></li>
+        
+        <li><a href="/post/2020/07/oo-2-constructor-overload/">菜雞與物件導向 (2): 建構式、多載</a></li>
+        
+        <li><a href="/post/2020/07/oo-1-class-object/">菜雞與物件導向 (1): 類別、物件</a></li>
+        
+        <li><a href="/post/2020/07/oo-0-object-oriented/">菜雞與物件導向 (0): 前言</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/newbieguide">NewbieGuide</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/object-oriented">Object-Oriented</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                        <hr />
+<p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f07%2foo-5-polymorphism%2f" width="100%" frameborder=0></iframe>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/09/start-with-why/" title="讀《先問為什麼》">讀《先問為什麼》</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/08/csharp-timezone/" title="C#: 時區轉換、民國西元、國曆農曆、中文月份週期">C#: 時區轉換、民國西元、國曆農曆、中文月份週期</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/08/powershell-beauty/" title="Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh">Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/08/csharp-string-interpolation/" title="C#: 字串插值 (String interpolation) 的格式化">C#: 字串插值 (String interpolation) 的格式化</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/08/system-environment/" title="C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑">C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/code-style/" title="C#: 程式碼風格備忘">C#: 程式碼風格備忘</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/pocket/" title="Pocket —— 稍後閱讀，想看再看">Pocket —— 稍後閱讀，想看再看</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/oo-7-interface/" title="菜雞與物件導向 (7): 介面">菜雞與物件導向 (7): 介面</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/oo-6-abstract-override/" title="菜雞與物件導向 (6): 抽象、覆寫">菜雞與物件導向 (6): 抽象、覆寫</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/oo-5-polymorphism/" title="菜雞與物件導向 (5): 多型">菜雞與物件導向 (5): 多型</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp/">csharp (18)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/newbieguide/">newbieguide (10)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (32)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">推薦友站</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://ithelp.ithome.com.tw/users/20112224/articles" title="KingLong">KingLong - iT邦幫忙</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        
+        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-92586970-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+</body>
+</html>

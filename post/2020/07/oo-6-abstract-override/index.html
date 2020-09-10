@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>菜雞與物件導向 (6): 抽象、覆寫 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞與物件導向 (6): 抽象、覆寫 - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2020-07-12T23:53:06&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2020-07-12T23:53:06&#43;08:00">
+        
+    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="description" content="用 C# 的方式介紹何謂物件導向(Object Oriented) 中的抽象(Abstract) 和覆寫(Override)。抽象類別是指某些類別本身不應該被實體化成一個物件，這種類別我們就應該把它們標記為抽象類別。而覆寫則是指衍生類別重新定義父類別的方法。">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/post/2020/07/oo-6-abstract-override/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">菜雞與物件導向 (6): 抽象、覆寫</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2020-7-12,
+                        </date>
+                        
+                        <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/newbieguide">NewbieGuide</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp">CSharp</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+                        <div class="post-content">
+                            <p>抽象的概念很直接，請回想一下前面的例子就可以了：</p>
+<p>當我們在用卡牌的例子時，雖然怪獸卡跟魔法卡都繼承了 Card 這個類別，但是我們仍然能 <code>new Card()</code> 來建立一張新卡牌，那…怪怪的吧，這張卡牌到底是什麼呀，空白的卡片嗎？</p>
+<p>又或是動物的例子，我們的狗跟貓都繼承了哺乳類，那我們能實例化一個哺乳類嗎？我們的狗跟鳥都是動物，那我們能實例化一個動物嗎？</p>
+<p>小明跟小華都繼承了工程師，那我們能 new 一個工程師嗎…？</p>
+<p>有些類別就是這樣，它們負責定義共通的那些特性，<strong>然而它們本身不應該被實體化成一個物件，這種類別我們就應該把它們標記為抽象類別</strong>。</p>
+<p><strong>抽象類別在 C# 裡用 <code>abstract</code> 這個修飾詞來表示</strong>，可以加在類別或方法上。例如 <code>abstract class Animal</code> 就代表動物這個類別是個抽象類別，它不能被實例化。</p>
+<p>而當加在方法上時，例如 <code>public abstract void Eat()</code> 就是代表這個進食的方法無法被叫用，只能由繼承者去重新定義這個方法。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Animal</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">void</span> Eat();
+}
+</code></pre></div><p>那麼繼承者們，也就是衍生類別如何去重新定義父類別的方法呢？這時候就必須使用<strong>覆寫 <code>override</code></strong>。</p>
+<p>覆寫是指對於像是前述的抽象方法時，在同名的方法前加上 <code>override</code> 關鍵字就可以讓程式知道你要覆寫這個方法（甚至有抽象方法的時候你不覆寫，編譯器還會生氣）。例如前述的 Eat，狗就可以用 <code>public override void Eat()</code> 的方式去覆寫吃東西這個方法。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span> : Animal
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;Black&#34;</span>;
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Eat()
+    {
+        <span style="color:#75715e">/* 嚼嚼嚼 */</span>
+    }
+}
+</code></pre></div><p>但有時候我們只是希望秉持著多型的精神，讓子類別有可以重新定義的彈性，這時候我們就會使用 <strong>虛擬 <code>virtual</code></strong> 的方式去標記這個方法，如此一來就可以實作，同時也讓子類別可以覆寫。例如可能狗有 <code>public virtual void Eat()</code> 這個進食的方法：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> Eat()
+    {
+        <span style="color:#75715e">/* 嚼嚼熱狗 */</span>
+    }
+}
+</code></pre></div><p>但是我們有了 <code>RobotDog</code> 這個類別，它就可以繼承並且重新改寫掉 <code>Eat()</code> 這個方法，從吃肉變成喝汽油。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RobotDog</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Eat()
+    {
+        <span style="color:#75715e">/* 嚼嚼汽油 */</span>
+    }
+}
+</code></pre></div><p>關於抽象和覆寫這部份的範例，因為我個人碰觸的比較少，唯恐我的舉例不夠深入，這邊再附上幾個不錯的範例，可以作為參考：</p>
+<ul>
+<li><a href="https://medium.com/@ad57475747/c-%E9%9B%9C%E8%A8%98-%E4%BB%8B%E9%9D%A2-interface-%E6%8A%BD%E8%B1%A1-abstract-%E8%99%9B%E6%93%AC-virtual-%E4%B9%8B%E6%88%91%E8%A6%8B-dc3c5878bb80">C#雜記 — 介面(interface)、抽象( abstract)、虛擬(virtual)之我見 - Medium</a></li>
+<li><a href="https://exfast.me/2016/09/c-sharp-use-interface-abstract-override-inheritance-implements-a-simple-example/">[C#] 利用 interface(介面) abstract(抽象) override(覆寫) inherit(繼承) 實作簡單範例 - 從入門到放棄</a></li>
+</ul>
+<p>接著下一篇，我們就接著看這一部分的最後一片拼圖：介面吧！</p>
+<blockquote>
+<p>本系列下一篇：<a href="/post/202007-oo-7-interface">菜雞與物件導向 (7): 介面</a></p>
+</blockquote>
+<h2 id="同系列文章">同系列文章</h2>
+<ul>
+<li><a href="/post/202007-newbieguide-oo">菜雞與物件導向 (0): 前言</a></li>
+<li><a href="/post/202007-oo-1-class-object">菜雞與物件導向 (1): 類別、物件</a></li>
+<li><a href="/post/202007-oo-2-constructor-overload">菜雞與物件導向 (2): 建構式、多載</a></li>
+<li><a href="/post/202007-oo-3-encapsulation">菜雞與物件導向 (3): 封裝</a></li>
+<li><a href="/post/202007-oo-4-inheritance">菜雞與物件導向 (4): 繼承</a></li>
+<li><a href="/post/202007-oo-5-polymorphism">菜雞與物件導向 (5): 多型</a></li>
+<li><a href="/post/202007-oo-6-abstract-override">菜雞與物件導向 (6): 抽象、覆寫</a></li>
+<li><a href="/post/202007-oo-7-interface">菜雞與物件導向 (7): 介面</a></li>
+</ul>
+<h2 id="參考資料">參考資料</h2>
+<ul>
+<li><a href="https://medium.com/@ad57475747/c-%E9%9B%9C%E8%A8%98-%E4%BB%8B%E9%9D%A2-interface-%E6%8A%BD%E8%B1%A1-abstract-%E8%99%9B%E6%93%AC-virtual-%E4%B9%8B%E6%88%91%E8%A6%8B-dc3c5878bb80">C#雜記 — 介面(interface)、抽象(abstract)、虛擬(virtual)之我見 - Medium</a></li>
+<li><a href="https://exfast.me/2016/09/c-sharp-use-interface-abstract-override-inheritance-implements-a-simple-example/">[C#] 利用 interface(介面) abstract(抽象) override(覆寫) inherit(繼承) 實作簡單範例 - 從入門到放棄</a></li>
+<li><a href="https://matthung0807.blogspot.com/2018/02/java-overload.html">Java 什麼是多載(Overload), 覆寫(Override), 多型(Polymorphism) - 菜鳥工程師肉豬</a></li>
+<li><a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-2_%E5%BB%BA%E6%A7%8B%E5%BC%8Fconstructor%E5%A4%9A%E8%BC%89overloading%E8%88%87%E8%A6%86%E5%AF%ABoverriding/">Object Oriented物件導向-2:建構式(Constructor)、多載(Overloading)與覆寫(Overriding) - Sian</a></li>
+<li><a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/abstract">Abstract - Microsoft Docs</a></li>
+</ul>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2020/07/oo-5-polymorphism/">菜雞與物件導向 (5): 多型</a></li>
+        
+        <li><a href="/post/2020/07/oo-4-inheritance/">菜雞與物件導向 (4): 繼承</a></li>
+        
+        <li><a href="/post/2020/07/oo-3-encapsulation/">菜雞與物件導向 (3): 封裝</a></li>
+        
+        <li><a href="/post/2020/07/oo-2-constructor-overload/">菜雞與物件導向 (2): 建構式、多載</a></li>
+        
+        <li><a href="/post/2020/07/oo-1-class-object/">菜雞與物件導向 (1): 類別、物件</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/newbieguide">NewbieGuide</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/object-oriented">Object-Oriented</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                        <hr />
+<p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f07%2foo-6-abstract-override%2f" width="100%" frameborder=0></iframe>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/09/start-with-why/" title="讀《先問為什麼》">讀《先問為什麼》</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/08/csharp-timezone/" title="C#: 時區轉換、民國西元、國曆農曆、中文月份週期">C#: 時區轉換、民國西元、國曆農曆、中文月份週期</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/08/powershell-beauty/" title="Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh">Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/08/csharp-string-interpolation/" title="C#: 字串插值 (String interpolation) 的格式化">C#: 字串插值 (String interpolation) 的格式化</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/08/system-environment/" title="C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑">C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/code-style/" title="C#: 程式碼風格備忘">C#: 程式碼風格備忘</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/pocket/" title="Pocket —— 稍後閱讀，想看再看">Pocket —— 稍後閱讀，想看再看</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/oo-7-interface/" title="菜雞與物件導向 (7): 介面">菜雞與物件導向 (7): 介面</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/oo-6-abstract-override/" title="菜雞與物件導向 (6): 抽象、覆寫">菜雞與物件導向 (6): 抽象、覆寫</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/oo-5-polymorphism/" title="菜雞與物件導向 (5): 多型">菜雞與物件導向 (5): 多型</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp/">csharp (18)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/newbieguide/">newbieguide (10)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (32)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">推薦友站</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://ithelp.ithome.com.tw/users/20112224/articles" title="KingLong">KingLong - iT邦幫忙</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        
+        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-92586970-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+</body>
+</html>

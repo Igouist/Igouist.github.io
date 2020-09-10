@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Asp.net MVC: Entity Framework 連線資料庫 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="Asp.net MVC: Entity Framework 連線資料庫 - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2019-12-09T00:09:08&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2019-12-09T00:09:08&#43;08:00">
+        
+    <meta name="Keywords" content="[Dotnet .net C# Database Entity Framework Asp.net MVC]">
+    <meta name="description" content="在 Asp.net MVC 框架上，將資料庫基礎功能以實體資料模型產生的方式，建立具有 CRUD （新增讀取更新刪除）基本操作的頁面">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/post/2019/12/aspnet-connect-db-ef/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">Asp.net MVC: Entity Framework 連線資料庫</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2019-12-9,
+                        </date>
+                        
+                        <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp">CSharp</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+                        <div class="post-content">
+                            <blockquote>
+<p>目標：將 <a href="https://igouist.github.io/post/201912-aspnet-connect-db/">上一篇的 Asp.net MVC：連線資料庫、簡單實作 CRUD</a> 的資料庫基礎功能改成以 <strong>Entity Framework</strong> 產生的方式跑一遍</p>
+</blockquote>
+<p>既然上一篇介紹了土法煉鋼動手做的資料庫取值方式，就覺得不順手把從 EF 建立出基本功能介面的方式記錄下來似乎是有點奇怪。實際上開始寫成筆記之後才發現對內容尚不是很了解，例如一直用 Data First 產生頁面但對 Code First 以程式碼產生架構的方式很不熟。儘管如此仍稍微紀錄一下，之後有更深的了解（例如 ASP.NET Identity 或 Code First 等部分）再進一步做成筆記。另外也可參考較詳細的<a href="https://docs.microsoft.com/zh-tw/aspnet/mvc/overview/getting-started/getting-started-with-ef-using-mvc/creating-an-entity-framework-data-model-for-an-asp-net-mvc-application">官方文檔</a>。</p>
+<p>開一個新的專案來示範。前面新增專案的部分都和前一篇一樣，檔案 → 新增專案 → .NET Framework → MVC 這樣</p>
+<blockquote>
+<p>備註：旁邊有個變更驗證的部分是 ASP.NET Identity，在做會員系統的時候有用過，但這篇不會用到，為怕忘記故於此紀錄，另可參照 2013 年的<a href="http://2or3.blogspot.com/2013/12/mvc5-aspnet-identity.html">這篇</a>及官方文檔。</p>
+</blockquote>
+<p>專案開啟後，我們在 Model 新增 ADO.net 實體資料模型</p>
+<p><img src="https://i.imgur.com/oSsVE3o.png" alt=""></p>
+<p><img src="https://i.imgur.com/WKo3Sd5.png" alt=""></p>
+<p>接著有分為幾種方法，主要是從資料庫產生模型，和資料庫產生 Code First 的模型，可參見 <a href="http://kevintsengtw.blogspot.com/2013/10/aspnet-mvc-entity-framework-code-first.html">ASP.NET MVC 使用 Entity Framework Code First - 基礎入門</a> 裡的說明。這篇會使用來自資料庫的 EF Designer 模型這個選項做建置。</p>
+<p><img src="https://i.imgur.com/XkWWJzn.png" alt=""></p>
+<p>選擇了之後就會進到連線資料庫的部分，按照指示一步一步連線到資料庫。這邊也會幫你將連線字串儲存到 Web.config 裡。</p>
+<p><img src="https://i.imgur.com/bU52Zv0.png" alt=""></p>
+<p>接著選取我們在這個模型中要包含的資料表。要注意下半部分的複數化或單數化建議是不要勾選，否則它會幫你把資料庫那些順手改個名，出事的機率會很高。</p>
+<p>成功的話就可以看見資料表出現在 edmx 檔的視窗裡了：</p>
+<p><img src="https://i.imgur.com/QTld12h.png" alt=""></p>
+<p>接著我們來建立 Controller ：</p>
+<p><img src="https://i.imgur.com/d3s6lSO.png" alt=""></p>
+<p><img src="https://i.imgur.com/n810bKz.png" alt=""></p>
+<p>上一篇我們為了從頭開始因此選擇空的 Controller，這邊則可以按照要求選擇自己需要的就可以了。我們選擇使用 EF 建立 Controller 和 View。</p>
+<p><img src="https://i.imgur.com/FsiSn3w.png" alt=""></p>
+<p>接著這邊選擇要進行操作的那個類，以及資料連接的字串，就能看到它開始從模型產生囉！</p>
+<blockquote>
+<p>註：如果在這步驟發生錯誤，先嘗試重建方案看看。</p>
+</blockquote>
+<p>如果一切順利，應該能看見它已經幫你建立好具有 列表、新增、修改、刪除和查詢的 Action 和 View</p>
+<p><img src="https://i.imgur.com/GEodVlL.png" alt=""></p>
+<p>測試時基本功能也能順利地使用</p>
+<p><img src="https://i.imgur.com/5SGg5PJ.png" alt=""></p>
+<p>心得：利用這個方式可以快速地產生具有基本操作功能的網頁，以此為基礎進行修改的話就能省下非常多的時間，可以說是非常強大的。但實際上其細節有非常多的地方可以處理，還是要更深的理解才能完全發揮呢。</p>
+                        </div>
+
+                        
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/dotnet">Dotnet</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/database">Database</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/entity-framework">Entity Framework</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                        <hr />
+<p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2019%2f12%2faspnet-connect-db-ef%2f" width="100%" frameborder=0></iframe>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/09/start-with-why/" title="讀《先問為什麼》">讀《先問為什麼》</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/08/csharp-timezone/" title="C#: 時區轉換、民國西元、國曆農曆、中文月份週期">C#: 時區轉換、民國西元、國曆農曆、中文月份週期</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/08/powershell-beauty/" title="Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh">Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/08/csharp-string-interpolation/" title="C#: 字串插值 (String interpolation) 的格式化">C#: 字串插值 (String interpolation) 的格式化</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/08/system-environment/" title="C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑">C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/code-style/" title="C#: 程式碼風格備忘">C#: 程式碼風格備忘</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/pocket/" title="Pocket —— 稍後閱讀，想看再看">Pocket —— 稍後閱讀，想看再看</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/oo-7-interface/" title="菜雞與物件導向 (7): 介面">菜雞與物件導向 (7): 介面</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/oo-6-abstract-override/" title="菜雞與物件導向 (6): 抽象、覆寫">菜雞與物件導向 (6): 抽象、覆寫</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/oo-5-polymorphism/" title="菜雞與物件導向 (5): 多型">菜雞與物件導向 (5): 多型</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp/">csharp (18)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/newbieguide/">newbieguide (10)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (32)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">推薦友站</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://ithelp.ithome.com.tw/users/20112224/articles" title="KingLong">KingLong - iT邦幫忙</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        
+        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-92586970-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+</body>
+</html>

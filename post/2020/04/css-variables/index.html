@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>CSS: 變數 (Variables) | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="CSS: 變數 (Variables) - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2020-04-26T23:09:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2020-04-26T23:09:00&#43;08:00">
+        
+    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="description" content="原本使用 CSS 時就會有許多重複使用的部分，例如說網站的主色彩和副色彩等，然而在管理上，或是要修改的時候就會很麻煩，通常都要另外借助工具來處理。然而 CSS 其實原生就有變數可以使用，大大地增加了改動時的方便性。用法上也相當簡單。本篇的目標就是紀錄前陣子同學弄主題切換時用到的 CSS 變數（Variables）功能用法。">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/post/2020/04/css-variables/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">CSS: 變數 (Variables)</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2020-4-26,
+                        </date>
+                        
+                        <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/css">CSS</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+                        <div class="post-content">
+                            <p>這禮拜忙了些，只好先偷懶打張安牌。這邊就記一下前陣子同學弄主題切換時用到的 CSS 變數（Variables）功能用法</p>
+<p>原本使用 CSS 時就會有許多重複使用的部分，例如說網站的主色彩和副色彩等，然而在管理上，或是要修改的時候就會很麻煩，通常都要另外借助工具來處理。然而 CSS 其實原生就有變數可以使用，大大地增加了改動時的方便性。用法上也相當簡單。</p>
+<p>在 CSS 宣告變數時，建議放在 <code>:root</code> 裡，並使用 <code>--變數名</code> 的方式宣告。例如</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css">:<span style="color:#a6e22e">root</span>{
+    --color: <span style="color:#ae81ff">#000000</span>;
+}
+</code></pre></div><p>而使用的時候只要 <code>var(--變數名)</code> 就可以囉。例如</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#f92672">body</span> {
+  <span style="color:#66d9ef">background</span>: <span style="color:#a6e22e">var</span>(<span style="color:#f92672">--</span><span style="color:#66d9ef">color</span>);
+}
+</code></pre></div><p>平時使用也常搭配 CSS 的 clac 及 JS 的 document.documentElement.style.setProperty 來處理，這部分就直接看範例吧。
+以下附上調色盤 Codepen 作為範例，用法主要參考 <a href="https://pjchender.github.io/2017/09/26/js30-day03-css-variables/">CSS Variables</a> 這篇。</p>
+<p class="codepen" data-height="265" data-theme-id="dark" data-default-tab="css,result" data-user="igouist" data-slug-hash="NWPBMwP" style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;" data-pen-title="CSS 變數測試：調色盤">
+  <span>See the Pen <a href="https://codepen.io/igouist/pen/NWPBMwP">
+  CSS 變數測試：調色盤</a> by IGOU (<a href="https://codepen.io/igouist">@igouist</a>)
+  on <a href="https://codepen.io">CodePen</a>.</span>
+</p>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+<h2 id="參考資料">參考資料</h2>
+<ul>
+<li><a href="https://pjchender.github.io/2017/09/26/js30-day03-css-variables/">CSS Variables - PJCHENder私房菜</a></li>
+<li><a href="https://muki.tw/tech/native-css-variables/">SASS, LESS 退散，原生 CSS 可以使用變數啦！ - MUKI space*</a></li>
+<li><a href="https://mnya.tw/cc/word/1340.html">CSS 原生變數（Variables）介紹與使用教學 - 萌芽綜合天地</a></li>
+<li><a href="https://w3c.hexschool.com/blog/21985acb">原生 CSS 變數運用技巧（CSS Variables）</a></li>
+</ul>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2020/04/feedly/">Feedly —— 我的資訊，我來掌握</a></li>
+        
+        <li><a href="/post/2020/04/epplus/">EPPlus —— 輕鬆處理 Excel</a></li>
+        
+        <li><a href="/post/2020/04/bandon-3-line-notify/">我要訂便當 (3): 用 Python &#43; Line Notify 傳送通知</a></li>
+        
+        <li><a href="/post/2020/03/visualstudio/">Visual studio 環境設定 —— 字型、套件、快捷鍵</a></li>
+        
+        <li><a href="/post/2020/03/sikulix/">SikuliX —— 針對圖形介面寫自動化腳本的小幫手</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/css">CSS</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                        <hr />
+<p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f04%2fcss-variables%2f" width="100%" frameborder=0></iframe>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/09/start-with-why/" title="讀《先問為什麼》">讀《先問為什麼》</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/08/csharp-timezone/" title="C#: 時區轉換、民國西元、國曆農曆、中文月份週期">C#: 時區轉換、民國西元、國曆農曆、中文月份週期</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/08/powershell-beauty/" title="Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh">Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/08/csharp-string-interpolation/" title="C#: 字串插值 (String interpolation) 的格式化">C#: 字串插值 (String interpolation) 的格式化</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/08/system-environment/" title="C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑">C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/code-style/" title="C#: 程式碼風格備忘">C#: 程式碼風格備忘</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/pocket/" title="Pocket —— 稍後閱讀，想看再看">Pocket —— 稍後閱讀，想看再看</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/oo-7-interface/" title="菜雞與物件導向 (7): 介面">菜雞與物件導向 (7): 介面</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/oo-6-abstract-override/" title="菜雞與物件導向 (6): 抽象、覆寫">菜雞與物件導向 (6): 抽象、覆寫</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/07/oo-5-polymorphism/" title="菜雞與物件導向 (5): 多型">菜雞與物件導向 (5): 多型</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp/">csharp (18)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/newbieguide/">newbieguide (10)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (32)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">推薦友站</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://ithelp.ithome.com.tw/users/20112224/articles" title="KingLong">KingLong - iT邦幫忙</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        
+        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-92586970-4', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+</body>
+</html>
