@@ -103,13 +103,13 @@
                         </div>
                         
                         <div class="post-content">
-                            <p>在上一集的 <a href="https://igouist.github.io/post/202005-bandon-ex1-heroku/">將 Python 腳本部署上 Heroku</a> 中，記錄了將 Python 腳本放上 Heroku 的過程，但仍然沒有將我們的 <a href="https://igouist.github.io/tags/bandon/">訂便當小幫手</a> 給放上去。之前有稍微提到是因為過程中遇到了一些問題，最後決定將這些問題和找到的前人解決文記錄在這一篇，將來再遇到的時候就可以參考。</p>
+                            <p>在上一集的 <a href="/post/2020/05/bandon-4-heroku/">將 Python 腳本部署上 Heroku</a> 中，記錄了將 Python 腳本放上 Heroku 的過程，但仍然沒有將我們的 <a href="/tags/bandon/">訂便當小幫手</a> 給放上去。之前有稍微提到是因為過程中遇到了一些問題，最後決定將這些問題和找到的前人解決文記錄在這一篇，將來再遇到的時候就可以參考。</p>
 <ol>
 <li>SQLite 要改成用 PostgreSQL</li>
 <li>在 Heroku 上執行 Selenium</li>
 </ol>
 <h3 id="一sqlite-要改成用-postgresql">一、SQLite 要改成用 PostgreSQL</h3>
-<p>在之前的 <a href="https://igouist.github.io/post/202003-bandon-2-sqlite/">我要訂便當(2) —— 用 Python + Sqlite 儲存訂單</a> 中，為了方便及簡單性，選擇了較輕便的 SQLite 來儲存我們爬回來的訂單資訊。然而，SQLite 將資料儲存在小檔案以便於攜帶的做法，在 Heroku 上將會遭遇像是各個 dyno 的資料不同步等許多問題，因此 Heroku 是不建議使用 SQLite 的。</p>
+<p>在之前的 <a href="/post/2020/03/bandon-2-sqlite/">我要訂便當(2) —— 用 Python + Sqlite 儲存訂單</a> 中，為了方便及簡單性，選擇了較輕便的 SQLite 來儲存我們爬回來的訂單資訊。然而，SQLite 將資料儲存在小檔案以便於攜帶的做法，在 Heroku 上將會遭遇像是各個 dyno 的資料不同步等許多問題，因此 Heroku 是不建議使用 SQLite 的。</p>
 <p>在 Heroku 的開發文件中的 <a href="https://devcenter.heroku.com/articles/sqlite3">SQLite on Heroku</a> 有關於這部分的詳細說明，並直接提到「<em>If you were to use SQLite on Heroku, you would lose your entire database at least once every 24 hours.</em>」同時，官方也提供了他們的建議：<strong>PostgreSQL</strong>。相較於輕便但只能同時單一寫入而且還會在 dyno 炸掉的 SQLite，PostgreSQL 的完整性更符合 Heroku 對服務的要求。</p>
 <p>關於在 Heroku 上使用 PostgreSQL 的做法，這篇 <a href="https://swf.com.tw/?p=1327">佈署 Python Flask 網站留言板應用程式到 Heroku + PostgreSQL 資料庫系統</a> 說明得相當詳細。</p>
 <p>這邊簡述一下操作過程（當然，還是建議進入上面推薦的網頁直接照圖操作）</p>
@@ -125,9 +125,9 @@
 <li><a href="https://devcenter.heroku.com/articles/sqlite3">SQLite on Heroku - Heroku Dev Center</a></li>
 </ul>
 <h3 id="二在-heroku-上執行-selenium">二、在 Heroku 上執行 Selenium</h3>
-<p>前面的 <a href="https://igouist.github.io/post/202003-bandon-1-selenium/">我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單</a> 中，能取得訂單內容主要都是依賴於 Selenium 控 chrome 上。然而我們丟上 Heroku 後… 哪來的瀏覽器啊！因此遭遇到了這整個專案最大的存在危機（？）</p>
+<p>前面的 <a href="/post/2020/03/bandon-1-selenium/">我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單</a> 中，能取得訂單內容主要都是依賴於 Selenium 控 chrome 上。然而我們丟上 Heroku 後… 哪來的瀏覽器啊！因此遭遇到了這整個專案最大的存在危機（？）</p>
 <p>幸好後來有找到這篇 <a href="https://medium.com/@mikelcbrowne/running-chromedriver-with-python-selenium-on-heroku-acc1566d161c">Running ChromeDriver with Python Selenium on Heroku</a>，裡面有說明如何順利在 Heroku 上跑 Selenium，實在是相當感謝，這邊也記錄一下。</p>
-<p>我們在前面 <a href="https://igouist.github.io/post/202005-bandon-ex1-heroku/">我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku</a> 有提到，Heroku 有建置包這東西來協助建置專案，也提到 Python 是 heroku-buildpack-python。這邊就是建置包去建出 webdriver，因此使用 <code>heroku buildpacks:add</code> 的指令去加入 <code>heroku-buildpack-chromedriver heroku buildpa</code> 這個建置包。</p>
+<p>我們在前面 <a href="/post/2020/05/bandon-4-heroku/">我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku</a> 有提到，Heroku 有建置包這東西來協助建置專案，也提到 Python 是 heroku-buildpack-python。這邊就是建置包去建出 webdriver，因此使用 <code>heroku buildpacks:add</code> 的指令去加入 <code>heroku-buildpack-chromedriver heroku buildpa</code> 這個建置包。</p>
 <p>加入完畢之後，要設定 heroku 的 config 去指定 chrome 和 chrome driver 的路徑</p>
 <pre><code>heroku config:set GOOGLE_CHROME_BIN=/app/.apt/usr/bin/google_chrome
 heroku config:set CHROMEDRIVER_PATH=/app/.chromedriver/bin/chromedriver
@@ -151,11 +151,11 @@ chrome_options<span style="color:#f92672">.</span>binary_location <span style="c
 <p>那麼本週就到這裡，之後還會找新的坑來跳，畢竟菜雞就是不斷地踩坑嘛！感謝收看～</p>
 <h2 id="我要訂便當系列">我要訂便當系列</h2>
 <ul>
-<li><a href="https://igouist.github.io/post/202003-bandon-1-selenium/">我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單</a></li>
-<li><a href="https://igouist.github.io/post/202003-bandon-2-sqlite/">我要訂便當(2) —— 用 Python + Sqlite 儲存訂單</a></li>
-<li><a href="https://igouist.github.io/post/202004-bandon-3-line-notify/">我要訂便當(3) —— 用 Python + Line Notify 傳送通知</a></li>
-<li><a href="https://igouist.github.io/post/202005-bandon-ex1-heroku/">我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku</a></li>
-<li><a href="https://igouist.github.io/post/202005-bandon-ex2-heroku-debug/">我要訂便當(4-2) —— Heroku 填坑小記</a></li>
+<li><a href="/post/2020/03/bandon-1-selenium/">我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單</a></li>
+<li><a href="/post/2020/03/bandon-2-sqlite/">我要訂便當(2) —— 用 Python + Sqlite 儲存訂單</a></li>
+<li><a href="/post/2020/04/bandon-3-line-notify/">我要訂便當(3) —— 用 Python + Line Notify 傳送通知</a></li>
+<li><a href="/post/2020/05/bandon-4-heroku/">我要訂便當(4) —— 將 Python 腳本部署上 Heroku</a></li>
+<li><a href="/post/2020/05/bandon-5-heroku-debug/">我要訂便當(5) —— Heroku 填坑小記</a></li>
 </ul>
                         </div>
 

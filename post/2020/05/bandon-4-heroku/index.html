@@ -104,7 +104,7 @@
                             <blockquote>
 <p>目標：紀錄一下如何將 Python 寫好的東西丟上 <a href="https://www.heroku.com/home">Heroku</a></p>
 </blockquote>
-<p>在先前的 <a href="https://igouist.github.io/post/202003-bandon-1-selenium/">訂便當系列</a> 中已經建立了一個替我們去爬便當網並通知我們的小工具，但還存在一個相當大的問題：要在哪跑？總不能就只放在家裡電腦有開機就跑、沒開機就算了吧？因此我們必須找個主機把它放上去。而在上一篇做 Line Notify 的時候所參考的 <a href="https://www.evanlin.com/go-line-notify/">如何快速建置一個 LINE Notify 的服務</a> 中提到了將服務放上 Heroku 的部分，因此馬上嘗試看看。</p>
+<p>在先前的 <a href="/post/2020/03/bandon-1-selenium/">訂便當系列</a> 中已經建立了一個替我們去爬便當網並通知我們的小工具，但還存在一個相當大的問題：要在哪跑？總不能就只放在家裡電腦有開機就跑、沒開機就算了吧？因此我們必須找個主機把它放上去。而在上一篇做 Line Notify 的時候所參考的 <a href="https://www.evanlin.com/go-line-notify/">如何快速建置一個 LINE Notify 的服務</a> 中提到了將服務放上 Heroku 的部分，因此馬上嘗試看看。</p>
 <p>結果過程中碰了不少壁，因此特地紀錄下來。</p>
 <p><strong>Heroku 是一個雲端平台</strong>，讓使用者可以把服務丟上去跑，同時最讚的部分是，免費用戶就提供了每月 450 小時可以使用（但有每半小時會進入休眠的限制），詳情可以參閱 <a href="https://www.heroku.com/pricing">Heroku 的計費頁面</a>。</p>
 <p>本系列最後一階段的目標就是要將訂便當爬蟲整套丟上去雲端上運行，達到被動接收通知的效果。但由於訂便當爬蟲還牽涉到用 Selenium 開瀏覽器互動，以及使用 Sqlite 儲存的部分，轉移到 Heroku 的環境上還需要進行一些調整。因此<strong>這一階段將會分成兩篇（或以上）文章進行，上篇會先簡單地紀錄如何將服務放上 Heroku，下篇開始則著重於紀錄將訂便當系統放上 Heroku 時遇到的問題和解決過程</strong>。</p>
@@ -141,7 +141,7 @@ $ git init
 $ heroku git:remote -a Heroku的APP名稱
 </code></pre><p><img src="https://i.imgur.com/TumTYwP.png" alt=""></p>
 <h2 id="環境設定及測試">環境設定及測試</h2>
-<p>這邊由於前面提到訂便當系統有部分要調整的關係，因此只使用 <a href="https://igouist.github.io/post/202004-bandon-3-line-notify/">我要訂便當(3) 的 Lint Notify 測試版</a> 的 Line Notify 上去試試看。上一集的簡單 Line Notify 程式碼如下，這邊命名為 <code>myApp.py</code>：</p>
+<p>這邊由於前面提到訂便當系統有部分要調整的關係，因此只使用 <a href="/post/2020/04/bandon-3-line-notify/">我要訂便當(3) 的 Lint Notify 測試版</a> 的 Line Notify 上去試試看。上一集的簡單 Line Notify 程式碼如下，這邊命名為 <code>myApp.py</code>：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> requests
 
 <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">lineNotifyMessage</span>(token, msg):
@@ -213,6 +213,14 @@ $ git push heroku master
 <h2 id="後記">後記</h2>
 <p>其實原本打算部署的部分一篇解決的，沒想到牆就這樣撞了上來，將便當放到 Heroku 上時實在遇到挺多問題，例如第一次使用時直接把整坨檔案直接推上去也沒設定結果建置失敗，或是發現 Heroku 不給用 Sqlite，或是 Selenium 要另外找建置包等等，因此最後決定切成兩篇，一篇好好記 Heroku 的流程，剩下的部份再按照問題做紀錄。</p>
 <p>同時因為原本的訂便當已經在家裡電腦跑著了，部屬上雲似乎是額外再戰的部份。待到剩下問題解決了，抓緊下班時間再寫上來記著，希望以後能派上用場吧。</p>
+<h2 id="我要訂便當系列">我要訂便當系列</h2>
+<ul>
+<li><a href="/post/2020/03/bandon-1-selenium/">我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單</a></li>
+<li><a href="/post/2020/03/bandon-2-sqlite/">我要訂便當(2) —— 用 Python + Sqlite 儲存訂單</a></li>
+<li><a href="/post/2020/04/bandon-3-line-notify/">我要訂便當(3) —— 用 Python + Line Notify 傳送通知</a></li>
+<li><a href="/post/2020/05/bandon-4-heroku/">我要訂便當(4) —— 將 Python 腳本部署上 Heroku</a></li>
+<li><a href="/post/2020/05/bandon-5-heroku-debug/">我要訂便當(5) —— Heroku 填坑小記</a></li>
+</ul>
 <h2 id="參考資料">參考資料</h2>
 <ul>
 <li><a href="https://medium.com/enjoy-life-enjoy-coding/heroku-%E6%90%AD%E9%85%8D-git-%E5%9C%A8-heroku-%E4%B8%8A%E9%83%A8%E7%BD%B2%E7%B6%B2%E7%AB%99%E7%9A%84%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E5%AD%B8-bf4fd6f998b8">搭配 Git 在 Heroku 上部署網站的手把手教學 - 神Q超人</a></li>
@@ -228,14 +236,6 @@ $ git push heroku master
 <li><a href="https://devcenter.heroku.com/categories/heroku-architecture">Heroku Dev Center</a></li>
 <li><a href="https://devcenter.heroku.com/articles/getting-started-with-python">Heroku Dev Center: Getting Started on Heroku with Python</a></li>
 <li><a href="https://github.com/michaelkrukov/heroku-python-script">Template for hosting python scripts and applications on Heroku - Github</a></li>
-</ul>
-<h2 id="我要訂便當系列">我要訂便當系列</h2>
-<ul>
-<li><a href="https://igouist.github.io/post/202003-bandon-1-selenium/">我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單</a></li>
-<li><a href="https://igouist.github.io/post/202003-bandon-2-sqlite/">我要訂便當(2) —— 用 Python + Sqlite 儲存訂單</a></li>
-<li><a href="https://igouist.github.io/post/202004-bandon-3-line-notify/">我要訂便當(3) —— 用 Python + Line Notify 傳送通知</a></li>
-<li><a href="https://igouist.github.io/post/202005-bandon-ex1-heroku/">我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku</a></li>
-<li><a href="https://igouist.github.io/post/202005-bandon-ex2-heroku-debug/">我要訂便當(4-2) —— Heroku 填坑小記</a></li>
 </ul>
                         </div>
 
