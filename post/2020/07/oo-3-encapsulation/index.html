@@ -159,8 +159,9 @@
 </code></pre></div><p>要加上預設值也能這樣寫</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; } = <span style="color:#e6db74">&#34;這是一張卡牌。&#34;</span>;
 </code></pre></div><p>可以說是方便很多。甚至進一步說，我們就可以藉由公有和私有、存取子、自動實作這些工具，<strong>決定外部的使用者能看到哪些部份</strong>。</p>
-<p>當然，封裝的概念並不僅僅只是對屬性做存取管控如此而已，<strong>提高類別內的內聚性，降低對外的耦合性，隱藏複雜資訊才是最重要的方針</strong>，然而這只能在設計時，或是維護到頭痛才能親自體會了。例如說：<strong>當你需要處理一長串的商業邏輯，以至於需要將他們切割成數個小函式時，將它們宣告成 <code>Private</code> 就是相當好的選擇</strong>，這意味著這些工具僅讓你的物件內部使用，外面的人不應該直接調用其中的任何功能，同時又能幫助你的主要流程變得更簡潔。</p>
-<p>例如說，當我們有個連線到資料庫取得客戶資料的方法（可能是 <code>UserRepository.Get(int UserId)</code> 這種感覺），可能我們除了 <code>Public</code> 的 <code>Get</code> 方法以外，還有一些 <code>Private</code> 的 <code>ConnectDB</code> 等輔助方法。但<strong>呼叫這個函式的使用端不需要知道 這個函式是怎麼連線到資料庫的，又是怎麼搜尋出資料的，只需要知道呼叫了之後能拿到客戶資料就好</strong>。</p>
+<p>當然，封裝的概念並不僅僅只是對屬性做存取管控如此而已，<strong>提高類別內的內聚性，降低對外的耦合性，隱藏複雜資訊才是最重要的方針</strong>，然而這只能在設計時，或是維護到頭痛才能親自體會了。</p>
+<p>例如說：<strong>當你需要處理一長串的商業邏輯，以至於需要將他們切割成數個小函式時，將它們宣告成 <code>Private</code> 就是相當好的選擇</strong>，這意味著這些工具僅讓你的物件內部使用，外面的人不應該直接調用其中的任何功能，同時又能幫助你的主要流程變得更簡潔。</p>
+<p>又或者是，當我們有個連線到資料庫取得客戶資料的方法（可能是 <code>UserRepository.Get(int UserId)</code> 這種感覺），可能我們除了 <code>Public</code> 的 <code>Get</code> 方法以外，還有一些 <code>Private</code> 的 <code>ConnectDB</code> 等輔助方法。但<strong>呼叫這個函式的使用端不需要知道 這個函式是怎麼連線到資料庫的，又是怎麼搜尋出資料的，只需要知道呼叫了之後能拿到客戶資料就好</strong>。</p>
 <p>兩個物件之間「知道」得越多，其耦合就越高。替換和修改時互相牽連的機會和規模也越大，因此封裝可以說是物件導向的基石也不為過。封裝的好或不好（亦即物件是否足夠內聚，其職責是否單一，暴露內部資訊的多寡等等），直接關係到整個架構的優劣，不可謂不慎。</p>
 <p>封裝的部分就講到這裡，並不是很難理解，但是要封裝得好，或是說知道怎樣才算封裝得好，還是需要經驗，不是我這種菜雞一時半刻能理得白說得清的。這邊只能先筆記一下存取範圍的控制，接著我們就繼續順著看繼承吧。</p>
 <blockquote>
