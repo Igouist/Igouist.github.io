@@ -112,84 +112,114 @@
 =&gt; 101 (2進位) 
 =&gt; 5 
 </code></pre><p>假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。</p>
-<p>在 C# 中已經有方便的工具可以處理數字列表，我們可以建立一個 <strong>列舉（Enum）</strong>，並且按照上面說明的，將每個技能各自用一個位元來表示。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> SkillEnum
+<p>在 C# 中已經有方便的工具可以處理數字列表，我們可以建立一個 <strong>列舉（Enum）</strong>，並且按照上面說明的，將老闆提到的每個技能各自用一個位元來表示。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[Flags]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> SkillEnum
 {
-    C          = <span style="color:#ae81ff">1</span>,   <span style="color:#75715e">// 0000000001
-</span><span style="color:#75715e"></span>    CSharp     = <span style="color:#ae81ff">2</span>,   <span style="color:#75715e">// 0000000010
-</span><span style="color:#75715e"></span>    Golang     = <span style="color:#ae81ff">4</span>,   <span style="color:#75715e">// 0000000100
-</span><span style="color:#75715e"></span>    Java       = <span style="color:#ae81ff">8</span>,   <span style="color:#75715e">// 0000001000
-</span><span style="color:#75715e"></span>    JavaScript = <span style="color:#ae81ff">16</span>,  <span style="color:#75715e">// 0000010000 
-</span><span style="color:#75715e"></span>    PHP        = <span style="color:#ae81ff">32</span>,  <span style="color:#75715e">// 0000100000
-</span><span style="color:#75715e"></span>    Python     = <span style="color:#ae81ff">64</span>,  <span style="color:#75715e">// 0001000000
-</span><span style="color:#75715e"></span>    R          = <span style="color:#ae81ff">128</span>, <span style="color:#75715e">// 0010000000
-</span><span style="color:#75715e"></span>    Ruby       = <span style="color:#ae81ff">256</span>, <span style="color:#75715e">// 0100000000
-</span><span style="color:#75715e"></span>    SQL        = <span style="color:#ae81ff">512</span>  <span style="color:#75715e">// 1000000000
+    C = <span style="color:#ae81ff">1</span>,     <span style="color:#75715e">// 0001
+</span><span style="color:#75715e"></span>    PHP = <span style="color:#ae81ff">2</span>,   <span style="color:#75715e">// 0010
+</span><span style="color:#75715e"></span>    SQL = <span style="color:#ae81ff">4</span>,   <span style="color:#75715e">// 0100
+</span><span style="color:#75715e"></span>    Java = <span style="color:#ae81ff">8</span>,  <span style="color:#75715e">// 1000
 </span><span style="color:#75715e"></span>}
 </code></pre></div><blockquote>
-<p>註：C# 有提供專給位元運算用的 Enum，請參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.flagsattribute?view=netcore-3.1">FlagsAttribute</a>。只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用　ToString() 也能更方便看見旗標內容</p>
+<p>註：<code>[Flags]</code>的標籤是指 C# 專門提供給位元旗標使用的 Enum，請參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.flagsattribute?view=netcore-3.1">FlagsAttribute</a>。</p>
+<p>只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用 ToString() 也能更方便看見旗標內容</p>
 </blockquote>
-<p>那麼假使今天來的新人 Bob，他總共會 C, Java, PHP, R, SQL 五種語言，那現在他的資料欄位，就會是五種語言對應的位置為 1，其餘為 0，也就是 <code>1010101001</code> =  <code>681</code></p>
-<p>當 <strong>查詢</strong> 的時候，就將 Bob 的數值和目標數值做 <code>AND</code> 運算。例如說我們想知道 Bob 會不會 Java，就可以將 <code>681</code> 和 JAVA 的 <code>8</code> 做 <code>&amp;</code>，即可知道 Bob 會不會 Java。在做權限檢查時也是如此去確認對象是否有對應的權限：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> BobsSkills = <span style="color:#ae81ff">681</span>;
-<span style="color:#75715e">// 也支援直接加上 0B 寫成二進位，例如：
-</span><span style="color:#75715e">// var BobsSkills = 0b1010101001;
-</span><span style="color:#75715e">// var BobsSkills = 0b_0010_1010_1001;
+<h2 id="查詢--and">查詢 =&gt; AND</h2>
+<p>那麼假使今天來的新人 Bob，他會 C, PHP 兩種語言，那現在他的資料欄位，就會是這兩種語言對應的位置為 1，其餘為 0，也就是 <code>0011</code> =  <code>3</code></p>
+<p>當 <strong>查詢</strong> 的時候，就將 Bob 的數值和目標數值做 <strong><code>AND</code></strong> 運算。例如說我們想知道 Bob 會不會 Java，就可以將 <code>3</code> 和代表 C 位置的 <code>1</code> 做 <code>&amp;</code>，即可知道 Bob 會不會 Java。</p>
+<p>也就是必須要 <strong>同個位置的值都是 1</strong>，在這邊就是指 Bob 的技能中 Java 的欄位，和 SkillEnum 中對應的欄位都要是 1 的時候，才會有數值。否則就會是 0：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> BobSkills = <span style="color:#ae81ff">3</span>;
+<span style="color:#75715e">// var BobSkills = 0b_0011; // C + PHP
 </span><span style="color:#75715e"></span>
-<span style="color:#75715e">// 用 &amp; (AND) 來確認 Bob 會不會 Java...
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> IsBobSkilledJava = BobsSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.Java;
-<span style="color:#e6db74">$&#34;Bob 會 Java 嗎？{Convert.ToBoolean(IsBobSkilledJava)}&#34;</span>.Dump();
-<span style="color:#75715e">// Bob 會 Java 嗎？True
-</span></code></pre></div><p>從位元的方式來看 <code>AND</code> 會是這樣的</p>
-<pre><code>    0 0 1 1
-AND 0 1 0 1
------------
-    0 0 0 1
-</code></pre><p>也就是必須要 <strong>同個位置的值都是 1</strong>，在這邊也就是 Bob 的技能中 Java 的欄位，和 SkillEnum 中對應的欄位都要是 1 的時候，才會有數值。否則就會是 0 。</p>
-<p>那假設 Bob 經過一番苦練，又掌握了 JavaScript 這門語言呢？當我們要 <strong>賦予</strong> 的時候只要用 <code>OR</code> 就可以把新的部分賦予給他：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> IsBobSkilledJavaScript = BobsSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.JavaScript;
-<span style="color:#e6db74">$&#34;Bob 會 JavaScript 嗎？{Convert.ToBoolean(IsBobSkilledJavaScript)}&#34;</span>.Dump();
-<span style="color:#75715e">// Bob 會 JavaScript 嗎？False
+<span style="color:#75715e">// 確認是否有某個 Flag，使用 And(&amp;)
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> isBobKnowC = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.C;
+<span style="color:#e6db74">$&#34;Bob 會使用 C 嗎？{Convert.ToBoolean(isBobKnowC)}&#34;</span>.Dump(); <span style="color:#75715e">// True
 </span><span style="color:#75715e"></span>
-<span style="color:#75715e">// 用 | (OR) 讓 Bob 去學習 JavaScript...
-</span><span style="color:#75715e"></span>BobsSkills = BobsSkills | (<span style="color:#66d9ef">int</span>)SkillEnum.JavaScript;
+<span style="color:#75715e">//     J S P C
+</span><span style="color:#75715e">//     0 0 1 1 Bob
+</span><span style="color:#75715e">// AND 0 0 0 1 SkillEnum.C
+</span><span style="color:#75715e">// -----------
+</span><span style="color:#75715e">//     0 0 0 1 =&gt; 1 &gt; 0 =&gt; True
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">var</span> isBobKnowJava = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.Java;
+<span style="color:#e6db74">$&#34;Bob 會使用 Java 嗎？{Convert.ToBoolean(isBobKnowJava)}&#34;</span>.Dump(); <span style="color:#75715e">// False
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">//     J S P C
+</span><span style="color:#75715e">//     0 0 1 1 Bob
+</span><span style="color:#75715e">// AND 1 0 0 0 SkillEnum.Java
+</span><span style="color:#75715e">// -----------
+</span><span style="color:#75715e">//     0 0 0 0 =&gt; 0 =&gt; False
+</span><span style="color:#75715e"></span>
+</code></pre></div><h2 id="賦予--or">賦予 =&gt; OR</h2>
+<p>那假設 Bob 經過一番苦練，又掌握了 SQL 這門語言呢？當我們要 <strong>賦予</strong> 的時候只要用 <strong><code>OR</code></strong> 就可以把新的部分賦予給他：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
+<span style="color:#e6db74">$&#34;Bob 會使用 SQL 嗎？{Convert.ToBoolean(isBobKnowSQL)}&#34;</span>.Dump(); <span style="color:#75715e">// False
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// 賦予某個 Flag，使用 OR (|)
+</span><span style="color:#75715e"></span>BobSkills = BobSkills | (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
+<span style="color:#e6db74">$&#34;（Bob 學習 SQL 中）&#34;</span>.Dump();
 
-IsBobSkilledJavaScript = BobsSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.JavaScript;
-<span style="color:#e6db74">$&#34;Bob 會 JavaScript 嗎？{Convert.ToBoolean(IsBobSkilledJavaScript)}&#34;</span>.Dump();
-<span style="color:#75715e">// Bob 會 JavaScript 嗎？True
-</span></code></pre></div><p>從位元的方式來看 <code>OR</code> 會是這樣的</p>
-<pre><code>    0 0 1 1
- OR 0 1 0 1
------------
-    0 1 1 1
-</code></pre><p>也就是當 <strong>兩者之間任一為 1</strong> 的時候，在這邊也就是當 Bob 的技能和我們要求給他的 SkillEnum 同位置只要有一個是 1，那就會有數值。</p>
+<span style="color:#75715e">//     J S P C
+</span><span style="color:#75715e">//     0 0 1 1 Bob
+</span><span style="color:#75715e">//  OR 0 1 0 0 SkillEnum.SQL
+</span><span style="color:#75715e">// -----------
+</span><span style="color:#75715e">//     0 1 1 1 =&gt; New Bob
+</span><span style="color:#75715e"></span>
+isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
+<span style="color:#e6db74">$&#34;Bob 會使用 SQL 嗎？{Convert.ToBoolean(isBobKnowSQL)}&#34;</span>.Dump(); <span style="color:#75715e">// True
+</span></code></pre></div><p>也就是當 <strong>兩者之間任一為 1</strong> 的時候，在這邊也就是當 Bob 的技能和我們要求給他的 SkillEnum 同位置只要有一個是 1，那就會有數值。</p>
 <p>例如說原本 Bob 不會 JavaScript，所以 JavaScript 那一欄就會是 0 。而我們把它和 SkillEnum.JavaScript（也就是只有 JavaScript 那一欄是 1 ）做 OR 運算後，JavaScript 代表的欄位就會變成 1，而其他則不變。</p>
+<h2 id="移除--xor">移除 =&gt; XOR</h2>
+<p>有新增就會有刪除。當我們要 <strong>移除</strong> 某一項旗標的時候，只需要使用 <strong><code>XOR</code></strong> 就可以把兩者同時為 <code>1</code> 的欄位給變回 0。但在使用上要注意，必須先確認目標欄位的確有數值，否則兩個 0 也是會變成 1 的。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
+<span style="color:#e6db74">$&#34;Bob 會使用 SQL 嗎？{Convert.ToBoolean(isBobKnowSQL)}&#34;</span>.Dump(); <span style="color:#75715e">// True
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// 挪除某個 Flag，使用 XOR (^)
+</span><span style="color:#75715e"></span>BobSkills = BobSkills ^ (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
+<span style="color:#e6db74">$&#34;（Bob ... 忘記了SQL！）&#34;</span>.Dump();
+
+<span style="color:#75715e">//     J S P C
+</span><span style="color:#75715e">//     0 1 1 1 Bob
+</span><span style="color:#75715e">// XOR 0 1 0 0 SkillEnum.SQL
+</span><span style="color:#75715e">// -----------
+</span><span style="color:#75715e">//     0 0 1 1 =&gt; New Bob
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// 警告：使用 XOR 之前一定要先檢查，若原本是關閉 (0) 的將會被打開 (0 XOR 1 =&gt; 1)
+</span><span style="color:#75715e"></span>
+isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
+<span style="color:#e6db74">$&#34;Bob 會使用 SQL 嗎？{Convert.ToBoolean(isBobKnowSQL)}&#34;</span>.Dump(); <span style="color:#75715e">// False
+</span></code></pre></div><h2 id="多項賦予--or-or-or">多項賦予 =&gt; OR, OR, OR</h2>
 <p>聰明的你應該能猜出如果要給予預設值的時候可以怎麼給囉，沒錯！只要把有的項目全部 OR 起來就可以了：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> BobsSkills = 
-    (<span style="color:#66d9ef">int</span>)SkillEnum.C    |
-    (<span style="color:#66d9ef">int</span>)SkillEnum.Java |
-    (<span style="color:#66d9ef">int</span>)SkillEnum.PHP  |
-    (<span style="color:#66d9ef">int</span>)SkillEnum.R    |
-    (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
-    
-<span style="color:#75715e">// C, Java, PHP, R, SQL
-</span></code></pre></div><p>從上面我們可以看到：<strong>賦予內容時用 OR 讓指定的位置變成 1、而檢查的時候則用 AND 去找出目標的位置是否為 1</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 賦與多個值 ＝ 一路 OR 下去
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> Bob2Skills =    
+    (<span style="color:#66d9ef">int</span>)SkillEnum.C | 
+    (<span style="color:#66d9ef">int</span>)SkillEnum.SQL |     
+    (<span style="color:#66d9ef">int</span>)SkillEnum.Java; 
+
+<span style="color:#e6db74">$&#34;Bob 技能欄的十進位為：{Bob2Skills}&#34;</span>.Dump(); <span style="color:#75715e">// 13
+</span><span style="color:#75715e"></span><span style="color:#e6db74">$&#34;Bob 技能欄的二進位為：{Convert.ToString(Bob2Skills, 2)}&#34;</span>.Dump(); <span style="color:#75715e">// 1101
+</span></code></pre></div><h2 id="列出內容--foreach-flags">列出內容 =&gt; Foreach, Flags</h2>
 <p>那如果我想要確認現在有哪些欄位是開啟的呢？例如說，當我們要確認 Bob 會哪些程式語言的時候怎麼做呢？</p>
 <p>既然用 AND 可以查詢其中一個位置，那麼只要將列舉和位元用迴圈逐一 AND 出來，就可以還原 Bob 的列表囉</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> BobsSkills = <span style="color:#ae81ff">681</span>;
-<span style="color:#66d9ef">var</span> enumCount = Enum.GetNames(<span style="color:#66d9ef">typeof</span>(SkillEnum)).Count();
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> enumCount = Enum.GetNames(<span style="color:#66d9ef">typeof</span>(SkillEnum)).Count();
 <span style="color:#66d9ef">var</span> BobsSkillsList = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt;();
 
 <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">var</span> i = <span style="color:#ae81ff">0</span>; i &lt; enumCount; i++)
-    <span style="color:#66d9ef">if</span>(Convert.ToBoolean(BobsSkills &amp; (<span style="color:#66d9ef">int</span>)Math.Pow(<span style="color:#ae81ff">2</span>, i))) <span style="color:#75715e">// AND 運算
+    <span style="color:#66d9ef">if</span>(Convert.ToBoolean(Bob2Skills &amp; (<span style="color:#66d9ef">int</span>)Math.Pow(<span style="color:#ae81ff">2</span>, i))) <span style="color:#75715e">// AND 運算
 </span><span style="color:#75715e"></span>        BobsSkillsList.Add(((SkillEnum)Math.Pow(<span style="color:#ae81ff">2</span>, i)).ToString());
 <span style="color:#e6db74">$&#34;Bob 會的語言有：{String.Join(&#34;</span>, <span style="color:#e6db74">&#34;, BobsSkillsList)}&#34;</span>.Dump();
-<span style="color:#75715e">// Bob 會的語言有：C, Java, PHP, R, SQL
+<span style="color:#75715e">// C, SQL, Java
 </span></code></pre></div><p>不過上面這個依序列印的方式還是太麻煩了。如果有像前半段提到的，<strong>替 Enum 加上 <code>[Flags]</code> 標籤</strong>的話，用起來就更簡單了：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> BobsSkills = <span style="color:#ae81ff">681</span>;
-((SkillEnum)BobsSkills).Dump();
-<span style="color:#75715e">// C, Java, PHP, R, SQL
-</span></code></pre></div><p>整理來說概念並不困難，只是一個位元對應一個對象，再視情況進行運算而已。但能應用的範圍相當廣泛，除了最常用的權限管理，其他諸如活動月份、門鎖狀況等等只要符合條件的情形都可以借這個方法來處理。這邊稍作紀錄，希望以後能派上用場。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#e6db74">$&#34;Bob 掌握的技能為：{(SkillEnum)Bob2Skills}&#34;</span>.Dump(); 
+<span style="color:#75715e">// C, SQL, Java
+</span></code></pre></div><p>最後再總結一下：</p>
+<ul>
+<li><strong>賦予內容時用 OR 讓指定的位置變成 1</strong></li>
+<li><strong>檢查的時候則用 AND 找出目標的位置是否為 1</strong></li>
+<li><strong>移除的時候則用 XOR 讓目標位置的 1 抵銷為 0</strong></li>
+</ul>
+<p>整理來說概念並不困難，只是一個位元對應一個對象，再視情況進行運算而已。但能應用的範圍相當廣泛，除了最常用的權限管理，其他諸如活動月份、門鎖狀況等等只要符合條件的情形都可以借這個方法來處理。這邊稍作紀錄，希望以後能派上用場。</p>
 <h2 id="延伸閱讀及參考資料">延伸閱讀及參考資料</h2>
 <ul>
 <li><a href="https://medium.com/@kazafchen/%E4%B8%80%E4%BB%B6intent%E6%95%99%E6%88%91%E7%9A%84%E4%BA%8B-bitwise-operation-dd3a388ae34e">一件Intent教我的事： Bitwise Operation</a></li>
