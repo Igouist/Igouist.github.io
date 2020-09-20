@@ -7,20 +7,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>菜雞與物件導向 (6): 抽象、覆寫 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="菜雞與物件導向 (6): 抽象、覆寫 - 伊果的沒人看筆記本">
+    <title>菜雞與物件導向 (9): SOLID | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞與物件導向 (9): SOLID - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2020-07-12T23:53:06&#43;08:00">
+    <meta property="article:published_time" content="2020-09-20T13:51:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2020-07-12T23:53:06&#43;08:00">
+    <meta property="article:modified_time" content="2020-09-20T13:51:00&#43;08:00">
         
     <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
-    <meta name="description" content="用 C# 的方式介紹何謂物件導向(Object Oriented) 中的抽象(Abstract) 和覆寫(Override)。抽象類別是指某些類別本身不應該被實體化成一個物件，這種類別我們就應該把它們標記為抽象類別。而覆寫則是指衍生類別重新定義父類別的方法。">
+    <meta name="description" content="我們在前面的章節已經說明了一些物件導向的特性，例如繼承和多型等等。然而我們並沒有討論到怎麼運用、或是怎樣設計才能算是更好的、更優雅的、更符合物件導向精神的；我們並沒有提到一個評估的標準，或是指引一個更好的方向。隨著物件導向的亂用、誤用、無腦用，軟體就會逐漸腐化，為了阻止腐化，建立能容忍變化、容易理解、能讓模組和元件使用的程式碼，我們需要使用 SOLID 原則。SOLID 原則包括：單一職責原則、開放封閉原則、里氏替換原則、介面隔離原則、依賴反轉原則。">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/post/2020/07/oo-6-abstract-override/">
+    <meta property="og:url" content="https://igouist.github.io/post/2020/09/oo-9-solid/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/normalize.css">
@@ -78,10 +78,10 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">菜雞與物件導向 (6): 抽象、覆寫</h1>
+                            <h1 class="post-title">菜雞與物件導向 (9): SOLID</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2020-7-12,
+                            2020-9-20,
                         </date>
                         
                         <div class="post-meta">
@@ -103,72 +103,61 @@
                         </div>
                         
                         <div class="post-content">
-                            <p>抽象的概念很直接，請回想一下前面的例子就可以了：</p>
-<p>當我們在用卡牌的例子時，雖然怪獸卡跟魔法卡都繼承了 Card 這個類別，但是我們仍然能 <code>new Card()</code> 來建立一張新卡牌，那…怪怪的吧，這張卡牌到底是什麼呀，空白的卡片嗎？</p>
-<p>又或是動物的例子，我們的狗跟貓都繼承了哺乳類，那我們能實例化一個哺乳類嗎？我們的狗跟鳥都是動物，那我們能實例化一個動物嗎？</p>
-<p>小明跟小華都繼承了工程師，那我們能 new 一個工程師嗎…？</p>
-<p>有些類別就是這樣，它們負責定義共通的那些特性，<strong>然而它們本身不應該被實體化成一個物件，這種類別我們就應該把它們標記為抽象類別</strong>。</p>
-<p><strong>抽象類別在 C# 裡用 <code>abstract</code> 這個修飾詞來表示</strong>，可以加在類別或方法上。例如 <code>abstract class Animal</code> 就代表動物這個類別是個抽象類別，它不能被實例化。</p>
-<p>而當加在方法上時，例如 <code>public abstract void Eat()</code> 就是代表這個進食的方法無法被叫用，只能由繼承者去重新定義這個方法。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Animal</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">void</span> Eat();
-}
-</code></pre></div><p>那麼繼承者們，也就是衍生類別如何去重新定義父類別的方法呢？這時候就必須使用<strong>覆寫 <code>override</code></strong>。</p>
-<p>覆寫是指對於像是前述的抽象方法時，在同名的方法前加上 <code>override</code> 關鍵字就可以讓程式知道你要覆寫這個方法（甚至有抽象方法的時候你不覆寫，編譯器還會生氣）。例如前述的 Eat，狗就可以用 <code>public override void Eat()</code> 的方式去覆寫吃東西這個方法。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span> : Animal
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;Black&#34;</span>;
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Eat()
-    {
-        <span style="color:#75715e">/* 嚼嚼嚼 */</span>
-    }
-}
-</code></pre></div><p>但有時候我們只是希望秉持著多型的精神，讓子類別有可以重新定義的彈性，這時候我們就會使用 <strong>虛擬 <code>virtual</code></strong> 的方式去標記這個方法，如此一來就可以實作，同時也讓子類別可以覆寫。例如可能狗有 <code>public virtual void Eat()</code> 這個進食的方法：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> Eat()
-    {
-        <span style="color:#75715e">/* 嚼嚼熱狗 */</span>
-    }
-}
-</code></pre></div><p>但是我們有了 <code>RobotDog</code> 這個類別，它就可以繼承並且重新改寫掉 <code>Eat()</code> 這個方法，從吃肉變成喝汽油。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RobotDog</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Eat()
-    {
-        <span style="color:#75715e">/* 嚼嚼汽油 */</span>
-    }
-}
-</code></pre></div><p>關於抽象和覆寫這部份的範例，因為我個人碰觸的比較少，唯恐我的舉例不夠深入，這邊再附上幾個不錯的範例，可以作為參考：</p>
-<ul>
-<li><a href="https://medium.com/@ad57475747/c-%E9%9B%9C%E8%A8%98-%E4%BB%8B%E9%9D%A2-interface-%E6%8A%BD%E8%B1%A1-abstract-%E8%99%9B%E6%93%AC-virtual-%E4%B9%8B%E6%88%91%E8%A6%8B-dc3c5878bb80">C#雜記 — 介面(interface)、抽象( abstract)、虛擬(virtual)之我見 - Medium</a></li>
-<li><a href="https://exfast.me/2016/09/c-sharp-use-interface-abstract-override-inheritance-implements-a-simple-example/">[C#] 利用 interface(介面) abstract(抽象) override(覆寫) inherit(繼承) 實作簡單範例 - 從入門到放棄</a></li>
-</ul>
-<p>接著下一篇，我們就接著看這一部分的最後一片拼圖：介面吧！</p>
+                            <p>終於進入了原則篇，接下來的幾篇我們會介紹幾個物件導向的原則（基本上就是指 SOLID 原則）。因此這篇就讓我 <s>水一下</s> 當成後半段的目錄，方便之後可以把相關的部分整理進來。</p>
+<h4 id="為什麼我們需要這些原則">為什麼我們需要這些原則？</h4>
+<p>我們在前面的章節已經說明了一些物件導向的特性，例如繼承和多型等等。然而我們並沒有討論到怎麼運用、或是怎樣設計才能算是更好的、更優雅的、更符合物件導向精神的；我們並沒有提到一個評估的標準，或是指引一個更好的方向。</p>
+<p>然而，混亂的使用物件導向對整個專案的毀滅性甚至比乾脆不使用物件導向還高。</p>
+<p>這些特性使用起來很簡單，大多數語言只需要一個符號或標示就能完成繼承，把一堆東西全部塞在一起就可以說我在封裝。但怎麼使用得好，又該什麼時候使用呢？這就是難的地方吧。</p>
+<p>例如說濫用繼承，或是封裝時完全不隱藏複雜度一路 Puuuuublic 到底，又或者是類別之間過於相互依賴，全部耦合成一團等等。如果**隨便地使用物件導向的各項特性，就會讓整個架構變得僵化、脆弱、危險、充滿臭味。</p>
+<p>更可怕的是，這個發臭的過程是每一次設計、每一次修改都會有所影響，所謂「持續發生，腐敗成真」，<strong>隨著物件導向的亂用、誤用、無腦用，軟體就會逐漸腐化</strong>。一組腐化的軟體可能會有以下特徵：大量的依賴使得修改變得困難、修改後看似不相干的各個地方發生問題、或是修改時沒辦法依循原本的設計、到處出現不必要的複雜性和不必要的重複，模組也變得難以理解等等。</p>
+<p>阻止程式碼的腐化、追求更好的架構和設計、寫出更好的代碼，當然是我輩所追求的目標。儘管面對的可能是不同的問題和不同的環境，那些優質、穩固、具有<strong>反脆弱</strong>特質的程式碼也必然會有些共通之處。例如說：需要具有<strong>面對改變</strong>的能力、具有<strong>方便管理</strong>的能力、具有<strong>隱藏複雜性</strong>的能力。</p>
+<p>因此，大前輩們整理並提出了一些可以致力的方向，也就是所謂的「<strong>原則</strong>」。如同心法、教義一般，只要實作的同時將其牢記在心，就能讓我們作為一些行動的準則和依據。</p>
+<p>所謂練拳不練功，到老一場空。我們可不能看了招式就無腦用，先讓我們看一下這些 SOLID 原則的目標是什麼。</p>
+<p>在 <a href="https://www.books.com.tw/products/0010786994">Clean Architecture</a> 裡是這樣說明的：</p>
 <blockquote>
-<p>本系列下一篇：<a href="/post/2020/07/oo-7-interface">菜雞與物件導向 (7): 介面</a></p>
-</blockquote>
-<h2 id="同系列文章">同系列文章</h2>
+<p>這些原則的目標是建立中層級的軟體結構，這樣的結構包含：</p>
 <ul>
-<li><a href="/post/2020/07/oo-0-object-oriented">菜雞與物件導向 (0): 前言</a></li>
-<li><a href="/post/2020/07/oo-1-class-object">菜雞與物件導向 (1): 類別、物件</a></li>
-<li><a href="/post/2020/07/oo-2-constructor-overload">菜雞與物件導向 (2): 建構式、多載</a></li>
-<li><a href="/post/2020/07/oo-3-encapsulation">菜雞與物件導向 (3): 封裝</a></li>
-<li><a href="/post/2020/07/oo-4-inheritance">菜雞與物件導向 (4): 繼承</a></li>
-<li><a href="/post/2020/07/oo-5-polymorphism">菜雞與物件導向 (5): 多型</a></li>
-<li><a href="/post/2020/07/oo-6-abstract-override">菜雞與物件導向 (6): 抽象、覆寫</a></li>
-<li><a href="/post/2020/07/oo-7-interface">菜雞與物件導向 (7): 介面</a></li>
-<li><a href="/post/2020/09/oo-8-cohesion-and-coupling">菜雞與物件導向 (8): 內聚、耦合</a></li>
+<li>能容忍變化</li>
+<li>容易理解</li>
+<li>在許多軟體系統中能夠使用的元件的基礎</li>
 </ul>
+<p>「中層級」是指這些原則是程式設計師在模組層級工作時應用的原則。它們應用在程式碼層級之上，並且有助於定義模組和元件內使用的軟體結構類型。</p>
+</blockquote>
+<p>我們應用這些原則的場景，應該是在所謂的「中層級」發生。也就是並非小到一行程式碼，也並非是一整個專案，而是其中的各個「<strong>模組</strong>」。不論是類別、介面又或是其他名稱的任何東西，凡是具有函式或資料的中層級，我們就可以運用這些原則來處理。</p>
+<p>而我們之所以要用這些原則，就是為了達到 <strong>能容忍變化</strong>、<strong>容易理解</strong>、<strong>能讓模組和元件使用</strong> 這些目標。</p>
+<p>這些目標可以當作一個良好的程式碼模組該有的特徵。你的類別必須能容忍變化，必須具備可擴展性和可修改性，畢竟<strong>軟體的需求大多時候都是擴展跟修改</strong>。更進一步說，功能和彈性之間甚至應該先選擇彈性，畢竟為了功能犧牲彈性的話，一但面對變化，整個程式就碎了；但優先選擇彈性的話，至少你還有機會能把它修改得更符合功能，所以對這些原則而言，能容忍變化是相當重要的。甚至，<strong>整個 SOLID 就是面對變化的作戰策略</strong>。</p>
+<p>而容易理解就更重要了。Clean Code 裡有提過，<strong>閱讀程式碼和實際開工打字的時間大約是佔 10 : 1</strong>，因此是否容易理解，是否乾淨好懂就是相當重要的一環。看得快，就寫得快；寫得越快，心越慢。</p>
+<p>如同我們在首篇所說，物件導向就是在替我們把概念抽象化，而這抽象過程所使用的這些特性，就是為了減少複雜性、提高可理解度而存在的。因此，一組優良的程式碼，容易理解是絕對必要的。</p>
+<p>另外關於為什麼我們需要這些原則，我個人推薦可以先閱讀這幾篇，對我個人來說很有收穫：</p>
+<ul>
+<li><a href="https://wadehuanglearning.blogspot.com/2019/10/solid.html">淺談物件導向 SOLID 原則對工程師的好處與如何影響能力 - WadeHuang的學習迷航記</a></li>
+<li><a href="https://wadehuanglearning.blogspot.com/2019/10/solid-why-solid.html">再談 SOLID 原則，Why SOLID? - WadeHuang的學習迷航記</a></li>
+<li><a href="http://teddy-chen-tw.blogspot.com/2014/04/solid.html">SOLID：五則皆變 - 搞笑談軟工</a></li>
+</ul>
+<h4 id="說那麼多所以到底有哪些原則">說那麼多，所以到底有哪些原則？</h4>
+<p>現在我們已經了解到，因為軟體會逐漸腐化，所以我們要找出原則；這些原則的目標，就在於設計出可變化可理解的優質模組。現在，是時候公布我們 SOLID 五大天王的名諱了：</p>
+<ul>
+<li>單一職責原則 <strong>S</strong>ingle Responsibility Principle (SRP)</li>
+<li>開放封閉原則 <strong>O</strong>pen-Closed Principle (OCP)</li>
+<li>里氏替換原則 <strong>L</strong>iskov Substitution Principle (LSP)</li>
+<li>介面隔離原則 <strong>I</strong>nterface Segregation Principle (ISP)</li>
+<li>依賴反轉原則 <strong>D</strong>ependency Inversion Principle (DIP)</li>
+</ul>
+<blockquote>
+<p>註：大多時候 L 的位置也會多一個 Law of Demeter 迪米特法則（= Least Knowledge Principle 最少知識原則），畢竟也挺重要的，而且四大天王都有五個人了，五大原則有六個也是剛剛好。</p>
+</blockquote>
+<p>而它們的首字合起來就是 <strong><code>SOLID</code></strong>，表達出那種穩固的、可靠的感覺！順便一提，順序沒有任何關係，會排成 SOLID 純粹只是作者朋友當時覺得這樣比較好記。</p>
+<p>那麼從下篇開始，我們就按序從單一職責開始介紹。我們下次見～</p>
 <h2 id="參考資料">參考資料</h2>
 <ul>
-<li><a href="https://medium.com/@ad57475747/c-%E9%9B%9C%E8%A8%98-%E4%BB%8B%E9%9D%A2-interface-%E6%8A%BD%E8%B1%A1-abstract-%E8%99%9B%E6%93%AC-virtual-%E4%B9%8B%E6%88%91%E8%A6%8B-dc3c5878bb80">C#雜記 — 介面(interface)、抽象(abstract)、虛擬(virtual)之我見 - Medium</a></li>
-<li><a href="https://exfast.me/2016/09/c-sharp-use-interface-abstract-override-inheritance-implements-a-simple-example/">[C#] 利用 interface(介面) abstract(抽象) override(覆寫) inherit(繼承) 實作簡單範例 - 從入門到放棄</a></li>
-<li><a href="https://matthung0807.blogspot.com/2018/02/java-overload.html">Java 什麼是多載(Overload), 覆寫(Override), 多型(Polymorphism) - 菜鳥工程師肉豬</a></li>
-<li><a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-2_%E5%BB%BA%E6%A7%8B%E5%BC%8Fconstructor%E5%A4%9A%E8%BC%89overloading%E8%88%87%E8%A6%86%E5%AF%ABoverriding/">Object Oriented物件導向-2:建構式(Constructor)、多載(Overloading)與覆寫(Overriding) - Sian</a></li>
-<li><a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/abstract">Abstract - Microsoft Docs</a></li>
+<li><a href="https://wadehuanglearning.blogspot.com/2019/10/solid.html">淺談物件導向 SOLID 原則對工程師的好處與如何影響能力 - WadeHuang的學習迷航記</a></li>
+<li><a href="https://wadehuanglearning.blogspot.com/2019/10/solid-why-solid.html">再談 SOLID 原則，Why SOLID? - WadeHuang的學習迷航記</a></li>
+<li><a href="http://teddy-chen-tw.blogspot.com/2014/04/solid.html">SOLID：五則皆變 - 搞笑談軟工</a></li>
+<li><a href="https://medium.com/@ChunYeung/%E4%BD%BF%E4%BA%BA%E7%98%8B%E7%8B%82%E7%9A%84-solid-%E5%8E%9F%E5%89%87-%E7%9B%AE%E9%8C%84-b33fdfc983ca">使人瘋狂的 SOLID 原則：目錄 - YC</a></li>
+<li><a href="https://medium.com/@f40507777/%E6%88%91%E8%A9%B2%E5%AD%B8%E6%9C%83solid%E5%97%8E-4e73887c9156">我該學會SOLID嗎? - Finn</a></li>
+<li><a href="https://www.ycc.idv.tw/introduction-object-oriented-programming_3.html">件導向武功秘笈（3）：內功篇 — 物件導向指導原則SOLID - YC Chen</a></li>
+<li><a href="https://medium.com/%E6%89%8B%E5%AF%AB%E7%AD%86%E8%A8%98/clean-code-b45a89ea8c66">第 1 章 無瑕的程式碼 | Clean Code - 手寫筆記</a></li>
+<li><a href="https://www.books.com.tw/products/0010786994">《無瑕的程式碼：整潔的軟體設計與架構篇》</a></li>
 </ul>
                         </div>
 
@@ -178,15 +167,15 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
+        <li><a href="/post/2020/09/oo-8-cohesion-and-coupling/">菜雞與物件導向 (8): 內聚、耦合</a></li>
+        
+        <li><a href="/post/2020/07/oo-7-interface/">菜雞與物件導向 (7): 介面</a></li>
+        
+        <li><a href="/post/2020/07/oo-6-abstract-override/">菜雞與物件導向 (6): 抽象、覆寫</a></li>
+        
         <li><a href="/post/2020/07/oo-5-polymorphism/">菜雞與物件導向 (5): 多型</a></li>
         
         <li><a href="/post/2020/07/oo-4-inheritance/">菜雞與物件導向 (4): 繼承</a></li>
-        
-        <li><a href="/post/2020/07/oo-3-encapsulation/">菜雞與物件導向 (3): 封裝</a></li>
-        
-        <li><a href="/post/2020/07/oo-2-constructor-overload/">菜雞與物件導向 (2): 建構式、多載</a></li>
-        
-        <li><a href="/post/2020/07/oo-1-class-object/">菜雞與物件導向 (1): 類別、物件</a></li>
         
     </ul>
 </div>
@@ -209,7 +198,7 @@
                         </div>
                         <hr />
 <p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
-<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f07%2foo-6-abstract-override%2f" width="100%" frameborder=0></iframe>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f09%2foo-9-solid%2f" width="100%" frameborder=0></iframe>
                     </article>
                     
     
