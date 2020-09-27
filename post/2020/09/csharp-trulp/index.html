@@ -7,22 +7,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>PHP | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="PHP - 伊果的沒人看筆記本">
+    <title>C#: 元組 (Tuple) | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="C#: 元組 (Tuple) - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
+    <meta property="article:published_time" content="2020-09-27T23:56:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2020-09-27T23:56:00&#43;08:00">
         
     <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
-    <meta name="description" content="PHP">
+    <meta name="description" content="C#: 元組 (Tuple)">
+        <meta name="author" content="Igouist">
         
-    <meta name="author" content="Igouist">
-    <meta property="og:url" content="https://igouist.github.io/tags/php/">
+    <meta property="og:url" content="https://igouist.github.io/post/2020/09/csharp-trulp/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/normalize.css">
     
+        <link rel="stylesheet" href="/css/prism.css">
+    
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="alternate" type="application/rss+xml+xml" href="https://igouist.github.io/tags/php/index.xml" title="伊果的沒人看筆記本" />
     <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 
     
@@ -31,7 +36,6 @@
     
     
 </head>
-
 
 <body>
 <header id="header" class="clearfix">
@@ -47,7 +51,7 @@
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://igouist.github.io/">Home</a>
+                    <a class="current" href="https://igouist.github.io/">Home</a>
                     
                     <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
                     
@@ -72,59 +76,140 @@
 
             <div class="col-8" id="main">
                 <div class="res-cons">
-                    
-                    <h3 class="archive-title">
-                        包含標籤
-                        <span class="keyword">PHP</span>
-                        的文章
-                    </h3>
-                    
-
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2019/12/android-fetch-mysql-using-xampp/">Android: MySQL 連線筆記（使用XAMPP）</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2019-12-9,
-                            </date>
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">C#: 元組 (Tuple)</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2020-9-27,
+                        </date>
+                        
+                        <div class="post-meta">
                             
-                            <div class="post-meta meta-category">
-                                
-                                    <a href="https://igouist.github.io/categories/android">Android</a>
-                                
-                            </div>
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp">CSharp</a></span>
                             
-                            <div class="post-content">
-                                <p>之前做給學弟妹參考的簡單筆記，順手放上來，以後遇到的時候可以回來參考。</p>
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+                        <div class="post-content">
+                            <p>因為隔壁介紹原則的部分有點卡住了，所以這週來紀錄一下挺常用到的方便東西：<strong>Tuple</strong></p>
+<p>這篇的 Tuple 指的是 C# 7.0 後提供的 <strong>ValueTuple</strong> 和相關語法，舊版得用 <code>Tuple.Create</code> 建立，成員的名稱也只能使用 Item1, Item2&hellip;，實用性並不是很高。但新 Tuple 出現後，方便程度大大提升，這邊就稍作紀錄一下。</p>
 <blockquote>
-<p>目標：利用 XAMPP 簡單地架設一個伺服器環境，建立資料庫，並且能在 Android 上取得資料庫的資料。</p>
+<p>註：此處使用的 <code>Dump</code> 是 Linqpad 提供的輸出方法，把它當成 Print 就行了。</p>
 </blockquote>
-<h2 id="架設伺服器環境">架設伺服器環境</h2>
-<p>在電腦架設伺服器環境的工具有很多種，例如 <a href="https://ithelp.ithome.com.tw/articles/10190366">Windows 內建就有的 IIS</a>（通常拿來搭配 ASP.net）以及微軟的 <a href="https://snippetinfo.net/media/1869">WAMP</a> 等等，或是直接用 <a href="https://ithelp.ithome.com.tw/articles/10075496">Node.js</a> 跑環境兼後端，不勝枚舉。今天要拿來實作的是 <strong>XAMPP</strong> 這一款。XAMPP 嚴格說起來並不算是一個軟體，而是一個<strong>架站懶人包</strong>，它的名字是由這些東西組成的：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
+student.Item1.Dump(); <span style="color:#75715e">// 1
+</span><span style="color:#75715e"></span>student.Item2.Dump(); <span style="color:#75715e">// 王小明
+</span><span style="color:#75715e"></span>
+student.Dump();
+</code></pre></div><p>可以看到 Tuple 的建立相當簡單，只需要用小括號 <code>()</code> 括選起來即可。建立後的內容就會像這樣：</p>
+<p><img src="https://i.imgur.com/H0wJglN.png" alt=""></p>
+<p>但這樣使用就和之前一樣，取出來時只能拿 Item1, Item2，放個幾天根本就不記得 Item1 裡面是啥東西了。這時我們就可以<strong>替成員們取名字</strong>：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">(<span style="color:#66d9ef">int</span> ID, <span style="color:#66d9ef">string</span> Name) student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
+student.ID.Dump(); <span style="color:#75715e">// 1
+</span><span style="color:#75715e"></span>student.Name.Dump(); <span style="color:#75715e">// 王小明
+</span></code></pre></div><p>如此使用的時候就和一般操作物件的習慣沒有差別，也增加了可讀性。</p>
+<p>到這裡可能感覺只是個方便的變數打包小工具，但其真正順手的地方就在於作為<strong>回傳值</strong>的時候。</p>
+<p>過去要一次回傳多個值，除了使用 Ref 等方式以外，就只能乖乖做一個類別來裝，但有時候傳的東西又相當簡單，實在不太願意就此建立一個類別，又或是事情已經無法挽回，專案虛胖了一堆<strong>米蟲類別</strong>。有了 Tuple 之後，面對這種情況就可以<strong>直接使用 Tuple 解決</strong>，並且替成員們命名之後，既簡便又好讀！</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 回傳型別使用 Tuple
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> (<span style="color:#66d9ef">bool</span> IsSuccess, <span style="color:#66d9ef">string</span> Message) DoSomeThing()
+{
+    <span style="color:#75715e">// 做了一堆事情
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> (<span style="color:#66d9ef">true</span>, <span style="color:#e6db74">&#34;操作成功&#34;</span>);
+}
+
+<span style="color:#66d9ef">void</span> Main()
+{
+	<span style="color:#66d9ef">var</span> result = DoSomeThing();
+	result.IsSuccess.Dump(); <span style="color:#75715e">// true
+</span><span style="color:#75715e"></span>	result.Message.Dump(); <span style="color:#75715e">// 操作成功
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>而當我們作為回傳值使用時，也可以直接原地解封：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 回傳型別使用 Tuple
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> (<span style="color:#66d9ef">bool</span> IsSuccess, <span style="color:#66d9ef">string</span> Message) DoSomeThing()
+{
+    <span style="color:#75715e">// 做了一堆事情
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> (<span style="color:#66d9ef">true</span>, <span style="color:#e6db74">&#34;操作成功&#34;</span>);
+}
+
+<span style="color:#66d9ef">void</span> Main()
+{
+    <span style="color:#75715e">// 直接拆開賦值給多個變數
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> (isSuccess, message) = DoSomeThing();
+	isSuccess.Dump(); <span style="color:#75715e">// true
+</span><span style="color:#75715e"></span>	message.Dump(); <span style="color:#75715e">// 操作成功
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>作為一個簡易臨時型別挺方便的，但要注意不要用過頭了。兩三個成員還算方便，如果有七八個甚至十來個成員，請還是乖乖做成類別吧！</p>
+<h2 id="參考資料">參考資料</h2>
 <ul>
-<li>X = 跨平台</li>
-<li>A = Apache：網頁伺服器軟體</li>
-<li>M = MySQL：資料庫軟體</li>
-<li>P = PHP：程式語言，可以閱覽 <a href="http://www.w3school.com.cn/php/">w3school：PHP</a> 和 <a href="http://www.runoob.com/php/php-tutorial.html">菜鳥教程：PHP</a></li>
-<li>P = Perl：程式語言，可以閱覽 <a href="http://www.runoob.com/perl/perl-tutorial.html">菜鳥教程：Perl</a></li>
-</ul>……
-                                <p class="readmore"><a href="https://igouist.github.io/post/2019/12/android-fetch-mysql-using-xampp/">閱讀全文</a></p>
-                            </div>
-                        </article>
-                        <hr color="#D9D9D9" />
+<li><a href="https://www.huanlintalk.com/2017/04/c-7-tuple-syntax.html">C# 7 新增的 Tuple 語法 - Huanlin 學習筆記</a></li>
+<li><a href="https://dotblogs.com.tw/supershowwei/2018/10/01/135755">[料理佳餚] 用 ValueTuple 解放雞肋類別 - 軟體主廚的程式料理廚房</a></li>
+</ul>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2020/08/csharp-timezone/">C#: 時區轉換、民國西元、國曆農曆、中文月份週期</a></li>
+        
+        <li><a href="/post/2020/08/csharp-string-interpolation/">C#: 字串插值 (String interpolation) 的格式化</a></li>
+        
+        <li><a href="/post/2020/08/system-environment/">C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑</a></li>
+        
+        <li><a href="/post/2020/07/code-style/">C#: 程式碼風格備忘</a></li>
+        
+        <li><a href="/post/2020/06/bit-flags-and-enum/">C#: 位元旗標 (Bit flag) 與列舉</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/dotnet">Dotnet</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                        <hr />
+<p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f09%2fcsharp-trulp%2f" width="100%" frameborder=0></iframe>
+                    </article>
                     
+    
 
-                    
-
-
-
-
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
                 </div>
             </div>
-
             <div id="secondary">
     <section class="widget">
         <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
@@ -337,6 +422,22 @@
 </footer>
 
 
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
 <a id="rocket" href="#top"></a>
 <script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
 
@@ -354,7 +455,6 @@ if (!doNotTrack) {
 
 
 <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
-
 
 
 

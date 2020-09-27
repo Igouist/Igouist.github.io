@@ -84,6 +84,47 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2020/09/csharp-trulp/">C#: 元組 (Tuple)</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-9-27,
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                
+                                    <a href="https://igouist.github.io/categories/csharp">CSharp</a>
+                                
+                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p>因為隔壁介紹原則的部分有點卡住了，所以這週來紀錄一下挺常用到的方便東西：<strong>Tuple</strong></p>
+<p>這篇的 Tuple 指的是 C# 7.0 後提供的 <strong>ValueTuple</strong> 和相關語法，舊版得用 <code>Tuple.Create</code> 建立，成員的名稱也只能使用 Item1, Item2&hellip;，實用性並不是很高。但新 Tuple 出現後，方便程度大大提升，這邊就稍作紀錄一下。</p>
+<blockquote>
+<p>註：此處使用的 <code>Dump</code> 是 Linqpad 提供的輸出方法，把它當成 Print 就行了。</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
+student.Item1.Dump(); <span style="color:#75715e">// 1
+</span><span style="color:#75715e"></span>student.Item2.Dump(); <span style="color:#75715e">// 王小明
+</span><span style="color:#75715e"></span>
+student.Dump();
+</code></pre></div><p>可以看到 Tuple 的建立相當簡單，只需要用小括號 <code>()</code> 括選起來即可。建立後的內容就會像這樣：</p>
+<p><img src="https://i.imgur.com/H0wJglN.png" alt=""></p>
+<p>但這樣使用就和之前一樣，取出來時只能拿 Item1, Item2，放個幾天根本就不記得 Item1 裡面是啥東西了。這時我們就可以<strong>替成員們取名字</strong>：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">(<span style="color:#66d9ef">int</span> ID, <span style="color:#66d9ef">string</span> Name) student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
+student.ID.Dump(); <span style="color:#75715e">// 1
+</span><span style="color:#75715e"></span>student.Name.Dump(); <span style="color:#75715e">// 王小明
+</span></code></pre></div><p>如此使用的時候就和一般操作物件的習慣沒有差別，也增加了可讀性。</p>……
+                                <p class="readmore"><a href="https://igouist.github.io/post/2020/09/csharp-trulp/">閱讀全文</a></p>
+                            </div>
+                        </article>
+                        <hr color="#D9D9D9" />
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2020/09/oo-9-solid/">菜雞與物件導向 (9): SOLID</a>
                                 </h1>
                             </header>
@@ -483,40 +524,6 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
                         </article>
                         <hr color="#D9D9D9" />
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2020/07/oo-4-inheritance/">菜雞與物件導向 (4): 繼承</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-7-12,
-                            </date>
-                            
-                            <div class="post-meta meta-category">
-                                
-                                    <a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a>
-                                
-                                    <a href="https://igouist.github.io/categories/csharp">CSharp</a>
-                                
-                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p>接著要介紹的是繼承 aka 物件導向三大特性之王 aka 濫用榜 Ko.1 ，繼承的強大幾乎和它的惡名一樣可怕，給一個從 <a href="https://dotblogs.com.tw/initials/2016/06/10/171117">[心得整理] c# 物件導向程式 - 2.封裝、繼承、多型的三大特性</a> 這篇摘過來的例子就可以略知一二了：</p>
-<p><img src="https://i.imgur.com/IFV4xjr.png" alt=""></p>
-<p>什麼也不做，僅僅只是繼承而已，就取得了繼承對象（C# 中稱為基底類別）近乎全部的內容，真是太可怕了。在 C# 中，繼承可以取得基底類別除了 <code>Private</code> 以外所有的內容，例如 <code>Protected</code> 更是表明就是只給繼承使用的。</p>
-<p>由此可見，在減少重複程式碼的路上，繼承無疑達到了全新的高度。</p>
-<p>那麼繼承代表的是什麼意思呢？大多的網站都能直接說明：<strong>繼承是一種「is-a」的關係。當你能說出Ａ是一個Ｂ的時候，就代表你認為Ａ可以繼承自Ｂ</strong>。</p>
-<p>最直覺的繼承例子就是<strong>物種的分類</strong>。舉例來說，狗跟貓都是哺乳類，因此他們都可以繼承到一些哺乳類共通的特徵（例如哺乳、用肺呼吸）。藉由繼承，我們可以把這些哺乳類共有的特徵全部放在哺乳類這個物件，再由狗和貓分別去繼承哺乳類，藉此讓他們都能得到哺乳類的特徵，再進一步發展出自己的特徵和行為，甚至重新定義基底類別的方法為自己所用。因此，像大話設計模式就將繼承說明如：繼承者是對於被繼承者的一種特殊化。</p>
-<p>如此一來，當我們需要修改哺乳類的定義的時候，<strong>只需要修改一個地方，而繼承了哺乳類的這些物件（C# 中稱為衍生類別）全都能夠一起修改到，大大地減少了跑來跑去修改的次數，也讓程式碼的重複大幅度地減少</strong>。</p>
-<p>然而也因為如此，繼承最大的惡名出現了：<strong>繼承享受了取用基底類別內容的好處，卻也必須背負牽一髮動全身的風險</strong>。</p>……
-                                <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-4-inheritance/">閱讀全文</a></p>
-                            </div>
-                        </article>
-                        <hr color="#D9D9D9" />
-                    
 
                     
 
@@ -531,6 +538,10 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
     
     <li >
         <a href="https://igouist.github.io/categories/csharp/page/2/">2</a>
+    </li>
+    
+    <li >
+        <a href="https://igouist.github.io/categories/csharp/page/3/">3</a>
     </li>
     
 
@@ -559,6 +570,10 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/09/csharp-trulp/" title="C#: 元組 (Tuple)">C#: 元組 (Tuple)</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2020/09/oo-9-solid/" title="菜雞與物件導向 (9): SOLID">菜雞與物件導向 (9): SOLID</a>
@@ -596,10 +611,6 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
         <a href="https://igouist.github.io/post/2020/07/pocket/" title="Pocket —— 稍後閱讀，想看再看">Pocket —— 稍後閱讀，想看再看</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2020/07/oo-7-interface/" title="菜雞與物件導向 (7): 介面">菜雞與物件導向 (7): 介面</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -618,7 +629,7 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp/">csharp (20)</a>
+        <a href="https://igouist.github.io/categories/csharp/">csharp (21)</a>
     </li>
     
     <li>
@@ -646,7 +657,7 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (34)</a>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (35)</a>
     </li>
     
 </ul>
