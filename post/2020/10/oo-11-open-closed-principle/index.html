@@ -7,20 +7,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>C#: 時區轉換、民國西元、國曆農曆、中文月份週期 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="C#: 時區轉換、民國西元、國曆農曆、中文月份週期 - 伊果的沒人看筆記本">
+    <title>菜雞與物件導向 (11): 開放封閉原則 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞與物件導向 (11): 開放封閉原則 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2020-08-30T11:58:00&#43;08:00">
+    <meta property="article:published_time" content="2020-10-25T11:58:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2020-08-30T11:58:00&#43;08:00">
+    <meta property="article:modified_time" content="2020-10-25T11:58:00&#43;08:00">
         
     <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
-    <meta name="description" content="紀錄一下 C# 關於時間處理的操作，包括 TimeZoneInfo 的時區資訊，以及使用 TaiwanCalendar 來將西元年轉換成民國年、用 TaiwanLunisolarCalendar 將國曆轉換成農曆，和用 DateTimeFormatInfo 取得周次的中文等等">
+    <meta name="description" content="菜雞與物件導向 (11): 開放封閉原則">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/post/2020/08/csharp-timezone/">
+    <meta property="og:url" content="https://igouist.github.io/post/2020/10/oo-11-open-closed-principle/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/normalize.css">
@@ -78,13 +78,15 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">C#: 時區轉換、民國西元、國曆農曆、中文月份週期</h1>
+                            <h1 class="post-title">菜雞與物件導向 (11): 開放封閉原則</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2020-8-30,
+                            2020-10-25,
                         </date>
                         
                         <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a></span>
                             
                                 <span class="meta-category"><a href="https://igouist.github.io/categories/csharp">CSharp</a></span>
                             
@@ -101,59 +103,48 @@
                         </div>
                         
                         <div class="post-content">
-                            <p>聊到將時間從 UTC 轉到台灣時間，居然還是聽到朋友表示使用 +8 小時的做法，驚為天人。這種做法可能會造成後續的問題，例如時區並不會跟著變動，或是遇到日光節約等特殊狀況就容易出事。和西元民國轉換直接 -1911 一樣不穩定。</p>
-<p>這篇就用來記錄一下之前看過比較優雅的時區轉換方式，順便將先前存著的時間處理相關資料整理一下，方便之後需要時可以馬上回來查詢。</p>
-<h4 id="timezoneinfo-時區資訊">TimeZoneInfo: 時區資訊</h4>
-<p>轉換方式主要參考自 <a href="https://dotblogs.com.tw/supershowwei/2016/10/17/141620">[食譜好菜] DateTime 具有文化特性的格式化及時區的轉換</a> 及 <a href="https://docs.microsoft.com/zh-tw/dotnet/standard/datetime/converting-between-time-zones">在各時區間轉換時間</a>，感謝前人的指引。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 假設現在是要從標準時區 +00:00 轉換到台灣時區，故這邊使用 UtcNow 先取標準世界協調時間
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> nowDateTime = DateTime.UtcNow;
-
-nowDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-<span style="color:#75715e">// 2020/08/30 15:56:05 +00:00
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// ==================================================
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// 傳統的 直接對時間做計算的方式…
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> addedDateTime = nowDateTime.AddHours(<span style="color:#ae81ff">8</span>);
-
-addedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-<span style="color:#75715e">// 2020/08/30 23:56:05 +00:00
-</span><span style="color:#75715e">// 可以看到儘管時間變動了，時區仍然還在 +00:00
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// ==================================================
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// 使用 TimeZoneInfo 先取得台北時區
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> timeZone = TimeZoneInfo.FindSystemTimeZoneById(<span style="color:#e6db74">&#34;Taipei Standard Time&#34;</span>);
-
-<span style="color:#75715e">// 再使用 TimeZoneInfo 來變更時間
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> convertedDateTime = TimeZoneInfo.ConvertTime(nowDateTime, timeZone);
-
-convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-<span style="color:#75715e">// 2020/08/30 23:56:05 +08:00
-</span><span style="color:#75715e">// 可以看到除了時間變更以外，時區也切換到 +08:00 了！
-</span></code></pre></div><p>上面取得台北時區的步驟，可以參照 <a href="https://docs.microsoft.com/en-us/previous-versions/windows/embedded/gg154758(v=winembedded.80)">Time Zone IDs</a> 來查詢想要的時區。這樣的時區切換方式，不僅副作用少，不會因為時區沒轉雷到後續接手的人，也省卻了擔心日光節約等等問題，這種事就交給微軟去煩惱吧！</p>
-<p>另外這邊也逐步放一些時區處理相關的參考資料：</p>
-<h4 id="taiwancalendar-西元年轉民國年">TaiwanCalendar: 西元年轉民國年</h4>
-<h4 id="taiwanlunisolarcalendar-國曆轉農曆">TaiwanLunisolarCalendar: 國曆轉農曆</h4>
-<p>可以參考這篇 <a href="https://kevintsengtw.blogspot.com/2014/06/c.html">基本題 - C# 西元年轉換取得民國年格式字串 - mrkt 的程式學習筆記</a>，內文示範了使用 <code>System.Globalization.TaiwanCalendar</code> 和 <code>System.Globalization.TaiwanLunisolarCalendar</code> 來進行安全轉換的作法。</p>
-<h4 id="datetimeformatinfo-月週時間的格式">DateTimeFormatInfo: 月、週、時間的格式</h4>
-<p>不用再傻傻地手刻陣列「星期一」、「星期二」、「星期三」…之類的了，只要用 <code>DateTimeFormatInfo.CurrentInfo</code> 的就好啦：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> MonthCh = DateTimeFormatInfo.CurrentInfo.MonthNames;   <span style="color:#75715e">// 中文月份名稱列表
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> MonthEn = DateTimeFormatInfo.InvariantInfo.MonthNames; <span style="color:#75715e">// 英文月份名稱列表
-</span></code></pre></div><p>除了月份以外，<code>DateTimeFormatInfo.CurrentInfo</code> 也包含了當地的其他欄位與格式。</p>
-<p>例如 <code>AbbreviatedDayNames</code> 能拿到 週一、週二、週三…；<code>DayNames</code> 則會拿到 星期一、星期二、星期三…</p>
-<p>時間格式的話，<code>FullDateTimePattern</code> 就會拿到 <code>yyyy'年'M'月'd'日' tt hh:mm:ss</code> 等等</p>
-<p>內容還有許多欄位，有興趣的可以用 LinqPad 來 Dump 看看，或是直接翻閱 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.globalization.datetimeformatinfo?view=netcore-3.1">DateTimeFormatInfo</a> 囉！</p>
+                            <h2 id="定義">定義</h2>
+<blockquote>
+<p><strong>開放封閉原則：軟體實體（類別、模組、函式等等）應該對擴展開放，而對修改封閉</strong></p>
+</blockquote>
+<p>在我們了解什麼是「對擴展開放」和「對修改封閉」之前，先讓我們談談：什麼是擴展，什麼又是修改呢？</p>
+<p>用白話一點的方式來形容，修改就是把東西拆開來改，像是手術；而擴展就是對東西額外加裝模組，像是添購設備。我們用飛行來舉例，像是鳥類直接用翅膀飛行，如果有需要修改飛行方法的話就得對鳥直接進行手術；但如果今天是一個裝備了噴射背包的人，我們只需要把噴射背包換成噴射鞋子、甚至噴射翅膀就可以了，不需要去修改人這個本體。</p>
+<p>這邊可以發現開放封閉原則是針對「改變的時候」去做一個行動的建議，例如需求追加和變更等等。<strong>凡是變化都有成本</strong>，例如變動的難易度、變動造成的影響範圍等等都會影響到成本，若是程式碼冗長、內部邏輯複雜，類別之間互相耦合、影響範圍很廣，導致綁手綁腳或壞東壞西等等狀況，使得修改很困難，成本就會變高，進而使得開發效率變低。</p>
+<p>然而，軟體並不是製造完畢就完工的東西，而是隨需求而生、隨需求而變的動態作品，因此程式碼的修改或重構相當頻繁。就像我們在<a href="/post/2020/09/oo-8-cohesion-and-coupling">內聚耦合篇</a>提過的：軟體面對改變的能力，就像基因適應環境並生存下去的能力。因此，程式必須具有彈性，也就是需要盡可能降低修改的成本。</p>
+<p>那麼讓我們回到前面：動手術跟換道具，哪個的成本比較高呢？</p>
+<blockquote>
+<p><strong>面對需求，對程式碼的改動是透過增加新程式碼進行的，而不是更改現有的程式碼</strong>　　
+<br/>（《大話設計模式》）</p>
+</blockquote>
+<p>所以，我們希望能夠用擴充的方式去完成變化，而不是用針對內部進行修改的方式來做；希望藉由良好的設計，能迴避上面那串修改困難導致成本高昂的問題。</p>
+<p>而這個思路，其實你我都已經很習以為常了，就是<strong>模組化</strong>。</p>
+<h2 id="模組化">模組化</h2>
+<p>組裝電腦的時候，就是針對主機板加裝各種模組；寫程式的時候，我們也很習慣引入套件來使用；甚至使用 Visual Studio 或是 Chrome 這類軟體的時候，我們也都會使用擴充套件來加上我們需要的功能。甚至洛克人也是，我們打倒 BOSS 之後就能替洛克人加裝各種模組，讓他能夠具備各個 BOSS 的功能。噢當然我們不會把整台洛克人拆開然後改造成另一台，不然拆來拆去多麻煩。</p>
+<p>我們的周遭四處可見模組化，用模組來擴充本體的想法自古以來比比皆然。</p>
+<p>這邊就可以發現到：主機板上面事先會留好許多讓你接顯示卡或記憶體等等的插槽、Chrome 這類軟體會開放 API 和權限等功能給擴充套件來使用。當我們想要利用擴展的方式來擴充本體的能力時，我們需要留下一個供對接的地方，也就是<strong>擴充點</strong>。</p>
+<p>擴充點可以說是留給後人的貼心禮物（跟另一種留給後人的炸死人禮物並不相同）但是，我們要怎麼知道哪些地方可以擴充、可能擴充呢？我們可以先區分<strong>主要邏輯</strong>和<strong>附加邏輯</strong>，像是洛克人跟技能，你和噴射背包，又或者是「查詢客戶」的主邏輯和各種不同「查詢客戶的條件」等等的組合。</p>
+<p>因為如果不加以區分，我們就沒辦法把附加邏輯做成模組，也就找不到主要邏輯和附加邏輯之間的擴充點，如此一來就勢必要針對混成一坨的邏輯做修改和業務處理，接著就會落入我們在上一篇<a href="/post/2020/10/oo-10-single-responsibility-principle">單一職責原則</a>提過的各種悲慘下場：修改一個地方影響一狗票功能、修改前必須痛苦地閱讀大量不相關的程式碼…等等。</p>
+<p>這些問題，也正是<strong>單一職責原則</strong>所要解決的。此處可以直接參考上一篇也引用過的<a href="https://wadehuanglearning.blogspot.com/2019/12/blog-post.html">再談物件導向設計原則: 單一職責原則，定義、解析與實踐</a>這篇，裡面的學生列表例子就蠻直接好懂的。另外也必須推薦一下這位大大的<a href="https://wadehuanglearning.blogspot.com/2019/12/blog-post_11.html">物件導向設計原則：開放封閉原則，定義、解析與實踐</a>，對業務邏輯和附加邏輯的說明也相當明確，從為什麼要隔離兩者，到如何實踐都有說明，值得一看。</p>
+<p>而我們辨認出主要邏輯跟附加邏輯之後，該怎麼實行開放封閉原則呢？</p>
+<h2 id="實行">實行</h2>
+<blockquote>
+<p>答案就是抽象。（《無瑕的程式碼：敏捷完整篇》）</p>
+</blockquote>
+<p>這邊舉幾個方向：我們可以<strong>在主要邏輯和附加邏輯之間，加入抽象層來解耦合</strong>，也就是我們大哥<a href="/post/2020/07/oo-7-interface">介面</a>該出場的時候了。當我們的類別不再堅持依賴某個物件，例如說我就是要噴射背包，然後把背包黏死在背後；而是接受我只需要能飛的東西，不論傳遞進來的是噴射背包還是噴射鞋子，如此一來就夠用介面表達出需求，使得功能<strong>可以被任何符合需求的方式擴展</strong>。</p>
+<p>另外還有，使用外部注入來處理附加邏輯。除了不將附加邏輯寫在類別中，降低修改的機會以外，和介面的邏輯一致：你給什麼工具我就用什麼工具。當我們的附加邏輯是從外部丟給類別，使得類別預先留好擴充點，並且能由外部決定擴充方式，要擴展也就相當容易了。順便一提，我進公司學習以來，注入跟介面通常都是一起出現的 Combo 技。</p>
+<p>當我們在設置我們的擴充點（上個世紀稱作「放置鉤子」）時，有時會預測失敗，變成<strong>不必要的複雜性</strong>。也很容易走火入魔，就變成<strong>過度設計</strong>。因此，我們最終會等到足夠確信將會變化時，才進行重構的動作。</p>
+<p>在無瑕的程式碼中，建議可以接受「<strong>被愚弄一次</strong>」，先假設不會變化，而當真的變化到來時，就將該變化相關的部份重構抽象起來，得了一次病，從此就免疫，還可以少走冤枉路。又或許，也可以嘗試看看<a href="https://shawnlin0201.github.io/Methodology/Methodology-004-Rule-Of-Three-principle/">三次原則</a>。</p>
+<h2 id="結語">結語</h2>
+<p>最後，開放封閉原則的範圍實在是太大了。事實上，其他設計原則，例如單一職責、依賴反轉等等，都是為了達到開放封閉這個終極的目標而產生的。但是，我們不可能預測到所有變化，也沒有任何做法能夠適用於所有狀況，因此要達到完全的封閉是不可能的。然而，這是我們應當嘗試精進的目標，只要謹記開放封閉原則，就能不斷改善架構，也就離良好的設計更進一步了。</p>
+<p>而對我而言，開放封閉的好處在於強迫像我這樣的工程師去<strong>思考</strong>，哪些地方是附加邏輯，哪些地方可以留作擴充，又該怎麼做才能方便擴充，這個過程和嘗試對我輩菜鳥才是真正最有價值的地方吧。</p>
+<p>最後感謝一下 Ray 大大的路過指點。我當時問了不知道怎麼形容開放封閉原則，大大就說了個例子：咱們人哪，學新東西可是比改個性來得簡單多了。也基於這個例子讓我想到了手術和洛克人，還有變動的難易度、本性（核心邏輯）和新技能（附加邏輯）的差別可以這樣咻咻地串起來，這邊就謝過啦。順便也貼下大大的 <a href="https://raychiutw.github.io/">Blog</a>，加減蹭一下。</p>
 <h2 id="參考資料">參考資料</h2>
 <ul>
-<li><a href="https://kevintsengtw.blogspot.com/2014/06/c.html">基本題 - C# 西元年轉換取得民國年格式字串 - mrkt 的程式學習筆記</a></li>
-<li><a href="https://dotblogs.com.tw/supershowwei/2016/10/17/141620">[食譜好菜] DateTime 具有文化特性的格式化及時區的轉換</a></li>
-<li><a href="https://dotblogs.com.tw/supershowwei/2019/04/15/095324">[桌邊服務] DateTime 本身有沒有包含時區的資訊？</a></li>
-<li><a href="https://dotblogs.com.tw/ricochen/2016/02/12/114642">[C#]UTC時區轉換 - RiCo技術農場</a></li>
-<li><a href="https://blog.miniasp.com/post/2010/04/30/Concept-DateTime-TimeZone">釐清觀念：.NET 日期結構(DateTime) 與 時區轉換</a></li>
-<li><a href="https://blog.darkthread.net/blog/compare-datetime-with-diff-timezone">笨問題 - UTC 與本地時區 DateTime 比較</a></li>
-<li><a href="https://docs.microsoft.com/zh-tw/dotnet/standard/base-types/custom-date-and-time-format-strings?redirectedfrom=MSDN">自訂日期與時間格式字串 - Microsoft Docs</a></li>
-<li><a href="https://docs.microsoft.com/zh-tw/dotnet/standard/datetime/converting-between-time-zones">在各時區間轉換時間 - Microsoft Docs</a></li>
+<li><a href="https://www.jyt0532.com/2020/03/19/ocp/">深入淺出開放封閉原則 Open-Closed Principle - jyt0532&rsquo;s Blog</a></li>
+<li><a href="https://wadehuanglearning.blogspot.com/2019/12/blog-post_11.html">物件導向設計原則：開放封閉原則，定義、解析與實踐 - WadeHuang的學習迷航記</a></li>
+<li><a href="https://medium.com/%E6%89%8B%E5%AF%AB%E7%AD%86%E8%A8%98/%E7%AC%AC-10-%E7%AB%A0-%E9%A1%9E%E5%88%A5-clean-code-1c7898d11cd7">第 10 章 類別 | Clean Code 敏捷軟體開發技巧守則</a></li>
+<li><a href="https://shawnlin0201.github.io/Methodology/Methodology-004-Rule-Of-Three-principle/">程式設計心法 三次原則（Rule Of Three principle）- 璇之又璇的網路世界</a></li>
+<li><a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87solid-2_open-close-principleocp-%E9%96%8B%E6%94%BE%E5%B0%81%E9%96%89%E5%8E%9F%E5%89%87/">Object Oriented物件導向設計原則SOLID-2:Open-Close Principle(OCP) 開放封閉原則 - Sian</a></li>
 </ul>
                         </div>
 
@@ -163,15 +154,15 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/2020/08/csharp-string-interpolation/">C#: 字串插值 (String interpolation) 的格式化</a></li>
+        <li><a href="/post/2020/10/oo-10-single-responsibility-principle/">菜雞與物件導向 (10): 單一職責原則</a></li>
         
-        <li><a href="/post/2020/08/system-environment/">C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑</a></li>
+        <li><a href="/post/2020/09/oo-9-solid/">菜雞與物件導向 (9): SOLID</a></li>
         
-        <li><a href="/post/2020/07/code-style/">C#: 程式碼風格備忘</a></li>
+        <li><a href="/post/2020/09/oo-8-cohesion-and-coupling/">菜雞與物件導向 (8): 內聚、耦合</a></li>
         
-        <li><a href="/post/2020/06/bit-flags-and-enum/">C#: 位元旗標 (Bit flag) 與列舉</a></li>
+        <li><a href="/post/2020/07/oo-7-interface/">菜雞與物件導向 (7): 介面</a></li>
         
-        <li><a href="/post/2020/04/epplus/">EPPlus —— 輕鬆處理 Excel</a></li>
+        <li><a href="/post/2020/07/oo-6-abstract-override/">菜雞與物件導向 (6): 抽象、覆寫</a></li>
         
     </ul>
 </div>
@@ -181,9 +172,11 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
                             
                             <ul class="clearfix">
                                 
-                                <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
+                                <li><a href="https://igouist.github.io/tags/newbieguide">NewbieGuide</a></li>
                                 
-                                <li><a href="https://igouist.github.io/tags/dotnet">Dotnet</a></li>
+                                <li><a href="https://igouist.github.io/tags/object-oriented">Object-Oriented</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
                                 
                                 <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
                                 
@@ -192,7 +185,7 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
                         </div>
                         <hr />
 <p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
-<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f08%2fcsharp-timezone%2f" width="100%" frameborder=0></iframe>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f10%2foo-11-open-closed-principle%2f" width="100%" frameborder=0></iframe>
                     </article>
                     
     

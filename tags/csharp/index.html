@@ -84,6 +84,45 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2020/10/oo-11-open-closed-principle/">菜雞與物件導向 (11): 開放封閉原則</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-10-25,
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                
+                                    <a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a>
+                                
+                                    <a href="https://igouist.github.io/categories/csharp">CSharp</a>
+                                
+                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <h2 id="定義">定義</h2>
+<blockquote>
+<p><strong>開放封閉原則：軟體實體（類別、模組、函式等等）應該對擴展開放，而對修改封閉</strong></p>
+</blockquote>
+<p>在我們了解什麼是「對擴展開放」和「對修改封閉」之前，先讓我們談談：什麼是擴展，什麼又是修改呢？</p>
+<p>用白話一點的方式來形容，修改就是把東西拆開來改，像是手術；而擴展就是對東西額外加裝模組，像是添購設備。我們用飛行來舉例，像是鳥類直接用翅膀飛行，如果有需要修改飛行方法的話就得對鳥直接進行手術；但如果今天是一個裝備了噴射背包的人，我們只需要把噴射背包換成噴射鞋子、甚至噴射翅膀就可以了，不需要去修改人這個本體。</p>
+<p>這邊可以發現開放封閉原則是針對「改變的時候」去做一個行動的建議，例如需求追加和變更等等。<strong>凡是變化都有成本</strong>，例如變動的難易度、變動造成的影響範圍等等都會影響到成本，若是程式碼冗長、內部邏輯複雜，類別之間互相耦合、影響範圍很廣，導致綁手綁腳或壞東壞西等等狀況，使得修改很困難，成本就會變高，進而使得開發效率變低。</p>
+<p>然而，軟體並不是製造完畢就完工的東西，而是隨需求而生、隨需求而變的動態作品，因此程式碼的修改或重構相當頻繁。就像我們在<a href="/post/2020/09/oo-8-cohesion-and-coupling">內聚耦合篇</a>提過的：軟體面對改變的能力，就像基因適應環境並生存下去的能力。因此，程式必須具有彈性，也就是需要盡可能降低修改的成本。</p>
+<p>那麼讓我們回到前面：動手術跟換道具，哪個的成本比較高呢？</p>
+<blockquote>
+<p><strong>面對需求，對程式碼的改動是透過增加新程式碼進行的，而不是更改現有的程式碼</strong>　　
+<br/>（《大話設計模式》）</p>
+</blockquote>……
+                                <p class="readmore"><a href="https://igouist.github.io/post/2020/10/oo-11-open-closed-principle/">閱讀全文</a></p>
+                            </div>
+                        </article>
+                        <hr color="#D9D9D9" />
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle/">菜雞與物件導向 (10): 單一職責原則</a>
                                 </h1>
                             </header>
@@ -467,55 +506,6 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
                         </article>
                         <hr color="#D9D9D9" />
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2020/07/oo-6-abstract-override/">菜雞與物件導向 (6): 抽象、覆寫</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-7-12,
-                            </date>
-                            
-                            <div class="post-meta meta-category">
-                                
-                                    <a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a>
-                                
-                                    <a href="https://igouist.github.io/categories/csharp">CSharp</a>
-                                
-                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p>抽象的概念很直接，請回想一下前面的例子就可以了：</p>
-<p>當我們在用卡牌的例子時，雖然怪獸卡跟魔法卡都繼承了 Card 這個類別，但是我們仍然能 <code>new Card()</code> 來建立一張新卡牌，那…怪怪的吧，這張卡牌到底是什麼呀，空白的卡片嗎？</p>
-<p>又或是動物的例子，我們的狗跟貓都繼承了哺乳類，那我們能實例化一個哺乳類嗎？我們的狗跟鳥都是動物，那我們能實例化一個動物嗎？</p>
-<p>小明跟小華都繼承了工程師，那我們能 new 一個工程師嗎…？</p>
-<p>有些類別就是這樣，它們負責定義共通的那些特性，<strong>然而它們本身不應該被實體化成一個物件，這種類別我們就應該把它們標記為抽象類別</strong>。</p>
-<p><strong>抽象類別在 C# 裡用 <code>abstract</code> 這個修飾詞來表示</strong>，可以加在類別或方法上。例如 <code>abstract class Animal</code> 就代表動物這個類別是個抽象類別，它不能被實例化。</p>
-<p>而當加在方法上時，例如 <code>public abstract void Eat()</code> 就是代表這個進食的方法無法被叫用，只能由繼承者去重新定義這個方法。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Animal</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">void</span> Eat();
-}
-</code></pre></div><p>那麼繼承者們，也就是衍生類別如何去重新定義父類別的方法呢？這時候就必須使用<strong>覆寫 <code>override</code></strong>。</p>
-<p>覆寫是指對於像是前述的抽象方法時，在同名的方法前加上 <code>override</code> 關鍵字就可以讓程式知道你要覆寫這個方法（甚至有抽象方法的時候你不覆寫，編譯器還會生氣）。例如前述的 Eat，狗就可以用 <code>public override void Eat()</code> 的方式去覆寫吃東西這個方法。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span> : Animal
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;Black&#34;</span>;
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Eat()
-    {
-        <span style="color:#75715e">/* 嚼嚼嚼 */</span>
-    }
-}
-</code></pre></div>……
-                                <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-6-abstract-override/">閱讀全文</a></p>
-                            </div>
-                        </article>
-                        <hr color="#D9D9D9" />
-                    
 
                     
 
@@ -564,6 +554,10 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2020/10/oo-11-open-closed-principle/" title="菜雞與物件導向 (11): 開放封閉原則">菜雞與物件導向 (11): 開放封閉原則</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2020/10/markdown/" title="易讀易寫！擁抱寫作神器 —— Markdown">易讀易寫！擁抱寫作神器 —— Markdown</a>
     </li>
     
@@ -599,10 +593,6 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
         <a href="https://igouist.github.io/post/2020/08/powershell-beauty/" title="Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh">Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2020/08/csharp-string-interpolation/" title="C#: 字串插值 (String interpolation) 的格式化">C#: 字串插值 (String interpolation) 的格式化</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -621,7 +611,7 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp/">csharp (22)</a>
+        <a href="https://igouist.github.io/categories/csharp/">csharp (23)</a>
     </li>
     
     <li>
@@ -633,7 +623,7 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (11)</a>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (12)</a>
     </li>
     
     <li>
@@ -649,7 +639,7 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (38)</a>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (39)</a>
     </li>
     
 </ul>
