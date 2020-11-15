@@ -17,20 +17,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>菜雞與物件導向 (3): 封裝 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="菜雞與物件導向 (3): 封裝 - 伊果的沒人看筆記本">
+    <title>菜雞與物件導向 (13): 介面隔離原則 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞與物件導向 (13): 介面隔離原則 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2020-07-12T23:53:03&#43;08:00">
+    <meta property="article:published_time" content="2020-11-15T12:00:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2020-07-12T23:53:03&#43;08:00">
+    <meta property="article:modified_time" content="2020-11-15T12:00:00&#43;08:00">
         
     <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
-    <meta name="description" content="用 C# 的方式介紹何謂物件導向(Object Oriented) 三大特性中的封裝(Encapsulation)。封裝的概念很直覺：將物件視作一個整體，實作內容隱藏起來，讓使用者只需要知道怎麼使用即可。例如說，當你去販賣機買飲料，你也不需要知道裡面的構造，只要知道你選了飲料投了錢，飲料就會跑出來就行">
+    <meta name="description" content="SOLID 之 介面隔離原則（Interface Segregation Principle, ISP）：不應該強迫用戶依賴它們未使用的方法，應該最小化類別與類別之間的介面。當我們遇到無法實作介面的要求，或是必須用空實作和拋錯來欺騙介面的時候，可以優先從單一職責和里氏替換的角度切入，檢驗介面的設計是否合理，並用組合的觀念來實作類別。">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/post/2020/07/oo-3-encapsulation/">
+    <meta property="og:url" content="https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/normalize.css">
@@ -88,10 +88,10 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">菜雞與物件導向 (3): 封裝</h1>
+                            <h1 class="post-title">菜雞與物件導向 (13): 介面隔離原則</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2020-7-12,
+                            2020-11-15,
                         </date>
                         
                         <div class="post-meta">
@@ -113,83 +113,62 @@
                         </div>
                         
                         <div class="post-content">
-                            <p>這次我們要介紹的是傳說中的黑盒子：封裝。<strong>封裝和繼承、多型並稱物件導向三大特性</strong>，會是這個順序也是當然的，因為有了封裝才會需要繼承，因為繼承了才會有了多型，因此我們這幾節也按照這個順序快速地看過。</p>
-<p>所謂的封裝，咱同事在他整理的文章 <a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-3_%E5%B0%81%E8%A3%9Dencapsulation%E7%B9%BC%E6%89%BFinheritance%E8%88%87%E5%A4%9A%E5%9E%8Bpolymorphism/">Object Oriented物件導向-3:封裝(Encapsulation)、繼承(Inheritance)與多型(polymorphism)</a> 中的例子就舉得不錯：當你按下鍵盤的Ａ鍵，螢幕隨即出現了Ａ，你不必知道中間發生了什麼事，你只需要知道怎麼操作和最後得到什麼就可以了。</p>
-<p>此外我也看到過販賣機的例子，<strong>當你去販賣機買飲料，你也不需要知道裡面的構造，只要知道你選了飲料投了錢，飲料就會跑出來就行</strong>。</p>
-<p>因此<strong>封裝的概念很直覺：將物件視作一個整體，實作內容隱藏起來，讓使用者只需要知道怎麼使用即可。</strong>（相似的思路，我們後續的介面會再提到）大概就像懶人包的感覺。如果封裝做得夠好，除了可以將程式碼整理得井井有條以外，也能讓物件內部的修改不會影響到使用物件的地方，並且讓物件的使用者直覺地知道如何使用，最終達到降耦合的目標。</p>
-<p>關於封裝的概念，或是會問「什麼是耦合？」的朋友，建議可以看看這篇：<a href="https://ithelp.ithome.com.tw/articles/10203659">實務上的高內聚與低耦合</a></p>
-<p>而從上面的敘述中我們可以察覺到要實現封裝，最重要的就是：<strong>對外的開放程度（存取範圍）的控制</strong>。或是套一句前輩的說法：<strong>給程式碼隱私的空間</strong>。</p>
-<p>在 C# 之中，類別裡控制可見度是使用修飾子來定義存取範圍，也就是當我們替類別宣告欄位時使用的 <code>Public</code> 和 <code>Private</code>。<code>Public</code> 代表所有人都看得到，而 <code>private</code> 則是私有的，只有自己看得到。</p>
-<p>之所以要如此宣告，是為了將控制權掌握在物件本身，就像大話設計模式比喻的：物件就像間房子，我們不希望被看光光，可以看見的 <code>Public</code> 就像門和窗，而不該看見的 <code>Private</code> 則是用牆壁隱藏起來，而對於這間房子而言，門窗是可以控制的。</p>
-<blockquote>
-<p>註：當然，控制的程度也不會只有公開和私有兩個選項而已，另外還有限同一個組件才能取用、限定衍生類別才能取用等等，但現在的例子較為單調，暫且按下不表。有興趣的朋友可以參照 <a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/accessibility-levels">存取範圍層級</a> 的說明。</p>
-</blockquote>
-<p>對於這部分的範例，我覺得 <a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/using-properties">微軟文件的範例</a> 裡設定月份的區塊已經能很清楚表達了。但為了這篇文章的一致性，還是硬擠著一個範例出來：</p>
-<p>某一天，我們突然決定讓使用者可以傳入卡牌敘述了，但是卡牌上能顯示的字數有限，只能顯示 30 個字，因此首先我們先把卡牌敘述改成私有的：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+                            <p>今天要記錄的是介面隔離原則，顧名思義是和介面高度相關的原則。因此在閱讀本篇之前，可能需要先對<a href="/post/2020/07/oo-7-interface">介面</a>有一點了解呦。</p>
+<p>事情就從上一篇<a href="/post/2020/11/oo-12-liskov-substitution-principle">里氏替換原則</a>的鳥類物流公司開始說起。老闆痛定思痛，決定先用<strong>介面</strong>先規定好物流士們的應徵條件，例如裝貨、卸貨、飛行、必須有帥氣的喙等等。</p>
+<p>這道命令下來後，倉庫們的企鵝都慌了，來檢查的編譯器瘋狂跳出 Error:「您未實作 IBird 的 Fly() 方法！」這下怎麼辦呢，為了要保住飯碗，企鵝們就必須實作出飛行才行，可是企鵝真的就不會飛呀！</p>
+<p>這下子企鵝們只剩下兩個選擇：不實作飛行，但是就不能被當成物流士，最後就會被開除；或是……空實作。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Penguin</span> : IBird
 {
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name;
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Level;
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack;
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> _description; <span style="color:#75715e">// 更改為私有的
-</span><span style="color:#75715e"></span>
-    <span style="color:#75715e">/* 一些其他方法 */</span>
-}
-</code></pre></div><p>呃可能第一步就會讓人有些疑惑：「啊你要給人家傳東西進來還改私有？」但等等，且聽我娓娓道來：<strong>C# 中的屬性，是用 <code>Set</code> 和 <code>Get</code> 兩個方法去存取的</strong>，因此我們將進一步規劃出我們的門和窗：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
-{
-    <span style="color:#75715e">// 略
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> _description;
-
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Fly()
     {
-        <span style="color:#66d9ef">set</span>
-        {
-            <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">value</span>.Length &gt; <span style="color:#ae81ff">0</span> &amp;&amp; <span style="color:#66d9ef">value</span>.Length &lt; <span style="color:#ae81ff">30</span>)
-            {
-                <span style="color:#66d9ef">this</span>._description = <span style="color:#66d9ef">value</span>;
-            }
-        }
-        <span style="color:#66d9ef">get</span>
-        {
-            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>._description;
-        }
-    }
-    <span style="color:#75715e">/* 一些其他方法 */</span>
+      <span style="color:#75715e">// Do nothing;
+</span><span style="color:#75715e"></span>    }
 }
-</code></pre></div><p>如此一來我們就能對存取屬性時的行為進行管控囉。</p>
-<p>而在 C# 裡，如果你並沒有要特別針對存取另做額外處理，可以直接使用<strong>自動實作</strong>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">set</span>; <span style="color:#66d9ef">get</span>; }
-</code></pre></div><p>這樣 C# 就會自動幫你建立一個私有屬性，並且只能經由 set 和 get 進行存取。</p>
-<p>簡化寫法之後，例如唯讀就可以這樣寫：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; }
-</code></pre></div><p>或是</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">set</span>; }
-</code></pre></div><p>要加上預設值也能這樣寫</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; } = <span style="color:#e6db74">&#34;這是一張卡牌。&#34;</span>;
-</code></pre></div><p>可以說是方便很多。甚至進一步說，我們就可以藉由公有和私有、存取子、自動實作這些工具，<strong>決定外部的使用者能看到哪些部份</strong>。</p>
-<p>當然，封裝的概念並不僅僅只是對屬性做存取管控如此而已，<strong>提高類別內的內聚性，降低對外的耦合性，隱藏複雜資訊才是最重要的方針</strong>，然而這只能在設計時，或是維護到頭痛才能親自體會了。</p>
-<p>例如說：<strong>當你需要處理一長串的商業邏輯，以至於需要將他們切割成數個小函式時，將它們宣告成 <code>Private</code> 就是相當好的選擇</strong>，這意味著這些工具僅讓你的物件內部使用，外面的人不應該直接調用其中的任何功能，同時又能幫助你的主要流程變得更簡潔。</p>
-<p>又或者是，當我們有個連線到資料庫取得客戶資料的方法（可能是 <code>UserRepository.Get(int UserId)</code> 這種感覺），可能我們除了 <code>Public</code> 的 <code>Get</code> 方法以外，還有一些 <code>Private</code> 的 <code>ConnectDB</code> 等輔助方法。但<strong>呼叫這個函式的使用端不需要知道 這個函式是怎麼連線到資料庫的，又是怎麼搜尋出資料的，只需要知道呼叫了之後能拿到客戶資料就好</strong>。</p>
-<p>兩個物件之間「知道」得越多，其耦合就越高。替換和修改時互相牽連的機會和規模也越大，因此封裝可以說是物件導向的基石也不為過。封裝的好或不好（亦即物件是否足夠內聚，其職責是否單一，暴露內部資訊的多寡等等），直接關係到整個架構的優劣，不可謂不慎。</p>
+</code></pre></div><p>企鵝們終於騙過了編譯器檢查員，然而當送貨的命令下來之後，企鵝們再一次卡在倉庫門口發呆，最終物流公司仍然踏上了虧損的老路，再度面臨倒閉危機…</p>
+<h2 id="定義">定義</h2>
+<p>不知道大家對企鵝遇到的狀況有沒有經驗呢？<strong>當介面規定了太多要求，而我們實作的子類別只需要其中一部份，或是有些要求根本無法達成，就會發生這個困境：放棄實作介面，或是用空實作和錯誤處理去欺騙介面</strong>。</p>
+<p>例如資料庫存取的介面要求太多和當下資料庫過於一致的方法，結果替換資料庫的時候導致部份方法實作不出來；或是像<a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87solid-4_interface-segregation-principleisp-%E4%BB%8B%E9%9D%A2%E9%9A%94%E9%9B%A2%E5%8E%9F%E5%89%87/">俺同事文章</a>中的例子，交通工具的介面要求能開關車門，結果電動機車無法實作。</p>
+<p>然而，如果我們選擇用空實作或是拋出錯誤的方式，去欺騙介面，等到需要呼叫該方法的時候，就會發生許多非預期的錯誤。甚至讓接手程式碼的人在什麼都不知道的情況之下就讓系統掛掉。聰明的朋友們一定發現了，這就是違反了<a href="/post/2020/11/oo-12-liskov-substitution-principle">里氏替換原則</a>！</p>
+<p>為了迴避到處都是空實作地雷的結局，大前輩們就提出了介面隔離原則：</p>
 <blockquote>
-<p>補充：封裝的核心在於「隱藏複雜資訊」，而我們前段所提到「物件是否內聚」可以參照 <a href="post/2020/09/oo-8-cohesion-and-coupling">菜雞與物件導向 (8): 內聚、耦合</a><!--；「職責是否單一」可以參照 [菜雞與物件導向 (10): 單一職責原則](/post/2020/09/oo-9-single-responsibility-principle)-->。這些概念之間彼此相扣，此處就先按下不表。</p>
+<p><strong>介面隔離原則（Interface Segregation Principle）：不應該強迫用戶依賴它們未使用的方法</strong></p>
 </blockquote>
-<p>封裝的部分就講到這裡，並不是很難理解，但是要封裝得好，或是說知道怎樣才算封裝得好，還是需要經驗，不是我這種菜雞一時半刻能理得白說得清的。這邊只能先筆記一下存取範圍的控制，接著我們就繼續順著看繼承吧。</p>
-<blockquote>
-<p>本系列下一篇：<a href="/post/2020/07/oo-4-inheritance">菜雞與物件導向 (4): 繼承</a></p>
-</blockquote>
+<p>這邊的用戶也就是我們的子類別，它們等同是這個介面的使用者。當我們必須強迫使用者去實作一些他們不需要的方法時，就代表了一個事實：我們的介面太「胖」了！裡面的某些要求可能是非必要的，以至於造成了實作上的冗餘。</p>
+<p>也基於這條原則延伸出了一個方向：<strong>應該最小化類別與類別之間的介面</strong>。</p>
+<h2 id="介面也要單一職責">介面也要單一職責</h2>
+<p>但是，我們要怎麼知道是我們設計的介面太胖，還是子類別在偷懶呢？又要怎麼知道我們的介面設計是否已經「最小化」呢？</p>
+<p>那就是<a href="/post/2020/10/oo-10-single-responsibility-principle">單一職責原則</a>出場的時候了。一個合理的介面設計是能夠符合單一職責原則的，反過來說，我們可以用單一職責原則來檢視我們的介面設計是否良好。</p>
+<p>當我們設計介面的時候，或是像上面遇到必須空實作的時候，就可以思考一下：<strong>這個介面的職責是否單一？這個介面的意圖是什麼？這個介面是否只對一個角色負責、只有一個原因改變？</strong></p>
+<p>當我們的介面符合單一職責、足夠<a href="/post/2020/09/oo-8-cohesion-and-coupling">內聚</a>的時候，我們自然就能夠說這個介面已經足夠精簡了。</p>
+<h2 id="用組合實現功能">用組合實現功能</h2>
+<p>有些人可能就會有點疑惑了：「但是我就是需要這個功能呀，如果我不塞在介面，要放去哪呢？」</p>
+<p>很簡單，<strong>放去另一個該職責的介面就可以了</strong>。</p>
+<p>和繼承需要注意的部分一樣，濫用介面也是濫用繼承，我們應該用<strong>組合</strong>去實現功能而不是用繼承去綁死功能。一個資料串列能做的功能可能相當多，但我們並不需要一次就要求實現全部能做的事情，而是將這些工作分組，再從中組合出我們需要的部份。</p>
+<p>此處以 C# 來說，例如我們很常接觸的 <code>List</code> 類別，並不是只實作了 <code>IList</code>，而是實作了 <code>ICollection&lt;T&gt;</code>, <code>IEnumerable&lt;T&gt;</code>, <code>IEnumerable</code>, <code>IList&lt;T&gt;</code>, <code>IReadOnlyCollection&lt;T&gt;</code>, <code>IReadOnlyList&lt;T&gt;</code>, <code>ICollection</code>, <code>IList</code> 這些介面，層層堆疊，相互嵌合。</p>
+<p>那我們就知道 List 由這些介面「組合」而成，也知道了我們 List 具有這些介面要求的能力，讓我們能在合適的時候使用這個類別。同時又保留了這些介面能搭配出另一種組合的彈性，例如 <code>Array</code> 就是由 <code>ICollection</code>, <code>IEnumerable</code>, <code>IList</code>, <code>IStructuralComparable</code>, <code>IStructuralEquatable</code>, <code>ICloneable</code> 組合而成。</p>
+<p>就像可能有位大神，名片一拿出來就是一串「程式設計師／架構師／攝影師／貓奴」，<strong>我們的類別也要懂得斜槓</strong>。如此一來類別就比較不容易被介面綁死，也能因應不同場合來決定身分，從「每次都被逼著買套餐可是又不喜歡小菜」變成「餐餐自由配」，組合就該如此自由！</p>
+<p>回到開頭的例子，把想要的行為全部定義在一個介面裡，然後用一個類別去實現它遇到不需要的動作就詐騙介面，是相當不 OK 的；而是應該<strong>把想要的行為用職責的角度去思考</strong>，根據職責建立成一或多個介面。然後只<strong>挑選</strong>並實作該類別需要的動作（介面），如此就可以讓介面不再臃腫，而是變得靈活。</p>
+<p>就像是武術秘笈中的招式，其實也是一連串的動作所組成；所謂的功能，其實也是一連串行為所組成的。既然行為組合成了功能，我們也要從組合的角度去思考如何建立類別。<strong>組合就像是積木一樣</strong>，我們用積木堆疊來完成作品，同時每個積木又可以各自靈活運用。</p>
+<p>而積木也分成了好用的積木，和很難使用的積木，在程式中可以從夠不夠 SOILD 看出來。不好用的那些用起來會覺得卡卡的，測試也很難寫；好用的則會讓你面對變化的時候，就像拆裝樂高一樣順手方便。聰明的朋友可能聯想到了，這就是<a href="/post/2020/10/oo-11-open-closed-principle">開放封閉原則</a>中我們提過的模組化。</p>
+<p>通常來說積木的形狀越複雜、體積越大，就越難以靈活使用，介面也是如此，因此我們在設計介面的時候，要謹記<strong>介面隔離原則</strong>，利用我們在單一職責原則、里氏替換原則學到的原則來檢驗我們的介面，如此就可以迴避相當多尷尬兩難的實作場面，也能讓介面的使用更加靈活。</p>
+<p>那麼，在結束之前，有興趣的朋友可以跟我一起想一想：介面隔離原則，只適用於設計類別架構時的介面嗎？其他的介面（Interface）呢？例如 API，是不是也可以按照介面隔離原則的精神下去設計呢？</p>
+<h2 id="後日談">後日談</h2>
+<p>企鵝詐騙介面的事情終究還是暴露了。</p>
+<p>但是這群企鵝的夢想就是成為物流士，老闆也狠不下心把牠們趕走。</p>
+<p>「也許……」<a href="https://zh.wikipedia.org/wiki/%E5%B0%8F%E9%BB%84%E9%B8%AD%E8%B0%83%E8%AF%95%E6%B3%95">鴨子顧問</a>說：「我們可以有別的方法。只要使用<strong>介面隔離原則</strong>。」</p>
+<p>老闆：『介面隔離？怎麼做呢？』</p>
+<p>「我們可以把送貨放到 IDelivery，然後讓他們用不同的介面來實作移動方式，例如 IFly、ISwin、IRun 等等。用<strong>組合</strong>的方式來完成不同種類的物流士類別，這樣就可以有很多種送貨方式了」</p>
+<p>『原來如此，不只是空運 —— 我們要征服陸海空嗎！』</p>
+<p>改變作法的鳥禽物流公司搖身一變成了動物物流公司，同時廣徵天下動物，除了企鵝也能從南極發貨中心快速運貨以外，公司還招到了明星成員獵豹物流士，從此蒸蒸日上、強勢打入各大物流市場，最後進軍宇宙。可喜可賀，可喜可賀。</p>
 <h2 id="參考資料">參考資料</h2>
 <ul>
-<li><a href="https://ithelp.ithome.com.tw/articles/10203659">實務上的高內聚與低耦合 - 可不可以不要寫糙 code</a></li>
-<li><a href="https://medium.com/@ChunYeung/%E4%BB%80%E9%BA%BC%E6%98%AFoo-%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E8%88%87%E5%B0%81%E8%A3%9D-80379c24e62">什麼是OO？物件導向與封裝 - Chun Yeung - Medium</a></li>
-<li><a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-3_%E5%B0%81%E8%A3%9Dencapsulation%E7%B9%BC%E6%89%BFinheritance%E8%88%87%E5%A4%9A%E5%9E%8Bpolymorphism/">Object Oriented物件導向-3:封裝(Encapsulation)、繼承(Inheritance)與多型(polymorphism) - Sian</a></li>
-<li><a href="https://dotblogs.com.tw/initials/2016/06/10/171117">[心得整理] c# 物件導向程式 - 2.封裝、繼承、多型的三大特性 - 聊聊程式</a></li>
-<li><a href="https://www.ithome.com.tw/node/45903">思考物件導向(1)物件導向與封裝 - 蔡學鏞</a></li>
-<li><a href="https://medium.com/@totoroLiu/%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-object-oriented-programming-%E6%A6%82%E5%BF%B5-5f205d437fd6">物件導向(Object Oriented Programming)概念 - Po-Ching Liu - Medium</a></li>
-<li><a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/accessibility-levels">存取範圍層級 - Microsoft Docs</a></li>
-<li><a href="https://www.tenlong.com.tw/products/9789866761799">《大話設計模式》附錄：物件導向基礎</a></li>
+<li><a href="https://medium.com/@f40507777/%E4%BB%8B%E9%9D%A2%E9%9A%94%E9%9B%A2%E5%8E%9F%E5%89%87-interface-segregation-principle-isp-6854c5b3b42c">介面隔離原則 Interface Segregation Principle (ISP) - Finn</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10192464">SOLID 之 介面隔離原則（Interface segregation principle）- Miles</a></li>
+<li><a href="https://dotblogs.com.tw/hatelove/2010/10/17/interface-segregation-principle">91 之 ASP.NET 由淺入深 不負責講座 Day20 - ISP 介面隔離原則</a></li>
+<li><a href="https://daydaynews.cc/zh-tw/technology/346506.html">設計模式之美十六：介面隔離原則有哪三種應用？介面該如何理解</a></li>
+<li><a href="https://yncbearz.github.io/2020/06/03/Interface-Segregation-Principle/">介面隔離原則 - YNCBearz</a></li>
+<li><a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87solid-4_interface-segregation-principleisp-%E4%BB%8B%E9%9D%A2%E9%9A%94%E9%9B%A2%E5%8E%9F%E5%89%87/">Object Oriented物件導向設計原則SOLID-4:Interface Segregation Principle(ISP) 介面隔離原則 - Sian</a></li>
+<li><a href="https://www.tenlong.com.tw/products/9789864342099">《無瑕的程式碼：物件導向原則、設計模式與C#實踐》</a> Ch.12 ISP：介面隔離原則</li>
 </ul>
 <h2 id="同系列文章">同系列文章</h2>
 <ul>
@@ -216,15 +195,15 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/2020/07/oo-2-constructor-overload/">菜雞與物件導向 (2): 建構式、多載</a></li>
+        <li><a href="/post/2020/11/oo-12-liskov-substitution-principle/">菜雞與物件導向 (12): 里氏替換原則</a></li>
         
-        <li><a href="/post/2020/07/oo-1-class-object/">菜雞與物件導向 (1): 類別、物件</a></li>
+        <li><a href="/post/2020/10/oo-11-open-closed-principle/">菜雞與物件導向 (11): 開放封閉原則</a></li>
         
-        <li><a href="/post/2020/07/oo-0-object-oriented/">菜雞與物件導向 (0): 前言</a></li>
+        <li><a href="/post/2020/10/oo-10-single-responsibility-principle/">菜雞與物件導向 (10): 單一職責原則</a></li>
         
-        <li><a href="/post/2020/07/automapper/">AutoMapper —— 類別轉換超省力</a></li>
+        <li><a href="/post/2020/09/oo-9-solid/">菜雞與物件導向 (9): SOLID</a></li>
         
-        <li><a href="/post/2020/06/electron-net/">Electron.net —— 把網頁包成桌面應用吧</a></li>
+        <li><a href="/post/2020/09/oo-8-cohesion-and-coupling/">菜雞與物件導向 (8): 內聚、耦合</a></li>
         
     </ul>
 </div>
@@ -247,7 +226,7 @@
                         </div>
                         <hr />
 <p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
-<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f07%2foo-3-encapsulation%2f" width="100%" frameborder=0></iframe>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f11%2foo-13-interface-segregation-principle%2f" width="100%" frameborder=0></iframe>
                     </article>
                     
     
