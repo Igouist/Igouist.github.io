@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-92586970-4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-92586970-4');
+    </script>
+
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>Bug | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="Bug - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+        
+    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="description" content="Bug">
+        
+    <meta name="author" content="Igouist">
+    <meta property="og:url" content="https://igouist.github.io/categories/bug/">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="alternate" type="application/rss+xml+xml" href="https://igouist.github.io/categories/bug/index.xml" title="伊果的沒人看筆記本" />
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    
+                    <h3 class="archive-title">
+                        分類
+                        <span class="keyword">Bug</span>
+                        中的文章
+                    </h3>
+                    
+
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2020/11/bugs-install-dotnet-core-on-amazon-ami-requires-openssl/">菜雞抓蟲: 在 Amazon Linux AMI 安裝 .net Core 時卡在 Requires: openssl-libs 而無法安裝的錯誤</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-11-22,
+                            </date>
+                            
+                            <div class="post-meta meta-category">
+                                
+                                    <a href="https://igouist.github.io/categories/bug">Bug</a>
+                                
+                                    <a href="https://igouist.github.io/categories/csharp">CSharp</a>
+                                
+                                    <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p>最近遇到在 Amazon Linux AMI 要安裝 .net Core 3.1 環境的時候，會一直跳出<br/> <code>Requires: openssl-libs</code> 而無法安裝的問題，儘管明明已經有 openssl 了，但過程還是一直碰壁，因此在這邊紀錄一下。</p>
+<p>過程中嘗試了安裝 openssl-libs（會找不到該套件）、下載 Dotnet 的 tar.gz 直接從執行檔下 Dotnet 指令起站台（雖然站台起得來，但執行者會是當下的登入身分，後續連線資料庫等等很容易出錯）等方法。最後在 Github 的 Dotnet/Core issue 翻到這篇 <a href="https://github.com/dotnet/core/issues/930">Cannot install .NET Core 2.0 on Amazon Linux AMI</a> 才成功解決。</p>
+<p>首先先將 openssl-libs 的 SPEC 抓下來，然後給 <a href="http://linux.vbird.org/linux_basic/0520softwaremanager/0520rpmtarball.php">RPM</a> 建置一下。這兩句可以參考一下這篇 <a href="https://medium.com/linux-%E9%96%8B%E7%99%BC%E5%85%A5%E9%96%80/rpm-%E6%89%93%E5%8C%85-%E7%94%B1%E4%B8%80%E7%AB%85%E4%B8%8D%E9%80%9A%E5%88%B0%E5%8B%95%E6%89%8B%E6%BF%AB%E7%94%A8-%E4%BA%8C-df9eea70bd7b">RPM 打包︰由一竅不通到動手濫用 (二)</a> 的說明。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget https://github.com/dotnet/core/files/2186067/openssl-libs-ami.spec.txt
+rpmbuild --bb openssl-libs-ami.spec.txt
+</code></pre></div>……
+                                <p class="readmore"><a href="https://igouist.github.io/post/2020/11/bugs-install-dotnet-core-on-amazon-ami-requires-openssl/">閱讀全文</a></p>
+                            </div>
+                        </article>
+                        <hr color="#D9D9D9" />
+                    
+
+                    
+
+
+
+
+                </div>
+            </div>
+
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/11/bugs-install-dotnet-core-on-amazon-ami-requires-openssl/" title="菜雞抓蟲: 在 Amazon Linux AMI 安裝 .net Core 時卡在 Requires: openssl-libs 而無法安裝的錯誤">菜雞抓蟲: 在 Amazon Linux AMI 安裝 .net Core 時卡在 Requires: openssl-libs 而無法安裝的錯誤</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle/" title="菜雞與物件導向 (13): 介面隔離原則">菜雞與物件導向 (13): 介面隔離原則</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/11/dark-reader/" title="Dark Reader —— 暗黑模式愛好者的 Chrome 必備套件">Dark Reader —— 暗黑模式愛好者的 Chrome 必備套件</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle/" title="菜雞與物件導向 (12): 里氏替換原則">菜雞與物件導向 (12): 里氏替換原則</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/10/oo-11-open-closed-principle/" title="菜雞與物件導向 (11): 開放封閉原則">菜雞與物件導向 (11): 開放封閉原則</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/10/markdown/" title="易讀易寫！擁抱寫作神器 —— Markdown">易讀易寫！擁抱寫作神器 —— Markdown</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/10/external-screen/" title="聊一下外接螢幕">聊一下外接螢幕</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle/" title="菜雞與物件導向 (10): 單一職責原則">菜雞與物件導向 (10): 單一職責原則</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/09/csharp-trulp/" title="C#: 元組 (Tuple)">C#: 元組 (Tuple)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/09/oo-9-solid/" title="菜雞與物件導向 (9): SOLID">菜雞與物件導向 (9): SOLID</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/bug/">bug (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp/">csharp (26)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (14)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (11)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (43)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/bug/">bug</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/linux/">linux</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">蹭一下</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://kevintsengtw.blogspot.com/" title="mrkt">mrkt 的程式學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="#ZgotmplZ" title="ray">Ray&#39;s Notes</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        
+        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+        
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+
+</body>
+</html>
