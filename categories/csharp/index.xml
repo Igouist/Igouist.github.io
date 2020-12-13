@@ -6,10 +6,37 @@
     <description>Recent content in CSharp on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Sun, 22 Nov 2020 23:40:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 13 Dec 2020 21:53:00 +0800</lastBuildDate>
     
 	<atom:link href="https://igouist.github.io/categories/csharp/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>菜雞與物件導向 (14): 依賴反轉原則</title>
+      <link>https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle/</link>
+      <pubDate>Sun, 13 Dec 2020 21:53:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle/</guid>
+      <description>&lt;p&gt;在聊依賴反轉之前，先讓我們聊聊什麼是依賴，所謂的依賴就是一種「受到某個東西影響、牽制」的狀態。例如說如果有個像我一樣的肥宅每天一定要來一片雞排才能療癒身心，那我就是依賴雞排；同樣的，如果有個大叔不抽菸就會全身不舒服，就是對香菸有所依賴。當有「必須要藉由某個人事物來達到目的」的狀況時，就是依賴。&lt;/p&gt;
+&lt;p&gt;而在程式設計裡面的概念也差不多，如果&lt;strong&gt;Ａ模組直接受到Ｂ模組的影響，我們就稱Ａ依賴了Ｂ&lt;/strong&gt;，最明顯的狀況就是Ａ模組需要藉由Ｂ模組的實例來完成某個功能的時候，例如「匯出報表」功能建立了一個「Excel 控制類別」的實例以建立檔案；或是「會員查詢」功能建立了一個「DB 連線」的實例來進入資料庫取得會員資料，諸如此類由Ａ模組直接藉由Ｂ模組的實例來完成想要的動作，就是依賴。&lt;/p&gt;
+&lt;h2 id=&#34;依賴與耦合&#34;&gt;依賴與耦合&lt;/h2&gt;
+&lt;p&gt;然而所謂的依賴，其實就會造成我們之前聊過的&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;耦合&lt;/a&gt;，我們以&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-5-polymorphism&#34;&gt;多型&lt;/a&gt;篇中老闆和小明的例子來舉例：現在有間小小公司，老闆請來了小明當工程師，並請他開工撰寫產品程式碼。&lt;/p&gt;
+&lt;p&gt;當「撰寫產品程式」對「工程師」直接依賴的時候，狀況可能是這樣的：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Product Work()
+{
+    Ming programmer = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Ming();
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; product = programmer.Programming();
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; product;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;過一陣子，老闆發現小明寫出來的東西似乎不太行，於是把小明趕走，另外請了小華。這時候因為「工程師」這個實作類別不一樣了，我們就必須要改一次程式碼：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Product Work()
+{
+    Hua programmer = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Hua();
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; product = programmer.Programming();
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; product;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
     
     <item>
       <title>菜雞抓蟲: 在 Amazon Linux AMI 安裝 .net Core 時卡在 Requires: openssl-libs 而無法安裝的錯誤</title>
@@ -507,6 +534,7 @@ warrior.Hit(goblin);
 &lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-11-open-closed-principle&#34;&gt;菜雞與物件導向 (11): 開放封閉原則&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle&#34;&gt;菜雞與物件導向 (12): 里氏替換原則&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle&#34;&gt;菜雞與物件導向 (13): 介面隔離原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle&#34;&gt;菜雞與物件導向 (14): 依賴反轉原則&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description>
     </item>
     

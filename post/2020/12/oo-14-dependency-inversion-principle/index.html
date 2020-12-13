@@ -17,20 +17,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>菜雞與物件導向 (13): 介面隔離原則 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="菜雞與物件導向 (13): 介面隔離原則 - 伊果的沒人看筆記本">
+    <title>菜雞與物件導向 (14): 依賴反轉原則 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞與物件導向 (14): 依賴反轉原則 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2020-11-15T12:00:00&#43;08:00">
+    <meta property="article:published_time" content="2020-12-13T21:53:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2020-11-15T12:00:00&#43;08:00">
+    <meta property="article:modified_time" content="2020-12-13T21:53:00&#43;08:00">
         
     <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
-    <meta name="description" content="SOLID 之 介面隔離原則（Interface Segregation Principle, ISP）：不應該強迫用戶依賴它們未使用的方法，應該最小化類別與類別之間的介面。當我們遇到無法實作介面的要求，或是必須用空實作和拋錯來欺騙介面的時候，可以優先從單一職責和里氏替換的角度切入，檢驗介面的設計是否合理，並用組合的觀念來實作類別。">
+    <meta name="description" content="記錄了依賴反轉原則(Dependency-Inversion Principle)、控制反轉 (Inversion of Control, IoC) 與 依賴注入 (Dependency Injection)">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle/">
+    <meta property="og:url" content="https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/normalize.css">
@@ -88,10 +88,10 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">菜雞與物件導向 (13): 介面隔離原則</h1>
+                            <h1 class="post-title">菜雞與物件導向 (14): 依賴反轉原則</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2020-11-15,
+                            2020-12-13,
                         </date>
                         
                         <div class="post-meta">
@@ -113,65 +113,107 @@
                         </div>
                         
                         <div class="post-content">
-                            <p>今天要記錄的是介面隔離原則，顧名思義是和介面高度相關的原則。因此在閱讀本篇之前，可能需要先對<a href="/post/2020/07/oo-7-interface">介面</a>有一點了解呦。</p>
-<p>事情就從上一篇<a href="/post/2020/11/oo-12-liskov-substitution-principle">里氏替換原則</a>的鳥類物流公司開始說起。老闆痛定思痛，決定先用<strong>介面</strong>先規定好物流士們的應徵條件，例如裝貨、卸貨、飛行、必須有帥氣的喙等等。</p>
-<p>這道命令下來後，倉庫們的企鵝都慌了，來檢查的編譯器瘋狂跳出 Error:「您未實作 IBird 的 Fly() 方法！」這下怎麼辦呢，為了要保住飯碗，企鵝們就必須實作出飛行才行，可是企鵝真的就不會飛呀！</p>
-<p>這下子企鵝們只剩下兩個選擇：不實作飛行，但是就不能被當成物流士，最後就會被開除；或是……空實作。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Penguin</span> : IBird
+                            <p>在聊依賴反轉之前，先讓我們聊聊什麼是依賴，所謂的依賴就是一種「受到某個東西影響、牽制」的狀態。例如說如果有個像我一樣的肥宅每天一定要來一片雞排才能療癒身心，那我就是依賴雞排；同樣的，如果有個大叔不抽菸就會全身不舒服，就是對香菸有所依賴。當有「必須要藉由某個人事物來達到目的」的狀況時，就是依賴。</p>
+<p>而在程式設計裡面的概念也差不多，如果<strong>Ａ模組直接受到Ｂ模組的影響，我們就稱Ａ依賴了Ｂ</strong>，最明顯的狀況就是Ａ模組需要藉由Ｂ模組的實例來完成某個功能的時候，例如「匯出報表」功能建立了一個「Excel 控制類別」的實例以建立檔案；或是「會員查詢」功能建立了一個「DB 連線」的實例來進入資料庫取得會員資料，諸如此類由Ａ模組直接藉由Ｂ模組的實例來完成想要的動作，就是依賴。</p>
+<h2 id="依賴與耦合">依賴與耦合</h2>
+<p>然而所謂的依賴，其實就會造成我們之前聊過的<a href="/post/2020/09/oo-8-cohesion-and-coupling">耦合</a>，我們以<a href="/post/2020/07/oo-5-polymorphism">多型</a>篇中老闆和小明的例子來舉例：現在有間小小公司，老闆請來了小明當工程師，並請他開工撰寫產品程式碼。</p>
+<p>當「撰寫產品程式」對「工程師」直接依賴的時候，狀況可能是這樣的：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
 {
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Fly()
-    {
-      <span style="color:#75715e">// Do nothing;
-</span><span style="color:#75715e"></span>    }
+    Ming programmer = <span style="color:#66d9ef">new</span> Ming();
+    <span style="color:#66d9ef">var</span> product = programmer.Programming();
+    <span style="color:#66d9ef">return</span> product;
 }
-</code></pre></div><p>企鵝們終於騙過了編譯器檢查員，然而當送貨的命令下來之後，企鵝們再一次卡在倉庫門口發呆，最終物流公司仍然踏上了虧損的老路，再度面臨倒閉危機…</p>
+</code></pre></div><p>過一陣子，老闆發現小明寫出來的東西似乎不太行，於是把小明趕走，另外請了小華。這時候因為「工程師」這個實作類別不一樣了，我們就必須要改一次程式碼：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
+{
+    Hua programmer = <span style="color:#66d9ef">new</span> Hua();
+    <span style="color:#66d9ef">var</span> product = programmer.Programming();
+    <span style="color:#66d9ef">return</span> product;
+}
+</code></pre></div><p>又過了好一陣子，老闆又另外請了小美來工作。於是又要再改一次，而且小美的工作方式甚至不叫做 <code>Programming</code>，而是 <code>Coding</code>：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
+{
+    Mei programmer = <span style="color:#66d9ef">new</span> Mei();
+    <span style="color:#66d9ef">var</span> product = programmer.Coding();
+    <span style="color:#66d9ef">return</span> product;
+}
+</code></pre></div><p>現在有感覺到一點問題了嗎？如果一直換人，<code>Work</code> 的程式碼豈不是每次都要修改？甚至根據依賴對象的不同，連使用方式都可能受到影響，很明顯這樣就是所謂不健康的耦合。</p>
+<blockquote>
+<p>這邊還有個例子我很喜歡，在這篇<a href="https://notfalse.net/1/dip">依賴倒置原則</a>的文章中，用吃東西來舉例：如果寫死了依賴漢堡，難道一輩子就只能吃漢堡了嗎？如果想改成吃義大利麵，就要修改程式碼；有一百種食物，難道就要改一百次嗎？</p>
+</blockquote>
+<p>試想，因為「SQL 查詢」的方法有了一些變更，使用到該方法的「會員查詢」就連帶要更動，甚至有關聯的地方都必須要變動，如此一來改動的範圍如森林大火般延燒。</p>
+<p>同時由於我們在開發功能的時候，都是讓大功能（高階模組）調用各個小功能（低階模組）來實現目標，越高層的就越整體、越抽象、越接近目標；而越低階就越細節、越接近實作，關注點越小。而我們的思維通常是由大範圍往下到小實作，從整體目標逐漸拆解成各個步驟。</p>
+<p>但是，當我們的高階模組直接依賴低階模組的時候，事情就會變得有點怪怪的。就像董事長必須清潔廁所導致沒空進行公司決策一樣，<strong>原本職責在於高層次、整體的模組，卻不得不因為這些低階模組的變動受到影響</strong>。那麼隨著層次越高，底下依賴的模組越多，改動的頻率就會提高。</p>
+<p>既然改動範圍又大，改動頻率又高，耦合又不健康，就代表這樣的依賴是有問題的。然而，物件導向的精神就在於讓物件之間互相協作，消除多餘的重複。因此，依賴又是不可能消除的。</p>
 <h2 id="定義">定義</h2>
-<p>不知道大家對企鵝遇到的狀況有沒有經驗呢？<strong>當介面規定了太多要求，而我們實作的子類別只需要其中一部份，或是有些要求根本無法達成，就會發生這個困境：放棄實作介面，或是用空實作和錯誤處理去欺騙介面</strong>。</p>
-<p>例如資料庫存取的介面要求太多和當下資料庫過於一致的方法，結果替換資料庫的時候導致部份方法實作不出來；或是像<a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87solid-4_interface-segregation-principleisp-%E4%BB%8B%E9%9D%A2%E9%9A%94%E9%9B%A2%E5%8E%9F%E5%89%87/">俺同事文章</a>中的例子，交通工具的介面要求能開關車門，結果電動機車無法實作。</p>
-<p>然而，如果我們選擇用空實作或是拋出錯誤的方式，去欺騙介面，等到需要呼叫該方法的時候，就會發生許多非預期的錯誤。甚至讓接手程式碼的人在什麼都不知道的情況之下就讓系統掛掉。聰明的朋友們一定發現了，這就是違反了<a href="/post/2020/11/oo-12-liskov-substitution-principle">里氏替換原則</a>！</p>
-<p>為了迴避到處都是空實作地雷的結局，大前輩們就提出了介面隔離原則：</p>
+<p>面對這樣的困境，依賴反轉原則告訴我們：</p>
 <blockquote>
-<p><strong>介面隔離原則（Interface Segregation Principle）：不應該強迫用戶依賴它們未使用的方法</strong></p>
+<p><strong>依賴反轉原則 (Dependency-Inversion Principle)：高階模組不應該依賴於低階模組。兩者都應該依賴抽象</strong></p>
 </blockquote>
-<p>這邊的用戶也就是我們的子類別，它們等同是這個介面的使用者。當我們必須強迫使用者去實作一些他們不需要的方法時，就代表了一個事實：我們的介面太「胖」了！裡面的某些要求可能是非必要的，以至於造成了實作上的冗餘。</p>
-<p>也基於這條原則延伸出了一個方向：<strong>應該最小化類別與類別之間的介面</strong>。</p>
-<h2 id="介面也要單一職責">介面也要單一職責</h2>
-<p>但是，我們要怎麼知道是我們設計的介面太胖，還是子類別在偷懶呢？又要怎麼知道我們的介面設計是否已經「最小化」呢？</p>
-<p>那就是<a href="/post/2020/10/oo-10-single-responsibility-principle">單一職責原則</a>出場的時候了。一個合理的介面設計是能夠符合單一職責原則的，反過來說，我們可以用單一職責原則來檢視我們的介面設計是否良好。</p>
-<p>當我們設計介面的時候，或是像上面遇到必須空實作的時候，就可以思考一下：<strong>這個介面的職責是否單一？這個介面的意圖是什麼？這個介面是否只對一個角色負責、只有一個原因改變？</strong></p>
-<p>當我們的介面符合單一職責、足夠<a href="/post/2020/09/oo-8-cohesion-and-coupling">內聚</a>的時候，我們自然就能夠說這個介面已經足夠精簡了。</p>
-<h2 id="用組合實現功能">用組合實現功能</h2>
-<p>有些人可能就會有點疑惑了：「但是我就是需要這個功能呀，如果我不塞在介面，要放去哪呢？」</p>
-<p>很簡單，<strong>放去另一個該職責的介面就可以了</strong>。</p>
-<p>和繼承需要注意的部分一樣，濫用介面也是濫用繼承，我們應該用<strong>組合</strong>去實現功能而不是用繼承去綁死功能。一個資料串列能做的功能可能相當多，但我們並不需要一次就要求實現全部能做的事情，而是將這些工作分組，再從中組合出我們需要的部份。</p>
-<p>此處以 C# 來說，例如我們很常接觸的 <code>List</code> 類別，並不是只實作了 <code>IList</code>，而是實作了 <code>ICollection&lt;T&gt;</code>, <code>IEnumerable&lt;T&gt;</code>, <code>IEnumerable</code>, <code>IList&lt;T&gt;</code>, <code>IReadOnlyCollection&lt;T&gt;</code>, <code>IReadOnlyList&lt;T&gt;</code>, <code>ICollection</code>, <code>IList</code> 這些介面，層層堆疊，相互嵌合。</p>
-<p>那我們就知道 List 由這些介面「組合」而成，也知道了我們 List 具有這些介面要求的能力，讓我們能在合適的時候使用這個類別。同時又保留了這些介面能搭配出另一種組合的彈性，例如 <code>Array</code> 就是由 <code>ICollection</code>, <code>IEnumerable</code>, <code>IList</code>, <code>IStructuralComparable</code>, <code>IStructuralEquatable</code>, <code>ICloneable</code> 組合而成。</p>
-<p>就像可能有位大神，名片一拿出來就是一串「程式設計師／架構師／攝影師／貓奴」，<strong>我們的類別也要懂得斜槓</strong>。如此一來類別就比較不容易被介面綁死，也能因應不同場合來決定身分，從「每次都被逼著買套餐可是又不喜歡小菜」變成「餐餐自由配」，組合就該如此自由！</p>
-<p>回到開頭的例子，把想要的行為全部定義在一個介面裡，然後用一個類別去實現它遇到不需要的動作就詐騙介面，是相當不 OK 的；而是應該<strong>把想要的行為用職責的角度去思考</strong>，根據職責建立成一或多個介面。然後只<strong>挑選</strong>並實作該類別需要的動作（介面），如此就可以讓介面不再臃腫，而是變得靈活。</p>
-<p>就像是武術秘笈中的招式，其實也是一連串的動作所組成；所謂的功能，其實也是一連串行為所組成的。既然行為組合成了功能，我們也要從組合的角度去思考如何建立類別。<strong>組合就像是積木一樣</strong>，我們用積木堆疊來完成作品，同時每個積木又可以各自靈活運用。</p>
-<p>而積木也分成了好用的積木，和很難使用的積木，在程式中可以從夠不夠 SOILD 看出來。不好用的那些用起來會覺得卡卡的，測試也很難寫；好用的則會讓你面對變化的時候，就像拆裝樂高一樣順手方便。聰明的朋友可能聯想到了，這就是<a href="/post/2020/10/oo-11-open-closed-principle">開放封閉原則</a>中我們提過的模組化。</p>
-<p>通常來說積木的形狀越複雜、體積越大，就越難以靈活使用，介面也是如此，因此我們在設計介面的時候，要謹記<strong>介面隔離原則</strong>，利用我們在單一職責原則、里氏替換原則學到的原則來檢驗我們的介面，如此就可以迴避相當多尷尬兩難的實作場面，也能讓介面的使用更加靈活。</p>
-<p>那麼，在結束之前，有興趣的朋友可以跟我一起想一想：介面隔離原則，只適用於設計類別架構時的介面嗎？其他的介面（Interface）呢？例如 API，是不是也可以按照介面隔離原則的精神下去設計呢？</p>
-<h2 id="後日談">後日談</h2>
-<p>企鵝詐騙介面的事情終究還是暴露了。</p>
-<p>但是這群企鵝的夢想就是成為物流士，老闆也狠不下心把牠們趕走。</p>
-<p>「也許……」<a href="https://zh.wikipedia.org/wiki/%E5%B0%8F%E9%BB%84%E9%B8%AD%E8%B0%83%E8%AF%95%E6%B3%95">鴨子顧問</a>說：「我們可以有別的方法。只要使用<strong>介面隔離原則</strong>。」</p>
-<p>老闆：『介面隔離？怎麼做呢？』</p>
-<p>「我們可以把送貨放到 IDelivery，然後讓他們用不同的介面來實作移動方式，例如 IFly、ISwim、IRun 等等。用<strong>組合</strong>的方式來完成不同種類的物流士類別，這樣就可以有很多種送貨方式了」</p>
-<p>『原來如此，不只是空運 —— 我們要征服陸海空嗎！』</p>
-<p>改變作法的鳥禽物流公司搖身一變成了動物物流公司，同時廣徵天下動物，除了企鵝也能從南極發貨中心快速運貨以外，公司還招到了明星成員獵豹物流士，從此蒸蒸日上、強勢打入各大物流市場，最後進軍宇宙。可喜可賀，可喜可賀。</p>
+<p>是的，不應該直接去依賴，而是必須藉由抽象來隔開。不應該直接去受到實作的影響，而是只要關注在所需要的功能。</p>
+<p>這部分其實已經破梗完了，我們在<a href="/post/2020/07/oo-7-interface">介面篇</a>已經說明過依賴反轉最基本的思維路線。我們並不是用低階模組的功能直接拼湊出高階模組，讓高階模組直接依賴低階模組然後受到影響；而是把關注點放在需要的功能上，用介面隔開實作，解開他們彼此之間的耦合，介面就是模組之間的抽象層。</p>
+<p>同時也要明白一件重要的事：<strong>並不是低階模組的實作提供了抽象層，而是高階模組針對所需要的功能提出了抽象，而低階模組去實現它</strong>。</p>
+<p>我們並不是因為有「DB 的連線方法」和「處理會員資料的方法」所以才說「我們有這兩個東西欸，那我們來組成會員查詢功能吧」；而是「我們想做一個會員查詢功能，所以我們需要連線到 DB，然後對這些資料做篩選和處理」</p>
+<p>就如同我們在介面的例子所提的一樣：「老闆為了製造產品（高階模組的目標），開出了工程師的應徵條件（介面），而小明前來應徵（低階模組的實作）」</p>
+<p>如此一來，依賴就「反轉」了。原本是 <code>高階模組 → 低階模組</code> 的關係，變成了 <code>高階模組 → 介面 ← 低階模組</code>。並不是高階去依賴低階，而是低階去依賴高階要求的功能。</p>
+<p>這也就是依賴反轉原則的第二點：</p>
 <blockquote>
-<p>本系列下一篇：<a href="/post/2020/12/oo-14-dependency-inversion-principle">菜雞與物件導向 (14): 依賴反轉原則</a></p>
+<p><strong>抽象不應該依賴細節。細節應該依賴抽象</strong></p>
 </blockquote>
+<p>到這邊我們就推完<a href="/post/2020/07/oo-7-interface">介面篇</a>的前提了，這邊就請大家再回顧一下介面篇的內容。也就是說，上面的例子改用介面之後，就會和介面篇的例子相同，變成：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
+{
+    IProgrammer programmer = <span style="color:#66d9ef">new</span> Ming();
+    <span style="color:#66d9ef">var</span> product = programmer.Programming();
+    <span style="color:#66d9ef">return</span> product;
+}
+</code></pre></div><p>這邊就會遇到我們介面篇結束時所問的問題：我們使用功能之前，必須先建立該類別的實例，也就是 <code>new Ming()</code>，那麼，我們不就還是直接依賴了實作嗎？</p>
+<h2 id="控制反轉-inversion-of-control-ioc-與-依賴注入-dependency-injection">控制反轉 (Inversion of Control, IoC) 與 依賴注入 (Dependency Injection)</h2>
+<p>即使我們反轉了依賴關係，但總是要建立實例才能使用的呀。所以，只是將對具體的依賴更改為對抽象的依賴，仍然是不夠的，在要使用的瞬間就會遭遇到問題。面對這個問題，大大們提出了許多個解決的方法，今天就介紹一個比較常見的方向：<strong>控制反轉 (Inversion of Control, IoC)</strong>。</p>
+<p>思路非常的簡單：既然如此，我們把實例的建立和實例的使用切分開來就好了，<strong>不再是由高階模組去建立並控制低階模組，而是我們讓一個控制反轉中心去建立低階模組，然後高階模組要使用的時候再把這個低階模組交給高階模組使用</strong>。</p>
+<p>如此一來，控制權也跟著反轉過來了，高階模組從<strong>主動</strong>建立低階模組，變成<strong>被動</strong>接收低階模組；也就是從原先的 <code>高階模組 —(建立)→ 低階模組</code>，變成了 <code>高階模組 ←(傳遞低階模組)— 控制反轉中心</code>。</p>
+<p>控制反轉的概念比較像是：當肚子餓的時候，如果自己煮菜的時候，必須自己備料、自己烹調、才能有東西吃。但如果去餐廳點餐，只要說出自己想要的餐點，店家就會負責備料，廚師就會烹調，最後就把需要的餐點送上桌來吃。</p>
+<p>也就是說，<strong>高階模組再也不需要關心如何建立，該建立哪個實體，只專注於使用功能，真正達到介面的精神。低階模組也只需要等待控制反轉中心分發，到了崗位就把份內事做好，專心在自己的職責身上即可</strong>。如此一來就能解除兩者之間的耦合。</p>
+<p>但是，要怎麼把控制中心建立的低階模組，交給高階模組做使用呢？這時候的實作方式就是我們所謂的**依賴注入 (Dependency Injection)**了。</p>
+<p>依賴注入說穿了很簡單，就是<strong>用各種姿勢把東西丟進去給類別使用</strong>。</p>
+<p>例如說我們先前提過的<a href="/post/2020/07/oo-2-constructor-overload">建構式</a>，就是其中一種解決方法。用上面的例子，就會變成：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ProductService</span>
+{
+    <span style="color:#66d9ef">private</span> IProgrammer _programmer;
+
+    <span style="color:#66d9ef">public</span> ProductService(IProgrammer programmer)
+    {
+        <span style="color:#66d9ef">this</span>._programmer = programmer;
+    }
+
+    <span style="color:#66d9ef">public</span> Product Work()
+    {
+        <span style="color:#66d9ef">var</span> product = <span style="color:#66d9ef">this</span>._programmer.Programming();
+        <span style="color:#66d9ef">return</span> product;
+    }
+}
+</code></pre></div><p>在這個例子中，我們利用建構式的方式，從外部傳入該介面的實體來使用。現在撰寫產品程式碼的工作再也不用為了換工程師而改變，也不用因為實作細節或是方法名稱而煩惱，只要照個介面合約使用就可以了。至於要傳遞哪個實體進來，這份工作要交給小明還是小美，就讓控制中心去決定，大家各司其職，落實單一職責。</p>
+<p>當然，注入的方式不只建構式注入，還有設值注入（也就是從外部改變目標的某個屬性值來達到注入）等等；提供 IOC 的方式也不只一種，例如 .net 的 Unity，甚至到了 .net Core 時代 IOC 還直接是內建的功能呢，由於口味眾多，此處暫且按下不表。</p>
+<h2 id="結語">結語</h2>
+<p>那麼，我們最後再來複習一遍：</p>
+<p><strong>高階模組不應該依賴於低階模組，兩者都應該依賴抽象</strong>。為了解除耦合，必須用介面這種抽象層進行隔離。</p>
+<p><strong>抽象不應該依賴細節。細節應該依賴抽象</strong>。介面應該是高階模組提出的要求，然後才去使用實作了這些要求的低階模組。這些實作應該圍繞著這些要求，而不是讓要求去配合實作，更不要讓要求中包含實作。</p>
+<p><strong>為了解決介面實例化仍然會產生依賴的問題，就有了控制反轉</strong>。把控制權交給第三方，藉此讓使用者能夠不用關心實例化的過程，而注重在使用並達成目標的職責上。</p>
+<p><strong>而控制反轉的具體實現方法是依賴注入</strong>，藉由從建構式傳遞、更改目標的屬性等方式，把低階模組交給高階模組使用者。當我們藉由依賴注入的方式實現控制反轉，就能夠讓物件的設計符合依賴反轉原則。</p>
+<p>這個部份的做法還是挺複雜的，<del>所以才拖稿這麼久</del>，因此決定把原因的順序推過一遍，也算是幫自己重新了解一次。參考資料有蠻多篇我都相當喜歡，想更了解依賴反轉、控制反轉等等的朋友可以再自行閱讀。那麼，我們下次見～</p>
 <h2 id="參考資料">參考資料</h2>
 <ul>
-<li><a href="https://medium.com/@f40507777/%E4%BB%8B%E9%9D%A2%E9%9A%94%E9%9B%A2%E5%8E%9F%E5%89%87-interface-segregation-principle-isp-6854c5b3b42c">介面隔離原則 Interface Segregation Principle (ISP) - Finn</a></li>
-<li><a href="https://ithelp.ithome.com.tw/articles/10192464">SOLID 之 介面隔離原則（Interface segregation principle）- Miles</a></li>
-<li><a href="https://dotblogs.com.tw/hatelove/2010/10/17/interface-segregation-principle">91 之 ASP.NET 由淺入深 不負責講座 Day20 - ISP 介面隔離原則</a></li>
-<li><a href="https://daydaynews.cc/zh-tw/technology/346506.html">設計模式之美十六：介面隔離原則有哪三種應用？介面該如何理解</a></li>
-<li><a href="https://yncbearz.github.io/2020/06/03/Interface-Segregation-Principle/">介面隔離原則 - YNCBearz</a></li>
-<li><a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87solid-4_interface-segregation-principleisp-%E4%BB%8B%E9%9D%A2%E9%9A%94%E9%9B%A2%E5%8E%9F%E5%89%87/">Object Oriented物件導向設計原則SOLID-4:Interface Segregation Principle(ISP) 介面隔離原則 - Sian</a></li>
-<li><a href="https://www.tenlong.com.tw/products/9789864342099">《無瑕的程式碼：物件導向原則、設計模式與C#實踐》</a> Ch.12 ISP：介面隔離原則</li>
+<li><a href="https://notfalse.net/1/dip">依賴倒置原則 (Dependency-Inversion Principle, DIP) - NotFalse 技術客</a></li>
+<li><a href="https://notfalse.net/3/ioc-di">控制反轉 (IoC) 與 依賴注入 (DI)</a></li>
+<li><a href="https://medium.com/@f40507777/%E4%BE%9D%E8%B3%B4%E5%8F%8D%E8%BD%89%E5%8E%9F%E5%89%87-dependency-inversion-principle-dip-bc0ba2e3a388">依賴反轉原則 Dependency Inversion Principle (DIP) - Finn</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10191603">從被動變主動—依賴反轉 - 伊恩 - iT邦幫忙</a></li>
+<li><a href="https://dustinhsiao21.github.io/dp/solid-dependency-inversion-principle/">SOLID 原則 - Dependency Inversion Principle(依賴反轉原則) - Dustin;s murmur</a></li>
+<li><a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87solid-6_dependency-inversion-principledip-%E4%BE%9D%E8%B3%B4%E5%8F%8D%E8%BD%89%E5%8E%9F%E5%89%87/">Object Oriented物件導向設計原則SOLID-6:Dependency Inversion Principle(DIP)依賴反轉原則 - Sian</a></li>
+<li><a href="https://sunnyday0932.github.io/2020/%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5-didependency-injection/">依賴注入 DI(Dependency Injection) - Sian</a></li>
+<li><a href="https://dotblogs.com.tw/supershowwei/2018/07/30/144329">[小菜一碟] 談談物件導向設計原則中 DIP（依賴反轉原則）中的 Dependency（依賴） - 軟體主廚的程式料理廚房</a></li>
+<li><a href="https://www.jyt0532.com/2020/03/24/dip/">深入淺出依賴反向原則 Dependency Inversion Principle - jyt0532&rsquo;s Blog</a></li>
+<li><a href="https://dotblogs.com.tw/daniel/2018/01/17/140435">IOC(控制反轉)，DI(依賴注入) 深入淺出~~ - 石頭的coding之路</a></li>
 </ul>
 <h2 id="同系列文章">同系列文章</h2>
 <ul>
@@ -199,6 +241,8 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
+        <li><a href="/post/2020/11/oo-13-interface-segregation-principle/">菜雞與物件導向 (13): 介面隔離原則</a></li>
+        
         <li><a href="/post/2020/11/oo-12-liskov-substitution-principle/">菜雞與物件導向 (12): 里氏替換原則</a></li>
         
         <li><a href="/post/2020/10/oo-11-open-closed-principle/">菜雞與物件導向 (11): 開放封閉原則</a></li>
@@ -206,8 +250,6 @@
         <li><a href="/post/2020/10/oo-10-single-responsibility-principle/">菜雞與物件導向 (10): 單一職責原則</a></li>
         
         <li><a href="/post/2020/09/oo-9-solid/">菜雞與物件導向 (9): SOLID</a></li>
-        
-        <li><a href="/post/2020/09/oo-8-cohesion-and-coupling/">菜雞與物件導向 (8): 內聚、耦合</a></li>
         
     </ul>
 </div>
@@ -230,7 +272,7 @@
                         </div>
                         <hr />
 <p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
-<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f11%2foo-13-interface-segregation-principle%2f" width="100%" frameborder=0></iframe>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f12%2foo-14-dependency-inversion-principle%2f" width="100%" frameborder=0></iframe>
                     </article>
                     
     
