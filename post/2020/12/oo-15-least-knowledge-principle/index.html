@@ -17,20 +17,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>C#: 字串插值 (String interpolation) 的格式化 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="C#: 字串插值 (String interpolation) 的格式化 - 伊果的沒人看筆記本">
+    <title>菜雞與物件導向 (15): 最少知識原則 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞與物件導向 (15): 最少知識原則 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2020-08-09T20:35:00&#43;08:00">
+    <meta property="article:published_time" content="2020-12-20T23:57:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2020-08-09T20:35:00&#43;08:00">
+    <meta property="article:modified_time" content="2020-12-20T23:57:00&#43;08:00">
         
     <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
-    <meta name="description" content="紀錄一下 C# 關於 字串插值 (String interpolation) 的操作和數字、貨幣、時間的格式化">
+    <meta name="description" content="最少知識原則 (Least Knowledge Principle)：只和直接的朋友溝通，不和陌生人說話">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/post/2020/08/csharp-string-interpolation/">
+    <meta property="og:url" content="https://igouist.github.io/post/2020/12/oo-15-least-knowledge-principle/">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/normalize.css">
@@ -88,13 +88,15 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">C#: 字串插值 (String interpolation) 的格式化</h1>
+                            <h1 class="post-title">菜雞與物件導向 (15): 最少知識原則</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2020-8-9,
+                            2020-12-20,
                         </date>
                         
                         <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a></span>
                             
                                 <span class="meta-category"><a href="https://igouist.github.io/categories/csharp">CSharp</a></span>
                             
@@ -111,42 +113,67 @@
                         </div>
                         
                         <div class="post-content">
-                            <p>自從 C# 有了 <a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/tokens/interpolated">字串插值</a> 這東西之後，我就一直是愛用者。畢竟比起 <code>string.format</code> 這東西可是看起來優雅多了。例如：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> message = <span style="color:#e6db74">$&#34;哈囉，{userName} 您的點數將於 {cutoffTime} 到期。&#34;</span>;
-</code></pre></div><p>簡潔又明瞭，一眼就能理解字串內容。實在是挺方便，後來發現這東西還有一些延伸用法，這邊就稍加紀錄一下：</p>
-<p>字串插值中能夠做<strong>簡易計算</strong>，例如：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> message = <span style="color:#e6db74">$&#34;您輸入的數值為：{a}、{b}。他們相加為：{a + b}&#34;</span>;
-</code></pre></div><p>同時，在字串插值時可以針對內容作格式化，只需要用 <code>:</code> 來區隔，妥善運用可以省下一堆 <code>ToString()</code> 的空間。</p>
-<p>例如當我們要將<strong>時間</strong>格式化的時候，就可以：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> date = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>);
-<span style="color:#66d9ef">var</span> message = <span style="color:#e6db74">$&#34;您的商品已於 {date:yyyy/MM/dd} 抵達。&#34;</span>;
-<span style="color:#75715e">// 您的商品已於 2020/08/09 抵達。
-</span></code></pre></div><p>另外，<strong>數值</strong>當然也可以格式化，不過數值的應用比較複雜，主要是用來定下小數點、百分比等符號的位置。
-可以參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/standard/base-types/custom-numeric-format-strings">自訂數值格式字串 - Microsoft Docs</a></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> cost = <span style="color:#ae81ff">2100</span>;
-<span style="color:#66d9ef">var</span> message1 = <span style="color:#e6db74">$&#34;您的商品一共是 {cost:#,###} 元&#34;</span>;
-<span style="color:#75715e">// 用 # 可以替數字預留位置
-</span><span style="color:#75715e">// 您的商品一共是 2,100 元
-</span><span style="color:#75715e"></span>
-<span style="color:#66d9ef">var</span> message2 = <span style="color:#e6db74">$&#34;您的商品一共是 {cost:#,###.00} 元&#34;</span>;
-<span style="color:#75715e">// 也可以用 0 來預留位置，若該數字有值就會顯示該數字，沒有就會自動補 0
-</span><span style="color:#75715e">// 您的商品一共是 2,100.00 元
-</span></code></pre></div><p>而格式化也支援<strong>列舉</strong>，在同時顯示列舉的意義和值的時候會很有幫助：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// public enum Color { Red = 1, Blue = 2, Green = 3 };
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> color = Color.Blue;
-<span style="color:#e6db74">$&#34;編號 {color:D} 是 {color:G}&#34;</span>.Dump();
-<span style="color:#75715e">// 編號 2 是 Blue
-</span></code></pre></div><p>承上部分，由於 <code>:</code> 在字串插值裡已經有特殊意義了，因此想在字串插值中使用<strong>三元運算子</strong>，必須先用 <code>( )</code> 括起來，如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> message = <span style="color:#e6db74">$&#34;您的包裹 {(isArrival ? &#34;</span><span style="color:#960050;background-color:#1e0010">已</span><span style="color:#e6db74">&#34; : &#34;</span><span style="color:#960050;background-color:#1e0010">尚未</span><span style="color:#e6db74">&#34;)} 抵達門市&#34;</span>;
-</code></pre></div><p>對字串插值有興趣的朋友，也可用<a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/tutorials/exploration/interpolated-strings">微軟官方的教學課程</a>來試試呦。</p>
+                            <p>在<a href="/post/2020/12/oo-14-dependency-inversion-principle">上一篇</a>我們紀錄了依賴反轉原則，到此五大原則介紹完畢…是這樣嗎？太天真了！就像四天王總是五個人一樣，五大原則當然也有第六個！</p>
+<p>今天我們就來記錄五大原則中Ｌ位的第一候補：<strong>最少知識原則 (Least Knowledge Principle)</strong>。最少知識原則又被稱作<strong>迪米特法則 (Law of Demeter)</strong>，不多說直接上定義：</p>
+<blockquote>
+<p><strong>最少知識原則 (Least Knowledge Principle)：只和直接的朋友溝通，不和陌生人說話</strong></p>
+</blockquote>
+<p>那麼所謂的朋友是什麼呢？就是指這個物件或方法有直接相關的物件啦。例如例如當我們使用一個方法時，這個方法應該只認識：</p>
+<ul>
+<li>該方法所屬的類別</li>
+<li>該方法所接收的參數</li>
+<li>該方法中建立的類別</li>
+<li>該方法所屬的類別所依賴的對象</li>
+</ul>
+<p>除此之外對這個方法而言都是陌生人。什麼情況會遇到陌生人呢？有一個蠻常遇到的狀況就符合定義：當我們使用依賴對象的方法，該方法給了我們另一個類別時，我們就正在接觸毫無關係的陌生人。</p>
+<p>這個原則的要求就是：不要跟陌生人說話，就算是朋友介紹了他的朋友給你也一樣，不認識就是不認識，更不能拿陌生人的東西。換個方式就是說：<strong>不應該使用其他類別的方法所回傳的類別的方法</strong>。</p>
+<p>用文字的可能會有點繞口令，簡單來說就是像 <code>Foo.GetBoo().BooDoSomeThing()</code> 這種情況，我們不該去跟 <code>Foo</code> 要 <code>Boo</code> 回來然後使用 <code>Boo</code> 的方法，因為我們只認識 <code>Foo</code>，而不認識 <code>Boo</code>。</p>
+<p>畢竟，主人可以叫狗坐下，但主人不應該直接控制狗的腿坐下；當我們按下牆壁的開關時，是希望燈直接打開，而不是彈出兩條電線讓你自己接起來；當我們去餐廳時，會讓服務生替你把要求的餐點交給廚師烹調，而不是我們直接殺進去廚房對著廚師吼「你給我煮啊！」</p>
+<p>這種直接叫廚師煮給你看、直接伸手進去模組的黑盒子裡操作的做法，完全和<a href="/post/2020/07/oo-3-encapsulation">封裝</a>的概念背道而馳，腿的動作就應該讓狗去自己控制，讓燈泡亮就應該隱藏在開關之後。</p>
+<p>除了只和直接的朋友溝通，也就是只和直接依賴的類別互動，這個互動也是要講究一點的。畢竟朋友之間也還是會有共通的默契和距離，類別之間的互動也應該只做必要的溝通。</p>
+<p>這就是我們在封裝提過的「給程式碼隱私的空間」：為了避免物件之間的互動情況過於複雜，我們應該加以控制，把各自的工作封裝在各自的物件內部，使其只有必要的往來。因此最少知識原則也要求了：<strong>一個物件應該對其他物件應該只有最少的了解</strong>。</p>
+<p>到這邊讓我們稍微整理一下：</p>
+<ul>
+<li>只和直接的朋友溝通，不和陌生人說話：物件或方法應該只和自己及直接接觸的對象互動</li>
+<li>不應該使用其他類別的方法回傳的類別的方法：不該破壞封裝並造成額外且違反邏輯的互動</li>
+<li>一個物件對其他物件應該只有最少的了解：類別只開放 (Public) 必要的功能，並且類別之間應該只有必要的互動</li>
+</ul>
+<p>也就是說：<strong>只依賴應該依賴的對象，只開放應該開放的方法</strong>。</p>
+<p>聰明的朋友應該能從這邊看出最少知識原則的核心理念了，就是<strong>解除耦合</strong>。</p>
+<p>我們在<a href="/post/2020/09/oo-8-cohesion-and-coupling">耦合篇</a>提過，物件彼此有關聯就會產生耦合，而不好的耦合就會散發出臭味。為了方便管理和降低複雜性，減少臭味出現的機率，我們的目標就是追求耦合。</p>
+<p>相對於<a href="/post/2020/12/oo-14-dependency-inversion-principle">依賴反轉原則</a>利用<a href="/post/202007-oo-7-interface">抽象和介面</a>的方式在模組之間做出隔離和控制的作法。最少知識原則則是利用<a href="/post/202007-oo-3-encapsulation">封裝</a>的概念來解除耦合，畢竟，關聯越少耦合也越少嘛。</p>
+<p>所以我們可以說：良好的封裝就是符合最少知識原則的封裝。複雜性隱藏到自己內部，對外只開放必要的功能，並且只使用到直接關聯的對象，確保不會造成意外的耦合，且讓關聯的模組之間更加靠攏。如此一來，就能夠更加提高內聚、降低耦合了。</p>
+<p>然而，為了好好地切分朋友和陌生人，也可能會變成需要<strong>建立更多的中間類別</strong>，或是更多的依賴關係。</p>
+<p>例如人原本可以直接把電線接起來讓燈泡亮起來，但為了把電線使燈泡變亮這件事的複雜度封裝起來，我們就必須要有一個開關，再把電線放到開關後面去，變成了人按下開關，開關藉由電線點亮燈炮等等，整體來說會使系統內的類別變多。因此，在設計的時候也必須要考量到整個方法串的深度，可以用<a href="/post/2020/10/oo-10-single-responsibility-principle">單一職責</a>的角度下去衡量。請不要越封裝越細，類別越做越多，反而變成過度設計了。</p>
+<p>那麼，今天就記錄到這裡。由於最少知識原則的概念，大多在封裝篇和耦合篇的時候就已經偷渡完了，所以這邊就針對觀念簡單介紹，實務上處理類別間的耦合時，就可以稍微從最少知識原則的角度想一想，一定會有幫助的。那麼，我們下次見～</p>
 <h2 id="參考資料">參考資料</h2>
 <ul>
-<li><a href="https://dotblogs.com.tw/eyelash/2019/07/06/205834">【C# 6.0】字串插補（更容易插入變數） - EY＊研究院</a></li>
-<li><a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/tokens/interpolated">字串插值 - Microsoft Docs</a></li>
-<li><a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/tutorials/string-interpolation">C# 中的字串插補 - Microsoft Docs</a></li>
-<li><a href="https://docs.microsoft.com/zh-tw/dotnet/standard/base-types/custom-numeric-format-strings">自訂數值格式字串 - Microsoft Docs</a></li>
-<li><a href="https://docs.microsoft.com/zh-tw/dotnet/standard/base-types/enumeration-format-strings">列舉格式字串 - Microsoft Docs</a></li>
-<li><a href="https://docs.microsoft.com/zh-tw/dotnet/standard/base-types/formatting-types">.NET 中的格式類型 - Microsoft Docs</a></li>
+<li><a href="https://dotblogs.com.tw/hatelove/2010/10/16/least-knowledge-principle">[ASP.NET]91之ASP.NET由淺入深 不負責講座 Day19 - LoD/LKP 最少知識原則 - In 91</a></li>
+<li><a href="https://medium.com/@ckpattern35/ck-patt-%E8%A8%AD%E8%A8%88%E6%A8%A1%E5%BC%8F-11-%E8%BF%AA%E7%B1%B3%E7%89%B9%E6%B3%95%E5%89%87-demeter-law-931fefc4abda">[CK Patt 設計模式#11] 迪米特法則(Demeter Law)</a></li>
+<li><a href="https://yuchitung.github.io/2019/06/24/least-knowledge-principle/">最小知識原則 - Yuchi 的學習筆記</a></li>
+<li><a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87solid-3_law-of-demeterlod-%E7%8B%84%E7%B1%B3%E7%89%B9%E6%B3%95%E5%89%87/">Object Oriented物件導向設計原則SOLID-3:Law of Demeter(LoD) 狄米特法則 - Sian</a></li>
+<li><a href="http://c.biancheng.net/view/1331.html">迪米特法則——面向對象設計原則</a></li>
+<li><a href="http://glj8989332.blogspot.com/2018/04/design-pattern-law-of-demeter.html">[Design Pattern] 迪米特法則 (Law of Demeter) - Code Paradise</a></li>
+<li><a href="https://www.cnblogs.com/gaochundong/p/least_knowledge_principle.html">最少知识原则（Least Knowledge Principle） - 熵碼匠藝</a></li>
+<li><a href="https://www.ithome.com.tw/voice/98670">封裝與迪米特法則 - 林信良</a></li>
+</ul>
+<h2 id="同系列文章">同系列文章</h2>
+<ul>
+<li><a href="/post/2020/07/oo-0-object-oriented">菜雞與物件導向 (0): 前言</a></li>
+<li><a href="/post/2020/07/oo-1-class-object">菜雞與物件導向 (1): 類別、物件</a></li>
+<li><a href="/post/2020/07/oo-2-constructor-overload">菜雞與物件導向 (2): 建構式、多載</a></li>
+<li><a href="/post/2020/07/oo-3-encapsulation">菜雞與物件導向 (3): 封裝</a></li>
+<li><a href="/post/2020/07/oo-4-inheritance">菜雞與物件導向 (4): 繼承</a></li>
+<li><a href="/post/2020/07/oo-5-polymorphism">菜雞與物件導向 (5): 多型</a></li>
+<li><a href="/post/2020/07/oo-6-abstract-override">菜雞與物件導向 (6): 抽象、覆寫</a></li>
+<li><a href="/post/2020/07/oo-7-interface">菜雞與物件導向 (7): 介面</a></li>
+<li><a href="/post/2020/09/oo-8-cohesion-and-coupling">菜雞與物件導向 (8): 內聚、耦合</a></li>
+<li><a href="/post/2020/09/oo-9-solid">菜雞與物件導向 (9): SOLID</a></li>
+<li><a href="/post/2020/10/oo-10-single-responsibility-principle">菜雞與物件導向 (10): 單一職責原則</a></li>
+<li><a href="/post/2020/10/oo-11-open-closed-principle">菜雞與物件導向 (11): 開放封閉原則</a></li>
+<li><a href="/post/2020/11/oo-12-liskov-substitution-principle">菜雞與物件導向 (12): 里氏替換原則</a></li>
+<li><a href="/post/2020/11/oo-13-interface-segregation-principle">菜雞與物件導向 (13): 介面隔離原則</a></li>
+<li><a href="/post/2020/12/oo-14-dependency-inversion-principle">菜雞與物件導向 (14): 依賴反轉原則</a></li>
 </ul>
                         </div>
 
@@ -156,15 +183,15 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/2020/08/system-environment/">C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑</a></li>
+        <li><a href="/post/2020/12/oo-14-dependency-inversion-principle/">菜雞與物件導向 (14): 依賴反轉原則</a></li>
         
-        <li><a href="/post/2020/07/code-style/">C#: 程式碼風格備忘</a></li>
+        <li><a href="/post/2020/11/oo-13-interface-segregation-principle/">菜雞與物件導向 (13): 介面隔離原則</a></li>
         
-        <li><a href="/post/2020/06/bit-flags-and-enum/">C#: 位元旗標 (Bit flag) 與列舉</a></li>
+        <li><a href="/post/2020/11/oo-12-liskov-substitution-principle/">菜雞與物件導向 (12): 里氏替換原則</a></li>
         
-        <li><a href="/post/2020/04/epplus/">EPPlus —— 輕鬆處理 Excel</a></li>
+        <li><a href="/post/2020/10/oo-11-open-closed-principle/">菜雞與物件導向 (11): 開放封閉原則</a></li>
         
-        <li><a href="/post/2020/07/oo-7-interface/">菜雞與物件導向 (7): 介面</a></li>
+        <li><a href="/post/2020/10/oo-10-single-responsibility-principle/">菜雞與物件導向 (10): 單一職責原則</a></li>
         
     </ul>
 </div>
@@ -174,9 +201,11 @@
                             
                             <ul class="clearfix">
                                 
-                                <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
+                                <li><a href="https://igouist.github.io/tags/newbieguide">NewbieGuide</a></li>
                                 
-                                <li><a href="https://igouist.github.io/tags/dotnet">Dotnet</a></li>
+                                <li><a href="https://igouist.github.io/tags/object-oriented">Object-Oriented</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
                                 
                                 <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
                                 
@@ -185,7 +214,7 @@
                         </div>
                         <hr />
 <p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
-<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f08%2fcsharp-string-interpolation%2f" width="100%" frameborder=0></iframe>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f12%2foo-15-least-knowledge-principle%2f" width="100%" frameborder=0></iframe>
                     </article>
                     
     
