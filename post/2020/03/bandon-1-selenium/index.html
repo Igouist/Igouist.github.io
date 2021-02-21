@@ -122,7 +122,7 @@
 </blockquote>
 <p>最近在公司的時候有個莫大的煩惱，就是關於辦公室團購這回事兒。現在待著的公司主要是從 <a href="https://dinbendon.net/">Dinbendon</a> 這套系統來揪團購，舉凡品客、火鍋等都在上面訂過，據我觀察最受歡迎出現最多次的當屬雞排了。煩惱就在於，每次都會錯過雞排的團購，光在辦公室聞著四面八方傳來的雞排香味，就令人無法忍受！因此趁著這個機會，來嘗試能不能像之前的 <a href="https://hackmd.io/@IgouistBlog/ptt_crawler_and_listener">PTT</a> 一樣來弄出一個通知，順便玩玩最近看到的工具。這系列的文章會分成多個部分，主要是以使用的工具來分集。</p>
 <p>由於在從團購網取得訂單的過程中需要跟網頁進行互動，因此這次要使用的工具是 <strong><a href="https://www.selenium.dev/">Selenium</a></strong>。</p>
-<p><strong>Selenium 是一個對網頁做自動化測試的工具</strong>，並且也支援相當多語言可以使用，能夠經由腳本或錄製的方式對瀏覽器進行操作。例如我同事便使用 C# 和 Hangfire 來完成訂便當的目標（對，這麼無聊的人不只我一個），而我則用相對比較熟悉的 Python 來實作。</p>
+<p><strong>Selenium 是一個對網頁做自動化測試的工具</strong>，但我個人比較常在爬蟲的時候用到XD。它能夠經由腳本或錄製的方式對瀏覽器進行操作，並且也支援相當多語言可以使用，例如我同事便使用 C# 和 Hangfire 來完成訂便當的目標（對，這麼無聊的人不只我一個），而我則用相對比較熟悉的 Python 來實作。</p>
 <p>關於本篇主要的操作和步驟，主要參考 <a href="https://medium.com/@NorthBei/%E5%9C%A8windows%E4%B8%8A%E5%AE%89%E8%A3%9Dpython-selenium-%E7%B0%A1%E6%98%93%E6%95%99%E5%AD%B8-eade1cd2d12d">在 Windows 上安裝 Python &amp; Selenium 簡易教學</a> 這篇文章，在此感謝；而各語言的語法等等，可以翻閱 <a href="https://selenium-python-zh.readthedocs.io/en/latest/index.html">教學文檔</a>。</p>
 <h2 id="準備工作">準備工作</h2>
 <p>開始寫腳本之前，確保 Python 已經安裝完畢，並且先下載好 <a href="https://pypi.org/project/selenium/">Selenium 套件包</a>。</p>
@@ -152,7 +152,7 @@ driver<span style="color:#f92672">.</span>get(url)  <span style="color:#75715e">
 <p><img src="https://i.imgur.com/741auju.png" alt=""></p>
 <p>接著想要看到訂單內容，還必須要輸入帳號密碼和驗證碼才行，這也就是前面提到的需要互動的部分。先使用 F12 的使用者工具觀察欄位的名稱，以利後續 Selenium 的抓取 <del>，爬蟲的基本就在於拆人家的房子</del></p>
 <p><img src="https://i.imgur.com/3SWOJtJ.png" alt=""></p>
-<p>確認名稱之後就可以添加指令，讓 Selenium 幫我們輸入看看</p>
+<p>確認名稱之後就可以添加指令，讓 Selenium 幫我們輸入看看。這邊要注意我們加上了 <code>sleep()</code> 來暫停一下，因為在 Selenium 的操作之間，建議要加上些許延遲，避免畫面動作都還沒完成，指令就一股腦丟完了囧。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">2</span>) <span style="color:#75715e"># 演一下</span>
 
 username <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Hello&#34;</span>
@@ -189,6 +189,23 @@ driver<span style="color:#f92672">.</span>find_element_by_name(<span style="colo
 <h2 id="整理及包裝">整理及包裝</h2>
 <p>接著流程一如前部分，觀察網頁結構並且將目標取出。</p>
 <p>這邊先將左半部分的 Table 拿出來，接著針對表格的每一列取出該元素之後取文字。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#75715e"># 取出訂單表格列</span>
+rows <span style="color:#f92672">=</span> driver<span style="color:#f92672">.</span>find_elements_by_css_selector(
+    <span style="color:#e6db74">&#34;div#inProgressBox&gt;table&gt;tbody&gt;tr&#34;</span>)
+
+<span style="color:#66d9ef">if</span> len(rows) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+    driver<span style="color:#f92672">.</span>close()
+    <span style="color:#66d9ef">return</span> list()
+    
+<span style="color:#75715e"># 取出每一列資料的文字</span>
+bandons <span style="color:#f92672">=</span> [list(map(getText, row<span style="color:#f92672">.</span>find_elements_by_css_selector(
+    <span style="color:#e6db74">&#34;td&gt;div&gt;a&gt;span&#34;</span>))) <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> rows]  
+driver<span style="color:#f92672">.</span>close()
+
+<span style="color:#75715e"># 做成一張表</span>
+tableHeader <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;人數&#39;</span>, <span style="color:#e6db74">&#39;發起人&#39;</span>, <span style="color:#e6db74">&#39;目標&#39;</span>]
+bandons_df <span style="color:#f92672">=</span> pandas<span style="color:#f92672">.</span>DataFrame(bandons, columns<span style="color:#f92672">=</span>tableHeader)
+</code></pre></div><p>目前為止整體程式碼如下：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> selenium <span style="color:#f92672">import</span> webdriver
 <span style="color:#f92672">import</span> re
 <span style="color:#f92672">import</span> time
