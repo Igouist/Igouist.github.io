@@ -92,6 +92,85 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2020/08/powershell-beauty/" title="Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh" >Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-8-15,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/tools">Tools</a></span>
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p>最近在兩天內經歷了記憶體死去、系統毀損、機殼碎裂等等，終於電腦重灌。一堆設定都要重弄，正好也是個機會，這篇順手記一下常用好幫手 Powershell 的美化步驟。</p>
+<p>先放一張施工後的圖鎮樓：</p>
+<p><img src="https://i.imgur.com/417skJs.png" alt=""></p>
+<p>可以在開始圖示上用右鍵打開選單，之後點選 Powershell；或是 Win + X 打開選單，然後按 I 或 A （後者會以系統管理員身分開啟）就能開啟了。</p>
+<p>如果選單打開還是 CMD 而不是 Powershell 的，可以先去切換成 Powershell，真的是比較好用啦（<a href="https://www.microsoft.com/zh-tw/p/windows-terminal/9n0dx20hk701?activetab=pivot:overviewtab">Windows Terminal</a> 笑而不語）</p>
+<p>剛打開的畫面是這樣的：
+<img src="https://i.imgur.com/JE6BTSU.png" alt=""></p>
+<p>抱歉，光細明體我就不太行了。所以接下來就從字型這些內建設定開始！</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2020/08/powershell-beauty/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2020/08/csharp-string-interpolation/" title="C#: 字串插值 (String interpolation) 的格式化" >C#: 字串插值 (String interpolation) 的格式化</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-8-9,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p>自從 C# 有了 <a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/tokens/interpolated">字串插值</a> 這東西之後，我就一直是愛用者。畢竟比起 <code>string.format</code> 這東西可是看起來優雅多了。例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> message = <span style="color:#e6db74">$&#34;哈囉，{userName} 您的點數將於 {cutoffTime} 到期。&#34;</span>;
+</code></pre></div><p>簡潔又明瞭，一眼就能理解字串內容。實在是挺方便，後來發現這東西還有一些延伸用法，這邊就稍加紀錄一下：</p>
+<p>字串插值中能夠做<strong>簡易計算</strong>，例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> message = <span style="color:#e6db74">$&#34;您輸入的數值為：{a}、{b}。他們相加為：{a + b}&#34;</span>;
+</code></pre></div><p>同時，在字串插值時可以針對內容作格式化，只需要用 <code>:</code> 來區隔，妥善運用可以省下一堆 <code>ToString()</code> 的空間。</p>
+<p>例如當我們要將<strong>時間</strong>格式化的時候，就可以：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> date = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2020</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>);
+<span style="color:#66d9ef">var</span> message = <span style="color:#e6db74">$&#34;您的商品已於 {date:yyyy/MM/dd} 抵達。&#34;</span>;
+<span style="color:#75715e">// 您的商品已於 2020/08/09 抵達。
+</span></code></pre></div><p>另外，<strong>數值</strong>當然也可以格式化，不過數值的應用比較複雜，主要是用來定下小數點、百分比等符號的位置。
+可以參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/standard/base-types/custom-numeric-format-strings">自訂數值格式字串 - Microsoft Docs</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> cost = <span style="color:#ae81ff">2100</span>;
+<span style="color:#66d9ef">var</span> message1 = <span style="color:#e6db74">$&#34;您的商品一共是 {cost:#,###} 元&#34;</span>;
+<span style="color:#75715e">// 用 # 可以替數字預留位置
+</span><span style="color:#75715e">// 您的商品一共是 2,100 元
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">var</span> message2 = <span style="color:#e6db74">$&#34;您的商品一共是 {cost:#,###.00} 元&#34;</span>;
+<span style="color:#75715e">// 也可以用 0 來預留位置，若該數字有值就會顯示該數字，沒有就會自動補 0
+</span><span style="color:#75715e">// 您的商品一共是 2,100.00 元
+</span></code></pre></div>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2020/08/csharp-string-interpolation/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2020/08/system-environment/" title="C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑" >C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑</a>
                                 </h1>
                             </header>
@@ -437,106 +516,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2020/07/oo-2-constructor-overload/" title="菜雞與物件導向 (2): 建構式、多載" >菜雞與物件導向 (2): 建構式、多載</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-7-12,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a></span>
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p>我就直接說了，有用前面的程式碼區塊的人，絕對執行不了。因為我們建立哥布林和戰士這兩張卡片的時候，根本就沒有給他們數值呀！</p>
-<p>雖然可以先呼叫出來再賦值…</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card();
-goblin.Name = <span style="color:#e6db74">&#34;哥布林&#34;</span>;
-goblin.Attack = <span style="color:#ae81ff">3</span>;
-goblin.Health = <span style="color:#ae81ff">2</span>;
-<span style="color:#75715e">/* ...其他賦值 */</span>
-</code></pre></div><p>這實在相當占空間，也有點奇怪。畢竟如果是阿福（狗），一出生的時候應該就確定了一些特徵才對，例如品種、血型、眼睛顏色這種。並不會出生後過一陣子，才突然決定這些東西，既然如此，我們在產生物件的時候，當然也會希望在<strong>建立的同時就先決定好一部份內容</strong>。</p>
-<p>這時候我們就可以藉由<strong>建構式</strong>的方式，在建立物件時就進行一些我們想要的操作。</p>
-<p>事實上，<strong>當我們呼叫 <code>new Card()</code> 的時候</strong>（不覺得這個 () 很有呼叫方法的感覺嗎？）<strong>我們就是正在調用 Card 的建構式</strong>。而當我們沒有特別去定義建構式的時候，就會直接使用內建的建構式去幫我們產生物件。</p>
-<p>現在我們替 Card 新增一個建構式：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
-{
-    <span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">int</span> attack, <span style="color:#66d9ef">int</span> health)
-    {
-        <span style="color:#66d9ef">this</span>.Name = name;
-        <span style="color:#66d9ef">this</span>.Attack = attack;
-        <span style="color:#66d9ef">this</span>.Health = health;
-    }
-    <span style="color:#75715e">/* ... 其他屬性和方法 */</span>
-}
-</code></pre></div><p>在 C# 的時候，建構式必須和類別同名，且不需要定義回傳類型。當我們有了建構式，剛剛的例子就可以改寫成：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;哥布林&#34;</span>, attack: <span style="color:#ae81ff">3</span>, health: <span style="color:#ae81ff">2</span>);
-<span style="color:#66d9ef">var</span> warrior = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;戰士&#34;</span> , attack: <span style="color:#ae81ff">4</span>, health: <span style="color:#ae81ff">3</span>);
-warrior.Hit(goblin);
-</code></pre></div><p><strong>建構式也就是建立這個物件時執行的函式</strong>，通常會用來進行初始化，也就是做一些建立物件必要的準備。例如傳遞必要屬性或是建構需要的其他物件、或是給予私有屬性初始值等等，例如說我們的卡牌一建立，就會需要知道它的名字和戰鬥力，這樣才有卡牌的感覺，而不該像一些<a href="https://zh.wikipedia.org/wiki/%E6%AD%A6%E8%97%A4%E9%81%8A%E6%88%B2">壞決鬥者</a>邊打牌邊偷偷印卡。</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-2-constructor-overload/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2020/07/oo-1-class-object/" title="菜雞與物件導向 (1): 類別、物件" >菜雞與物件導向 (1): 類別、物件</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-7-12,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a></span>
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <blockquote>
-<p>直覺上你當然知道什麼是物件；物件就在你的身邊。</p>
-<p>汽車、iPhone、收音機、吐司機、廚房用具等等，你說得出來的都是。</p>
-<p>　　——《深入淺出學會編寫程式》</p>
-</blockquote>
-<p>什麼是物件？一切都是物件；物件是什麼？物件是一切事物的抽象化。</p>
-<p>物件導向試圖讓抽象的程式碼，更貼近於我們的實際生活，其認為一切是由各式各樣的人事物互動所組成的，因此有了物件這個共通、最基本的概念。</p>
-<p>關於把概念抽象化成物件的過程，可以參考 <a href="https://ithelp.ithome.com.tw/articles/10201905">一個語言如果不改變你的思考方式，就不值得學？談程式語言的本質</a> 這篇，對於抽象化的部份我認為描述得很好。</p>
-<p>現在我們知道，物件就是用來表達「我們知道的某個東西」，且可以是「任何東西」，例如說狗就是一個物件，食物也是一個物件。而這些物件之間會彼此互動，例如說狗有吃東西這個<strong>動作</strong>，我們就能夠試著用物件來表達「狗吃食物」這個動作；同時物件也會有一些專屬於它的<strong>特徵</strong>，例如說狗可能有名字、毛色等等。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">Dog afu = <span style="color:#66d9ef">new</span> Dog(); <span style="color:#75715e">// 阿福是一隻狗
-</span><span style="color:#75715e"></span>Console.Write(afu.Color); <span style="color:#75715e">// 阿福是黑色的
-</span><span style="color:#75715e"></span>afu.Eat(food); <span style="color:#75715e">// 阿福會吃食物
-</span></code></pre></div><p>理解物件的概念是相當直覺且迅速的，畢竟你我身邊有著數不清的東西，它們都是一件一件的物件，但這樣的理解還不夠明確。</p>
-<p>就像前文所引的<a href="https://ithelp.ithome.com.tw/articles/10201905">談程式語言的本質</a>文中所提到的，在抽象化的同時我們必然要選擇。</p>
-<p>例如說狗是一個物件；那麼狗擁有的那些東西呢？狗耳朵？狗的聲音？也是物件嗎？狗又能做哪些動作？</p>
-<p>狗是單純一個物件，還是很多個物件組合而成的？狗肺是物件嗎？細胞是物件嗎？我們要做到什麼程度呢？</p>
-<p>我們需要選擇怎麼去描述「狗」，我們需要將它用程式碼的方式定義出來。</p>
-<p><strong>我們需要類別</strong>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color;
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Eat(IFood food) { <span style="color:#75715e">/* 進食與消化之類的 */</span> };
-}
-</code></pre></div><p>藉由我們定義的類別，就可以從類別中實例化（＝建立）出物件。</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-1-class-object/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -616,6 +595,14 @@ warrior.Hit(goblin);
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2021/03/sekiro-darksouls3-clear/" title="隻狼、黑暗靈魂３　白金！">隻狼、黑暗靈魂３　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/03/visual-studio-bookmark/" title="Visual Studio: 書籤（bookmarks）">Visual Studio: 書籤（bookmarks）</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2021/01/oo-ex1-end2020/" title="菜雞與物件導向 (Ex1): 小結">菜雞與物件導向 (Ex1): 小結</a>
     </li>
     
@@ -645,14 +632,6 @@ warrior.Hit(goblin);
     
     <li>
         <a href="https://igouist.github.io/post/2020/11/dark-reader/" title="Dark Reader —— 暗黑模式愛好者的 Chrome 必備套件">Dark Reader —— 暗黑模式愛好者的 Chrome 必備套件</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle/" title="菜雞與物件導向 (12): 里氏替換原則">菜雞與物件導向 (12): 里氏替換原則</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2020/10/oo-11-open-closed-principle/" title="菜雞與物件導向 (11): 開放封閉原則">菜雞與物件導向 (11): 開放封閉原則</a>
     </li>
     
 </ul>
@@ -685,6 +664,14 @@ warrior.Hit(goblin);
     </li>
     
     <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/life/">life (1)</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (17)</a>
     </li>
     
@@ -697,7 +684,7 @@ warrior.Hit(goblin);
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (12)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (13)</a>
     </li>
     
     <li>
@@ -741,9 +728,13 @@ warrior.Hit(goblin);
     
     <a href="https://igouist.github.io/tags/excel/">excel</a>
     
+    <a href="https://igouist.github.io/tags/game/">game</a>
+    
     <a href="https://igouist.github.io/tags/heroku/">heroku</a>
     
     <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/life/">life</a>
     
     <a href="https://igouist.github.io/tags/linux/">linux</a>
     
