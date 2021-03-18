@@ -46,7 +46,8 @@
       <pubDate>Fri, 01 Jan 2021 23:50:49 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2021/01/oo-ex1-end2020/</guid>
-      <description>&lt;p&gt;隨著 2020 進到了 2021，菜雞與物件導向也推進到了五大原則結束，可以暫時告一段落了。&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/hycMTRZ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;隨著 2020 進到了 2021，菜雞與物件導向也推進到了五大原則結束，可以暫時告一段落了。&lt;/p&gt;
 &lt;p&gt;最初和朋友約好了要把公司新訓學到的東西做個整理（廣告一下他的部落格：&lt;a href=&#34;https://sunnyday0932.github.io/&#34;&gt;Sian&lt;/a&gt;），只是沒想到因為太常發廢文偷懶，大半年才推進到物件導向的基礎而已，甚至占不到新訓內容的十分之一。希望 2021 能繼續推進，把這部份的坑給填一填，然後把前面的文章也重構一下，只是按照我的個性，可能又會忍不住開新的坑吧，哈哈。&lt;/p&gt;
 &lt;p&gt;至於物件導向相關的心得和紀錄，也就是這個系列，偶而有想到或是有所體悟的時候再發上來吧，暫時想先把前面隨手寫凌亂文章給整一整先。在這個十幾篇的短系列，記錄了從類別與物件開始，到耦合、內聚及五大原則，每個主題的心得。這邊稍微做個小整理：&lt;/p&gt;
 &lt;h4 id=&#34;類別物件post202007oo-1-class-object&#34;&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-1-class-object&#34;&gt;類別、物件&lt;/a&gt;&lt;/h4&gt;
@@ -67,7 +68,8 @@
       <pubDate>Sun, 20 Dec 2020 23:57:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/12/oo-15-least-knowledge-principle/</guid>
-      <description>&lt;p&gt;在&lt;a href=&#34;https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle&#34;&gt;上一篇&lt;/a&gt;我們紀錄了依賴反轉原則，到此五大原則介紹完畢…是這樣嗎？太天真了！就像四天王總是五個人一樣，五大原則當然也有第六個！&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/FOWZ8zY.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在&lt;a href=&#34;https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle&#34;&gt;上一篇&lt;/a&gt;我們紀錄了依賴反轉原則，到此五大原則介紹完畢…是這樣嗎？太天真了！就像四天王總是五個人一樣，五大原則當然也有第六個！&lt;/p&gt;
 &lt;p&gt;今天我們就來記錄五大原則中Ｌ位的第一候補：&lt;strong&gt;最少知識原則 (Least Knowledge Principle)&lt;/strong&gt;。最少知識原則又被稱作&lt;strong&gt;迪米特法則 (Law of Demeter)&lt;/strong&gt;，不多說直接上定義：&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;最少知識原則 (Least Knowledge Principle)：只和直接的朋友溝通，不和陌生人說話&lt;/strong&gt;&lt;/p&gt;
@@ -88,7 +90,8 @@
       <pubDate>Sun, 13 Dec 2020 21:53:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle/</guid>
-      <description>&lt;p&gt;在聊依賴反轉之前，先讓我們聊聊什麼是依賴，所謂的依賴就是一種「受到某個東西影響、牽制」的狀態。例如說如果有個像我一樣的肥宅每天一定要來一片雞排才能療癒身心，那我就是依賴雞排；同樣的，如果有個大叔不抽菸就會全身不舒服，就是對香菸有所依賴。當有「必須要藉由某個人事物來達到目的」的狀況時，就是依賴。&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ywiHuis.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在聊依賴反轉之前，先讓我們聊聊什麼是依賴，所謂的依賴就是一種「受到某個東西影響、牽制」的狀態。例如說如果有個像我一樣的肥宅每天一定要來一片雞排才能療癒身心，那我就是依賴雞排；同樣的，如果有個大叔不抽菸就會全身不舒服，就是對香菸有所依賴。當有「必須要藉由某個人事物來達到目的」的狀況時，就是依賴。&lt;/p&gt;
 &lt;p&gt;而在程式設計裡面的概念也差不多，如果&lt;strong&gt;Ａ模組直接受到Ｂ模組的影響，我們就稱Ａ依賴了Ｂ&lt;/strong&gt;，最明顯的狀況就是Ａ模組需要藉由Ｂ模組的實例來完成某個功能的時候，例如「匯出報表」功能建立了一個「Excel 控制類別」的實例以建立檔案；或是「會員查詢」功能建立了一個「DB 連線」的實例來進入資料庫取得會員資料，諸如此類由Ａ模組直接藉由Ｂ模組的實例來完成想要的動作，就是依賴。&lt;/p&gt;
 &lt;h2 id=&#34;依賴與耦合&#34;&gt;依賴與耦合&lt;/h2&gt;
 &lt;p&gt;我們在之前的&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;耦合篇&lt;/a&gt;提過，如果模組和另一個模組之間有關連，那這兩者之間就耦合。以此來看，依賴就是一種耦合的關係，那麼，依賴是健康還是不健康的耦合呢？現在讓我們用&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-5-polymorphism&#34;&gt;多型篇&lt;/a&gt;用過的「老闆徵工程師」的例子來舉例一下：現在有間小小公司，老闆請來了小明當工程師，並請他開工撰寫產品程式碼。&lt;/p&gt;
@@ -162,7 +165,8 @@ rpmbuild --bb openssl-libs-ami.spec.txt
       <pubDate>Sun, 15 Nov 2020 12:00:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle/</guid>
-      <description>&lt;p&gt;今天要記錄的是介面隔離原則，顧名思義是和介面高度相關的原則。因此在閱讀本篇之前，可能需要先對&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-7-interface&#34;&gt;介面&lt;/a&gt;有一點了解呦。&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/itHN6VZ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;今天要記錄的是介面隔離原則，顧名思義是和介面高度相關的原則。因此在閱讀本篇之前，可能需要先對&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-7-interface&#34;&gt;介面&lt;/a&gt;有一點了解呦。&lt;/p&gt;
 &lt;p&gt;事情就從上一篇&lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle&#34;&gt;里氏替換原則&lt;/a&gt;的鳥類物流公司開始說起。老闆痛定思痛，決定先用&lt;strong&gt;介面&lt;/strong&gt;先規定好物流士們的應徵條件，例如裝貨、卸貨、飛行、必須有帥氣的喙等等。&lt;/p&gt;
 &lt;p&gt;這道命令下來後，倉庫們的企鵝都慌了，來檢查的編譯器瘋狂跳出 Error:「您未實作 IBird 的 Fly() 方法！」這下怎麼辦呢，為了要保住飯碗，企鵝們就必須實作出飛行才行，可是企鵝真的就不會飛呀！&lt;/p&gt;
 &lt;p&gt;這下子企鵝們只剩下兩個選擇：不實作飛行，但是就不能被當成物流士，最後就會被開除；或是……空實作。&lt;/p&gt;
@@ -198,7 +202,8 @@ rpmbuild --bb openssl-libs-ami.spec.txt
       <pubDate>Sun, 01 Nov 2020 11:31:44 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle/</guid>
-      <description>&lt;h2 id=&#34;定義&#34;&gt;定義&lt;/h2&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ZAuxFRy.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;定義&#34;&gt;定義&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;里氏替換原則 (Liskov Substitution Principle)：子類別必須能夠替換父類別&lt;/strong&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -216,7 +221,8 @@ rpmbuild --bb openssl-libs-ami.spec.txt
       <pubDate>Sun, 25 Oct 2020 11:58:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/10/oo-11-open-closed-principle/</guid>
-      <description>&lt;h2 id=&#34;定義&#34;&gt;定義&lt;/h2&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/6pQOti2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;定義&#34;&gt;定義&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;開放封閉原則 (Open-Close Principle)：軟體實體（類別、模組、函式等等）應該對擴展開放，而對修改封閉&lt;/strong&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -270,7 +276,8 @@ rpmbuild --bb openssl-libs-ami.spec.txt
       <pubDate>Fri, 02 Oct 2020 11:03:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle/</guid>
-      <description>&lt;p&gt;我們在前面的&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;內聚和耦合&lt;/a&gt;有提到過，內聚並不是無腦把相關的程式碼都封在一起就好了，也有分成健康的和不健康的。但我們要怎麼知道這個類別是否足夠健康呢？單一職責原則就是很好的檢驗方式，這篇就讓我們來紀錄一下。&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/VyyeaYz.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;我們在前面的&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;內聚和耦合&lt;/a&gt;有提到過，內聚並不是無腦把相關的程式碼都封在一起就好了，也有分成健康的和不健康的。但我們要怎麼知道這個類別是否足夠健康呢？單一職責原則就是很好的檢驗方式，這篇就讓我們來紀錄一下。&lt;/p&gt;
 &lt;h2 id=&#34;定義&#34;&gt;定義&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;單一職責原則 (Single Responsibility Principle)&lt;/strong&gt; 顧名思義，就是一個類別應該&lt;strong&gt;只負責一個職責&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;但是這樣太過籠統了，「職責」相當容易產生誤會，容易變成各說各話。&lt;s&gt;畢竟咱們工程師最愛戰定義了嘛。&lt;/s&gt;&lt;/p&gt;
@@ -318,7 +325,8 @@ student.ID.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 1
       <pubDate>Sun, 20 Sep 2020 13:51:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/09/oo-9-solid/</guid>
-      <description>&lt;p&gt;終於進入了原則篇，接下來的幾篇我們會介紹幾個物件導向的原則（基本上就是指 SOLID 原則）。因此這篇就讓我 &lt;s&gt;水一下&lt;/s&gt; 當成後半段的目錄，方便之後可以把相關的部分整理進來。&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/U7iWMT9.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;終於進入了原則篇，接下來的幾篇我們會介紹幾個物件導向的原則（基本上就是指 SOLID 原則）。因此這篇就讓我 &lt;s&gt;水一下&lt;/s&gt; 當成後半段的目錄，方便之後可以把相關的部分整理進來。&lt;/p&gt;
 &lt;h4 id=&#34;為什麼我們需要這些原則&#34;&gt;為什麼我們需要這些原則？&lt;/h4&gt;
 &lt;p&gt;我們在前面的章節已經說明了一些物件導向的特性，例如繼承和多型等等。然而我們並沒有討論到怎麼運用、或是怎樣設計才能算是更好的、更優雅的、更符合物件導向精神的；我們並沒有提到一個評估的標準，或是指引一個更好的方向。&lt;/p&gt;
 &lt;p&gt;然而，混亂的使用物件導向對整個專案的毀滅性甚至比乾脆不使用物件導向還高。&lt;/p&gt;
@@ -335,7 +343,8 @@ student.ID.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 1
       <pubDate>Sun, 13 Sep 2020 23:56:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling/</guid>
-      <description>&lt;p&gt;做為前後段落的分水嶺，這篇文章我將紀錄一下 &lt;strong&gt;「內聚」(Cohesion)&lt;/strong&gt; 和 &lt;strong&gt;「耦合」(Coupling)&lt;/strong&gt;，這兩者是評估一個類別或元件的重要概念。&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/cgxW9yZ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;做為前後段落的分水嶺，這篇文章我將紀錄一下 &lt;strong&gt;「內聚」(Cohesion)&lt;/strong&gt; 和 &lt;strong&gt;「耦合」(Coupling)&lt;/strong&gt;，這兩者是評估一個類別或元件的重要概念。&lt;/p&gt;
 &lt;p&gt;在實務上，為了提升擴展性，降低維護成本等因素，我們對於單個類別或元件，會有著 &lt;strong&gt;「低耦合」&lt;/strong&gt; 及 &lt;strong&gt;「高內聚」&lt;/strong&gt; 的期待。例如我們在 &lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-3-encapsulation&#34;&gt;菜雞與物件導向 (3): 封裝&lt;/a&gt; 中，我們就有提到封裝的好壞相當重要，其中也包含了「提高類別內的內聚性，降低對外的耦合性」。那麼，到底什麼是內聚，什麼又是耦合呢？&lt;/p&gt;
 &lt;h2 id=&#34;內聚&#34;&gt;內聚&lt;/h2&gt;
 &lt;blockquote&gt;
@@ -535,7 +544,8 @@ convertedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yy
       <pubDate>Sun, 12 Jul 2020 23:53:07 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/07/oo-7-interface/</guid>
-      <description>&lt;p&gt;如果說繼承是用來表明物件「屬於什麼」；那麼介面就是用來表明物件「能做什麼」。&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9eGbMlk.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;如果說繼承是用來表明物件「屬於什麼」；那麼介面就是用來表明物件「能做什麼」。&lt;/p&gt;
 &lt;p&gt;如果說封裝是將物件視作一個整體，是隱藏複雜度；那麼介面就是封裝精神的體現。&lt;/p&gt;
 &lt;p&gt;如果說多型是指藉著繼承後能實作不同的行為的可能性達到擴展的彈性；那麼介面就是在實作多型。&lt;/p&gt;
 &lt;p&gt;介面就是這麼厲害，這麼瀟灑。介面就是我大哥，今天誰不服介面，對不起！我們不認識。&lt;/p&gt;
@@ -567,8 +577,9 @@ convertedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yy
       <pubDate>Sun, 12 Jul 2020 23:53:06 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/07/oo-6-abstract-override/</guid>
-      <description>&lt;blockquote&gt;
-&lt;p&gt;備註：這邊的抽象是指程式語言中的抽象類別，而非&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Y2gHFsr.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;備註：這邊的抽象是指程式語言中的抽象類別，而非抽象化&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;抽象的概念很直接，請回想一下前面的例子就可以了：&lt;/p&gt;
 &lt;p&gt;當我們在用卡牌的例子時，雖然怪獸卡跟魔法卡都繼承了 Card 這個類別，但是我們仍然能 &lt;br/&gt; &lt;code&gt;new Card()&lt;/code&gt; 來建立一張新卡牌，那…怪怪的吧，這張卡牌到底是什麼呀，空白的卡片嗎？&lt;/p&gt;
@@ -601,7 +612,8 @@ convertedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yy
       <pubDate>Sun, 12 Jul 2020 23:53:05 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/07/oo-5-polymorphism/</guid>
-      <description>&lt;p&gt;多型算是比較三特性之中給人感覺比較溫和的了，不如說只要有了繼承，那麼多型的到來就是必然的。多型的定義是：不同的物件能夠做出一樣的行為，但必須由他們自己的程式碼來實作。&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/65N5R3A.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;多型算是比較三特性之中給人感覺比較溫和的了，不如說只要有了繼承，那麼多型的到來就是必然的。多型的定義是：不同的物件能夠做出一樣的行為，但必須由他們自己的程式碼來實作。&lt;/p&gt;
 &lt;p&gt;白話一點說就是：&lt;strong&gt;一樣的事，不同做法&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;多型相對是比較好理解的，畢竟每個人做同一件事的方法本來就不太一樣。例如一樣是泡奶茶，英國就正常地泡，&lt;a href=&#34;https://www.ettoday.net/news/20200707/1754177.htm&#34;&gt;美國就會用微波爐&lt;/a&gt;；一樣是肉粽，有些人就是比較愛吃油飯；到了程式的世界裡也是，即使繼承了同一個物件，實現這個行為的方式也可以不同。&lt;/p&gt;
 &lt;p&gt;在此可以先推這篇 &lt;a href=&#34;https://matthung0807.blogspot.com/2018/02/java-overload.html&#34;&gt;Java 什麼是多載(Overload), 覆寫(Override), 多型(Polymorphism) - 菜鳥工程師肉豬&lt;/a&gt; 中的說明。其中可以從例子看到儘管狗跟鳥都是繼承自動物這個類別，但對於「移動」這個方法，他們實作的方式並不一樣。這就是多型的範例。&lt;/p&gt;
@@ -631,7 +643,8 @@ convertedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yy
       <pubDate>Sun, 12 Jul 2020 23:53:04 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/07/oo-4-inheritance/</guid>
-      <description>&lt;p&gt;接著要介紹的是繼承 aka 物件導向三大特性之王 aka 濫用榜 Ko.1 ，繼承的強大幾乎和它的惡名一樣可怕，給一個從 &lt;a href=&#34;https://dotblogs.com.tw/initials/2016/06/10/171117&#34;&gt;[心得整理] c# 物件導向程式 - 2.封裝、繼承、多型的三大特性&lt;/a&gt; 這篇摘過來的例子就可以略知一二了：&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/g9FZ3WN.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著要介紹的是繼承 aka 物件導向三大特性之王 aka 濫用榜 Ko.1 ，繼承的強大幾乎和它的惡名一樣可怕，給一個從 &lt;a href=&#34;https://dotblogs.com.tw/initials/2016/06/10/171117&#34;&gt;[心得整理] c# 物件導向程式 - 2.封裝、繼承、多型的三大特性&lt;/a&gt; 這篇摘過來的例子就可以略知一二了：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://i.imgur.com/IFV4xjr.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;什麼也不做，僅僅只是繼承而已，就取得了繼承對象（C# 中稱為基底類別）近乎全部的內容，真是太可怕了。在 C# 中，繼承可以取得基底類別除了 &lt;code&gt;Private&lt;/code&gt; 以外所有的內容，例如 &lt;code&gt;Protected&lt;/code&gt; 更是表明就是只給繼承使用的。&lt;/p&gt;
 &lt;p&gt;由此可見，在減少重複程式碼的路上，繼承無疑達到了全新的高度。&lt;/p&gt;
@@ -647,7 +660,8 @@ convertedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yy
       <pubDate>Sun, 12 Jul 2020 23:53:03 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/07/oo-3-encapsulation/</guid>
-      <description>&lt;p&gt;這次我們要介紹的是傳說中的黑盒子：封裝。&lt;strong&gt;封裝和繼承、多型並稱物件導向三大特性&lt;/strong&gt;，會是這個順序也是當然的，因為有了封裝才會需要繼承，因為繼承了才會有了多型，因此我們這幾節也按照這個順序快速地看過。&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/cc9DLDo.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;這次我們要介紹的是傳說中的黑盒子：封裝。&lt;strong&gt;封裝和繼承、多型並稱物件導向三大特性&lt;/strong&gt;，會是這個順序也是當然的，因為有了封裝才會需要繼承，因為繼承了才會有了多型，因此我們這幾節也按照這個順序快速地看過。&lt;/p&gt;
 &lt;p&gt;所謂的封裝，咱同事在他整理的文章 &lt;a href=&#34;https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-3_%E5%B0%81%E8%A3%9Dencapsulation%E7%B9%BC%E6%89%BFinheritance%E8%88%87%E5%A4%9A%E5%9E%8Bpolymorphism/&#34;&gt;Object Oriented物件導向-3:封裝(Encapsulation)、繼承(Inheritance)與多型(polymorphism)&lt;/a&gt; 中的例子就舉得不錯：當你按下鍵盤的Ａ鍵，螢幕隨即出現了Ａ，你不必知道中間發生了什麼事，你只需要知道怎麼操作和最後得到什麼就可以了。&lt;/p&gt;
 &lt;p&gt;此外我也看到過販賣機的例子，&lt;strong&gt;當你去販賣機買飲料，你也不需要知道裡面的構造，只要知道你選了飲料投了錢，飲料就會跑出來就行&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;因此&lt;strong&gt;封裝的概念很直覺：將物件視作一個整體，實作內容隱藏起來，讓使用者只需要知道怎麼使用即可。&lt;/strong&gt;（相似的思路，我們後續的介面會再提到）大概就像懶人包的感覺。如果封裝做得夠好，除了可以將程式碼整理得井井有條以外，也能讓物件內部的修改不會影響到使用物件的地方，並且讓物件的使用者直覺地知道如何使用，最終達到降耦合的目標。&lt;/p&gt;
@@ -666,7 +680,8 @@ convertedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yy
       <pubDate>Sun, 12 Jul 2020 23:53:02 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/07/oo-2-constructor-overload/</guid>
-      <description>&lt;p&gt;我就直接說了，有用前面的程式碼區塊的人，絕對執行不了。因為我們建立哥布林和戰士這兩張卡片的時候，根本就沒有給他們數值呀！&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/naCjLay.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;我就直接說了，有用前面的程式碼區塊的人，絕對執行不了。因為我們建立哥布林和戰士這兩張卡片的時候，根本就沒有給他們數值呀！&lt;/p&gt;
 &lt;p&gt;雖然可以先呼叫出來再賦值…&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; goblin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card();
 goblin.Name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;哥布林&amp;#34;&lt;/span&gt;;
@@ -700,7 +715,8 @@ warrior.Hit(goblin);
       <pubDate>Sun, 12 Jul 2020 23:53:01 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/07/oo-1-class-object/</guid>
-      <description>&lt;blockquote&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TIEIXm5.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;blockquote&gt;
 &lt;p&gt;直覺上你當然知道什麼是物件；物件就在你的身邊。&lt;/p&gt;
 &lt;p&gt;汽車、iPhone、收音機、吐司機、廚房用具等等，你說得出來的都是。&lt;/p&gt;
 &lt;p&gt;　　——《深入淺出學會編寫程式》&lt;/p&gt;
@@ -732,7 +748,8 @@ warrior.Hit(goblin);
       <pubDate>Sun, 12 Jul 2020 23:53:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/07/oo-0-object-oriented/</guid>
-      <description>&lt;p&gt;在訂便當告一段落之後，其實就已經和同事約好要來整理公司新訓的筆記。但儘管已經到職快一年了，有些工具已經在專案碰過好幾次。但遇到需要跟朋友討論，或是聽前輩說明觀念的時候，還是不自主地會想「我真的懂嗎？」故一直是挺畏懼的。&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9UtcyAf.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在訂便當告一段落之後，其實就已經和同事約好要來整理公司新訓的筆記。但儘管已經到職快一年了，有些工具已經在專案碰過好幾次。但遇到需要跟朋友討論，或是聽前輩說明觀念的時候，還是不自主地會想「我真的懂嗎？」故一直是挺畏懼的。&lt;/p&gt;
 &lt;p&gt;但幸虧同事的鼓勵和以身作則，最終還是開啟了這個新系列，決定直接開坑把當初前輩新訓指導過的部分整理下來，也算是讓自己能趁著這機會好好複習一番，把自己的想法跟心得記錄下來。&lt;/p&gt;
 &lt;p&gt;另外，如果你是真心希望弄懂物件導向的朋友，這邊推薦&lt;a href=&#34;https://www.tenlong.com.tw/products/9789866761799&#34;&gt;《大話設計模式》&lt;/a&gt;的附錄，內容對物件導向的介紹清晰易懂且循序漸進，非常適合作為了解物件導向的起頭。&lt;/p&gt;
 &lt;p&gt;本篇的段落將會分成以下幾個部份，由於只是筆記一下，因此會附上一些知識點的參考資料，看見的時候可以先行閱讀；末尾也會附上有關的參考資料及文章，對於這類概念性的東西，一向是推薦多方閱讀以增強理解，就像保哥寫的：「&lt;strong&gt;如果你問 100 個人這個問題，可能會得到 200 個答案，所以你一定要有自己獨到、有自信、精闢的見解或描述方式&lt;/strong&gt;。」如果有寫得不錯的文章想推薦給我，或是有地方需要補充和指證，還請不吝指教。共勉之。&lt;/p&gt;
