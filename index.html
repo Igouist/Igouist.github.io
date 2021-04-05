@@ -92,6 +92,102 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/" title="菜雞新訓記 (1): 使用 Git 來進行版本控制吧" >菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2021-4-5,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/N54Pg7s.png" alt=""></p>
+<p>這是俺整理公司新訓內容的第一篇文章，目標是整理 Git 相關的筆記。</p>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80%E6%8E%A8%E8%96%A6%E8%B3%87%E6%BA%90">前言、推薦資源</a></li>
+<li><a href="#%E4%BB%80%E9%BA%BC%E6%98%AF-git">什麼是 Git？</a></li>
+<li><a href="#%E5%88%86%E6%95%A3%E5%BC%8F%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6">分散式版本控制</a></li>
+<li><a href="#%E7%A2%BA%E8%AA%8D-git-%E5%B7%B2%E7%B6%93%E5%AE%89%E8%A3%9D">確認 Git 已經安裝</a></li>
+<li><a href="#%E5%BB%BA%E7%AB%8B%E4%B8%80%E5%80%8B%E6%96%B0%E7%9A%84%E5%84%B2%E5%AD%98%E5%BA%ABinit">建立一個新的儲存庫（Init）</a></li>
+<li><a href="#%E5%8A%A0%E5%85%A5%E8%AE%8A%E6%9B%B4add">加入變更（Add）</a></li>
+<li><a href="#%E6%8F%90%E4%BA%A4%E8%AE%8A%E6%9B%B4commit">提交變更（Commit）</a>
+<ul>
+<li><a href="#commit-%E7%9A%84%E8%A8%8A%E6%81%AF">Commit 的訊息</a></li>
+<li><a href="#commit-%E7%9A%84%E6%99%82%E6%A9%9F">Commit 的時機</a></li>
+<li><a href="#commit-%E5%92%8C-add-%E7%9A%84-combo-%E6%8A%80">Commit 和 Add 的 Combo 技</a></li>
+<li><a href="#%E5%8A%A0%E5%85%A5-gitignore-%E5%BF%BD%E7%95%A5%E6%AA%94%E6%A1%88">加入 .gitignore 忽略檔案</a></li>
+</ul>
+</li>
+<li><a href="#%E6%8F%90%E4%BA%A4%E7%B4%80%E9%8C%84log">提交紀錄（Log）</a></li>
+<li><a href="#%E7%89%88%E6%9C%AC%E5%B7%AE%E7%95%B0diff">版本差異（Diff）</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC-head">關於 HEAD</a></li>
+<li><a href="#revert">Revert</a></li>
+<li><a href="#reset">Reset</a></li>
+<li><a href="#%E5%88%86%E6%94%AFbranch">分支（Branch）</a>
+<ul>
+<li><a href="#%E6%96%B0%E5%BB%BA%E5%88%86%E6%94%AFbranch%E8%88%87%E5%88%87%E6%8F%9B%E5%88%86%E6%94%AFcheckout">新建分支（branch）與切換分支（checkout）</a></li>
+<li><a href="#%E5%90%88%E4%BD%B5merge">合併（Merge）</a></li>
+<li><a href="#%E8%A1%9D%E7%AA%81conflict">衝突（Conflict）</a></li>
+<li><a href="#rebase">Rebase</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E5%88%86%E6%94%AF%E5%88%97%E8%A1%A8%E5%88%AA%E9%99%A4%E5%88%86%E6%94%AF">查看分支列表、刪除分支</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC%E6%96%B7%E9%A0%ADdetached-head">關於斷頭（detached HEAD）</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC%E5%88%86%E6%94%AF%E7%AD%96%E7%95%A5">關於分支策略</a></li>
+</ul>
+</li>
+<li><a href="#%E9%81%A0%E7%AB%AF%E5%84%B2%E5%AD%98%E5%BA%ABremote%E6%8E%A8%E9%80%81push">遠端儲存庫（Remote）、推送（Push）</a></li>
+<li><a href="#%E6%93%B7%E5%8F%96fatch%E6%8F%90%E5%8F%96pull">擷取（Fatch）、提取（Pull）</a></li>
+<li><a href="#clone">Clone</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC%E6%8F%90%E5%8F%96%E8%A6%81%E6%B1%82pull-request">關於提取要求（pull request）</a></li>
+<li><a href="#%E5%B0%8F%E7%B5%90">小結</a></li>
+<li><a href="#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0">本系列文章</a></li>
+<li><a href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99">參考資料</a></li>
+</ul>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2021/04/newbie-0-menu/" title="菜雞新訓記 (0): 前言" >菜雞新訓記 (0): 前言</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2021-4-5,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <blockquote>
+<p>長夜將至，我從今開始守望。<br/>
+　　　　　　　　　　　　　　——《冰與火之歌》守夜人誓詞</p>
+</blockquote>
+<p>年初整理完物件導向系列後，休息（沉迷遊戲）了好一陣子，終於要繼續整理公司新訓的內容啦！</p>
+<p>因為這個系列會是公司新訓時期的筆記整理，所以會是比較簡易的實作紀錄，並不會太過深入，需要的時候會用延伸閱讀的形式補充上去。如果看文的過程中覺得有什麼能夠補充的，也歡迎告訴我呦。</p>
+<p>本系列預計會從 Git 的基本操作開始，簡單建立一個 Web Api 為主軸，逐步介紹相關的部份，例如簡單地引入套件、簡單地分層等等。基本方針就是直接抄襲<a href="https://sunnyday0932.github.io/">隔壁同事的部落格</a>。</p>
+<p>後續有更新的文章，就會整理到這篇目錄中。或是也可以從 <a href="/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記</a> 裡面做系列文的查詢。</p>
+<p>那麼，就從第一篇：<a href="/post/2021/03/newbie-1-hello-git">Git 入門這樣做</a> 開始吧！</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2021/04/newbie-0-menu/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2021/03/sekiro-darksouls3-clear/" title="隻狼、黑暗靈魂３　白金！" >隻狼、黑暗靈魂３　白金！</a>
                                 </h1>
                             </header>
@@ -371,77 +467,6 @@ rpmbuild --bb openssl-libs-ami.spec.txt
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle/" title="菜雞與物件導向 (13): 介面隔離原則" >菜雞與物件導向 (13): 介面隔離原則</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-11-15,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a></span>
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p><img src="https://i.imgur.com/itHN6VZ.png" alt=""></p>
-<p>今天要記錄的是介面隔離原則，顧名思義是和介面高度相關的原則。因此在閱讀本篇之前，可能需要先對<a href="/post/2020/07/oo-7-interface">介面</a>有一點了解呦。</p>
-<p>事情就從上一篇<a href="/post/2020/11/oo-12-liskov-substitution-principle">里氏替換原則</a>的鳥類物流公司開始說起。老闆痛定思痛，決定先用<strong>介面</strong>先規定好物流士們的應徵條件，例如裝貨、卸貨、飛行、必須有帥氣的喙等等。</p>
-<p>這道命令下來後，倉庫們的企鵝都慌了，來檢查的編譯器瘋狂跳出 Error:「您未實作 IBird 的 Fly() 方法！」這下怎麼辦呢，為了要保住飯碗，企鵝們就必須實作出飛行才行，可是企鵝真的就不會飛呀！</p>
-<p>這下子企鵝們只剩下兩個選擇：不實作飛行，但是就不能被當成物流士，最後就會被開除；或是……空實作。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Penguin</span> : IBird
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Fly()
-    {
-      <span style="color:#75715e">// Do nothing;
-</span><span style="color:#75715e"></span>    }
-}
-</code></pre></div><p>企鵝們終於騙過了編譯器檢查員，然而當送貨的命令下來之後，企鵝們再一次卡在倉庫門口發呆，最終物流公司仍然踏上了虧損的老路，再度面臨倒閉危機…</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2020/11/dark-reader/" title="Dark Reader —— 暗黑模式愛好者的 Chrome 必備套件" >Dark Reader —— 暗黑模式愛好者的 Chrome 必備套件</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-11-8,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/tools">Tools</a></span>
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p><img src="https://i.imgur.com/G4OjUzE.png" alt=""></p>
-<blockquote>
-<p>不能信任那些 Terminal 或編輯器用白底的人。</br>
-—— <a href="https://github.com/CodeTengu/JokeKappa/blob/master/jokekappa/jokes/codetengu_weekly.json">JokeKappa</a></p>
-</blockquote>
-<p>這禮拜推薦了個常用的 chrome 套件給同樣喜歡黑色背景的同事，這邊也推薦給大家。</p>
-<p><s>絕對不是因為隻狼更新了不小心砍太爽，結果來不及寫介面隔離只能介紹套件水一下，Heiya～</s></p>
-<p>今天要介紹的就是這款 <a href="https://chrome.google.com/webstore/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh">Dark Reader</a>，這是我用 chrome 時首選的暗黑模式擴充套件，在俺寫文的這時候已經超過了三百萬次的下載次數，現在就讓我來記錄一下這款擴充套件的一些特色唄。</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2020/11/dark-reader/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -506,6 +531,10 @@ rpmbuild --bb openssl-libs-ami.spec.txt
     </li>
     
     <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (2)</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
     </li>
     
@@ -515,6 +544,14 @@ rpmbuild --bb openssl-libs-ami.spec.txt
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/" title="菜雞新訓記 (1): 使用 Git 來進行版本控制吧">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/04/newbie-0-menu/" title="菜雞新訓記 (0): 前言">菜雞新訓記 (0): 前言</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/03/sekiro-darksouls3-clear/" title="隻狼、黑暗靈魂３　白金！">隻狼、黑暗靈魂３　白金！</a>
@@ -548,14 +585,6 @@ rpmbuild --bb openssl-libs-ami.spec.txt
         <a href="https://igouist.github.io/post/2020/11/bugs-install-dotnet-core-on-amazon-ami-requires-openssl/" title="菜雞抓蟲: 在 Amazon Linux AMI 安裝 .net Core 時卡在 Requires: openssl-libs">菜雞抓蟲: 在 Amazon Linux AMI 安裝 .net Core 時卡在 Requires: openssl-libs</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle/" title="菜雞與物件導向 (13): 介面隔離原則">菜雞與物件導向 (13): 介面隔離原則</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2020/11/dark-reader/" title="Dark Reader —— 暗黑模式愛好者的 Chrome 必備套件">Dark Reader —— 暗黑模式愛好者的 Chrome 必備套件</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -578,7 +607,7 @@ rpmbuild --bb openssl-libs-ami.spec.txt
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (12)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (14)</a>
     </li>
     
     <li>

@@ -103,6 +103,100 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2021-4-5,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/N54Pg7s.png" alt=""></p>
+<p>這是俺整理公司新訓內容的第一篇文章，目標是整理 Git 相關的筆記。</p>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80%E6%8E%A8%E8%96%A6%E8%B3%87%E6%BA%90">前言、推薦資源</a></li>
+<li><a href="#%E4%BB%80%E9%BA%BC%E6%98%AF-git">什麼是 Git？</a></li>
+<li><a href="#%E5%88%86%E6%95%A3%E5%BC%8F%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6">分散式版本控制</a></li>
+<li><a href="#%E7%A2%BA%E8%AA%8D-git-%E5%B7%B2%E7%B6%93%E5%AE%89%E8%A3%9D">確認 Git 已經安裝</a></li>
+<li><a href="#%E5%BB%BA%E7%AB%8B%E4%B8%80%E5%80%8B%E6%96%B0%E7%9A%84%E5%84%B2%E5%AD%98%E5%BA%ABinit">建立一個新的儲存庫（Init）</a></li>
+<li><a href="#%E5%8A%A0%E5%85%A5%E8%AE%8A%E6%9B%B4add">加入變更（Add）</a></li>
+<li><a href="#%E6%8F%90%E4%BA%A4%E8%AE%8A%E6%9B%B4commit">提交變更（Commit）</a>
+<ul>
+<li><a href="#commit-%E7%9A%84%E8%A8%8A%E6%81%AF">Commit 的訊息</a></li>
+<li><a href="#commit-%E7%9A%84%E6%99%82%E6%A9%9F">Commit 的時機</a></li>
+<li><a href="#commit-%E5%92%8C-add-%E7%9A%84-combo-%E6%8A%80">Commit 和 Add 的 Combo 技</a></li>
+<li><a href="#%E5%8A%A0%E5%85%A5-gitignore-%E5%BF%BD%E7%95%A5%E6%AA%94%E6%A1%88">加入 .gitignore 忽略檔案</a></li>
+</ul>
+</li>
+<li><a href="#%E6%8F%90%E4%BA%A4%E7%B4%80%E9%8C%84log">提交紀錄（Log）</a></li>
+<li><a href="#%E7%89%88%E6%9C%AC%E5%B7%AE%E7%95%B0diff">版本差異（Diff）</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC-head">關於 HEAD</a></li>
+<li><a href="#revert">Revert</a></li>
+<li><a href="#reset">Reset</a></li>
+<li><a href="#%E5%88%86%E6%94%AFbranch">分支（Branch）</a>
+<ul>
+<li><a href="#%E6%96%B0%E5%BB%BA%E5%88%86%E6%94%AFbranch%E8%88%87%E5%88%87%E6%8F%9B%E5%88%86%E6%94%AFcheckout">新建分支（branch）與切換分支（checkout）</a></li>
+<li><a href="#%E5%90%88%E4%BD%B5merge">合併（Merge）</a></li>
+<li><a href="#%E8%A1%9D%E7%AA%81conflict">衝突（Conflict）</a></li>
+<li><a href="#rebase">Rebase</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E5%88%86%E6%94%AF%E5%88%97%E8%A1%A8%E5%88%AA%E9%99%A4%E5%88%86%E6%94%AF">查看分支列表、刪除分支</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC%E6%96%B7%E9%A0%ADdetached-head">關於斷頭（detached HEAD）</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC%E5%88%86%E6%94%AF%E7%AD%96%E7%95%A5">關於分支策略</a></li>
+</ul>
+</li>
+<li><a href="#%E9%81%A0%E7%AB%AF%E5%84%B2%E5%AD%98%E5%BA%ABremote%E6%8E%A8%E9%80%81push">遠端儲存庫（Remote）、推送（Push）</a></li>
+<li><a href="#%E6%93%B7%E5%8F%96fatch%E6%8F%90%E5%8F%96pull">擷取（Fatch）、提取（Pull）</a></li>
+<li><a href="#clone">Clone</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC%E6%8F%90%E5%8F%96%E8%A6%81%E6%B1%82pull-request">關於提取要求（pull request）</a></li>
+<li><a href="#%E5%B0%8F%E7%B5%90">小結</a></li>
+<li><a href="#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0">本系列文章</a></li>
+<li><a href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99">參考資料</a></li>
+</ul>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2021/04/newbie-0-menu/">菜雞新訓記 (0): 前言</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2021-4-5,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <blockquote>
+<p>長夜將至，我從今開始守望。<br/>
+　　　　　　　　　　　　　　——《冰與火之歌》守夜人誓詞</p>
+</blockquote>
+<p>年初整理完物件導向系列後，休息（沉迷遊戲）了好一陣子，終於要繼續整理公司新訓的內容啦！</p>
+<p>因為這個系列會是公司新訓時期的筆記整理，所以會是比較簡易的實作紀錄，並不會太過深入，需要的時候會用延伸閱讀的形式補充上去。如果看文的過程中覺得有什麼能夠補充的，也歡迎告訴我呦。</p>
+<p>本系列預計會從 Git 的基本操作開始，簡單建立一個 Web Api 為主軸，逐步介紹相關的部份，例如簡單地引入套件、簡單地分層等等。基本方針就是直接抄襲<a href="https://sunnyday0932.github.io/">隔壁同事的部落格</a>。</p>
+<p>後續有更新的文章，就會整理到這篇目錄中。或是也可以從 <a href="/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記</a> 裡面做系列文的查詢。</p>
+<p>那麼，就從第一篇：<a href="/post/2021/03/newbie-1-hello-git">Git 入門這樣做</a> 開始吧！</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2021/04/newbie-0-menu/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2021/01/oo-ex1-end2020/">菜雞與物件導向 (Ex1): 小結</a>
                                     </h1>
                                 </header>
@@ -402,89 +496,6 @@
                             </article>
                             <hr color="#D9D9D9" />
                         
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling/">菜雞與物件導向 (8): 內聚、耦合</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2020-9-13,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a>
-                                    
-                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <p><img src="https://i.imgur.com/cgxW9yZ.png" alt=""></p>
-<p>做為前後段落的分水嶺，這篇文章我將紀錄一下 <strong>「內聚」(Cohesion)</strong> 和 <strong>「耦合」(Coupling)</strong>，這兩者是評估一個類別或元件的重要概念。</p>
-<p>在實務上，為了提升擴展性，降低維護成本等因素，我們對於單個類別或元件，會有著 <strong>「低耦合」</strong> 及 <strong>「高內聚」</strong> 的期待。例如我們在 <a href="/post/2020/07/oo-3-encapsulation">菜雞與物件導向 (3): 封裝</a> 中，我們就有提到封裝的好壞相當重要，其中也包含了「提高類別內的內聚性，降低對外的耦合性」。那麼，到底什麼是內聚，什麼又是耦合呢？</p>
-<h2 id="內聚">內聚</h2>
-<blockquote>
-<p><strong>「把需要的程式和資料都包裝在同一個模組內，使得該模組能夠做為一個單獨的個體執行」</strong></p>
-</blockquote>
-<p>白話一點說，就是就是把用到的東西都打包到一處，該有的自己都有了，所以即使單獨一個人也能完成工作的能力、可以自己 Carry 整場不用看豬隊友臉色的能力。越能自己單幹，越不需要依賴其他類別的時候，內聚力就越高。如果你的類別什麼都要依賴其他類別，像小嬰兒一樣需要呵護照顧，那內聚力就很低。反之，如果像野外求生大師，啥都靠自己，那內聚力就超高。</p>
-<p>內聚代表的是該模組的<strong>獨立性</strong>，當這個模組可以獨力完成工作，就代表我們能夠<strong>重複使用</strong>它，且不需要擔心影響到其他模組。並且也基於這點，我們不用擔心變動這個模組時需要先處理其他的模組，因為這個工作所需的都包含在模組內了，這樣就可以<strong>單獨修改</strong>該模組，減少維護成本。</p>
-<p>例如你的筆已經包含了所有寫字工具的條件，具有墨水跟筆芯等等，可以只使用筆就完成寫字這個工作。那麼我們就可以隨身帶著，在任何需要的時候重複使用它，而不用擔心我們會不會漏了什麼必要零件沒有帶出門。同時，如果我們需要換筆芯或墨水，我們也知道要更換的部份就在筆裡面，不需要去找鉛筆盒中別的地方。</p>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2020/07/oo-7-interface/">菜雞與物件導向 (7): 介面</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2020-7-12,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a>
-                                    
-                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <p><img src="https://i.imgur.com/9eGbMlk.png" alt=""></p>
-<p>如果說繼承是用來表明物件「屬於什麼」；那麼介面就是用來表明物件「能做什麼」。</p>
-<p>如果說封裝是將物件視作一個整體，是隱藏複雜度；那麼介面就是封裝精神的體現。</p>
-<p>如果說多型是指藉著繼承後能實作不同的行為的可能性達到擴展的彈性；那麼介面就是在實作多型。</p>
-<p>介面就是這麼厲害，這麼瀟灑。介面就是我大哥，今天誰不服介面，對不起！我們不認識。</p>
-<p>介面就像是針對類別的實作、物件的行為去做規定的一個契約書，會先定義好要實作這個介面的類別所必須要有的方法，而當我們建立符合這個介面的類別時，就必須實作出所有介面中定義好方法才可以。……這樣說起來實在太繞口，總而言之介面的核心概念只有一條：</p>
-<p><strong>我不在乎你是誰，我只在乎你能做什麼。</strong></p>
-<p>由於介面基本上就是封裝繼承多型抽象之大雜燴，所以我們把前面的小明小華例子稍微修改來用吧。也就是以公司徵人的方式去理解介面。</p>
-<p>介面就像是老闆開出來的要求列表，例如說：要會寫 C#、要會寫 SQL、要會 VB…等等，於是老闆就貼出了徵人啟示，要求新來的員工必須要有 <code>IProgrammer</code> 寫的能力：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> IProgrammer
-{
-    <span style="color:#66d9ef">void</span> WriteCSharp();
-    <span style="color:#66d9ef">void</span> WriteSQL();
-    <span style="color:#66d9ef">void</span> WriteVB();
-}
-</code></pre></div><p>特別注意和前面多型的例子的不同處，<strong>介面只需要先定義好該做的事，裡面怎麼做不需要管；所以只需要宣告要求的方法，不需要撰寫方法本體</strong>。</p>
-<p>於是今天小華就又(?)來面試了，但是他其實並不會寫 C#：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Hua</span> : IProgrammer
-{
-    <span style="color:#75715e">// Error: Hua 未實作 IProgrammer.WriteCSharp()
-</span><span style="color:#75715e"></span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteSQL() { <span style="color:#75715e">/* Work */</span> }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteVB() { <span style="color:#75715e">/* Work */</span> }
-}
-</code></pre></div><p>這時候編譯器就會跳出錯誤了：很抱歉，你不符合我們 <code>IProgrammer</code> 的規定，因為我們只喜歡訓練精英（略），請你實作完之後再來。否則你就不能掛上我們 <code> : IProgrammer</code> 的頭銜。</p>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-7-interface/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
                     
 
                     
@@ -500,6 +511,10 @@
     
     <li >
         <a href="https://igouist.github.io/tags/newbieguide/page/2/">2</a>
+    </li>
+    
+    <li >
+        <a href="https://igouist.github.io/tags/newbieguide/page/3/">3</a>
     </li>
     
 
@@ -535,6 +550,10 @@
     </li>
     
     <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (2)</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
     </li>
     
@@ -544,6 +563,14 @@
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/" title="菜雞新訓記 (1): 使用 Git 來進行版本控制吧">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/04/newbie-0-menu/" title="菜雞新訓記 (0): 前言">菜雞新訓記 (0): 前言</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/03/sekiro-darksouls3-clear/" title="隻狼、黑暗靈魂３　白金！">隻狼、黑暗靈魂３　白金！</a>
@@ -577,14 +604,6 @@
         <a href="https://igouist.github.io/post/2020/11/bugs-install-dotnet-core-on-amazon-ami-requires-openssl/" title="菜雞抓蟲: 在 Amazon Linux AMI 安裝 .net Core 時卡在 Requires: openssl-libs">菜雞抓蟲: 在 Amazon Linux AMI 安裝 .net Core 時卡在 Requires: openssl-libs</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle/" title="菜雞與物件導向 (13): 介面隔離原則">菜雞與物件導向 (13): 介面隔離原則</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2020/11/dark-reader/" title="Dark Reader —— 暗黑模式愛好者的 Chrome 必備套件">Dark Reader —— 暗黑模式愛好者的 Chrome 必備套件</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -607,7 +626,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (12)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (14)</a>
     </li>
     
     <li>

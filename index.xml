@@ -6,10 +6,76 @@
     <description>Recent content on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Sat, 13 Mar 2021 09:38:00 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 05 Apr 2021 22:39:01 +0800</lastBuildDate>
     
 	<atom:link href="https://igouist.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>菜雞新訓記 (1): 使用 Git 來進行版本控制吧</title>
+      <link>https://igouist.github.io/post/2021/04/newbie-1-hello-git/</link>
+      <pubDate>Mon, 05 Apr 2021 22:39:01 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2021/04/newbie-1-hello-git/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/N54Pg7s.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;這是俺整理公司新訓內容的第一篇文章，目標是整理 Git 相關的筆記。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%89%8D%E8%A8%80%E6%8E%A8%E8%96%A6%E8%B3%87%E6%BA%90&#34;&gt;前言、推薦資源&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E4%BB%80%E9%BA%BC%E6%98%AF-git&#34;&gt;什麼是 Git？&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%88%86%E6%95%A3%E5%BC%8F%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6&#34;&gt;分散式版本控制&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E7%A2%BA%E8%AA%8D-git-%E5%B7%B2%E7%B6%93%E5%AE%89%E8%A3%9D&#34;&gt;確認 Git 已經安裝&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%BB%BA%E7%AB%8B%E4%B8%80%E5%80%8B%E6%96%B0%E7%9A%84%E5%84%B2%E5%AD%98%E5%BA%ABinit&#34;&gt;建立一個新的儲存庫（Init）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%8A%A0%E5%85%A5%E8%AE%8A%E6%9B%B4add&#34;&gt;加入變更（Add）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E6%8F%90%E4%BA%A4%E8%AE%8A%E6%9B%B4commit&#34;&gt;提交變更（Commit）&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#commit-%E7%9A%84%E8%A8%8A%E6%81%AF&#34;&gt;Commit 的訊息&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#commit-%E7%9A%84%E6%99%82%E6%A9%9F&#34;&gt;Commit 的時機&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#commit-%E5%92%8C-add-%E7%9A%84-combo-%E6%8A%80&#34;&gt;Commit 和 Add 的 Combo 技&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%8A%A0%E5%85%A5-gitignore-%E5%BF%BD%E7%95%A5%E6%AA%94%E6%A1%88&#34;&gt;加入 .gitignore 忽略檔案&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E6%8F%90%E4%BA%A4%E7%B4%80%E9%8C%84log&#34;&gt;提交紀錄（Log）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E7%89%88%E6%9C%AC%E5%B7%AE%E7%95%B0diff&#34;&gt;版本差異（Diff）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E9%97%9C%E6%96%BC-head&#34;&gt;關於 HEAD&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#revert&#34;&gt;Revert&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#reset&#34;&gt;Reset&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%88%86%E6%94%AFbranch&#34;&gt;分支（Branch）&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#%E6%96%B0%E5%BB%BA%E5%88%86%E6%94%AFbranch%E8%88%87%E5%88%87%E6%8F%9B%E5%88%86%E6%94%AFcheckout&#34;&gt;新建分支（branch）與切換分支（checkout）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%90%88%E4%BD%B5merge&#34;&gt;合併（Merge）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E8%A1%9D%E7%AA%81conflict&#34;&gt;衝突（Conflict）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#rebase&#34;&gt;Rebase&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E6%9F%A5%E7%9C%8B%E5%88%86%E6%94%AF%E5%88%97%E8%A1%A8%E5%88%AA%E9%99%A4%E5%88%86%E6%94%AF&#34;&gt;查看分支列表、刪除分支&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E9%97%9C%E6%96%BC%E6%96%B7%E9%A0%ADdetached-head&#34;&gt;關於斷頭（detached HEAD）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E9%97%9C%E6%96%BC%E5%88%86%E6%94%AF%E7%AD%96%E7%95%A5&#34;&gt;關於分支策略&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E9%81%A0%E7%AB%AF%E5%84%B2%E5%AD%98%E5%BA%ABremote%E6%8E%A8%E9%80%81push&#34;&gt;遠端儲存庫（Remote）、推送（Push）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E6%93%B7%E5%8F%96fatch%E6%8F%90%E5%8F%96pull&#34;&gt;擷取（Fatch）、提取（Pull）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#clone&#34;&gt;Clone&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E9%97%9C%E6%96%BC%E6%8F%90%E5%8F%96%E8%A6%81%E6%B1%82pull-request&#34;&gt;關於提取要求（pull request）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%B0%8F%E7%B5%90&#34;&gt;小結&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0&#34;&gt;本系列文章&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99&#34;&gt;參考資料&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>菜雞新訓記 (0): 前言</title>
+      <link>https://igouist.github.io/post/2021/04/newbie-0-menu/</link>
+      <pubDate>Mon, 05 Apr 2021 22:39:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2021/04/newbie-0-menu/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;長夜將至，我從今開始守望。&lt;br/&gt;
+　　　　　　　　　　　　　　——《冰與火之歌》守夜人誓詞&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;年初整理完物件導向系列後，休息（沉迷遊戲）了好一陣子，終於要繼續整理公司新訓的內容啦！&lt;/p&gt;
+&lt;p&gt;因為這個系列會是公司新訓時期的筆記整理，所以會是比較簡易的實作紀錄，並不會太過深入，需要的時候會用延伸閱讀的形式補充上去。如果看文的過程中覺得有什麼能夠補充的，也歡迎告訴我呦。&lt;/p&gt;
+&lt;p&gt;本系列預計會從 Git 的基本操作開始，簡單建立一個 Web Api 為主軸，逐步介紹相關的部份，例如簡單地引入套件、簡單地分層等等。基本方針就是直接抄襲&lt;a href=&#34;https://sunnyday0932.github.io/&#34;&gt;隔壁同事的部落格&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;後續有更新的文章，就會整理到這篇目錄中。或是也可以從 &lt;a href=&#34;https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/&#34;&gt;菜雞新訓記&lt;/a&gt; 裡面做系列文的查詢。&lt;/p&gt;
+&lt;p&gt;那麼，就從第一篇：&lt;a href=&#34;https://igouist.github.io/post/2021/03/newbie-1-hello-git&#34;&gt;Git 入門這樣做&lt;/a&gt; 開始吧！&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>隻狼、黑暗靈魂３　白金！</title>

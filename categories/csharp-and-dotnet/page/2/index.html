@@ -103,6 +103,97 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2020/06/bit-flags-and-enum/">C#: 位元旗標 (Bit flag) 與列舉</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2020-6-14,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p>前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。</p>
+<p>平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告個 Boolean 來處理。但這次遇到的是同時有多個「有／沒有」的狀況，但我遇到的程式碼並沒有分成多個 Bool 去做處理，而是直接儲存成一個數值。</p>
+<p><strong>由於「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列的話，就只需要一個數字就可以紀錄或傳遞給其他系統了</strong>。例如最常見的用處是在權限系統，若有「讀」、「寫」、「執行」等權限，那麼我們按照這個順序去排列，當 <code>讀＝可、寫＝不可、執行＝可</code> 的時候，就記做 <code>101</code> = <code>5</code>。這種直接用一組位元表示狀態的方式就叫做<strong>位元旗標（Bit flag）</strong></p>
+<pre><code>1 讀   = 可
+0 寫   = 不可
+1 執行 = 可
+
+/* 橫放 */
+=&gt; 101 (2進位) 
+=&gt; 5 
+</code></pre><p>假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。</p>
+<p>在 C# 中已經有方便的工具可以處理數字列表，我們可以建立一個叫做 SkillEnum 的<strong>列舉（Enum）</strong>，並且按照上面說明的，將老闆提到的每個技能各自用一個位元來表示。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[Flags]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> SkillEnum
+{
+    C = <span style="color:#ae81ff">1</span>,     <span style="color:#75715e">// 0001
+</span><span style="color:#75715e"></span>    PHP = <span style="color:#ae81ff">2</span>,   <span style="color:#75715e">// 0010
+</span><span style="color:#75715e"></span>    SQL = <span style="color:#ae81ff">4</span>,   <span style="color:#75715e">// 0100
+</span><span style="color:#75715e"></span>    Java = <span style="color:#ae81ff">8</span>,  <span style="color:#75715e">// 1000
+</span><span style="color:#75715e"></span>}
+</code></pre></div><blockquote>
+<p>註：<code>[Flags]</code>的標籤是指 C# 專門提供給位元旗標使用的 Enum，請參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.flagsattribute?view=netcore-3.1">FlagsAttribute</a>。</p>
+<p>只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用 ToString() 也能更方便看見旗標內容</p>
+</blockquote>
+<p>有了這個列舉之後，我們就可以<strong>表達不同排列組合的狀況</strong>了。例如：</p>
+<pre><code>* C: C
+* P: PHP
+* S: SQL
+* J: Java
+===========
+J S P C
+0 0 0 0 =&gt; 什麼都不會
+0 0 0 1 =&gt; 只會 C
+0 0 1 1 =&gt; 同時會 C 和 PHP
+1 0 1 0 =&gt; 同時 PHP 和 Java
+1 1 1 1 =&gt; 全部都會
+</code></pre>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/06/bit-flags-and-enum/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2020/04/epplus/">EPPlus —— 輕鬆處理 Excel</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2020-4-12,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p>前陣子工作需要匯出一些資料表，因此用到了 <a href="https://github.com/EPPlusSoftware/EPPlus">EPPlus</a> 這套工具來把資料匯出成 Excel。由於這需求似乎會挺常遇到的，決定記一下。</p>
+<blockquote>
+<p>目標：稍微紀錄一下這次碰到 EPPlus 的用法。</p>
+</blockquote>
+<p><strong>EPPlus 是在 .NET Framework 或 .NET Core 上提供控制 Excel 的元件，操作簡單好懂</strong>，當有需要在網頁上讓人將表格資料下載成 Excel 的功能時就可以試著使用。常常一併被提起的還有另一個一樣老牌的相似功能元件 NPOI，不過我個人只用過 EPPlus 便不再贅述。關於更詳細的介紹，可以參閱黑暗執行緒的這篇 <a href="https://blog.darkthread.net/blog/epplus/">比 NPOI 更討喜的 Excel 元件 - EPPlus!</a>，儘管是有些久遠的文章但仍能迅速了解 EEplus 的賣點和差異。</p>
+<p>我在使用 EPPlus 時主要的參考來自於 <a href="https://github.com/EPPlusSoftware/EPPlus/wiki">EPPlus 的 Wiki</a>，每個功能都有說明及範例，同時也有範例專案可以下載，寫得相當詳細。另外還找了如 <a href="https://www.cnblogs.com/rumeng/p/3785748.html">導出 Excel 之 Epplus 使用教程 - Wico&rsquo;s Blog</a>、<a href="https://dotblogs.com.tw/malonestudyrecord/2018/03/21/103124">使用 EPPLUS 操控 Excel - 碼農的學習日誌</a> 這些有逐步說明的文章，在此感謝。</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/04/epplus/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2019/12/aspnet-connect-db/">Asp.net MVC: 連線資料庫、簡單實作 CRUD</a>
                                     </h1>
                                 </header>
@@ -204,6 +295,10 @@
     </li>
     
     <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (2)</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
     </li>
     
@@ -213,6 +308,14 @@
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/" title="菜雞新訓記 (1): 使用 Git 來進行版本控制吧">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/04/newbie-0-menu/" title="菜雞新訓記 (0): 前言">菜雞新訓記 (0): 前言</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/03/sekiro-darksouls3-clear/" title="隻狼、黑暗靈魂３　白金！">隻狼、黑暗靈魂３　白金！</a>
@@ -246,14 +349,6 @@
         <a href="https://igouist.github.io/post/2020/11/bugs-install-dotnet-core-on-amazon-ami-requires-openssl/" title="菜雞抓蟲: 在 Amazon Linux AMI 安裝 .net Core 時卡在 Requires: openssl-libs">菜雞抓蟲: 在 Amazon Linux AMI 安裝 .net Core 時卡在 Requires: openssl-libs</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle/" title="菜雞與物件導向 (13): 介面隔離原則">菜雞與物件導向 (13): 介面隔離原則</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2020/11/dark-reader/" title="Dark Reader —— 暗黑模式愛好者的 Chrome 必備套件">Dark Reader —— 暗黑模式愛好者的 Chrome 必備套件</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -276,7 +371,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (12)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (14)</a>
     </li>
     
     <li>
