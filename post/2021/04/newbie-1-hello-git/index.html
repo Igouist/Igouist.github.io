@@ -210,7 +210,7 @@
 </ul>
 <p>那麼，你很有可能需要 Git！</p>
 <!--more-->
-<p><strong>Git 是一套分散式的版本控制，也就是像是打電動時的存檔</strong>。讓我們可以在面臨重要選擇的時候存檔、打王之前存檔、打贏的時候也存個檔。當然，像是那種有多劇情多結局的遊戲，也可以針對不同路線各自存檔。</p>
+<p><strong>Git 是一套分散式的版本控制，就像是打電動時的存檔</strong>。讓我們可以在面臨重要選擇的時候存檔、打王之前存檔、打贏的時候也存個檔。當然，像是那種有多劇情多結局的遊戲，也可以針對不同路線各自存檔。</p>
 <p>同時它也支援雲端存檔，你可以在電腦上存個檔，然後有網路的時候就丟上去雲端備份一下。而這個雲端備份是共用的，所以你可以跟朋友一起玩同一款遊戲，各自攻略不同的 BOSS，再把存檔和朋友互相交流交流，合成一個有兩份戰利品的存檔。</p>
 <p>這些功能在 Git 有著聽起來比較厲害的名字，例如認可（Commit）、分支（Branch）、分散式、合併（Merge）等等。我們後續再慢慢了解它們。</p>
 <h3 id="分散式版本控制">分散式版本控制</h3>
@@ -242,7 +242,7 @@
 <p>確認我們已經有 Git 之後，接著就必須先跟 Git 說我們是誰、信箱是什麼：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git config --global user.name <span style="color:#e6db74">&#34;I am INEVITABL&#34;</span>
 git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.com&#34;</span>
-</code></pre></div><p>這樣就會把設定好的名稱和信箱存到 config 裡面。如果要查看現在有的 config，可以輸入 <code>git config --list</code></p>
+</code></pre></div><p>這樣就會把設定好的名稱和信箱存到 config 裡面。如果要查看現在有的 config，可以輸入<br/> <code>git config --list</code></p>
 <blockquote>
 <p>另外也還能指定編譯器、新增別名等等，可以參照 <a href="https://gitbook.tw/chapters/config/convenient-settings.html">其它方便的設定 - 為你自己學 Git</a></p>
 </blockquote>
@@ -260,13 +260,13 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 </blockquote>
 <p>接著讓我們先移動過去資料夾：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">cd C:\hello-git
-</code></pre></div><p>並且將 Git 初始化：</p>
+</code></pre></div><p>並且<strong>使用 <code>git init</code> 將 Git 初始化</strong>：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git init
 </code></pre></div><p><img src="https://i.imgur.com/WIckbA1.png" alt=""></p>
 <p>如此一來，這個資料夾就成為了「<strong>工作區（Working directory）</strong>」，也就是「歸我 Git 管啦！」的意思</p>
 <p>同時，我們也能在原本的 hello-git 資料夾中，發現多了一個 <code>.git</code> 的隱藏檔案：</p>
 <p><img src="https://i.imgur.com/3hgT4eP.png" alt=""></p>
-<p>這個 <code>.git</code> 就是用來幫我們處理一堆版本控制工作的地方，也叫做「<strong>儲存庫（Repository）</strong>」。裡面會放一些設定值、已經確認變更的文件等等。</p>
+<p>這個 <code>.git</code> 就是用來幫我們處理一堆版本控制工作的地方，也叫做<br/>「<strong>儲存庫（Repository）</strong>」。裡面會放一些設定值、已經確認變更的文件等等。</p>
 <p>現在讓我們來確認一下這個工作區的狀況，<code>git status</code> 將會列出當前的狀態，這將會是我們很常使用的指令。</p>
 <p><img src="https://i.imgur.com/5XwsruS.png" alt=""></p>
 <p>可以看到我們現在在 Master 分支，並且還沒有 Commit 任何東西。這兩個部分我們等等就會說明，現在就讓我們按照它的提示，來把檔案丟進去給 Git 試試吧。</p>
@@ -282,13 +282,13 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git add A.txt
 </code></pre></div><p><img src="https://i.imgur.com/fFlY2rK.png" alt=""></p>
 <p>現在可以看到我們新增檔案這個動作已經被 Git 捕捉到了。</p>
-<p>前面有提過，我們在 <code>git init</code> 之後，當下的資料夾就會變成「工作區」，而 .git 則會成為「儲存庫」。在這兩者之間，還會有一層「暫存區（Staging Area）」（有些朋友會叫做「索引區（index）」，對象是一樣的）。</p>
+<p>前面有提過，<strong>我們在 <code>git init</code> 之後，當下的資料夾就會變成「工作區」，而 .git 則會成為「儲存庫」。在這兩者之間，還會有一層「暫存區（Staging Area）」</strong>（有些朋友會叫做「索引區（index）」，對象是一樣的）。</p>
 <p>這三者之間的工作流程就像是一條工廠輸送帶：</p>
 <pre><code>工作區（Working directory）→ 暫存區（Staging Area）→ 儲存庫（Repository）
-</code></pre><p>而這個 Add 加入檔案的過程，其實就是將我們 <strong>在工作區所做的變更，加入到暫存區（Staging Area）</strong></p>
-<p>所以我們新增檔案、變更內容等等，其實都要跟 Git 用 add 指令打聲招呼，說「我有動這個哦，幫我看著一下」，Git 才會把這些變更的對象放到暫存區裡，等待後續丟到儲存庫的動作。</p>
+</code></pre><p>而這個 <strong><code>add</code></strong> 加入檔案的過程，其實就是將我們 <strong>在工作區所做的變更，加入到暫存區（Staging Area）</strong></p>
+<p>所以我們新增檔案、變更內容等等，其實都要跟 Git 用 <code>add</code> 指令打聲招呼，說「我有動這個哦，幫我看著一下」，Git 才會把這些變更的對象放到暫存區裡，等待後續丟到儲存庫的動作。</p>
 <p>那有些朋友可能就會問啦：我工作的時候處理的檔案一定很多個啊，每個都要 add 豈不是累死？</p>
-<p>不用擔心，當有多個檔案要 add 的時候，我們可以加上參數 -a，也就是：</p>
+<p>不用擔心，當有多個檔案要 <code>add</code> 的時候，我們可以加上參數 <code>-A</code>，也就是：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git add -A
 </code></pre></div><p>或是</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git add --all
@@ -332,7 +332,7 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 <li>魔王城決戰</li>
 </ul>
 <p>這下完蛋，如果什麼關鍵道具還是劇情沒有拿掉，要嘛放棄，要嘛認命從頭開始。所以，我們在 Commit 的時候要盡量迴避這個狀況。對此，我的建議是：</p>
-<p>在所有你覺得「<strong>這是一個段落</strong>」的時候就 Commit。</p>
+<p><strong>在所有你覺得「這是一個段落」的時候就 Commit。</strong></p>
 <p>就像這小節的開頭：完成了一個小功能？ Commit；重構了一個變數的命名？ Commit。在你所有想要 Commit 的時候 Commit，畢竟 Commit 不用錢，真的不用省。</p>
 <p>寧可多 Commit 幾次，等熟練 Git 的時候，<s>或是被靠夭洗版的時候</s>，再考慮用 rebase 之類的技能來把多個零碎的 Commit 整理成一個；也不要臨時出了什麼事，結果 Git 一打開，只能回到一個月前，那真的是欲哭無淚。阿彌陀佛，保護自己，就從 Commit 開始。</p>
 <blockquote>
@@ -366,7 +366,7 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 <p><img src="https://i.imgur.com/WTr6t7f.png" alt=""></p>
 <h3 id="提交紀錄log">提交紀錄（Log）</h3>
 <p>現在我們已經可以成功存檔了，但有玩過遊戲的都知道，通常都會有個地方讓你看當前的存檔和紀錄等等。那麼<strong>在 Git 中要怎麼看我們的 Commit 記錄呢</strong>？這時候就要用到 <code>log</code> 指令。</p>
-<p>由於只有存過一次也太寒酸了，<strong>現在讓我們把 A.txt 打開，將原本的 Hello! 改成 Hello world! 並且再 Commit 一次</strong>：</p>
+<p>由於只有存過一次也太寒酸了，現在讓我們把 A.txt 打開，將原本的 Hello! 改成 Hello world! 並且再 Commit 一次：</p>
 <p><img src="https://i.imgur.com/uZY0Kjm.png" alt=""></p>
 <p><img src="https://i.imgur.com/IhLiS0z.png" alt=""></p>
 <p>然後，讓我們試試 <code>git log</code>：</p>
@@ -385,7 +385,7 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 <ul>
 <li>HEAD 是指向我們當前所在的分支，而我們 HEAD 所在的 master 分支則是在 743d&hellip; 這個 Commit 上</li>
 <li>關於 HEAD 我們會在 <a href="#%E9%97%9C%E6%96%BC-head">關於 HEAD</a> 繼續說明</li>
-<li>關於 分支 我們會在 [分支] 繼續說明</li>
+<li>關於 分支 我們會在 <a href="#%E5%88%86%E6%94%AFbranch">分支</a> 繼續說明</li>
 </ul>
 </li>
 </ul>
@@ -400,7 +400,7 @@ $env:LESSCHARSET='utf-8'                         # Less 分頁的環境變數
 <p>主要是因為一些歷史原因，Windows 在這塊並沒有全面支持 Utf-8，因此需要告訴 Git 我們要以 utf-8 作為編碼，並且也把 Git 用到的 Less 分頁等環境變數設定好。感謝 CSDN 的這篇 <a href="https://blog.csdn.net/FollowGodSteps/article/details/96271359">PowerShell | git log 中文亂碼問題解決</a> 和 Github 上的 <a href="https://gist.github.com/nightire/5069597">Nightire 大大</a>。</p>
 <p>但是如果你是 <a href="https://docs.microsoft.com/zh-tw/windows/wsl/install-win10">在 Windows 也要安裝 Ubuntu，我就是要 Bashhhhh</a> 的朋友就當我沒說。</p>
 </blockquote>
-<p>不過比起這樣的文字，我們比較常用的還是 Git 那相當有特色的線圖。現在讓我們試試 <code>git log  --oneline --graph</code>：</p>
+<p>不過比起這樣的文字，我們比較常用的還是 Git 那相當有特色的線圖。現在讓我們試試<br/> <code>git log  --oneline --graph</code>：</p>
 <p><img src="https://i.imgur.com/V9ysh2L.png" alt=""></p>
 <p>可以看到 Log 變得相當精簡了。在我們後續會講到的<a href="#%E5%88%86%E6%94%AFbranch">分支</a>情景下，線圖還會幫忙畫出不同分支路線（平常有使用 Git 的 GUI 工具的朋友們應該都很熟悉了）</p>
 <p>這邊就借朋友的 Project 示範一下：</p>
@@ -421,8 +421,8 @@ $env:LESSCHARSET='utf-8'                         # Less 分頁的環境變數
 <p><img src="https://i.imgur.com/9BYAkeV.png" alt=""></p>
 <h3 id="版本差異diff">版本差異（Diff）</h3>
 <p>有些朋友可能會問：「我知道每一次 Commit 了，但我還是不知道每個 Commit 到底動了哪些地方呀？」</p>
-<p>或是更進一步的：「我知道可以用 <code>git log -p</code> 來看每次 Commit 的內容啦，也知道變動了哪些地方應該要直接能從 Commit Message 大致看出來啦。但 log 的雜訊太多了，我只想要確切<strong>知道兩個 Commit 間到底變動了哪些</strong>，該怎麼做？」</p>
-<p>這時候我們就可以使用 <code>git diff</code> 來看兩個 Commit 之間的差異。</p>
+<p>或是更進一步的：「我知道可以用 <code>git log -p</code> 來看每次 Commit 的內容啦，也知道變動了哪些地方應該要直接能從 Commit Message 大致看出來啦。但 log 的雜訊太多了，我只想要確切知道兩個 Commit 間到底變動了哪些，該怎麼做？」</p>
+<p>這時候我們就可以<strong>使用 <code>git diff</code> 來看兩個 Commit 之間的差異</strong>。</p>
 <p>現在讓我們回到 <code>git log</code> 示範時的狀況：</p>
 <p><img src="https://i.imgur.com/hD1c1h1.png" alt=""></p>
 <p>可以看到我們有三個 Commit，分別是 a657, 6fbe, 2b33</p>
@@ -445,7 +445,7 @@ $env:LESSCHARSET='utf-8'                         # Less 分頁的環境變數
 <p>現在我們試試看先用 <code>git -add A.txt</code>，把 A.txt 加入到
 暫存中，再呼叫 <code>git diff</code> 試試：
 <img src="https://i.imgur.com/g97cuY9.png" alt=""></p>
-<p>卻發現沒有找到任何差異了！這是因為 A.txt 已經被收入到暫存區中，不在工作區了。如果我們要確認暫存區和儲存庫之間的差異，要加上 <code>--cached</code> 參數，現在再用 <code>git diff --cached</code> 試試：</p>
+<p>卻發現沒有找到任何差異了！這是因為 A.txt 已經被收入到暫存區中，不在工作區了。如果我們要<strong>確認暫存區和儲存庫之間的差異，要加上 <code>--cached</code> 參數</strong>，現在再用 <code>git diff --cached</code> 試試：</p>
 <p><img src="https://i.imgur.com/POr2E1J.png" alt=""></p>
 <p>就可以看到暫存區和儲存庫之間的差異囉。</p>
 <p>最後，示範完了就養成好習慣，順便 Commit 來結束這一小節吧：</p>
@@ -466,8 +466,12 @@ $env:LESSCHARSET='utf-8'                         # Less 分頁的環境變數
 <p><strong>HEAD 基本上可以當作「目前位置」的概念，它是一個會指向當前分支的指標。</strong></p>
 <p>通常來說，HEAD 會指向目前所在的分支最新的一個 Commit（除非發生<a href="#%E9%97%9C%E6%96%BC%E6%96%B7%E9%A0%ADdetached-head">斷頭</a>）。</p>
 <p>但由於我們還沒有認識分支，當然也沒有針對分支進行任何操作，因此 HEAD 就會指向我們的預設分支 master（Github 現在改叫做 main 了），所以現在直接把 HEAD 當成目前所在位置就可以了。</p>
-<p>同時，也可以用 HEAD 搭配 <code>^</code>（上一個版本）、<code>~</code>（上幾個版本）來直接替代大多數需要給定 Commit SHA1 值的操作，會讓整個 Git 指令操作變得相當簡便。</p>
-<p>例如說當我們在 <code>git diff</code> 的時候，明明只是要看跟上一版或者前面幾版的差異，實在很不想再查 SHA1 碼，就可以用 <code>git diff HEAD HEAD^</code> 或是 <code>git diff HEAD HEAD~2</code> 的指令來加快查詢。</p>
+<p>同時，也可以用 HEAD 搭配 <code>^</code>（上一個版本）、<code>~</code>（上幾個版本）來直接替代大多數需要給定 Commit SHA1 值的操作，例如說：</p>
+<ul>
+<li><code>HEAD~5</code> = 目前位置往前五步</li>
+<li><code>f74d^</code> = f74d 這個 Commit 的上一個 Commit</li>
+</ul>
+<p>這樣會讓整個 Git 指令操作變得相當簡便，當我們在 <code>git diff</code> 的時候，明明只是要看跟上一版或者前面幾版的差異，實在很不想再查 SHA1 碼，就可以用 <code>git diff HEAD HEAD^</code> 或是 <code>git diff HEAD HEAD~2</code> 的指令來加快查詢。</p>
 <p>關於 HEAD 的延伸閱讀，可以參考這兩篇：</p>
 <ul>
 <li><a href="https://gitbook.tw/chapters/using-git/what-is-head.html">【冷知識】HEAD 是什麼東西？ - 為你自己學 Git</a></li>
@@ -480,7 +484,7 @@ $env:LESSCHARSET='utf-8'                         # Less 分頁的環境變數
 </blockquote>
 <p>既然我們已經學會存檔，也能看過去都存了哪些檔了，是時候該學學讀檔了吧！</p>
 <p>大多數的遊戲都有「上一步」、「悔棋」、「恢復上一動！懷疑啊？」這類的動作，在 Git 中則是叫做 <code>Revert</code>。</p>
-<p>不過「我這一步完全不算」，Revert 比較像是「我再把棋子移回去就是了」的概念。也就是說，雖然是悔棋，但是這個悔棋本身也算是一步的意思。</p>
+<p>不過「我這一步完全不算」，<strong><code>Revert</code> 比較像是「我再把棋子移回去就是了」的概念</strong>。也就是說，雖然是悔棋，但是這個悔棋本身也算是一步的意思。</p>
 <p>這個部份直接試看看會比較好了解，讓我們把 A.txt 打開，並且把內容改成</p>
 <pre><code>Hello world. HAHAHA.
 </code></pre><p>緊接著直接 <code>Commit -a -m &quot;HAHA&quot;</code>，現在的 Git Log 應該會長得像這樣：</p>
@@ -558,7 +562,9 @@ Revert 所 Revert 掉的 Commit，夠直覺吧！</p>
 <p>經歷過一些已經宣告死刑的需求過陣子借屍還魂死灰復燃的神奇操作之後，真的會感謝 Git 救工程師於水火之中。阿彌陀佛。</p>
 </blockquote>
 <blockquote>
-<p>補充：在 <code>reset</code> 的時候真的會強烈感覺到 Commit 的頻率和 Commit Message 的重要，想想前面 Commit 章節的那兩個例子：如果只有「專案初始化」、「功能完成」兩個 Commit，那 就算 <code>reset</code> 能飛天遁地也無用武之地，如果 Commit 訊息一整排都是「Add」、「Add」、「Add」，那給你 <code>reset</code> 也不知道該往哪裡去。所以切記切記，魔鬼藏在 Commit 裡！</p>
+<p>補充：在 <code>reset</code> 的時候真的會強烈感覺到 Commit 的頻率和 Commit Message 的重要，想想前面 Commit 章節的那兩個例子：</p>
+<p>如果只有「專案初始化」、「功能完成」兩個 Commit，那 就算 <code>reset</code> 也無用武之地，如果 Commit 訊息一整排都是「Add」、「Add」、「Add」，那給你 <code>reset</code> 也不知道該往哪裡去。</p>
+<p>所以切記切記，魔鬼藏在 Commit 裡！</p>
 </blockquote>
 <h3 id="分支branch">分支（Branch）</h3>
 <p>就算是超級英雄片也會有團隊合作各司其職的時候，程式開發上一定也會遇到多人合作的狀況，這時候我們就不能一路無腦 Commit 下去。</p>
@@ -571,20 +577,20 @@ Revert 所 Revert 掉的 Commit，夠直覺吧！</p>
 <p>最後再進行合併。</p>
 <p>就算是只有一個人開發，有時候也會遇到正在開發某一個功能的時候，發現其他功能的某個地方壞了，又不想混在一起做。這時候也可以用分支進行管理。</p>
 <p>這個部份我推薦連猴子都能懂的 Git 指南中的 <a href="https://backlog.com/git-tutorial/tw/stepup/stepup1_1.html">什麼是分支？</a> 這頁的<a href="https://backlog.com/git-tutorial/tw/img/post/stepup/capture_stepup1_1_2.png">圖例</a>，可以看到各自開發不同功能之後，合併在一起取得有全部變更的網頁。</p>
-<p>分支在大多範例中會被形容像是樹枝的分枝，從主幹發散出去。但我個人覺得比較像是水流，從任何一處我們都可以岔分出另一條水流，這兩條水流各自經歷了不同的地方，可能第一條水流帶來了泥沙，第二條河流被汙染了核廢料，而我們又能將這兩條水流會合在一起，得到同時有泥沙和核廢料的水流。</p>
-<p>而個人認為，分支最重要的概念就是進行環境的隔離，大家可以在自己的分支上進行作業，又不會互相影響。就算想修改看看，也可以在自己的分支上先行測試，沒問題了再合併上去，這樣就能在工作流程上貫徹封裝、降耦合和單一職責的精神。並且，也因為多條分支可以同時進行不同的工作，也能達到平行處理般的效率，重要的是戰犯更好找了，豈不妙哉。</p>
+<p>分支在大多範例中會被形容像是樹枝的分枝，從主幹發散出去。但我個人覺得比較像是<strong>水流</strong>，從任何一處我們都可以岔分出另一條水流，這兩條水流各自經歷了不同的地方，可能第一條水流帶來了泥沙，第二條河流被汙染了核廢料，而我們又能將這兩條水流會合在一起，得到同時有泥沙和核廢料的水流。</p>
+<p>而個人認為，分支最重要的概念就是進行<strong>環境的隔離</strong>，大家可以在自己的分支上進行作業，又不會互相影響。就算想修改看看，也可以在自己的分支上先行測試，沒問題了再合併上去，這樣就能在工作流程上貫徹封裝、降耦合和單一職責的精神。並且，也因為多條分支可以同時進行不同的工作，也能達到平行處理般的效率，重要的是戰犯更好找了，豈不妙哉。</p>
 <p>那麼，我們現在就來記錄一下分支的基本操作吧。</p>
 <h4 id="新建分支branch與切換分支checkout">新建分支（branch）與切換分支（checkout）</h4>
 <p>我們在預設狀況下，就會位於 Master（有些地方是 Main）分支上，首先讓我們從新建分支與切換分支開始嘗試。在 <code>hello-git</code> 中，新增兩個檔案：<code>B.txt</code> 和 <code>C.txt</code>，現在資料夾應該會是這個樣子：</p>
 <p><img src="https://i.imgur.com/gEWbVkJ.png" alt=""></p>
 <p>接著將這兩個新檔案 Add 進來並且 Commit：</p>
 <p><img src="https://i.imgur.com/qXwq3WC.png" alt=""></p>
-<p>可以看到我們的 master 分支位於最新的 Commit 07672f4 上了，接著我們要從這裡用 <code>git branch</code> 拉出一條新的分支：</p>
+<p>可以看到我們的 master 分支位於最新的 Commit 07672f4 上了，接著我們要從這裡<br/> <strong>用 <code>git branch</code> 拉出一條新的分支</strong>：</p>
 <pre><code>git branch Branch-B
 </code></pre><blockquote>
-<p>補充：分支拉出來的 Commit 點稱為 <code>Base</code>。由於任兩個 Branch 一定會找得到一個共同的 base，因此我們在對分支間做合併和比較時，並不是將整份拿出來做大量核對，而是從這個 Base 當作基準點來進行變更的比較。這個 base 的概念和我們後續的 <a href="#%E5%90%88%E4%BD%B5merge">合併</a>、<a href="#%E8%A1%9D%E7%AA%81conflict">衝突</a> 等操作會比較相關。</p>
+<p>補充：<strong>分支拉出來的 Commit 點稱為 <code>Base</code></strong>。由於任兩個 Branch 一定會找得到一個共同的 base，因此我們在對分支間做合併和比較時，並不是將整份拿出來做大量核對，而是從這個 Base 當作基準點來進行變更的比較。這個 base 的概念和我們後續的 <a href="#%E5%90%88%E4%BD%B5merge">合併</a>、<a href="#%E8%A1%9D%E7%AA%81conflict">衝突</a> 等操作會比較相關。</p>
 </blockquote>
-<p>建立分支後，我們再使用 <code>git checkout</code> 簽出分支：</p>
+<p>建立分支後，我們再<strong>使用 <code>git checkout</code> 簽出分支</strong>：</p>
 <pre><code>git checkout Branch-B
 </code></pre><p>應該可以看到 Git 告訴你已經切換到 Branch-B 了，我們也可以用 <code>git status</code> 來進行確認：</p>
 <p><img src="https://i.imgur.com/mrektkG.png" alt=""></p>
@@ -615,13 +621,13 @@ Revert 所 Revert 掉的 Commit，夠直覺吧！</p>
 </ul>
 <h4 id="合併merge">合併（Merge）</h4>
 <blockquote>
-<p>「真是太諷刺了紹安，你拉了新分支繞了一大圈，最後做出來的 feature 竟然是你不想做的，你老闆的需求。<br/>
-　所以說呢，分支最後終究是要回到 master 來的，這四千個 Commit 的盡頭 Merge，或許正是你的極限也說不定。」</p>
+<p>「真是太諷刺了紹安，你拉了新分支繞了一大圈，<br/>　最後做出來的 feature 竟然是你不想做的，你老闆的需求。<br/>
+　所以說呢，分支最後終究是要回到 master 來的，<br/>　這四千個 Commit 的盡頭 Merge，或許正是你的極限也說不定。」</p>
 </blockquote>
-<p>不管是新功能的開發，問題的修復，效能的測試等等，大多數以上的分支最終都是需要合併回來的。每個專案大概就像那種機器人合體戰隊的動畫的每一集一樣，最後都要來 Merge 一下，可以說是避無可避。</p>
+<p>不管是新功能的開發，問題的修復，效能的測試等等，<strong>大多數以上的分支最終都是需要合併回來的</strong>。每個專案大概就像那種機器人合體戰隊的動畫的每一集一樣，最後都要來 Merge 一下，可以說是避無可避。</p>
 <p>我們在前面一節有開出了兩個分支：Branch-B 和 Branch-C，現在讓我們把他們合而為一。首先，讓我們先簽出到 Branch-B：</p>
 <pre><code>git checkout Branch-B
-</code></pre><p>接著使用 <code>git merge</code> 指令來用 Branch-B 分支把 Branch-C 分支給吃進來：</p>
+</code></pre><p>接著<strong>使用 <code>git merge</code> 指令來用 Branch-B 分支把 Branch-C 分支給吃進來</strong>：</p>
 <p><img src="https://i.imgur.com/9G1qj6g.png" alt=""></p>
 <p>這時候可以觀察看看 <code>hello-git</code> 資料夾，B.txt 和 C.txt 應該都已經消失了。</p>
 <p>我們可以用 <code>git log</code> 來觀察一下：</p>
@@ -634,7 +640,7 @@ Revert 所 Revert 掉的 Commit，夠直覺吧！</p>
 <p><img src="https://i.imgur.com/pEySmri.png" alt=""></p>
 <p>這樣就成功將兩個負責不同項目的分支裡的變更都合併回 master 囉！</p>
 <h4 id="衝突conflict">衝突（Conflict）</h4>
-<p>當然，不是每一次合併都能順利，就像不是每次合作都能順利一樣。只要兩個分支有共同增刪改同一份文件同一個區塊，在合併的時候就會發生衝突。</p>
+<p>當然，不是每一次合併都能順利，就像不是每次合作都能順利一樣。只要兩個分支<strong>有共同增刪改同一份文件同一個區塊，在合併的時候就會發生衝突</strong>。</p>
 <p>衝突的時候我們得要開啟檔案逐一審查有衝突的區塊，並選擇使用對方還是自己還是手動合併成新的版本。</p>
 <p>現在讓我們來實際操作看看吧：</p>
 <p>首先，讓我們先確認自己在 master，然後新建並簽出一支新的分支 <code>Branch-X</code>：</p>
@@ -653,13 +659,13 @@ git checkout -b Branch-Y
 </code></pre><p>現在，我們手頭上有 Branch-X 和 Branch-Y 兩條分支了，並且他們都變更過了 A.txt，現在我們直接用 Branch-Y 來合併 Branch-X：</p>
 <pre><code>git merge Branch-X
 </code></pre><p><img src="https://i.imgur.com/4j9GJmA.png" alt=""></p>
-<p>可以看到 Git 跳出訊息跟你說自動合併失敗（Automatic merge failed），要求你進行修復。</p>
+<p>可以看到 Git 跳出訊息跟你說<strong>自動合併失敗（Automatic merge failed）</strong>，要求你進行修復。</p>
 <p>並且 <code>git status</code> 也會告訴你，你有未處理的 merge 問題，A.txt 這個檔案都有被變更到：</p>
 <p><img src="https://i.imgur.com/14o8dB9.png" alt=""></p>
 <p>這時候讓我們去看看 A.txt 的內容：</p>
 <p><img src="https://i.imgur.com/etAf0gj.png" alt=""></p>
 <p>會看到 Git 標示出發生衝突的部分，上半部是我們當前 HEAD 也就是 Branch-Y 的內容，下部分則是 Branch-X 的內容。</p>
-<p>我們必須把這個衝突的部分處理好，並且把這些標示拿掉，再重新 Commit 一次。假設Ｘ跟Ｙ兩位同事經過 <del>扭打</del> 討論之後，決定改成兩個人的名字都要標在上面，變成 <code>Hello X &amp; Y!</code>，我們就可以進行 commit 來結束衝突囉：</p>
+<p>我們<strong>必須把這個衝突的部分處理好，並且把這些標示拿掉，再重新 Commit 一次</strong>。假設Ｘ跟Ｙ兩位同事經過 <del>扭打</del> 討論之後，決定改成兩個人的名字都要標在上面，變成 <code>Hello X &amp; Y!</code>，我們就可以進行 commit 來結束衝突囉：</p>
 <p><img src="https://i.imgur.com/1HXkePJ.png" alt=""></p>
 <p>通常來說，如果是使用 GUI 工具的朋友，應該會像 <code>Diff</code> 那樣給一個對照的列表讓你選擇，例如說我平常用的 Visual Studio 就會並排讓你勾選要使用哪一邊的，或是自己修改（這邊借用一下官方文件的圖）：</p>
 <p><img src="https://docs.microsoft.com/zh-tw/visualstudio/ide/media/git-merge-editor.png?view=vs-2019" alt=""></p>
@@ -670,7 +676,7 @@ git checkout -b Branch-Y
 </blockquote>
 <h4 id="rebase">Rebase</h4>
 <p>在處理分支的時候還有另一種合併方式，就是使用 Rebase。</p>
-<p>我們在前面分支的章節有稍微提起過，分支的 base 是建立出分支的 Commit，也是分支和其他分支比較的基準點。而 rebase 就是「重新設定基準點」的意思。</p>
+<p>我們在前面分支的章節有稍微提起過，分支的 base 是建立出分支的 Commit，也是分支和其他分支比較的基準點。<strong>而 rebase 就是「重新設定基準點」的意思</strong>。</p>
 <p>剛剛在 merge 的時候，我們已經將 Branch-X 併入了 Branch-Y ，現在就試試用 rebase 的方式，將 Branch-X 併入 master 吧。</p>
 <pre><code>git checkout master
 git rebase Branch-Y
@@ -707,9 +713,12 @@ git branch -d Branch-Y
 </ul>
 <h4 id="關於分支策略">關於分支策略</h4>
 <p>既然是團隊合作，雖然大家各自拉了一條分支出去做事，但還是要有點 SOP，這就叫做分支策略。</p>
-<p>最常見的做法來說，會有兩個最重要的分支：正式服務的主要分支（master, main）、開發用的測試分支（develop）。接著再衍生出相關的分支，例如 功能（feature）、修復（hotfix）等等。</p>
+<p>以最常見的 Git Flow 來說，<strong>會有兩個最重要的分支：正式服務的主要分支（master, main）、開發用的測試分支（develop）。接著再衍生出相關的分支，例如 功能（feature）、修復（hotfix）等等</strong>。</p>
 <p>當然針對這些分支，也會有一些相關的規定，主要會有命名規定和合併的規定。例如微軟的分支命名建議就比較像 <code>{分支種類}/{人員}/{描述}</code>，例如說小明拉了一個產品功能的分支，就是 <code>feature/Ming/product</code> 等等。</p>
-<p>流程的部分就有多個流派，最常見的就是從 master 拉出 develop，然後在 develop 上拉出多個 feature 進行開發。這些 feature 分支開發完畢後，再匯回 develop 進行測試，當專案完成、develop 的測試通過後，就可以推上 master。而當線上有問題發生的時候，會從 master 拉出 hotfix 分支，並修復完成之後同步更新給 master 和 develop。藉此保持 master 分支的穩定和乾淨。</p>
+<p>流程的部分就有多個流派，目前我們常用的方式和上面提到的 Git Flow 比較相像，是從 master 拉出 develop，然後在 develop 上拉出多個 feature 進行開發。</p>
+<p>這些 feature 分支開發完畢後，再匯回 develop 進行測試，當專案完成、develop 的測試通過後，就可以推上 master。</p>
+<p>而當線上有問題發生的時候，會從 master 拉出 hotfix 分支，並修復完成之後同步更新給 master 和 develop。藉此保持 master 分支的穩定和乾淨。</p>
+<p>不過當然這是我所屬的團隊常用的方法，這些流程還是很吃團隊文化的，記得入境隨俗哪。</p>
 <p>關於這些分支的介紹和協作，可以參照這些文章：</p>
 <ul>
 <li><a href="https://gitbook.tw/chapters/gitflow/why-need-git-flow.html">Git Flow 是什麼？為什麼需要這種東西？</a></li>
@@ -736,14 +745,14 @@ git branch -d Branch-Y
 <p>其中最重要的是上面那串 <code>.git</code> 結尾的網址，我們接著就要使用這個網址來將剛剛的 <code>hello-git</code> 資料夾推送到這個儲存庫。</p>
 <p>現在讓我們鏡頭回到棚內的 git 指令，首先 <code>git status</code> 確保 Commit 等動作都已經完成：</p>
 <p><img src="https://i.imgur.com/Nci6Yvd.png" alt=""></p>
-<p>接著讓我們用 <code>git remote add</code> 來增加叫做 <code>origin</code> 的遠端儲存庫到這個儲存庫中，完成了之後再用 <code>git remote</code> 確認遠端儲存庫列表是不是已經有 <code>origin</code> 了：</p>
+<p>接著讓我們<strong>用 <code>git remote add</code> 來增加叫做 <code>origin</code> 的遠端儲存庫到這個儲存庫中</strong>，完成了之後再用 <code>git remote</code> 確認遠端儲存庫列表是不是已經有 <code>origin</code> 了：</p>
 <pre><code>git remote add origin https://github.com/yourGithubName/yourGithubRepository.git
 git remote
 </code></pre><p><img src="https://i.imgur.com/WFqrEAu.png" alt=""></p>
 <p>因為 Github 的主要分支已經改成使用 <code>Main</code> 了，因此我們順應一下，也用 <code>git branch -M</code> 把 master 分支改名成 Main 吧</p>
 <pre><code>git branch -M main
 </code></pre><p><img src="https://i.imgur.com/vNFIUiQ.png" alt=""></p>
-<p>完成之後，就可以開始上傳囉。在 Git 中，推送到遠端儲存庫只要使用 <code>push</code> 指令就可以了，語法是 <code>git push {遠端儲存庫名稱} {要推送的分支}</code>，例如我們現在的推送就是：</p>
+<p>完成之後，就可以開始上傳囉。在 Git 中，<strong>推送到遠端儲存庫只要使用 <code>push</code> 指令就可以了，語法是 <code>git push {遠端儲存庫名稱} {要推送的分支}</code></strong>，例如我們現在的推送就是：</p>
 <pre><code>git push origin main
 </code></pre><p><img src="https://i.imgur.com/Ubdt85H.png" alt=""></p>
 <p>推送完成後，讓我們再回到 Github 上查看：</p>
@@ -766,39 +775,39 @@ git remote
 <p><img src="https://i.imgur.com/TRv8i93.png" alt=""></p>
 <p>拉到最下面，加上 Commit Message，並且按下 Commit Changes</p>
 <p><img src="https://i.imgur.com/GRpH0el.png" alt=""></p>
-<p>現在遠端儲存庫已經有了一個變更，但是我們本機還不知道呢！接著就讓我們實際操作一下，首先我們需要取得遠端的資訊，這時候就可以用 <code>fetch</code> 來擷取遠端儲存庫的資訊回來：</p>
+<p>現在遠端儲存庫已經有了一個變更，但是我們本機還不知道呢！接著就讓我們實際操作一下，首先我們需要取得遠端的資訊，這時候就可以<strong>用 <code>fetch</code> 來擷取遠端儲存庫的資訊</strong>回來：</p>
 <pre><code>git fetch
 </code></pre><p><img src="https://i.imgur.com/InviqZr.png" alt=""></p>
 <p>可以看見 Git 從遠端儲存庫抓了資訊回來，這時候我們如果查看 <code>git log</code>，並加上 <code>--all</code> 來顯示全部分支的話：</p>
 <p><img src="https://i.imgur.com/JBEalid.png" alt=""></p>
 <p>可以看見有一個 <code>origin/main</code> 的分支超越了我們的 <code>main</code> 分支了，這也就是在 <code>origin</code> 遠端儲存庫的 <code>main</code> 分支的意思。這時候我們就可以知道，遠端儲存庫的進度比起我們本機的還要更新。</p>
 <p>那麼要怎麼讓本機的進度追上呢？其實 <code>main</code> 和 <code>origin/main</code> 也就是兩條分支，所以只要使用 <code>merge</code> 就可以把進度往前推。</p>
-<p>當然我們也可以不用這麼麻煩，可以直接使用 <code>pull</code> 指令來提取遠端儲存庫對應的分支直接和本機現在的分支進行合併，也就是 <code>fetch</code> + <code>merge</code>。這樣就是從雲端下載最新檔囉！現在就讓我們試試吧：</p>
+<p>當然我們也可以不用這麼麻煩，可以直接<strong>使用 <code>pull</code> 指令來提取遠端儲存庫對應的分支直接和本機現在的分支進行合併，也就是 <code>fetch</code> + <code>merge</code></strong>。這樣就是從雲端下載最新檔囉！現在就讓我們試試吧：</p>
 <pre><code>git pull origin main
 </code></pre><p><code>pull</code> 語法的邏輯和 <code>push</code> 是一樣的。當我們 <code>pull</code> 下來後，就可以 <code>git log</code> 來確認一下記錄囉：</p>
 <p><img src="https://i.imgur.com/945NY8u.png" alt=""></p>
 <p>可以看到我們的 <code>main</code> 分支已經跟上 <code>origin/main</code> 的進度囉！</p>
 <h3 id="clone">Clone</h3>
-<p>上面我們已經嘗試過「本機有儲存庫，上傳到遠端儲存庫」的場景了。但是大多數時候，像是我們在公司會需要接手開發專案啦、使用人家已經寫好的工具啦等等，都是「本機沒有任何東西，要從遠端下載東西」的場景。</p>
+<p>上面我們已經嘗試過「本機有儲存庫，上傳到遠端儲存庫」的場景了。但是大多數時候，像是我們在公司會需要接手開發專案啦、使用人家已經寫好的工具啦等等，都是「<strong>本機沒有任何東西，要從遠端進行下載</strong>」的場景。</p>
 <p>這個時候就是 Github 大家最常做的 <code>Clone</code> 出場的時候啦！</p>
 <p>現在就讓我們再新增一個 <code>GitRepos</code> 資料夾，我們的目標就是把儲存庫拉下來這裡：</p>
 <p><img src="https://i.imgur.com/ryaEGB2.png" alt=""></p>
 <p>接著讓我們回到 Github 上的 Repository，畫面中間靠右會有一個綠色的 <code>↓ Code</code> 按鈕（這應該是整個 Github 大家按最多次的按鈕）點開就會出現下載選項：</p>
 <p><img src="https://i.imgur.com/WY6HnKT.png" alt=""></p>
 <p>分別是各個命令列下載方式對應的連結、Github Desktop 專用的開啟方式，還有最常用到的 ZIP 下載方式。</p>
-<p>我個人是比較常下載壓縮檔來解壓縮啦，不過都已經用指令到這裡了，就讓我們來試試 <code>git clone</code> 吧：</p>
+<p>我個人是比較常下載壓縮檔來解壓縮啦，不過都已經用指令到這裡了，就讓我們來試試 <strong><code>git clone</code></strong> 吧：</p>
 <pre><code>git clone https://github.com/yourGithubName/yourGithubRepository.git
 </code></pre><p><img src="https://i.imgur.com/TmPSidi.png" alt=""></p>
 <p>接著在 <code>GitRepos</code> 裡面就生出來一個 <code>hello-git</code> 啦，進入後檔案也都在呢：</p>
 <p><img src="https://i.imgur.com/qJ9RVQN.png" alt=""></p>
 <p>這樣就成功把儲存庫 Clone 下來囉！</p>
-<p>Clone 下來的儲存庫會自動建立和遠端儲存庫的繫結，也就是已經是 <code>git remote add </code> 好的狀態，相當方便。接著後續就和基本的 Git 操作一樣囉。</p>
+<p><strong>Clone 下來的儲存庫會自動建立和遠端儲存庫的繫結</strong>，也就是已經是 <code>git remote add </code> 好的狀態，相當方便。接著後續就和基本的 Git 操作一樣囉。</p>
 <h3 id="關於提取要求pull-request">關於提取要求（pull request）</h3>
 <p>如果你 Clone 的是自己的儲存庫，當然就可以開始工作後 <code>Add</code> <code>Commit</code> <code>Push</code> 連發，但如果不是你自己的儲存庫，又想要幫忙修改東西，或是工作上有審核機制，該怎麼辦呢？</p>
 <p>這個時候我們就要用提取要求（pull request）的方式來互動啦。</p>
-<p>Pull request 就是指發出一個 request 請對方來 Pull，如果對方覺得 OK，就會同意提起要求並把變更合併到自己的儲存庫裡。不過發 PR 這個動作似乎在每個平台都有點微妙的不同。</p>
+<p><strong>Pull request 就是指發出一個 request 請對方來 Pull，如果對方覺得 OK，就會同意提取要求並把變更合併到自己的儲存庫裡</strong>。不過發 PR 這個動作似乎在每個平台都有點微妙的不同。</p>
 <p>例如說平常工作時候使用 TFS（現在叫做 Azure DevOps）的發 PR 方式，是將分支推送上去之後，發起 PR 並請主管審核，確認沒問題後再進行 Merge；但在 Github 上，則是要先叉（Fork）一份到自己家，Clone 下來修改完之後推上去，再發出 PR 請對方來提取合併。</p>
-<p>也由於這個部分已經是社群互動的進階動作了，故先按下不表，附上 Azure DevOps 和 Github 的 Pull Request 操作方式的介紹文章，有興趣的朋友可以去看看：</p>
+<p>PR 比較常見於社群協作，還有工作上的提交審核等等，也由於這個部分已經是社群互動的進階動作了，故先按下不表。附上 Azure DevOps 和 Github 的 Pull Request 操作方式的介紹文章，有興趣的朋友可以去看看：</p>
 <ul>
 <li><a href="https://gitbook.tw/chapters/github/pull-request.html">與其它開發者的互動 - 使用 Pull Request（PR）- 為你自己學 Git</a></li>
 <li><a href="https://blog.alantsai.net/posts/2019/05/code-review-02-what-is-pull-request-and-how-to-create-it-in-azure-devops">[02][讓團隊彼此知道程式碼走向]何爲Pull Request並且如何建立 - 以Azure DevOps爲例</a></li>
