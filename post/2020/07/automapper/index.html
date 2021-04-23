@@ -263,7 +263,8 @@
     <span style="color:#75715e">// 註冊 Mapper
 </span><span style="color:#75715e"></span>    services.AddAutoMapper(<span style="color:#66d9ef">typeof</span>(Startup)); 
 }
-</code></pre></div><blockquote>
+</code></pre></div><p>可能有些人會有點疑惑：前面還需要 <code>MapperConfiguration</code> 怎麼這次不用了呢？那是因為 <code>AddAutoMapper</code> 的時候就會用反射去取得同組件中的 <code>Profile</code> 來載入，所以這部分就可以不用擔心，只要專心在使用上就好。</p>
+<blockquote>
 <p>2021/4/23 補充：</p>
 <p>感謝同事們的討論，這邊也補充給大家參考一下</p>
 <p>當我們直接使用 <code>services.AddAutoMapper(typeof(Startup));</code> 註冊的時候，AutoMapper 會去抓我們 <code>typeof</code> 的型別，並對該型別所在的 Assembly 進行反射找出所有的 <code>Profile</code>。</p>
@@ -282,8 +283,7 @@
 </span><span style="color:#75715e"></span>{
     <span style="color:#66d9ef">this</span>._mapper = mapper;
 }
-</code></pre></div><p>執行之後就能確認確實有轉換到值。可能有些人會有點疑惑：前面還需要 <code>MapperConfiguration</code> 怎麼這次不用了呢？那是因為 <code>AddAutoMapper</code> 的時候就會用反射去取得專案中的 <code>Profile</code> 來載入了，這部分就可以不用擔心，只要專心在使用上就好。</p>
-<p>最後再來對照一下商業邏輯的部份：</p>
+</code></pre></div><p>執行之後就能確認確實有轉換到值囉！最後再來對照一下商業邏輯的部份：</p>
 <p>－－瘦身前－－</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
 {
