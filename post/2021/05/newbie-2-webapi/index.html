@@ -1,0 +1,1221 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-92586970-4"></script>
+    <script async>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-92586970-4');
+    </script>
+
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務 - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2021-05-02T12:39:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2021-05-02T12:39:00&#43;08:00">
+        
+    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="description" content="這是俺整理公司新訓內容的第二篇文章，目標是對 Api, Restful Api, HTTP Method, HTTP Request, HTTP Response, HTTP Status 等相關的知識點做個筆記，並用 .net Core 建立一個簡易的 Web Api 專案">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/post/2021/05/newbie-2-webapi/">
+    <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link defer rel="stylesheet" href="/css/normalize.css">
+    
+        <link defer rel="stylesheet" href="/css/prism.css">
+    
+    <link defer rel="stylesheet" href="/css/style.css">
+    <script async type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    
+    <script data-ad-client="ca-pub-2119949858103459" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script async>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "[map[]]",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp-and-dotnet/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2021-5-2,
+                        </date>
+                        
+                        <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+                        <div class="post-content">
+                            <p><img src="https://i.imgur.com/ATcQbMV.png" alt=""></p>
+<p>這是俺整理公司新訓內容的第二篇文章，目標是<strong>對 Api, Restful Api, HTTP 等相關的知識點做個筆記，並用 .net Core 建立一個簡易的 Web Api 專案</strong>。</p>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80%E5%9F%BA%E6%9C%AC%E8%A7%80%E5%BF%B5">前言、基本觀念</a>
+<ul>
+<li><a href="#%E9%97%9C%E6%96%BC-web-api">關於 Web API</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC-restful-%E8%88%87-http-method">關於 Restful 與 HTTP Method</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC-http-request-%E5%92%8C-response">關於 HTTP Request 和 Response</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC-http-status-code">關於 HTTP Status Code</a></li>
+</ul>
+</li>
+<li><a href="#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a>
+<ul>
+<li><a href="#%E6%96%B0%E5%BB%BA-net-core-web-api-%E5%B0%88%E6%A1%88">新建 .net Core Web API 專案</a></li>
+<li><a href="#%E5%8B%95%E6%89%8B%E5%AF%A6%E4%BD%9C-crud">動手實作 CRUD</a></li>
+<li><a href="#%E4%B8%AD%E5%A0%B4%E4%BC%91%E6%81%AF">中場休息</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0">本系列文章</a></li>
+<li><a href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99">參考資料</a></li>
+</ul>
+<h3 id="前言基本觀念">前言、基本觀念</h3>
+<p>我們在 <a href="/post/2021/04/newbie-1-hello-git">上一篇</a> 記錄了新訓第一天的 Git 操作筆記。接著在這篇，我們終於要進入 .net Core 啦！</p>
+<p>目前的規劃是先從建立一個可以使用的、最簡單版本的 Web Api 服務開始，再將各個工具擴增進來。所以後續的文章應該都會以這篇的簡易 API 為基底繼續延伸下去（如果順利的話啦）</p>
+<p>這篇文章的前半段會用來記錄一些<strong>使用或開發 API 常用到的相關知識</strong>，如果對 HTTP 的部分已經有點頭緒，或是迫不及待想直接動手用 .net Core 開 Api 服務的朋友們，可以直接跳到<a href="#%E5%BB%BA%E7%AB%8B%E5%B0%88%E6%A1%88">建立專案</a>的部份。那麼，我們開始吧～</p>
+<h4 id="關於-web-api">關於 Web API</h4>
+<p>我們在物件導向的 <a href="/post/2020/07/oo-7-interface/">介面</a> 時有稍微聊過所謂介面（Interface）的概念：「在兩個系統，或是兩個分層之間要介接的時候，只需要提供我這個功能的接口／介面給對方，就能讓對方知道如何使用」</p>
+<p>API（Application Programming Interface）也是同樣的道理：</p>
+<p><strong>在不同的應用程式或服務（Application）之間，使用程式碼（Programming）的方式提供一組 介面（Interface），讓提供方和使用方可以藉由這組介面銜接起來。</strong></p>
+<p>API 最貼切的比喻就是我們在<a href="/content/post/2020/07/oo-3-encapsulation.md">封裝</a>篇也用過的<strong>販賣機</strong>：販賣機會提供不同飲料的按鈕，當我們選擇了其中一個按鈕按下、投了錢之後，對應的飲料就會掉下來。</p>
+<p>對應回來就是：我們到了某個服務（販賣機），去拿我們想要的資料（飲料），所以呼叫了該服務的某支 API（按鈕）並且提供了一些該 API 要求的資料（投錢），最後 API 就會把我們想要的資料交給我們（飲料）</p>
+<p>再用更實際的例子來說就像是：假設我們想要做一款可以查詢台北市的公車動態的 APP，於是我們到了提供公車動態的服務 <a href="https://ptx.transportdata.tw/MOTC?t=Bus&amp;v=2#!/CityBus/CityBusApi_RealTimeByFrequency">MOTC Transport API v2</a> 去找我們想要的 API，過程中我們可能需要告訴服務我們要查的是台北市，最後服務就會將公車動態的資料交給我們。</p>
+<p>關於 API 的部份，推薦可以先閱讀過 Huli 大大的這兩篇，將基本觀念說明的相當好懂且透徹：</p>
+<ul>
+<li><a href="https://medium.com/@hulitw/learning-tcp-ip-http-via-sending-letter-5d3299203660">從傳紙條輕鬆學習基本網路概念</a></li>
+<li><a href="https://medium.com/@hulitw/ramen-and-api-6238437dc544">從拉麵店的販賣機理解什麼是 API</a></li>
+</ul>
+<p>另外，也推一下我在 CodingBar 看到的這篇 <a href="https://medium.com/codingbar/api-%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E9%BA%BC-%E7%94%A8%E7%99%BD%E8%A9%B1%E6%96%87%E5%B8%B6%E4%BD%A0%E8%AA%8D%E8%AD%98-95f65a9cfc33">API 到底是什麼？ 用白話文帶你認識</a> 和它所引用的影片：</p>
+<iframe src="https://www.youtube.com/embed/zvKadd9Cflc" width="100%" height="480" frameborder="0" scrolling="no" allowfullscreen></iframe>
+<h4 id="關於-restful-與-http-method">關於 Restful 與 HTTP Method</h4>
+<p>都提到 API 了，當然不能不提 Restful 了。Restful 說起來比較像是 API 界的一種流派，大概就像「飛天御劍流」之於「劍道」的關係一樣。只不過因為 Restful 太 Restful（？），所以幾乎已經成為主流了。</p>
+<p>那麼 Restful 到底是什麼呢？</p>
+<p>前一段我們有提過，API 的一個重點是：提供我這個功能需要的接口／介面給對方，就能讓對方知道如何使用。</p>
+<p>如果有點進去看 Huli 大大的文章，尤其是<a href="https://medium.com/@hulitw/learning-tcp-ip-http-via-sending-letter-5d3299203660">傳紙條</a>那一篇的話，應該會察覺到在資料交換的過程中，最重要的一環就是建立共識，或者說是建立原則以降低溝通成本。</p>
+<p>Restful 想做的也是同一件事：大家都有一個制定路由的共識，就可以降低閱讀和維護成本。</p>
+<p>原先的 API 在路由的制定上並沒有什麼原則，幾乎就是看提供者爽怎麼訂就怎麼訂：</p>
+<pre><code>/api/create-order
+/api/getProduct?id=1
+/api/productDetailByProductId
+</code></pre><p>但這樣就會造成額外的溝通成本。</p>
+<p>為了消除這些溝通成本，Restful 就出現了！Restful 提倡使用「<strong>符合 HTTP 語意</strong>」和「<strong>以資源為主</strong>」的方式來處理 API 的路由。</p>
+<p>我們用白話一點的方式來理解：大多數時候，我們發出的請求都是「對『什麼東西』做『什麼動作』」，也就是通常會有一個「<strong>動詞</strong>」和一個「<strong>目標</strong>」，Restful 就是從這兩個部份下手來達成共識。</p>
+<p>那我們從「動作」的部分開始，也就是建立「符合 HTTP 語意」的共識：<strong>我們可以利用 HTTP 定義的請求方法（HTTP Method，也被稱為 HTTP 動作）來表達我們的要求</strong>。</p>
+<p>上面推薦過的 Huli 大大這篇<a href="https://medium.com/@hulitw/learning-tcp-ip-http-via-sending-letter-5d3299203660">傳紙條文章</a>中有提到，因為能做的事情太多了，光是一個訂便當相關的動作，既可以訂購便當，也要能查有哪些便當可以訂，或是訂好了卻要換成別的便當等等。因此為了將動作做個統一，就在紙條的 Header 加了欄位，用來<strong>標示這次動作是哪種類型</strong>，這就是所謂的 HTTP 方法。</p>
+<p>我們比較常見的 HTTP 方法有這幾個：</p>
+<ul>
+<li><strong><code>GET</code></strong>
+<ul>
+<li>用來<strong>查詢</strong>、取得資源。例如說「<strong>Get 最新的一筆訂單</strong>」</li>
+</ul>
+</li>
+<li><strong><code>POST</code></strong>
+<ul>
+<li>用來<strong>建立</strong>新資源。例如說「<strong>Post 一筆新訂單</strong>」</li>
+<li>也可以用來當萬用動詞，就是不太確定歸類在哪一個、使用其他動詞遇到障礙的時候使用</li>
+</ul>
+</li>
+<li><strong><code>PUT</code></strong>
+<ul>
+<li>通常用來<strong>更新</strong>現有的資源。例如說「<strong>Put 一號訂單的新訂單內容</strong>」</li>
+<li>如果服務有額外處理的話，有時候也會做成 沒有這筆資源就新增一筆</li>
+</ul>
+</li>
+<li><strong><code>PATCH</code></strong>
+<ul>
+<li>用來更新資源的時候做「<strong>部分更新</strong>」。例如說「<strong>Patch 一號訂單的出貨狀況</strong>」</li>
+</ul>
+</li>
+<li><strong><code>DELETE</code></strong>
+<ul>
+<li>用來<strong>刪除</strong>資源，例如說「<strong>Delete 一號訂單</strong>」</li>
+</ul>
+</li>
+</ul>
+<p>其中有幾個部分可能會讓人有點疑惑，這邊稍微整理一下，也歡迎大家補充：</p>
+<hr>
+<p><code>PUT</code> 和 <code>PATCH</code> 都可以用來更新？以產品更新舉例的話：</p>
+<ul>
+<li><code>PUT</code> 比較像是把整個產品資料丟上去，然後整團更新掉</li>
+<li><code>PATCH</code> 則是只更新一部份，像是只丟產品名稱上去，然後就只更新名稱</li>
+</ul>
+<hr>
+<p><code>POST</code> 的萬用動詞是什麼意思？</p>
+<ul>
+<li>我們有時還是會遇到不太確定要歸類到哪個動詞，或是其他動詞處理不來的情況，預設就使用 <code>POST</code> 處理</li>
+<li>例如說，以 <code>GET</code> 查詢的時候，參數的規劃有些問題導致於 QueryString 放不太下，就可以考慮改用 <code>POST</code>，並將參數放入 Body</li>
+</ul>
+<hr>
+<p>我在查詢 HTTP 動作的時候（例如維基百科的<a href="https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE#%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95">請求方法</a>），有看到「安全（Safe）」、「冪等（idempotent）」這些用詞，是什麼意思？</p>
+<ul>
+<li><strong>安全（Safe）的方法是指沒有對資料進行變更的操作</strong>。例如：
+<ul>
+<li>當我 <code>GET</code> 的時候，我單純只是查詢資料<br/>不會對資料進行任何變動，所以是安全的</li>
+<li>反過來說像是 <code>PUT</code>, <code>DELETE</code> 這些會對資料進行變更的方法就是不安全的</li>
+<li>使用不安全的方法的時候，就得要考慮用特殊的方式告訴系統的使用者該操作可能的變更。例如前端呼叫前會跳出視窗警告：「確認是否刪除」等等</li>
+</ul>
+</li>
+<li><strong>冪等（idempotent）則是指該方法在同樣的條件下，不管重複作幾次，對資源的結果都相同</strong>。例如：
+<ul>
+<li>我一直 <code>GET</code>，不管我 <code>GET</code> 幾次，資料還是同樣那一份不會變動</li>
+<li>我一直 <code>PUT</code>，不管我 <code>PUT</code> 同樣的參數幾次，資料的結果還是會長一樣</li>
+<li>我一直 <code>DELETE</code>，不管我 <code>DELETE</code> 幾次，那一份資料都一樣不在了</li>
+<li>我一直 <code>POST</code> ，就會一直長出新資料（！注意，不是 idempotent ！）</li>
+<li><code>PATCH</code> 的部份比較特殊一點：
+<ul>
+<li>因為我們要求更新這個資源的某一些部份的時候，並不能確定其他地方會不會變動<br/></li>
+<li>例如說，我們更新了 產品描述 這個欄位，結果其實還有一個欄位是 版本號，然後服務偵測到每次更新都會自動增加。<br/>這樣我們就算重複 <code>PATCH</code> 結果也有可能不一樣，因此 <code>PATCH</code> 並不能算是 idempotent 的</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>除此之外，這邊只列出了我個人平常比較常接觸的 HTTP 方法，其他還有 <code>HEAD</code>、<code>TRACE</code> 等等，有興趣的朋友可以再逛逛 MDN 的 <a href="https://developer.mozilla.org/zh-TW/docs/Web/HTTP/Methods">HTTP 請求方法</a>。</p>
+<p>現在我們大概知道了有這些 HTTP 方法可以使用，也因此已經將動作抽離出來了。接著就輪到我們要進行這些動作的「目標」了，這部份則要求：我們在制定路由的時候，應該從「<strong>資源</strong>」的角度下去考慮。</p>
+<p>這相當直覺，例如「新增 訂單」、「查詢 產品」這樣，我們動作後面接續的應該要是一個資源。從這個方式下去定的話，上面的範例應該就會變成：</p>
+<pre><code>POST /api/order
+GET /api/product/1
+</code></pre><p>很明確就能夠看出<strong>意圖</strong>。這邊就讓我們來看看微軟的 <a href="https://docs.microsoft.com/zh-tw/azure/architecture/best-practices/api-design#define-operations-in-terms-of-http-methods">Web Api 設計</a> 文中的範例表格：</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>POST</th>
+<th>GET</th>
+<th>PUT</th>
+<th>DELETE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/customers</td>
+<td>建立新客戶</td>
+<td>擷取所有客戶</td>
+<td>大量更新客戶</td>
+<td>移除所有客戶</td>
+</tr>
+<tr>
+<td>/customers/1</td>
+<td>錯誤</td>
+<td>擷取客戶 1 的詳細資料</td>
+<td>更新客戶 1 的詳細資料 (若有的話)</td>
+<td>移除客戶 1</td>
+</tr>
+<tr>
+<td>/customers/1/orders</td>
+<td>為客戶 1 建立新訂單</td>
+<td>擷取客戶 1 的所有訂單</td>
+<td>大量更新客戶 1 的訂單</td>
+<td>移除客戶 1 的所有訂單</td>
+</tr>
+</tbody>
+</table>
+<p>這邊大致上有個感覺就行了，畢竟 Restful 是一種風格，並沒有強烈的規定。因此只要記得設計 Api 的時候，按照上面這個方向去處理即可。</p>
+<p>同樣的，這個訂立的原則，也就得仰賴多去看人家的 Api 怎麼設計來培養了。但只要把握幾個重點：建立共識、提高可讀性，還有設計的時候好好和來介接的夥伴喬一下，基本上就不會有什麼差錯啦，畢竟這東西很彈性的。</p>
+<p>最後推一下這兩篇 Restful API 相關的文章：</p>
+<ul>
+<li><a href="https://progressbar.tw/posts/53">休息(REST)式架構? 寧靜式(RESTful)的Web API是現在的潮流？</a>
+<ul>
+<li>我個人覺得寫得很清楚明瞭，並且範例也相當好懂，咱們當初新訓的時候也是看這篇來了解概念的</li>
+</ul>
+</li>
+<li><a href="https://tw.twincl.com/programming/*641y">簡明 RESTful API 設計要點</a>
+<ul>
+<li>針對一些要點有說明，有興趣的朋友可以稍微看過一遍。內文提到的 HTTP Status 我們等等也會進行說明</li>
+</ul>
+</li>
+</ul>
+<h4 id="關於-http-request-和-response">關於 HTTP Request 和 Response</h4>
+<p>現在讓我們運用動詞（HTTP 動詞）和名詞（Restful 風格的路由），就可以組出像是 <code>GET product/1</code> 這樣子的 Api 路徑。用寄送信封的方式來說的話，現在我們就等於已經掌握了寄送的地址。</p>
+<p>我們有了地址之後，才能寄信到這個地址給對方，並且等待對方的回信（話說這年頭大家都用網路通訊了，會不會過幾年沒人看得懂這組經典比喻啊？）。</p>
+<p>而我們有了 Api 的地址（URL）之後，就可以<strong>對這個地址上的服務送出一個 Request（請求），服務接受到請求之後，就會給予我們一個 Response（回應）</strong>。</p>
+<p>這個送出請求、取得回應的動作，就是網路運作的原理。例如當你打開瀏覽器到某個網站，就是對該網站發出一個取得網站內容的請求，網站再給你網站內容的回應。</p>
+<blockquote>
+<p>補充一下，聰明的朋友可能發現了，我們前面介紹的 Api 也就是這組動作：當我們呼叫某個服務，例如 Google Map 的 Api，也就是對目標的 Api 發出了一個想要使用服務的請求，服務再針對請求給予回應。因此，要想了解 Api 的各個知識點，接觸 HTTP 是必不可免的。</p>
+<p>但 HTTP 這水挺深的哪，所以我們這篇的紀錄先以「打 Api 服務的時候不至於都看不懂」為目標進行，稍微介紹一下 Request 和 Response 的內容吧。來日方長嘛。</p>
+</blockquote>
+<p>Request 和 Response 的內容，有興趣的朋友可以直接在瀏覽器進入開發人員工具就能看到了，以 Edge 和 Chrome 為例：首先按下 F12 ，並找到網路（Network）的部分，就可以看到進入網頁的各個請求和回應，隨便點開一個就會有 Request 和 Response 的內容囉：</p>
+<p><img src="https://i.imgur.com/kdK0xo1.png" alt=""></p>
+<p>或者是可以直接參考 NotFalse 技術客的這篇 <a href="https://notfalse.net/39/http-message-format">HTTP/1.1 — 訊息格式 (Message Format)</a>，裡面對 HTTP 請求格式的各個部分上色並逐步講解的方式讓我蠻喜歡的，相當清楚。</p>
+<p>接著就讓我們來看一下訊息的格式，通常會分成三個比較主要的區塊：<strong>Start Line</strong>、<strong>Header</strong>、<strong>Body</strong>：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-JSON" data-lang="JSON"><span style="color:#960050;background-color:#1e0010">HTTP/</span><span style="color:#ae81ff">1.1</span> <span style="color:#ae81ff">200</span> <span style="color:#960050;background-color:#1e0010">OK</span> <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Start</span> <span style="color:#960050;background-color:#1e0010">Line</span>
+
+<span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Header</span>
+<span style="color:#960050;background-color:#1e0010">Content-Type:</span> <span style="color:#960050;background-color:#1e0010">application/json;</span> <span style="color:#960050;background-color:#1e0010">charset=utf</span><span style="color:#ae81ff">-8</span>
+<span style="color:#960050;background-color:#1e0010">Date:</span> <span style="color:#960050;background-color:#1e0010">Mon,</span> <span style="color:#ae81ff">26</span> <span style="color:#960050;background-color:#1e0010">Apr</span> <span style="color:#ae81ff">2021</span> <span style="color:#ae81ff">14</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">00</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">31</span> <span style="color:#960050;background-color:#1e0010">GMT</span>
+
+<span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Body</span>
+{
+  <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;nike&#34;</span>,
+  <span style="color:#f92672">&#34;category&#34;</span>: <span style="color:#e6db74">&#34;shoes&#34;</span>
+}
+</code></pre></div><p><strong>Start Line 在 Request 的時候又叫做 Request-line，會標明 HTTP Method、URL、HTTP 版本</strong>，例如 <code>GET /product/1 HTTP/1.1</code>。我們 <a href="#%E9%97%9C%E6%96%BC-restful-%E8%88%87-http-method">上一節</a> 學的 HTTP 動作和路由地址就是用在這裡。</p>
+<p>而 <strong>Start Line 在 Response 的時候又叫做 Status-line，會標明 HTTP 版本、HTTP 狀態碼（Status Code）和描述</strong>，例如 <code>HTTP/1.1 200 OK</code>，這個狀態碼就是 Response 中的主要回應，我們在 <a href="#%E9%97%9C%E6%96%BC-http-status-code">下一節</a> 再來列一些常看到的 Status Code，現在先知道這裡就是服務用來告訴你「好呀」跟「不要」的地方即可。</p>
+<p>Start Line 會放在整個訊息的第一行，之後會用個空行做分隔，再接著 Header。</p>
+<p><strong>Header 又叫作標頭、表頭等，主要是用來放這次訊息相關的參數和資訊</strong>。</p>
+<p>例如說用 Content-Type 來說明這次訊息傳輸的格式，可能是表示 HTML 的 <code>text/html</code>，或者是表示 JSON 的 <code>application/json</code> 等等；也有可能用 <code>cookie</code> 來表示瀏覽器當前紀錄的資訊等等。</p>
+<p>Header 可以放的資訊有挺多種的，有興趣的朋友可以看看這篇 <a href="https://medium.com/ttyy2985/http%E5%89%8D%E5%BE%8C%E7%AB%AF%E5%82%B3%E8%BC%B8%E6%B5%81%E7%A8%8B-8ee40ffca1bd">HTTP 前後端傳輸流程</a>，列出了常見的 HTTP Header 欄位；如果好奇上面提到的 Content-Type 有那些常用的種類，也可以參照這篇 <a href="https://medium.com/hobo-engineer/ricky%E7%AD%86%E8%A8%98-postman-%E5%B8%B8%E8%A6%8B%E7%9A%84-content-type-b17a75396668">Postman 常見的 Content-type</a>，這邊就先按下不表。</p>
+<p>Header 結束之後，按照訊息的內容可能會有 Body，兩者之間會空一行隔開。<strong>Body 又叫做回應主體，是非必須、選填的，通常我們會用來存放本次訊息需要的資料</strong>。</p>
+<p>以寄信來舉例的話，Header 就像是外面的 寄信人、收件人等資訊，而 Body 則是裡面的信件內文。但要注意，一個訊息並不一定要有 Body，就像我們也可以只寄送明信片一樣。很常聽到的一個比喻就是：GET 就像明信片、POST 就像是包裹，中間就是需不需要附加 Body 的差別。</p>
+<p>當 GET 的時候，我們通常並不會用到 Body，如果有需要附上參數的話，GET 我們會放到 QueryString（就是接續在往指後面，常常見到的 ?a=1&amp;b=2 那串）。</p>
+<p>例如說取得產品列表，我們需要向 <code>/product</code> 發出 <code>GET</code> 請求，同時我們又只想要類別是鞋子、關鍵字為 Nike 的產品，那我們組出來的整個 URL 和 QueryString 可能就是這樣的：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-JSON" data-lang="JSON"><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">/product?category=shoes&amp;keyword=nike</span>
+
+<span style="color:#960050;background-color:#1e0010">/*</span> <span style="color:#960050;background-color:#1e0010">這邊會有一些</span> <span style="color:#960050;background-color:#1e0010">Header</span> <span style="color:#960050;background-color:#1e0010">*/</span>
+</code></pre></div><p>其他的場景，例如 POST 時，如果有需要附上資料，我們通常會用到 Json 或 XML 之類的格式放到 Body 中。例如我們現在要新增一筆新的產品，是叫做 Nike 的鞋子，那可能就會附上：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-JSON" data-lang="JSON"><span style="color:#960050;background-color:#1e0010">POST</span> <span style="color:#960050;background-color:#1e0010">/product</span>
+
+<span style="color:#960050;background-color:#1e0010">/*</span> <span style="color:#960050;background-color:#1e0010">這邊會有一些</span> <span style="color:#960050;background-color:#1e0010">Header</span> <span style="color:#960050;background-color:#1e0010">*/</span>
+
+{
+  <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;nike&#34;</span>,
+  <span style="color:#f92672">&#34;category&#34;</span>: <span style="color:#e6db74">&#34;shoes&#34;</span>
+}
+</code></pre></div><p>如果是 XML 的話，可能就會是這樣表示：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-XML" data-lang="XML"><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span style="color:#f92672">&lt;root&gt;</span>
+  <span style="color:#f92672">&lt;name&gt;</span>nike<span style="color:#f92672">&lt;/name&gt;</span>
+  <span style="color:#f92672">&lt;category&gt;</span>shoes<span style="color:#f92672">&lt;/category&gt;</span>
+<span style="color:#f92672">&lt;/root&gt;</span>
+</code></pre></div><p>當然也有可能是用其他的格式，只要服務願意接受，兩邊能夠通訊其實也就沒什麼關係，說到底網頁最基本的部分也還是一個回傳 HTML 格式的 Response。所以各位如果遇見了沒看過的格式也不用驚慌，因為放在這裡都一樣是用來表示資料的格式，只是表達的方式不一樣而已。</p>
+<p>不過我平常開發和使用 API 都是用 JSON 的場合居多（個人覺得體感上 JSON 已經快一統 API 的天下了），強烈建議至少還是要能看懂 JSON。</p>
+<blockquote>
+<p>備註：關於 JSON 如果不太了解的朋友，可以參閱 <a href="http://miniaspreading.github.io/guide-to-json/1-what-is-json.html">JSON精要讀書紀錄</a></p>
+</blockquote>
+<p>最後再複習一次，當我們呼叫一個 API 的時候，我們可能會送出一個 HTTP Request（請求）</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-JSON" data-lang="JSON"><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">/product/</span><span style="color:#ae81ff">1</span> <span style="color:#960050;background-color:#1e0010">HTTP/</span><span style="color:#ae81ff">1.1</span> <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Start</span> <span style="color:#960050;background-color:#1e0010">Line</span>
+
+<span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Header</span>
+<span style="color:#960050;background-color:#1e0010">user-agent:</span> <span style="color:#960050;background-color:#1e0010">Mozilla/</span><span style="color:#ae81ff">5.0</span> <span style="color:#960050;background-color:#1e0010">(Windows</span> <span style="color:#960050;background-color:#1e0010">NT</span> <span style="color:#ae81ff">10.0</span><span style="color:#960050;background-color:#1e0010">;</span> <span style="color:#960050;background-color:#1e0010">Win</span><span style="color:#ae81ff">64</span><span style="color:#960050;background-color:#1e0010">;</span> <span style="color:#960050;background-color:#1e0010">x</span><span style="color:#ae81ff">64</span><span style="color:#960050;background-color:#1e0010">)</span> <span style="color:#960050;background-color:#1e0010">//...其他一堆標頭</span>
+</code></pre></div><p>然後服務就會回給我們一個 HTTP Response（回應）</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-JSON" data-lang="JSON"><span style="color:#960050;background-color:#1e0010">HTTP/</span><span style="color:#ae81ff">1.1</span> <span style="color:#ae81ff">200</span> <span style="color:#960050;background-color:#1e0010">OK</span> <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Start</span> <span style="color:#960050;background-color:#1e0010">Line</span>
+
+<span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Header</span>
+<span style="color:#960050;background-color:#1e0010">Content-Type:</span> <span style="color:#960050;background-color:#1e0010">application/json;</span> <span style="color:#960050;background-color:#1e0010">charset=utf</span><span style="color:#ae81ff">-8</span>
+<span style="color:#960050;background-color:#1e0010">Date:</span> <span style="color:#960050;background-color:#1e0010">Mon,</span> <span style="color:#ae81ff">26</span> <span style="color:#960050;background-color:#1e0010">Apr</span> <span style="color:#ae81ff">2021</span> <span style="color:#ae81ff">14</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">00</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">31</span> <span style="color:#960050;background-color:#1e0010">GMT</span>
+
+<span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Body</span>
+{
+  <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;nike&#34;</span>,
+  <span style="color:#f92672">&#34;category&#34;</span>: <span style="color:#e6db74">&#34;shoes&#34;</span>
+}
+</code></pre></div><p>這樣我們就成功交換資料啦！</p>
+<p>……當然，所謂天有不測風雲，API 有 500 Internal Server ERROR，沒有每次打 API 都一定是 OK 的啦，其他什麼 404, 500 動不動就會跑出來。</p>
+<p>就像我們去網路購物的時候，按下購買把購物車清空後，網頁就會告訴我們「訂單成立」或是「結帳失敗」等等，當 API 的使用者將這個要求發送給 API 服務，服務就會告訴使用者針對這個要求的回應。這就是我們之前提到的 HTTP 狀態碼（Status Code）出場的時候了。</p>
+<h4 id="關於-http-status-code">關於 HTTP Status Code</h4>
+<p>在上個小節中我們有提到，<strong>Response 的 Start Line 會帶著一組 HTTP 狀態碼（Status Code）和描述，用來告訴你這次請求的回應</strong>。</p>
+<p>大概就像是<strong>告白</strong>之後的好呀、謝謝你、你是個好人等等，回應也有分成很多種，這邊就稍微紀錄一下平常遇到的幾種狀態。</p>
+<hr>
+<p>1xx: 參考資訊，在正式回應之前先暫時給使用者一些資訊。就像是「先讓我考慮一下…」</p>
+<hr>
+<p>2xx: 成功</p>
+<ul>
+<li><strong>200: 要求成功</strong>。就像是「好呀」</li>
+<li><strong>201: 已建立</strong>。要求新增資源的時候會用到，就像是「OK，那我掛穩交囉」</li>
+<li><strong>204: 無內容</strong>。就像是 雖然點頭了，可是什麼話也沒說</li>
+</ul>
+<hr>
+<p>3xx: 重新導向</p>
+<ul>
+<li><strong>301: 永久轉址</strong>。就像是傳了簡訊之後得到「她換手機了，我是她爸」</li>
+<li><strong>303: 臨時轉址</strong>，原本存在但是換了位置，就像是打電話過去結果「她出門了，我是她爸」</li>
+<li><strong>304: 沒有變動</strong>，可以直接去快取拿就好。就像是「說啥呢，我們都結婚五十年了= =」</li>
+</ul>
+<hr>
+<p>4xx: 用戶端錯誤</p>
+<ul>
+<li><strong>400: 要求錯誤</strong>，大多數使用者造成無法處理的問題都會丟到這，可能是<br/>參數沒給、這個網域不存在等等。就像是『她』說「其實我是 ♂ 的呦，沒關係嗎？」</li>
+<li><strong>401: 拒絕存取</strong>，可能是沒有登入、授權失敗等等。<br/>就像是「你是誰？！我根本不認識你啊？！」</li>
+<li><strong>403: 禁止使用</strong>，可能是沒有權限、沒有憑證、被拒絕等等。<br/>就像是「抱歉，你的長相實在…抱歉。」</li>
+<li><strong>404: 找不到</strong>，這個應該是最常見的用戶端錯誤了。<br/>就像是「你認錯人了吧…？」</li>
+<li><strong>418: <a href="https://blog.huli.tw/2019/06/14/http-status-code-418-teapot/">我是個茶壺</a></strong>，啊人家就只是個茶壺…</li>
+</ul>
+<hr>
+<p>5xx: 伺服器錯誤</p>
+<ul>
+<li><strong>500: 內部伺服器錯誤</strong>，大多數問題都會被丟到這一類，我們開發人員頭痛的時候就到了…</li>
+<li><strong>501: 未實作</strong>，通常對一個只提供 <code>GET</code> 的 <code>URL</code> 打 <code>POST</code> 就會看到了。<br/>就像是「我已經結婚囉，謝謝你呢 ^^」</li>
+<li><strong>502: 無效回應</strong>。就像是「我也喜歡哆啦Ａ夢呢」</li>
+<li><strong>503: 伺服器維護或過載</strong>。就像是 追求者太多了，根本沒空回你。</li>
+<li><strong>504: 閘道逾時</strong>。就像是（已讀不回）。</li>
+</ul>
+<hr>
+<p>對還有哪些 HTTP Status 或是想對每個 HTTP Status 發生的狀況了解得更詳細的朋友，可以參閱以下兩篇：</p>
+<ul>
+<li><a href="https://noob.tw/http-status-code/">常見與不常見的 HTTP Status Code - Noob&rsquo;s Space</a>
+<ul>
+<li>除了列出常見的 HTTP 狀態，還收錄了一些非官方和惡搞的</li>
+<li>看了這篇知道更多 HTTP Status Code 之後，本網站正考慮支持 HTTP Status 735</li>
+</ul>
+</li>
+<li><a href="https://blog.miniasp.com/post/2009/01/16/Web-developer-should-know-about-HTTP-Status-Code">網頁開發人員應了解的 HTTP 狀態碼 - The Will Will Web</a>
+<ul>
+<li>針對每個狀態有更詳細的說明，並列出了更細的 IIS 擴充狀態，例如 401.1 - 登入失敗等等</li>
+<li>強力推薦 Dotnet 相關的開發人員看個一遍有個印象</li>
+</ul>
+</li>
+</ul>
+<h3 id="正式開工">正式開工</h3>
+<p>現在，我們已經大概了解 API 以及 Restful API 的一些相關知識了，接著就讓我們來實際建立一個簡單的 API 服務吧！</p>
+<h4 id="新建-net-core-web-api-專案">新建 .net Core Web API 專案</h4>
+<p>首先打開我們的 Visual Studio，建立新的專案。</p>
+<p><img src="https://i.imgur.com/tRvVsFa.png" alt=""></p>
+<p>我們這次用 .net Core 來進行示範，並且用官方內建的 Web API 框架直接開場，所以這邊選擇 Asp.net Core Web API。</p>
+<p><img src="https://i.imgur.com/lyjhWFS.png" alt=""></p>
+<blockquote>
+<p>註：這些<strong>建立專案的畫面和選項隨著版本可能會有點不一樣</strong>，例如說可能會先選擇 .net Core 的 Web 服務之後，後續再勾選 API 的選項等等。例如之前的 <a href="/post/2019/12/aspnet-connect-db">Asp.net MVC</a> 文章中，就需要在選擇範本的時候選擇是 MVC 或 Web API 的範本。就麻煩各位再稍微見機行事一下。</p>
+</blockquote>
+<p><img src="https://i.imgur.com/NCQj9Wf.png" alt=""></p>
+<p>接著輸入專案名稱和選擇專案路徑，我在這邊採用 Newbie/Noob 的 N（而且 Project N 感覺很潮？），各位嘗試的時候可以自由取名，但要注意後續用到 <code>ProjectN</code> 這個名字的部分必須和你取的名字一致呦。</p>
+<p><img src="https://i.imgur.com/Lbr3qkw.png" alt=""></p>
+<p>這是紀錄採用的版本為長期支援的 .net Core 3.1（如果這個步驟有選擇其他版本的朋友，後續安裝套件的時候可能要注意一下版本相容性的問題）</p>
+<p>建立之後我們的專案結構應該會長這樣：</p>
+<p><img src="https://i.imgur.com/lGGHzDN.png" alt=""></p>
+<p>恭喜各位，到這一步的時候，<strong>Web API 服務已經建好了！</strong></p>
+<p><del>直接用範本就是這麼爽，謝謝微軟把拔。</del></p>
+<p>我們先來稍微認識一下環境設定相關的成員：</p>
+<hr>
+<p><code>Properties/launchSettings.json</code></p>
+<ul>
+<li>用來放我們偵錯專案時套用的環境設定，例如說我們偵錯的時候預設要打開哪個頁面（launchUrl）就是在這邊設定</li>
+<li>可以參見 <a href="https://blog.poychang.net/visual-studio-launch-settings-iis-express-iis-project-executable/">launchSettings.json 的 commandName 是做什麼用的？</a></li>
+</ul>
+<hr>
+<p><code>appsettings.json</code></p>
+<ul>
+<li>用來放組態資料，像是連線字串、Log 的紀錄層級等等就會丟在這</li>
+<li>以前用過 <code>web.config</code> 的朋友可能會比較熟。但在 .net Core 已經將不同職責的設定區塊拆分出去給<br/> <code>appsettings.json</code>、<code>.csproj</code> 等等，並且可以繫結強型別，所以更乾淨了。（感謝 Mike 和 <a href="https://sunnyday0932.github.io/2021/dotnet-core-webapi-1%E9%9D%9E%E5%90%8C%E6%AD%A5fluentvalidation%E9%A9%97%E8%AD%89/">Sian</a> 的說明）</li>
+<li>關於兩者的差異和讀取 <code>appsettings.json</code> 的方法，可以參照余小章大大的這篇 <a href="https://dotblogs.com.tw/yc421206/2020/06/28/how_to_read_config_appsettings_json_via_net_core_31">如何讀取 AppSettings.json 組態設定檔</a></li>
+</ul>
+<hr>
+<p><code>Startup.cs</code></p>
+<ul>
+<li>設定服務的行為、註冊依賴注入相關的東西就丟在這，像之前註冊 <a href="/post/2020/07/automapper">AutoMapper</a> 服務的時候就是在這裡設定</li>
+<li>我們後續還會常常過來找 Startup 玩</li>
+</ul>
+<hr>
+<p><code>Program.cs</code></p>
+<ul>
+<li>整個應用程式的進入點</li>
+<li>關於服務啟動之後的順序和 <code>Program.cs</code>, <code>Startup.cs</code> 的內容，<br/>可以參照 <a href="https://blog.johnwu.cc/article/ironman-day02-asp-net-core-application-lifetime.html">ASP.NET Core 2 系列 - 程式生命週期 (Application Lifetime) - John Wu&rsquo;s Blog</a></li>
+</ul>
+<hr>
+<p>現在這個時間點，我們還不會對設定的部分動什麼手腳，只要對這些東西有個瞭解就好了。</p>
+<p>我們把鏡頭轉到剛剛沒提到的其他檔案，可以看到還有 <code>WeatherForecast.cs</code> 和 <code>Controllers</code> 及裡面的 <code>WeatherForecastController.cs</code>。</p>
+<blockquote>
+<p>補充一下，如果之前已經對 MVC 架構有點熟悉度的朋友，應該對 <code>Controller</code> 這個詞不陌生了。</p>
+<p>Web API 的範本其實也是同樣的概念，只是 <code>View</code> 的部分已經交給呼叫 Api 服務的使用者去處理了，而這邊的 <code>WeatherForecast.cs</code> 打開可以發現只是純粹的天氣資料，也就是個 <code>Model</code> 或 <code>ViewModel</code> 之類的東西。</p>
+<p>至於 <code>Controller</code> 的職責仍然沒有什麼變化，就是個第一線的交通警察。所以先前做過 MVC 的朋友大概會覺得比較親近一些吧。大概。</p>
+</blockquote>
+<p>這邊可以看到 <code>WeatherForecast.cs</code> 只是個用在 <code>WeatherForecastController</code> 的天氣資料類別。所以我們直接打開 <code>WeatherForecastController</code> 來觀察一下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
+<span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WeatherForecastController</span> : ControllerBase
+{
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span>[] Summaries = <span style="color:#66d9ef">new</span>[]
+    {
+        <span style="color:#e6db74">&#34;Freezing&#34;</span>, <span style="color:#e6db74">&#34;Bracing&#34;</span>, <span style="color:#e6db74">&#34;Chilly&#34;</span>, <span style="color:#e6db74">&#34;Cool&#34;</span>, <span style="color:#e6db74">&#34;Mild&#34;</span>,
+        <span style="color:#e6db74">&#34;Warm&#34;</span>, <span style="color:#e6db74">&#34;Balmy&#34;</span>, <span style="color:#e6db74">&#34;Hot&#34;</span>, <span style="color:#e6db74">&#34;Sweltering&#34;</span>, <span style="color:#e6db74">&#34;Scorching&#34;</span>
+    };
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;WeatherForecastController&gt; _logger;
+
+    <span style="color:#66d9ef">public</span> WeatherForecastController(ILogger&lt;WeatherForecastController&gt; logger)
+    {
+        _logger = logger;
+    }
+<span style="color:#a6e22e">
+</span><span style="color:#a6e22e">    [HttpGet]</span>
+    <span style="color:#66d9ef">public</span> IEnumerable&lt;WeatherForecast&gt; Get()
+    {
+        <span style="color:#66d9ef">var</span> rng = <span style="color:#66d9ef">new</span> Random();
+        <span style="color:#66d9ef">return</span> Enumerable.Range(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">5</span>).Select(index =&gt; <span style="color:#66d9ef">new</span> WeatherForecast
+        {
+            Date = DateTime.Now.AddDays(index),
+            TemperatureC = rng.Next(-<span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">55</span>),
+            Summary = Summaries[rng.Next(Summaries.Length)]
+        })
+        .ToArray();
+    }
+}
+</code></pre></div><p>首先在整個類別開始的地方加上了兩個屬性（Attribute）：<code>[ApiController]</code> 很明顯告訴我們這是個 Api Controller，而接著的 <code>[Route(&quot;[controller]&quot;)]</code> 用來決定我們這個 controller 的路由。</p>
+<p><strong>這邊要特別注意 <code>Route</code> 這個屬性，我們會在 Controller 和 Function 上用這個屬性來制定我們的 Api 的 URL，也就是我們前面 <a href="#%E9%97%9C%E6%96%BC-restful-%E8%88%87-http-method">Restful 小節</a> 提過的「用資源制定路由」要處理的部分。</strong></p>
+<p>現在可以看到 <code>Route</code> 的內容是 <code>[controller]</code>，所以會直接採用 controller 的名稱，在這邊也就會是 <code>/WeatherForecast/</code>。</p>
+<p>如果有需要額外客製化路由的話，只要修改 <code>Route</code> 標籤就可以了，例如：改成 <code>Route(&quot;hello&quot;)</code> 的話，就會變成 <code>/hello/</code>；那如果我們接著在 Function 上掛上 <code>Route(&quot;world&quot;)</code> 的話，該方法的路由就會變成 <code>/hello/world/</code>，以此類推。</p>
+<p>接著我們繼續往下看，可以看到放了一列不同的天氣 <code>string[] Summaries</code>，還有一些屬性與使用依賴注入的建構子範例 <code>WeatherForecastController()</code>，這個部份我們在後續的章節會再說明。</p>
+<p>在建構式之後，我們會看到 <code>Get()</code> 方法，方法名稱並沒有什麼太大的關係，這邊要注意的重點在於：<strong>上面也掛了 <code>HttpGet</code> 的屬性，這個部份用來制定我們該方法所對應的 HTTP Method，也就是我們前面 <a href="#%E9%97%9C%E6%96%BC-restful-%E8%88%87-http-method">Restful 小節</a> 提過的「符合 HTTP 語意」所要處理的部分，例如 <code>GET</code>, <code>POST</code> 等等，就可以用 <code>[HttpGet]</code>, <code>[HttpPost]</code> 等屬性來標示</strong>。</p>
+<p>最後這個 <code>Get()</code> 方法會隨機丟回天氣跟氣溫。現在就讓我們實際來呼叫看看吧！</p>
+<blockquote>
+<p>備註：由於本系列還沒教到使用 Postman 或 Thunder client 這類直接呼叫 API 的方便小工具，所以呼叫的部分會使用瀏覽器或命令列進行示範，已經會使用這類工具的朋友可以用自己順手的工具嘗試就好囉。</p>
+</blockquote>
+<p>現在讓我們直接執行看看：</p>
+<p><img src="https://i.imgur.com/61SgLPf.png" alt=""></p>
+<p>由於 <code>Properties/launchSettings.json</code> 裡有設定了 <code>launchUrl</code> 就是 <code>weatherforecast</code>，所以我們應該會直接看到它幫忙打開瀏覽器，並取得（<code>GET</code>）了 <code>https://localhost:{yourIISPort}/weatherforecast</code> 的結果：</p>
+<p><img src="https://i.imgur.com/4jl7qvd.png" alt=""></p>
+<blockquote>
+<p>小提示：如果瀏覽器打開沒有自動排版而是一整陀的朋友，可以先去裝個 <a href="https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc">JsonView</a> 來保護眼睛。安裝前後差異可以參見 <a href="/post/2020/05/jsonview">Json View —— 用 Chrome 打開 Json 的正確方式</a></p>
+</blockquote>
+<p>那如果是要用 Powershell 呼叫 API 的朋友，可以使用 <code>Invoke-RestMethod</code> 來進行呼叫，再用 <code>ConvertTo-Json</code> 轉換成比較好讀的格式，例如：<code>Invoke-RestMethod https://localhost:{yourIISPort}/weatherforecast | ConvertTo-Json</code>。注意 yourIISPort 這兒是你啟動後的 port 號，像是 <code>https://localhost:44304/weatherforecast</code>。</p>
+<p><img src="https://i.imgur.com/QSp7VRr.png" alt=""></p>
+<blockquote>
+<p>備註：Linux 的朋友就直接使用 Curl 來打就行了唄。另外，上面的 Powershell 語法特別感謝這篇 <a href="https://blog.poychang.net/using-powershell-call-http-request/">使用 PowerShell 呼叫 Web API 請求</a></p>
+</blockquote>
+<p>到這邊我們就做完了簡單的認識，也確認我們新建的專案確實好好活著囉。</p>
+<h4 id="動手實作-crud">動手實作 CRUD</h4>
+<p>既然我們前面已經去逛過預設的 <code>WeatherForecastController</code> 了，現在就讓我們來自己建一個吧。</p>
+<p>沒有脈絡就做不了事，先讓我們來訂一個情境：這是一個卡片對戰遊戲的卡片管理功能，一張卡片包含：卡片編號（ID）、卡片名稱和卡片敘述三個欄位。</p>
+<p>因為我這個人喜歡整理、愛好整潔（？）這邊就先讓我們新增一個 <code>Models</code> 資料夾，用來存放卡片的類別</p>
+<p><img src="https://i.imgur.com/Zoci28m.png" alt=""></p>
+<p>建立 <code>Models</code> 資料夾之後，在 <code>Models</code> 裡面新增 <code>Card.cs</code>：</p>
+<p><img src="https://i.imgur.com/EeAPqZv.png" alt=""></p>
+<p>現在應該會是這個樣子：</p>
+<p><img src="https://i.imgur.com/b6hcSaw.png" alt=""></p>
+<p>接著讓我們打開 <code>Card.cs</code>，加上卡片的各個欄位：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 卡片
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+{
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 卡片編號
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 卡片名稱
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 卡片描述
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+</code></pre></div><p>完成卡片類別的建立之後，讓我們前往 <code>Controller</code>，新建一個 <code>CardController.cs</code>：</p>
+<p><img src="https://i.imgur.com/XRbNmT4.png" alt=""></p>
+<p>我們打開 <code>CardController.cs</code>。這個類別裡面現在應該是空空如也：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span>
+{
+    <span style="color:#75715e">// 啥也沒有
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>接著我們就開始逐步施工吧（這邊的步驟可以去隔壁抄 <code>WeatherForecastController.cs</code> 也 OK 啦）</p>
+<p>首先，我們要先繼承 <code>ControllerBase</code> 取得控制器該有的方法和成員。接著，我們要加上 <code>[ApiController]</code> 的屬性給這個類別，讓他知道他現在負責搞 API 了。</p>
+<p>如果過程中跑出紅線的話，就按一下燈泡或用 <code>Alt + Enter</code> 把該 using 的東西給 using 進來。現在應該會像這樣：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
+{
+    <span style="color:#75715e">// 啥也沒有
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>接著讓我們加上 <code>Route</code>，因為我們按照資源下去設計的話，<code>Route</code> 多半也是 <code>/card</code> 這樣子的路徑，因此我們繼續使用 <code>[Route(&quot;[controller]&quot;)]</code> 就可以了。如果各位要做的 API 資源在這邊需要客製化，再自己改成想要的字串即可。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
+<span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
+{
+    <span style="color:#75715e">// 啥也沒有
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>這邊就讓我們先建立一個 <code>static</code> 並且為空的 <code>IEnumerable&lt;Card&gt;</code> 的私有成員，用來驗證我們後續開的功能是否可以正常運作</p>
+<blockquote>
+<p>備註：我們會在下一個章節把這部分更改為連線資料庫去變更真正的資料，這邊就先用私有成員假裝一下唄。</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
+<span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
+{
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 測試用的資料集合
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> List&lt;Card&gt; _cards = <span style="color:#66d9ef">new</span> List&lt;Card&gt;();
+}
+</code></pre></div><p>這樣事前工作已經準備完畢了，讓我們來加上操作方法吧！</p>
+<p>首先先來一個查詢所有卡片的 Function，同樣用 <code>[HttpGet]</code> 來標明這是個 <code>GET</code> 方法，並且<strong>因為我們沒有特別指定路由，所以目前就是接著類別 <code>CardController</code> 的 <code>/card</code>，也就是 <code>GET /card</code></strong>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 查詢卡片列表
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpGet]</span>
+<span style="color:#66d9ef">public</span> List&lt;Card&gt; GetList()
+{
+    <span style="color:#66d9ef">return</span> _cards;
+}
+</code></pre></div><p>然後讓我們加上一個單獨查詢單張卡片的方法：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 查詢卡片
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpGet]</span>
+<span style="color:#a6e22e">[Route(&#34;{id}&#34;)]</span>
+<span style="color:#66d9ef">public</span> Card Get([FromRoute] <span style="color:#66d9ef">int</span> id)
+{
+    <span style="color:#66d9ef">return</span> _cards.FirstOrDefault(card =&gt; card.Id == id);
+}
+</code></pre></div><p>可以注意到我們用 <code>Route</code> 來指定了這個方法的 URL，<strong>並且用 <code>{id}</code> 的方式告訴 API 說這一格是參數 <code>int id</code> 所在的位置</strong>。</p>
+<p>這樣的話這個方法的 Route 就會變成 <code>GET /card/1</code>（查詢 ID 為 1 的卡片） 這種感覺。實際使用的時候我們會很經常用 <code>{參數}</code> 這種方法來把參數加入到 Route 並制定 Function 對應的 URL，以此達到符合 Restful 的感覺。</p>
+<p>另一個可以注意到的地方是<strong>我們在 Function 的參數上加上了 <code>[FromRoute]</code> 的屬性來告訴 API 說 <code>int id</code> 這個參數是來自於 Route 上的</strong>。</p>
+<p>除了 <code>FromRoute</code> 以外，還有 <code>GET</code> 時很常用到的 <code>[FromQuery]</code> 或舊版本的 <code>[FromUri]</code>（指這個參數從 QueryString 也就是 ?a=1&amp;b=2 那串裡面接收）、<code>POST</code> 和其他狀況常用到的 <code>[FromBody]</code>（指這個參數要從 Body 接收）等等，可以讓我們標明參數的來源。</p>
+<blockquote>
+<p>補充說明一下，雖然也有簡單型別預設從 Uri，複雜型別預設從 Body 等等貼心的設定，但個人認為還是盡量都標明出來，對自己和後續維護的人都會比較好一點…。</p>
+</blockquote>
+<p>接著讓我們加入新增卡片，還有編輯卡片的方法吧，在這之前我們先建立一個 <code>Parameter</code> 資料夾，用來放一些傳入的參數，並且新增一個 <code>CardParameter</code> 來當作我們新增和修改卡片的參數類別：</p>
+<p><img src="https://i.imgur.com/fiqBwZM.png" alt=""></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 卡片參數
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardParameter</span>
+{
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 卡片名稱
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 卡片描述
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+</code></pre></div><blockquote>
+<p>補充：雖然也有建立一個對應的類別，接著就只使用這個類別的作法，像是先前的 <a href="https://igouist.github.io/post/2019/12/aspnet-connect-db/">Asp.net MVC</a>，我們就只使用一個對應資料表欄位的類別來完成 CRUD 全部的操作。放到這裡來說的話，也就是只用 <code>Card</code> 類別，查詢也是用這個類別顯示，更新也是用這個類別當作參數。</p>
+<p>但有些情況的時候，我們會希望傳進來新增或修改的參數跟類別並不一致，例如當我們新增 <code>Card</code> 的時候，並不需要 <code>Id</code> 這個欄位；又或是有些資料表中有 <code>CreateTime</code>、<code>UpdateTime</code> 這類程式自動填入、顯示的時候才有意義的欄位，就不會在新增或更新的時候對外開放；又或者是分層架構這類每一層要求的欄位並不一樣的情況等等。這些時候，我們就會採取將參數，也就是 <code>Parameter</code> 切分成一個單獨的類別進行管控。</p>
+<p>基本上就像即使是同一張表，我們也會根據顯示的狀況來製作成不同的 <code>ViewModel</code> 一樣，我們也會根據傳入的狀況來決定 <code>Parameter</code> 的範圍。這個部份我們會在分層架構的時候再介紹一次，現在只要大致有<strong>可以把「顯示用類別」和「參數用類別」拆成不同的類別來進行出入口管制</strong>的概念就可以。</p>
+</blockquote>
+<p>建立完參數之後，我們就可以回到 <code>CardController</code> 來加上新增和更新的方法：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 新增卡片
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpPost]</span>
+<span style="color:#66d9ef">public</span> IActionResult Insert([FromBody] CardParameter parameter)
+{
+    _cards.Add(<span style="color:#66d9ef">new</span> Card
+    {
+        Id = _cards.Any() 
+          ? _cards.Max(card =&gt; card.Id) + <span style="color:#ae81ff">1</span>
+          : <span style="color:#ae81ff">0</span>, <span style="color:#75715e">// 臨時防呆，如果沒東西就從 0 開始
+</span><span style="color:#75715e"></span>        Name = parameter.Name,
+        Description = parameter.Description
+    });
+
+    <span style="color:#66d9ef">return</span> Ok();
+}
+
+<span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 更新卡片
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
+</span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpPut]</span>
+<span style="color:#a6e22e">[Route(&#34;{id}&#34;)]</span>
+<span style="color:#66d9ef">public</span> IActionResult Update(
+<span style="color:#a6e22e">    [FromRoute]</span> <span style="color:#66d9ef">int</span> id,
+<span style="color:#a6e22e">    [FromBody]</span> CardParameter parameter)
+{
+    <span style="color:#66d9ef">var</span> targetCard = _cards.FirstOrDefault(card =&gt; card.Id == id);
+    <span style="color:#66d9ef">if</span> (targetCard <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
+    {
+        <span style="color:#66d9ef">return</span> NotFound();
+    }
+
+    targetCard.Name = parameter.Name;
+    targetCard.Description = parameter.Description;
+
+    <span style="color:#66d9ef">return</span> Ok();
+}
+</code></pre></div><p>這邊的 <code>[HttpPost]</code>、<code>[HttpPut]</code> 以及 <code>[FromRpute]</code>、<code>[FromBody]</code> 我們在前面都已經掌握了。但在這裡我們還是可以看到 <code>return Ok()</code> 和 <code>return NotFound()</code> 這兩個新朋友。</p>
+<p>聰明的朋友看 return 的方法名稱應該已經猜到了，這就是我們前面提過的 <a href="#%E9%97%9C%E6%96%BC-http-status-code">HTTP Status</a>。當然前面查詢成功的時候和這邊的 <code>Ok()</code> 一樣是 <code>200</code> 的狀態，此外還有代表 <code>400</code> 的 <code>BadRequest()</code>、代表 <code>404</code> 的 <code>NotFound()</code> 等等。</p>
+<p>除此之外，我們也不是每次都會回傳 <code>IActionResult</code>，可能也會是自訂的錯誤型別等等，所以也看過使用 <code>Response.StatusCode</code> 來直接設定 Http Status Code 的做法，例如 <code>Response.StatusCode = 200;</code> 之後再進行回傳的做法，各位再視情況使用吧。</p>
+<p>現在 CRUD 四大天王，我們已經只剩下 D 了，現在就來把刪除卡片的方法補上吧：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 刪除卡片
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpDelete]</span>
+<span style="color:#a6e22e">[Route(&#34;{id}&#34;)]</span>
+<span style="color:#66d9ef">public</span> IActionResult Delete([FromRoute] <span style="color:#66d9ef">int</span> id)
+{
+    _cards.RemoveAll(card =&gt; card.Id == id);
+    <span style="color:#66d9ef">return</span> Ok();
+}
+</code></pre></div><p>這樣四大天王（包含查詢列表通常是五個）就到齊了，現在的 <code>CardController</code> 應該是長這樣的：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
+<span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
+{
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 測試用的資料集合
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> List&lt;Card&gt; _cards = <span style="color:#66d9ef">new</span> List&lt;Card&gt;();
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片列表
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpGet]</span>
+    <span style="color:#66d9ef">public</span> List&lt;Card&gt; GetList()
+    {
+        <span style="color:#66d9ef">return</span> _cards;
+    }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpGet]</span>
+<span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
+    <span style="color:#66d9ef">public</span> Card Get([FromRoute] <span style="color:#66d9ef">int</span> id)
+    {
+        <span style="color:#66d9ef">return</span> _cards.FirstOrDefault(card =&gt; card.Id == id);
+    }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 新增卡片
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpPost]</span>
+    <span style="color:#66d9ef">public</span> IActionResult Insert([FromBody] CardParameter parameter)
+    {
+        _cards.Add(<span style="color:#66d9ef">new</span> Card
+        {
+            Id = _cards.Any() 
+                ? _cards.Max(card =&gt; card.Id) + <span style="color:#ae81ff">1</span>
+                : <span style="color:#ae81ff">0</span>, <span style="color:#75715e">// 臨時防呆，如果沒東西就從 0 開始
+</span><span style="color:#75715e"></span>            Name = parameter.Name,
+            Description = parameter.Description
+        });
+
+        <span style="color:#66d9ef">return</span> Ok();
+    }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 更新卡片
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpPut]</span>
+<span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
+    <span style="color:#66d9ef">public</span> IActionResult Update(
+<span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id,
+<span style="color:#a6e22e">        [FromBody]</span> CardParameter parameter)
+    {
+        <span style="color:#66d9ef">var</span> targetCard = _cards.FirstOrDefault(card =&gt; card.Id == id);
+        <span style="color:#66d9ef">if</span> (targetCard <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
+        {
+            <span style="color:#66d9ef">return</span> NotFound();
+        }
+
+        targetCard.Name = parameter.Name;
+        targetCard.Description = parameter.Description;
+
+        <span style="color:#66d9ef">return</span> Ok();
+    }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 刪除卡片
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpDelete]</span>
+<span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
+    <span style="color:#66d9ef">public</span> IActionResult Delete([FromRoute] <span style="color:#66d9ef">int</span> id)
+    {
+        _cards.RemoveAll(card =&gt; card.Id == id);
+        <span style="color:#66d9ef">return</span> Ok();
+    }
+}
+</code></pre></div><p>最後讓我們啟動來測試一下吧！</p>
+<hr>
+<blockquote>
+<p>備註：和上面同樣地，因為這邊還沒說明到 Postman 等測試軟體，所以直接使用 Powershell 進行示範，已經有慣用軟體，或是直接寫一個腳本出來接的朋友，請用自己方便順手的測試方法去呼叫就好囉。</p>
+</blockquote>
+<p>讓我們打開 Powershell，繼續使用 <code>Invoke-RestMethod</code> 來呼叫 API 試試看，別忘了 Port 要換成你啟動專案時 IIS 掛上去的 Port</p>
+<p>首先讓我們新增一張卡片：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card `
+ -Method <span style="color:#e6db74">&#39;POST&#39;</span> `
+ -Headers @{ <span style="color:#e6db74">&#34;Content-Type&#34;</span> = <span style="color:#e6db74">&#34;application/json&#34;</span>; } `
+ -Body <span style="color:#e6db74">&#34;{</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">name</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">: </span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">mycard</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">,</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">description</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">: </span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">sample card</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">}&#34;</span>
+</code></pre></div><p>接著讓我們查詢看看所有卡片，看看新增的卡片在不在：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card | ConvertTo-Json
+</code></pre></div><p><img src="https://i.imgur.com/IvHYdZR.png" alt=""></p>
+<p>既然卡片已經存在了，讓我們試試看編輯，把「我的卡片」改成「我們的卡片」，<del>打倒富農份子</del>：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card/0 `
+ -Method <span style="color:#e6db74">&#39;PUT&#39;</span> `
+ -Headers @{ <span style="color:#e6db74">&#34;Content-Type&#34;</span> = <span style="color:#e6db74">&#34;application/json&#34;</span>; } `
+ -Body <span style="color:#e6db74">&#34;{</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">name</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">: </span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">ourcard</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">,</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">description</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">: </span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">sample card</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">}&#34;</span>
+</code></pre></div><p>並且用查詢單張卡片的方式來查詢卡片資料：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card/0 | ConvertTo-Json
+</code></pre></div><p><img src="https://i.imgur.com/FjFHdSt.png" alt=""></p>
+<p>如果編輯的卡片不存在，會噴出 404：</p>
+<p><img src="https://i.imgur.com/j6Dom6l.png" alt=""></p>
+<p>最後讓我們來試試刪除：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card/0 `
+ -Method <span style="color:#e6db74">&#39;DELETE&#39;</span>
+</code></pre></div><p>然後同樣使用查詢全部，應該要沒有任何卡片了：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card | ConvertTo-Json
+</code></pre></div><p><img src="https://i.imgur.com/0WNEkAm.png" alt=""></p>
+<p>到這邊就確認我們的 API 服務（也就是基本的 CRUD）已經 ON 起來啦！</p>
+<h4 id="中場休息">中場休息</h4>
+<p>這邊我們紀錄了一些會用到的 HTTP 基礎知識，並用 Asp.net Core 的 Web API 範本新建了一個 API 服務，也加入了自己設定的 CRUD。</p>
+<p>但要特別注意，雖然我們對外的開口已經建起來了，但這時候的 Card 還只是個用 static 變數假裝的空殼，只要站台重啟就會消失了。</p>
+<p>正所謂「<strong>沒有連到資料庫的 CRUD，就像是沒有加醬汁的料理！</strong>」，我們在下一集就要來把我們的 Api 服務連接到資料庫啦！</p>
+<p>那麼，我們下次見～</p>
+<h3 id="本系列文章">本系列文章</h3>
+<ul>
+<li><a href="/post/2021/03/newbie-0-menu">菜雞新訓記 (0): 目錄</a></li>
+<li><a href="/post/2021/03/newbie-1-hello-git">菜雞新訓記 (1): Git 入門這樣做</a></li>
+<li><a href="/content/post/2021/05/newbie-2-webapi">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）<br/>認識 Api 與建置 Web Api 服務</a></li>
+</ul>
+<h3 id="參考資料">參考資料</h3>
+<ul>
+<li><a href="https://medium.com/@hulitw/learning-tcp-ip-http-via-sending-letter-5d3299203660">從傳紙條輕鬆學習基本網路概念 - huli</a></li>
+<li><a href="https://medium.com/@hulitw/ramen-and-api-6238437dc544">從拉麵店的販賣機理解什麼是 API - huli</a></li>
+<li><a href="https://medium.com/codingbar/api-%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E9%BA%BC-%E7%94%A8%E7%99%BD%E8%A9%B1%E6%96%87%E5%B8%B6%E4%BD%A0%E8%AA%8D%E8%AD%98-95f65a9cfc33">API 到底是什麼？ 用白話文帶你認識 - BAR 主特調</a></li>
+<li><a href="https://docs.microsoft.com/zh-tw/azure/architecture/best-practices/api-design">Web API 設計 - Microsoft Docs</a></li>
+<li><a href="https://progressbar.tw/posts/53">休息(REST)式架構? 寧靜式(RESTful)的Web API是現在的潮流？ - 進度條</a></li>
+<li><a href="https://tw.twincl.com/programming/*641y">簡明 RESTful API 設計要點 - Twincl</a></li>
+<li><a href="https://notfalse.net/39/http-message-format">HTTP/1.1 — 訊息格式 (Message Format) - NotFalse</a></li>
+<li><a href="https://medium.com/ttyy2985/http%E5%89%8D%E5%BE%8C%E7%AB%AF%E5%82%B3%E8%BC%B8%E6%B5%81%E7%A8%8B-8ee40ffca1bd">HTTP 前後端傳輸流程 - ttyy2985</a></li>
+<li><a href="https://medium.com/hobo-engineer/ricky%E7%AD%86%E8%A8%98-postman-%E5%B8%B8%E8%A6%8B%E7%9A%84-content-type-b17a75396668">Postman 常見的 Content-type - hobo-engineer</a></li>
+<li><a href="https://noob.tw/http-status-code/">常見與不常見的 HTTP Status Code - Noob&rsquo;s Space</a></li>
+<li><a href="https://blog.miniasp.com/post/2009/01/16/Web-developer-should-know-about-HTTP-Status-Code">網頁開發人員應了解的 HTTP 狀態碼 - The Will Will Web</a></li>
+<li><a href="https://dotblogs.com.tw/yc421206/2020/06/28/how_to_read_config_appsettings_json_via_net_core_31">如何讀取 AppSettings.json 組態設定檔 - 余小章</a></li>
+<li><a href="https://blog.poychang.net/visual-studio-launch-settings-iis-express-iis-project-executable/">launchSettings.json 的 commandName 是做什麼用的？</a></li>
+<li><a href="https://blog.johnwu.cc/article/ironman-day02-asp-net-core-application-lifetime.html">ASP.NET Core 2 系列 - 程式生命週期 (Application Lifetime) - John Wu&rsquo;s Blog</a></li>
+<li><a href="https://blog.poychang.net/using-powershell-call-http-request/">使用 PowerShell 呼叫 Web API 請求</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE">超文本傳輸協定 - 維基百科</a></li>
+</ul>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2021/04/newbie-1-hello-git/">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a></li>
+        
+        <li><a href="/post/2021/04/newbie-0-menu/">菜雞新訓記 (0): 前言</a></li>
+        
+        <li><a href="/post/2021/01/oo-ex1-end2020/">菜雞與物件導向 (Ex1): 小結</a></li>
+        
+        <li><a href="/post/2020/12/oo-15-least-knowledge-principle/">菜雞與物件導向 (15): 最少知識原則</a></li>
+        
+        <li><a href="/post/2020/12/oo-14-dependency-inversion-principle/">菜雞與物件導向 (14): 依賴反轉原則</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/newbieguide">NewbieGuide</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/dotnet">dotnet</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/csharp">csharp</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/api">api</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                        <hr />
+<p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2021%2f05%2fnewbie-2-webapi%2f" width="100%" frameborder=0></iframe>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">系列文</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E6%88%91%E8%A6%81%E8%A8%82%E4%BE%BF%E7%95%B6/">我要訂便當 (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/05/visual-studio-split-window-in-one-file/" title="Visual Studio: 在同一個檔案分割視窗">Visual Studio: 在同一個檔案分割視窗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/" title="菜雞新訓記 (1): 使用 Git 來進行版本控制吧">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/04/newbie-0-menu/" title="菜雞新訓記 (0): 前言">菜雞新訓記 (0): 前言</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/03/sekiro-darksouls3-clear/" title="隻狼、黑暗靈魂３　白金！">隻狼、黑暗靈魂３　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/03/visual-studio-bookmark/" title="Visual Studio: 書籤 (bookmarks)">Visual Studio: 書籤 (bookmarks)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/01/oo-ex1-end2020/" title="菜雞與物件導向 (Ex1): 小結">菜雞與物件導向 (Ex1): 小結</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/12/oo-15-least-knowledge-principle/" title="菜雞與物件導向 (15): 最少知識原則">菜雞與物件導向 (15): 最少知識原則</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle/" title="菜雞與物件導向 (14): 依賴反轉原則">菜雞與物件導向 (14): 依賴反轉原則</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/12/7_taskbar/" title="7&#43; Taskbar Tweaker —— 簡單方便的 Windows 工作列調整工具">7&#43; Taskbar Tweaker —— 簡單方便的 Windows 工作列調整工具</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/bug/">bug (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (15)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/life/">life (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (17)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (47)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/api/">api</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/bug/">bug</a>
+    
+    <a href="https://igouist.github.io/tags/chrome/">chrome</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/game/">game</a>
+    
+    <a href="https://igouist.github.io/tags/git/">git</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/life/">life</a>
+    
+    <a href="https://igouist.github.io/tags/linux/">linux</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">蹭一下</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://kevintsengtw.blogspot.com/" title="mrkt">mrkt 的程式學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://raychiutw.github.io/" title="ray">Ray&#39;s Notes</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">小東西</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+
+    <section class="widget">
+    <h3 class="widget-title">放個廣告加減賺</h3>
+    <ul class="widget-list">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-2119949858103459"
+            data-ad-slot="9031038367"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </ul>
+</section>
+
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        
+        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+</body>
+</html>

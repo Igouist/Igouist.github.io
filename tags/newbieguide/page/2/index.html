@@ -103,6 +103,40 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2020/09/oo-9-solid/">菜雞與物件導向 (9): SOLID</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2020-9-20,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a>
+                                    
+                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/U7iWMT9.png" alt=""></p>
+<p>終於進入了原則篇，接下來的幾篇我們會介紹幾個物件導向的原則（基本上就是指 SOLID 原則）。因此這篇就讓我 <s>水一下</s> 當成後半段的目錄，方便之後可以把相關的部分整理進來。</p>
+<h4 id="為什麼我們需要這些原則">為什麼我們需要這些原則？</h4>
+<p>我們在前面的章節已經說明了一些物件導向的特性，例如繼承和多型等等。然而我們並沒有討論到怎麼運用、或是怎樣設計才能算是更好的、更優雅的、更符合物件導向精神的；我們並沒有提到一個評估的標準，或是指引一個更好的方向。</p>
+<p>然而，混亂的使用物件導向對整個專案的毀滅性甚至比乾脆不使用物件導向還高。</p>
+<p>這些特性使用起來很簡單，大多數語言只需要一個符號或標示就能完成繼承，把一堆東西全部塞在一起就可以說我在封裝。但怎麼使用得好，又該什麼時候使用呢？這就是難的地方吧。</p>
+<p>例如說濫用繼承，或是封裝時完全不隱藏複雜度一路 Puuuuublic 到底，又或者是類別之間過於相互依賴，全部耦合成一團等等。如果隨便地使用物件導向的各項特性，就會讓整個架構變得僵化、脆弱、危險、充滿臭味。</p>
+<p>更可怕的是，這個發臭的過程是每一次設計、每一次修改都會有所影響，所謂「持續發生，腐敗成真」，<strong>隨著物件導向的亂用、誤用、無腦用，軟體就會逐漸腐化</strong>。一組腐化的軟體可能會有以下特徵：大量的依賴使得修改變得困難、修改後看似不相干的各個地方發生問題、或是修改時沒辦法依循原本的設計、到處出現不必要的複雜性和不必要的重複，模組也變得難以理解等等。</p>
+<p>阻止程式碼的腐化、追求更好的架構和設計、寫出更好的代碼，當然是我輩所追求的目標。儘管面對的可能是不同的問題和不同的環境，那些優質、穩固、具有<strong>反脆弱</strong>特質的程式碼也必然會有些共通之處。例如說：需要具有<strong>面對改變</strong>的能力、具有<strong>方便管理</strong>的能力、具有<strong>隱藏複雜性</strong>的能力。</p>
+<p>因此，大前輩們整理並提出了一些可以致力的方向，也就是所謂的「<strong>原則</strong>」。如同心法、教義一般，只要實作的同時將其牢記在心，就能讓我們作為一些行動的準則和依據。</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/09/oo-9-solid/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling/">菜雞與物件導向 (8): 內聚、耦合</a>
                                     </h1>
                                 </header>
@@ -498,38 +532,6 @@ warrior.Hit(goblin);
                             </article>
                             <hr color="#D9D9D9" />
                         
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2020/07/automapper/">AutoMapper —— 類別轉換超省力</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2020-7-5,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
-                                    
-                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <p>類別間的轉換幾乎是每個專案每個工程師都會碰到的動作，舉凡是分層架構每層之間的轉換，如 Dto 轉換成 ViewModel；或是接收到資料要塞進自定義的類別時也需要進行轉換。但<strong>在遠古時代，當我們要把一個類別的資料倒進另一個類別時，總免不了一番折騰</strong>。</p>
-<p>例如一個卡片對戰遊戲的資料庫，光是要先把卡片資料讀取出來就需要：</p>
-<p><img src="https://i.imgur.com/c81Hx5I.png" alt=""></p>
-<p>有些時候也會看見用 Foreach 然後逐一傳值的場景，或是各種差不多的變種情況。同樣的是，光是將一個簡單的卡片資訊轉換成 ViewModel，就花了一大段在做對映的處理。這個過程本身枯燥乏味又占空間，更可怕的是，<strong>如果有個陳年資料表，動不動就上百個欄位，那這個轉換過程的恐怖程度可想而知</strong>。</p>
-<p>幸好！天無絕人之路，這種時候就是本日的主角 —— AutoMapper 出場的時候了。</p>
-<p>當 AutoMapper 一出手，轉換的過程瞬間就變成：</p>
-<p><img src="https://i.imgur.com/KxHAKpi.png" alt=""></p>
-<p>是不是精簡很多呢？接著就讓我們來看看怎麼開始使用吧！</p>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/07/automapper/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
                     
 
                     
@@ -588,7 +590,7 @@ warrior.Hit(goblin);
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (2)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (3)</a>
     </li>
     
     <li>
@@ -601,6 +603,10 @@ warrior.Hit(goblin);
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/05/visual-studio-split-window-in-one-file/" title="Visual Studio: 在同一個檔案分割視窗">Visual Studio: 在同一個檔案分割視窗</a>
@@ -638,10 +644,6 @@ warrior.Hit(goblin);
         <a href="https://igouist.github.io/post/2020/12/7_taskbar/" title="7&#43; Taskbar Tweaker —— 簡單方便的 Windows 工作列調整工具">7&#43; Taskbar Tweaker —— 簡單方便的 Windows 工作列調整工具</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2020/11/i-am-doing-well-after-leaving-the-company/" title="讀《離開公司，我過得還不錯》">讀《離開公司，我過得還不錯》</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -664,7 +666,7 @@ warrior.Hit(goblin);
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (14)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (15)</a>
     </li>
     
     <li>
@@ -707,6 +709,8 @@ warrior.Hit(goblin);
 <div class="tagcloud">
     
     <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/api/">api</a>
     
     <a href="https://igouist.github.io/tags/automapper/">automapper</a>
     
