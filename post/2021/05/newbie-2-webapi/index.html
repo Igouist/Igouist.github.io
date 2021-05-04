@@ -126,6 +126,7 @@
 <li><a href="#%E9%97%9C%E6%96%BC-restful-%E8%88%87-http-method">關於 Restful 與 HTTP Method</a></li>
 <li><a href="#%E9%97%9C%E6%96%BC-http-request-%E5%92%8C-response">關於 HTTP Request 和 Response</a></li>
 <li><a href="#%E9%97%9C%E6%96%BC-http-status-code">關於 HTTP Status Code</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC-stateless">關於 Stateless</a></li>
 </ul>
 </li>
 <li><a href="#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a>
@@ -163,7 +164,7 @@
 <p>那麼 Restful 到底是什麼呢？</p>
 <p>前一段我們有提過，API 的一個重點是：提供我這個功能需要的接口／介面給對方，就能讓對方知道如何使用。</p>
 <p>如果有點進去看 Huli 大大的文章，尤其是<a href="https://medium.com/@hulitw/learning-tcp-ip-http-via-sending-letter-5d3299203660">傳紙條</a>那一篇的話，應該會察覺到在資料交換的過程中，最重要的一環就是建立共識，或者說是建立原則以降低溝通成本。</p>
-<p>Restful 想做的也是同一件事：大家都有一個制定路由的共識，就可以降低閱讀和維護成本。</p>
+<p>Restful 想做的也是同一件事：只要大家都有一個制定路由的共識，就可以降低閱讀和維護成本。</p>
 <p>原先的 API 在路由的制定上並沒有什麼原則，幾乎就是看提供者爽怎麼訂就怎麼訂：</p>
 <pre><code>/api/create-order
 /api/getProduct?id=1
@@ -242,7 +243,7 @@
 </li>
 </ul>
 <hr>
-<p>除此之外，這邊只列出了我個人平常比較常接觸的 HTTP 方法，其他還有 <code>HEAD</code>、<code>TRACE</code> 等等，有興趣的朋友可以再逛逛 MDN 的 <a href="https://developer.mozilla.org/zh-TW/docs/Web/HTTP/Methods">HTTP 請求方法</a>。</p>
+<p>那麼補充就先到這裡。除了上面只列出了我個人平常比較常接觸的 HTTP 方法之外，其他還有 <code>HEAD</code>、<code>TRACE</code> 等等，有興趣的朋友可以再逛逛 MDN 的 <a href="https://developer.mozilla.org/zh-TW/docs/Web/HTTP/Methods">HTTP 請求方法</a>。</p>
 <p>現在我們大概知道了有這些 HTTP 方法可以使用，也因此已經將動作抽離出來了。接著就輪到我們要進行這些動作的「目標」了，這部份則要求：我們在制定路由的時候，應該從「<strong>資源</strong>」的角度下去考慮。</p>
 <p>這相當直覺，例如「新增 訂單」、「查詢 產品」這樣，我們動作後面接續的應該要是一個資源。從這個方式下去定的話，上面的範例應該就會變成：</p>
 <pre><code>POST /api/order
@@ -282,6 +283,7 @@ GET /api/product/1
 </tr>
 </tbody>
 </table>
+<br/>
 <p>這邊大致上有個感覺就行了，畢竟 Restful 是一種風格，並沒有強烈的規定。因此只要記得設計 Api 的時候，按照上面這個方向去處理即可。</p>
 <p>同樣的，這個訂立的原則，也就得仰賴多去看人家的 Api 怎麼設計來培養了。但只要把握幾個重點：建立共識、提高可讀性，還有設計的時候好好和來介接的夥伴喬一下，基本上就不會有什麼差錯啦，畢竟這東西很彈性的。</p>
 <p>最後推一下這兩篇 Restful API 相關的文章：</p>
@@ -432,6 +434,24 @@ GET /api/product/1
 </ul>
 </li>
 </ul>
+<hr>
+<h4 id="關於-stateless">關於 Stateless</h4>
+<blockquote>
+<p>2021/5/4: 發文之後發現忘記提到無狀態了，所以這邊回來補充一下。</p>
+</blockquote>
+<p>接續前面提到的 Restful 風格，在 API 的制定上，Restful 還有另一個要求，就是必須是 <strong>無狀態的（Stateless）</strong>。</p>
+<p>無狀態是指：伺服器不會儲存使用者的狀態，當使用者呼叫 API 的時候，應該給予所有 API 需要的內容。</p>
+<p>用比較的方式來說：原本的 API 設計可能會保存使用者的動作狀態，然後留到下一次呼叫的時候再接著使用，那這樣的 API 設計的時候就像是制定食譜，必須要求使用者照順序才可以正常運作。</p>
+<p>例如必須先打Ａ，再打Ｂ，最後打Ｃ，沒有照順序打的話就會因為狀態不對而壞掉。但這樣的做法其實就是所謂的<a href="https://dotblogs.azurewebsites.net/Im_sqz777/2021/04/18/what-is-temporal-coupling">時序耦合</a>，不僅造成測試和使用上的困擾，也相當的不直覺、相當的有「味道」。</p>
+<p>而我們在 Restful 的時候，是用資源的方式下去考慮，所以應該把重點放在資源的操作，而不是狀態的管理和流程，否則就會很奇怪。例如說你去買雞蛋，然後老闆突然跟你說：不行喔，因為你還沒買過牛奶。哇，整個就莫名其妙。</p>
+<p>所以在 Restful 的設計上，<strong>每一次呼叫都應該要是獨立的呼叫</strong>，設計的時候就是以資源為主體，再利用這些資源互相搭配來完成功能。</p>
+<p>例如說「登入之後跳出使用者待結帳的訂單，並且 Show 出訂單中的產品」這種情況，我們就不該要求使用者一定要照順序打，然後伺服器再來記住登入的資訊、使用者的編號、訂單的編號等等，除了記錄一堆多餘的資訊，更把 API 的使用場景給卡死了，相當不 OK。</p>
+<p>這邊用資源的角度出發的話，應該讓「登入」、「查詢訂單（使用者呼叫時提供使用者編號）」、「查詢產品（使用者呼叫時提供訂單編號）」組合起來，從「將這些資源的操作組合在一起完成功能」的角度出發，那在別的流程就可以重複使用這些 API 來組成功能，同時也能分別對各個功能進行開發跟測試。</p>
+<p>如此一來，就能提升彈性、自由度。同時，因為伺服器不用紀錄狀態，讓每一次呼叫都是獨立的呼叫，不只可以重複使用，聚焦在資源上也能讓操作變得簡潔。進一步來說，因為狀態不會被綁死在特定的機器上，那就可以開始搞擴大加機器做分散式啦。</p>
+<blockquote>
+<p>補充一下：當然，要做到完全沒有狀態是很難的，但我們可以做到讓伺服器不要綁死、每個呼叫都是盡量獨立的，來盡可能使得服務乾淨、有彈性、可分散處理。</p>
+<p>同時也因為這樣，為了讓使用者的狀態不會遺失（例如登入狀態），就得做到使用者的每個呼叫都要能夠證明自己的身份，所以才有了壓成 Token、把身分驗證的伺服器分離等等的驗證做法，這個部份我們有空再來填坑吧。</p>
+</blockquote>
 <h3 id="正式開工">正式開工</h3>
 <p>現在，我們已經大概了解 API 以及 Restful API 的一些相關知識了，接著就讓我們來實際建立一個簡單的 API 服務吧！</p>
 <h4 id="新建-net-core-web-api-專案">新建 .net Core Web API 專案</h4>
@@ -854,6 +874,9 @@ GET /api/product/1
 <li><a href="https://docs.microsoft.com/zh-tw/azure/architecture/best-practices/api-design">Web API 設計 - Microsoft Docs</a></li>
 <li><a href="https://progressbar.tw/posts/53">休息(REST)式架構? 寧靜式(RESTful)的Web API是現在的潮流？ - 進度條</a></li>
 <li><a href="https://tw.twincl.com/programming/*641y">簡明 RESTful API 設計要點 - Twincl</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10230223">不做怎麼知道系列之Android開發者的30天後端養成故事 Day22 - 什麼是真正的 RESTful API? #RESTful API應該長什麼樣子?</a></li>
+<li><a href="https://sunnyday0932.github.io/2020/dotnet-core-webapi%E5%AF%A6%E4%BD%9C-4-restful-api%E4%BB%8B%E7%B4%B9/">dotnet Core WebApi實作-4 RESTful API介紹 _ Sian</a></li>
+<li><a href="https://medium.com/%E8%90%AC%E4%BA%8B%E5%B1%8B%E9%98%BF%E6%B3%B0%E7%9A%84%E7%9F%A5%E8%AD%98%E6%B5%B7/cs-2-%E6%AF%8F%E6%AF%8F%E8%81%BD%E5%88%B0%E5%B7%A5%E7%A8%8B%E5%B8%AB%E8%AA%AA-api-%E6%89%80%E4%BB%A5%E5%88%B0%E5%BA%95%E4%BB%80%E9%BA%BC%E6%98%AF-api-%E5%95%8A-b155662425e">CS #2 — 每每聽到工程師說 API，所以到底什麼是 API 啊？ - 萬事屋阿泰的知識海</a></li>
 <li><a href="https://notfalse.net/39/http-message-format">HTTP/1.1 — 訊息格式 (Message Format) - NotFalse</a></li>
 <li><a href="https://medium.com/ttyy2985/http%E5%89%8D%E5%BE%8C%E7%AB%AF%E5%82%B3%E8%BC%B8%E6%B5%81%E7%A8%8B-8ee40ffca1bd">HTTP 前後端傳輸流程 - ttyy2985</a></li>
 <li><a href="https://medium.com/hobo-engineer/ricky%E7%AD%86%E8%A8%98-postman-%E5%B8%B8%E8%A6%8B%E7%9A%84-content-type-b17a75396668">Postman 常見的 Content-type - hobo-engineer</a></li>
