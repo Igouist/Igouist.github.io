@@ -295,7 +295,7 @@
 </span><span style="color:#75715e">/// 連線字串
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span> _connectString = <span style="color:#e6db74">@&#34;Server=(LocalDB)\MSSQLLocalDB;Database=Newbie;Trusted_Connection=True;&#34;</span>;
-</code></pre></div><p>這邊採用直接放私有成員的做法，如果你有多個類別需要用到資料庫連線，可以考慮集中管理連線字串到 appsettings.json 或是 web.config 之類的地方。這邊之所以直接放到私有成員裡寫死，是因為這邊的範例情景相對簡單，先不打算挪出去而模糊焦點 <del>，而且我之後要改成依賴注入的時候也比較好改。</del></p>
+</code></pre></div><p>這邊採用直接放私有成員的做法，如果你有多個類別需要用到資料庫連線，可以考慮集中管理連線字串到 <code>appsettings.json</code> 或是 <code>web.config</code> 之類的地方。這邊之所以直接放到私有成員裡寫死，是因為這邊的範例情景相對簡單，先不打算挪出去而模糊焦點 <del>，而且我之後要改成依賴注入的時候也比較好改。</del></p>
 <p>接著就讓我們從查詢全部卡片的方法開始加入吧！我們應該要有一個回傳 卡片串列 的方法（我這邊習慣使用 IEnumerable，比較不熟的朋友用 List 也沒關係）</p>
 <blockquote>
 <p>小提示：過程中看到紅線請不要慌，如果有需要 using 的就請順手 using 一下，例如 <code>Card</code> 的類別、等等會用到的 <code>Dapper</code> 等等。或是像 <code>SqlConnection</code> 沒抓到套件，就 Alt Enter 安裝一下即可。</p>
@@ -303,6 +303,7 @@
 <blockquote>
 <p>補充：因為 Dapper 對每個資料庫系統所產生的語法會不一樣，所以假如你是使用 MySql 的朋友，這邊的連線請改成使用 <code>MySqlConnection</code></p>
 </blockquote>
+<p>準備好了嗎？深呼吸！我們要對資料表進行查詢囉：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 查詢卡片列表
 </span><span style="color:#75715e">/// &lt;/summary&gt;
