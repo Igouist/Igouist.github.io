@@ -1,0 +1,1257 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-92586970-4"></script>
+    <script async>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-92586970-4');
+    </script>
+
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫 - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2021-05-09T11:15:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2021-05-09T11:15:00&#43;08:00">
+        
+    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="description" content="這是俺整理公司新訓內容的第三篇文章，目標是簡單地使用 Dapper 連線到資料庫並完成 CRUD 的功能">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/post/2021/05/newbie-3-dapper/">
+    <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link defer rel="stylesheet" href="/css/normalize.css">
+    
+        <link defer rel="stylesheet" href="/css/prism.css">
+    
+    <link defer rel="stylesheet" href="/css/style.css">
+    <script async type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    
+    <script data-ad-client="ca-pub-2119949858103459" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script async>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "[map[]]",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp-and-dotnet/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2021-5-9,
+                        </date>
+                        
+                        <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+                        <div class="post-content">
+                            <p><img src="https://i.imgur.com/kOpRPTm.png" alt=""></p>
+<p>這是俺整理公司新訓內容的第三篇文章，目標是<strong>簡單地使用 Dapper 連線到資料庫並完成 CRUD 的功能</strong>。</p>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80%E5%9F%BA%E6%9C%AC%E8%A7%80%E5%BF%B5">前言、基本觀念</a>
+<ul>
+<li><a href="#%E9%97%9C%E6%96%BC%E5%BC%B1%E5%9E%8B%E5%88%A5%E8%88%87%E5%BC%B7%E5%9E%8B%E5%88%A5">關於弱型別與強型別</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC%E7%89%A9%E4%BB%B6%E9%97%9C%E4%BF%82%E5%B0%8D%E6%98%A0orm">關於物件關係對映（ORM）</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC-dapper">關於 Dapper</a></li>
+</ul>
+</li>
+<li><a href="#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a>
+<ul>
+<li><a href="#%E7%92%B0%E5%A2%83%E6%BA%96%E5%82%99%E5%BB%BA%E7%AB%8B%E8%B3%87%E6%96%99%E8%A1%A8%E5%AE%89%E8%A3%9D-dapper">環境準備（建立資料表、安裝 Dapper）</a></li>
+<li><a href="#%E5%BB%BA%E7%AB%8B%E5%B0%8D%E6%87%89%E8%B3%87%E6%96%99%E8%A1%A8%E7%9A%84%E9%A1%9E%E5%88%A5">建立對應資料表的類別</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-dapper-%E5%AF%A6%E4%BD%9C-crud">使用 Dapper 實作 CRUD</a></li>
+<li><a href="#%E5%B0%8D%E6%8E%A5%E8%88%87%E6%B8%AC%E8%A9%A6">對接與測試</a></li>
+</ul>
+</li>
+<li><a href="#%E5%B0%8F%E7%B5%90">小結</a></li>
+<li><a href="#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0">本系列文章</a></li>
+</ul>
+<p>接續<a href="/post/2021/05/newbie-2-webapi">上一篇</a>的進度，我們接著要來連線到資料庫中完成我們的 Web Api 的 CRUD 範例。因為從新訓時期到現在工作團隊作業上主要都是使用 Dapper 來做連線資料庫的工作，這邊就直接用 Dapper 來推進吧！</p>
+<p>Dapper 有多好用呢？它輕量、它簡單、它快速。總之先把大神們的介紹文直接拿來鎮樓：</p>
+<ul>
+<li><a href="https://blog.darkthread.net/blog/dapper/">短小精悍的.NET ORM神器 &ndash; Dapper - 黑暗執行緒</a></li>
+<li><a href="https://dotblogs.com.tw/mrkt/2016/06/10/153606">另一種資料存取對映處理方式的選擇 - Dapper - mrkt 的程式學習筆記</a></li>
+<li><a href="https://www.huanlintalk.com/2014/03/a-micro-orm-dapper.html">好用的微型 ORM：Dapper - Huanlin 學習筆記</a></li>
+</ul>
+<p>那麼按照慣例，我們先來 <del>吹捧今天的主角</del> 說明一點簡單的前因後果吧。想直接實作的朋友，可以跳到<a href="#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a>的小節呦。</p>
+<h3 id="前言基本觀念">前言、基本觀念</h3>
+<h4 id="關於弱型別與強型別">關於弱型別與強型別</h4>
+<p>在很久很久以前，從資料庫裏面撈資料庫會使用 <code>DataTable</code>、<code>DataSet</code> 的做法去取，但有一個小小的問題，就是這些做法並不是強型別的。當我們在從 <code>Rows[0][&quot;ID&quot;]</code> 取值的時候，其實我們不知道 Key 對不對，也不知道取不取得到值，更不知道取出來的值是哪個型別。</p>
+<p>當強型別的語法寫慣了之後，再回到上面的這種弱型別環境，就常常會遇到一些令人抓狂的狀況。像是編譯的時候沒出錯，執行的時候才炸掉；因為沒有指定型別，也就無法進行某些操作，必須額外再轉型；轉了型也不知道跑起來是不是和想的一樣等等……<strong>內心充滿了不安感</strong>。戰戰慄慄，汗不敢出。</p>
+<blockquote>
+<p>當然，強型別與弱型別各有優缺點，會按照語言環境、個人喜好等等有適用的場合。這邊就不再贅述，對這部分有興趣的朋友可以參照：</p>
+<ul>
+<li><a href="https://blog.miniasp.com/post/2008/01/21/What-is-Strong-Type">何謂「強型別」(Strong Type) - The Will Will Web</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10202260">你不可不知的 JavaScript 二三事#Day3：資料型態的夢魘——動態型別加弱型別</a></li>
+</ul>
+<p>至於我們上面提到的，像使用 <code>DataTable</code> 會掉的坑，可以參考 coreychen71 的這篇 <a href="https://coreychen71.github.io/posts/2019-06/strongtypeweaktype/">強型別與弱型別</a> 的範例，有使用過（踩過）的朋友可能會比較眼熟。</p>
+<p>說到底，想要編譯時期就發現錯誤？或是不想耗費心力在轉型過程？本來就會有相對應的代價。</p>
+<p>不過就我個人認為，既然都在 C# 這個環境了，又是嘗試向已知的資料表取值，取出來的值通常都還會進行進一步的操作，最後還是要指定型別做轉型囧…</p>
+<p>既然你遲早要用強型別的，為什麼不一開始就用強型別呢？還能少一堆坑。</p>
+<p>呃，總之，感謝微軟拔拔讓我有 <code>var</code> 可以用。幫我檢查型別又讓我可以爽寫，謝謝齁。</p>
+</blockquote>
+<h4 id="關於物件關係對映orm">關於物件關係對映（ORM）</h4>
+<p>因為前述的型別問題，大多數人就投向了 ORM 的懷抱。ORM 的全名是物件關係對映（Object Relational Mapping），核心理念是將資料庫的資料映射到物件裡，這樣就可以在我們的程式語言中直接像操作物件一樣地去操作資料。</p>
+<p>例如說在之前的這篇 <a href="/post/2019/12/aspnet-connect-db-ef">Asp.net MVC: Entity Framework 連線資料庫</a>，就利用了 Entity Framework 這個工具去把資料表和類別對接起來，進而直接在程式碼中對資料進行操作。</p>
+<blockquote>
+<p>關於 ORM 的更多介紹，例如優點和缺點等等，可以參照這兩篇：</p>
+<ul>
+<li><a href="https://ithelp.ithome.com.tw/articles/10207752">資料庫設計概念 - ORM - johnliutw</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2019/02/orm-tutorial.html">ORM 实例教程 - 阮一峰</a></li>
+</ul>
+</blockquote>
+<p>雖然 ORM 帶來了很多方便的好處，例如說：可以自動產生 SQL 語法不用自己寫、且包裝之後的語法通常會簡化過，讓可讀性變好了，操作也變方便了，資料操作放在專案裡容易維護，而 ORM 工具通常都已經做了一些必要的處理，例如用參數的方式幫忙擋了 SQL Injection 啦，使用交易、避免更新衝突等等。</p>
+<p>但畢竟<strong>自動產生語法是有極限的</strong>，因此 ORM 同時也有著肥大、前置作業太多、當語句複雜時轉換成 SQL 的效能可能變差、對於較特別或客製化的需求也很難處理等等的問題。</p>
+<p>除了前面提到的複雜場景產生的 SQL 效能會變差等問題以外，在實務上也會遇到翻寫古老 SQL 程式時，難以將原本的 T-SQL 語法順利轉換成 ORM 語法的狀況，或者是原本的資料表設計並沒有好好弄好關聯和正規化變得一團亂，導致針對已經運行一段時間的專案引入 ORM 變得相當困難。</p>
+<p>因此，在使用上需要根據狀況，再決定是否要用 ORM 來進行開發。像是如果對資料表的操作語句單純（例如經典傳統百年不變的 CRUD），或是不需要對 SQL 有太深的認識也要能夠開發，那使用 ORM 就是上上之選。</p>
+<blockquote>
+<p>關於各個狀況的比較，這邊推薦黑大的 <a href="https://blog.darkthread.net/blog/linq-or-direct-sql/">閒聊：用 LINQ 還是自己寫 SQL？</a>，整理了在 Dotnet 執行 SQL 邏輯的策略和優缺點，建議可以先看過有個感覺。</p>
+<p>另外，關於一些 ORM 的問題點，除了上面 ORM 介紹文章中提到的缺點以外，也可以閱讀這篇 <a href="https://tecky.io/en/blog/SQL%E4%B8%89%E9%83%A8%E6%9B%B2:%E4%BD%A0%E4%B8%8D%E9%9C%80%E8%A6%81ORM/">你不需要 ORM</a> 有實際的程式碼例子可能會比較有感覺。</p>
+</blockquote>
+<h4 id="關於-dapper">關於 Dapper</h4>
+<p>那既然這樣，我們能不能在上面兩者之間取得一個平衡呢？</p>
+<p>讓一個工具來<strong>協助我們處理和資料庫的溝通</strong>，幫忙我們<strong>把資料表對應到類別，把資料轉換成物件</strong>，讓我們可以使用<strong>強型別</strong>去開發；同時我們又可以保留大部分的彈性，像是<strong>讓我們自己撰寫 SQL 語法</strong>或一些細微的設定，讓我們可以主動去<strong>調整效能</strong>？</p>
+<p>如果又比起 ORM 更<strong>輕量</strong>，又能<strong>快速方便好用</strong>就好了。</p>
+<p>這種工具真的存在嗎？</p>
+<p>有，就是今天的主角 －－ <strong>Dapper</strong>！</p>
+<p>Dapper 是一個輕量的 ORM 工具，<a href="https://noamlewis.wordpress.com/2012/07/18/net-4-5-improves-orm-performance-across-the-chart/">效能好</a>，使用簡單，自由度高。</p>
+<p>它的特色就是<strong>快速、輕便、效能好</strong>，使用方式也相當簡單，因為它只<strong>幫你處理資料轉物件</strong>的部份，剩下的像是 SQL 語法和連線，你還是要自己負責。</p>
+<p>不過，我們有讚讚的物件就行了唄，畢竟是物件導向嘛，能當成物件使用最重要了。而且換個方向想，至少我們奪回了 SQL 語法的自主權（？）</p>
+<blockquote>
+<p>補充一下：如果你用了 Dapper 但還是很不想寫 SQL，場景又是簡單的 CRUD。呃，<del>為什麼不去用隔壁棚的 EF</del>，你可以試試加裝 <a href="https://github.com/tmsmith/Dapper-Extensions">DapperExtensions</a></p>
+</blockquote>
+<p>當我們有了 Dapper 之後…</p>
+<p>把 Dapper 交給那些 認真到會去 SSMS 跑一次 SQL 語法看執行效能的那些朋友，你們可以盡量發揮你們的 SQL 能力取得更好的效能。</p>
+<p>把 Dapper 交給那些 覺得 Entity Framework 效能地雷太多（或只是像我一樣不太熟）的朋友，至少隱晦的事故發生率會少很多。</p>
+<p>把 Dapper 交給那些 覺得還要先建一堆東西做一堆事才能拿資料很麻煩的朋友，快速簡單 Model 開下去 SQL 砸下去就可以爽拿 DB 資料。</p>
+<p>把 Dapper 交給那些 翻寫古老屎山的朋友，移植又臭又長 SQL 語法到新框架的時候，終於可以整個拉過來先跑，再步步為營去重構。</p>
+<p>所以說，Dapper 好！Dapper 妙！Dapper 嚇嚇叫！</p>
+<h3 id="正式開工">正式開工</h3>
+<h4 id="環境準備建立資料表安裝-dapper">環境準備（建立資料表、安裝 Dapper）</h4>
+<p>到這邊已經用了兩千字來吹捧 Dapper 了，差不多讓我們把鏡頭轉回到 Web Api 服務上，邊推進邊說明一些簡單的用法吧！</p>
+<p>接續我們<a href="/post/2021/05/newbie-2-webapi">上一篇</a>的進度，在上一篇裡，我們對外開了一組簡單 CRUD 的 API，用來查增修刪我們的卡片資訊。</p>
+<p>但當時只是開了簡單的服務，資料也是暫存的而已。所以這篇的目標是將我們的 API 服務連到資料庫，真正實現對卡片資料的操作。</p>
+<p>先讓我們說明一下本篇的示範環境，假設在 Local 的 SQL Server 裡，有著一個 <code>Newbie</code> 資料庫，其中有一張 <code>Card</code> 的資料表。其結構如下：</p>
+<p><img src="https://i.imgur.com/Gec9WeQ.png" alt=""></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql"><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> [dbo].[Card](
+	[Id] [int] <span style="color:#66d9ef">IDENTITY</span>(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+	[Name] [nvarchar](<span style="color:#ae81ff">50</span>) <span style="color:#66d9ef">NULL</span>,
+	[Description] [nvarchar](<span style="color:#ae81ff">50</span>) <span style="color:#66d9ef">NULL</span>,
+	[Attack] [int] <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+	[Health] [int] <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>,
+	[Cost] [int] <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>
+) <span style="color:#66d9ef">ON</span> [<span style="color:#66d9ef">PRIMARY</span>]
+<span style="color:#66d9ef">GO</span>
+</code></pre></div><p>該表用來存放基本的卡牌資訊，包含該卡牌的 ID（主鍵）、卡牌名稱、卡牌描述、攻擊力、血量、花費值。</p>
+<blockquote>
+<p>小提示：使用其他結構的資料表，例如用自己建立的資料表，或是經典的北風資料表，甚至是公司內的資料表來練習開發的朋友，要記得後續的處理都要改成你使用的資料表的內容呦！</p>
+</blockquote>
+<p>現在我們有了一張資料表，鏡頭轉回到我們的 .net Core Web API 服務。</p>
+<p>既然今天的主角是 Dapper，當然要<strong>先打開 NuGet 把 Dapper 給安裝下來</strong>。</p>
+<p><img src="https://i.imgur.com/rT0Nop6.png" alt=""></p>
+<p><img src="https://i.imgur.com/66GtKJA.png" alt=""></p>
+<p><img src="https://i.imgur.com/0fuLbQC.png" alt=""></p>
+<p>恭喜你，你已經完成本篇文章實作的一半了。</p>
+<h4 id="建立對應資料表的類別">建立對應資料表的類別</h4>
+<p>使用 Dapper 的時候，我們要先準備好<strong>把資料從拉回來時，用來轉換成物件的類別</strong>。</p>
+<p>我們在上次已經有在 <code>Models</code> 資料夾裡建立好 <code>Card.cs</code>，現在我們就來修改它。（不是從上一期開始跟的朋友，請製作一個和資料表欄位相對應的 Class）</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 卡片
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+{
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 卡片編號
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 卡片名稱
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 卡片描述
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 攻擊力
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 血量
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 花費
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+</code></pre></div><blockquote>
+<p>小提示：如果資料表的欄位數量很多很龐大，手刻會刻到死的朋友，可以試試用 Linqpad 去產生對應的類別。請參閱 mrkt 的這篇 <a href="https://dotblogs.com.tw/mrkt/2016/06/14/190618">Dapper - 使用 LINQPad 快速產生相對映 SQL Command 查詢結果的類別</a>。</p>
+<p>用 Linqpad 直接從資料表產生類別，和 Dapper 搭配起來，開發上那可真是一個快啊！這邊推薦給大家。</p>
+</blockquote>
+<blockquote>
+<p>補充：如果建立類別的時候，對於把 SQL Server 裡面的型別對應到 C# 裡有困難的話，可以參閱 <a href="https://docs.microsoft.com/zh-tw/dotnet/framework/data/adonet/sql-server-data-type-mappings">SQL Server 資料類型對應</a>（感謝 <a href="https://sunnyday0932.github.io/2020/dotnet-core-webapi%E5%AF%A6%E4%BD%9C%E4%BD%BF%E7%94%A8dapper-1/">Sian</a> 的補充）。至於其他家的 DB，呃，還請大家自己查一下囉。</p>
+</blockquote>
+<p>建立類別的時候要注意，這個類別是用來接收你最後拉回來的資料的。要是你最後打算 Join 兩張表然後各取兩個欄位，這裡的類別就是那各兩個欄位；要是你查詢之後只打算返回其中的幾個欄位，這裡的類別就是那幾個欄位。</p>
+<p>在工作上就見識過同事在查詢一張數百欄位的大型表時，針對該表建立了少數欄位、一半欄位、全部欄位三種情況的類別，搭配了泛型和 Dapper 的轉換來接收不同數量的值，藉此控制不同查詢場景時的傳輸成本。因此，建立類別的時候還是要<strong>依照你最終想要拿到哪些資料下去調整</strong>比較好。</p>
+<p>刻好要用來接資料的類別之後，接著就讓我們來實作 CRUD 的銜接部分吧！</p>
+<h4 id="使用-dapper-實作-crud">使用 Dapper 實作 CRUD</h4>
+<blockquote>
+<p>小提示：你可能需要對 SQL 有基本的認識，至少需要知道對應 CRUD 的 SELECT, INSERT, UPDATE 和 DELETE。不太熟悉的朋友可以參考  <a href="https://www.1keydata.com/tw/sql/sql.html">SQL語法教學</a></p>
+</blockquote>
+<blockquote>
+<p>小提示：這個章節會實際操作 Dapper 去資料表取得資料，如果過程中對 Dapper 的各個 Function 使用上有疑惑的話，可以參閱尼克人生的這篇 <a href="https://dotblogs.com.tw/OldNick/2018/01/15/Dapper#Dapper%20-%20Query">輕量級ORM - Dapper 使用</a>，對各方法都有範例，相當好懂，推薦給大家。</p>
+</blockquote>
+<p>在這個步驟，我打算在方案中新增一個 <code>Repository</code> 資料夾，並在裡面新增 <code>CardRepository.cs</code> 檔案，用來放我們接下來對資料表的操作。</p>
+<p>這邊的資料夾和檔案命名是因為在公司分層習慣了，所以原本使用 MVC 的朋友，可以把檔案或是以下實作的部分新增在代表資料處理的 <code>Models</code> 裡就好了，例如加到 <code>Models/Card.cs</code>，或是放在任何你用來放資料庫連線處理的位置即可，位置並不是本篇記錄的重點。</p>
+<p>現在我們應該會有個空的 Class：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 卡片資料操作
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardRepository</span>
+{
+
+}
+</code></pre></div><p>然後讓我們加上連線字串，我的範例直接使用 Localhost 的 DB，所以如果你也有按照步驟來測試的話，這邊請改成你的連線字串。</p>
+<p>連線字串放好之後，回到我們的 <code>CardRepository</code>，加上放置連線字串的私有常數和建構式：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 連線字串
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span> _connectString = <span style="color:#e6db74">@&#34;Server=(LocalDB)\MSSQLLocalDB;Database=Newbie;Trusted_Connection=True;&#34;</span>;
+</code></pre></div><p>這邊採用直接放私有成員的做法，如果你有多個類別需要用到資料庫連線，可以考慮集中管理連線字串到 appsettings.json 或是 web.config 之類的地方。這邊之所以直接放到私有成員裡寫死，是因為這邊的範例情景相對簡單，先不打算挪出去而模糊焦點 <del>，而且我之後要改成依賴注入的時候也比較好改。</del></p>
+<p>接著就讓我們從查詢全部卡片的方法開始加入吧！我們應該要有一個回傳 卡片串列 的方法（我這邊習慣使用 IEnumerable，比較不熟的朋友用 List 也沒關係）</p>
+<blockquote>
+<p>小提示：過程中看到紅線請不要慌，如果有需要 using 的就請順手 using 一下，例如 <code>Card</code> 的類別、等等會用到的 <code>Dapper</code> 等等。或是像 <code>SqlConnection</code> 沒抓到套件，就 Alt Enter 安裝一下即可。</p>
+</blockquote>
+<blockquote>
+<p>補充：因為 Dapper 對每個資料庫系統所產生的語法會不一樣，所以假如你是使用 MySql 的朋友，這邊的連線請改成使用 <code>MySqlConnection</code></p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 查詢卡片列表
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> IEnumerable&lt;Card&gt; GetList()
+{
+    <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+    {
+        <span style="color:#66d9ef">var</span> result = conn.Query&lt;Card&gt;(<span style="color:#e6db74">&#34;SELECT * FROM Card&#34;</span>);
+        <span style="color:#66d9ef">return</span> result;
+    }
+}
+</code></pre></div><p>就是這麼簡單！</p>
+<p>Dapper 會替實作 IDbConnection 的類別們，也就是我們平常用的連線小幫手們加上擴充方法，讓我們可以方便簡單地使用。</p>
+<p>如果你的 C# 版本大於 8.0 ，using 語句甚至不需要大括弧，如果又不像我喜歡三不五時宣告成變數方便中斷看一下裡面裝什麼，整體就更簡潔了：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 查詢卡片列表
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> IEnumerable&lt;Card&gt; GetList()
+{
+    <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+    <span style="color:#66d9ef">return</span> conn.Query&lt;Card&gt;(<span style="color:#e6db74">&#34;SELECT * FROM Card&#34;</span>);
+}
+</code></pre></div><p>這邊也能看到 Dapper 最常見的使用方式：<strong>當我們查詢的時候，可以使用 <code>Query&lt;T&gt;</code> 方法，並將我們要接收資料的類別放入泛型，再將我們的 SQL 語法做為參數傳入。Dapper 會執行 SQL 並嘗試把查詢結果轉換成我們指定的類別。</strong></p>
+<blockquote>
+<p>補充：Dapper 會去對照資料表的欄位名稱和類別中的欄位名稱，名稱一樣且型別能對應的就會把資料放進去。</p>
+<p>如果遇到兩者有不一樣的，例如資料表欄位開成 <code>card_name</code> 但是類別中的欄位是 <code>Name</code> 這種時候，比較簡單暴力的做法是在 <code>SELECT</code> 的時候用 <code>AS</code> 替欄位命名，或是告訴 Dapper 指定的欄位對照，有這個需求的朋友請參照軟體主廚的這篇 <a href="https://dotblogs.com.tw/supershowwei/2016/08/16/175753">料理佳餚 - Dapper 自定義欄位對應的三種方式</a></p>
+</blockquote>
+<blockquote>
+<p>補充：如果有好奇的朋友也可以嘗試不給 <code>Query&lt;T&gt;</code> 指定型別，這樣回來的就會是 <code>dynamic</code>，但是不太建議這樣用啦，畢竟我們就是打算要享受強型別的好處才這樣做的嘛！何必又回到方法不能用、執行才報錯的時代呢？乖乖建立類別還比較實在。這部分請參見 <a href="https://dotblogs.com.tw/mrkt/2016/06/12/170411">每個查詢的結果都要定義並對映一個類別嗎？（使用 dynamic）</a></p>
+</blockquote>
+<hr>
+<p>事不宜遲，我們接著建立查詢單筆的方法吧：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 查詢卡片
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> Card Get(<span style="color:#66d9ef">int</span> id)
+{
+    <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+    {
+        <span style="color:#66d9ef">var</span> result = conn.QueryFirstOrDefault&lt;Card&gt;(
+            <span style="color:#e6db74">&#34;SELECT TOP 1 * FROM Card Where Id = @id&#34;</span>,
+            <span style="color:#66d9ef">new</span> 
+            { 
+                Id = id,
+            });
+        <span style="color:#66d9ef">return</span> result;
+    }
+}
+</code></pre></div><p>從這段我們可以知道兩件事情：</p>
+<p>除了 <code>Query</code> 之外，<strong>Dapper 還準備了一些針對不同查詢的 <code>Query</code> 方法給大家使用</strong>，例如：</p>
+<ul>
+<li><code>QueryFirst</code> 只取第一筆，如果找不到就報錯</li>
+<li><code>QueryFirstOrDefault</code> 只取第一筆，如果找不到就丟回預設值</li>
+<li><code>QuerySingle</code>，只取一筆，如果找不到或是找到多筆符合的就報錯</li>
+<li><code>QuerySingleOrDefault</code> 只取一筆，如果找不到就丟回預設值，找到多筆符合的就報錯</li>
+</ul>
+<p>除此之外，如果你的架構已經大量使用非同步，Dapper 也都有提供非同步版本的方法使用，例如 <code>QueryAsync</code>，這邊的示範專案還在黑暗時代，就不贅述。</p>
+<p>至於 <code>Query</code> 系列裡面比較特別的應該就是 <code>QueryMultiple</code> 了，它能允許同時執行多段 SQL，例如 <code>SELECT * FROM Card; SELECT TOP 1 * FROM Card;</code> 之類的，並取回一串結果。</p>
+<p>取得之後再逐一用 <code>Read&lt;T&gt;()</code> 的方式來把結果轉換成物件，但由於平常開 Function 會需要考慮<a href="/post/2020/10/oo-10-single-responsibility-principle">單一職責原則</a>的關係，很少接觸到有需要在同個方法執行兩段 SQL 並回傳兩個甚至多個不同物件的狀況，這邊就留給有需要的朋友自己嘗試囉。</p>
+<hr>
+<p>回到我們剛剛開好的查詢卡片方法，第二件事就是我們知道了 <strong><code>Query&lt;T&gt;</code> 系列可以傳入第二個參數，用來告訴 Dapper 這次 SQL 語法會用到的變數</strong>。</p>
+<p>只要丟個物件進去，就算是匿名物件，Dapper 也會幫忙做成 SQL 的參數。有些朋友可能會問：為什麼不直接用 <code>+</code> 的方式或是直接<a href="/post/2020/08/csharp-string-interpolation">字串插值</a> 組到 SQL 裡面就好了呢？</p>
+<p>如果真的有這個問題的話，呃，<code>SQL Injection</code> 先了解一下。</p>
+<blockquote>
+<p>給那些想瞭解又懶得跳出去查的朋友：</p>
+<ul>
+<li><a href="https://medium.com/%E7%A8%8B%E5%BC%8F%E7%8C%BF%E5%90%83%E9%A6%99%E8%95%89/%E6%B7%BA%E8%AB%87%E9%A7%AD%E5%AE%A2%E6%94%BB%E6%93%8A-%E7%B6%B2%E7%AB%99%E5%AE%89%E5%85%A8-%E4%B8%80%E6%AC%A1%E7%9C%8B%E6%87%82-sql-injection-%E7%9A%84%E6%94%BB%E6%93%8A%E5%8E%9F%E7%90%86-b1994fd2392a">網站安全🔒 一次看懂 SQL Injection 的攻擊原理 — 「雍正繼位之謎」</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10189201">攻擊行為－SQL 資料隱碼攻擊 SQL injection</a></li>
+</ul>
+</blockquote>
+<p>簡單來說，為了防範不良分子在 SQL 上「自由發揮」，通常都不會允許直接把傳進來的參數等等直接丟到 SQL 裡面去串起來。</p>
+<p>所以現在比較常見也被認為是最有效的作法是，把參數另外宣告成 SQL 提供的變數，例如 Sql Server 的<a href="https://docs.microsoft.com/zh-tw/sql/t-sql/language-elements/variables-transact-sql?view=sql-server-ver15">變數</a>。</p>
+<p>如此一來，資料庫就會先解析完 SQL 語法，才嘗試把變數「作為字串」塞進去指定的位置。藉此來防範 SQL Injection 的問題。</p>
+<p>同樣是 <code>SELECT * FROM Card WHERE id = {id};</code>，然後傳入一樣是 <code>1; DROP TABLE Card</code>;</p>
+<ul>
+<li>直接銜接：<code>SELECT * FROM Card WHERE id = 1; DROP TABLE Card;</code></li>
+<li>作為字串：<code>SELECT * FROM Card WHERE id = &quot;1; DROP TABLE Card&quot;;</code></li>
+</ul>
+<p>這樣子的差異應該就能理解為什麼參數化查詢能夠防範 SQL Injection 了，因為通通給你包起來。除此之外，參數化查詢還有能夠重複使用執行計畫提升效能、好維護等等好處，真的是屌打字串拼接黨。</p>
+<p>回到我們剛剛開好的查詢卡片方法，在這邊我們必須用卡片 ID 來查詢卡片，所以必須將 ID 丟進去。那就可以看到我們的 SQL 條件有加上 <code>Where Id = @Id</code>，告訴 SQL 我們有一個 <code>@Id</code> 變數，接著我們再把 ID 包成物件丟給 Dapper 請他幫忙處理一下。</p>
+<p>不過我個人比較不喜歡把東西都集中一坨在方法的呼叫上，所以我會把 SQL 和參數都拆分出來，並使用 <strong>DynamicParameters</strong> 來建立參數，如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 查詢卡片
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> Card Get(<span style="color:#66d9ef">int</span> id)
+{
+    <span style="color:#66d9ef">var</span> sql =
+    <span style="color:#e6db74">@&#34;
+</span><span style="color:#e6db74">        SELECT * 
+</span><span style="color:#e6db74">        FROM Card 
+</span><span style="color:#e6db74">        Where Id = @id
+</span><span style="color:#e6db74">    &#34;</span>;
+
+    <span style="color:#66d9ef">var</span> parameters = <span style="color:#66d9ef">new</span> DynamicParameters();
+    parameters.Add(<span style="color:#e6db74">&#34;Id&#34;</span>, id);
+
+    <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+    {
+        <span style="color:#66d9ef">var</span> result = conn.QueryFirstOrDefault&lt;Card&gt;(sql, parameters);
+        <span style="color:#66d9ef">return</span> result;
+    }
+}
+</code></pre></div><p>這樣切出來做成變數也比較整潔美觀好清理，如果有需要按照狀況增加 SQL 語法或參數的時候，也比較方便。例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 假設查詢卡片列表的時候，為了知道這回合能用的卡片有卡些
+</span><span style="color:#75715e">// 需要指定卡片的花費必須低於多少，所以多了一個參數 int? cost 的場合：
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">if</span> (cost != <span style="color:#66d9ef">null</span> &amp;&amp; cost &gt; <span style="color:#ae81ff">0</span>)
+{
+    sql += <span style="color:#e6db74">&#34; And Cost &lt;= @Cost &#34;</span>
+    parameters.Add(<span style="color:#e6db74">&#34;Cost&#34;</span>, cost);
+}
+</code></pre></div><p>當然上面這段只是示範，實務上在附加條件和參數的時候也會遇到…</p>
+<ul>
+<li>因為不想判斷前面有沒有 <code>WHERE</code> 語句，所以把所有條件先放到陣列中，最後再用 <code>String.Join</code> 以 <code>AND</code> 連接起來的</li>
+<li>同上，但比較古老的時代會使用 <code>WHERE 1 = 1</code> 然後再接 <code>AND</code> 串條件</li>
+<li>由於參數太多，因為效能上的考量，所以不用 <code>+=</code> 來連接 SQL 語句，而是使用 <code>StringBuilder</code> 的</li>
+<li>把 SQL 語法內共用的部分拆出去做成 Private 以提高程式碼共用程度，減少重複贅詞的</li>
+<li>直接把整個 SQL 語法拆出去放別的地方的</li>
+</ul>
+<p>等等各種因應狀況所採取的手段，各位在處理這部分的時候，如果不是自己新建的專案，還請觀察一下團隊的用法再自行調整。</p>
+<hr>
+<p>除此之外，這邊還有一個小細節需要補充：<strong>當我們在使用 <code>DynamicParameters</code>，把變數丟進去時，Dapper 會自動幫我們做型別上的轉換</strong>。</p>
+<p>BUT！就是這個 BUT！對於一些 <code>int</code> 啦、<code>bool</code> 的是不會有什麼問題，但一些比較難對應得到的型別，Dapper 就會嘗試用比較穩的打法，例如 <code>String</code> 就會變成 <code>nvarchar(4000)</code> 之類的。</p>
+<p>但是，型別不同對 SQL 的執行計畫也會造成影響，甚至會造成效能變差。針對這個問題，我們可以在加入參數的時候，一併<strong>告訴 Dapper 我們指定的型別</strong>。</p>
+<p>例如前述的 <code>parameters.Add(&quot;Id&quot;, id)</code>，可以給第三個參數告訴它 DBType，變成 <code>parameters.Add(&quot;Id&quot;, id, System.Data.DbType.Int32);</code></p>
+<p>關於這個型別調整的部分，有興趣的朋友可以閱讀軟體主廚的這篇：<a href="https://dotblogs.com.tw/supershowwei/2019/08/12/232213">Dapper 用起來很友善，但是預設的參數型別對執行計劃不太友善</a></p>
+<p>裡面針對型別影響執行計畫有進行測試，並且提供了針對 DbString 更方便使用的 String 擴充方法，我們團隊也有將其應用在專案上，推薦大家可以瞭解一下。</p>
+<hr>
+<p>現在我們已經解決了查詢，接著讓我們來處理一下新增卡片和修改卡片的部分吧！</p>
+<p>首先先讓我們回到上篇的 <code>CardParameter</code>，把這次多的欄位也給補上。如果是這篇才加入的朋友，請自己捏一個 <code>CardParameter.cs</code> 出來，我們在新增和修改的時候會拿來當作參數使用。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 卡片參數
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardParameter</span>
+{
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 卡片名稱
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 卡片描述
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 攻擊力
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 血量
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 花費
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+</code></pre></div><p>如果在業務上有些需求導致新增和修改的參數不一樣的朋友（例如有些欄位不開放修改），也可以考慮拆分成兩個 Parameter 去面對不同的場景。</p>
+<p>補上之後讓我們回到 <code>CardRepository</code>，利用 SQL 的 <code>INSERT</code> 和 <code>UPDATE</code> 語法來把 <code>Parameter</code> 的內容給塞進去吧：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 新增卡片
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;參數&lt;/param&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Create(CardParameter parameter)
+{
+    <span style="color:#66d9ef">var</span> sql =
+    <span style="color:#e6db74">@&#34;
+</span><span style="color:#e6db74">        INSERT INTO Card 
+</span><span style="color:#e6db74">        (
+</span><span style="color:#e6db74">            [Name]
+</span><span style="color:#e6db74">           ,[Description]
+</span><span style="color:#e6db74">           ,[Attack]
+</span><span style="color:#e6db74">           ,[Health]
+</span><span style="color:#e6db74">           ,[Cost]
+</span><span style="color:#e6db74">        ) 
+</span><span style="color:#e6db74">        VALUES 
+</span><span style="color:#e6db74">        (
+</span><span style="color:#e6db74">            @Name
+</span><span style="color:#e6db74">           ,@Description
+</span><span style="color:#e6db74">           ,@Attack
+</span><span style="color:#e6db74">           ,@Health
+</span><span style="color:#e6db74">           ,@Cost
+</span><span style="color:#e6db74">        );
+</span><span style="color:#e6db74">        
+</span><span style="color:#e6db74">        SELECT @@IDENTITY;
+</span><span style="color:#e6db74">    &#34;</span>;
+
+    <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+    {
+        <span style="color:#66d9ef">var</span> result = conn.QueryFirstOrDefault&lt;<span style="color:#66d9ef">int</span>&gt;(sql, parameter);
+        <span style="color:#66d9ef">return</span> result;
+    }
+}
+
+<span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 修改卡片
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
+</span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;參數&lt;/param&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Update(<span style="color:#66d9ef">int</span> id, CardParameter parameter)
+{
+    <span style="color:#66d9ef">var</span> sql =
+    <span style="color:#e6db74">@&#34;
+</span><span style="color:#e6db74">        UPDATE Card
+</span><span style="color:#e6db74">        SET 
+</span><span style="color:#e6db74">             [Name] = @Name
+</span><span style="color:#e6db74">            ,[Description] = @Description
+</span><span style="color:#e6db74">            ,[Attack] = @Attack
+</span><span style="color:#e6db74">            ,[Health] = @Health
+</span><span style="color:#e6db74">            ,[Cost] = @Cost
+</span><span style="color:#e6db74">        WHERE 
+</span><span style="color:#e6db74">            Where Id = @id
+</span><span style="color:#e6db74">    &#34;</span>;
+
+    <span style="color:#66d9ef">var</span> parameters = <span style="color:#66d9ef">new</span> DynamicParameters(parameter);
+    parameters.Add(<span style="color:#e6db74">&#34;Id&#34;</span>, id, System.Data.DbType.Int32);
+
+    <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+    {
+        <span style="color:#66d9ef">var</span> result = conn.Execute(sql, parameters);
+        <span style="color:#66d9ef">return</span> result &gt; <span style="color:#ae81ff">0</span>;
+    }
+}
+</code></pre></div><p>這邊可以注意到，<strong>除了查詢用的 <code>Query</code> 以外，Dapper 也提供了執行指令用的 <code>Execute</code></strong>。在一些不需要回傳東西的時候，例如更新和刪除，又或是單純呼叫預存程序（SP, Stored Procedure）的時候相當方便，而且當然也有提供非同步的版本可以使用。</p>
+<p>而最強大的地方是，<strong>Dapper 支援多筆新增和更新</strong>。例如前面我們的新增卡片 <code>Create(CardParameter parameter)</code> 裡面：</p>
+<p>如果我們是直接改成丟一整串的新卡片進來，也就是 <code>Create(IEnumerable&lt;CardParameter&gt; parameters)</code> 然後呼叫 Dapper 來跑 <code>conn.Execute(sql, parameters)</code> 是可以新增多筆卡片的，更新也是同樣的道理。</p>
+<p>同時也因為可以執行多個 SQL 語句、新增多筆資料，<strong>Dapper 也提供了交易（Transaction）</strong>，只需要 <code>using(var transaction = conn.BeginTransaction())</code>，完成後 <code>transaction.Commit()</code> 就可以囉。不過這些部份我們暫時不會用到，有興趣的朋友可以再自己嘗試看看。</p>
+<blockquote>
+<p>補充：由於我個人習慣新增資料之後，用 <code>@@IDENTITY</code> 或 <code>LAST_INSERT_ID()</code> 這類語法把該筆資料的 ID 拉回來方便後續檢查和使用，所以在 <code>Create()</code> 是使用 <code>Query&lt;int&gt;</code> 的方式來取得 ID。沒有這類需求的朋友，也可以像 <code>Update()</code> 的部分一樣用 <code>Execute</code> 就可以了。</p>
+</blockquote>
+<p>到這邊大家應該已經大致了解 Dapper 的使用方式了，讓我們把最後的刪除卡片補上去吧：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 刪除卡片
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Delete(<span style="color:#66d9ef">int</span> id)
+{
+    <span style="color:#66d9ef">var</span> sql =
+    <span style="color:#e6db74">@&#34;
+</span><span style="color:#e6db74">        DELETE FROM Card
+</span><span style="color:#e6db74">        WHERE Id = @Id
+</span><span style="color:#e6db74">    &#34;</span>;
+
+    <span style="color:#66d9ef">var</span> parameters = <span style="color:#66d9ef">new</span> DynamicParameters();
+    parameters.Add(<span style="color:#e6db74">&#34;Id&#34;</span>, id, System.Data.DbType.Int32);
+
+    <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+    {
+        <span style="color:#66d9ef">var</span> result = conn.Execute(sql, parameters);
+    }
+}
+</code></pre></div><p>到這邊我們就做完 CRUD 一套囉！現在的 <code>CardRepository</code> 應該會長得像這樣：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardRepository</span>
+{
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 連線字串
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span> _connectString = 
+    <span style="color:#e6db74">@&#34;Server=(LocalDB)\MSSQLLocalDB;Database=Newbie;Trusted_Connection=True;&#34;</span>;
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片列表
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;Card&gt; GetList()
+    {
+        <span style="color:#66d9ef">var</span> sql = <span style="color:#e6db74">&#34;SELECT * FROM Card&#34;</span>;
+
+        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+        {
+            <span style="color:#66d9ef">var</span> result = conn.Query&lt;Card&gt;(sql);
+            <span style="color:#66d9ef">return</span> result;
+        }
+    }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> Card Get(<span style="color:#66d9ef">int</span> id)
+    {
+        <span style="color:#66d9ef">var</span> sql =
+        <span style="color:#e6db74">@&#34;
+</span><span style="color:#e6db74">            SELECT * 
+</span><span style="color:#e6db74">            FROM Card 
+</span><span style="color:#e6db74">            Where Id = @id
+</span><span style="color:#e6db74">        &#34;</span>;
+
+        <span style="color:#66d9ef">var</span> parameters = <span style="color:#66d9ef">new</span> DynamicParameters();
+        parameters.Add(<span style="color:#e6db74">&#34;Id&#34;</span>, id, System.Data.DbType.Int32);
+
+        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+        {
+            <span style="color:#66d9ef">var</span> result = conn.QueryFirstOrDefault&lt;Card&gt;(sql, parameters);
+            <span style="color:#66d9ef">return</span> result;
+        }
+    }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 新增卡片
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;參數&lt;/param&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Create(CardParameter parameter)
+    {
+        <span style="color:#66d9ef">var</span> sql =
+        <span style="color:#e6db74">@&#34;
+</span><span style="color:#e6db74">            INSERT INTO Card 
+</span><span style="color:#e6db74">            (
+</span><span style="color:#e6db74">                [Name]
+</span><span style="color:#e6db74">              ,[Description]
+</span><span style="color:#e6db74">              ,[Attack]
+</span><span style="color:#e6db74">              ,[Health]
+</span><span style="color:#e6db74">              ,[Cost]
+</span><span style="color:#e6db74">            ) 
+</span><span style="color:#e6db74">            VALUES 
+</span><span style="color:#e6db74">            (
+</span><span style="color:#e6db74">                @Name
+</span><span style="color:#e6db74">                ,@Description
+</span><span style="color:#e6db74">                ,@Attack
+</span><span style="color:#e6db74">                ,@Health
+</span><span style="color:#e6db74">                ,@Cost
+</span><span style="color:#e6db74">            );
+</span><span style="color:#e6db74">            
+</span><span style="color:#e6db74">            SELECT @@IDENTITY;
+</span><span style="color:#e6db74">        &#34;</span>;
+
+        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+        {
+            <span style="color:#66d9ef">var</span> result = conn.QueryFirstOrDefault&lt;<span style="color:#66d9ef">int</span>&gt;(sql, parameter);
+            <span style="color:#66d9ef">return</span> result;
+        }
+    }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 修改卡片
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;參數&lt;/param&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Update(<span style="color:#66d9ef">int</span> id, CardParameter parameter)
+    {
+        <span style="color:#66d9ef">var</span> sql =
+        <span style="color:#e6db74">@&#34;
+</span><span style="color:#e6db74">            UPDATE Card
+</span><span style="color:#e6db74">            SET 
+</span><span style="color:#e6db74">                [Name] = @Name
+</span><span style="color:#e6db74">                ,[Description] = @Description
+</span><span style="color:#e6db74">                ,[Attack] = @Attack
+</span><span style="color:#e6db74">                ,[Health] = @Health
+</span><span style="color:#e6db74">                ,[Cost] = @Cost
+</span><span style="color:#e6db74">            WHERE 
+</span><span style="color:#e6db74">                Id = @id
+</span><span style="color:#e6db74">        &#34;</span>;
+
+        <span style="color:#66d9ef">var</span> parameters = <span style="color:#66d9ef">new</span> DynamicParameters(parameter);
+        parameters.Add(<span style="color:#e6db74">&#34;Id&#34;</span>, id, System.Data.DbType.Int32);
+
+        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+        {
+            <span style="color:#66d9ef">var</span> result = conn.Execute(sql, parameters);
+            <span style="color:#66d9ef">return</span> result &gt; <span style="color:#ae81ff">0</span>;
+        }
+    }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 刪除卡片
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Delete(<span style="color:#66d9ef">int</span> id)
+    {
+        <span style="color:#66d9ef">var</span> sql =
+        <span style="color:#e6db74">@&#34;
+</span><span style="color:#e6db74">            DELETE FROM Card
+</span><span style="color:#e6db74">            WHERE Id = @Id
+</span><span style="color:#e6db74">        &#34;</span>;
+
+        <span style="color:#66d9ef">var</span> parameters = <span style="color:#66d9ef">new</span> DynamicParameters();
+        parameters.Add(<span style="color:#e6db74">&#34;Id&#34;</span>, id, System.Data.DbType.Int32);
+
+        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+        {
+            <span style="color:#66d9ef">var</span> result = conn.Execute(sql, parameters);
+        }
+    }
+}
+</code></pre></div><h4 id="對接與測試">對接與測試</h4>
+<p>接著就讓我們回到 <code>CardController</code> 把這邊的操作和 API 對外的開口給銜接起來。</p>
+<p>首先先把 <code>CardRepository</code> 宣告成私有成員，取代掉我們原本用來暫存卡片資料的 <code>private static List&lt;Card&gt; _cards</code>。並且在建構式進行賦值（<del>一樣是打算讓之後改成注入的時候比較好改XD</del>）</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 卡片資料操作
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> CardRepository _cardRepository;
+
+<span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 建構式
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> CardController()
+{
+    <span style="color:#66d9ef">this</span>._cardRepository = <span style="color:#66d9ef">new</span> CardRepository();
+}
+</code></pre></div><p>後續其實就是把 <code>_cards</code> 給砍掉後，並且把各個操作改成呼叫 <code>CardRepository</code> 對應的方法，如果是這篇才加入的朋友，也就直接建立各個方法去對接 <code>CardRepository</code> 即可。</p>
+<p>過程就不再贅述。修改後應該會長這個樣子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
+<span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
+{
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 卡片資料操作
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> CardRepository _cardRepository;
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 建構式
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> CardController()
+    {
+        <span style="color:#66d9ef">this</span>._cardRepository = <span style="color:#66d9ef">new</span> CardRepository();
+    }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片列表
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpGet]</span>
+    <span style="color:#66d9ef">public</span> IEnumerable&lt;Card&gt; GetList()
+    {
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>._cardRepository.GetList();
+    }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpGet]</span>
+<span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
+    <span style="color:#66d9ef">public</span> Card Get([FromRoute] <span style="color:#66d9ef">int</span> id)
+    {
+        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._cardRepository.Get(id);
+        <span style="color:#66d9ef">if</span> (result <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
+        {
+            Response.StatusCode = <span style="color:#ae81ff">404</span>;
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span>;
+        }
+        <span style="color:#66d9ef">return</span> result;
+    }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 新增卡片
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpPost]</span>
+    <span style="color:#66d9ef">public</span> IActionResult Insert([FromBody] CardParameter parameter)
+    {
+        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._cardRepository.Create(parameter);
+        <span style="color:#66d9ef">if</span> (result &gt; <span style="color:#ae81ff">0</span>)
+        {
+            <span style="color:#66d9ef">return</span> Ok();
+        }
+        <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+    }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 更新卡片
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpPut]</span>
+<span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
+    <span style="color:#66d9ef">public</span> IActionResult Update(
+<span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id,
+<span style="color:#a6e22e">        [FromBody]</span> CardParameter parameter)
+    {
+        <span style="color:#66d9ef">var</span> targetCard = <span style="color:#66d9ef">this</span>._cardRepository.Get(id);
+        <span style="color:#66d9ef">if</span> (targetCard <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
+        {
+            <span style="color:#66d9ef">return</span> NotFound();
+        }
+
+        <span style="color:#66d9ef">var</span> isUpdateSuccess = <span style="color:#66d9ef">this</span>._cardRepository.Update(id, parameter);
+        <span style="color:#66d9ef">if</span> (isUpdateSuccess)
+        {
+            <span style="color:#66d9ef">return</span> Ok();
+        }
+        <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+    }
+
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 刪除卡片
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpDelete]</span>
+<span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
+    <span style="color:#66d9ef">public</span> IActionResult Delete([FromRoute] <span style="color:#66d9ef">int</span> id)
+    {
+        <span style="color:#66d9ef">this</span>._cardRepository.Delete(id);
+        <span style="color:#66d9ef">return</span> Ok();
+    }
+}
+</code></pre></div><p>接著就和上一篇一樣，讓我們按照 新增 → 查詢列表 → 修改 → 查詢單筆 → 刪除 的順序來跑一次看看吧！</p>
+<p>首先讓我們新增一張卡片（記得 URL 和 Port 要改成你啟動的版本呦）：</p>
+<pre><code>Invoke-RestMethod https://localhost:44304/card `
+ -Method 'POST' `
+ -Headers @{ &quot;Content-Type&quot; = &quot;application/json&quot;; } `
+ -Body &quot;{`&quot;name`&quot;: `&quot;mycard`&quot;,`&quot;description`&quot;: `&quot;sample card`&quot;, `&quot;attack`&quot;: 3, `&quot;health`&quot;: 4, `&quot;cost`&quot;: 2 }&quot;
+</code></pre><p><img src="https://i.imgur.com/oQOv7VN.png" alt=""></p>
+<p>然後讓我們在 SSMS（SQL Server Management Studio）確認一下：</p>
+<p><img src="https://i.imgur.com/CuxT7jB.png" alt=""></p>
+<p>接著讓我們試試查詢：</p>
+<pre><code>Invoke-RestMethod https://localhost:44304/card | ConvertTo-Json
+</code></pre><p><img src="https://i.imgur.com/XmKRKsm.png" alt=""></p>
+<p>既然查詢成功了，就針對這筆來試試看修改：</p>
+<pre><code>Invoke-RestMethod https://localhost:44304/card/1 `
+ -Method 'PUT' `
+ -Headers @{ &quot;Content-Type&quot; = &quot;application/json&quot;; } `
+ -Body &quot;{`&quot;name`&quot;: `&quot;ourcard`&quot;,`&quot;description`&quot;: `&quot;sample card`&quot;, `&quot;attack`&quot;: 4, `&quot;health`&quot;: 5, `&quot;cost`&quot;: 3}&quot;
+</code></pre><p><img src="https://i.imgur.com/Xo5JFyP.png" alt=""></p>
+<p>一樣在 SSMS 確認一下：</p>
+<p><img src="https://i.imgur.com/SxsQdc2.png" alt=""></p>
+<p>看來我們有成功更新到，讓我們針對這筆來查詢看看：</p>
+<pre><code>Invoke-RestMethod https://localhost:44304/card/1 | ConvertTo-Json
+</code></pre><p><img src="https://i.imgur.com/iieIxee.png" alt=""></p>
+<p>查詢出來的也的確是變動過的結果了。最後，讓我們把這張卡片刪除，回歸乾淨吧！</p>
+<pre><code>Invoke-RestMethod https://localhost:44304/card/1 `
+ -Method 'DELETE'
+</code></pre><p><img src="https://i.imgur.com/WcNVRKA.png" alt=""></p>
+<p>確認資料表的卡片已經消失：</p>
+<p><img src="https://i.imgur.com/a5toUnV.png" alt=""></p>
+<p>到這邊我們就宣告完工啦！</p>
+<h3 id="小結">小結</h3>
+<p>我們把前篇的 Web API 服務利用 Dapper 連接到 SQL Server，並成功完成了基本的 CRUD 功能。</p>
+<p>這邊總結一下這篇的一些小要點：</p>
+<ul>
+<li><code>DataTable</code> 等弱型別在使用上會有偵錯困難、必須額外轉型等問題；而直接對映的 <code>ORM</code> 又常有過於肥大、自動產生的語法效能可能不佳的問題</li>
+<li><strong><code>Dapper</code> 是一款輕量級的 ORM</strong>，它具有以下特色：
+<ul>
+<li><strong>簡單</strong>：能幫我們將資料表欄位對應到類別欄位，讓我們查詢的資料能簡單直接地轉換成物件，享受強型別的好處</li>
+<li><strong>輕便</strong>：比起其他 ORM，相當輕便，引入套件後就能快速開始使用，效能也相當不錯</li>
+<li><strong>彈性</strong>：可以自己撰寫 SQL 語法，自己進行效能的優化與調整，相對 ORM 提升了自由度和彈性，但也要自己對語法負責</li>
+</ul>
+</li>
+<li>使用 <strong><code>Query</code> 系列的方法來進行資料的查詢</strong>
+<ul>
+<li>提供了 <code>QueryFirstOrDefault</code> 等方法來進一步調整查詢方式（<a href="https://dotblogs.com.tw/OldNick/2018/01/15/Dapper#Dapper%20-%20Query">參閱</a>）</li>
+<li>提供了 <code>Async</code> 結尾的非同步方法</li>
+<li>在 <code>Query&lt;T&gt;</code> 中指定對應資料表欄位的類別來讓 Dapper 進行轉換</li>
+<li>建立對應資料表欄位的類別時，可以用 Linqpad 來節省時間（<a href="https://dotblogs.com.tw/mrkt/2016/06/14/190618">參閱</a>）</li>
+</ul>
+</li>
+<li>使用 <strong><code>Execute</code> 系列的方法來進行語法的執行</strong>
+<ul>
+<li>同樣提供了 <code>Async</code> 結尾的非同步方法</li>
+</ul>
+</li>
+<li>使用 <strong><code>DynamicParameters</code> 來建立參數集合</strong>
+<ul>
+<li>藉由參數化查詢迴避 SQL Injection 攻擊</li>
+<li>預設的型別轉換可能會有效能問題，在使用 DBString 等難以對應的型別時，可以自訂型別轉換來提升效能（<a href="https://dotblogs.com.tw/supershowwei/2019/08/12/232213">參閱</a>）</li>
+<li>允許傳遞多組參數來執行同一段 SQL 語法，藉此可以做到多筆新增、多筆更新的效果</li>
+</ul>
+</li>
+<li>提供了 <code>BeginTransaction</code> 來開啟一段 SQL Transaction</li>
+<li>針對不同的查詢場景、邏輯的複雜程度等等，我們應該評估後再決定使用傳統 ORM 或是 Dapper 或其他方式來操作資料庫（<a href="https://blog.darkthread.net/blog/linq-or-direct-sql/">參閱</a>）</li>
+</ul>
+<p>今天就到這邊告一段落。現在這組 Web API 已經是常見的「連接到資料庫進行基本操作」的範本了，接下來我們會針對這組 Web API 服務進行各式各樣的 <del>擺弄</del> 改造。</p>
+<p>那麼，我們下次見～</p>
+<h3 id="本系列文章">本系列文章</h3>
+<ul>
+<li><a href="/post/2021/04/newbie-0-menu">菜雞新訓記 (0): 目錄</a></li>
+<li><a href="/post/2021/04/newbie-1-hello-git">菜雞新訓記 (1): Git 入門這樣做</a></li>
+<li><a href="/post/2021/05/newbie-2-webapi">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧<br/>（上）認識 Api 與建置 Web Api 服務</a></li>
+<li><a href="/post/2021/05/newbie-3-dapper">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧<br/>（下）使用 Dapper 連線到資料庫</a></li>
+</ul>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2021/05/newbie-2-webapi/">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a></li>
+        
+        <li><a href="/post/2021/04/newbie-1-hello-git/">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a></li>
+        
+        <li><a href="/post/2021/04/newbie-0-menu/">菜雞新訓記 (0): 前言</a></li>
+        
+        <li><a href="/post/2021/01/oo-ex1-end2020/">菜雞與物件導向 (Ex1): 小結</a></li>
+        
+        <li><a href="/post/2020/12/oo-15-least-knowledge-principle/">菜雞與物件導向 (15): 最少知識原則</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/newbieguide">NewbieGuide</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/dotnet">dotnet</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/csharp">csharp</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/api">api</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/dapper">dapper</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                        <hr />
+<p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2021%2f05%2fnewbie-3-dapper%2f" width="100%" frameborder=0></iframe>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">系列文</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E6%88%91%E8%A6%81%E8%A8%82%E4%BE%BF%E7%95%B6/">我要訂便當 (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (4)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/05/visual-studio-split-window-in-one-file/" title="Visual Studio: 在同一個檔案分割視窗">Visual Studio: 在同一個檔案分割視窗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/" title="菜雞新訓記 (1): 使用 Git 來進行版本控制吧">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/04/newbie-0-menu/" title="菜雞新訓記 (0): 前言">菜雞新訓記 (0): 前言</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/03/sekiro-darksouls3-clear/" title="隻狼、黑暗靈魂３　白金！">隻狼、黑暗靈魂３　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/03/visual-studio-bookmark/" title="Visual Studio: 書籤 (bookmarks)">Visual Studio: 書籤 (bookmarks)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/01/oo-ex1-end2020/" title="菜雞與物件導向 (Ex1): 小結">菜雞與物件導向 (Ex1): 小結</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/12/oo-15-least-knowledge-principle/" title="菜雞與物件導向 (15): 最少知識原則">菜雞與物件導向 (15): 最少知識原則</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle/" title="菜雞與物件導向 (14): 依賴反轉原則">菜雞與物件導向 (14): 依賴反轉原則</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/bug/">bug (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (16)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/life/">life (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (17)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (47)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/api/">api</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/bug/">bug</a>
+    
+    <a href="https://igouist.github.io/tags/chrome/">chrome</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/dapper/">dapper</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/game/">game</a>
+    
+    <a href="https://igouist.github.io/tags/git/">git</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/life/">life</a>
+    
+    <a href="https://igouist.github.io/tags/linux/">linux</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">蹭一下</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://kevintsengtw.blogspot.com/" title="mrkt">mrkt 的程式學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://raychiutw.github.io/" title="ray">Ray&#39;s Notes</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">小東西</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+
+    <section class="widget">
+    <h3 class="widget-title">放個廣告加減賺</h3>
+    <ul class="widget-list">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-2119949858103459"
+            data-ad-slot="9031038367"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </ul>
+</section>
+
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        
+        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+</body>
+</html>

@@ -103,6 +103,57 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2021-5-9,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/kOpRPTm.png" alt=""></p>
+<p>這是俺整理公司新訓內容的第三篇文章，目標是<strong>簡單地使用 Dapper 連線到資料庫並完成 CRUD 的功能</strong>。</p>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80%E5%9F%BA%E6%9C%AC%E8%A7%80%E5%BF%B5">前言、基本觀念</a>
+<ul>
+<li><a href="#%E9%97%9C%E6%96%BC%E5%BC%B1%E5%9E%8B%E5%88%A5%E8%88%87%E5%BC%B7%E5%9E%8B%E5%88%A5">關於弱型別與強型別</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC%E7%89%A9%E4%BB%B6%E9%97%9C%E4%BF%82%E5%B0%8D%E6%98%A0orm">關於物件關係對映（ORM）</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC-dapper">關於 Dapper</a></li>
+</ul>
+</li>
+<li><a href="#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a>
+<ul>
+<li><a href="#%E7%92%B0%E5%A2%83%E6%BA%96%E5%82%99%E5%BB%BA%E7%AB%8B%E8%B3%87%E6%96%99%E8%A1%A8%E5%AE%89%E8%A3%9D-dapper">環境準備（建立資料表、安裝 Dapper）</a></li>
+<li><a href="#%E5%BB%BA%E7%AB%8B%E5%B0%8D%E6%87%89%E8%B3%87%E6%96%99%E8%A1%A8%E7%9A%84%E9%A1%9E%E5%88%A5">建立對應資料表的類別</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-dapper-%E5%AF%A6%E4%BD%9C-crud">使用 Dapper 實作 CRUD</a></li>
+<li><a href="#%E5%B0%8D%E6%8E%A5%E8%88%87%E6%B8%AC%E8%A9%A6">對接與測試</a></li>
+</ul>
+</li>
+<li><a href="#%E5%B0%8F%E7%B5%90">小結</a></li>
+<li><a href="#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0">本系列文章</a></li>
+</ul>
+<p>接續<a href="/post/2021/05/newbie-2-webapi">上一篇</a>的進度，我們接著要來連線到資料庫中完成我們的 Web Api 的 CRUD 範例。因為從新訓時期到現在工作團隊作業上主要都是使用 Dapper 來做連線資料庫的工作，這邊就直接用 Dapper 來推進吧！</p>
+<p>Dapper 有多好用呢？它輕量、它簡單、它快速。總之先把大神們的介紹文直接拿來鎮樓：</p>
+<ul>
+<li><a href="https://blog.darkthread.net/blog/dapper/">短小精悍的.NET ORM神器 &ndash; Dapper - 黑暗執行緒</a></li>
+<li><a href="https://dotblogs.com.tw/mrkt/2016/06/10/153606">另一種資料存取對映處理方式的選擇 - Dapper - mrkt 的程式學習筆記</a></li>
+<li><a href="https://www.huanlintalk.com/2014/03/a-micro-orm-dapper.html">好用的微型 ORM：Dapper - Huanlin 學習筆記</a></li>
+</ul>
+<p>那麼按照慣例，我們先來 <del>吹捧今天的主角</del> 說明一點簡單的前因後果吧。想直接實作的朋友，可以跳到<a href="#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a>的小節呦。</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a>
                                     </h1>
                                 </header>
@@ -494,34 +545,6 @@ J S P C
                             </article>
                             <hr color="#D9D9D9" />
                         
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2019/12/aspnet-connect-db/">Asp.net MVC: 連線資料庫、簡單實作 CRUD</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2019-12-9,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <p>在教學時直接使用 EF 對資料庫跑繫結的方式產生各頁面，但得到了「點一點東西就跑出來了搞不懂呀」的回饋，心想有道理。因此從頭開始實作一遍，並記錄下來。<s>（雖然做完還是覺得，直接用 EF 跑的話果然比較安全方便啊）</s></p>
-<blockquote>
-<p>目標：<strong>實作一個 MVC 架構，具資料庫基本操作功能的網站</strong>，其中包含連線至資料庫的 model、對其進行調用的 controller 以及顯示的 view。</p>
-</blockquote>
-<p>註：本文預設已在本地電腦上安裝了 <a href="https://www.microsoft.com/zh-tw/sql-server/sql-server-editions-express">SQL Server</a>，並且建立了測試用的資料庫 Test 及表 card，詳情會在文章內述。另外，由於在寫這邊的時候是為了練習手動從編碼開始嘗試連線，故將不使用 <a href="https://docs.microsoft.com/zh-tw/aspnet/mvc/overview/getting-started/getting-started-with-ef-using-mvc/creating-an-entity-framework-data-model-for-an-asp-net-mvc-application">EF 連線產生 Edmx</a> 的方式，而是直接手工編寫程式碼進行操作。</p>
-<p>另外，關於直接從資料表自動產生可操作的頁面，亦即使用 Entity Framework 做資料繫結的方式，請見 <a href="/post/2019/12/aspnet-connect-db-ef/">Asp.net MVC 筆記：Entity Framework 連線資料庫</a></p>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2019/12/aspnet-connect-db/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
                     
 
                     
@@ -572,7 +595,7 @@ J S P C
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (3)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (4)</a>
     </li>
     
     <li>
@@ -585,6 +608,10 @@ J S P C
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a>
@@ -622,10 +649,6 @@ J S P C
         <a href="https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle/" title="菜雞與物件導向 (14): 依賴反轉原則">菜雞與物件導向 (14): 依賴反轉原則</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2020/12/7_taskbar/" title="7&#43; Taskbar Tweaker —— 簡單方便的 Windows 工作列調整工具">7&#43; Taskbar Tweaker —— 簡單方便的 Windows 工作列調整工具</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -648,7 +671,7 @@ J S P C
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (15)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (16)</a>
     </li>
     
     <li>
@@ -709,6 +732,8 @@ J S P C
     <a href="https://igouist.github.io/tags/csharp/">csharp</a>
     
     <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/dapper/">dapper</a>
     
     <a href="https://igouist.github.io/tags/database/">database</a>
     
