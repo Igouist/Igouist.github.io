@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-92586970-4"></script>
+    <script async>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-92586970-4');
+    </script>
+
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧 - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2021-05-16T21:56:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2021-05-16T21:56:00&#43;08:00">
+        
+    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="description" content="這是俺整理公司新訓內容的第四篇文章，目標是簡單地使用 Swagger 來自動產生簡單好看可測試的 API 文件，主要使用 Swashbuckle，並說明了註冊服務、產生XML檔案、使用SwaggerDoc等技巧">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/post/2021/05/newbie-4-swagger/">
+    <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link defer rel="stylesheet" href="/css/normalize.css">
+    
+        <link defer rel="stylesheet" href="/css/prism.css">
+    
+    <link defer rel="stylesheet" href="/css/style.css">
+    <script async type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    
+    <script data-ad-client="ca-pub-2119949858103459" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script async>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "[map[]]",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp-and-dotnet/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2021-5-16,
+                        </date>
+                        
+                        <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+                        <div class="post-content">
+                            <p><img src="https://i.imgur.com/TnzhZaW.png" alt=""></p>
+<p>這是俺整理公司新訓內容的第四篇文章，目標是<strong>簡單地使用 Swagger 工具來自動產生可互動的 API 文件</strong>。</p>
+<ul>
+<li><a href="#api-%E6%96%87%E4%BB%B6%E8%88%87-swagger">API 文件與 Swagger</a></li>
+<li><a href="#%E5%AE%89%E8%A3%9D-swashbuckle-%E5%8F%8A%E5%95%9F%E7%94%A8-swagger">安裝 Swashbuckle 及啟用 Swagger</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-swaggerdoc-%E5%A2%9E%E5%8A%A0%E5%B0%88%E6%A1%88%E6%8F%8F%E8%BF%B0">使用 SwaggerDoc 增加專案描述</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-xml-%E6%96%87%E4%BB%B6%E5%BE%9E%E8%A8%BB%E8%A7%A3%E7%94%A2%E7%94%9F-api-%E8%AA%AA%E6%98%8E">使用 XML 文件從註解產生 API 說明</a></li>
+<li><a href="#%E5%8A%A0%E4%B8%8A%E5%9B%9E%E5%82%B3%E6%A0%BC%E5%BC%8F%E5%92%8C%E5%9B%9E%E5%82%B3%E5%9E%8B%E5%88%A5">加上回傳格式和回傳型別</a></li>
+<li><a href="#%E5%B0%8F%E7%B5%90">小結</a></li>
+<li><a href="#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0">本系列文章</a></li>
+<li><a href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99">參考資料</a></li>
+</ul>
+<h3 id="api-文件與-swagger">API 文件與 Swagger</h3>
+<p>在 <a href="/post/2021/05/newbie-3-dapper">上一篇</a> 我們建立了一個有簡單的 CRUD 的 Web API 服務，這篇我們就接續著 API 服務往下看吧！</p>
+<p>之前我們介紹 API 的時候有提過，API 是為了讓兩個服務之間可以溝通、互動所產生的接口。而所有的溝通要有效，都一定要先有共識，隨著溝通的人數越來越多，或是內容的理解要越來越細，就會用文件或契約的方式來達成共識。</p>
+<p>回到我們的 API 服務開發來說，就是你除了把服務生出來了，可以跑了以外，還有一個重要的點是：<strong>必須讓所有的使用者（包含幾個月後的你自己）知道怎麼使用這組 API 服務</strong>。</p>
+<p>也就來說，就是要寫 <strong>API 規格文件</strong> 啦！</p>
+<p>為了能讓服務對接順利，以及省下大部份口沫橫飛解釋的時間，甚至是好幾個月之後能夠順利回想起來，我們在開發 API 的時候一定會列出 API 接口的規格和用法。包括但不限於：<strong>用途、路由、參數、回傳值</strong>等等，更細部的會有例如參數放在 QueryString 還是 Body、參數是否必填、回傳的 JSON 範例等等。</p>
+<p>不過寫文件畢竟是能登上靠北榜的工作內容之一（靠北榜還包括其他人不寫文件、寫註解、其他人不寫註解等），同時，每次 API 有變動還要一直去維護文件真的很麻煩，所以…</p>
+<p>我們工程師的美德，就是懶惰！ API 文件什麼的，當然是要用自動產生的啦～</p>
+<p>今天要介紹的 <strong>Swagger 工具就是幫助我們來自動產生 API 規格文件的好幫手</strong>，接下來就先讓我們稍微認識一下 Swagger 吧！</p>
+<p>Swagger 是一套 API 互動文件產生器，主要是讓人跟電腦都能夠理解 API 的功能和內容，而不需要閱讀程式碼。因為 Swagger 已經在 2015 捐贈給 OpenAPI，所以也會看到有人用 OpenAPI 來稱呼它。更精準的說，OpenAPI 是一種規格、一種表達方式，Swagger 則是使用 OpenAPI 的工具。</p>
+<p>想知道 Swagger 工具的 API 文件長怎樣的朋友，可以<strong>到 Swagger 提供的 Demo 網頁</strong>：<a href="http://petstore.swagger.io/">petstore.swagger.io</a> 逛逛按按。</p>
+<p>操作上挺直覺的，而且我們前面提到的「用途、路由、參數、回傳」等等 API 資訊都清楚明瞭的顯示，甚至還可以戳一戳，直接呼叫 API 來動手試試。更重要的是：這些都是<strong>自動產生</strong>的！所以說，Swagger，好！</p>
+<p>也因為 Swagger 是一種工具，所以大多主流語言都會有支援 Swagger 的工具包，例如 Golang 的 swag 和 go-swagger。</p>
+<p>在 Dotnet 陣營裡面，作為代表的則是 <a href="https://github.com/domaindrivendev/Swashbuckle.AspNetCore">Swashbuckle</a> 和 <a href="https://github.com/RicoSuter/NSwag">NSwag</a>。由於工作團隊採用前者，故本篇將會以 <strong>Swashbuckle</strong> 來逐步實作。</p>
+<blockquote>
+<p>對 NSwag 有興趣，或是工作要求採用的朋友。可以參閱以下資料：</p>
+<ul>
+<li><a href="https://ithelp.ithome.com.tw/articles/10242295">使用Swagger自動建立清晰明瞭的REST API文件 - 我與 ASP.NET Core 的 30天</a></li>
+<li>微軟文件的 <a href="https://docs.microsoft.com/zh-tw/aspnet/core/tutorials/getting-started-with-nswag?view=aspnetcore-5.0&amp;tabs=visual-studio">NSwag 與 ASP.NET Core 使用者入門</a></li>
+</ul>
+</blockquote>
+<h3 id="安裝-swashbuckle-及啟用-swagger">安裝 Swashbuckle 及啟用 Swagger</h3>
+<p>現在讓我們把鏡頭回到我們在<a href="/post/2021/05/newbie-3-dapper">上一篇</a>裡使用 .net Core 預設的 Web API 範本建立的簡易 CRUD 服務。</p>
+<p>首先，直奔 Nuget、搜尋 Swashbuckle，應該可以看到一整排：</p>
+<p><img src="https://i.imgur.com/9vn5HUG.png" alt=""></p>
+<p>我們這個示範專案的環境是 .net Core，所以我們選擇 <strong><code>Swashbuckle.AspNetCore</code></strong>，安裝了懶人包，就等於裝好了 Swashbuckle 家的 OpenAPI 三劍客 Swagger、SwaggerGen、SwaggerUI，之後的文件產生和進階操作也就不用煩惱了。</p>
+<blockquote>
+<p>環境不是 .net Core 的 Asp.net Web API 朋友，請安裝 <code>Swashbuckle</code>，不過整體操作和顯示上並不會相差太多。</p>
+<p>此外，在安裝和操作上也可以參照 mrkt 大大的 Swagger 相關文章：</p>
+<ul>
+<li><a href="https://kevintsengtw.blogspot.com/2015/12/aspnet-web-api-swagger.html">ASP.NET Web API 文件產生器 - 使用 Swagger - mrkt 的程式學習筆記</a></li>
+<li><a href="https://kevintsengtw.blogspot.com/2015/12/swashbuckle-swagger-for-web-api.html">Swashbuckle - Swagger for Web Api 顯示內容的調整 - mrkt 的程式學習筆記</a></li>
+</ul>
+</blockquote>
+<p><img src="https://i.imgur.com/En0Aarn.png" alt=""></p>
+<p>安裝完成之後，就讓我們來註冊 Swagger 服務吧！</p>
+<p>首先讓我們到 <code>Startup.cs</code> 的 <code>ConfigureServices</code>，加上 <code>services.AddSwaggerGen();</code> 把 Swagger 的服務掛上去：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// This method gets called by the runtime.
+</span><span style="color:#75715e">// Use this method to add services to the container.
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+{
+    services.AddControllers();
+
+    services.AddSwaggerGen(); <span style="color:#75715e">// 註冊 Swagger
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>接著往下看，到 <code>Configure</code> 把 Swagger 服務打開，我們需要加上 <code>UseSwagger</code> 讓它能夠用 middleware 產生 API 文件的 JSON，並用 <code>UseSwaggerUI</code> 指定 JSON 檔案來產生 API 文件的 UI 頁面。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">app.UseSwagger();
+app.UseSwaggerUI(c =&gt;
+{
+    c.SwaggerEndpoint(<span style="color:#e6db74">&#34;/swagger/v1/swagger.json&#34;</span>, <span style="color:#e6db74">&#34;My API V1&#34;</span>);
+});
+</code></pre></div><p>這樣就啟用了 Swagger 的服務了。</p>
+<p>現在讓我們執行偵錯，<strong>並且到專案目錄底下的 <code>/swagger</code> 路徑</strong>（以我為例就是 <code>localhost:44304/swagger</code>），應該就能看到 Swagger 工具的介面啦！</p>
+<p><img src="https://i.imgur.com/odrQ5IO.png" alt=""></p>
+<p>並且在上面可以注意到我們<strong>自動生成的 API JSON 文件，也就是前面註冊時看過的 <code>/swagger/v1/swagger.json</code></strong>（以我為例就是 <code>localhost:44304/swagger/v1/swagger.json</code>）</p>
+<p><img src="https://i.imgur.com/HysAWQu.png" alt=""></p>
+<p>這邊大致上就可以了解到，<strong>Swagger 工具就是藉由去掃我們的 <code>ApiController</code>，產生出對應的 API 規格的 JSON 檔案，再讀取這個 JSON 檔案來產生出 Swagger 的 UI 頁面</strong>。</p>
+<blockquote>
+<p>補充：這邊也可以對 Swagger 的 UI 路徑進行設定，不一定要在 <code>/swagger</code> 底下。只需要在 <code>UseSwaggerUI</code> 中使用 <code>RoutePrefix</code> 就可以指定 Swagger UI 的 Route。</p>
+<p>例如說我想要一進來我們服務的網址，就直接顯示 Swagger 畫面，像是 <code>myapi.com</code> 就顯示 Swagger UI 而非 <code>myapi.com/swagger</code> 的時候，就可以這樣設定：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">app.UseSwaggerUI(c =&gt;
+{
+   c.SwaggerEndpoint(<span style="color:#e6db74">&#34;/swagger/v1/swagger.json&#34;</span>, <span style="color:#e6db74">&#34;My API V1&#34;</span>);
+   c.RoutePrefix = <span style="color:#66d9ef">string</span>.Empty; <span style="color:#75715e">// 指定路徑為 &#34;&#34;
+</span><span style="color:#75715e"></span>});
+</code></pre></div><p>這樣就會直接在指定的路徑顯示 Swagger UI 囉！</p>
+</blockquote>
+<blockquote>
+<p>補充：如果有在 <code>Properties/launchSettings.json</code> 設定偵錯時的起始頁面的朋友，也可以試試<strong>把起始頁面 <code>launchUrl</code> 設定成 Swagger UI 的路徑</strong>，例如 <code>&quot;launchUrl&quot;: &quot;swagger&quot;</code>，平常測試的時候會順手很多，推薦給大家</p>
+</blockquote>
+<p>接著讓我們用 Swagger UI 來測試一下 API 吧，首先讓我們新增一張卡片，選擇新增卡片的 API 並試試 <code>Try it out</code>，可以看到範例和輸入 Body 的區塊：</p>
+<p><img src="https://i.imgur.com/8ruN7w9.png" alt=""></p>
+<p>執行之後下方就會告訴我們執行結果和回傳：</p>
+<p><img src="https://i.imgur.com/UUm4v20.png" alt=""></p>
+<p>接著試試用 Swagger UI 來 GET 看看是不是真的有新增成功：</p>
+<p><img src="https://i.imgur.com/I5eAVZm.png" alt=""></p>
+<p>確認 Swagger UI 的確和我們的 CardController 銜接在一起了，啟用服務成功！</p>
+<h3 id="使用-swaggerdoc-增加專案描述">使用 SwaggerDoc 增加專案描述</h3>
+<p>不過現在只是一個可以互動的操作介面而已，離可以取代文件還有一段距離，接著就讓我們一步一步來增加資訊到這個 UI 介面吧。</p>
+<p>首先讓我們回到 <code>ConfigureServices</code>，修改一下 <code>AddSwaggerGen</code>，讓我們可以丟東西進去，這邊就直接用微軟文件的範例來稍作修改：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddSwaggerGen(c =&gt;
+{
+    <span style="color:#75715e">// API 服務簡介
+</span><span style="color:#75715e"></span>    c.SwaggerDoc(<span style="color:#e6db74">&#34;v1&#34;</span>, <span style="color:#66d9ef">new</span> OpenApiInfo
+    {
+        Version = <span style="color:#e6db74">&#34;v1&#34;</span>,
+        Title = <span style="color:#e6db74">&#34;菜雞 API&#34;</span>,
+        Description = <span style="color:#e6db74">&#34;菜雞新訓記的範例 API&#34;</span>,
+        TermsOfService = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/&#34;</span>),
+        Contact = <span style="color:#66d9ef">new</span> OpenApiContact
+        {
+            Name = <span style="color:#e6db74">&#34;Igouist&#34;</span>,
+            Email = <span style="color:#66d9ef">string</span>.Empty,
+            Url = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/about/&#34;</span>),
+        },
+        License = <span style="color:#66d9ef">new</span> OpenApiLicense
+        {
+            Name = <span style="color:#e6db74">&#34;TEST&#34;</span>,
+            Url = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/about/&#34;</span>),
+        }
+    });
+});
+</code></pre></div><p>這邊可以填入版本、API 名稱和說明、聯絡方式等資訊，這些資訊會顯示在 Swagger UI 的開頭：</p>
+<p><img src="https://i.imgur.com/9v4DssU.png" alt=""></p>
+<p>替自己的服務加上說明是絕對必要的，不過平時會比較常用的也是 <code>Title</code>、<code>Description</code> 這些基本欄位，各位再按照自己的服務調整吧。</p>
+<h3 id="使用-xml-文件從註解產生-api-說明">使用 XML 文件從註解產生 API 說明</h3>
+<p>我們有了整個服務的說明之後，當然也要替每一支 API 補上說明啦！</p>
+<p>這邊我們可以採用<strong>產生 XML 檔案的方式來讓 Swagger 取得每支 API 在 Function 上的註解</strong>，這樣就能自動產生 API 的說明了。</p>
+<p>首先就是要打開 XML 文件，先讓我們從 <code>方案總管</code> 對我們的專案 <code>右鍵</code>，選擇 <code>屬性</code>：</p>
+<p><img src="https://i.imgur.com/Iol6yxX.png" alt=""></p>
+<p>進入屬性頁之後，<strong>到 <code>建置</code>，找到 <code>XML 文件檔案</code> 並勾選起來</strong>，通常會自動幫你填入路徑：</p>
+<p><img src="https://i.imgur.com/qWU9iJP.png" alt=""></p>
+<blockquote>
+<p>補充：並非使用 Visual Studio 開發的朋友，也可以參考微軟文件的開啟方式：打開 <code>.csproj</code> 檔案，並找到 <code>PropertyGroup</code> 加上 <code>GenerateDocumentationFile</code> ，並設為 true，例如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;PropertyGroup&gt;</span>
+ <span style="color:#f92672">&lt;GenerateDocumentationFile&gt;</span>true<span style="color:#f92672">&lt;/GenerateDocumentationFile&gt;</span>
+<span style="color:#f92672">&lt;/PropertyGroup&gt;</span>
+</code></pre></div></blockquote>
+<p>完成並儲存之後，讓我們<strong>回到 <code>ConfigureServices</code> 的 <code>AddSwaggerGen</code> 部分，把讀取 XML 的命令也加進去</strong>：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> xmlFile = <span style="color:#e6db74">$&#34;{Assembly.GetExecutingAssembly().GetName().Name}.xml&#34;</span>;
+<span style="color:#66d9ef">var</span> xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+c.IncludeXmlComments(xmlPath);
+</code></pre></div><p>如果在上一個步驟有加入專案描述，現在的 <code>AddSwaggerGen</code> 可能會長這樣：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddSwaggerGen(c =&gt;
+{
+    <span style="color:#75715e">// API 服務簡介
+</span><span style="color:#75715e"></span>    c.SwaggerDoc(<span style="color:#e6db74">&#34;v1&#34;</span>, <span style="color:#66d9ef">new</span> OpenApiInfo
+    {
+        Version = <span style="color:#e6db74">&#34;v1&#34;</span>,
+        Title = <span style="color:#e6db74">&#34;菜雞 API&#34;</span>,
+        Description = <span style="color:#e6db74">&#34;菜雞新訓記的範例 API&#34;</span>,
+        TermsOfService = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/&#34;</span>),
+        Contact = <span style="color:#66d9ef">new</span> OpenApiContact
+        {
+            Name = <span style="color:#e6db74">&#34;Igouist&#34;</span>,
+            Email = <span style="color:#66d9ef">string</span>.Empty,
+            Url = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/about/&#34;</span>),
+        }
+    });
+
+    <span style="color:#75715e">// 讀取 XML 檔案產生 API 說明
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> xmlFile = <span style="color:#e6db74">$&#34;{Assembly.GetExecutingAssembly().GetName().Name}.xml&#34;</span>;
+    <span style="color:#66d9ef">var</span> xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
+</code></pre></div><blockquote>
+<p>小提示：這邊的 <code>xmlFile</code> 路徑是對照前面步驟 專案屬性中的 XML 產生路徑，並用反射的方式去符合自動產生路徑的規則拿到 XML 檔案。</p>
+<p>如果在前面的步驟有自己指定 XML 檔案產生路徑的朋友，這邊的 <code>xmlFile</code> 也要記得和 XML 檔案路徑對應上呦。</p>
+</blockquote>
+<p>最後也是最重要的一步：<strong>確保你的 ApiController 底下的各 API 有乖乖加上註解</strong>：</p>
+<p><img src="https://i.imgur.com/yVQQIln.png" alt=""></p>
+<blockquote>
+<p>小提示：搭配 <a href="https://marketplace.visualstudio.com/items?itemName=sergeb.GhostDoc">GhostDoc</a> 自動產生註解，又快又香！用過就回不去了。</p>
+<p>相關的說明可以參見：<a href="https://dotblogs.com.tw/wasichris/2016/01/21/172429">使用 GhostDoc 自動產出符合語意的註解 - 搞搞就懂</a></p>
+</blockquote>
+<p>確定 <strong>對專案開啟產生 XML、讓 Swagger 讀取 XML、乖乖寫註解</strong> 三個步驟都有完成之後，就可以開啟 Swagger UI 來看看啦！</p>
+<p><img src="https://i.imgur.com/quHdcGV.png" alt=""></p>
+<p>可以看到每支 API 都有顯示註解的名稱了，讓我們跟沒有的時候比對一下：</p>
+<p><img src="https://i.imgur.com/TsroNer.png" alt=""></p>
+<p>是不是貼心多了呢？</p>
+<p>並且如果對參數、傳入和傳出的 Model 都有確實加上註解的話，在 API 的內容頁面就可以直接看到 QueryString 的參數，並且對 Model 點選 Schema 也會顯示 Model 的說明：</p>
+<p><img src="https://i.imgur.com/pI9OJQD.png" alt=""></p>
+<p><img src="https://i.imgur.com/kPQRL9m.png" alt=""></p>
+<p>如此一來參數和回傳，從名稱、說明、型別和範例都有了，這樣才有 API 文件的感覺嘛！</p>
+<p>除了基本的 <code>summary</code> 用來標示 API 的用途、<code>param</code> 用來標記參數名稱之外，比較特別的就是可以加上 <code>remarks</code> 來替 API 做更詳細的說明，例如：</p>
+<p><img src="https://i.imgur.com/E79TDpY.png" alt=""></p>
+<p>這樣就會顯示在 Swagger UI 上該 API 點開的內文中：</p>
+<p><img src="https://i.imgur.com/ZFDLWsv.png" alt=""></p>
+<p>很適合用來進行更詳細的說明和備註。</p>
+<p>通常我們做到這裡就差不多了已經具備 API 文件該有的部分了，不過資訊當然是多多益善嘛，接著就讓我們來補充一些小東西上去吧～</p>
+<h3 id="加上回傳格式和回傳型別">加上回傳格式和回傳型別</h3>
+<p>我們在 <a href="/post/2021/05/newbie-2-webapi">API 的介紹</a> 有提到：API 的回傳有許多格式，例如最常見的 JSON、XML，或者是純文字和檔案等等。</p>
+<p>同時，我們也提過 API 可能會根據不同狀況，也會有不同的 HTTP Status 回應，例如 404: 找不到。但讓我們確認一下我們現在的文件…</p>
+<p><img src="https://i.imgur.com/IhWDMBe.png" alt=""></p>
+<p>看起來預設的 Media type 並沒有作用，並且也只有 200 成功時的狀況。現在就讓我們來補充一下吧！</p>
+<p>在目標的 Api 方法上加上 <code>[Produces(&quot;application/json&quot;)]</code> 就可以標示該方法的回傳格式為 <code>application/json</code>，例如：</p>
+<p><img src="https://i.imgur.com/9S1o9sH.png" alt=""></p>
+<p>這樣在 Swagger UI 上該 API 的 Responses 就會標記為指定的格式：</p>
+<p><img src="https://i.imgur.com/OjRt09o.png" alt=""></p>
+<p>接著，讓我們用 <code>ProducesResponseType</code> 來指定回傳時的型別，以及在註解中使用 <code>&lt;response&gt;</code> 標籤來替回傳時的 HTTP Status 加上說明吧：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 查詢卡片
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;remarks&gt;我是附加說明&lt;/remarks&gt;
+</span><span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e">/// &lt;response code=&#34;200&#34;&gt;回傳對應的卡片&lt;/response&gt;
+</span><span style="color:#75715e">/// &lt;response code=&#34;404&#34;&gt;找不到該編號的卡片&lt;/response&gt;          
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpGet]</span>
+<span style="color:#a6e22e">[Produces(&#34;application/json&#34;)]</span>
+<span style="color:#a6e22e">[ProducesResponseType(typeof(Card), 200)]</span>
+<span style="color:#a6e22e">[Route(&#34;{id}&#34;)]</span>
+<span style="color:#66d9ef">public</span> Card Get([FromRoute] <span style="color:#66d9ef">int</span> id)
+{
+    <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._cardRepository.Get(id);
+    <span style="color:#66d9ef">if</span> (result <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
+    {
+        Response.StatusCode = <span style="color:#ae81ff">404</span>;
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span>;
+    }
+    <span style="color:#66d9ef">return</span> result;
+}
+</code></pre></div><p><img src="https://i.imgur.com/I90gVGu.png" alt=""></p>
+<p>這樣做的 Swagger UI 就會多出這些 HTTP Status 對應的資訊囉：</p>
+<p><img src="https://i.imgur.com/owvkBq4.png" alt=""></p>
+<h3 id="小結">小結</h3>
+<p>API 文件寫得好，溝通沒煩惱。</p>
+<p><img src="https://i.imgur.com/THIt8EI.png" alt=""></p>
+<p>今天記錄了在 API 中服務使用 Swagger 的一些筆記，這邊快速整理一下：</p>
+<p>關於 Swagger：</p>
+<ul>
+<li>為了提升溝通的效率、確保將來能記得用法，因此我們要寫 API 規格文件</li>
+<li>為了提升寫文件的效率（和懶惰），因此我們可以嘗試自動產生 API 規格文件</li>
+<li>Swagger（OpenAPI），是一套 API 互動文件產生器，是幫助我們來自動產生 API 規格文件和測試的好幫手
+<ul>
+<li>在 Dotnet 陣營裡以 Swashbuckle 和 NSwag 最常見</li>
+</ul>
+</li>
+</ul>
+<p>關於 Swashbuckle：</p>
+<ul>
+<li>在 NuGet 安裝 <code>Swashbuckle.Core</code></li>
+<li>在 <code>Startup.cs</code> 的 <code>ConfigureServices</code> 加上 <code>services.AddSwaggerGen();</code> 註冊服務</li>
+<li>在 <code>Startup.cs</code> 的 <code>Configure</code> 加上 <code>UseSwagger</code> 產生 API 文件的 JSON</li>
+<li>在 <code>Startup.cs</code> 的 <code>Configure</code> 加上 <code>UseSwaggerUI</code> 來使用 JSON 產生 API 文件的 UI 頁面</li>
+<li>在 <code>AddSwaggerGen</code> 中，使用 <code>SwaggerDoc</code> 和 <code>OpenApiInfo</code> 加上服務描述</li>
+<li>在 <code>AddSwaggerGen</code> 中，使用 <code>IncludeXmlComments</code> 讀取 XML 註解並產生 API 描述（需要先對專案開啟產生 XML 檔案）
+<ul>
+<li>在 <code>ApiController</code> 的各個 API 接口加上 XML 註解，最常見的有
+<ul>
+<li><code>summary</code> 用來標示 API 描述</li>
+<li><code>param</code> 用來標示參數描述</li>
+<li><code>remarks</code> 用來標示 API 服務的說明</li>
+<li><code>response</code> 用來標示回傳的狀態碼說明</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在 <code>ApiController</code> 的各個 API 接口加上 <code>[Produces]</code> 來標記回傳格式</li>
+<li>在 <code>ApiController</code> 的各個 API 接口加上 <code>[ProducesResponseType]</code> 來標記回傳狀態對應的型別</li>
+</ul>
+<p>今天的紀錄就到這邊，之後如果還有發現什麼小技巧再回來補充，也歡迎幫忙告訴我還能怎麼使用。</p>
+<p>那麼，我們下次見～</p>
+<h3 id="本系列文章">本系列文章</h3>
+<ul>
+<li><a href="/post/2021/04/newbie-0-menu">菜雞新訓記 (0): 目錄</a></li>
+<li><a href="/post/2021/04/newbie-1-hello-git">菜雞新訓記 (1): Git 入門這樣做</a></li>
+<li><a href="/post/2021/05/newbie-2-webapi">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧<br/>（上）認識 Api 與建置 Web Api 服務</a></li>
+<li><a href="/post/2021/05/newbie-3-dapper">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧<br/>（下）使用 Dapper 連線到資料庫</a></li>
+<li><a href="/post/2021/05/newbie-4-swagger">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</a></li>
+</ul>
+<h3 id="參考資料">參考資料</h3>
+<ul>
+<li><a href="https://docs.microsoft.com/zh-tw/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-5.0&amp;tabs=visual-studio">Swashbuckle 與 ASP.NET Core 使用者入門 | Microsoft Docs</a></li>
+<li><a href="https://sunnyday0932.github.io/2020/dotnet-core-webapi%E5%AF%A6%E4%BD%9C%E4%BD%BF%E7%94%A8dapperswaggerpostman-2/">dotnet Core WebApi實作(使用Dapper、Swagger、Postman)-2 (sunnyday0932.github.io)</a></li>
+<li><a href="https://kevintsengtw.blogspot.com/2015/12/aspnet-web-api-swagger.html">mrkt 的程式學習筆記: ASP.NET Web API 文件產生器 - 使用 Swagger (kevintsengtw.blogspot.com)</a></li>
+<li><a href="https://kevintsengtw.blogspot.com/2015/12/swashbuckle-swagger-for-web-api.html">mrkt 的程式學習筆記: Swashbuckle - Swagger for Web Api 顯示內容的調整 (kevintsengtw.blogspot.com)</a></li>
+<li><a href="https://blog.darkthread.net/blog/swagger-notes-1/">Swagger 初試筆記-黑暗執行緒 (darkthread.net)</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10242295">使用 Swagger 自動建立清晰明瞭的 REST API文件 - 我與 ASP.NET Core 的 30天 - iT 邦幫忙</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10195190">ASP.NET Core 2 系列 - Web API 文件產生器 (Swagger)</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10230804">原來後端要知道 - 如何寫 API 文件？ - iT 邦幫忙</a></li>
+<li><a href="https://yunchenli.medium.com/%E4%BD%BF%E7%94%A8swagger%E8%87%AA%E5%8B%95%E7%94%A2%E7%94%9Fapi%E6%96%87%E4%BB%B6-a8f5c65d267c">使用 Swagger 自動產生 API 文件 | by 11 | Medium</a></li>
+</ul>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2021/05/newbie-3-dapper/">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫</a></li>
+        
+        <li><a href="/post/2021/05/newbie-2-webapi/">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a></li>
+        
+        <li><a href="/post/2021/04/newbie-1-hello-git/">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a></li>
+        
+        <li><a href="/post/2021/04/newbie-0-menu/">菜雞新訓記 (0): 前言</a></li>
+        
+        <li><a href="/post/2021/01/oo-ex1-end2020/">菜雞與物件導向 (Ex1): 小結</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/newbieguide">NewbieGuide</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/dotnet">dotnet</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/csharp">csharp</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/api">api</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/swagger">swagger</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                        <hr />
+<p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2021%2f05%2fnewbie-4-swagger%2f" width="100%" frameborder=0></iframe>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">系列文</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E6%88%91%E8%A6%81%E8%A8%82%E4%BE%BF%E7%95%B6/">我要訂便當 (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/05/visual-studio-split-window-in-one-file/" title="Visual Studio: 在同一個檔案分割視窗">Visual Studio: 在同一個檔案分割視窗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/" title="菜雞新訓記 (1): 使用 Git 來進行版本控制吧">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/04/newbie-0-menu/" title="菜雞新訓記 (0): 前言">菜雞新訓記 (0): 前言</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/03/sekiro-darksouls3-clear/" title="隻狼、黑暗靈魂３　白金！">隻狼、黑暗靈魂３　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/03/visual-studio-bookmark/" title="Visual Studio: 書籤 (bookmarks)">Visual Studio: 書籤 (bookmarks)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/01/oo-ex1-end2020/" title="菜雞與物件導向 (Ex1): 小結">菜雞與物件導向 (Ex1): 小結</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2020/12/oo-15-least-knowledge-principle/" title="菜雞與物件導向 (15): 最少知識原則">菜雞與物件導向 (15): 最少知識原則</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/bug/">bug (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (17)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/life/">life (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (17)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (47)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/api/">api</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/bug/">bug</a>
+    
+    <a href="https://igouist.github.io/tags/chrome/">chrome</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/dapper/">dapper</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/game/">game</a>
+    
+    <a href="https://igouist.github.io/tags/git/">git</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/life/">life</a>
+    
+    <a href="https://igouist.github.io/tags/linux/">linux</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/swagger/">swagger</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">蹭一下</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://kevintsengtw.blogspot.com/" title="mrkt">mrkt 的程式學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://raychiutw.github.io/" title="ray">Ray&#39;s Notes</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">小東西</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+
+    <section class="widget">
+    <h3 class="widget-title">放個廣告加減賺</h3>
+    <ul class="widget-list">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-2119949858103459"
+            data-ad-slot="9031038367"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </ul>
+</section>
+
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        
+        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+</body>
+</html>
