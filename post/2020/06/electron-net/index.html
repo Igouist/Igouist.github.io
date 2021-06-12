@@ -26,7 +26,7 @@
         
     <meta property="article:modified_time" content="2020-06-28T19:41:00&#43;08:00">
         
-    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="Keywords" content="[CSharp Tools w3HexSchool Electron Electron.net]">
     <meta name="description" content="Electron 是用 Chromium 和 Node.js 將網頁封裝成桌面應用程式。基本上只要會寫網頁，就能夠寫桌面 GUI，真是有夠賺。">
         <meta name="author" content="Igouist">
         
@@ -128,12 +128,14 @@
 <ul>
 <li><a href="#%E5%AE%89%E8%A3%9D%E5%A5%97%E4%BB%B6%E5%8F%8A%E7%92%B0%E5%A2%83%E8%A8%AD%E7%BD%AE">安裝套件及環境設置</a></li>
 <li><a href="#%E5%89%8D%E5%BE%8C%E7%AB%AF%E5%82%B3%E5%80%BC-ipcmain-ipcrenderer">前後端傳值 (IpcMain, IpcRenderer)</a></li>
-<li><a href="#%E6%89%93%E5%8C%85%E6%88%90%E5%9F%B7%E8%A1%8C%E6%AA%94-exe">打包成執行檔（.exe）</a></li>
+<li><a href="#%E6%89%93%E5%8C%85%E6%88%90%E5%9F%B7%E8%A1%8C%E6%AA%94exe">打包成執行檔（.exe）</a></li>
+<li><a href="#%E5%BE%8C%E8%A8%98">後記</a></li>
+<li><a href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99">參考資料</a></li>
 </ul>
 <p>那麼首先從建立新專案開始，這邊用 .net Core MVC 來測試</p>
 <p><img src="https://i.imgur.com/xf2fOwT.png" alt=""></p>
 <p><img src="https://i.imgur.com/O0jwPZF.png" alt=""></p>
-<h3 id="安裝套件及環境設置">安裝套件及環境設置</h3>
+<h2 id="安裝套件及環境設置">安裝套件及環境設置</h2>
 <p>建立專案之後，前往 Nuget 先把 <strong>ElectronNET API</strong> 安裝下來</p>
 <p><img src="https://i.imgur.com/hT5JZu0.png" alt=""></p>
 <p>安裝完畢之後，開始做一些前置動作，首先：</p>
@@ -151,7 +153,7 @@
 <p><img src="https://i.imgur.com/iFqkq6d.png" alt=""></p>
 <p>成功從桌面應用開起來了！</p>
 <p><img src="https://i.imgur.com/Y89i3HK.png" alt=""></p>
-<h3 id="前後端傳值-ipcmain-ipcrenderer">前後端傳值 (IpcMain, IpcRenderer)</h3>
+<h2 id="前後端傳值-ipcmain-ipcrenderer">前後端傳值 (IpcMain, IpcRenderer)</h2>
 <p>在 Electron 中，會分成<strong>跑應用程式的主處理序 (main process)</strong>、和<strong>處理網頁畫面的渲染處理序 (renderer process)</strong>。而兩者之間的<strong>溝通則經由 <code>Ipc</code> 開啟頻道傳遞訊息來實現</strong></p>
 <p>這邊簡單嘗試一次，首先，我們先在 <code>Views/Home/index.cshtml</code> 加上一個簡單的按鈕</p>
 <p>並且加上 JavaScript 發送訊息和接收訊息的方法</p>
@@ -187,7 +189,7 @@
 <p>這樣就能成功在前後端之間傳值了！但要注意，它是建立一個 Channel 來傳遞訊息，所以<strong>兩邊的 channel 名稱可不能錯了</strong>。</p>
 <p>另外也有提供同步版本的 <code>ipcRendered.sendSync()</code> 與 <code>Electron.IpcMain.OnSync()</code> 等等方法，相關的操作可以參照官方的 <a href="https://github.com/ElectronNET/electron.net-api-demos">API DEMO</a> 中的 <code>Controllers/IpcController.cs</code> 及 <code>Views/Ipc/Index.cshtml</code></p>
 <p>而關於 IPC 的說明，可以參考這篇 <a href="https://medium.com/@terracotta_ko/electron-ipc-%E6%A9%9F%E5%88%B6-2a1b087c9ae5">[Electron] IPC 機制</a>，以及官方文件：<a href="https://www.electronjs.org/docs/api/ipc-main">ipcMain</a>、<a href="https://www.electronjs.org/docs/api/ipc-renderer">ipcRenderer</a></p>
-<h3 id="打包成執行檔exe">打包成執行檔（.exe）</h3>
+<h2 id="打包成執行檔exe">打包成執行檔（.exe）</h2>
 <p>既然是桌面軟體，當然是要包裝成 exe 直接執行囉。畢竟總不能做了個小工具分享給朋友，還要「欸你自己開專案建置一下」吧 XD</p>
 <p>在專案資料夾下用命令列輸入指令 <code>electronize build /target win</code> ，其中 <code>/target</code> 除了 win 也可以指定 osx, liunx 等等</p>
 <p><img src="https://i.imgur.com/4iSSuCC.png" alt=""></p>
@@ -197,7 +199,7 @@
 <p>稍微打開看看</p>
 <p><img src="https://i.imgur.com/Ywg2CoQ.png" alt=""></p>
 <p>可以正常執行！</p>
-<h3 id="後記">後記</h3>
+<h2 id="後記">後記</h2>
 <p>目前只做到專案成功跑起來和一些簡單的測試而已，幸虧黑大的文章跟網路上的一些教學相當完整，並沒有花費太多時間。但是畢竟約好了要玩玩看這個框架，且許多功能沒有試過，例如 <a href="https://blog.darkthread.net/blog/electron-api-brief/">Electron.NET API 快速巡覽</a> 提到的大多功能，<del>因此還在煩惱後續的紀錄要集中在這一篇還是另外開成系列文，這部分等下週更新再說囉。</del></p>
 <p>6/29 更新: 最後還是決定把最近嘗試的都集中在這一篇了，畢竟我還是挺懶的，這樣比較好找嘛～</p>
 <p>另外有興趣自己試試的朋友，也可以參閱 <a href="https://www.electronjs.org/docs">官方文檔</a> 其實相當完整。基本上只要會寫網頁，就能夠寫桌面 GUI，真是有夠賺。</p>
@@ -573,5 +575,16 @@
 
 
 
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
 </body>
 </html>

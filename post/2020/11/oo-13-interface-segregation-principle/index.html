@@ -26,7 +26,7 @@
         
     <meta property="article:modified_time" content="2020-11-15T12:00:00&#43;08:00">
         
-    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="Keywords" content="[Object-Oriented Interface Segregation Principle ISP 介面隔離原則 SOLID w3HexSchool]">
     <meta name="description" content="記錄了 SOLID 中的介面隔離原則（Interface Segregation Principle, ISP）：不應該強迫用戶依賴它們未使用的方法，應該最小化類別與類別之間的介面。當我們遇到無法實作介面的要求，或是必須用空實作和拋錯來欺騙介面的時候，可以優先從單一職責和里氏替換的角度切入，檢驗介面的設計是否合理，並用組合的觀念來實作類別。">
         <meta name="author" content="Igouist">
         
@@ -132,13 +132,14 @@
 </span><span style="color:#75715e"></span>    }
 }
 </code></pre></div><p>企鵝們終於騙過了編譯器檢查員，然而當送貨的命令下來之後，企鵝們再一次卡在倉庫門口發呆，最終物流公司仍然踏上了虧損的老路，再度面臨倒閉危機…</p>
-<h2 id="定義">定義</h2>
-<p>不知道大家對企鵝遇到的狀況有沒有經驗呢？<strong>當介面規定了太多要求，而我們實作的子類別只需要其中一部份，或是有些要求根本無法達成，就會發生這個困境：放棄實作介面，或是用空實作和錯誤處理去欺騙介面</strong>。</p>
+<h2 id="介面隔離原則interface-segregation-principle">介面隔離原則（Interface Segregation Principle）</h2>
+<p>不知道大家對企鵝遇到的狀況有沒有經驗呢？</p>
+<p><strong>當介面規定了太多要求，而我們實作的子類別只需要其中一部份，或是有些要求根本無法達成，就會發生這個困境：放棄實作介面，或是用空實作和錯誤處理去欺騙介面</strong>。</p>
 <p>例如資料庫存取的介面要求太多和當下資料庫過於一致的方法，結果替換資料庫的時候導致部份方法實作不出來；或是像<a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E8%A8%AD%E8%A8%88%E5%8E%9F%E5%89%87solid-4_interface-segregation-principleisp-%E4%BB%8B%E9%9D%A2%E9%9A%94%E9%9B%A2%E5%8E%9F%E5%89%87/">俺同事文章</a>中的例子，交通工具的介面要求能開關車門，結果電動機車無法實作。</p>
 <p>然而，如果我們選擇用空實作或是拋出錯誤的方式，去欺騙介面，等到需要呼叫該方法的時候，就會發生許多非預期的錯誤。甚至讓接手程式碼的人在什麼都不知道的情況之下就讓系統掛掉。聰明的朋友們一定發現了，這就是違反了<a href="/post/2020/11/oo-12-liskov-substitution-principle">里氏替換原則</a>！</p>
 <p>為了迴避到處都是空實作地雷的結局，大前輩們就提出了介面隔離原則：</p>
 <blockquote>
-<p><strong>介面隔離原則（Interface Segregation Principle）：不應該強迫用戶依賴它們未使用的方法</strong></p>
+<p><strong>不應該強迫用戶依賴它們未使用的方法</strong></p>
 </blockquote>
 <p>這邊的用戶也就是我們的子類別，它們等同是這個介面的使用者。當我們必須強迫使用者去實作一些他們不需要的方法時，就代表了一個事實：我們的介面太「胖」了！裡面的某些要求可能是非必要的，以至於造成了實作上的冗餘。</p>
 <p>也基於這條原則延伸出了一個方向：<strong>應該最小化類別與類別之間的介面</strong>。</p>
@@ -561,5 +562,16 @@
 
 
 
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
 </body>
 </html>

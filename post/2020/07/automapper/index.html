@@ -26,7 +26,7 @@
         
     <meta property="article:modified_time" content="2020-07-05T23:40:00&#43;08:00">
         
-    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="Keywords" content="[CSharp w3HexSchool AutoMapper]">
     <meta name="description" content="當我們要把一個類別的資料倒進另一個類別時，總免不了一番折騰。AutoMapper 會自動將指定類別間同樣名稱的屬性內容做轉換，省卻不必要的枯燥乏味又占空間的轉換過程。">
         <meta name="author" content="Igouist">
         
@@ -199,7 +199,38 @@
 </span><span style="color:#75715e"></span>
     <span style="color:#66d9ef">return</span> result;
 }
-</code></pre></div><h2 id="簡化整理">簡化整理</h2>
+</code></pre></div><blockquote>
+<p>(2021/6/9) 補充：</p>
+<p>在我們前面提到的欄位轉換時，要特別注意兩個欄位的型別是否能夠對應上。由於 AutoMapper 會貼心地幫我們進行轉換，但有些時候可能會產生問題，讓我們看看下面這個例子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Boo</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+
+<span style="color:#66d9ef">public</span> Foo Sut()
+{
+    <span style="color:#66d9ef">var</span> boo = <span style="color:#66d9ef">new</span> Boo
+    {
+        Val = <span style="color:#ae81ff">2.65</span>
+    };
+
+    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
+        cfg.CreateMap&lt;Boo, Foo&gt;());
+    <span style="color:#66d9ef">var</span> mapper = config.CreateMapper();
+    
+    <span style="color:#66d9ef">var</span> foo = mapper.Map&lt;Foo&gt;(boo);
+    <span style="color:#66d9ef">return</span> foo; <span style="color:#75715e">// 3
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>可以看到上面這個例子中，我們可以把 <code>double</code> 的欄位直接 Mapping 到 <code>int</code> 的欄位上，因為 AutoMapper 的貼心，所以不會出錯，但過程中還是可能發生喪失精度的問題。</p>
+<p>像是例子中的 2.65 就直接變成了 3，如果符合我們的需求（例如本來就打算轉型）倒是沒關係，但如果是因為不小心轉到的話，在找問題上可能就會比較麻煩。</p>
+<p>因此在轉換的時候，還請特別留意一下轉換雙方的型別，測試一下轉換結果是不是自己要的結果會比較好呦。</p>
+</blockquote>
+<h2 id="簡化整理">簡化整理</h2>
 <p>可能看到這裡有些讀者就開始疑惑了：這好像跟一開始簡介不太一樣啊，詐欺？又或者是：我每個方法裡面都要重新建一個 Mapper？這不太對吧？</p>
 <p>的確是這樣沒錯，AutoMapper 要達到更簡潔，還需要再做一些整理。例如使用 Profile 將對映關係集中起來，以及把 Mapper 的建構抽取出來。可能是在建構式建立共用的 Mapper ，或是以依賴注入 (Dependency Injection) 的方式來注入 Mapper 等等。以下就逐步進行介紹。</p>
 <h3 id="profile">Profile</h3>
@@ -265,7 +296,7 @@
 }
 </code></pre></div><p>可能有些人會有點疑惑：前面還需要 <code>MapperConfiguration</code> 怎麼這次不用了呢？那是因為 <code>AddAutoMapper</code> 的時候就會用反射去取得同組件中的 <code>Profile</code> 來載入，所以這部分就可以不用擔心，只要專心在使用上就好。</p>
 <blockquote>
-<p>2021/4/23 補充：</p>
+<p>(2021/4/23) 補充：</p>
 <p>感謝同事們的討論，這邊也補充給大家參考一下</p>
 <p>當我們直接使用 <code>services.AddAutoMapper(typeof(Startup));</code> 註冊的時候，AutoMapper 會去抓我們 <code>typeof</code> 的型別，並對該型別所在的 Assembly 進行反射找出所有的 <code>Profile</code>。</p>
 <p>但如果你有用到多層的架構、或是不同的組件內都有 <code>Profile</code> 需要註冊，又或者只是想要逐個 <code>Profile</code> 進行註冊，方便進行控管的話，可以考慮使用 <strong><code>AddProfile</code></strong> 或 <strong><code>AddProfiles</code></strong> 的方式來進行註冊，例如：</p>
@@ -334,11 +365,11 @@
         
         <li><a href="/post/2020/06/bit-flags-and-enum/">C#: 位元旗標 (Bit flag) 與列舉</a></li>
         
-        <li><a href="/post/2020/04/epplus/">EPPlus —— 輕鬆處理 Excel</a></li>
-        
         <li><a href="/post/2020/03/visualstudio/">Visual studio 環境設定 —— 字型、套件、快捷鍵</a></li>
         
         <li><a href="/post/2020/06/darkhorse/">讀《黑馬思維》</a></li>
+        
+        <li><a href="/post/2020/06/wakatime/">WakaTime —— 我 Coding 了多久？</a></li>
         
     </ul>
 </div>
@@ -685,5 +716,16 @@
 
 
 
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
 </body>
 </html>

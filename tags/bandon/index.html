@@ -126,7 +126,7 @@
 <li>SQLite 要改成用 PostgreSQL</li>
 <li>在 Heroku 上執行 Selenium</li>
 </ol>
-<h3 id="一sqlite-要改成用-postgresql">一、SQLite 要改成用 PostgreSQL</h3>
+<h2 id="一sqlite-要改成用-postgresql">一、SQLite 要改成用 PostgreSQL</h2>
 <p>在之前的 <a href="/post/2020/03/bandon-2-sqlite/">我要訂便當(2) —— 用 Python + Sqlite 儲存訂單</a> 中，為了方便及簡單性，選擇了較輕便的 SQLite 來儲存我們爬回來的訂單資訊。然而，SQLite 將資料儲存在小檔案以便於攜帶的做法，在 Heroku 上將會遭遇像是各個 dyno 的資料不同步等許多問題，因此 Heroku 是不建議使用 SQLite 的。</p>
 <p>在 Heroku 的開發文件中的 <a href="https://devcenter.heroku.com/articles/sqlite3">SQLite on Heroku</a> 有關於這部分的詳細說明，並直接提到「<em>If you were to use SQLite on Heroku, you would lose your entire database at least once every 24 hours.</em>」同時，官方也提供了他們的建議：<strong>PostgreSQL</strong>。相較於輕便但只能同時單一寫入而且還會在 dyno 炸掉的 SQLite，PostgreSQL 的完整性更符合 Heroku 對服務的要求。</p>
 <p>關於在 Heroku 上使用 PostgreSQL 的做法，這篇 <a href="https://swf.com.tw/?p=1327">佈署 Python Flask 網站留言板應用程式到 Heroku + PostgreSQL 資料庫系統</a> 說明得相當詳細。</p>……
@@ -258,7 +258,7 @@
 <p>這是參加<a href="https://www.hexschool.com/2019/11/14/2019-11-14-w3Hexschool-2020-challenge/">六角鼠年全馬</a>的第一篇，主要是希望能夠養成寫部落格的習慣。由於我本身並沒有主要技能，因此這次參賽文章會以我最近玩的玩具、使用的套件或是遇到的問題做紀錄。</p>
 <p>希望能夠派上用場。</p>
 <p>目標：使用 <strong>Python</strong> 及 <strong>Selenium</strong> 連線到訂便當網站，自動輸入帳號密碼登入後，取回網站上的訂單資訊</p>
-<p>(2020-12-04 更新: 由於訂便當網站改版，所以程式碼已經不能照抄了。但有興趣的朋友還是能自己摸索做點變動，也能夠照常進行喔，加油～)</p>
+<p>(2020/12/4) 更新: 由於訂便當網站改版，所以程式碼已經不能照抄了。但有興趣的朋友還是能自己摸索做點變動，也能夠照常進行喔，加油～</p>
 </blockquote>
 <p>最近在公司的時候有個莫大的煩惱，就是關於辦公室團購這回事兒。現在待著的公司主要是從 <a href="https://dinbendon.net/">Dinbendon</a> 這套系統來揪團購，舉凡品客、火鍋等都在上面訂過，據我觀察最受歡迎出現最多次的當屬雞排了。煩惱就在於，每次都會錯過雞排的團購，光在辦公室聞著四面八方傳來的雞排香味，就令人無法忍受！因此趁著這個機會，來嘗試能不能像之前的 <a href="https://hackmd.io/@IgouistBlog/ptt_crawler_and_listener">PTT</a> 一樣來弄出一個通知，順便玩玩最近看到的工具。這系列的文章會分成多個部分，主要是以使用的工具來分集。</p>
 <p>由於在從團購網取得訂單的過程中需要跟網頁進行互動，因此這次要使用的工具是 <strong><a href="https://www.selenium.dev/">Selenium</a></strong>。</p>
@@ -568,6 +568,17 @@
 
 
 
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
 
 </body>
 </html>

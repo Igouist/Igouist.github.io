@@ -26,7 +26,7 @@
         
     <meta property="article:modified_time" content="2021-05-16T22:42:00&#43;08:00">
         
-    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="Keywords" content="[asp.net core dotnet core web api swagger]">
     <meta name="description" content="這是俺整理公司新訓內容的第四篇文章，目標是簡單地使用 Swagger 來自動產生簡單好看可測試的 API 文件，主要使用 Swashbuckle，並說明了註冊服務、產生XML檔案、使用SwaggerDoc等技巧">
         <meta name="author" content="Igouist">
         
@@ -120,16 +120,16 @@
                             <p><img src="https://i.imgur.com/TnzhZaW.png" alt=""></p>
 <p>這是俺整理公司新訓內容的第四篇文章，目標是<strong>簡單地使用 Swagger 工具來自動產生可互動的 API 文件</strong>。</p>
 <ul>
-<li><a href="#api-%E6%96%87%E4%BB%B6%E8%88%87-swagger">API 文件與 Swagger</a></li>
-<li><a href="#%E5%AE%89%E8%A3%9D-swashbuckle-%E5%8F%8A%E5%95%9F%E7%94%A8-swagger">安裝 Swashbuckle 及啟用 Swagger</a></li>
-<li><a href="#%E4%BD%BF%E7%94%A8-swaggerdoc-%E5%A2%9E%E5%8A%A0%E5%B0%88%E6%A1%88%E6%8F%8F%E8%BF%B0">使用 SwaggerDoc 增加專案描述</a></li>
-<li><a href="#%E4%BD%BF%E7%94%A8-xml-%E6%96%87%E4%BB%B6%E5%92%8C-includexmlcomments-%E5%BE%9E%E8%A8%BB%E8%A7%A3%E7%94%A2%E7%94%9F-api-%E8%AA%AA%E6%98%8E">使用 XML 文件和 IncludeXmlComments 從註解產生 API 說明</a></li>
-<li><a href="#%E4%BD%BF%E7%94%A8-produces-%E5%B1%AC%E6%80%A7%E5%92%8C-response-%E8%A8%BB%E8%A7%A3%E8%A3%9C%E5%85%85%E5%9B%9E%E5%82%B3%E8%B3%87%E8%A8%8A">使用 Produces 屬性和 response 註解補充回傳資訊</a></li>
-<li><a href="#%E5%B0%8F%E7%B5%90">小結</a></li>
-<li><a href="#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0">本系列文章</a></li>
-<li><a href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99">參考資料</a></li>
+<li><a href="/post/2021/05/newbie-4-swagger#api-%E6%96%87%E4%BB%B6%E8%88%87-swagger">API 文件與 Swagger</a></li>
+<li><a href="/post/2021/05/newbie-4-swagger#%E5%AE%89%E8%A3%9D-swashbuckle-%E5%8F%8A%E5%95%9F%E7%94%A8-swagger">安裝 Swashbuckle 及啟用 Swagger</a></li>
+<li><a href="/post/2021/05/newbie-4-swagger#%E4%BD%BF%E7%94%A8-swaggerdoc-%E5%A2%9E%E5%8A%A0%E5%B0%88%E6%A1%88%E6%8F%8F%E8%BF%B0">使用 SwaggerDoc 增加專案描述</a></li>
+<li><a href="/post/2021/05/newbie-4-swagger#%E4%BD%BF%E7%94%A8-xml-%E6%96%87%E4%BB%B6%E5%92%8C-includexmlcomments-%E5%BE%9E%E8%A8%BB%E8%A7%A3%E7%94%A2%E7%94%9F-api-%E8%AA%AA%E6%98%8E">使用 XML 文件和 IncludeXmlComments 從註解產生 API 說明</a></li>
+<li><a href="/post/2021/05/newbie-4-swagger#%E4%BD%BF%E7%94%A8-produces-%E5%B1%AC%E6%80%A7%E5%92%8C-response-%E8%A8%BB%E8%A7%A3%E8%A3%9C%E5%85%85%E5%9B%9E%E5%82%B3%E8%B3%87%E8%A8%8A">使用 Produces 屬性和 response 註解補充回傳資訊</a></li>
+<li><a href="/post/2021/05/newbie-4-swagger#%E5%B0%8F%E7%B5%90">小結</a></li>
+<li><a href="/post/2021/05/newbie-4-swagger#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0">本系列文章</a></li>
+<li><a href="/post/2021/05/newbie-4-swagger#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99">參考資料</a></li>
 </ul>
-<h3 id="api-文件與-swagger">API 文件與 Swagger</h3>
+<h2 id="api-文件與-swagger">API 文件與 Swagger</h2>
 <p>在 <a href="/post/2021/05/newbie-3-dapper">上一篇</a> 我們建立了一個有簡單的 CRUD 的 Web API 服務，這篇我們就接續著 API 服務往下看吧！</p>
 <p>之前我們介紹 API 的時候有提過：API 是為了讓兩個服務之間可以溝通、互動所產生的接口。而所有的溝通要有效，都一定要先有共識，隨著溝通的人數越來越多，或是內容的理解要越來越細，就會用文件或契約的方式來達成共識。</p>
 <p>回到我們的 API 服務開發來說，就是你除了把服務生出來了，可以跑了以外，還有一個重要的點是：<strong>必須讓所有的使用者（包含幾個月後的你自己）知道怎麼使用這組 API 服務</strong>。</p>
@@ -162,6 +162,7 @@ example: https://exampleProjN.com/api/card/1
 </code></pre></div><p>當然這邊已經把例子簡化很多了，實際上的 API 文件格式會隨著各地的團隊習慣而改變，用表格和 PDF 等等的狀況也很常見。</p>
 <p>對 API 規格都長怎樣有興趣的朋友，也可以直接在網路上找找一些公開的文件：</p>
 <ul>
+<li><a href="https://developer.pixnet.pro/#!/doc/pixnetApi/glossaryArea">痞客幫 API 文件</a></li>
 <li><a href="https://www.91app.com/developers#api-doc">91 APP 的開發文件</a></li>
 <li><a href="https://agridata.coa.gov.tw/apidocs.aspx">農業資料開放平台</a></li>
 <li><a href="https://opendata.judicial.gov.tw/news/detail?newsId=3032">司法院資料開放平台</a></li>
@@ -185,7 +186,7 @@ example: https://exampleProjN.com/api/card/1
 <li>微軟文件的 <a href="https://docs.microsoft.com/zh-tw/aspnet/core/tutorials/getting-started-with-nswag?view=aspnetcore-5.0&amp;tabs=visual-studio">NSwag 與 ASP.NET Core 使用者入門</a></li>
 </ul>
 </blockquote>
-<h3 id="安裝-swashbuckle-及啟用-swagger">安裝 Swashbuckle 及啟用 Swagger</h3>
+<h2 id="安裝-swashbuckle-及啟用-swagger">安裝 Swashbuckle 及啟用 Swagger</h2>
 <p>現在讓我們把鏡頭回到我們在<a href="/post/2021/05/newbie-3-dapper">上一篇</a>裡使用 .net Core 預設的 Web API 範本建立的簡易 CRUD 服務。</p>
 <p>首先，直奔 Nuget、搜尋 Swashbuckle，應該可以看到一整排：</p>
 <p><img src="https://i.imgur.com/9vn5HUG.png" alt=""></p>
@@ -241,7 +242,7 @@ app.UseSwaggerUI(c =&gt;
 <p>接著試試用 Swagger UI 來 GET 看看是不是真的有新增成功：</p>
 <p><img src="https://i.imgur.com/I5eAVZm.png" alt=""></p>
 <p>確認 Swagger UI 的確和我們的 CardController 銜接在一起了，啟用服務成功！</p>
-<h3 id="使用-swaggerdoc-增加專案描述">使用 SwaggerDoc 增加專案描述</h3>
+<h2 id="使用-swaggerdoc-增加專案描述">使用 SwaggerDoc 增加專案描述</h2>
 <p>不過現在只是一個可以互動的操作介面而已，離可以取代文件還有一段距離，接著就讓我們一步一步來增加資訊到這個 UI 介面吧。</p>
 <p>首先讓我們回到 <code>ConfigureServices</code>，修改一下 <code>AddSwaggerGen</code>，讓我們可以丟東西進去，這邊就直接用微軟文件的範例來稍作修改：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddSwaggerGen(c =&gt;
@@ -269,7 +270,7 @@ app.UseSwaggerUI(c =&gt;
 </code></pre></div><p>這邊可以填入版本、API 名稱和說明、聯絡方式等資訊，這些資訊會顯示在 Swagger UI 的開頭：</p>
 <p><img src="https://i.imgur.com/9v4DssU.png" alt=""></p>
 <p>替自己的服務加上說明是絕對必要的，不過平時會比較常用的也是 <code>Title</code>、<code>Description</code> 這些基本欄位，各位再按照自己的服務調整吧。</p>
-<h3 id="使用-xml-文件和-includexmlcomments-從註解產生-api-說明">使用 XML 文件和 IncludeXmlComments 從註解產生 API 說明</h3>
+<h2 id="使用-xml-文件和-includexmlcomments-從註解產生-api-說明">使用 XML 文件和 IncludeXmlComments 從註解產生 API 說明</h2>
 <p>我們有了整個服務的說明之後，當然也要替每一支 API 補上說明啦！</p>
 <p>這邊我們可以採用<strong>產生 XML 檔案的方式來讓 Swagger 取得每支 API 在 Function 上的註解</strong>，這樣就能自動產生 API 的說明了。</p>
 <p>首先就是要打開 XML 文件，先讓我們從 <code>方案總管</code> 對我們的專案 <code>右鍵</code>，選擇 <code>屬性</code>：</p>
@@ -337,7 +338,7 @@ c.IncludeXmlComments(xmlPath);
 <p><img src="https://i.imgur.com/ZFDLWsv.png" alt=""></p>
 <p>很適合用來進行更詳細的說明和備註。</p>
 <p>通常我們做到這裡就差不多了已經具備 API 文件該有的部分了，不過資訊當然是多多益善嘛，接著就讓我們來補充一些小東西上去吧～</p>
-<h3 id="使用-produces-屬性和-response-註解補充回傳資訊">使用 Produces 屬性和 response 註解補充回傳資訊</h3>
+<h2 id="使用-produces-屬性和-response-註解補充回傳資訊">使用 Produces 屬性和 response 註解補充回傳資訊</h2>
 <p>我們在 <a href="/post/2021/05/newbie-2-webapi">API 的介紹</a> 有提到：API 的回傳有許多格式，例如最常見的 JSON、XML，或者是純文字和檔案等等。</p>
 <p>同時，我們也提過 API 可能會根據不同狀況，也會有不同的 HTTP Status 回應，例如 404: 找不到。但讓我們確認一下我們現在的文件…</p>
 <p><img src="https://i.imgur.com/IhWDMBe.png" alt=""></p>
@@ -373,7 +374,7 @@ c.IncludeXmlComments(xmlPath);
 <p>這樣做的 Swagger UI 就會多出這些 HTTP Status 對應的資訊囉：</p>
 <p><img src="https://i.imgur.com/owvkBq4.png" alt=""></p>
 <p>到這邊我們就提供了各種情況對應的回傳啦，隔壁同事如果問你說「為啥我打是回 400 啊？」就可以對他說「<a href="https://www.urbandictionary.com/define.php?term=RTFW">RTFW</a>！」</p>
-<h3 id="小結">小結</h3>
+<h2 id="小結">小結</h2>
 <p>這篇記錄了 Swagger 自動產生 API 規格文件的作法，從 API 的路由、說明、參數、Model 跟回傳值全方位說明，還可以試打 API，可以說是<strong>完美提供健全的 API 環境</strong>啦。</p>
 <p>阿彌陀佛阿彌陀佛，所謂寫一篇文件勝造七級浮屠，這個 Swagger 開下去，還不飛昇當神去了。正是：API 文件寫得好，同事溝通沒煩惱；Swagger 用得好，生文件只要一秒。</p>
 <p><img src="https://i.imgur.com/THIt8EI.png" alt=""></p>
@@ -412,7 +413,7 @@ c.IncludeXmlComments(xmlPath);
 </ul>
 <p>今天的紀錄就到這邊，之後如果還有發現什麼小技巧再回來補充，也歡迎幫忙告訴我還能怎麼使用。</p>
 <p>那麼，我們下次見～</p>
-<h3 id="本系列文章">本系列文章</h3>
+<h2 id="本系列文章">本系列文章</h2>
 <ul>
 <li><a href="/post/2021/04/newbie-0-menu">菜雞新訓記 (0): 目錄</a></li>
 <li><a href="/post/2021/04/newbie-1-hello-git">菜雞新訓記 (1): Git 入門這樣做</a></li>
@@ -420,7 +421,7 @@ c.IncludeXmlComments(xmlPath);
 <li><a href="/post/2021/05/newbie-3-dapper">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧<br/>（下）使用 Dapper 連線到資料庫</a></li>
 <li><a href="/post/2021/05/newbie-4-swagger">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</a></li>
 </ul>
-<h3 id="參考資料">參考資料</h3>
+<h2 id="參考資料">參考資料</h2>
 <ul>
 <li><a href="https://docs.microsoft.com/zh-tw/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-5.0&amp;tabs=visual-studio">Swashbuckle 與 ASP.NET Core 使用者入門 | Microsoft Docs</a></li>
 <li><a href="https://sunnyday0932.github.io/2020/dotnet-core-webapi%E5%AF%A6%E4%BD%9C%E4%BD%BF%E7%94%A8dapperswaggerpostman-2/">dotnet Core WebApi實作(使用Dapper、Swagger、Postman)-2 (sunnyday0932.github.io)</a></li>
@@ -444,9 +445,9 @@ c.IncludeXmlComments(xmlPath);
         
         <li><a href="/post/2021/05/newbie-2-webapi/">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a></li>
         
-        <li><a href="/post/2021/04/newbie-1-hello-git/">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a></li>
-        
         <li><a href="/post/2021/04/newbie-0-menu/">菜雞新訓記 (0): 前言</a></li>
+        
+        <li><a href="/post/2021/04/newbie-1-hello-git/">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a></li>
         
         <li><a href="/post/2021/01/oo-ex1-end2020/">菜雞與物件導向 (Ex1): 小結</a></li>
         
@@ -797,5 +798,16 @@ c.IncludeXmlComments(xmlPath);
 
 
 
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
 </body>
 </html>

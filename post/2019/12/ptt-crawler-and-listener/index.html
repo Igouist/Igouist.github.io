@@ -26,7 +26,7 @@
         
     <meta property="article:modified_time" content="2019-12-09T10:05:00&#43;08:00">
         
-    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="Keywords" content="[Python Crawler PTT requests_html Gmail SMTP]">
     <meta name="description" content="Python 爬蟲練習：當 PTT 團購板上新發了一篇 Netflix 的文，馬上寄信告訴我。主要步驟為用 Python 的 requests_html 包爬 PTT 團購板的文章標題、並寄信（使用 Gmail）和持續監視。">
         <meta name="author" content="Igouist">
         
@@ -127,7 +127,7 @@
 <li>能夠寄信（使用 Gmail）</li>
 <li>持續監視，也就是重複執行</li>
 </ul>
-<h3 id="爬蟲">爬蟲</h3>
+<h2 id="使用-requests-爬蟲">使用 requests 爬蟲</h2>
 <p>所謂的爬蟲就是傳送 HTTP 去瀏覽網頁，並把網頁的內容（像 HTML 等）打包回來分析使用。</p>
 <p>這部分，我是參考這篇 <a href="https://github.com/leVirve/CrawlerTutorial">爬蟲極簡教學</a> 來寫的，主要是使用 <strong>requests</strong> 來取得 HTML，再使用 <strong>requests_html</strong> 解析，裡面的說明非常詳盡。</p>
 <p>除了這兩個，其他常用到的工具還有：解析 HTML 架構的 <strong>Beautiful Soup</strong>（<a href="https://blog.gtwang.org/programming/python-beautiful-soup-module-scrape-web-pages-tutorial/">教學</a>）、模擬瀏覽器的 <strong>Selenium</strong> 等。一些常用的工具可以參考這篇 <a href="https://blog.v123582.tw/2018/09/03/%E5%AD%B8%E7%BF%92-Python-%E7%88%AC%E8%9F%B2%E7%9A%84%E6%9C%80%E4%BD%B3%E8%B7%AF%E5%BE%91/">爬蟲的工具鍊</a> 的介紹。</p>
@@ -167,7 +167,7 @@
         meta[<span style="color:#e6db74">&#39;link&#39;</span>] <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;[Deleted]&#39;</span>
     <span style="color:#66d9ef">return</span> meta
 </code></pre></div><p>到這邊應該能取得首頁上目前的文章了。由於我們做的是監聽團購的目標是不是有人發文，因此我們並不需要再進連結取得內文、或是翻頁繼續爬等更複雜的操作，只需要第一頁的資料就足夠了。（如果想要翻頁，例如說需要爬前一百頁的時候，上面的爬蟲極簡教學有使用抓翻頁按鈕的連結來達成的做法可以參考。）</p>
-<h3 id="寄信">寄信</h3>
+<h2 id="使用-smtplib-寄信">使用 smtplib 寄信</h2>
 <p>寄信部分利用 smtplib 來做 <a href="http://learn-web-hosting-domain-name.mygreatname.com/how-mail-server-works/how-smtp-pop3-mail-servers-works.html">SMTP</a> 。使用方式相當簡單，可以參考 <a href="http://www.runoob.com/python/python-email.html">菜鳥教程的說明</a> 。這邊為了方便，直接使用 Gmail 來寄件。<em>（註：要讓 Gmail 可以用這種程式登入的方法來寄信，需要先開啟允許安全性較低的應用程式設定）</em></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">send_mail_for_me</span>(meta):
     <span style="color:#e6db74">&#39;利用 Gmail 的服務寄發通知信&#39;</span>
@@ -187,7 +187,7 @@
     server<span style="color:#f92672">.</span>send_message(msg)
     server<span style="color:#f92672">.</span>quit()
 </code></pre></div><p>這邊目標是將爬到的那一項傳進來寄出去。可以先稍微測試，寄一點垃圾信試試看（找不到的時候記得找一下垃圾信件）。確定收得到之後就可以整合進去了。</p>
-<h3 id="本體">本體</h3>
+<h2 id="本體">本體</h2>
 <p>接著將上面的兩個部分整合起來：爬蟲，然後如果爬到目標就寄信，沒爬到就準備重爬。這邊先放一個 flog 來準備之後判斷要不要繼續爬的部分。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">ptt_alert</span>(url, keyword):
     url <span style="color:#f92672">=</span> url <span style="color:#75715e"># 網址</span>
@@ -354,17 +354,6 @@ t <span style="color:#f92672">=</span> dt<span style="color:#f92672">.</span>dat
                         </div>
 
                         
-
-<div class="post-archive">
-    <h2>其他文章</h2>
-    <ul class="listing">
-        
-        <li><a href="/archives/">archives</a></li>
-        
-        <li><a href="/about/">關於我</a></li>
-        
-    </ul>
-</div>
 
 
                         <div class="post-meta meta-tags">
@@ -706,5 +695,16 @@ t <span style="color:#f92672">=</span> dt<span style="color:#f92672">.</span>dat
 
 
 
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
 </body>
 </html>

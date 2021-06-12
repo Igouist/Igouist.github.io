@@ -26,7 +26,7 @@
         
     <meta property="article:modified_time" content="2020-05-31T23:24:00&#43;08:00">
         
-    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="Keywords" content="[Python w3HexSchool Heroku Selenium Automation PostgreSQL]">
     <meta name="description" content="紀錄把 Python 腳本部屬上 Heroku 遇到的問題及解決方法。包括：將 SQLite 要改成用 PostgreSQL、在 Heroku 上執行 Selenium 等等，將這些問題和找到的前人解決文記錄在這一篇，將來再遇到的時候就可以參考。">
         <meta name="author" content="Igouist">
         
@@ -126,7 +126,7 @@
 <li>SQLite 要改成用 PostgreSQL</li>
 <li>在 Heroku 上執行 Selenium</li>
 </ol>
-<h3 id="一sqlite-要改成用-postgresql">一、SQLite 要改成用 PostgreSQL</h3>
+<h2 id="一sqlite-要改成用-postgresql">一、SQLite 要改成用 PostgreSQL</h2>
 <p>在之前的 <a href="/post/2020/03/bandon-2-sqlite/">我要訂便當(2) —— 用 Python + Sqlite 儲存訂單</a> 中，為了方便及簡單性，選擇了較輕便的 SQLite 來儲存我們爬回來的訂單資訊。然而，SQLite 將資料儲存在小檔案以便於攜帶的做法，在 Heroku 上將會遭遇像是各個 dyno 的資料不同步等許多問題，因此 Heroku 是不建議使用 SQLite 的。</p>
 <p>在 Heroku 的開發文件中的 <a href="https://devcenter.heroku.com/articles/sqlite3">SQLite on Heroku</a> 有關於這部分的詳細說明，並直接提到「<em>If you were to use SQLite on Heroku, you would lose your entire database at least once every 24 hours.</em>」同時，官方也提供了他們的建議：<strong>PostgreSQL</strong>。相較於輕便但只能同時單一寫入而且還會在 dyno 炸掉的 SQLite，PostgreSQL 的完整性更符合 Heroku 對服務的要求。</p>
 <p>關於在 Heroku 上使用 PostgreSQL 的做法，這篇 <a href="https://swf.com.tw/?p=1327">佈署 Python Flask 網站留言板應用程式到 Heroku + PostgreSQL 資料庫系統</a> 說明得相當詳細。</p>
@@ -135,14 +135,14 @@
 <p>安裝完畢之後，可以點選 Heroku Postgres 進入擴充套件管理的頁面，這邊進去 Setting 就可以進行相關的設定，也能從這邊取得帳號、密碼及資料庫URL。</p>
 <p>Heroku 部分設定完畢之後，就要回來改我們便當的程式碼。相對於當初 SQLite 時使用的 sqlite3 包，這次要操作 PostgreSQL 則是要使用 python-psycopg2 這個包。</p>
 <p>相關的操作可以參考 Gitbook.net 的這篇 <a href="http://tw.gitbook.net/postgresql/2013080998.html">PostgreSQL 連接 Python</a>。可以發現整體的操作方式和之前使用 sqlite3 並沒有什麼太大的不同，因此略做修改之後就可以使用囉。</p>
-<h4 id="本區段的參考資料">本區段的參考資料</h4>
+<h3 id="本區段的參考資料">本區段的參考資料</h3>
 <ul>
 <li><a href="https://swf.com.tw/?p=1327">佈署 Python Flask 網站留言板應用程式到 Heroku + PostgreSQL 資料庫系統</a></li>
 <li><a href="https://ithelp.ithome.com.tw/articles/10199016">[Ting&rsquo;s筆記Day5] 在部署到Heroku之前，將Rails專案從SQLite設定為PostgreSQL - iT邦幫忙</a></li>
 <li><a href="http://tw.gitbook.net/postgresql/2013080998.html">PostgreSQL 連接 Pytho - Gitbook</a></li>
 <li><a href="https://devcenter.heroku.com/articles/sqlite3">SQLite on Heroku - Heroku Dev Center</a></li>
 </ul>
-<h3 id="二在-heroku-上執行-selenium">二、在 Heroku 上執行 Selenium</h3>
+<h2 id="二在-heroku-上執行-selenium">二、在 Heroku 上執行 Selenium</h2>
 <p>前面的 <a href="/post/2020/03/bandon-1-selenium/">我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單</a> 中，能取得訂單內容主要都是依賴於 Selenium 控 chrome 上。然而我們丟上 Heroku 後… 哪來的瀏覽器啊！因此遭遇到了這整個專案最大的存在危機（？）</p>
 <p>幸好後來有找到這篇 <a href="https://medium.com/@mikelcbrowne/running-chromedriver-with-python-selenium-on-heroku-acc1566d161c">Running ChromeDriver with Python Selenium on Heroku</a>，裡面有說明如何順利在 Heroku 上跑 Selenium，實在是相當感謝，這邊也記錄一下。</p>
 <p>我們在前面 <a href="/post/2020/05/bandon-4-heroku/">我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku</a> 有提到，Heroku 有建置包這東西來協助建置專案，也提到 Python 是 heroku-buildpack-python。這邊就是建置包去建出 webdriver，因此使用 <code>heroku buildpacks:add</code> 的指令去加入 <code>heroku-buildpack-chromedriver heroku buildpa</code> 這個建置包。</p>
@@ -157,7 +157,7 @@ CHROMEDRIVER_PATH <span style="color:#f92672">=</span> <span style="color:#e6db7
 chrome_options<span style="color:#f92672">.</span>add_argument(<span style="color:#e6db74">&#39;--no-sandbox&#39;</span>)
 chrome_options<span style="color:#f92672">.</span>binary_location <span style="color:#f92672">=</span> GOOGLE_CHROME_PATH
 </code></pre></div><p>在初始化 <code>webdriver.Chrome</code> 一併傳入就可以囉！說起來之前 chrome 被我改壞時，也是靠 -no-sandbox 才開起來的，關於 sandbox ，可以看 Google 的 <a href="https://www.google.com/googlebooks/chrome/med_26.html">這篇漫畫</a>，或是這篇 <a href="https://www.inside.com.tw/article/14031-google-chrome-browser-10-years-history">Inside 的簡單介紹</a>。</p>
-<h4 id="本區段的參考資料-1">本區段的參考資料</h4>
+<h3 id="本區段的參考資料-1">本區段的參考資料</h3>
 <ul>
 <li><a href="https://medium.com/@mikelcbrowne/running-chromedriver-with-python-selenium-on-heroku-acc1566d161c">Running ChromeDriver with Python Selenium on Heroku - Michael Browne - Medium</a></li>
 <li><a href="http://b0212066.pixnet.net/blog/post/213602412-heroku-%E4%BD%BF%E7%94%A8-selenium-%E7%9A%84-webdriver">Heroku 上使用 webdriver 爬蟲抓資料 - Kevin的部落格</a></li>
@@ -187,11 +187,11 @@ chrome_options<span style="color:#f92672">.</span>binary_location <span style="c
         
         <li><a href="/post/2020/04/bandon-3-line-notify/">我要訂便當 (3): 用 Python &#43; Line Notify 傳送通知</a></li>
         
-        <li><a href="/post/2020/03/bandon-2-sqlite/">我要訂便當 (2): 用 Python &#43; Sqlite 儲存訂單</a></li>
-        
         <li><a href="/post/2020/03/bandon-1-selenium/">我要訂便當 (1): 用 Python &#43; Selenium 控制瀏覽器取得訂單</a></li>
         
         <li><a href="/post/2020/03/sikulix/">SikuliX —— 針對圖形介面寫自動化腳本的小幫手</a></li>
+        
+        <li><a href="/post/2020/03/bandon-2-sqlite/">我要訂便當 (2): 用 Python &#43; Sqlite 儲存訂單</a></li>
         
     </ul>
 </div>
@@ -542,5 +542,16 @@ chrome_options<span style="color:#f92672">.</span>binary_location <span style="c
 
 
 
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
 </body>
 </html>

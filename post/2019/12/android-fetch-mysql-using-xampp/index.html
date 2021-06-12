@@ -239,7 +239,7 @@
 <p>成功的話應該能看見網頁輸出了資料表中資料的 JSON，之後我們就是要用 Android 連線到這個網頁並取得資料。此外，若是要搜尋不同資料表的資料或是特定條件的資料，只需要更改 SQL 語法即可。</p>
 <blockquote>
 <p>備註：關於 JSON 可以參閱 <a href="http://miniaspreading.github.io/guide-to-json/1-what-is-json.html">JSON精要讀書紀錄</a>，另外常用的 SQL 操作還有新增、修改、刪除等，有興趣的同學可以嘗試自己實作。</p>
-<p><strong>警告</strong>：本篇僅教學如何連線取值，實際應用時請對取得資料的網頁進行<strong>資料驗證或加密</strong>。你可能需要了解 <a href="https://blog.toright.com/posts/1203/%E6%B7%BA%E8%AB%87-http-method%EF%BC%9A%E8%A1%A8%E5%96%AE%E4%B8%AD%E7%9A%84-get-%E8%88%87-post-%E6%9C%89%E4%BB%80%E9%BA%BC%E5%B7%AE%E5%88%A5%EF%BC%9F.html">GET 和 POST 的差異</a> 、於 PHP 端要求傳入特定的參數進行驗證後才能取得資料，以及嘗試搜尋如 <strong>AES</strong> 、<strong>RSA</strong> 等加密方式。</p>
+<p><strong>警告</strong>：本篇僅教學如何連線取值，實際應用時請對取得資料的網頁進行<strong>資料驗證或加密</strong>。你可能需要了解 <a href="https://blog.toright.com/posts/1203/%E6%B7%BA%E8%AB%87-http-method%EF%BC%9A%E8%A1%A8%E5%96%AE%E4%B8%AD%E7%9A%84-get-%E8%88%87-post-%E6%9C%89%E4%BB%80%E9%BA%BC%E5%B7%AE%E5%88%A5%EF%BC%9F.html">GET 和 POST 的差異</a> 、於 PHP 端要求傳入特定的參數進行驗證後才能取得資料等等。</p>
 </blockquote>
 <h2 id="在-android-連線取得資料">在 Android 連線取得資料</h2>
 <p>打開 Android studio，建立新專案，然後簡單開個版面如下就好，目標是按下按鈕之後把資料顯示在 Textview 裡面。</p>
@@ -269,8 +269,9 @@
 <p>引用了工具也取得權限之後，我們就可以回到 Java 程式碼的部分了。這邊先按每一段進行解說，<strong>最後會貼上整頁的程式碼</strong>。</p>
 <p>整體程式的思路是這樣的：由於 Android 本身的限制，和網路連線的部分必須要用另一個執行緒，不能干涉到主流程，因此我們需要先宣告一個執行緒。而它執行的事件部分，我們需要先宣告和 HTTP 有關的函式庫和物件，接著利用這些物件連線到我們伺服器上的網頁，最後把網頁上的資料拉回來。</p>
 <blockquote>
-<p>備註：HTTP 的部分，可以參考 <a href="http://fiend1120.pixnet.net/blog/post/193711428">Android HTTP Get 及 Post</a> 而執行緒的部分，可以參考 <a href="https://medium.com/@totoroLiu/program-process-thread-%E5%B7%AE%E7%95%B0-4a360c7345e5">Program/Process/Thread 差異</a> 以及 <a href="http://ccckmit.wikidot.com/thread">Thread 的概念</a>，而和 Android 相關的程式部分可以參考 <a href="http://andcooker.blogspot.com/2012/09/android-runnable-handler.html">Android 執行緒 - Runnable 與 Handler</a></p>
+<p>備註：HTTP 的部分，可以參考 <a href="http://fiend1120.pixnet.net/blog/post/193711428">Android HTTP Get 及 Post</a> <br/>而執行緒的部分，可以參考 <a href="https://medium.com/@totoroLiu/program-process-thread-%E5%B7%AE%E7%95%B0-4a360c7345e5">Program/Process/Thread 差異</a> 以及 <a href="http://ccckmit.wikidot.com/thread">Thread 的概念</a><br/>和 Android 相關的程式部分可以參考 <a href="http://andcooker.blogspot.com/2012/09/android-runnable-handler.html">Android 執行緒 - Runnable 與 Handler</a></p>
 <p>(2020/4/21) 補充：HTTP 的部分可以看 <a href="https://medium.com/@hulitw/learning-tcp-ip-http-via-sending-letter-5d3299203660">從傳紙條輕鬆學習基本網路概念</a> 這篇，寫得很不錯又好懂</p>
+<p>(2021/6/2) 補充：在之後的 .NET 的系列文補上了 HTTP 和 API 的一些基本知識。有興趣的朋友可以參閱本部落格的這篇 <a href="/post/2021/05/newbie-2-webapi">認識 Api 與建置 Web Api 服務</a></p>
 </blockquote>
 <p>首先是建立一個執行緒的部分：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#75715e">// 建立一個執行緒執行的事件取得網路資料
@@ -757,5 +758,16 @@
 
 
 
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
 </body>
 </html>

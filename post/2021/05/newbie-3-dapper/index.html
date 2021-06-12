@@ -26,7 +26,7 @@
         
     <meta property="article:modified_time" content="2021-05-09T11:15:00&#43;08:00">
         
-    <meta name="Keywords" content="Coding, Asp.net, Python, Igouist, Asp.net筆記, Python筆記, 程式設計, 實作">
+    <meta name="Keywords" content="[asp.net core dotnet core web api dapper]">
     <meta name="description" content="這是俺整理公司新訓內容的第三篇文章，目標是簡單地使用 Dapper 連線到資料庫並完成 CRUD 的功能">
         <meta name="author" content="Igouist">
         
@@ -120,23 +120,23 @@
                             <p><img src="https://i.imgur.com/kOpRPTm.png" alt=""></p>
 <p>這是俺整理公司新訓內容的第三篇文章，目標是<strong>簡單地使用 Dapper 連線到資料庫並完成 CRUD 的功能</strong>。</p>
 <ul>
-<li><a href="#%E5%89%8D%E8%A8%80%E5%9F%BA%E6%9C%AC%E8%A7%80%E5%BF%B5">前言、基本觀念</a>
+<li><a href="/post/2021/05/newbie-3-dapper#%E5%89%8D%E8%A8%80%E5%9F%BA%E6%9C%AC%E8%A7%80%E5%BF%B5">前言、基本觀念</a>
 <ul>
-<li><a href="#%E9%97%9C%E6%96%BC%E5%BC%B1%E5%9E%8B%E5%88%A5%E8%88%87%E5%BC%B7%E5%9E%8B%E5%88%A5">關於弱型別與強型別</a></li>
-<li><a href="#%E9%97%9C%E6%96%BC%E7%89%A9%E4%BB%B6%E9%97%9C%E4%BF%82%E5%B0%8D%E6%98%A0orm">關於物件關係對映（ORM）</a></li>
-<li><a href="#%E9%97%9C%E6%96%BC-dapper">關於 Dapper</a></li>
+<li><a href="/post/2021/05/newbie-3-dapper#%E9%97%9C%E6%96%BC%E5%BC%B1%E5%9E%8B%E5%88%A5%E8%88%87%E5%BC%B7%E5%9E%8B%E5%88%A5">關於弱型別與強型別</a></li>
+<li><a href="/post/2021/05/newbie-3-dapper#%E9%97%9C%E6%96%BC%E7%89%A9%E4%BB%B6%E9%97%9C%E4%BF%82%E5%B0%8D%E6%98%A0orm">關於物件關係對映（ORM）</a></li>
+<li><a href="/post/2021/05/newbie-3-dapper#%E9%97%9C%E6%96%BC-dapper">關於 Dapper</a></li>
 </ul>
 </li>
-<li><a href="#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a>
+<li><a href="/post/2021/05/newbie-3-dapper#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a>
 <ul>
-<li><a href="#%E7%92%B0%E5%A2%83%E6%BA%96%E5%82%99%E5%BB%BA%E7%AB%8B%E8%B3%87%E6%96%99%E8%A1%A8%E5%AE%89%E8%A3%9D-dapper">環境準備（建立資料表、安裝 Dapper）</a></li>
-<li><a href="#%E5%BB%BA%E7%AB%8B%E5%B0%8D%E6%87%89%E8%B3%87%E6%96%99%E8%A1%A8%E7%9A%84%E9%A1%9E%E5%88%A5">建立對應資料表的類別</a></li>
-<li><a href="#%E4%BD%BF%E7%94%A8-dapper-%E5%AF%A6%E4%BD%9C-crud">使用 Dapper 實作 CRUD</a></li>
-<li><a href="#%E5%B0%8D%E6%8E%A5%E8%88%87%E6%B8%AC%E8%A9%A6">對接與測試</a></li>
+<li><a href="/post/2021/05/newbie-3-dapper#%E7%92%B0%E5%A2%83%E6%BA%96%E5%82%99%E5%BB%BA%E7%AB%8B%E8%B3%87%E6%96%99%E8%A1%A8%E5%AE%89%E8%A3%9D-dapper">環境準備（建立資料表、安裝 Dapper）</a></li>
+<li><a href="/post/2021/05/newbie-3-dapper#%E5%BB%BA%E7%AB%8B%E5%B0%8D%E6%87%89%E8%B3%87%E6%96%99%E8%A1%A8%E7%9A%84%E9%A1%9E%E5%88%A5">建立對應資料表的類別</a></li>
+<li><a href="/post/2021/05/newbie-3-dapper#%E4%BD%BF%E7%94%A8-dapper-%E5%AF%A6%E4%BD%9C-crud">使用 Dapper 實作 CRUD</a></li>
+<li><a href="/post/2021/05/newbie-3-dapper#%E5%B0%8D%E6%8E%A5%E8%88%87%E6%B8%AC%E8%A9%A6">對接與測試</a></li>
 </ul>
 </li>
-<li><a href="#%E5%B0%8F%E7%B5%90">小結</a></li>
-<li><a href="#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0">本系列文章</a></li>
+<li><a href="/post/2021/05/newbie-3-dapper#%E5%B0%8F%E7%B5%90">小結</a></li>
+<li><a href="/post/2021/05/newbie-3-dapper#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0">本系列文章</a></li>
 </ul>
 <p>接續<a href="/post/2021/05/newbie-2-webapi">上一篇</a>的進度，我們接著要來連線到資料庫中完成我們的 Web Api 的 CRUD 範例。因為從新訓時期到現在工作團隊作業上主要都是使用 Dapper 來做連線資料庫的工作，這邊就直接用 Dapper 來推進吧！</p>
 <p>Dapper 有多好用呢？它輕量、它簡單、它快速。總之先把大神們的介紹文直接拿來鎮樓：</p>
@@ -146,8 +146,8 @@
 <li><a href="https://www.huanlintalk.com/2014/03/a-micro-orm-dapper.html">好用的微型 ORM：Dapper - Huanlin 學習筆記</a></li>
 </ul>
 <p>那麼按照慣例，我們先來 <del>吹捧今天的主角</del> 說明一點簡單的前因後果吧。想直接實作的朋友，可以跳到<a href="#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a>的小節呦。</p>
-<h3 id="前言基本觀念">前言、基本觀念</h3>
-<h4 id="關於弱型別與強型別">關於弱型別與強型別</h4>
+<h2 id="前言基本觀念">前言、基本觀念</h2>
+<h3 id="關於弱型別與強型別">關於弱型別與強型別</h3>
 <p>在很久很久以前，從資料庫裏面撈資料庫會使用 <code>DataTable</code>、<code>DataSet</code> 的做法去取，但有一個小小的問題，就是這些做法並不是強型別的。當我們在從 <code>Rows[0][&quot;ID&quot;]</code> 取值的時候，其實我們不知道 Key 對不對，也不知道取不取得到值，更不知道取出來的值是哪個型別。</p>
 <p>當強型別的語法寫慣了之後，再回到上面的這種弱型別環境，就常常會遇到一些令人抓狂的狀況。像是編譯的時候沒出錯，執行的時候才炸掉；因為沒有指定型別，也就無法進行某些操作，必須額外再轉型；轉了型也不知道跑起來是不是和想的一樣等等……<strong>內心充滿了不安感</strong>。戰戰慄慄，汗不敢出。</p>
 <blockquote>
@@ -162,7 +162,8 @@
 <p>既然你遲早要用強型別的，為什麼不一開始就用強型別呢？還能少一堆坑。</p>
 <p>呃，總之，感謝微軟拔拔讓我有 <code>var</code> 可以用。幫我檢查型別又讓我可以爽寫，謝謝齁。</p>
 </blockquote>
-<h4 id="關於物件關係對映orm">關於物件關係對映（ORM）</h4>
+<hr>
+<h3 id="關於物件關係對映orm">關於物件關係對映（ORM）</h3>
 <p>因為前述的型別問題，大多數人就投向了 ORM 的懷抱。ORM 的全名是物件關係對映（Object Relational Mapping），核心理念是將資料庫的資料映射到物件裡，這樣就可以在我們的程式語言中直接像操作物件一樣地去操作資料。</p>
 <p>例如說在之前的這篇 <a href="/post/2019/12/aspnet-connect-db-ef">Asp.net MVC: Entity Framework 連線資料庫</a>，就利用了 Entity Framework 這個工具去把資料表和類別對接起來，進而直接在程式碼中對資料進行操作。</p>
 <blockquote>
@@ -180,7 +181,8 @@
 <p>關於各個狀況的比較，這邊推薦黑大的 <a href="https://blog.darkthread.net/blog/linq-or-direct-sql/">閒聊：用 LINQ 還是自己寫 SQL？</a>，整理了在 Dotnet 執行 SQL 邏輯的策略和優缺點，建議可以先看過有個感覺。</p>
 <p>另外，關於一些 ORM 的問題點，除了上面 ORM 介紹文章中提到的缺點以外，也可以閱讀這篇 <a href="https://tecky.io/en/blog/SQL%E4%B8%89%E9%83%A8%E6%9B%B2:%E4%BD%A0%E4%B8%8D%E9%9C%80%E8%A6%81ORM/">你不需要 ORM</a> 有實際的程式碼例子可能會比較有感覺。</p>
 </blockquote>
-<h4 id="關於-dapper">關於 Dapper</h4>
+<hr>
+<h3 id="關於-dapper">關於 Dapper</h3>
 <p>那既然這樣，我們能不能在上面兩者之間取得一個平衡呢？</p>
 <p>讓一個工具來<strong>協助我們處理和資料庫的溝通</strong>，幫忙我們<strong>把資料表對應到類別，把資料轉換成物件</strong>，讓我們可以使用<strong>強型別</strong>去開發；同時我們又可以保留大部分的彈性，像是<strong>讓我們自己撰寫 SQL 語法</strong>或一些細微的設定，讓我們可以主動去<strong>調整效能</strong>？</p>
 <p>如果又比起 ORM 更<strong>輕量</strong>，又能<strong>快速方便好用</strong>就好了。</p>
@@ -198,8 +200,8 @@
 <p>把 Dapper 交給那些 覺得還要先建一堆東西做一堆事才能拿資料很麻煩的朋友，快速簡單 Model 開下去 SQL 砸下去就可以爽拿 DB 資料。</p>
 <p>把 Dapper 交給那些 翻寫古老屎山的朋友，移植又臭又長 SQL 語法到新框架的時候，終於可以整個拉過來先跑，再步步為營去重構。</p>
 <p>所以說，Dapper 好！Dapper 妙！Dapper 嚇嚇叫！</p>
-<h3 id="正式開工">正式開工</h3>
-<h4 id="環境準備建立資料表安裝-dapper">環境準備（建立資料表、安裝 Dapper）</h4>
+<h2 id="正式開工">正式開工</h2>
+<h3 id="環境準備建立資料表安裝-dapper">環境準備（建立資料表、安裝 Dapper）</h3>
 <p>到這邊已經用了兩千字來吹捧 Dapper 了，差不多讓我們把鏡頭轉回到 Web Api 服務上，邊推進邊說明一些簡單的用法吧！</p>
 <p>接續我們<a href="/post/2021/05/newbie-2-webapi">上一篇</a>的進度，在上一篇裡，我們對外開了一組簡單 CRUD 的 API，用來查增修刪我們的卡片資訊。</p>
 <p>但當時只是開了簡單的服務，資料也是暫存的而已。所以這篇的目標是將我們的 API 服務連到資料庫，真正實現對卡片資料的操作。</p>
@@ -224,7 +226,8 @@
 <p><img src="https://i.imgur.com/66GtKJA.png" alt=""></p>
 <p><img src="https://i.imgur.com/0fuLbQC.png" alt=""></p>
 <p>恭喜你，你已經完成本篇文章實作的一半了。</p>
-<h4 id="建立對應資料表的類別">建立對應資料表的類別</h4>
+<hr>
+<h3 id="建立對應資料表的類別">建立對應資料表的類別</h3>
 <p>使用 Dapper 的時候，我們要先準備好<strong>把資料從拉回來時，用來轉換成物件的類別</strong>。</p>
 <p>我們在上次已經有在 <code>Models</code> 資料夾裡建立好 <code>Card.cs</code>，現在我們就來修改它。（不是從上一期開始跟的朋友，請製作一個和資料表欄位相對應的 Class）</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
@@ -272,7 +275,8 @@
 <p>建立類別的時候要注意，這個類別是用來接收你最後拉回來的資料的。要是你最後打算 Join 兩張表然後各取兩個欄位，這裡的類別就是那各兩個欄位；要是你查詢之後只打算返回其中的幾個欄位，這裡的類別就是那幾個欄位。</p>
 <p>在工作上就見識過同事在查詢一張數百欄位的大型表時，針對該表建立了少數欄位、一半欄位、全部欄位三種情況的類別，搭配了泛型和 Dapper 的轉換來接收不同數量的值，藉此控制不同查詢場景時的傳輸成本。因此，建立類別的時候還是要<strong>依照你最終想要拿到哪些資料下去調整</strong>比較好。</p>
 <p>刻好要用來接資料的類別之後，接著就讓我們來實作 CRUD 的銜接部分吧！</p>
-<h4 id="使用-dapper-實作-crud">使用 Dapper 實作 CRUD</h4>
+<hr>
+<h3 id="使用-dapper-實作-crud">使用 Dapper 實作 CRUD</h3>
 <blockquote>
 <p>小提示：你可能需要對 SQL 有基本的認識，至少需要知道對應 CRUD 的 SELECT, INSERT, UPDATE 和 DELETE。不太熟悉的朋友可以參考  <a href="https://www.1keydata.com/tw/sql/sql.html">SQL語法教學</a></p>
 </blockquote>
@@ -700,7 +704,8 @@
         }
     }
 }
-</code></pre></div><h4 id="對接與測試">對接與測試</h4>
+</code></pre></div><hr>
+<h3 id="對接與測試">對接與測試</h3>
 <p>接著就讓我們回到 <code>CardController</code> 把這邊的操作和 API 對外的開口給銜接起來。</p>
 <p>首先先把 <code>CardRepository</code> 宣告成私有成員，取代掉我們原本用來暫存卡片資料的 <code>private static List&lt;Card&gt; _cards</code>。並且在建構式進行賦值（<del>一樣是打算讓之後改成注入的時候比較好改XD</del>）</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
@@ -847,7 +852,7 @@
 <p>確認資料表的卡片已經消失：</p>
 <p><img src="https://i.imgur.com/a5toUnV.png" alt=""></p>
 <p>到這邊我們就宣告完工啦！</p>
-<h3 id="小結">小結</h3>
+<h2 id="小結">小結</h2>
 <p>我們把前篇的 Web API 服務利用 Dapper 連接到 SQL Server，並成功完成了基本的 CRUD 功能。</p>
 <p>這邊總結一下這篇的一些小要點：</p>
 <ul>
@@ -887,7 +892,7 @@
 <blockquote>
 <p>本系列下一篇：<a href="/post/2021/05/newbie-4-swagger">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</a></p>
 </blockquote>
-<h3 id="本系列文章">本系列文章</h3>
+<h2 id="本系列文章">本系列文章</h2>
 <ul>
 <li><a href="/post/2021/04/newbie-0-menu">菜雞新訓記 (0): 目錄</a></li>
 <li><a href="/post/2021/04/newbie-1-hello-git">菜雞新訓記 (1): Git 入門這樣做</a></li>
@@ -905,9 +910,9 @@
         
         <li><a href="/post/2021/05/newbie-2-webapi/">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a></li>
         
-        <li><a href="/post/2021/04/newbie-1-hello-git/">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a></li>
-        
         <li><a href="/post/2021/04/newbie-0-menu/">菜雞新訓記 (0): 前言</a></li>
+        
+        <li><a href="/post/2021/04/newbie-1-hello-git/">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a></li>
         
         <li><a href="/post/2021/01/oo-ex1-end2020/">菜雞與物件導向 (Ex1): 小結</a></li>
         
@@ -1260,5 +1265,16 @@
 
 
 
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
 </body>
 </html>
