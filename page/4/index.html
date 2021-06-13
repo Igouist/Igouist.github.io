@@ -92,6 +92,63 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2020/07/code-style/" title="C#: 程式碼風格備忘" >C#: 程式碼風格備忘</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-7-25,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <blockquote>
+<p>前言：本篇是整理公司規範和網路文章後，方便我自己在各個場所也能回來查閱使用的，故仍會不定時修改（畢竟我這人挺三心二意的）。另外本篇有重新調整過行距，發現有點跑版的朋友可以先 Ctrl+F5 一下，感謝閱讀。</p>
+<p>如果你想知道的是如何寫出更優雅、更乾淨、品質更高的程式碼，那並不是該看這篇我個人的備忘錄，我會建議可以閱讀<a href="https://www.tenlong.com.tw/products/9789862017050?list_name=e-106">《無暇的程式碼》</a>。或是可以參考這幾篇，我覺得都寫得很好：<a href="https://ithelp.ithome.com.tw/users/20107637/ironman/1927">可不可以不要寫糙 code</a>、<a href="https://ithelp.ithome.com.tw/users/20107637/ironman/1927">Clean Code 無瑕的程式碼閱讀筆記</a>、<a href="https://ithelp.ithome.com.tw/users/20112160/ironman/1988">易讀程式之美學</a>，共勉之。</p>
+<p>如果你是正巧路過並且也寫 C#，希望這篇能讓你做為參考。但請記得，程式碼風格沒有絕對，最終還是回歸到團隊能否接受和將來的可維護性去考慮，畢竟教條是死的，人是活的。了解這樣做背後的原因，以及為自己寫的程式碼負責，這些都比對著隻字片語斤斤計較更加重要。</p>
+<p>Nothing is true, everything is permitted. —— Assassin&rsquo;s creed.</p>
+</blockquote>
+<h2 id="命名原則">命名原則</h2>
+<blockquote>
+<p>想像下一個接手你程式碼的人是個暴力傾向的重度精神病患者</p>
+<p>而且他知道你住在哪。　　—— 《無瑕的程式碼》</p>
+</blockquote>
+<ul>
+<li>使用<strong>有意義的命名</strong>，請重視描述性。除了迴圈計數器例外</li>
+<li>盡量不要超過五個單字</li>
+<li>業界和慣例中有對應縮寫時可以使用縮寫</li>
+<li>承上，縮寫兩個字母時全大寫，三個字母以上時只第一字大寫</li>
+</ul>
+<h3 id="命名空間">命名空間</h3>
+<ul>
+<li>基礎類別庫：{組織} . {大類/應用範圍} . {小類/專案名稱}
+<ul>
+<li><code>MyStudio.Libs.Basic</code></li>
+<li><code>MyStudio.Libs.Web.BaseTools</code></li>
+</ul>
+</li>
+<li>專案類別庫：{專案名稱} . {子專案/類別/用途}
+<ul>
+<li><code>MyProject.Permiss.Proxy</code></li>
+<li><code>MyProject.Permiss.Repository</code></li>
+</ul>
+</li>
+</ul>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2020/07/code-style/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2020/07/pocket/" title="Pocket —— 稍後閱讀，想看再看" >Pocket —— 稍後閱讀，想看再看</a>
                                 </h1>
                             </header>
@@ -506,39 +563,6 @@ warrior.Hit(goblin);
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2020/07/automapper/" title="AutoMapper —— 類別轉換超省力" >AutoMapper —— 類別轉換超省力</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-7-5,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p>類別間的轉換幾乎是每個專案每個工程師都會碰到的動作，舉凡是分層架構每層之間的轉換，如 Dto 轉換成 ViewModel；或是接收到資料要塞進自定義的類別時也需要進行轉換。但<strong>在遠古時代，當我們要把一個類別的資料倒進另一個類別時，總免不了一番折騰</strong>。</p>
-<p>例如一個卡片對戰遊戲的資料庫，光是要先把卡片資料讀取出來就需要：</p>
-<p><img src="https://i.imgur.com/c81Hx5I.png" alt=""></p>
-<p>有些時候也會看見用 Foreach 然後逐一傳值的場景，或是各種差不多的變種情況。同樣的是，光是將一個簡單的卡片資訊轉換成 ViewModel，就花了一大段在做對映的處理。這個過程本身枯燥乏味又占空間，更可怕的是，<strong>如果有個陳年資料表，動不動就上百個欄位，那這個轉換過程的恐怖程度可想而知</strong>。</p>
-<p>幸好！天無絕人之路，這種時候就是本日的主角 —— AutoMapper 出場的時候了。</p>
-<p>當 AutoMapper 一出手，轉換的過程瞬間就變成：</p>
-<p><img src="https://i.imgur.com/KxHAKpi.png" alt=""></p>
-<p>是不是精簡很多呢？接著就讓我們來看看怎麼開始使用吧！</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2020/07/automapper/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -626,6 +650,10 @@ warrior.Hit(goblin);
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet －－ 效能測試好簡單">C#: BenchmarkDotnet －－ 效能測試好簡單</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</a>
     </li>
     
@@ -661,10 +689,6 @@ warrior.Hit(goblin);
         <a href="https://igouist.github.io/post/2021/01/oo-ex1-end2020/" title="菜雞與物件導向 (Ex1): 小結">菜雞與物件導向 (Ex1): 小結</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2020/12/oo-15-least-knowledge-principle/" title="菜雞與物件導向 (15): 最少知識原則">菜雞與物件導向 (15): 最少知識原則</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -687,7 +711,7 @@ warrior.Hit(goblin);
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (17)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (18)</a>
     </li>
     
     <li>
@@ -738,6 +762,8 @@ warrior.Hit(goblin);
     <a href="https://igouist.github.io/tags/automation/">automation</a>
     
     <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/benchmarkdotnet/">benchmarkdotnet</a>
     
     <a href="https://igouist.github.io/tags/bug/">bug</a>
     
