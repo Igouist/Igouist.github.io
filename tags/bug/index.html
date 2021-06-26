@@ -103,6 +103,47 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2021/06/zero-width-space/">菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2021-6-26,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/bug">bug</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/bS6EGIL.png" alt=""></p>
+<p>這週遇到個想不到的坑，特別來記錄一下。故事是這樣的－－</p>
+<p>在需要呼叫其他 API 服務時，發生了以下怪事：</p>
+<ul>
+<li>打某支查詢 API，突然查不到任何東西，或是跳出參數錯誤</li>
+<li>有些<strong>需要用參數組成 URL 的 API 跑出 Not Found</strong>
+<ul>
+<li>第一組資料呼叫成功，第二組突然路徑錯誤</li>
+</ul>
+</li>
+<li>寫入的時候，<strong>資料莫名其妙多了個 <code>?</code></strong>
+<ul>
+<li>例如原先的資料是 <code>ABC</code>，不知怎地變成了 <code>ABC?</code></li>
+</ul>
+</li>
+</ul>
+<p>由於這些操作都涉及到同一個參數，直覺上就是我們這邊給的參數出了點問題，馬上進入找犯人的環節。直接中斷點標記下去，反覆觀察該字串，但它就是一個普通的字串 <code>&quot;ABC&quot;</code>，完全看不出什麼端倪。</p>
+<p>正要覺得參數沒有問題的時候，赫然發現組出來的 Url 相當不對勁：在該參數的後方，多出了 <strong><code>%E2%80%8B</code></strong> 這串神秘東西！</p>
+<p>當下我驚呆了，我們傳出去的 Url 裡，並不是預想的 <code>/api/product/ABC</code>，而是 <code>/api/product/ABC%e2%80%8b</code>！真是赤裸裸的背叛！這串鬼東西到底是什麼來頭？！</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2021/06/zero-width-space/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2020/11/bugs-install-dotnet-core-on-amazon-ami-requires-openssl/">菜雞抓蟲: 在 Amazon Linux AMI 安裝 .net Core 時卡在 Requires: openssl-libs</a>
                                     </h1>
                                 </header>
@@ -178,6 +219,10 @@ rpmbuild --bb openssl-libs-ami.spec.txt
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2021/06/zero-width-space/" title="菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！">菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet －－ 效能測試好簡單">C#: BenchmarkDotnet －－ 效能測試好簡單</a>
     </li>
     
@@ -213,10 +258,6 @@ rpmbuild --bb openssl-libs-ami.spec.txt
         <a href="https://igouist.github.io/post/2021/03/visual-studio-bookmark/" title="Visual Studio: 書籤 (bookmarks)">Visual Studio: 書籤 (bookmarks)</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/01/oo-ex1-end2020/" title="菜雞與物件導向 (Ex1): 小結">菜雞與物件導向 (Ex1): 小結</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -235,7 +276,7 @@ rpmbuild --bb openssl-libs-ami.spec.txt
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/bug/">bug (1)</a>
+        <a href="https://igouist.github.io/categories/bug/">bug (2)</a>
     </li>
     
     <li>

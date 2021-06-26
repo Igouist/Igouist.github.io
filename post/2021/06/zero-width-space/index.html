@@ -17,20 +17,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>菜雞與物件導向 (8): 內聚、耦合 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="菜雞與物件導向 (8): 內聚、耦合 - 伊果的沒人看筆記本">
+    <title>菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！ | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！ - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2020-09-13T23:56:00&#43;08:00">
+    <meta property="article:published_time" content="2021-06-26T21:53:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2020-09-13T23:56:00&#43;08:00">
+    <meta property="article:modified_time" content="2021-06-26T21:53:00&#43;08:00">
         
-        <meta name="keywords" content="Object-Oriented, Cohesion, Coupling, 內聚, 耦合, w3HexSchool">
-    <meta name="description" content="內聚 (Cohesion) 是指把用到的東西都打包到一處，該有的自己都有了，可以自己 Carry 整場不用看豬隊友臉色的能力；耦合 (Coupling) 則是指兩者之間的關聯越緊密，彼此互相影響越大，其耦合度就越高。例如說繼承就是強耦合的代表，而介面就是降低耦合的手段之一。">
+        <meta name="keywords" content="零寬空格, ZWSP, Zero-width space, U&#43;200B, %E2%80%8B, \xe2\x80\x8b">
+    <meta name="description" content="菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling/">
+    <meta property="og:url" content="https://igouist.github.io/post/2021/06/zero-width-space/">
     <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link defer rel="stylesheet" href="/css/normalize.css">
@@ -96,17 +96,15 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">菜雞與物件導向 (8): 內聚、耦合</h1>
+                            <h1 class="post-title">菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2020-9-13,
+                            2021-6-26,
                         </date>
                         
                         <div class="post-meta">
                             
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a></span>
-                            
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/bug">bug</a></span>
                             
                         </div>
                         
@@ -119,71 +117,65 @@
                         </div>
                         
                         <div class="post-content">
-                            <p><img src="https://i.imgur.com/cgxW9yZ.png" alt=""></p>
-<p>做為前後段落的分水嶺，這篇文章我將紀錄一下 <strong>「內聚」(Cohesion)</strong> 和 <strong>「耦合」(Coupling)</strong>，這兩者是評估一個類別或元件的重要概念。</p>
-<p>在實務上，為了提升擴展性，降低維護成本等因素，我們對於單個類別或元件，會有著 <strong>「低耦合」</strong> 及 <strong>「高內聚」</strong> 的期待。例如我們在 <a href="/post/2020/07/oo-3-encapsulation">菜雞與物件導向 (3): 封裝</a> 中，我們就有提到封裝的好壞相當重要，其中也包含了「提高類別內的內聚性，降低對外的耦合性」。那麼，到底什麼是內聚，什麼又是耦合呢？</p>
-<h2 id="內聚">內聚</h2>
-<blockquote>
-<p><strong>「把需要的程式和資料都包裝在同一個模組內，使得該模組能夠做為一個單獨的個體執行」</strong></p>
-</blockquote>
-<p>白話一點說，就是就是把用到的東西都打包到一處，該有的自己都有了，所以即使單獨一個人也能完成工作的能力、可以自己 Carry 整場不用看豬隊友臉色的能力。越能自己單幹，越不需要依賴其他類別的時候，內聚力就越高。如果你的類別什麼都要依賴其他類別，像小嬰兒一樣需要呵護照顧，那內聚力就很低。反之，如果像野外求生大師，啥都靠自己，那內聚力就超高。</p>
-<p>內聚代表的是該模組的<strong>獨立性</strong>，當這個模組可以獨力完成工作，就代表我們能夠<strong>重複使用</strong>它，且不需要擔心影響到其他模組。並且也基於這點，我們不用擔心變動這個模組時需要先處理其他的模組，因為這個工作所需的都包含在模組內了，這樣就可以<strong>單獨修改</strong>該模組，減少維護成本。</p>
-<p>例如你的筆已經包含了所有寫字工具的條件，具有墨水跟筆芯等等，可以只使用筆就完成寫字這個工作。那麼我們就可以隨身帶著，在任何需要的時候重複使用它，而不用擔心我們會不會漏了什麼必要零件沒有帶出門。同時，如果我們需要換筆芯或墨水，我們也知道要更換的部份就在筆裡面，不需要去找鉛筆盒中別的地方。</p>
-<p>既然我們是將不同的邏輯和功能，封裝成不同的物件，藉由這些物件的互動來構築我們抽象化的世界和想法。為了隱藏這些物件內部的複雜性，同時又保持物件的整體性，讓物件能真的符合我們概念中的「一個」物件，那麼<strong>追求高內聚就是必然的</strong>。</p>
-<p>然而，<strong>盲目地追求高內聚是很危險的</strong>。只要你希望，當然可以寫出一個超級內聚的類別，但這代表什麼呢？</p>
-<p>為了提高內聚，把關聯的東西都一股腦塞進同一個地方，越塞越多越塞越多，為了獨立作業，沒那麼相關的東西也硬塞在一起。從模組變成義大利麵，再從義大利麵變成大補帖，最後終於變成<a href="https://en.wikipedia.org/wiki/God_object">神</a>，實際上根本就不內聚，功能一大堆動輒數千行，維護者莫不痛哭流涕…</p>
-<p>又或是為了避免上面的狀況，限制了功能範圍，把成員不認識也算做低內聚的表現。但卻又為了內聚，為了能獨立作業，為了不依賴別人，硬是把別的地方已經有的功能複製一份過來，用到的東西都複製複製複製進來，人人都有一份。最後遇到修改時，<strong>要改這又要改那，等著改的地方遍地開花</strong>，維護成本暴增，維護者再度痛哭流涕…</p>
-<p>到這邊應該能瞭解到完全內聚是不可能也不應該的，過於執著就會走火入魔。那麼怎樣的內聚算是剛剛好呢？或是說，一個良好的高內聚？這就牽涉到這段程式碼的<strong>意圖</strong>了。</p>
-<p><strong>良好的內聚應該只關注在一件事情上，並適時地將不屬於自身職責的工作交給別人</strong>，達到所謂「<a href="https://ithelp.ithome.com.tw/articles/10203659">該內聚而內聚，該耦合而耦合</a>」。</p>
-<blockquote>
-<p>所謂「只關注一件事情」、「不屬於自身職責」云云，我們在之後的<a href="/post/2020/10/oo-10-single-responsibility-principle">單一職責原則</a>會更進一步地說明。且先按下不表。</p>
-</blockquote>
-<p>為了減少重複程式碼，和降低維護的困難，不管怎樣互動都是不可避免的。那既然我們的物件多多少少都得依賴別人，就不能不提到耦合了。</p>
-<h2 id="耦合">耦合</h2>
-<blockquote>
-<p><strong>「如果模組和另一個模組有關聯，那這兩者之間就耦合」。</strong></p>
-</blockquote>
-<p>耦合的定義就是這麼寬廣。不管是接收另一個物件傳入的值，或者是共用同個全域變數，更何況我中有你你中有我，都是耦合。當兩者之間的關聯越緊密，越無法分離，其耦合度就越高。例如說<a href="/post/2020/07/oo-4-inheritance">繼承</a>就是強耦合的代表，而<a href="/post/2020/07/oo-7-interface">介面</a>就是降低耦合的手段之一。</p>
-<p>當我們要求減少重複程式碼的時候，就會有多個模組共用同一段程式碼的情形發生，這也就是他們和這段程式碼彼此耦合。那當我們為了其中一個使用者修改了這段程式碼，就會連帶影響其他用到的地方。變成<strong>改了這裡壞那裡，修了那裡壞這裡</strong>的詭異情況。這也就是我們追求降低耦合的最大原因。</p>
-<p>彼此關聯就會彼此牽連，因此我們要讓彼此之間保持一個<strong>舒適的距離</strong>。注意，是舒適的距離，而不是不相往來，<strong>健康的內聚就是健康的耦合</strong>。</p>
-<p>內聚是模組的獨立性，耦合則是模組的關聯性，低內聚高耦合的組合，牽一髮動全身，改個一行程式碼動輒就是大規模傷害，我們甚至不能切分模組，完全和物件的精神背道而馳，這是萬不能接受的。為了讓每個物件各自獨立又能彼此互動，打著<a href="/post/2020/07/oo-3-encapsulation">封裝</a>的旗幟，我們應該追求高內聚低耦合。但所謂過猶不及，若是太過火變成超高內聚無耦合，又會變成可怕的融合怪物或是複製大軍……</p>
-<p>不健康的內聚和不健康的耦合都是問題，內聚和耦合這兩者就像天秤的兩端，我們的目標就是找到那個合適的平衡點，也就是健康的高內聚低耦合才是我們所追求的。</p>
-<p>同時也可以注意到內聚和耦合會發生的問題，例如修改時影響其他物件導致壞一整片，又或是修改時太多地方要改成本過高，總是圍繞在擴展和維護，基本上就是<strong>面對改變時會發生的問題</strong>。就像基因的優劣在於<strong>適應環境並生存</strong>下去的能力，程式碼也是如此。為了協助我們追求健康的高內聚低耦合目標，也為了讓我們面對改變（遭遇災難）時有個方針，因此才有了一些<strong>原則</strong>。</p>
-<p>就像我們前面敘述內聚時一直迴避的這些問題：怎樣才是適合的內聚？如果說過高的內聚會塞太多功能或複製重複功能而變成怪物，過低的內聚則會四處拈花惹草，那我們要怎麼知道這個類別或元件的功能範圍剛剛好？這些問題的參考準則，就在於我們之後要介紹的「<a href="/post/2020/10/oo-10-single-responsibility-principle">單一職責原則</a>」！</p>
-<p>過了兩個月再度接續這個系列，一回來就是一篇碎碎念充當預告片。<a href="/post/2020/09/oo-9-solid">下回</a>開始就要進入物件導向五大原則的段落了，那麼，我們下次見！</p>
-<blockquote>
-<p>註：內聚跟耦合算是相當重要又基礎的觀念，我個人也還在摸索，只聞其聲不見其影。想要更了解這兩個概念的朋友，可以將參考資料的文章都看過一遍，我個人覺得頗有幫助，尤其是實務上的高內聚和低耦合、搞笑談軟工兩篇，值得特別推薦。</p>
-</blockquote>
-<blockquote>
-<p>本系列下一篇：<a href="/post/2020/09/oo-9-solid">菜雞與物件導向 (9): SOLID</a></p>
-</blockquote>
-<h2 id="參考資料">參考資料</h2>
+                            <p><img src="https://i.imgur.com/bS6EGIL.png" alt=""></p>
+<p>這週遇到個想不到的坑，特別來記錄一下。故事是這樣的－－</p>
+<p>在需要呼叫其他 API 服務時，發生了以下怪事：</p>
 <ul>
-<li><a href="https://ithelp.ithome.com.tw/articles/10203659">實務上的高內聚與低耦合</a></li>
-<li><a href="http://teddy-chen-tw.blogspot.com/2011/12/1.html">亂談軟體設計（1）：Cohesion and Coupling - 搞笑談軟工</a></li>
-<li><a href="https://ithelp.ithome.com.tw/articles/10191761">斷開鎖鏈! 低耦合、高內聚</a></li>
-<li><a href="https://ithelp.ithome.com.tw/articles/10206839">如何寫高品質 function (內聚性篇)</a></li>
-<li><a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-5_%E5%85%A7%E8%81%9Acohesion%E8%80%A6%E5%90%88coupling/">Object Oriented物件導向-5:內聚(Cohesion)、耦合(Coupling) - Sian</a></li>
+<li>打某支查詢 API，突然查不到任何東西，或是跳出參數錯誤</li>
+<li>有些<strong>需要用參數組成 URL 的 API 跑出 Not Found</strong>
+<ul>
+<li>第一組資料呼叫成功，第二組突然路徑錯誤</li>
 </ul>
-<h2 id="同系列文章">同系列文章</h2>
+</li>
+<li>寫入的時候，<strong>資料莫名其妙多了個 <code>?</code></strong>
 <ul>
-<li><a href="/post/2020/07/oo-0-object-oriented">菜雞與物件導向 (0): 前言</a></li>
-<li><a href="/post/2020/07/oo-1-class-object">菜雞與物件導向 (1): 類別、物件</a></li>
-<li><a href="/post/2020/07/oo-2-constructor-overload">菜雞與物件導向 (2): 建構式、多載</a></li>
-<li><a href="/post/2020/07/oo-3-encapsulation">菜雞與物件導向 (3): 封裝</a></li>
-<li><a href="/post/2020/07/oo-4-inheritance">菜雞與物件導向 (4): 繼承</a></li>
-<li><a href="/post/2020/07/oo-5-polymorphism">菜雞與物件導向 (5): 多型</a></li>
-<li><a href="/post/2020/07/oo-6-abstract-override">菜雞與物件導向 (6): 抽象、覆寫</a></li>
-<li><a href="/post/2020/07/oo-7-interface">菜雞與物件導向 (7): 介面</a></li>
-<li><a href="/post/2020/09/oo-8-cohesion-and-coupling">菜雞與物件導向 (8): 內聚、耦合</a></li>
-<li><a href="/post/2020/09/oo-9-solid">菜雞與物件導向 (9): SOLID</a></li>
-<li><a href="/post/2020/10/oo-10-single-responsibility-principle">菜雞與物件導向 (10): 單一職責原則</a></li>
-<li><a href="/post/2020/10/oo-11-open-closed-principle">菜雞與物件導向 (11): 開放封閉原則</a></li>
-<li><a href="/post/2020/11/oo-12-liskov-substitution-principle">菜雞與物件導向 (12): 里氏替換原則</a></li>
-<li><a href="/post/2020/11/oo-13-interface-segregation-principle">菜雞與物件導向 (13): 介面隔離原則</a></li>
-<li><a href="/post/2020/12/oo-14-dependency-inversion-principle">菜雞與物件導向 (14): 依賴反轉原則</a></li>
-<li><a href="/post/2020/12/oo-15-least-knowledge-principle">菜雞與物件導向 (15): 最少知識原則</a></li>
-<li><a href="/post/2021/oo-ex1-end2020">菜雞與物件導向 (Ex1): 小結</a></li>
+<li>例如原先的資料是 <code>ABC</code>，不知怎地變成了 <code>ABC?</code></li>
+</ul>
+</li>
+</ul>
+<p>由於這些操作都涉及到同一個參數，直覺上就是我們這邊給的參數出了點問題，馬上進入找犯人的環節。直接中斷點標記下去，反覆觀察該字串，但它就是一個普通的字串 <code>&quot;ABC&quot;</code>，完全看不出什麼端倪。</p>
+<p>正要覺得參數沒有問題的時候，赫然發現組出來的 Url 相當不對勁：在該參數的後方，多出了 <strong><code>%E2%80%8B</code></strong> 這串神秘東西！</p>
+<p>當下我驚呆了，我們傳出去的 Url 裡，並不是預想的 <code>/api/product/ABC</code>，而是 <code>/api/product/ABC%e2%80%8b</code>！真是赤裸裸的背叛！這串鬼東西到底是什麼來頭？！</p>
+<p>一查下去，原來這東西叫做 <strong>零寬空格（Zero-width space, ZWSP）</strong></p>
+<p>顧名思義，就是完全沒有寬度的空白字元。這東西在 Unicode 叫做 <strong><code>U+200B</code></strong>，我們比較常見到的是編碼之後的樣子 <strong><code>%e2%80%8b</code></strong> 或 <strong><code>\xe2\x80\x8b</code></strong>。他還有另外兩個兄弟 <code>U+200C</code>、<code>U+200D</code>，平常在泰文、高棉文之類的地方工作，這東西的特色就是：<strong>肉眼不可見、殺人於無形</strong>。</p>
+<p>它有多可怕，讓我們直接用 Linqpad 來試看看吧。</p>
+<p>現在我們有選手 A 和選手 B，其中選手 A 偷偷嗑了禁藥 ZWSP：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> a = <span style="color:#e6db74">&#34;ABC&#34;</span> + <span style="color:#960050;background-color:#1e0010">&#39;\</span>u200B<span style="color:#960050;background-color:#1e0010">&#39;</span>;
+<span style="color:#66d9ef">var</span> b = <span style="color:#e6db74">&#34;ABC&#34;</span>;
+</code></pre></div><p>讓我們打印出來看看：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#e6db74">$&#34;a:{a}&#34;</span>.Dump();
+<span style="color:#e6db74">$&#34;b:{b}&#34;</span>.Dump();
+</code></pre></div><p><img src="https://i.imgur.com/Z9VihgB.png" alt="Image"></p>
+<p>看起來完全一模一樣，連反白都分辨不出來！</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">a.Length.Dump(); <span style="color:#75715e">// 4
+</span><span style="color:#75715e"></span>b.Length.Dump(); <span style="color:#75715e">// 3
+</span></code></pre></div><p>看來其中一個傢伙明顯比較長。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">(a == b).Dump();      <span style="color:#75715e">// False
+</span><span style="color:#75715e"></span>(a.Equals(b)).Dump(); <span style="color:#75715e">// False
+</span></code></pre></div><p>看來這兩個傢伙完全不一樣！</p>
+<p>目前看來，從長度和比較運算等方面都會發現它們並不一樣，但是肉眼卻分不出來。</p>
+<p>這樣就會產生一些看起來像是 <code>(&quot;ABC&quot; == &quot;ABC&quot;) // False</code> 的神奇場景，除了揉眼睛然後哭喊「明明就一樣」以外無從下手。更可怕的是當我們拿去組 Url，問題就出來啦：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">HttpUtility.UrlEncode(a).Dump(); <span style="color:#75715e">// ABC%e2%80%8b
+</span><span style="color:#75715e"></span>HttpUtility.UrlEncode(b).Dump(); <span style="color:#75715e">// ABC
+</span></code></pre></div><p>真是完蛋。</p>
+<p>同時在查資料的時候，也發現 NET Framework 3.5 之後的 <code>Trim()</code> 並不把這個零寬空格當成空白，因此單純用 <code>Trim()</code> 是不會把這鬼東西砍掉的。</p>
+<p>所以如果你有以下情況，你可能是零寬空格的受害者！</p>
+<ul>
+<li>存到資料庫的資料莫名多一個 <code>?</code>（有看不見或編碼錯誤的字元）</li>
+<li>呼叫 API 服務的時候，不是參數錯誤，就是直接報錯找不到（檢查組完的 URL）</li>
+</ul>
+<p>這邊也順便記一下怎麼解決的，雖然是用相當暴力的方式：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">(a.Replace(<span style="color:#e6db74">&#34;\u200B&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>) == b).Dump(); <span style="color:#75715e">// true
+</span></code></pre></div><p>沒錯，我直接 <code>Replace</code> 掉它了囧，勉強度過了這次危機。</p>
+<blockquote>
+<p>備註：如果有更好的處理方式，也歡迎提供給我呦，感謝～</p>
+</blockquote>
+<p>雖然我更疑惑的是，資料裡面到底為啥會出現這種東西啦囧……</p>
+<p>最後感謝一下這次讓我得到幫助的網路文章。每次 Debug 都要感謝前人們的禮物，謝謝。</p>
+<ul>
+<li><a href="https://www.codenong.com/cs109748163/">记一个神k，请求地址中加了一堆字符（%E2%80%8B）</a></li>
+<li><a href="https://snippetinfo.net/mobile/media/789">Zero Width Space｜老洪的 IT 學習系統</a></li>
+<li><a href="https://blog.miniasp.com/post/2014/01/15/C-Sharp-String-Trim-ZWSP-Zero-width-space">魔鬼般的細節：使用 C# 的 String.Trim() 方法刪除空白字元 - The Will Will Web</a></li>
 </ul>
                         </div>
 
@@ -193,15 +185,11 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/2020/07/oo-7-interface/">菜雞與物件導向 (7): 介面</a></li>
+        <li><a href="/post/2021/05/newbie-4-swagger/">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</a></li>
         
-        <li><a href="/post/2020/07/oo-6-abstract-override/">菜雞與物件導向 (6): 抽象、覆寫</a></li>
+        <li><a href="/post/2021/05/newbie-3-dapper/">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫</a></li>
         
-        <li><a href="/post/2020/07/oo-5-polymorphism/">菜雞與物件導向 (5): 多型</a></li>
-        
-        <li><a href="/post/2020/07/oo-4-inheritance/">菜雞與物件導向 (4): 繼承</a></li>
-        
-        <li><a href="/post/2020/07/oo-3-encapsulation/">菜雞與物件導向 (3): 封裝</a></li>
+        <li><a href="/post/2021/05/newbie-2-webapi/">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a></li>
         
     </ul>
 </div>
@@ -211,18 +199,16 @@
                             
                             <ul class="clearfix">
                                 
-                                <li><a href="https://igouist.github.io/tags/newbieguide">NewbieGuide</a></li>
+                                <li><a href="https://igouist.github.io/tags/api">api</a></li>
                                 
-                                <li><a href="https://igouist.github.io/tags/object-oriented">Object-Oriented</a></li>
-                                
-                                <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
+                                <li><a href="https://igouist.github.io/tags/bug">bug</a></li>
                                 
                             </ul>
                             
                         </div>
                         <hr />
 <p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
-<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f09%2foo-8-cohesion-and-coupling%2f" width="100%" frameborder=0></iframe>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2021%2f06%2fzero-width-space%2f" width="100%" frameborder=0></iframe>
                     </article>
                     
     

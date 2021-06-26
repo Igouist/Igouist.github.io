@@ -6,10 +6,37 @@
     <description>Recent content on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Sun, 13 Jun 2021 22:25:00 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 26 Jun 2021 21:53:00 +0800</lastBuildDate>
     
 	<atom:link href="https://igouist.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！</title>
+      <link>https://igouist.github.io/post/2021/06/zero-width-space/</link>
+      <pubDate>Sat, 26 Jun 2021 21:53:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2021/06/zero-width-space/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/bS6EGIL.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;這週遇到個想不到的坑，特別來記錄一下。故事是這樣的－－&lt;/p&gt;
+&lt;p&gt;在需要呼叫其他 API 服務時，發生了以下怪事：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;打某支查詢 API，突然查不到任何東西，或是跳出參數錯誤&lt;/li&gt;
+&lt;li&gt;有些&lt;strong&gt;需要用參數組成 URL 的 API 跑出 Not Found&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;第一組資料呼叫成功，第二組突然路徑錯誤&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;寫入的時候，&lt;strong&gt;資料莫名其妙多了個 &lt;code&gt;?&lt;/code&gt;&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;例如原先的資料是 &lt;code&gt;ABC&lt;/code&gt;，不知怎地變成了 &lt;code&gt;ABC?&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;由於這些操作都涉及到同一個參數，直覺上就是我們這邊給的參數出了點問題，馬上進入找犯人的環節。直接中斷點標記下去，反覆觀察該字串，但它就是一個普通的字串 &lt;code&gt;&amp;quot;ABC&amp;quot;&lt;/code&gt;，完全看不出什麼端倪。&lt;/p&gt;
+&lt;p&gt;正要覺得參數沒有問題的時候，赫然發現組出來的 Url 相當不對勁：在該參數的後方，多出了 &lt;strong&gt;&lt;code&gt;%E2%80%8B&lt;/code&gt;&lt;/strong&gt; 這串神秘東西！&lt;/p&gt;
+&lt;p&gt;當下我驚呆了，我們傳出去的 Url 裡，並不是預想的 &lt;code&gt;/api/product/ABC&lt;/code&gt;，而是 &lt;code&gt;/api/product/ABC%e2%80%8b&lt;/code&gt;！真是赤裸裸的背叛！這串鬼東西到底是什麼來頭？！&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>C#: BenchmarkDotnet －－ 效能測試好簡單</title>
