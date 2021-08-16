@@ -126,11 +126,21 @@
 <p>因此<strong>封裝的概念很直覺：將物件視作一個整體，實作內容隱藏起來，讓使用者只需要知道怎麼使用即可。</strong>（相似的思路，我們後續的介面會再提到）大概就像懶人包的感覺。如果封裝做得夠好，除了可以將程式碼整理得井井有條以外，也能讓物件內部的修改不會影響到使用物件的地方，並且讓物件的使用者直覺地知道如何使用，最終達到降耦合的目標。</p>
 <p>關於封裝的概念，或是會問「什麼是耦合？」的朋友，建議可以看看這篇：<a href="https://ithelp.ithome.com.tw/articles/10203659">實務上的高內聚與低耦合</a></p>
 <p>而從上面的敘述中我們可以察覺到要實現封裝，最重要的就是：<strong>對外的開放程度（存取範圍）的控制</strong>。或是套一句前輩的說法：<strong>給程式碼隱私的空間</strong>。</p>
-<p>在 C# 之中，類別裡控制可見度是使用修飾子來定義存取範圍，也就是當我們替類別宣告欄位時使用的 <code>Public</code> 和 <code>Private</code>。<code>Public</code> 代表所有人都看得到，而 <code>private</code> 則是私有的，只有自己看得到。</p>
-<p>之所以要如此宣告，是為了將控制權掌握在物件本身，就像大話設計模式比喻的：物件就像間房子，我們不希望被看光光，可以看見的 <code>Public</code> 就像門和窗，而不該看見的 <code>Private</code> 則是用牆壁隱藏起來，而對於這間房子而言，門窗是可以控制的。</p>
-<blockquote>
-<p>註：當然，控制的程度也不會只有公開和私有兩個選項而已，另外還有限同一個組件才能取用、限定衍生類別才能取用等等，但現在的例子較為單調，暫且按下不表。有興趣的朋友可以參照 <a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/accessibility-levels">存取範圍層級</a> 的說明。</p>
-</blockquote>
+<h2 id="存取範圍與存取子">存取範圍與存取子</h2>
+<p>在 C# 之中，類別裡控制可見度是使用修飾子來定義存取範圍，也就是當我們替類別宣告欄位時常看到的 <code>Public</code> 和 <code>Private</code>。</p>
+<ul>
+<li><code>Public</code>: 這是公開的，所有人都看得到</li>
+<li><code>Private</code>: 這是私有的，只有自己看得到</li>
+</ul>
+<p>除了最常用的這兩個以外，還有其他的修飾子可以先知道一下：</p>
+<ul>
+<li><code>Protected</code>: 這是受到保護的，只有自己和繼承的孩子們看得到</li>
+<li><code>internal</code>: 這是內部的，只有身為同一個組件的朋友們看得到</li>
+<li><code>Protected internal</code>：組合上面兩個，也就是可以給同個組件的朋友們，或是其他組件繼承的孩子們看見</li>
+</ul>
+<p>接下來的部分會以最常見的 <code>Public</code> 和 <code>Private</code> 來繼續說明，對存取範圍的這些修飾子有興趣的朋友，可以參照 <a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/accessibility-levels">存取範圍層級</a> 的說明。</p>
+<p>現在我們已經知道了有哪些修飾子可以用來控制存取範圍，但為什麼我們會需要宣告存取範圍的大小呢？其根本是為了<strong>將控制權掌握在物件本身</strong>。</p>
+<p>就像大話設計模式比喻的：物件就像間房子，我們不希望被看光光，可以看見的 <code>Public</code> 就像門和窗，而不該看見的 <code>Private</code> 則是用牆壁隱藏起來，而對於這間房子而言，門窗是可以控制的。</p>
 <p>對於這部分的範例，我覺得 <a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/using-properties">微軟文件的範例</a> 裡設定月份的區塊已經能很清楚表達了。但為了這篇文章的一致性，還是硬擠著一個範例出來：</p>
 <p>某一天，我們突然決定讓使用者可以傳入卡牌敘述了，但是卡牌上能顯示的字數有限，只能顯示 30 個字，因此首先我們先把卡牌敘述改成私有的：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
@@ -143,7 +153,8 @@
 </span><span style="color:#75715e"></span>
     <span style="color:#75715e">/* 一些其他方法 */</span>
 }
-</code></pre></div><p>呃可能第一步就會讓人有些疑惑：「啊你要給人家傳東西進來還改私有？」但等等，且聽我娓娓道來：<strong>C# 中的屬性，是用 <code>Set</code> 和 <code>Get</code> 兩個方法去存取的</strong>，因此我們將進一步規劃出我們的門和窗：</p>
+</code></pre></div><p>呃可能第一步就會讓人有些疑惑：「啊你要給人家傳東西進來還改私有？」但等等，且聽我娓娓道來：<strong>C# 中的屬性，是用 <code>Set</code> 和 <code>Get</code> 兩個方法去存取的</strong>，又稱做<a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/restricting-accessor-accessibility">存取子</a>。這兩個看門仔也就擔當了房屋的門窗、出入境時的海關、古代大戰中的關隘這類「控制進出通道」的角色。</p>
+<p>現在讓我們試著規劃出我們的門和窗，在上面的例子中，我們想要當卡牌的敘述進來時，保持在 30 個字：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
 {
     <span style="color:#75715e">// 略
@@ -157,6 +168,10 @@
             {
                 <span style="color:#66d9ef">this</span>._description = <span style="color:#66d9ef">value</span>;
             }
+            <span style="color:#66d9ef">else</span>
+            {
+                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> System.Exception(<span style="color:#e6db74">&#34;就跟你說限 30 個字看不懂喔！&#34;</span>);
+            }
         }
         <span style="color:#66d9ef">get</span>
         {
@@ -166,19 +181,44 @@
     <span style="color:#75715e">/* 一些其他方法 */</span>
 }
 </code></pre></div><p>如此一來我們就能對存取屬性時的行為進行管控囉。</p>
-<p>而在 C# 裡，如果你並沒有要特別針對存取另做額外處理，可以直接使用<strong>自動實作</strong>：</p>
+<p>那可能有些朋友會有疑惑：那為什麼我不能直接對外開放卡牌敘述，然後修改的時候檢查完再傳進來 set 就好了呢？這個就牽涉到一些「改太多地方了我要死啦」的悲情故事，這邊再舉個例子給大家體會一下。</p>
+<p>例如說，我們的卡片現在加入了戰力指數系統，這個戰力是預先從卡片的各項資訊計算好，並存放在資料庫的，並且因為計算的關係可能有小數點後十位之類的，那我們拿出來的時候可能會長這樣：<code>Power: 99.256256</code></p>
+<p>而在建立類別的時候，也很自然地選用了 <code>double</code> 來處理，於是現在類別就長這樣：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Power;
+}
+</code></pre></div><p>這個系統上線運行了一段時間之後，突然上頭來了需求：請把所有顯示到卡片敘述的地方都改成小數點後兩位就好。</p>
+<p>假設我們又因為一些原因並不打算直接修改從資料表取出來時的數值，又或者是已經改了然後被前輩電，因為記 Log 或是什麼戰力對決(?)功能還會需要用到原本的戰力數值，因此物件存放的戰力數值必須和資料表中的一致等等</p>
+<p>如果先前直接開放存取，那麼這下子要改的地方就變成「所有使用到這個屬性的地方」，再要是當場看到 Visual Studio 上面寫：<code>99 個參考</code>，那可能當場整個腦子就直接下班了。</p>
+<p>但如果我們是使用 <code>get</code> 和 <code>set</code> 的方式去處理的話，那麼我們只需要修改 <code>get</code> 存取子的規則，讓它讀取的時候幫忙四捨五入到小數點第二位就好了：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+{   
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">double</span> _power;
+    
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Power 
+    { 
+        <span style="color:#66d9ef">set</span> { <span style="color:#66d9ef">this</span>._power = <span style="color:#66d9ef">value</span>; } 
+        <span style="color:#66d9ef">get</span> { <span style="color:#66d9ef">return</span> Math.Round(<span style="color:#66d9ef">this</span>._power, <span style="color:#ae81ff">2</span>);}
+    }
+}
+</code></pre></div><p>這樣應該就能看出使用 <code>get</code> 和 <code>set</code> 去把攔位封裝起來的好處了，也就是：<strong>把「資料進出時加以處理的主導權」留在物件本身</strong>。</p>
+<p>而在 C# 裡，如果你並沒有（或是說「還沒有」）要特別針對存取另做額外處理，可以直接使用<strong>自動實作</strong>：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">set</span>; <span style="color:#66d9ef">get</span>; }
-</code></pre></div><p>這樣 C# 就會自動幫你建立一個私有屬性，並且只能經由 set 和 get 進行存取。</p>
-<p>簡化寫法之後，例如唯讀就可以這樣寫：</p>
+</code></pre></div><p>這樣實際上就會自動幫你建立一個私有屬性，並且只能經由這個公開屬性的 <code>set</code> 和 <code>get</code> 進行存取。</p>
+<p>藉由自動實作來簡化寫法之後，例如唯讀就可以這樣寫：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; }
 </code></pre></div><p>或是</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">set</span>; }
-</code></pre></div><p>要加上預設值也能這樣寫</p>
+</code></pre></div><p>使用自動實作時，若要加上預設值的話請這樣寫</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; } = <span style="color:#e6db74">&#34;這是一張卡牌。&#34;</span>;
-</code></pre></div><p>可以說是方便很多。甚至進一步說，我們就可以藉由公有和私有、存取子、自動實作這些工具，<strong>決定外部的使用者能看到哪些部份</strong>。</p>
-<p>當然，封裝的概念並不僅僅只是對屬性做存取管控如此而已，<strong>提高類別內的內聚性，降低對外的耦合性，隱藏複雜資訊才是最重要的方針</strong>，然而這只能在設計時，或是維護到頭痛才能親自體會了。</p>
-<p>例如說：<strong>當你需要處理一長串的商業邏輯，以至於需要將他們切割成數個小函式時，將它們宣告成 <code>Private</code> 就是相當好的選擇</strong>，這意味著這些工具僅讓你的物件內部使用，外面的人不應該直接調用其中的任何功能，同時又能幫助你的主要流程變得更簡潔。</p>
-<p>又或者是，當我們有個連線到資料庫取得客戶資料的方法（可能是 <code>UserRepository.Get(int UserId)</code> 這種感覺），可能我們除了 <code>Public</code> 的 <code>Get</code> 方法以外，還有一些 <code>Private</code> 的 <code>ConnectDB</code> 等輔助方法。但<strong>呼叫這個函式的使用端不需要知道這個函式是怎麼連線到資料庫的，又是怎麼搜尋出資料的，只需要知道呼叫了之後能拿到客戶資料就好</strong>。</p>
+</code></pre></div><p>可以說是方便很多。將來如果要針對設值給值的地方進行修改，也會比較方便一點。</p>
+<p>稍微了解了上面提到的存取範圍、存取子、自動實作這些工具之後，現在，我們就可以決定外部的使用者能看到物件的哪些部份了。</p>
+<h2 id="隱藏複雜度">隱藏複雜度</h2>
+<p>當然，封裝的概念並不僅僅只是對屬性定義存取範圍如此而已，<strong>提高類別內的內聚性，降低對外的耦合性，隱藏複雜資訊才是最重要的方針</strong>。</p>
+<p>也就是說，我們需要妥善地運用「把大的類別和方法切割成小的類別和方法」、「活用存取範圍，對外隱藏複雜資訊、對內切割成各個工作的私有方法」等等技巧，才能夠更接近完善的封裝一點。然而這只能在設計時，或是維護到頭痛才能親自體會了。</p>
+<p>接續著上面的技巧來說：<strong>當你面對在一個公開方法中需要處理一長串的商業邏輯，以至於需要將他們切割成數個小函式時，將它們宣告成 <code>Private</code> 就是相當好的選擇</strong>。例如說，我們有個連線到資料庫取得客戶資料的方法（可能是 <code>UserRepository.Get(int UserId)</code> 這種感覺），可能我們除了 <code>Public</code> 的 <code>Get</code> 方法以外，還有一些 <code>Private</code> 的 <code>ConnectDB</code> 等輔助方法。</p>
+<p>這意味著這些工具僅讓你的物件內部使用，外面的人不應該直接調用其中的任何功能，同時又能幫助你的主要流程變得更簡潔，提升維護和修改時的速度。同時以資料庫的例子來說，<strong>呼叫這個函式的使用端不需要知道這個函式是怎麼連線到資料庫的，又是怎麼搜尋出資料的，只需要知道呼叫了之後能拿到客戶資料就好</strong>。</p>
 <p>兩個物件之間「知道」得越多，其耦合就越高。替換和修改時互相牽連的機會和規模也越大，因此封裝可以說是物件導向的基石也不為過。封裝的好或不好（亦即物件是否足夠內聚，其職責是否單一，暴露內部資訊的多寡等等），直接關係到整個架構的優劣，不可謂不慎。</p>
 <blockquote>
 <p>補充：封裝的核心在於「隱藏複雜資訊」。而我們前段所提到需要注意的幾個部份：</p>
@@ -198,8 +238,10 @@
 <li><a href="https://dotblogs.com.tw/initials/2016/06/10/171117">[心得整理] c# 物件導向程式 - 2.封裝、繼承、多型的三大特性 - 聊聊程式</a></li>
 <li><a href="https://www.ithome.com.tw/node/45903">思考物件導向(1)物件導向與封裝 - 蔡學鏞</a></li>
 <li><a href="https://medium.com/@totoroLiu/%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-object-oriented-programming-%E6%A6%82%E5%BF%B5-5f205d437fd6">物件導向(Object Oriented Programming)概念 - Po-Ching Liu - Medium</a></li>
-<li><a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/accessibility-levels">存取範圍層級 - Microsoft Docs</a></li>
 <li><a href="https://www.tenlong.com.tw/products/9789866761799">《大話設計模式》附錄：物件導向基礎</a></li>
+<li><a href="https://aihuadesign.com/2020/03/16/access-modifiers-c-sharp/">Public? Private? 比較各種修飾詞存取範圍 – 理工宅 Nelson&rsquo;s Diary (aihuadesign.com)</a></li>
+<li><a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/accessibility-levels">存取範圍層級 - C# 參考 | Microsoft Docs</a></li>
+<li><a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/restricting-accessor-accessibility">限制存取子的存取範圍 - C# 程式設計手冊 | Microsoft Docs</a></li>
 </ul>
 <h2 id="推薦系列文">推薦系列文</h2>
 <ul>
