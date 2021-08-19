@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-92586970-4"></script>
+    <script async>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-92586970-4');
+    </script>
+
+    <meta name="generator" content="Hugo 0.74.3" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>菜雞抓蟲: 使用 FromUri 的複雜型別在有傳遞 QueryString 的情況下會先建立再賦值 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞抓蟲: 使用 FromUri 的複雜型別在有傳遞 QueryString 的情況下會先建立再賦值 - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2021-08-19T22:20:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2021-08-19T22:20:00&#43;08:00">
+        
+        <meta name="keywords" content="FromUri, QueryString, WebApi, default, 資料繫結, optional parameter">
+    <meta name="description" content="如果有傳遞 QueryString 的任何參數時，不管參數跟指定的類別有沒有關係，放在 [FromUri] 的複雜型別都會先建立出實體，再嘗試和 QueryString 的內容進行比對與設值。因此如果遇到要給定預設值的場合，還是得乖乖地針對型別中的成員做設定比較保險。另外，因為完全沒給 QueryString 的時候還是會是 null，故該有的參數檢查仍然不能漏了">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/post/2021/08/set-default-value-with-model-when-fromuri/">
+    <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link defer rel="stylesheet" href="/css/normalize.css">
+    
+        <link defer rel="stylesheet" href="/css/prism.css">
+    
+    <link defer rel="stylesheet" href="/css/style.css">
+    <script async type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    
+    <script data-ad-client="ca-pub-2119949858103459" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script async>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "[map[]]",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp-and-dotnet/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">菜雞抓蟲: 使用 FromUri 的複雜型別在有傳遞 QueryString 的情況下會先建立再賦值</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2021-8-19,
+                        </date>
+                        
+                        <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+                        <div class="post-content">
+                            <p><img src="https://i.imgur.com/TuGp6Lk.png" alt="Image"></p>
+<h2 id="事發緣由">事發緣由</h2>
+<p>在 .net Framework 4.6.2 MVC 的 ApiController 中，某個查詢資料列表的方法除了提供查詢條件的參數以外，還有提供選擇性的分頁參數。也就是像這樣子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[HttpGet]</span>
+<span style="color:#66d9ef">public</span> IEnumerable&lt;Boo&gt; GetBoos(
+<span style="color:#a6e22e">    [FromUri]</span> SearchBooParameter parameter,
+<span style="color:#a6e22e">    [FromUri]</span> PagingParameter paging = <span style="color:#66d9ef">null</span>)
+{
+    <span style="color:#75715e">// 呼叫 Service 查資料...
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>由於需要調整該功能的預設排序，改為由大到小，又不想背負更改大量共用的 <code>PagingParameter</code> 去影響到其他使用到的地方，決定在 Controller 這裡簡單用預測值加上判斷處理一下就好</p>
+<p>相信著「若使用者沒有傳遞 paging 相關的參數，應該就會是給定的預設值 <code>null</code> 吧！」的我，用了 <code>if (paging is null)</code> 進行判斷：若是 <code>null</code> 的情況就將其中用來標示排序方向的成員 <code>isDesc</code> 設定為 true，開開心心交差。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[HttpGet]</span>
+<span style="color:#66d9ef">public</span> IEnumerable&lt;Boo&gt; GetBoos(
+<span style="color:#a6e22e">    [FromUri]</span> SearchBooParameter parameter,
+<span style="color:#a6e22e">    [FromUri]</span> PagingParameter paging = <span style="color:#66d9ef">null</span>)
+{
+    <span style="color:#66d9ef">if</span> (paging <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
+    {
+        paging = <span style="color:#66d9ef">new</span> PagingParameter();
+        paging.isDesc = <span style="color:#66d9ef">true</span>; <span style="color:#75715e">// 預設由大到小
+</span><span style="color:#75715e"></span>    }
+    <span style="color:#75715e">// 呼叫 Service 查資料...
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>但實際使用之後發現：即使只有傳入查詢條件參數、未傳遞 paging 時，資料仍然由小到大顯示，且 <code>paging.isDesc</code> 竟然是 false，並未被更改到。也就是說，即使未傳遞 paging，它也並不是 null！</p>
+<p>實測之後發現：若在呼叫該 API 的時候，給定一個完全無關的參數，例如 <code>?a=1</code>，則 paging 還是會被建立一個實體出來，並無視 <code>= null</code> 這個預設值。因此就導致了非預期（＝跟我想的不一樣啊！）的行為。</p>
+<p>這邊直接先講結論：<strong>如果有傳遞 QueryString 的任何參數時，不管這些參數跟指定的類別有沒有關係，放在 <code>[FromUri]</code> 的複雜型別都會先建立出實體，再嘗試和 QueryString 的內容進行比對與設值</strong>。</p>
+<p>設定在 <code>[FromUri]</code> 的複雜型別身上的預設值，像是 <code>[FromUri] PagingParameter paging = null</code> 只有完全沒給任何 QueryString 的時候才會吃到。（不過因為預設值只能是常數的關係，基本上就是指 defualt 的 null）</p>
+<p>因此如果遇到要給定預設值的場合，還是得乖乖地針對型別中的成員做設定比較保險，例如 <code>bool isDesc { get; set; } = true</code>。另外，因為完全沒給 QueryString 的時候還是會是 null，故該有的參數檢查仍然不能漏了。</p>
+<h2 id="測試案例">測試案例</h2>
+<h4 id="net-framework-472-web-api---fromuri">.net Framework 4.7.2 Web Api - FromUri</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[RoutePrefix(&#34;api&#34;)]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ValuesController</span> : ApiController
+{
+<span style="color:#a6e22e">    [HttpGet, Route(&#34;Test&#34;)]</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test([FromUri] SimplyParameter parameter = <span style="color:#66d9ef">null</span>)
+    {
+        <span style="color:#66d9ef">return</span> parameter?.IsSuccess.ToString() ?? <span style="color:#e6db74">&#34;It&#39;s NULL!&#34;</span>; <span style="color:#75715e">// False
+</span><span style="color:#75715e"></span>    }
+    
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimplyParameter</span>
+    {
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> IsSuccess { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Message { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+    }
+}
+</code></pre></div><p><code>/api/test</code> =&gt; It&rsquo;s NULL!</p>
+<p><code>/api/test?a=2</code> =&gt; False</p>
+<p>若改為必須參數，而不是選擇性參數呢：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[HttpGet, Route(&#34;Test&#34;)]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test([FromUri] SimplyParameter parameter)
+{
+    <span style="color:#66d9ef">return</span> parameter?.IsSuccess.ToString() ?? <span style="color:#e6db74">&#34;It&#39;s NULL!&#34;</span>; <span style="color:#75715e">// False
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p><code>/api/test</code> =&gt; It&rsquo;s NULL!</p>
+<p><code>/api/test?a=2</code> =&gt; False</p>
+<p>看起來最大的差異點在於<strong>有沒有給 QueryString</strong>。</p>
+<p>現在讓我們對 Model 給定預設值，並加入建構式並觀察執行順序：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[RoutePrefix(&#34;api&#34;)]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ValuesController</span> : ApiController
+{
+<span style="color:#a6e22e">    [HttpGet, Route(&#34;Test&#34;)]</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test([FromUri] SimplyParameter parameter = <span style="color:#66d9ef">null</span>)
+    {
+        <span style="color:#66d9ef">return</span> parameter?.IsSuccess.ToString() ?? <span style="color:#e6db74">&#34;It&#39;s NULL!&#34;</span>; <span style="color:#75715e">// False
+</span><span style="color:#75715e"></span>    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimplyParameter</span>
+    {
+        <span style="color:#66d9ef">public</span> SimplyParameter()
+        {
+            Console.WriteLine(<span style="color:#e6db74">&#34;I&#39;m Creating!&#34;</span>);
+        }
+        
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> IsSuccess { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#66d9ef">true</span>;
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Message { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;It&#39;s me!&#34;</span>;
+    }
+}
+</code></pre></div><p><code>/api/test?a=2</code> =&gt; True</p>
+<p>並且在 &ldquo;It&rsquo;s me!&rdquo; 下中斷點，可以觀察到在進入 Test 前，的確建立了 SimplyParameter 並給予預設值</p>
+<p><code>/api/test?IsSuccess=true</code></p>
+<p>中斷點的執行順序為：</p>
+<ol>
+<li>建立 SimplyParameter</li>
+<li>執行 <code>public bool IsSuccess = true;</code> 給予初始值</li>
+<li>執行 <code>public string Message = &quot;It's me!&quot;</code> 給予初始值</li>
+<li>呼叫 <code>SimplyParameter()</code> 建構式，觸發 <code>&quot;I'm Creating!&quot;</code></li>
+<li>呼叫 <code>IsSuccess</code> 的 <code>set</code>，將 QueryString 傳遞的值塞進去</li>
+<li>對於 QueryString 未提供的 <code>Message</code>，則未呼叫其 <code>set</code>，保持預設值</li>
+<li>回到 <code>string Test()</code> 方法，<code>SimplyParameter</code> 已建立，無視 <code>parameter = null</code></li>
+</ol>
+<p>看起來當有傳遞 QueryString 的時候，就會先建立需要的 Model 再逐一嘗試設值。</p>
+<p>接著讓我們試試看，當 <code>[FromUri]</code> 的複雜型別不只一個的時候會怎麼運作呢：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[RoutePrefix(&#34;api&#34;)]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ValuesController</span> : ApiController
+{
+<span style="color:#a6e22e">    [HttpGet, Route(&#34;Test&#34;)]</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test(
+<span style="color:#a6e22e">        [FromUri]</span> SimplyParameter parameter = <span style="color:#66d9ef">null</span>,
+<span style="color:#a6e22e">        [FromUri]</span> AnotherSimplyParameter parameterAnother = <span style="color:#66d9ef">null</span>)
+    {
+        <span style="color:#66d9ef">return</span> parameter?.IsSuccess.ToString() ?? <span style="color:#e6db74">&#34;It&#39;s NULL!&#34;</span>; <span style="color:#75715e">// False
+</span><span style="color:#75715e"></span>    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimplyParameter</span>
+    {
+        <span style="color:#66d9ef">public</span> SimplyParameter()
+        {
+            Console.WriteLine(<span style="color:#e6db74">&#34;I&#39;m Creating!&#34;</span>);
+        }
+
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> IsSuccess { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#66d9ef">true</span>;
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Message { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;It&#39;s me!&#34;</span>;
+    }
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AnotherSimplyParameter</span>
+    {
+        <span style="color:#66d9ef">public</span> AnotherSimplyParameter()
+        {
+            Console.WriteLine(<span style="color:#e6db74">&#34;I, Another me, are Creating!&#34;</span>);
+        }
+
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Idx { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#ae81ff">999</span>;
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;WOW&#34;</span>;
+    }
+}
+</code></pre></div><p><code>/api/test?a=2</code></p>
+<p>SimplyParameter 和 AnotherSimplyParameter 會依照 <code>Test()</code> 中傳入的順序，各自經歷一次上述的流程，故兩者都不會是 Null</p>
+<p><code>/api/test?IsSuccess=true</code></p>
+<p>即使傳入的參數只有其中一個 Model 具有符合的欄位，但由於上述的順序是「先建立，再比對」，故仍然會按上述流程分別建立兩者，仍然不會是 Null</p>
+<p><code>/api/test?parameter.IsSuccess=true</code></p>
+<p>即使已經具名指定了 SimplyParameter，但動作和 <code>IsSuccess=true</code> 仍然一樣</p>
+<p>最後，我們加入一個簡單型別試試看，也就是改為如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test(
+<span style="color:#a6e22e">    [FromUri]</span> SimplyParameter parameter = <span style="color:#66d9ef">null</span>,
+<span style="color:#a6e22e">    [FromUri]</span> AnotherSimplyParameter parameterAnother = <span style="color:#66d9ef">null</span>,
+<span style="color:#a6e22e">    [FromUri]</span> <span style="color:#66d9ef">string</span> hello = <span style="color:#e6db74">&#34;world!&#34;</span>)
+</code></pre></div><p><code>/api/test</code> =&gt; hello = &ldquo;world!&quot;;</p>
+<p><code>/api/test?a=2</code> =&gt; hello = &ldquo;world!&quot;;</p>
+<p>簡單型別的預設值在運作上非常直覺，沒有什麼太大的問題。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[HttpGet, Route(&#34;Test&#34;)]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test(
+<span style="color:#a6e22e">    [FromUri]</span> <span style="color:#66d9ef">string</span> hello,
+<span style="color:#a6e22e">    [FromUri]</span> SimplyParameter parameter = <span style="color:#66d9ef">null</span>,
+<span style="color:#a6e22e">    [FromUri]</span> AnotherSimplyParameter parameterAnother = <span style="color:#66d9ef">null</span>)
+</code></pre></div><p><code>/api/test?hello=A</code></p>
+<p>即使我們已經給了作為必要參數的簡單型別值，但由於同樣是從 Uri 來的，並不會在把值丟給簡單型別後就停止，兩個可選的複雜型別仍然會被建立</p>
+<h2 id="結論">結論</h2>
+<ul>
+<li>在指定複雜型別為 <code>[FromUri]</code> 的場合，有以下注意事項
+<ul>
+<li>有傳遞 QueryString 的參數時，<strong>放在 <code>[FromUri]</code> 的複雜型別會先建立出實體，再嘗試和 QueryString 的內容進行比對與設值</strong>。
+<ul>
+<li>也因為會先建立實體，故選擇性參數的預設值，例如 <code>parameter = null</code> 或是 <code>parameter = default</code> 並沒有效果，而是以該類型中各成員的預設值為主</li>
+<li>因此如果遇到要針對各參數給定初始值的場合，請不要直接設定在 <code>[FromUri]</code> 的複雜型別身上再偷雞手動給值，而是乖乖地針對型別中的成員做設定</li>
+</ul>
+</li>
+<li><code>parameter = default</code> 當且僅當沒有傳遞任何 QueryString 的時候才有效（不過原本都沒給就會是 Default ，也就是 null，所以有沒有效我肉眼也分不太出來）</li>
+</ul>
+</li>
+<li>然後關於一開始的問題，最後認命地請使用端傳參數解決了，耶嘿</li>
+</ul>
+<h2 id="同場加映">同場加映</h2>
+<h4 id="net-core-31-web-api---fromquery">.net Core 3.1 Web Api - FromQuery</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[ApiController]</span>
+<span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TestController</span> : ControllerBase
+{
+<span style="color:#a6e22e">    [HttpGet]</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Get([FromQuery] SimplyParameter parameter = <span style="color:#66d9ef">null</span>)
+    {
+        <span style="color:#66d9ef">return</span> parameter?.IsSuccess.ToString() ?? <span style="color:#e6db74">&#34;It&#39;s NULL!&#34;</span>; <span style="color:#75715e">// False
+</span><span style="color:#75715e"></span>    }
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimplyParameter</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> IsSuccess { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Message { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+</code></pre></div><p><code>/test</code> =&gt; False</p>
+<p>不愧是 Core，直接就建實體了，畢竟都說是 <code>FromQuery</code> 了嘛。既然都直接說會從 Query 來了，就沒在跟你五四三看有沒有 QueryString 的啦 XD</p>
+<h2 id="參考資料">參考資料</h2>
+<ul>
+<li><a href="https://www.huanlintalk.com/2013/01/aspnet-web-api-parameter-binding.html">ASP.NET Web API 參數繫結 - Huan-Lin 學習筆記 (huanlintalk.com)</a></li>
+<li><a href="https://docs.microsoft.com/zh-tw/aspnet/web-api/overview/formats-and-model-binding/parameter-binding-in-aspnet-web-api">ASP.NET Web API 中的參數系結-ASP.NET 4.x | Microsoft Docs</a></li>
+</ul>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2021/06/zero-width-space/">菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！</a></li>
+        
+        <li><a href="/post/2021/05/newbie-4-swagger/">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</a></li>
+        
+        <li><a href="/post/2021/05/newbie-3-dapper/">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫</a></li>
+        
+        <li><a href="/post/2021/05/newbie-2-webapi/">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a></li>
+        
+        <li><a href="/post/2020/11/bugs-install-dotnet-core-on-amazon-ami-requires-openssl/">菜雞抓蟲: 在 Amazon Linux AMI 安裝 .net Core 時卡在 Requires: openssl-libs</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/api">api</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/bug">bug</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                        <hr />
+<p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2021%2f08%2fset-default-value-with-model-when-fromuri%2f" width="100%" frameborder=0></iframe>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    <section class="widget">
+        <h3 class="widget-title">系列文</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E6%88%91%E8%A6%81%E8%A8%82%E4%BE%BF%E7%95%B6/">我要訂便當 (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/08/set-default-value-with-model-when-fromuri/" title="菜雞抓蟲: 使用 FromUri 的複雜型別在有傳遞 QueryString 的情況下會先建立再賦值">菜雞抓蟲: 使用 FromUri 的複雜型別在有傳遞 QueryString 的情況下會先建立再賦值</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/06/zero-width-space/" title="菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！">菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet －－ 效能測試好簡單">C#: BenchmarkDotnet －－ 效能測試好簡單</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/05/visual-studio-split-window-in-one-file/" title="Visual Studio: 在同一個檔案分割視窗">Visual Studio: 在同一個檔案分割視窗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/" title="菜雞新訓記 (1): 使用 Git 來進行版本控制吧">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/04/newbie-0-menu/" title="菜雞新訓記 (0): 前言">菜雞新訓記 (0): 前言</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/03/sekiro-darksouls3-clear/" title="隻狼、黑暗靈魂３　白金！">隻狼、黑暗靈魂３　白金！</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/bug/">bug (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (19)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/life/">life (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (17)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (47)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/api/">api</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/benchmarkdotnet/">benchmarkdotnet</a>
+    
+    <a href="https://igouist.github.io/tags/bug/">bug</a>
+    
+    <a href="https://igouist.github.io/tags/chrome/">chrome</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/dapper/">dapper</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/game/">game</a>
+    
+    <a href="https://igouist.github.io/tags/git/">git</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/life/">life</a>
+    
+    <a href="https://igouist.github.io/tags/linux/">linux</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/swagger/">swagger</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">蹭一下</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://kevintsengtw.blogspot.com/" title="mrkt">mrkt 的程式學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://raychiutw.github.io/" title="ray">Ray&#39;s Notes</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">小東西</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+
+    <section class="widget">
+    <h3 class="widget-title">放個廣告加減賺</h3>
+    <ul class="widget-list">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-2119949858103459"
+            data-ad-slot="9031038367"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </ul>
+</section>
+
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        
+        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
+</body>
+</html>
