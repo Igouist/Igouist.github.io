@@ -307,6 +307,13 @@
 });
 </code></pre></div><p>這樣的可讀性更好，也能讓維護的人迅速掌握當前的 Profile，有需要的朋友可以嘗試看看</p>
 </blockquote>
+<blockquote>
+<p>(2021/8/27) 補充：</p>
+<p>感謝 <a href="https://raychiutw.github.io/">Ray</a> 大大提供的方法，這邊也補充給大家參考一下</p>
+<p>我們前面有提到 <code>AddAutoMapper</code> 會對該型別所在的 Assembly 進行反射找出所有的 <code>Profile</code>，那麼我們也可以轉換一下思路：只要把全部的組件都丟到 <code>AddAutoMapper</code> 裡就好了！這種時候我們就可以利用反射來達到我們的目的：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+</code></pre></div><p>相較於 <code>AddProfile</code> 這種逐一新增 <code>Profile</code> 的作法，利用反射會讓註冊顯得更乾淨，並且也更不容易有所遺漏。各位可以按照開發的場景選擇一下註冊的方式，有需要的朋友可以嘗試看看</p>
+</blockquote>
 <p>註冊好之後，我們就能將剛剛的示範部分更改為使用注入的方式來取得 Mapper：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> IMapper _mapper;
 
