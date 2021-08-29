@@ -152,6 +152,7 @@
 <ul>
 <li><a href="#%E5%B0%8D%E7%9B%AE%E5%89%8D%E6%89%80%E5%9C%A8%E8%A1%8C%E9%86%92%E7%9B%AE%E6%8F%90%E7%A4%BA">對目前所在行醒目提示</a></li>
 <li><a href="#%E8%AE%8A%E6%9B%B4-visual-studio-%E7%A8%8B%E5%BC%8F%E7%A2%BC%E7%9A%84%E9%85%8D%E8%89%B2">變更 Visual Studio 程式碼的配色</a></li>
+<li><a href="#%E5%85%A7%E5%B5%8C%E6%8F%90%E7%A4%BA">內嵌提示</a></li>
 </ul>
 </li>
 <li><a href="#%E9%85%8D%E8%89%B2%E4%B8%BB%E9%A1%8C">配色主題</a>
@@ -251,15 +252,7 @@ Edit.RemoveAllGuidelines // 移除輔助線
 <img src="https://i.imgur.com/YER0385.png" alt="">
 （載下來示範截圖之後立馬換回來，實在過於微妙）</p>
 <h2 id="設定">設定</h2>
-<h3 id="對目前所在行醒目提示">對目前所在行醒目提示</h3>
-<p>這段其實是發完文之後才補充的啦，這邊要推薦一個好用的設定：</p>
-<p><code>工具 &gt; 選項 &gt; 環境 &gt; 字型與色彩</code> 然後在下拉式選單找到 <code>反白顯示目前的行</code></p>
-<p>就可以對游標所在的那行做醒目提示囉！</p>
-<p><img src="https://i.imgur.com/qvh8i8l.png" alt=""></p>
-<p>圖中的綠色就是醒目提示。</p>
-<p>之前和大前輩聊到這個反白行，前輩表示他很討厭，因為他不太需要一條會干擾的色塊告訴他正在這</p>
-<p>但像我這種菜雞，按著 Ctrl + G 就不知道自己飛哪裡去了，還是標記一下好哈哈。</p>
-<h3 id="變更-visual-studio-程式碼的配色">變更 Visual Studio 程式碼的配色</h3>
+<h3 id="變更-visual-studio-程式碼的配色為新版本">變更 Visual Studio 程式碼的配色為新版本</h3>
 <p>Visual Studio 2019 預設的程式碼配色會是 2017 版本的，因此可以先調整更改成 2019 版本。</p>
 <p>更改的位置在 <code>工具 &gt; 選項 &gt; 文字編輯器 &gt; C# (看個人使用語言) &gt; 進階</code> 接著拉至最底找到 <code>編輯器色彩配置</code></p>
 <p><img src="https://i.imgur.com/lbUP19r.png" alt=""></p>
@@ -269,6 +262,29 @@ Edit.RemoveAllGuidelines // 移除輔助線
 <p>變更後：
 <img src="https://i.imgur.com/s0zYjmu.png" alt=""></p>
 <p>可以看到變數、方法都有上色了，在整排 Linq 連發的 Code 裡面可是相當實用呢</p>
+<h3 id="開啟內嵌提示">開啟內嵌提示</h3>
+<p>這邊推薦把「內嵌提示」這個實驗性功能打開，可以大大增加程式碼的可讀性。</p>
+<p>首先讓我們先到 <code>選項 &gt; 文字編輯器 &gt; C# &gt; 進階</code>，並且往下拉就可以看到內嵌提示。</p>
+<p><img src="https://i.imgur.com/FMERRDD.png" alt="image-20210830065440439"></p>
+<p>其中「<strong>顯示內嵌參數名稱</strong>」勾選起來的話，就會在呼叫方法時顯示該參數的名稱，如下圖的 <code>startIndex</code> 和 <code>length</code>：</p>
+<p><img src="https://i.imgur.com/7QCEEkY.png" alt="image-20210830065736932"></p>
+<p>像這種呼叫方法時傳遞的常數，例如 <code>0</code>、<code>false</code> 等等，加上參數名稱就能大大提升可讀性。</p>
+<p>但當我們是傳遞變數的時候，常常都已經針對該物件做好妥善的命名了，所以可以把子項的「當參數名稱符合方法的意圖時，不出現提示」也勾選起來，避免命名已經足夠描述內容時反而造成干擾。</p>
+<p>接著「<strong>顯示內嵌類型提示</strong>」也可以勾選起來，顧名思義就是會在洽當的時候提醒你「這東西是這個型別呦！」的小助手。</p>
+<p>其中我會關閉第一項「顯示有推斷類型之變數的提示」，它的效果就是每當你使用 <code>var</code> 的時候就會顯示推測的型別，例如：</p>
+<p><img src="https://i.imgur.com/nGyRm6J.png" alt="image-20210830071205401"></p>
+<p>可以看到 <code>var</code> 的後面會補上型別。<del>不過這樣我排版就亂掉了，而且我就是打算把型別丟給 C# 處理才用 var 的所以掰掰</del></p>
+<p>而第二項「<strong>顯示 Lambda 參數類型的提示</strong>」這個就相當推薦打開了，作用的方式會像這樣：</p>
+<p><img src="https://i.imgur.com/RVqvtcJ.png" alt="image-20210830071404915"></p>
+<p>當你在使用 Linq 的時候，就能更清楚知道現在自己在操作的是哪個型別、哪個部分。在 <code>Join</code>、<code>Groupby</code> 等等需要對串列連續地進行處理的時候，能夠發揮莫大的功效，特別強烈推薦要打開。</p>
+<h3 id="對目前所在行醒目提示">對目前所在行醒目提示</h3>
+<p>這段其實是發完文之後才補充的啦，這邊要推薦一個好用的設定：</p>
+<p><code>工具 &gt; 選項 &gt; 環境 &gt; 字型與色彩</code> 然後在下拉式選單找到 <code>反白顯示目前的行</code></p>
+<p>就可以對游標所在的那行做醒目提示囉！</p>
+<p><img src="https://i.imgur.com/qvh8i8l.png" alt=""></p>
+<p>圖中的綠色就是醒目提示。</p>
+<p>之前和大前輩聊到這個反白行，前輩表示他很討厭，因為他不太需要一條會干擾的色塊告訴他正在這</p>
+<p>但像我這種菜雞，按著 Ctrl + G 就不知道自己飛哪裡去了，還是標記一下好哈哈。</p>
 <h2 id="配色主題">配色主題</h2>
 <h3 id="one-dark-pro">One Dark Pro</h3>
 <p>這邊推薦我在 Visual Studio Code 也很愛用的主題：<strong>One Dark Pro</strong>，前陣子才發現居然在 Visual Studio 上也能看到熟悉的配色，馬上就安裝下來了。</p>
