@@ -135,8 +135,10 @@
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">void</span> Eat();
 }
-</code></pre></div><p>那麼繼承者們，也就是衍生類別如何去重新定義父類別的方法呢？這時候就必須使用<strong>覆寫 <code>override</code></strong>。</p>
-<p>覆寫是指對於像是前述的抽象方法時，在同名的方法前加上 <code>override</code> 關鍵字就可以讓程式知道你要覆寫這個方法（甚至有抽象方法的時候你不覆寫，編譯器還會生氣）。例如前述的 Eat，狗就可以用 <code>public override void Eat()</code> 的方式去覆寫吃東西這個方法。</p>
+</code></pre></div><p>那麼繼承者們，也就是衍生類別如何去重新定義父類別的方法呢？</p>
+<p><del>所謂「欲戴王冠，必 Override」</del>，這時候就必須使用<strong>覆寫（<code>override</code>）</strong>。</p>
+<p>覆寫是指對於像是前述的抽象方法時，在同名的方法前加上 <code>override</code> 關鍵字就可以讓程式知道你要覆寫這個方法（你不覆寫的話，編譯器還會生氣）。</p>
+<p>例如前述的 Eat，狗就可以用 <code>public override void Eat()</code> 的方式去覆寫吃東西這個方法：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span> : Animal
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;Black&#34;</span>;
@@ -145,7 +147,8 @@
         <span style="color:#75715e">/* 嚼嚼嚼 */</span>
     }
 }
-</code></pre></div><p>但有時候我們只是希望秉持著多型的精神，讓子類別有可以重新定義的彈性，這時候我們就會使用 <strong>虛擬 <code>virtual</code></strong> 的方式去標記這個方法，如此一來就可以實作，同時也讓子類別可以覆寫。例如可能狗有 <code>public virtual void Eat()</code> 這個進食的方法：</p>
+</code></pre></div><p>但有時候我們只是希望秉持著多型的精神，讓子類別有可以重新定義的彈性，這時候我們就會使用<br/> <strong>虛擬（<code>virtual</code>）</strong> 的方式去標記這個方法，如此一來就可以實作，同時也讓子類別可以覆寫。</p>
+<p>例如可能狗有 <code>public virtual void Eat()</code> 這個進食的方法：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span>
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> Eat()
@@ -153,17 +156,68 @@
         <span style="color:#75715e">/* 嚼嚼熱狗 */</span>
     }
 }
-</code></pre></div><p>但是我們有了 <code>RobotDog</code> 這個類別，它就可以繼承並且重新改寫掉 <code>Eat()</code> 這個方法，從吃肉變成喝汽油。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RobotDog</span>
+</code></pre></div><p>那假設我們有個 <code>Giwawa</code> 繼承了 <code>Dog</code>，但牠也是吃熱狗的，就可以選擇不去覆寫 <code>Eat()</code>：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Giwawa</span> : Dog
 {
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Eat()
+    <span style="color:#75715e">/* 不打算實作 Eat，直接使用 Dog 類別的 Eat */</span>
+}
+</code></pre></div><p>而當我們有了 <code>RobotDog</code> 這個類別，它就可以繼承並且重新改寫掉 <code>Eat()</code> 這個方法，從吃肉變成喝汽油。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RobotDog</span> : Dog
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Eat()
     {
         <span style="color:#75715e">/* 嚼嚼汽油 */</span>
     }
 }
-</code></pre></div><p>關於抽象和覆寫這部份的範例，因為我個人碰觸的比較少，唯恐我的舉例不夠深入，這邊再附上幾個不錯的範例，可以作為參考：</p>
+</code></pre></div><p>除了使用 <code>override</code> 去覆寫父類別的方法以外，也可以用 <code>new</code> 去隱藏父類別的方法：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CyberDog</span> : Dog
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">void</span> Eat()
+    {
+        <span style="color:#75715e">/* 嚼嚼汽油 */</span>
+    }
+}
+</code></pre></div><p><code>override</code> 和 <code>new</code> 的差別在於多型時轉型成父類別時的行為：</p>
 <ul>
-<li><a href="https://medium.com/@ad57475747/c-%E9%9B%9C%E8%A8%98-%E4%BB%8B%E9%9D%A2-interface-%E6%8A%BD%E8%B1%A1-abstract-%E8%99%9B%E6%93%AC-virtual-%E4%B9%8B%E6%88%91%E8%A6%8B-dc3c5878bb80">C#雜記 — 介面(interface)、抽象( abstract)、虛擬(virtual)之我見 - Medium</a></li>
+<li><code>override</code> 會直接取代掉父類別的方法，即使轉型為父類別還是以子類別的實作為主</li>
+<li><code>new</code> 則是會建立一個子類別專屬的方法，若轉型為父類別就會變回父類別的方法</li>
+</ul>
+<p>我們直接用例子來看看吧，假設我們現在有「拉不拉多」和「機器狗」，都繼承了「狗」。差別在於拉不拉多 override 了 <code>Eat()</code> 這個方法，而機器狗 new 了 <code>Eat()</code> 這個方法：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> Eat() 
+    =&gt; Console.WriteLine(<span style="color:#e6db74">&#34;吃了熱狗&#34;</span>);
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Labrador</span> : Dog
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Eat() 
+    =&gt; Console.WriteLine(<span style="color:#e6db74">&#34;吃了超大熱狗&#34;</span>);
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RobotDog</span> : Dog
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">void</span> Eat() 
+    =&gt; Console.WriteLine(<span style="color:#e6db74">&#34;喝了超多汽油&#34;</span>);
+}
+</code></pre></div><p>接著讓我們來看看當他們被實例化之後，以及被轉型為父類別的時候的 <code>Eat()</code> 有什麼不一樣吧：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// Labrador =&gt; override
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> lala = <span style="color:#66d9ef">new</span> Labrador();
+
+lala.Eat(); <span style="color:#75715e">// 吃了超大熱狗
+</span><span style="color:#75715e"></span>((Dog)lala).Eat(); <span style="color:#75715e">// 吃了超大熱狗
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// ==============================
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// RobotDog =&gt; new 
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> robot = <span style="color:#66d9ef">new</span> RobotDog();
+robot.Eat(); <span style="color:#75715e">// 喝了超多汽油
+</span><span style="color:#75715e"></span>((Dog)robot).Eat(); <span style="color:#75715e">// 吃了熱狗
+</span></code></pre></div><p>可以看到使用 <code>new</code> 來覆寫的 RobotDog 在被轉型為 Dog 的時候突然就變回吃熱狗了！</p>
+<p>要特別注意的是：當你覆寫了父類別的方法，卻忘記加上 <code>override</code> 的話，默認會當成是要 <code>new</code>，所以覆寫的時候還是小心一點，具體地把 <code>override</code> 或 <code>new</code> 寫出來吧！</p>
+<p>關於抽象和覆寫這部份的範例，因為我個人碰觸的比較少，唯恐我的舉例不夠深入，這邊再附上幾個不錯的範例，可以作為參考：</p>
+<ul>
+<li><a href="https://medium.com/@ad57475747/c-%E9%9B%9C%E8%A8%98-%E4%BB%8B%E9%9D%A2-interface-%E6%8A%BD%E8%B1%A1-abstract-%E8%99%9B%E6%93%AC-virtual-%E4%B9%8B%E6%88%91%E8%A6%8B-dc3c5878bb80">C#雜記 — 介面(interface)、抽象(abstract)、虛擬(virtual)之我見 - Medium</a></li>
 <li><a href="https://exfast.me/2016/09/c-sharp-use-interface-abstract-override-inheritance-implements-a-simple-example/">[C#] 利用 interface(介面) abstract(抽象) override(覆寫) inherit(繼承) 實作簡單範例 - 從入門到放棄</a></li>
 </ul>
 <p>接著<a href="/post/2020/07/oo-7-interface">下一篇</a>，我們就接著看這一部分的最後一片拼圖：介面吧！</p>
@@ -177,6 +231,7 @@
 <li><a href="https://matthung0807.blogspot.com/2018/02/java-overload.html">Java 什麼是多載(Overload), 覆寫(Override), 多型(Polymorphism) - 菜鳥工程師肉豬</a></li>
 <li><a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-2_%E5%BB%BA%E6%A7%8B%E5%BC%8Fconstructor%E5%A4%9A%E8%BC%89overloading%E8%88%87%E8%A6%86%E5%AF%ABoverriding/">Object Oriented物件導向-2:建構式(Constructor)、多載(Overloading)與覆寫(Overriding) - Sian</a></li>
 <li><a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/abstract">Abstract - Microsoft Docs</a></li>
+<li><a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/knowing-when-to-use-override-and-new-keywords">了解使用 Override 和 New 關鍵字的時機 - Microsoft Docs</a></li>
 </ul>
 <h2 id="同系列文章">同系列文章</h2>
 <ul>
