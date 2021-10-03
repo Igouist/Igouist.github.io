@@ -103,6 +103,79 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2021-10-3,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/S72H7sA.png" alt="img"></p>
+<p>這是俺整理公司新訓內容的第五篇文章，目標是<strong>使用三層式架構 (3-Layer Architecture) 來切分服務的關注點和職責</strong>。</p>
+<ul>
+<li><a href="#%E4%BB%80%E9%BA%BC%E6%98%AF%E5%88%86%E5%B1%A4%E5%88%86%E5%B1%A4%E5%8F%AF%E4%BB%A5%E5%90%83%E5%97%8E">什麼是分層？分層可以吃嗎？</a>
+<ul>
+<li><a href="#%E4%B8%89%E5%B1%A4%E5%BC%8F%E6%9E%B6%E6%A7%8B">三層式架構</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC-dto">關於 DTO</a></li>
+<li><a href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E6%88%91%E5%80%91%E9%9C%80%E8%A6%81%E5%88%86%E5%B1%A4%E6%9E%B6%E6%A7%8B">為什麼我們需要分層架構？</a></li>
+<li><a href="#%E6%9C%AC%E7%AF%80%E7%9A%84%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99">本節的參考資料</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AF%A6%E4%BD%9C">實作</a>
+<ul>
+<li><a href="#%E5%AF%A6%E4%BD%9C%E7%AF%84%E4%BE%8B%E7%9A%84%E6%9E%B6%E6%A7%8B%E8%88%87%E5%89%8D%E8%A8%80">實作範例的架構與前言</a></li>
+<li><a href="#%E5%A4%A7%E8%87%B4%E4%B8%8A%E7%9A%84%E6%AD%A5%E9%A9%9F">大致上的步驟</a></li>
+<li><a href="#%E7%AF%84%E4%BE%8B%E5%B0%88%E6%A1%88%E8%83%8C%E6%99%AF">範例專案背景</a></li>
+<li><a href="#%E5%BB%BA%E7%AB%8B%E5%88%86%E5%B1%A4">建立分層</a></li>
+<li><a href="#%E5%8A%A0%E5%85%A5%E5%8F%83%E8%80%83">加入參考</a></li>
+<li><a href="#%E5%BB%BA%E7%AB%8B%E4%BB%8B%E9%9D%A2%E8%88%87-dto">建立介面與 DTO</a></li>
+<li><a href="#%E5%AF%A6%E4%BD%9C-repository">實作 Repository</a></li>
+<li><a href="#%E5%AF%A6%E4%BD%9C-service">實作 Service</a></li>
+<li><a href="#%E5%AF%A6%E4%BD%9C-controller">實作 Controller</a></li>
+</ul>
+</li>
+<li><a href="#%E5%B0%8F%E7%B5%90">小結</a></li>
+<li><a href="#%E8%87%AA%E5%95%8F%E8%87%AA%E7%AD%94%E5%BF%83%E5%BE%97%E7%AF%87">自問自答心得篇</a>
+<ul>
+<li><a href="#%E9%97%9C%E6%96%BC%E9%87%8D%E8%A4%87%E5%BB%BA%E7%AB%8B-dto-%E7%9A%84%E5%95%8F%E9%A1%8C">關於重複建立 DTO 的問題</a></li>
+<li><a href="#%E4%B8%89%E5%B1%A4%E5%BC%8F%E6%9E%B6%E6%A7%8B%E8%B7%9F-mvc-%E4%B8%80%E6%A8%A3%E5%97%8E">三層式架構跟 MVC 一樣嗎？</a></li>
+<li><a href="#service-%E5%8F%AF%E4%BB%A5%E4%BE%9D%E8%B3%B4-service-%E5%97%8E">Service 可以依賴 Service 嗎？</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99">參考資料</a></li>
+<li><a href="#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0">本系列文章</a></li>
+</ul>
+<h2 id="什麼是分層分層可以吃嗎">什麼是分層？分層可以吃嗎？</h2>
+<blockquote>
+<p>天地混沌如雞子，商業邏輯生其中。</p>
+<p>萬八千歲，天地開闢。表現層為天。資料層為地。商業邏輯層在其中……</p>
+<p>　　　　－－民明書坊《盤古與他的CRUD之旅》</p>
+</blockquote>
+<p>根據民明書坊的文獻記載，我們常聽到的「天地玄黃，宇宙洪荒」云云，其實指的就是上古時期的開發狀況。當時世界還是一片混沌，所有的程式碼都混雜成一坨，不是所有東西寫在一起你儂我儂，一言不合就三千行；就是依賴關係交錯複雜，改了北極壞南極。</p>
+<p>要說有多亂呢，大概就算前人嘗試引入了 MVC，也只是改成把所有程式都塞在 Controller 而已，其絕望程度可見一斑。</p>
+<p>這時候隔壁課的老盤調過來接刀，一看不得了，便決定先對這屎山整頓一番。他大喝一聲，那些靠近使用者的便上浮起來化作了天，親近資料庫的便沉澱下去變成了地，而所有的商業邏輯就連接著兩者，支撐起了整個專案。這也就是分層架構的由來。</p>
+<p>一般來說，最常見的分層架構就是<strong>三層式架構</strong>了。</p>
+<h3 id="三層式架構">三層式架構</h3>
+<blockquote>
+<p>分層架構是運用最為廣泛的架構模式，幾乎每個軟體系統都需要通過層（Layer）來隔離不同的關注點（Concern Point），以此應對不同需求的變化，使得這種變化可以獨立進行；此外，分層架構模式還是隔離業務複雜度與技術複雜度的利器。 －－ <a href="https://raychiutw.github.io/2019/%E9%9A%A8%E6%89%8B-Design-Pattern-2-%E8%BB%9F%E9%AB%94%E5%88%86%E5%B1%A4%E8%A8%AD%E8%A8%88%E6%A8%A1%E5%BC%8F-Software-Layered-Architecture-Pattern/">Ray&rsquo;s Notes</a></p>
+</blockquote>
+<p>三層式架構顧名思義就是把應用程式分成三層，一般的分法是分成「<strong>展示層、商業邏輯層、資料存取層</strong>」。</p>
+<p><img src="https://i.imgur.com/RxSrWJm.jpg" alt="分層架構01"></p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/">C#: BenchmarkDotnet －－ 效能測試好簡單</a>
                                     </h1>
                                 </header>
@@ -471,62 +544,6 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
                             </article>
                             <hr color="#D9D9D9" />
                         
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2020/07/code-style/">C#: 程式碼風格備忘</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2020-7-25,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
-                                    
-                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <blockquote>
-<p>前言：本篇是整理公司規範和網路文章後，方便我自己在各個場所也能回來查閱使用的，故仍會不定時修改（畢竟我這人挺三心二意的）。另外本篇有重新調整過行距，發現有點跑版的朋友可以先 Ctrl+F5 一下，感謝閱讀。</p>
-<p>如果你想知道的是如何寫出更優雅、更乾淨、品質更高的程式碼，那並不是該看這篇我個人的備忘錄，我會建議可以閱讀<a href="https://www.tenlong.com.tw/products/9789862017050?list_name=e-106">《無暇的程式碼》</a>。或是可以參考這幾篇，我覺得都寫得很好：<a href="https://ithelp.ithome.com.tw/users/20107637/ironman/1927">可不可以不要寫糙 code</a>、<a href="https://ithelp.ithome.com.tw/users/20107637/ironman/1927">Clean Code 無瑕的程式碼閱讀筆記</a>、<a href="https://ithelp.ithome.com.tw/users/20112160/ironman/1988">易讀程式之美學</a>，共勉之。</p>
-<p>如果你是正巧路過並且也寫 C#，希望這篇能讓你做為參考。但請記得，程式碼風格沒有絕對，最終還是回歸到團隊能否接受和將來的可維護性去考慮，畢竟教條是死的，人是活的。了解這樣做背後的原因，以及為自己寫的程式碼負責，這些都比對著隻字片語斤斤計較更加重要。</p>
-<p>Nothing is true, everything is permitted. —— Assassin&rsquo;s creed.</p>
-</blockquote>
-<h2 id="命名原則">命名原則</h2>
-<blockquote>
-<p>想像下一個接手你程式碼的人是個暴力傾向的重度精神病患者</p>
-<p>而且他知道你住在哪。　　—— 《無瑕的程式碼》</p>
-</blockquote>
-<ul>
-<li>使用<strong>有意義的命名</strong>，請重視描述性。除了迴圈計數器例外</li>
-<li>盡量不要超過五個單字</li>
-<li>業界和慣例中有對應縮寫時可以使用縮寫</li>
-<li>承上，縮寫兩個字母時全大寫，三個字母以上時只第一字大寫</li>
-</ul>
-<h3 id="命名空間">命名空間</h3>
-<ul>
-<li>基礎類別庫：{組織} . {大類/應用範圍} . {小類/專案名稱}
-<ul>
-<li><code>MyStudio.Libs.Basic</code></li>
-<li><code>MyStudio.Libs.Web.BaseTools</code></li>
-</ul>
-</li>
-<li>專案類別庫：{專案名稱} . {子專案/類別/用途}
-<ul>
-<li><code>MyProject.Permiss.Proxy</code></li>
-<li><code>MyProject.Permiss.Repository</code></li>
-</ul>
-</li>
-</ul>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/07/code-style/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
                     
 
                     
@@ -577,7 +594,7 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (5)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (6)</a>
     </li>
     
     <li>
@@ -590,6 +607,10 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/" title="菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/08/set-default-value-with-model-when-fromuri/" title="菜雞抓蟲: 使用 FromUri 的複雜型別在有傳遞 QueryString 的情況下會先建立再賦值">菜雞抓蟲: 使用 FromUri 的複雜型別在有傳遞 QueryString 的情況下會先建立再賦值</a>
@@ -627,10 +648,6 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
         <a href="https://igouist.github.io/post/2021/04/newbie-0-menu/" title="菜雞新訓記 (0): 前言">菜雞新訓記 (0): 前言</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/03/sekiro-darksouls3-clear/" title="隻狼、黑暗靈魂３　白金！">隻狼、黑暗靈魂３　白金！</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -653,7 +670,7 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (19)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (20)</a>
     </li>
     
     <li>

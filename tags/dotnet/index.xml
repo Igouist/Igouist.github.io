@@ -6,10 +6,69 @@
     <description>Recent content in Dotnet on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Sun, 13 Jun 2021 22:25:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 03 Oct 2021 14:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://igouist.github.io/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</title>
+      <link>https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/</link>
+      <pubDate>Sun, 03 Oct 2021 14:00:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/S72H7sA.png&#34; alt=&#34;img&#34;&gt;&lt;/p&gt;
+&lt;p&gt;這是俺整理公司新訓內容的第五篇文章，目標是&lt;strong&gt;使用三層式架構 (3-Layer Architecture) 來切分服務的關注點和職責&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#%E4%BB%80%E9%BA%BC%E6%98%AF%E5%88%86%E5%B1%A4%E5%88%86%E5%B1%A4%E5%8F%AF%E4%BB%A5%E5%90%83%E5%97%8E&#34;&gt;什麼是分層？分層可以吃嗎？&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#%E4%B8%89%E5%B1%A4%E5%BC%8F%E6%9E%B6%E6%A7%8B&#34;&gt;三層式架構&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E9%97%9C%E6%96%BC-dto&#34;&gt;關於 DTO&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E7%82%BA%E4%BB%80%E9%BA%BC%E6%88%91%E5%80%91%E9%9C%80%E8%A6%81%E5%88%86%E5%B1%A4%E6%9E%B6%E6%A7%8B&#34;&gt;為什麼我們需要分層架構？&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E6%9C%AC%E7%AF%80%E7%9A%84%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99&#34;&gt;本節的參考資料&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%AF%A6%E4%BD%9C&#34;&gt;實作&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%AF%A6%E4%BD%9C%E7%AF%84%E4%BE%8B%E7%9A%84%E6%9E%B6%E6%A7%8B%E8%88%87%E5%89%8D%E8%A8%80&#34;&gt;實作範例的架構與前言&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%A4%A7%E8%87%B4%E4%B8%8A%E7%9A%84%E6%AD%A5%E9%A9%9F&#34;&gt;大致上的步驟&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E7%AF%84%E4%BE%8B%E5%B0%88%E6%A1%88%E8%83%8C%E6%99%AF&#34;&gt;範例專案背景&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%BB%BA%E7%AB%8B%E5%88%86%E5%B1%A4&#34;&gt;建立分層&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%8A%A0%E5%85%A5%E5%8F%83%E8%80%83&#34;&gt;加入參考&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%BB%BA%E7%AB%8B%E4%BB%8B%E9%9D%A2%E8%88%87-dto&#34;&gt;建立介面與 DTO&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%AF%A6%E4%BD%9C-repository&#34;&gt;實作 Repository&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%AF%A6%E4%BD%9C-service&#34;&gt;實作 Service&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%AF%A6%E4%BD%9C-controller&#34;&gt;實作 Controller&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%B0%8F%E7%B5%90&#34;&gt;小結&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E8%87%AA%E5%95%8F%E8%87%AA%E7%AD%94%E5%BF%83%E5%BE%97%E7%AF%87&#34;&gt;自問自答心得篇&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#%E9%97%9C%E6%96%BC%E9%87%8D%E8%A4%87%E5%BB%BA%E7%AB%8B-dto-%E7%9A%84%E5%95%8F%E9%A1%8C&#34;&gt;關於重複建立 DTO 的問題&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E4%B8%89%E5%B1%A4%E5%BC%8F%E6%9E%B6%E6%A7%8B%E8%B7%9F-mvc-%E4%B8%80%E6%A8%A3%E5%97%8E&#34;&gt;三層式架構跟 MVC 一樣嗎？&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#service-%E5%8F%AF%E4%BB%A5%E4%BE%9D%E8%B3%B4-service-%E5%97%8E&#34;&gt;Service 可以依賴 Service 嗎？&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99&#34;&gt;參考資料&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0&#34;&gt;本系列文章&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;什麼是分層分層可以吃嗎&#34;&gt;什麼是分層？分層可以吃嗎？&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;天地混沌如雞子，商業邏輯生其中。&lt;/p&gt;
+&lt;p&gt;萬八千歲，天地開闢。表現層為天。資料層為地。商業邏輯層在其中……&lt;/p&gt;
+&lt;p&gt;　　　　－－民明書坊《盤古與他的CRUD之旅》&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;根據民明書坊的文獻記載，我們常聽到的「天地玄黃，宇宙洪荒」云云，其實指的就是上古時期的開發狀況。當時世界還是一片混沌，所有的程式碼都混雜成一坨，不是所有東西寫在一起你儂我儂，一言不合就三千行；就是依賴關係交錯複雜，改了北極壞南極。&lt;/p&gt;
+&lt;p&gt;要說有多亂呢，大概就算前人嘗試引入了 MVC，也只是改成把所有程式都塞在 Controller 而已，其絕望程度可見一斑。&lt;/p&gt;
+&lt;p&gt;這時候隔壁課的老盤調過來接刀，一看不得了，便決定先對這屎山整頓一番。他大喝一聲，那些靠近使用者的便上浮起來化作了天，親近資料庫的便沉澱下去變成了地，而所有的商業邏輯就連接著兩者，支撐起了整個專案。這也就是分層架構的由來。&lt;/p&gt;
+&lt;p&gt;一般來說，最常見的分層架構就是&lt;strong&gt;三層式架構&lt;/strong&gt;了。&lt;/p&gt;
+&lt;h3 id=&#34;三層式架構&#34;&gt;三層式架構&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;分層架構是運用最為廣泛的架構模式，幾乎每個軟體系統都需要通過層（Layer）來隔離不同的關注點（Concern Point），以此應對不同需求的變化，使得這種變化可以獨立進行；此外，分層架構模式還是隔離業務複雜度與技術複雜度的利器。 －－ &lt;a href=&#34;https://raychiutw.github.io/2019/%E9%9A%A8%E6%89%8B-Design-Pattern-2-%E8%BB%9F%E9%AB%94%E5%88%86%E5%B1%A4%E8%A8%AD%E8%A8%88%E6%A8%A1%E5%BC%8F-Software-Layered-Architecture-Pattern/&#34;&gt;Ray&amp;rsquo;s Notes&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;三層式架構顧名思義就是把應用程式分成三層，一般的分法是分成「&lt;strong&gt;展示層、商業邏輯層、資料存取層&lt;/strong&gt;」。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/RxSrWJm.jpg&#34; alt=&#34;分層架構01&#34;&gt;&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>C#: BenchmarkDotnet －－ 效能測試好簡單</title>

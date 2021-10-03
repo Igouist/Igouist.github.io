@@ -103,6 +103,79 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2021-10-3,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/S72H7sA.png" alt="img"></p>
+<p>這是俺整理公司新訓內容的第五篇文章，目標是<strong>使用三層式架構 (3-Layer Architecture) 來切分服務的關注點和職責</strong>。</p>
+<ul>
+<li><a href="#%E4%BB%80%E9%BA%BC%E6%98%AF%E5%88%86%E5%B1%A4%E5%88%86%E5%B1%A4%E5%8F%AF%E4%BB%A5%E5%90%83%E5%97%8E">什麼是分層？分層可以吃嗎？</a>
+<ul>
+<li><a href="#%E4%B8%89%E5%B1%A4%E5%BC%8F%E6%9E%B6%E6%A7%8B">三層式架構</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC-dto">關於 DTO</a></li>
+<li><a href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E6%88%91%E5%80%91%E9%9C%80%E8%A6%81%E5%88%86%E5%B1%A4%E6%9E%B6%E6%A7%8B">為什麼我們需要分層架構？</a></li>
+<li><a href="#%E6%9C%AC%E7%AF%80%E7%9A%84%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99">本節的參考資料</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AF%A6%E4%BD%9C">實作</a>
+<ul>
+<li><a href="#%E5%AF%A6%E4%BD%9C%E7%AF%84%E4%BE%8B%E7%9A%84%E6%9E%B6%E6%A7%8B%E8%88%87%E5%89%8D%E8%A8%80">實作範例的架構與前言</a></li>
+<li><a href="#%E5%A4%A7%E8%87%B4%E4%B8%8A%E7%9A%84%E6%AD%A5%E9%A9%9F">大致上的步驟</a></li>
+<li><a href="#%E7%AF%84%E4%BE%8B%E5%B0%88%E6%A1%88%E8%83%8C%E6%99%AF">範例專案背景</a></li>
+<li><a href="#%E5%BB%BA%E7%AB%8B%E5%88%86%E5%B1%A4">建立分層</a></li>
+<li><a href="#%E5%8A%A0%E5%85%A5%E5%8F%83%E8%80%83">加入參考</a></li>
+<li><a href="#%E5%BB%BA%E7%AB%8B%E4%BB%8B%E9%9D%A2%E8%88%87-dto">建立介面與 DTO</a></li>
+<li><a href="#%E5%AF%A6%E4%BD%9C-repository">實作 Repository</a></li>
+<li><a href="#%E5%AF%A6%E4%BD%9C-service">實作 Service</a></li>
+<li><a href="#%E5%AF%A6%E4%BD%9C-controller">實作 Controller</a></li>
+</ul>
+</li>
+<li><a href="#%E5%B0%8F%E7%B5%90">小結</a></li>
+<li><a href="#%E8%87%AA%E5%95%8F%E8%87%AA%E7%AD%94%E5%BF%83%E5%BE%97%E7%AF%87">自問自答心得篇</a>
+<ul>
+<li><a href="#%E9%97%9C%E6%96%BC%E9%87%8D%E8%A4%87%E5%BB%BA%E7%AB%8B-dto-%E7%9A%84%E5%95%8F%E9%A1%8C">關於重複建立 DTO 的問題</a></li>
+<li><a href="#%E4%B8%89%E5%B1%A4%E5%BC%8F%E6%9E%B6%E6%A7%8B%E8%B7%9F-mvc-%E4%B8%80%E6%A8%A3%E5%97%8E">三層式架構跟 MVC 一樣嗎？</a></li>
+<li><a href="#service-%E5%8F%AF%E4%BB%A5%E4%BE%9D%E8%B3%B4-service-%E5%97%8E">Service 可以依賴 Service 嗎？</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99">參考資料</a></li>
+<li><a href="#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0">本系列文章</a></li>
+</ul>
+<h2 id="什麼是分層分層可以吃嗎">什麼是分層？分層可以吃嗎？</h2>
+<blockquote>
+<p>天地混沌如雞子，商業邏輯生其中。</p>
+<p>萬八千歲，天地開闢。表現層為天。資料層為地。商業邏輯層在其中……</p>
+<p>　　　　－－民明書坊《盤古與他的CRUD之旅》</p>
+</blockquote>
+<p>根據民明書坊的文獻記載，我們常聽到的「天地玄黃，宇宙洪荒」云云，其實指的就是上古時期的開發狀況。當時世界還是一片混沌，所有的程式碼都混雜成一坨，不是所有東西寫在一起你儂我儂，一言不合就三千行；就是依賴關係交錯複雜，改了北極壞南極。</p>
+<p>要說有多亂呢，大概就算前人嘗試引入了 MVC，也只是改成把所有程式都塞在 Controller 而已，其絕望程度可見一斑。</p>
+<p>這時候隔壁課的老盤調過來接刀，一看不得了，便決定先對這屎山整頓一番。他大喝一聲，那些靠近使用者的便上浮起來化作了天，親近資料庫的便沉澱下去變成了地，而所有的商業邏輯就連接著兩者，支撐起了整個專案。這也就是分層架構的由來。</p>
+<p>一般來說，最常見的分層架構就是<strong>三層式架構</strong>了。</p>
+<h3 id="三層式架構">三層式架構</h3>
+<blockquote>
+<p>分層架構是運用最為廣泛的架構模式，幾乎每個軟體系統都需要通過層（Layer）來隔離不同的關注點（Concern Point），以此應對不同需求的變化，使得這種變化可以獨立進行；此外，分層架構模式還是隔離業務複雜度與技術複雜度的利器。 －－ <a href="https://raychiutw.github.io/2019/%E9%9A%A8%E6%89%8B-Design-Pattern-2-%E8%BB%9F%E9%AB%94%E5%88%86%E5%B1%A4%E8%A8%AD%E8%A8%88%E6%A8%A1%E5%BC%8F-Software-Layered-Architecture-Pattern/">Ray&rsquo;s Notes</a></p>
+</blockquote>
+<p>三層式架構顧名思義就是把應用程式分成三層，一般的分法是分成「<strong>展示層、商業邏輯層、資料存取層</strong>」。</p>
+<p><img src="https://i.imgur.com/RxSrWJm.jpg" alt="分層架構01"></p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</a>
                                     </h1>
                                 </header>
@@ -486,41 +559,6 @@
                             </article>
                             <hr color="#D9D9D9" />
                         
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle/">菜雞與物件導向 (12): 里氏替換原則</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2020-11-1,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a>
-                                    
-                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <p><img src="https://i.imgur.com/ZAuxFRy.png" alt=""></p>
-<h2 id="里氏替換原則-liskov-substitution-principle">里氏替換原則 (Liskov Substitution Principle)</h2>
-<blockquote>
-<p><strong>子類別必須能夠替換父類別</strong></p>
-</blockquote>
-<p>里氏原則還包含了一個概念：子類別替換父類別後，<strong>不需要改變，也不會發生任何錯誤或異常</strong>。</p>
-<p>從定義就可以看出來，這項原則是來替我們處理繼承問題的。因此，在開始本篇之前，可能需要先對 <a href="/post/2020/07/oo-4-inheritance">繼承</a> 以及 <a href="/post/2020/07/oo-5-polymorphism">多型</a> 有基本的認識。如果可以的話，也請先看過 <a href="/post/2020/07/oo-7-interface">介面</a>。</p>
-<p>那麼，就讓我們從很久很久以前開始說起…</p>
-<h2 id="我的子類別進入叛逆期了怎麼辦">我的子類別進入叛逆期了，怎麼辦？</h2>
-<p>很久很久以前，有一間公司受到 <a href="https://zh.wikipedia.org/wiki/%E4%BB%A5%E9%B8%9F%E7%B1%BB%E4%B8%BA%E8%BD%BD%E4%BD%93%E7%9A%84%E7%BD%91%E9%99%85%E5%8D%8F%E8%AE%AE">鴿子封包</a> 所啟發，打算發展鳥類運輸技術，強勢打入無人機市場，用生物智慧掀起對人工智慧的革命。既然<strong>鳥類都會飛行</strong>，理所當然可以藉由飛行來進行空運，甚至還可以偷偷擊墜那些無人機對手，野心勃勃的老闆立馬徵了一批鳥類物流士，打出「凡是鳥類都可應徵」的旗號，各式各樣的猛禽響應而來，一時之間掀起整個物流業的風暴！</p>
-<p>但是好景不常，公司營運之後發貨狀況不佳，頻繁發生丟包問題，甚至有些貨根本就出不了倉庫，虧損越來越大，心急如焚的老闆下令徹查，這才發現—</p>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
                     
 
                     
@@ -575,7 +613,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (5)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (6)</a>
     </li>
     
     <li>
@@ -588,6 +626,10 @@
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/" title="菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/08/set-default-value-with-model-when-fromuri/" title="菜雞抓蟲: 使用 FromUri 的複雜型別在有傳遞 QueryString 的情況下會先建立再賦值">菜雞抓蟲: 使用 FromUri 的複雜型別在有傳遞 QueryString 的情況下會先建立再賦值</a>
@@ -625,10 +667,6 @@
         <a href="https://igouist.github.io/post/2021/04/newbie-0-menu/" title="菜雞新訓記 (0): 前言">菜雞新訓記 (0): 前言</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/03/sekiro-darksouls3-clear/" title="隻狼、黑暗靈魂３　白金！">隻狼、黑暗靈魂３　白金！</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -651,7 +689,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (19)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (20)</a>
     </li>
     
     <li>

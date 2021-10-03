@@ -103,6 +103,41 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle/">菜雞與物件導向 (12): 里氏替換原則</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2020-11-1,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a>
+                                    
+                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/ZAuxFRy.png" alt=""></p>
+<h2 id="里氏替換原則-liskov-substitution-principle">里氏替換原則 (Liskov Substitution Principle)</h2>
+<blockquote>
+<p><strong>子類別必須能夠替換父類別</strong></p>
+</blockquote>
+<p>里氏原則還包含了一個概念：子類別替換父類別後，<strong>不需要改變，也不會發生任何錯誤或異常</strong>。</p>
+<p>從定義就可以看出來，這項原則是來替我們處理繼承問題的。因此，在開始本篇之前，可能需要先對 <a href="/post/2020/07/oo-4-inheritance">繼承</a> 以及 <a href="/post/2020/07/oo-5-polymorphism">多型</a> 有基本的認識。如果可以的話，也請先看過 <a href="/post/2020/07/oo-7-interface">介面</a>。</p>
+<p>那麼，就讓我們從很久很久以前開始說起…</p>
+<h2 id="我的子類別進入叛逆期了怎麼辦">我的子類別進入叛逆期了，怎麼辦？</h2>
+<p>很久很久以前，有一間公司受到 <a href="https://zh.wikipedia.org/wiki/%E4%BB%A5%E9%B8%9F%E7%B1%BB%E4%B8%BA%E8%BD%BD%E4%BD%93%E7%9A%84%E7%BD%91%E9%99%85%E5%8D%8F%E8%AE%AE">鴿子封包</a> 所啟發，打算發展鳥類運輸技術，強勢打入無人機市場，用生物智慧掀起對人工智慧的革命。既然<strong>鳥類都會飛行</strong>，理所當然可以藉由飛行來進行空運，甚至還可以偷偷擊墜那些無人機對手，野心勃勃的老闆立馬徵了一批鳥類物流士，打出「凡是鳥類都可應徵」的旗號，各式各樣的猛禽響應而來，一時之間掀起整個物流業的風暴！</p>
+<p>但是好景不常，公司營運之後發貨狀況不佳，頻繁發生丟包問題，甚至有些貨根本就出不了倉庫，虧損越來越大，心急如焚的老闆下令徹查，這才發現—</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2020/10/oo-11-open-closed-principle/">菜雞與物件導向 (11): 開放封閉原則</a>
                                     </h1>
                                 </header>
@@ -474,57 +509,6 @@
                             </article>
                             <hr color="#D9D9D9" />
                         
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2020/07/oo-2-constructor-overload/">菜雞與物件導向 (2): 建構式、多載</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2020-7-12,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a>
-                                    
-                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <p><img src="https://i.imgur.com/naCjLay.png" alt=""></p>
-<p>我就直接說了，有用前面的程式碼區塊的人，絕對執行不了。因為我們建立哥布林和戰士這兩張卡片的時候，根本就沒有給他們數值呀！</p>
-<p>雖然可以先呼叫出來再賦值…</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card();
-goblin.Name = <span style="color:#e6db74">&#34;哥布林&#34;</span>;
-goblin.Attack = <span style="color:#ae81ff">3</span>;
-goblin.Health = <span style="color:#ae81ff">2</span>;
-<span style="color:#75715e">/* ...其他賦值 */</span>
-</code></pre></div><p>這實在相當占空間，也有點奇怪。畢竟如果是阿福（狗），一出生的時候應該就確定了一些特徵才對，例如品種、血型、眼睛顏色這種。並不會出生後過一陣子，才突然決定這些東西，既然如此，我們在產生物件的時候，當然也會希望在<strong>建立的同時就先決定好一部份內容</strong>。</p>
-<p>這時候我們就可以藉由<strong>建構式</strong>的方式，在建立物件時就進行一些我們想要的操作。</p>
-<p>事實上，<strong>當我們呼叫 <code>new Card()</code> 的時候</strong>（不覺得這個 () 很有呼叫方法的感覺嗎？）<strong>我們就是正在調用 Card 的建構式</strong>。而當我們沒有特別去定義建構式的時候，就會直接使用內建的建構式去幫我們產生物件。</p>
-<p>現在我們替 Card 新增一個建構式：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
-{
-    <span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">int</span> attack, <span style="color:#66d9ef">int</span> health)
-    {
-        <span style="color:#66d9ef">this</span>.Name = name;
-        <span style="color:#66d9ef">this</span>.Attack = attack;
-        <span style="color:#66d9ef">this</span>.Health = health;
-    }
-    <span style="color:#75715e">/* ... 其他屬性和方法 */</span>
-}
-</code></pre></div><p>在 C# 的時候，建構式必須和類別同名，且不需要定義回傳類型。當我們有了建構式，剛剛的例子就可以改寫成：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;哥布林&#34;</span>, attack: <span style="color:#ae81ff">3</span>, health: <span style="color:#ae81ff">2</span>);
-<span style="color:#66d9ef">var</span> warrior = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;戰士&#34;</span> , attack: <span style="color:#ae81ff">4</span>, health: <span style="color:#ae81ff">3</span>);
-warrior.Hit(goblin);
-</code></pre></div><p><strong>建構式也就是建立這個物件時執行的函式</strong>，通常會用來進行初始化，也就是做一些建立物件必要的準備。例如傳遞必要屬性或是建構需要的其他物件、或是給予私有屬性初始值等等，例如說我們的卡牌一建立，就會需要知道它的名字和戰鬥力，這樣才有卡牌的感覺，而不該像一些 <a href="https://zh.wikipedia.org/wiki/%E6%AD%A6%E8%97%A4%E9%81%8A%E6%88%B2">壞決鬥者</a> 邊打牌邊偷偷印卡。</p>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-2-constructor-overload/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
                     
 
                     
@@ -583,7 +567,7 @@ warrior.Hit(goblin);
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (5)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (6)</a>
     </li>
     
     <li>
@@ -596,6 +580,10 @@ warrior.Hit(goblin);
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/" title="菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/08/set-default-value-with-model-when-fromuri/" title="菜雞抓蟲: 使用 FromUri 的複雜型別在有傳遞 QueryString 的情況下會先建立再賦值">菜雞抓蟲: 使用 FromUri 的複雜型別在有傳遞 QueryString 的情況下會先建立再賦值</a>
@@ -633,10 +621,6 @@ warrior.Hit(goblin);
         <a href="https://igouist.github.io/post/2021/04/newbie-0-menu/" title="菜雞新訓記 (0): 前言">菜雞新訓記 (0): 前言</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/03/sekiro-darksouls3-clear/" title="隻狼、黑暗靈魂３　白金！">隻狼、黑暗靈魂３　白金！</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -659,7 +643,7 @@ warrior.Hit(goblin);
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (19)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (20)</a>
     </li>
     
     <li>
