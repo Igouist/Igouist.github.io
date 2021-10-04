@@ -92,6 +92,39 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2020/11/dark-reader/" title="Dark Reader —— 暗黑模式愛好者的 Chrome 必備套件" >Dark Reader —— 暗黑模式愛好者的 Chrome 必備套件</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-11-8,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/tools">Tools</a></span>
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/G4OjUzE.png" alt=""></p>
+<blockquote>
+<p>不能信任那些 Terminal 或編輯器用白底的人。</br>
+—— <a href="https://github.com/CodeTengu/JokeKappa/blob/master/jokekappa/jokes/codetengu_weekly.json">JokeKappa</a></p>
+</blockquote>
+<p>這禮拜推薦了個常用的 chrome 套件給同樣喜歡黑色背景的同事，這邊也推薦給大家。</p>
+<p><s>絕對不是因為隻狼更新了不小心砍太爽，結果來不及寫介面隔離只能介紹套件水一下，Heiya～</s></p>
+<p>今天要介紹的就是這款 <a href="https://chrome.google.com/webstore/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh">Dark Reader</a>，這是我用 chrome 時首選的暗黑模式擴充套件，在俺寫文的這時候已經超過了三百萬次的下載次數，現在就讓我來記錄一下這款擴充套件的一些特色唄。</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2020/11/dark-reader/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle/" title="菜雞與物件導向 (12): 里氏替換原則" >菜雞與物件導向 (12): 里氏替換原則</a>
                                 </h1>
                             </header>
@@ -419,62 +452,6 @@ student.ID.Dump(); <span style="color:#75715e">// 1
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2020/08/csharp-timezone/" title="C#: 時區轉換、民國西元、國曆農曆、中文月份週期" >C#: 時區轉換、民國西元、國曆農曆、中文月份週期</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-8-30,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p>聊到將時間從 UTC 轉到台灣時間，居然還是聽到朋友表示使用 +8 小時的做法，驚為天人。這種做法可能會造成後續的問題，例如時區並不會跟著變動，或是遇到日光節約等特殊狀況就容易出事。和西元民國轉換直接 -1911 一樣不穩定。</p>
-<p>這篇就用來記錄一下之前看過比較優雅的時區轉換方式，順便將先前存著的時間處理相關資料整理一下，方便之後需要時可以馬上回來查詢。</p>
-<h2 id="timezoneinfo-時區資訊">TimeZoneInfo: 時區資訊</h2>
-<p>轉換方式主要參考自 <a href="https://dotblogs.com.tw/supershowwei/2016/10/17/141620">[食譜好菜] DateTime 具有文化特性的格式化及時區的轉換</a> 及 <a href="https://docs.microsoft.com/zh-tw/dotnet/standard/datetime/converting-between-time-zones">在各時區間轉換時間</a>，感謝前人的指引。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 假設現在是要從標準時區 +00:00 轉換到台灣時區，故這邊使用 UtcNow 先取標準世界協調時間
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> nowDateTime = DateTime.UtcNow;
-
-nowDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-<span style="color:#75715e">// 2020/08/30 15:56:05 +00:00
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// ==================================================
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// 傳統的 直接對時間做計算的方式…
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> addedDateTime = nowDateTime.AddHours(<span style="color:#ae81ff">8</span>);
-
-addedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-<span style="color:#75715e">// 2020/08/30 23:56:05 +00:00
-</span><span style="color:#75715e">// 可以看到儘管時間變動了，時區仍然還在 +00:00
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// ==================================================
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// 使用 TimeZoneInfo 先取得台北時區
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> timeZone = TimeZoneInfo.FindSystemTimeZoneById(<span style="color:#e6db74">&#34;Taipei Standard Time&#34;</span>);
-
-<span style="color:#75715e">// 再使用 TimeZoneInfo 來變更時間
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> convertedDateTime = TimeZoneInfo.ConvertTime(nowDateTime, timeZone);
-
-convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-<span style="color:#75715e">// 2020/08/30 23:56:05 +08:00
-</span><span style="color:#75715e">// 可以看到除了時間變更以外，時區也切換到 +08:00 了！
-</span></code></pre></div><p>上面取得台北時區的步驟，可以參照 <a href="https://docs.microsoft.com/en-us/previous-versions/windows/embedded/gg154758(v=winembedded.80)">Time Zone IDs</a> 來查詢想要的時區。這樣的時區切換方式，不僅副作用少，不會因為時區沒轉雷到後續接手的人，也省卻了擔心日光節約等等問題，這種事就交給微軟去煩惱吧！</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2020/08/csharp-timezone/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -562,6 +539,10 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/" title="菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記">菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/" title="菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a>
     </li>
     
@@ -597,10 +578,6 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
         <a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/" title="菜雞新訓記 (1): 使用 Git 來進行版本控制吧">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/04/newbie-0-menu/" title="菜雞新訓記 (0): 前言">菜雞新訓記 (0): 前言</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -623,7 +600,7 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (20)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (21)</a>
     </li>
     
     <li>

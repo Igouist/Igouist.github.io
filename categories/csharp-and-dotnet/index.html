@@ -103,6 +103,49 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/">菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2021-10-4,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/RG2Wqcl.png" alt="Image"></p>
+<h2 id="事發緣由">事發緣由</h2>
+<p>在某套件中提供了某方法，它能讓使用者傳入多個參數，該方法再將各個參數組合為 QueryString 去指定的 Url 呼叫 Api 取值。</p>
+<p>這邊先不論把 Api 接口封裝到套件中的做法，神奇的是同樣的套件、同樣的語法，在不同人的電腦上執行，卻是一個成功一個失敗。</p>
+<p>經查後發現，該方法的參數中包含一欄型別為 DateTime 的資料，並且會把該欄位的值拿來 ToString() 再做為參數之一傳遞給目標 Api。</p>
+<p>原來是呼叫失敗的人就是在這個 <code>DateTime.ToString()</code> 的過程中產生了中文字，使得目標 Api 無法將中文字轉換回 DateTime 而發生了錯誤。</p>
+<p>也就是說：<strong>同一行 DateTime.ToString() 在不同電腦執行竟然不一樣？！</strong></p>
+<p>為了讓我們更快了解狀況，現在就簡單地使用 Linqpad 進行測試：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
+{
+    DateTime.Now.ToString().Dump();
+}
+</code></pre></div><p>首先，在我的 Windows 時間設定中，完整時間的格式為 <code>21:00:00</code> ，也就是 24 小時制。</p>
+<p>現在讓我們先執行上面這段語法看看：</p>
+<pre><code>// 2021/10/04 21:00:00
+</code></pre><p>接著讓我們變更時間格式看看。</p>
+<p>以我的 Win10 為例，在 Windows 工具列，也就是畫面的右下角右鍵，選擇 <code>調整日期時間 → 日期時間格式設定 → 變更資料格式</code>，將時間格式變更為 <code>上午 09:00:00</code>。</p>
+<p>重新啟動 Linqpad 再執行如下：</p>
+<pre><code>// 2021/10/04 下午 09:00:00
+</code></pre><p>可以看到 <code>下午</code> 兩個字就蹦出來了！</p>
+<p>之所以會有這樣的差異，是因為 <code>DateTime.ToString()</code> 預設轉換的目標格式會是抓取目前執行緒的<strong>文化特性</strong>。</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a>
                                     </h1>
                                 </header>
@@ -520,47 +563,6 @@ rpmbuild --bb openssl-libs-ami.spec.txt
                             </article>
                             <hr color="#D9D9D9" />
                         
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2020/09/csharp-trulp/">C#: 元組 (Tuple)</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2020-9-27,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
-                                    
-                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <p>因為隔壁介紹原則的部分有點卡住了，所以這週來紀錄一下挺常用到的方便東西：<strong>Tuple</strong></p>
-<p>這篇的 Tuple 指的是 C# 7.0 後提供的 <strong>ValueTuple</strong> 和相關語法，舊版得用 <code>Tuple.Create</code> 建立，成員的名稱也只能使用 Item1, Item2&hellip;，實用性並不是很高。但新 Tuple 出現後，方便程度大大提升，這邊就稍作紀錄一下。</p>
-<blockquote>
-<p>註：此處使用的 <code>Dump</code> 是 Linqpad 提供的輸出方法，把它當成 Print 就行了。</p>
-</blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
-student.Item1.Dump(); <span style="color:#75715e">// 1
-</span><span style="color:#75715e"></span>student.Item2.Dump(); <span style="color:#75715e">// 王小明
-</span><span style="color:#75715e"></span>
-student.Dump();
-</code></pre></div><p>可以看到 Tuple 的建立相當簡單，只需要用小括號 <code>()</code> 括選起來即可。建立後的內容就會像這樣：</p>
-<p><img src="https://i.imgur.com/H0wJglN.png" alt=""></p>
-<p>但這樣使用就和之前一樣，取出來時只能拿 Item1, Item2，放個幾天根本就不記得 Item1 裡面是啥東西了。這時我們就可以<strong>替成員們取名字</strong>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">(<span style="color:#66d9ef">int</span> ID, <span style="color:#66d9ef">string</span> Name) student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
-student.ID.Dump(); <span style="color:#75715e">// 1
-</span><span style="color:#75715e"></span>student.Name.Dump(); <span style="color:#75715e">// 王小明
-</span></code></pre></div><p>如此使用的時候就和一般操作物件的習慣沒有差別，也增加了可讀性。</p>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/09/csharp-trulp/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
                     
 
                     
@@ -576,6 +578,10 @@ student.ID.Dump(); <span style="color:#75715e">// 1
     
     <li >
         <a href="https://igouist.github.io/categories/csharp-and-dotnet/page/2/">2</a>
+    </li>
+    
+    <li >
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/page/3/">3</a>
     </li>
     
 
@@ -626,6 +632,10 @@ student.ID.Dump(); <span style="color:#75715e">// 1
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/" title="菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記">菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/" title="菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a>
     </li>
     
@@ -661,10 +671,6 @@ student.ID.Dump(); <span style="color:#75715e">// 1
         <a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/" title="菜雞新訓記 (1): 使用 Git 來進行版本控制吧">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/04/newbie-0-menu/" title="菜雞新訓記 (0): 前言">菜雞新訓記 (0): 前言</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -687,7 +693,7 @@ student.ID.Dump(); <span style="color:#75715e">// 1
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (20)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (21)</a>
     </li>
     
     <li>
