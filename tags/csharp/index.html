@@ -103,6 +103,32 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2021/10/swagger-enable-authorize/">在 Swagger UI 加上驗證按鈕，讓 Request Header 傳遞 Authorize Token</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2021-10-16,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/XjZLvSZ.png" alt="Image"></p>
+<p>在先前的 <a href="/post/2021/05/newbie-4-swagger">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</a> 中，我們介紹了在 .net Core 環境使用 <strong>Swashbuckle</strong> 套件來產生 Swagger 文檔，並且直接在 Swagger UI 中呼叫 API 來進行測試。</p>
+<p>但很多時候，我們的 API 會需要先驗證才能使用，例如<strong>在 Header 傳遞 Token 來驗證身分</strong>等等。這時候 Swagger UI 就會整個廢掉，打了都會出錯，很不方便。</p>
+<p>因此這篇文章就紀錄一下如何在 Swagger UI 上加入 Authorize Token 的傳遞，讓 Swagger UI 在需要身分驗證的環境也能直接呼叫使用。</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2021/10/swagger-enable-authorize/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/">菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記</a>
                                     </h1>
                                 </header>
@@ -509,61 +535,6 @@ student.ID.Dump(); <span style="color:#75715e">// 1
                             </article>
                             <hr color="#D9D9D9" />
                         
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2020/08/csharp-timezone/">C#: 時區轉換、民國西元、國曆農曆、中文月份週期</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2020-8-30,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
-                                    
-                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <p>聊到將時間從 UTC 轉到台灣時間，居然還是聽到朋友表示使用 +8 小時的做法，驚為天人。這種做法可能會造成後續的問題，例如時區並不會跟著變動，或是遇到日光節約等特殊狀況就容易出事。和西元民國轉換直接 -1911 一樣不穩定。</p>
-<p>這篇就用來記錄一下之前看過比較優雅的時區轉換方式，順便將先前存著的時間處理相關資料整理一下，方便之後需要時可以馬上回來查詢。</p>
-<h2 id="timezoneinfo-時區資訊">TimeZoneInfo: 時區資訊</h2>
-<p>轉換方式主要參考自 <a href="https://dotblogs.com.tw/supershowwei/2016/10/17/141620">[食譜好菜] DateTime 具有文化特性的格式化及時區的轉換</a> 及 <a href="https://docs.microsoft.com/zh-tw/dotnet/standard/datetime/converting-between-time-zones">在各時區間轉換時間</a>，感謝前人的指引。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 假設現在是要從標準時區 +00:00 轉換到台灣時區，故這邊使用 UtcNow 先取標準世界協調時間
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> nowDateTime = DateTime.UtcNow;
-
-nowDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-<span style="color:#75715e">// 2020/08/30 15:56:05 +00:00
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// ==================================================
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// 傳統的 直接對時間做計算的方式…
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> addedDateTime = nowDateTime.AddHours(<span style="color:#ae81ff">8</span>);
-
-addedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-<span style="color:#75715e">// 2020/08/30 23:56:05 +00:00
-</span><span style="color:#75715e">// 可以看到儘管時間變動了，時區仍然還在 +00:00
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// ==================================================
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// 使用 TimeZoneInfo 先取得台北時區
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> timeZone = TimeZoneInfo.FindSystemTimeZoneById(<span style="color:#e6db74">&#34;Taipei Standard Time&#34;</span>);
-
-<span style="color:#75715e">// 再使用 TimeZoneInfo 來變更時間
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> convertedDateTime = TimeZoneInfo.ConvertTime(nowDateTime, timeZone);
-
-convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-<span style="color:#75715e">// 2020/08/30 23:56:05 +08:00
-</span><span style="color:#75715e">// 可以看到除了時間變更以外，時區也切換到 +08:00 了！
-</span></code></pre></div><p>上面取得台北時區的步驟，可以參照 <a href="https://docs.microsoft.com/en-us/previous-versions/windows/embedded/gg154758(v=winembedded.80)">Time Zone IDs</a> 來查詢想要的時區。這樣的時區切換方式，不僅副作用少，不會因為時區沒轉雷到後續接手的人，也省卻了擔心日光節約等等問題，這種事就交給微軟去煩惱吧！</p>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/08/csharp-timezone/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
                     
 
                     
@@ -579,6 +550,10 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
     
     <li >
         <a href="https://igouist.github.io/tags/csharp/page/2/">2</a>
+    </li>
+    
+    <li >
+        <a href="https://igouist.github.io/tags/csharp/page/3/">3</a>
     </li>
     
 
@@ -629,6 +604,10 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2021/10/swagger-enable-authorize/" title="在 Swagger UI 加上驗證按鈕，讓 Request Header 傳遞 Authorize Token">在 Swagger UI 加上驗證按鈕，讓 Request Header 傳遞 Authorize Token</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/" title="菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記">菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記</a>
     </li>
     
@@ -664,10 +643,6 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
         <a href="https://igouist.github.io/post/2021/05/visual-studio-split-window-in-one-file/" title="Visual Studio: 在同一個檔案分割視窗">Visual Studio: 在同一個檔案分割視窗</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/" title="菜雞新訓記 (1): 使用 Git 來進行版本控制吧">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -690,7 +665,7 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (21)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (22)</a>
     </li>
     
     <li>
