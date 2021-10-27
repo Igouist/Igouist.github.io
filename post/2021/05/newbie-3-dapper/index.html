@@ -17,8 +17,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫 - 伊果的沒人看筆記本">
+    <title>菜雞新訓記 (3): 使用 Dapper 來連線到資料庫吧 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫吧 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
     <meta property="article:published_time" content="2021-05-09T11:15:00&#43;08:00">
@@ -27,7 +27,7 @@
     <meta property="article:modified_time" content="2021-05-09T11:15:00&#43;08:00">
         
         <meta name="keywords" content="dapper, ORM, Dotnet Core, .net Core, C#">
-    <meta name="description" content="這是俺整理公司新訓內容的第三篇文章，目標是在 .NET Core 簡單地使用 Dapper 連線到資料庫並完成 CRUD 的功能，並稍微介紹 ORM、強型別與弱型別">
+    <meta name="description" content="在 .NET Core 簡單地使用 Dapper 連線到資料庫完成 CRUD 功能，並介紹 ORM、強型別與弱型別等相關概念">
         <meta name="author" content="Igouist">
         
     <meta property="og:url" content="https://igouist.github.io/post/2021/05/newbie-3-dapper/">
@@ -96,7 +96,7 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫</h1>
+                            <h1 class="post-title">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫吧</h1>
                         </header>
                         <date class="post-meta meta-date">
                             2021-5-9,
@@ -116,28 +116,10 @@
                             </span>)
                         </div>
                         
+
                         <div class="post-content">
-                            <p><img src="https://i.imgur.com/kOpRPTm.png" alt=""></p>
+                            <p><img src="https://i.imgur.com/5IWE3BW.png" alt="Image"></p>
 <p>這是俺整理公司新訓內容的第三篇文章，目標是<strong>簡單地使用 Dapper 連線到資料庫並完成 CRUD 的功能</strong>。</p>
-<ul>
-<li><a href="/post/2021/05/newbie-3-dapper#%E5%89%8D%E8%A8%80%E5%9F%BA%E6%9C%AC%E8%A7%80%E5%BF%B5">前言、基本觀念</a>
-<ul>
-<li><a href="/post/2021/05/newbie-3-dapper#%E5%BC%B1%E5%9E%8B%E5%88%A5%E8%88%87%E5%BC%B7%E5%9E%8B%E5%88%A5">弱型別與強型別</a></li>
-<li><a href="/post/2021/05/newbie-3-dapper#%E7%89%A9%E4%BB%B6%E9%97%9C%E4%BF%82%E5%B0%8D%E6%98%A0orm">物件關係對映（ORM）</a></li>
-<li><a href="/post/2021/05/newbie-3-dapper#dapper">Dapper</a></li>
-</ul>
-</li>
-<li><a href="/post/2021/05/newbie-3-dapper#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a>
-<ul>
-<li><a href="/post/2021/05/newbie-3-dapper#%E7%92%B0%E5%A2%83%E6%BA%96%E5%82%99%E5%BB%BA%E7%AB%8B%E8%B3%87%E6%96%99%E8%A1%A8%E5%AE%89%E8%A3%9D-dapper">環境準備（建立資料表、安裝 Dapper）</a></li>
-<li><a href="/post/2021/05/newbie-3-dapper#%E5%BB%BA%E7%AB%8B%E5%B0%8D%E6%87%89%E8%B3%87%E6%96%99%E8%A1%A8%E7%9A%84%E9%A1%9E%E5%88%A5">建立對應資料表的類別</a></li>
-<li><a href="/post/2021/05/newbie-3-dapper#%E4%BD%BF%E7%94%A8-dapper-%E5%AF%A6%E4%BD%9C-crud">使用 Dapper 實作 CRUD</a></li>
-<li><a href="/post/2021/05/newbie-3-dapper#%E5%B0%8D%E6%8E%A5%E8%88%87%E6%B8%AC%E8%A9%A6">對接與測試</a></li>
-</ul>
-</li>
-<li><a href="/post/2021/05/newbie-3-dapper#%E5%B0%8F%E7%B5%90">小結</a></li>
-<li><a href="/post/2021/05/newbie-3-dapper#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0">本系列文章</a></li>
-</ul>
 <p>接續 <a href="/post/2021/05/newbie-2-webapi">上一篇</a> 的進度，我們接著要來連線到資料庫中完成我們的 Web Api 的 CRUD 範例。因為從新訓時期到現在工作團隊作業上主要都是使用 Dapper 來做連線資料庫的工作，這邊就直接用 Dapper 來推進吧！</p>
 <p><strong>Dapper 有多好用呢？它輕量、它簡單、它快速</strong>。總之先把大神們的介紹文直接拿來鎮樓：</p>
 <ul>
@@ -897,8 +879,8 @@
 <ul>
 <li><a href="/post/2021/04/newbie-0-menu">菜雞新訓記 (0): 目錄</a></li>
 <li><a href="/post/2021/04/newbie-1-hello-git">菜雞新訓記 (1): Git 入門這樣做</a></li>
-<li><a href="/post/2021/05/newbie-2-webapi">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧<br/>（上）認識 Api 與建置 Web Api 服務</a></li>
-<li><a href="/post/2021/05/newbie-3-dapper">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧<br/>（下）使用 Dapper 連線到資料庫</a></li>
+<li><a href="/post/2021/05/newbie-2-webapi">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Web Api 服務吧</a></li>
+<li><a href="/post/2021/05/newbie-3-dapper">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫吧</a></li>
 <li><a href="/post/2021/05/newbie-4-swagger">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</a></li>
 <li><a href="/post/2021/10/newbie-5-3-layer-architecture">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a></li>
 </ul>
@@ -910,7 +892,7 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/2021/05/newbie-2-webapi/">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a></li>
+        <li><a href="/post/2021/05/newbie-2-webapi/">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Web Api 服務吧</a></li>
         
         <li><a href="/post/2020/11/bugs-install-dotnet-core-on-amazon-ami-requires-openssl/">菜雞抓蟲: 在 Amazon Linux AMI 安裝 .net Core 時卡在 Requires: openssl-libs</a></li>
         
@@ -972,6 +954,35 @@
 </form>
     </section>
     
+    
+        <section class="widget">
+            <h3 class="widget-title">文章目錄</h3>
+            <ul class="widget-list">
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言基本觀念">前言、基本觀念</a>
+      <ul>
+        <li><a href="#弱型別與強型別">弱型別與強型別</a></li>
+        <li><a href="#物件關係對映orm">物件關係對映（ORM）</a></li>
+        <li><a href="#dapper">Dapper</a></li>
+      </ul>
+    </li>
+    <li><a href="#正式開工">正式開工</a>
+      <ul>
+        <li><a href="#環境準備建立資料表安裝-dapper">環境準備（建立資料表、安裝 Dapper）</a></li>
+        <li><a href="#建立對應資料表的類別">建立對應資料表的類別</a></li>
+        <li><a href="#使用-dapper-實作-crud">使用 Dapper 實作 CRUD</a></li>
+        <li><a href="#對接與測試">對接與測試</a></li>
+      </ul>
+    </li>
+    <li><a href="#小結">小結</a></li>
+    <li><a href="#本系列文章">本系列文章</a></li>
+  </ul>
+</nav>
+            </ul>
+        </section>
+    
+    
     <section class="widget">
         <h3 class="widget-title">系列文</h3>
 <ul class="widget-list">
@@ -1024,11 +1035,11 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫</a>
+        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫吧</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a>
+        <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Web Api 服務吧">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Web Api 服務吧</a>
     </li>
     
     <li>

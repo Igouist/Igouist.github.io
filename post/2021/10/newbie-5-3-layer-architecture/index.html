@@ -26,8 +26,8 @@
         
     <meta property="article:modified_time" content="2021-10-03T14:00:00&#43;08:00">
         
-        <meta name="keywords" content="三層式架構, 3-Layer Architecture, Service, Repository, dotnet core, web api">
-    <meta name="description" content="這是俺整理公司新訓內容的第五篇文章，目標是使用三層式架構 (3-Layer Architecture) 來切分服務的關注點和職責；三層式架構顧名思義就是把應用程式分成三層，一般的分法是分成「展示層、商業邏輯層、資料存取層」，本篇將逐步說明三層式架構的優點和前提，以及實際實作一次分層流程">
+        <meta name="keywords" content="三層式架構, 3-Layer Architecture, DTO, Data Transfer Object, Service Layer, Repository, dotnet core, web api">
+    <meta name="description" content="使用三層式架構 (3-Layer Architecture) 來切分服務的關注點和職責；三層式架構一般分成「展示層、商業邏輯層、資料存取層」，本篇紀錄三層式架構的優點、介紹 DTO、分層分工等重要觀念，以及實際實作一次分層流程">
         <meta name="author" content="Igouist">
         
     <meta property="og:url" content="https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/">
@@ -116,42 +116,10 @@
                             </span>)
                         </div>
                         
+
                         <div class="post-content">
                             <p><img src="https://i.imgur.com/S72H7sA.png" alt="img"></p>
 <p>這是俺整理公司新訓內容的第五篇文章，目標是<strong>使用三層式架構 (3-Layer Architecture) 來切分服務的關注點和職責</strong>。</p>
-<ul>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E4%BB%80%E9%BA%BC%E6%98%AF%E5%88%86%E5%B1%A4%E5%88%86%E5%B1%A4%E5%8F%AF%E4%BB%A5%E5%90%83%E5%97%8E">什麼是分層？分層可以吃嗎？</a>
-<ul>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E4%B8%89%E5%B1%A4%E5%BC%8F%E6%9E%B6%E6%A7%8B">三層式架構</a></li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E9%97%9C%E6%96%BC-dto">關於 DTO</a></li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E7%82%BA%E4%BB%80%E9%BA%BC%E6%88%91%E5%80%91%E9%9C%80%E8%A6%81%E5%88%86%E5%B1%A4%E6%9E%B6%E6%A7%8B">為什麼我們需要分層架構？</a></li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E6%9C%AC%E7%AF%80%E7%9A%84%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99">本節的參考資料</a></li>
-</ul>
-</li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E5%AF%A6%E4%BD%9C">實作</a>
-<ul>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E5%AF%A6%E4%BD%9C%E7%AF%84%E4%BE%8B%E7%9A%84%E6%9E%B6%E6%A7%8B%E8%88%87%E5%89%8D%E8%A8%80">實作範例的架構與前言</a></li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E5%A4%A7%E8%87%B4%E4%B8%8A%E7%9A%84%E6%AD%A5%E9%A9%9F">大致上的步驟</a></li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E7%AF%84%E4%BE%8B%E5%B0%88%E6%A1%88%E8%83%8C%E6%99%AF">範例專案背景</a></li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E5%BB%BA%E7%AB%8B%E5%88%86%E5%B1%A4">建立分層</a></li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E5%8A%A0%E5%85%A5%E5%8F%83%E8%80%83">加入參考</a></li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E5%BB%BA%E7%AB%8B%E4%BB%8B%E9%9D%A2%E8%88%87-dto">建立介面與 DTO</a></li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E5%AF%A6%E4%BD%9C-repository">實作 Repository</a></li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E5%AF%A6%E4%BD%9C-service">實作 Service</a></li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E5%AF%A6%E4%BD%9C-controller">實作 Controller</a></li>
-</ul>
-</li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E8%87%AA%E5%95%8F%E8%87%AA%E7%AD%94%E5%BF%83%E5%BE%97%E7%AF%87">自問自答心得篇</a>
-<ul>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E9%97%9C%E6%96%BC%E9%87%8D%E8%A4%87%E5%BB%BA%E7%AB%8B-dto-%E7%9A%84%E5%95%8F%E9%A1%8C">關於重複建立 DTO 的問題</a></li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E4%B8%89%E5%B1%A4%E5%BC%8F%E6%9E%B6%E6%A7%8B%E8%B7%9F-mvc-%E4%B8%80%E6%A8%A3%E5%97%8E">三層式架構跟 MVC 一樣嗎？</a></li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#service-%E5%8F%AF%E4%BB%A5%E4%BE%9D%E8%B3%B4-service-%E5%97%8E">Service 可以依賴 Service 嗎？</a></li>
-</ul>
-</li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E5%B0%8F%E7%B5%90">小結</a></li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99">參考資料</a></li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0">本系列文章</a></li>
-</ul>
 <h2 id="什麼是分層分層可以吃嗎">什麼是分層？分層可以吃嗎？</h2>
 <blockquote>
 <p>天地混沌如雞子，商業邏輯生其中。</p>
@@ -255,7 +223,7 @@
 </li>
 </ul>
 <p>這裡其實就是<strong>將「資料」和「方法」切割開來封裝</strong>的概念。如果切分得不錯的話，在呼叫的過程就會像是<strong>工廠流水線</strong>的感覺，資料隨著運輸帶到達每個工作區，然後工作區對資料進行處理之後，再送上運輸帶前往下個工作區，經歷了壯闊的旅程（？）之後最後終於到達使用者手上。</p>
-<p>不過相對的，每層之間都用 DTO 去通訊、過多的參數封裝成 DTO 等等，都會增加整個系統中的類別數量，有時候甚至會多到畫面上列不下的程度（我的 DTO 就像宇宙一樣！），反而造成管理和修改上的困難。</p>
+<p>不過相對的，每層之間都用 DTO 去通訊、過多的參數封裝成 DTO 等等，都會增加整個系統中的類別數量，有時候甚至會多到畫面上列不下的程度（我的 DTO 就像宇宙一樣廣闊！區區方案總管休想裝得下我！），反而造成管理和修改上的困難。</p>
 <p>因此 DTO 的應用場景，例如說是每一層都需要獨立的 DTO 嗎？或是使用同一個 DTO 來操作呢？會不會共用了參數反而造成耦合呢？都要到開發的時候來作取捨。</p>
 <p>關於上面這段重複建立 DTO 的問題，我們在最後的 <a href="#%E9%97%9C%E6%96%BC%E9%87%8D%E8%A4%87%E5%BB%BA%E7%AB%8B-dto-%E7%9A%84%E5%95%8F%E9%A1%8C">QA 階段</a> 再稍微聊一下吧，先讓我們把鏡頭轉回分層架構。</p>
 <h3 id="為什麼我們需要分層架構">為什麼我們需要分層架構？</h3>
@@ -277,19 +245,19 @@
 <li>這個資料表的欄位名字被換掉了 =&gt; OK，往 Repository 前進</li>
 <li>這個路由可以幫我調整一下嗎 =&gt; OK，Controller 改起來</li>
 </ul>
-<p>原先你可能要先閱讀一坨又臭又長的程式碼，花一堆時間從裡面找到你要改的地方才能開工。有明確的架構之後，就可以大幅地提升精準度，直接往相應職責的地方去就對了。</p>
-<p>因此，乾淨、分工明確的架構可以給你大方向的指引，替你省下許多垃圾時間，對比垃圾探險記來說實在是舒服許多。</p>
+<p>原先你可能要先閱讀一坨又臭又長的程式碼，經歷一場垃圾探險記、花一堆時間從裡面找到你要改的地方才能開工。有明確的架構之後，就可以大幅地提升精準度，直接往相應職責的地方去就對了。</p>
+<p>因此，乾淨、分工明確的架構可以給你大方向的指引，替你省下許多垃圾時間，實在是舒服許多。</p>
 <p><strong>適合多人合作、減少碰撞率</strong></p>
 <p>因為範圍縮小了，多人合作的時候就可以靈活地去調度、搭配，提升開發時的效率。</p>
-<p>例如說讓比較熟悉資料庫的朋友處理資料存取層、負責和 API 使用端商談規格的朋友先在展示層開好 API 接口等等，可以根據狀況從分層或是功能等方向去分工。</p>
-<p>並且這樣的分工也能減少碰撞率 ……至少會讓 Git 的衝突少一點囧。</p>
+<p>除了平常的你負責Ａ功能、我負責Ｂ功能以外，也可以嘗試讓比較熟悉資料庫的朋友處理資料存取層、負責和 API 使用端商談規格的朋友先在展示層開好 API 接口等等。</p>
+<p>如此就有了可以根據狀況從分層或是功能等方向去分工的彈性。並且這樣的分工也能減少碰撞率 ……至少會讓 Git 的衝突少一點囧。</p>
 <p><strong>增加程式碼的複用性</strong></p>
 <p>最後也是最有感覺的就是增加程式碼的複用性了。在商業邏輯中可能很多地方都會用到其他來源的資料來加工組合，例如查詢客戶的時候要一併列出訂單、推薦商品的時候要附上目前的優惠活動等等。</p>
 <p>這時候如果分層明確，一些像是資料存取層中的「查詢訂單」這種簡單又符合單一職責的方法，我們就可以加以取用，靈活組合出目前的需求。</p>
 <p>比起到處都把同一段撈資料的 Code 複製貼上複製貼上，然後要修改的時候整個遍地開花的狀況，能夠重複使用實在是舒服許多。</p>
 <p>到目前為止這應該是我最有感覺的一項，當你需要撈某個資料出來，發現隊友或是之前的自己已經寫好一個乾淨可用好擴充的 Function 在那邊讓你直接呼叫，那感覺真的是一個爽呀！</p>
 <p><strong>提供抽換的靈活度</strong></p>
-<p>這一項比較像是前面各項產生的結果。由於我們根據了不同職責卻拆分出各層，因此當我們面臨問題的時候是可以整層進行抽換的。</p>
+<p>這一項比較像是前面各項產生的結果。由於我們根據了不同職責來拆分出各層，因此當我們面臨問題的時候是可以整層進行抽換的。</p>
 <p>例如說當我們除了原先的網頁以外，還要提供 API 服務，那麼展示層即使抽換成了 Web API 專案，對整體的架構仍不會有影響，還是能保持同一套商業邏輯。</p>
 <p>又或者是說今天這個專案的資料來源要從 MySQL 換到 MSSQL 之類的，我們就可以把資料存取層替換掉，而不影響商業邏輯和展示層的運作。</p>
 <p><strong>享受以上優點的前提</strong></p>
@@ -332,9 +300,9 @@
 <li><a href="https://medium.com/@steph.c/%E4%B8%89%E5%B1%A4%E6%9E%B6%E6%A7%8B%E6%98%AF%E4%BB%80%E9%BA%BC-%E6%88%91%E5%8F%AA%E7%9F%A5%E9%81%93%E4%B8%89%E5%B1%A4%E8%82%89-efe542c38aaf">MVC 三層架構 是什麼? 我只知道三層肉. 三層架構 (3-Tier Architecture) 是哪三層 ? | by Steph Dev 史帝夫和戴夫</a></li>
 </ul>
 <h2 id="實作">實作</h2>
-<h4 id="實作範例的架構與前言">實作範例的架構與前言</h4>
+<h3 id="實作範例的架構與前言">實作範例的架構與前言</h3>
 <p>在這次的範例中，我會採用在公司時的切割標準：各層之間不同方向的通訊都有獨立的 DTO 來負責。</p>
-<p>當然<strong>每一層和每個 DTO 的名稱都是很彈性的</strong>，例如 <a href="https://raychiutw.github.io/2019/%E9%9A%A8%E6%89%8B-Design-Pattern-2-%E8%BB%9F%E9%AB%94%E5%88%86%E5%B1%A4%E8%A8%AD%E8%A8%88%E6%A8%A1%E5%BC%8F-Software-Layered-Architecture-Pattern/">Ray</a> 大大的範例中，Service 和 Repository 的部份就是使用 Dto 和 Entity 來命名。</p>
+<p>當然<strong>每一層和每個 DTO 的名稱都是很彈性的</strong>，例如 <a href="https://raychiutw.github.io/2019/%E9%9A%A8%E6%89%8B-Design-Pattern-2-%E8%BB%9F%E9%AB%94%E5%88%86%E5%B1%A4%E8%A8%AD%E8%A8%88%E6%A8%A1%E5%BC%8F-Software-Layered-Architecture-Pattern/">Ray</a> 大大的範例中，Service 和 Repository 的 DTO 部份就是使用 Dto 和 Entity 來命名。</p>
 <p>故這部份還請各位根據專案慣例作調整，我個人還是習慣用這套命名方式來處理。本範例的架構大致上會長這樣：</p>
 <p><img src="https://i.imgur.com/MYmaXpt.jpg" alt="分層架構03" style="zoom:50%;" /></p>
 <p>此外，實作部份主要的參考來源為：</p>
@@ -345,13 +313,13 @@
 </ul>
 <p>對想了解分層架構的朋友們，可以也看過 mrkt 大大的操作流程，整體的敘述比較深入。</p>
 <p>但要特別注意，由於我個人平時工作上比較常收到動輒好幾項查詢條件要包裝成單一支 API 的 Parameter DTO 這類需求，故已較為習慣建出一卡車的 DTO 這種方式。</p>
-<p><del>而且畢竟都要寫了，當然要用我習慣的流程來記錄嘛。作者特權！</del></p>
 <p>而像 mrkt 大大的<a href="https://kevintsengtw.blogspot.com/search/label/%E5%88%86%E5%B1%A4%E6%9E%B6%E6%A7%8B">系列文</a>是示範將已有的程式拆分為分層架構的模式、Ray 大大的<a href="https://github.com/raychiutw/software-layered-architecture-pattern-smaple">範例程式</a>的 DTO 命名和這篇的範例不同等等，因為環境、條件和習慣的差別，各家的分層方式和命名都會不太一樣，主要還是看團隊的慣例啦。</p>
+<p><del>而且畢竟都要寫了，當然要用我習慣的流程來記錄嘛。作者特權！</del></p>
 <p>因此本篇的範例，或是說每一篇說明分層的範例在操作的流程、DTO 的建立和使用上都會有所不同。還請有交叉閱讀的朋友們稍加留意。</p>
 <p>不過就像上面引用的 mrkt 大大說的：「『專案分層架構』這個題目相當難以說明，因為要分幾層、怎麼分層、各層有什麼職責、要做什麼事？這些都可以再細分成很多個主題來說明」</p>
 <p>所以希望各位不要拘泥於流程上的順序或是命名之類的，而是理解到這些<strong>都會依照實務上的狀況去做決策和調整</strong>。最後再重申一次：分層架構是一種分工的概念，所謂「兵無常勢，水無常形」請各位施主見機行事。善哉善哉。</p>
 <p>那麼我們就準備開始囉！</p>
-<h4 id="大致上的步驟">大致上的步驟</h4>
+<h3 id="大致上的步驟">大致上的步驟</h3>
 <p>感謝和同事 <a href="https://sunnyday0932.github.io/posts/">Sian</a> 的談話才整理這套步驟，基本上我習慣的流程如下：</p>
 <ol>
 <li>建立 Service 層</li>
@@ -382,7 +350,7 @@
 <li>同上，由於尚未使用注入，故 8 ~ 10 的實作部分會改從 Repository 開始實作</li>
 </ul>
 <p>以上部分就…等等實作就會瞭了。那讓我們先介紹一下目前的專案狀況吧！</p>
-<h4 id="範例專案背景">範例專案背景</h4>
+<h3 id="範例專案背景">範例專案背景</h3>
 <p>接著回到專案的介紹，如果並不是很在乎專案狀況，而是想看實作過程的朋友，請跳到 <a href="#%E5%BB%BA%E7%AB%8B%E5%88%86%E5%B1%A4">建立分層</a> 繼續閱讀。</p>
 <p>我們會使用這個系列的 ProjectN 專案繼續操作。該專案在先前的 <a href="/post/2021/05/newbie-2-webapi/">Api</a> 和 <a href="/post/2021/05/newbie-3-dapper/">Dapper</a> 章節中，已經建立了一個對卡牌資料表進行 CRUD 的 <code>CardController</code>。詳細部份就不附了（畢竟這篇都會打掉嘛）大致上長這樣：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
@@ -453,7 +421,7 @@
 </span><span style="color:#75715e"></span>    }
 }
 
-</code></pre></div><p>其中用來回傳顯示卡片內容的 Card 類別為了和分層的 DTO 命名一致，已經改為為 <code>CardViewModel</code>：</p>
+</code></pre></div><p>其中用來回傳顯示卡片內容的 Card 類別為了和分層的 DTO 命名一致，已經改為 <code>CardViewModel</code>：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 卡片
 </span><span style="color:#75715e">/// &lt;/summary&gt;
@@ -578,7 +546,7 @@
 </span><span style="color:#75715e"></span>}
 </code></pre></div><p>畢竟是 GET 方法，標示一下 FromQuery 才是好習慣呦。</p>
 <p>到這邊就說明完目前的專案狀況了，讓我們捲起袖子，開始切分層吧！</p>
-<h4 id="建立分層">建立分層</h4>
+<h3 id="建立分層">建立分層</h3>
 <p>接著讓我們先來建立分層吧，這邊採用建立「類別庫」的方式來分層，對於一些比較小的專案，使用資料夾來分層也是沒有問題的。</p>
 <p>首先，讓我們在方案總管對著方案按下右鍵，選擇 加入 → 新增專案</p>
 <p><img src="https://i.imgur.com/5kRtiNF.png" alt="image-20210921153907902"></p>
@@ -595,7 +563,7 @@
 <p>補充：如果想要把專案做排序或整理的朋友，可以對解決方案右鍵，選擇 加入 → 新增方案資料夾，用資料夾去做排序和整理</p>
 <p><del>有的時候我都懷疑其他人的分層用 Business 和 Data 命名，該不會是為了排序起來比較好看……？！</del></p>
 </blockquote>
-<h4 id="加入參考">加入參考</h4>
+<h3 id="加入參考">加入參考</h3>
 <p>建立完類別庫之後，接著我們就要來<strong>加入參考</strong>，也就是設定這些庫之間的依賴方向。</p>
 <p>一般的分層架構的依賴關係會是從上到下，也就是 展示層 → 商業邏輯層 → 資料存取層，然後他們三個都參考共用層。</p>
 <p><img src="https://i.imgur.com/uYlhVjn.jpg" alt="分層架構05" style="zoom:33%;" /></p>
@@ -612,7 +580,7 @@
 <blockquote>
 <p>小提示：如果想確認目前專案的相依性，可以在方案總管的解決方案上按下右鍵 → 專案相依性</p>
 </blockquote>
-<h4 id="建立介面與-dto">建立介面與 DTO</h4>
+<h3 id="建立介面與-dto">建立介面與 DTO</h3>
 <blockquote>
 <p>在這個小節，你可能會需要對介面有些了解。還不太了解的朋友，可以參照上個系列的<a href="/post/2020/07/oo-7-interface/">介面篇</a>。</p>
 </blockquote>
@@ -807,7 +775,7 @@
 <p>聊得遠了，讓我們回到 ProjectN 的 Repository，目前應該會是長這個樣子：</p>
 <p><img src="https://i.imgur.com/iNQdSnm.png" alt="image-20210921204201764"></p>
 <p>到這邊我們的介面和功能都訂好啦，接著就讓我們開始實作這些介面吧！</p>
-<h4 id="實作-repository">實作 Repository</h4>
+<h3 id="實作-repository">實作 Repository</h3>
 <blockquote>
 <p>註：本篇範例還不會用到依賴注入，因此會將需要用到的依賴對象，例如 Controller 中的 IService 實體直接在建構式裡面建立出來。也因為必須建立實體的關係，故必須從最底的 Repository 開始實作。</p>
 <p>如果是已經有在使用依賴注入的朋友，還請自行在腦內調整一下。不過我個人是覺得實作的順序沒有什麼關係啦，各位朋友有習慣的就按自己習慣的就好溜。</p>
@@ -1045,7 +1013,7 @@
         }
     }
 }
-</code></pre></div><h4 id="實作-service">實作 Service</h4>
+</code></pre></div><h3 id="實作-service">實作 Service</h3>
 <p>接著是我們 Service 層的實作。要注意的是，<strong>在 DTO 的轉換上，推薦使用 <a href="/post/2020/07/automapper/">AutoMapper</a> 來處理</strong>，讓方法關注在商業邏輯本身，而不用被 DTO 的賦值過程洗版。</p>
 <blockquote>
 <p>補充：對 AutoMapper 不太熟悉的朋友，可以先閱讀 <a href="https://igouist.github.io/post/2020/07/automapper/">AutoMapper —— 類別轉換超省力</a></p>
@@ -1246,7 +1214,7 @@
         <span style="color:#66d9ef">return</span> result;
     }
 }
-</code></pre></div><h4 id="實作-controller">實作 Controller</h4>
+</code></pre></div><h3 id="實作-controller">實作 Controller</h3>
 <p>最後就是讓我們的 Controller 來接上 Service 的介面，把方法公開出去啦！</p>
 <p>同樣的也先放一下 Mappings：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ControllerMappings</span> : Profile
@@ -1402,7 +1370,7 @@
 <h2 id="自問自答心得篇">自問自答心得篇</h2>
 <p>實作結束之後，這邊就留個版面放一些上面沒提到／塞不進去／老人碎碎念的部份。</p>
 <p>感謝 <a href="https://sunnyday0932.github.io/2020/%E4%B8%89%E5%B1%A4%E5%BC%8F%E6%9E%B6%E6%A7%8B/">Sian</a> 提供的建議和示範，這邊補上一些關於我個人分層上遇到的一些問題和想法，整理成Ｑ＆Ａ的方式。</p>
-<h4 id="關於重複建立-dto-的問題">關於重複建立 DTO 的問題</h4>
+<h3 id="關於重複建立-dto-的問題">關於重複建立 DTO 的問題</h3>
 <p>Q: 資料處理給商業邏輯要開一個 DataModel，商業邏輯出去又要開一個 ResultModel……每次都要開一堆重複的 DTO 很麻煩！一定要這樣做嗎？</p>
 <p>A: 不一定。</p>
 <p>我這邊也遇過一些系統，由於場景相對單純，存取上基本只有增修查改，商業邏輯也多是驗證和內容資料的處理，因此就採用一個 Dto 貫穿三層的方式進行。例如說跟訂單有關的就只使用一個 OrderDto、跟產品有關的就只用一個 ProductDto 這樣，整體用起來會比較像是一個實體對應一個 Dto的感覺。</p>
@@ -1432,7 +1400,7 @@
 <p>如果你可能會根據分層去指派分工，又或者是有些地方會頻繁地修改、每一層之間傳遞的資訊常常會有所差異，甚至是收到的需求常常挺客製化的時候，拆分開來在往後的修改就可能可以迴避一些耦合上的問題。但相對的，因為 Model 終究還是變多了，有時候也會遇到重複且多餘的修改。</p>
 <p>反過來說如果系統的工作單一，場景相對單純，例如說是針對某個職責去架設的、提供給其他系統使用的小型服務。那麼先採用 DTO 對映資料內容並共用的做法，在開發上反而比較迅速。</p>
 <p>就再請各位使用時細細品味吧。<del>我都是前輩怎麼開我就怎麼寫啦</del></p>
-<h4 id="三層式架構跟-mvc-一樣嗎">三層式架構跟 MVC 一樣嗎？</h4>
+<h3 id="三層式架構跟-mvc-一樣嗎">三層式架構跟 MVC 一樣嗎？</h3>
 <p>這個吼，不太一樣啦（抓頭）</p>
 <p>雖然兩者的目標都算是「區分職責＋解除耦合」的感覺，但並不是一樣的東西。</p>
 <p>MVC 是一種框架，主要分為 View, Controller, Model，特別強調此三者並不能直接類比到三層式架構的三層。我們從兩邊的角度來比對一下：</p>
@@ -1444,7 +1412,7 @@
 <li><a href="https://shunnien.github.io/2017/07/29/3-tier-and-mvc-introduction/">三層結構與 Asp.Net MVC 的簡介 | ShunNien&rsquo;s Blog</a></li>
 <li><a href="https://social.msdn.microsoft.com/Forums/expression/zh-TW/9b08c038-e365-449a-bd24-1a0771a525c2/3553121839webform33287mvc1997723652243352655027083303403526424565?forum=236">請問 WebForm 與 MVC 三層式架構的觀念問題 (microsoft.com)</a></li>
 </ul>
-<h4 id="service-可以依賴-service-嗎">Service 可以依賴 Service 嗎？</h4>
+<h3 id="service-可以依賴-service-嗎">Service 可以依賴 Service 嗎？</h3>
 <p>可以。<del>既然人家都寫好了不用白不用</del></p>
 <p>基本上來說在兩個 Service 之間就是物件和物件的關係，如果需要對方的公開方法，當然可以依賴對方。</p>
 <p>不過為了避免循環參考，和同事經過了一些討論，還是有一些地方可以注意：</p>
@@ -1496,7 +1464,8 @@
 </ul>
 <p>大概這樣。</p>
 <p>實作的部份也因為分層這個題目太廣了，其實有點不太知道要怎麼寫比較好，放置了一段時間。</p>
-<p>最後決定就接續先前文章的進度，用平常習慣的方式調整一下來跑完一輪。當然內容還有許多地方是需要調整的，例如我們下一篇要加入的依賴注入，或是將方法改寫為非同步等等。內文的範例也延續了單純的 CRUD，並沒有完整展現商業邏輯分工出來的魅力，算是一些小遺憾。最後補充一些我個人的心得，以及本篇的參考資料。如果有想要補充或討論的朋友，也歡迎分享您的看法，感謝感謝。</p>
+<p>最後決定就接續先前文章的進度，用平常習慣的方式調整一下來跑完一輪。當然內容還有許多地方是需要調整的：例如我們下一篇要加入的依賴注入，或是將方法改寫為非同步等等。</p>
+<p>內文的範例也延續了單純的 CRUD，並沒有完整展現商業邏輯分工出來的魅力，算是一些小遺憾。最後補充一些本篇的參考資料。如果有想要補充或討論的朋友，也歡迎分享您的看法，感謝感謝。</p>
 <p>那麼，我們下篇再見囉～</p>
 <h2 id="參考資料">參考資料</h2>
 <ul>
@@ -1514,8 +1483,8 @@
 <ul>
 <li><a href="/post/2021/04/newbie-0-menu">菜雞新訓記 (0): 目錄</a></li>
 <li><a href="/post/2021/04/newbie-1-hello-git">菜雞新訓記 (1): Git 入門這樣做</a></li>
-<li><a href="/post/2021/05/newbie-2-webapi">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧<br/>（上）認識 Api 與建置 Web Api 服務</a></li>
-<li><a href="/post/2021/05/newbie-3-dapper">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧<br/>（下）使用 Dapper 連線到資料庫</a></li>
+<li><a href="/post/2021/05/newbie-2-webapi">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Web Api 服務吧</a></li>
+<li><a href="/post/2021/05/newbie-3-dapper">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫吧</a></li>
 <li><a href="/post/2021/05/newbie-4-swagger">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</a></li>
 <li><a href="/post/2021/10/newbie-5-3-layer-architecture">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a></li>
 </ul>
@@ -1527,11 +1496,11 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
+        <li><a href="/post/2021/05/newbie-2-webapi/">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Web Api 服務吧</a></li>
+        
         <li><a href="/post/2021/05/newbie-4-swagger/">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</a></li>
         
-        <li><a href="/post/2021/05/newbie-2-webapi/">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a></li>
-        
-        <li><a href="/post/2021/05/newbie-3-dapper/">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫</a></li>
+        <li><a href="/post/2021/05/newbie-3-dapper/">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫吧</a></li>
         
         <li><a href="/post/2021/06/benchmarkdotnet/">C#: BenchmarkDotnet －－ 效能測試好簡單</a></li>
         
@@ -1587,6 +1556,49 @@
 </form>
     </section>
     
+    
+        <section class="widget">
+            <h3 class="widget-title">文章目錄</h3>
+            <ul class="widget-list">
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#什麼是分層分層可以吃嗎">什麼是分層？分層可以吃嗎？</a>
+      <ul>
+        <li><a href="#三層式架構">三層式架構</a></li>
+        <li><a href="#關於-dto">關於 DTO</a></li>
+        <li><a href="#為什麼我們需要分層架構">為什麼我們需要分層架構？</a></li>
+        <li><a href="#本節的參考資料">本節的參考資料</a></li>
+      </ul>
+    </li>
+    <li><a href="#實作">實作</a>
+      <ul>
+        <li><a href="#實作範例的架構與前言">實作範例的架構與前言</a></li>
+        <li><a href="#大致上的步驟">大致上的步驟</a></li>
+        <li><a href="#範例專案背景">範例專案背景</a></li>
+        <li><a href="#建立分層">建立分層</a></li>
+        <li><a href="#加入參考">加入參考</a></li>
+        <li><a href="#建立介面與-dto">建立介面與 DTO</a></li>
+        <li><a href="#實作-repository">實作 Repository</a></li>
+        <li><a href="#實作-service">實作 Service</a></li>
+        <li><a href="#實作-controller">實作 Controller</a></li>
+      </ul>
+    </li>
+    <li><a href="#自問自答心得篇">自問自答心得篇</a>
+      <ul>
+        <li><a href="#關於重複建立-dto-的問題">關於重複建立 DTO 的問題</a></li>
+        <li><a href="#三層式架構跟-mvc-一樣嗎">三層式架構跟 MVC 一樣嗎？</a></li>
+        <li><a href="#service-可以依賴-service-嗎">Service 可以依賴 Service 嗎？</a></li>
+      </ul>
+    </li>
+    <li><a href="#小結">小結</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+    <li><a href="#本系列文章">本系列文章</a></li>
+  </ul>
+</nav>
+            </ul>
+        </section>
+    
+    
     <section class="widget">
         <h3 class="widget-title">系列文</h3>
 <ul class="widget-list">
@@ -1639,11 +1651,11 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫</a>
+        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫吧</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a>
+        <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Web Api 服務吧">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Web Api 服務吧</a>
     </li>
     
     <li>

@@ -17,8 +17,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務 - 伊果的沒人看筆記本">
+    <title>菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Web Api 服務吧 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Web Api 服務吧 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
     <meta property="article:published_time" content="2021-05-02T12:39:00&#43;08:00">
@@ -27,7 +27,7 @@
     <meta property="article:modified_time" content="2021-05-02T12:39:00&#43;08:00">
         
         <meta name="keywords" content="Api, web api, Restful, Restful Api, HTTP Status Code, HTTP Method, .net core, dotnet core">
-    <meta name="description" content="這是俺整理公司新訓內容的第二篇文章，目標是對 Api, Restful Api, HTTP Method, HTTP Request, HTTP Response, HTTP Status 等相關的知識點做個筆記，並用 .net Core 建立一個簡易的 Web Api 專案">
+    <meta name="description" content="對 Web Api、Restful Api、HTTP Method、HTTP Request &amp; Response、HTTP Status 狀態碼等 API 相關的知識點做個筆記，並用 .net Core 建立一個簡易的 Web Api 專案">
         <meta name="author" content="Igouist">
         
     <meta property="og:url" content="https://igouist.github.io/post/2021/05/newbie-2-webapi/">
@@ -96,7 +96,7 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</h1>
+                            <h1 class="post-title">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Web Api 服務吧</h1>
                         </header>
                         <date class="post-meta meta-date">
                             2021-5-2,
@@ -116,35 +116,16 @@
                             </span>)
                         </div>
                         
+
                         <div class="post-content">
-                            <p><img src="https://i.imgur.com/41Z9hIp.png" alt="img"></p>
+                            <p><img src="https://i.imgur.com/6C0C9du.png" alt="Image"></p>
 <p>這是俺整理公司新訓內容的第二篇文章，目標是<strong>對 Api, Restful Api, HTTP 等相關的知識點做個筆記，並用 .net Core 建立一個簡易的 Web Api 專案</strong>。</p>
-<ul>
-<li><a href="/post/2021/05/newbie-2-webapi#%E5%89%8D%E8%A8%80%E5%9F%BA%E6%9C%AC%E8%A7%80%E5%BF%B5">前言、基本觀念</a>
-<ul>
-<li><a href="/post/2021/05/newbie-2-webapi#%E9%97%9C%E6%96%BC-web-api">關於 Web API</a></li>
-<li><a href="/post/2021/05/newbie-2-webapi#%E9%97%9C%E6%96%BC-restful-%E8%88%87-http-method">關於 Restful 與 HTTP Method</a></li>
-<li><a href="/post/2021/05/newbie-2-webapi#%E9%97%9C%E6%96%BC-http-request-%E5%92%8C-response">關於 HTTP Request 和 Response</a></li>
-<li><a href="/post/2021/05/newbie-2-webapi#%E9%97%9C%E6%96%BC-http-status-code">關於 HTTP Status Code</a></li>
-<li><a href="/post/2021/05/newbie-2-webapi#%E9%97%9C%E6%96%BC-stateless">關於 Stateless</a></li>
-</ul>
-</li>
-<li><a href="/post/2021/05/newbie-2-webapi#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a>
-<ul>
-<li><a href="/post/2021/05/newbie-2-webapi#%E6%96%B0%E5%BB%BA-net-core-web-api-%E5%B0%88%E6%A1%88">新建 .net Core Web API 專案</a></li>
-<li><a href="/post/2021/05/newbie-2-webapi#%E5%8B%95%E6%89%8B%E5%AF%A6%E4%BD%9C-crud">動手實作 CRUD</a></li>
-<li><a href="/post/2021/05/newbie-2-webapi#%E4%B8%AD%E5%A0%B4%E4%BC%91%E6%81%AF">中場休息</a></li>
-</ul>
-</li>
-<li><a href="/post/2021/05/newbie-2-webapi#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0">本系列文章</a></li>
-<li><a href="/post/2021/05/newbie-2-webapi#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99">參考資料</a></li>
-</ul>
 <h2 id="前言基本觀念">前言、基本觀念</h2>
 <p>我們在 <a href="/post/2021/04/newbie-1-hello-git">上一篇</a> 記錄了新訓第一天的 Git 操作筆記。接著在這篇，我們終於要進入 .net Core 啦！</p>
 <p>目前的規劃是先從建立一個可以使用的、最簡單版本的 Web Api 服務開始，再將各個工具擴增進來。所以後續的文章應該都會以這篇的簡易 API 為基底繼續延伸下去（如果順利的話啦）</p>
 <p>這篇文章的前半段會用來記錄一些<strong>使用或開發 API 常用到的相關知識</strong>，如果對 HTTP 的部分已經有點頭緒，或是迫不及待想直接動手用 .net Core 開 Api 服務的朋友們，可以直接跳到 <a href="#%E5%BB%BA%E7%AB%8B%E5%B0%88%E6%A1%88">建立專案</a> 的部份。那麼，我們開始吧～</p>
 <hr>
-<h3 id="關於-web-api">關於 Web API</h3>
+<h3 id="什麼是-web-api">什麼是 Web API</h3>
 <p>我們在物件導向的 <a href="/post/2020/07/oo-7-interface/">介面</a> 時有稍微聊過所謂介面（Interface）的概念：「在兩個系統，或是兩個分層之間要介接的時候，只需要提供我這個功能的接口／介面給對方，就能讓對方知道如何使用」</p>
 <p>API（Application Programming Interface）也是同樣的道理：</p>
 <p><strong>在不同的應用程式或服務（Application）之間，使用程式碼（Programming）的方式提供一組 介面（Interface），讓提供方和使用方可以藉由這組介面銜接起來。</strong></p>
@@ -159,7 +140,7 @@
 <p>另外，也推一下我在 CodingBar 看到的這篇 <a href="https://medium.com/codingbar/api-%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E9%BA%BC-%E7%94%A8%E7%99%BD%E8%A9%B1%E6%96%87%E5%B8%B6%E4%BD%A0%E8%AA%8D%E8%AD%98-95f65a9cfc33">API 到底是什麼？ 用白話文帶你認識</a> 和它所引用的影片：</p>
 <iframe src="https://www.youtube.com/embed/zvKadd9Cflc" width="100%" height="480" frameborder="0" scrolling="no" allowfullscreen></iframe>
 <hr>
-<h3 id="關於-restful-與-http-method">關於 Restful 與 HTTP Method</h3>
+<h3 id="什麼是-restful-與-http-method">什麼是 Restful 與 HTTP Method</h3>
 <p>都提到 API 了，當然不能不提 Restful 了。Restful 說起來比較像是 API 界的一種流派，大概就像「飛天御劍流」之於「劍道」的關係一樣。只不過因為 Restful 太 Restful（？），所以幾乎已經成為主流了。</p>
 <p>那麼 Restful 到底是什麼呢？</p>
 <p>前一段我們有提過，API 的一個重點是：提供我這個功能需要的接口／介面給對方，就能讓對方知道如何使用。</p>
@@ -300,7 +281,7 @@ GET /api/product/1
 </li>
 </ul>
 <hr>
-<h3 id="關於-http-request-和-response">關於 HTTP Request 和 Response</h3>
+<h3 id="什麼是-http-request-和-response">什麼是 HTTP Request 和 Response</h3>
 <p>現在讓我們運用動詞（HTTP 動詞）和名詞（Restful 風格的路由），就可以組出像是 <code>GET product/1</code> 這樣子的 Api 路徑。用寄送信封的方式來說的話，現在我們就等於已經掌握了寄送的地址。</p>
 <p>我們有了地址之後，才能寄信到這個地址給對方，並且等待對方的回信（話說這年頭大家都用網路通訊了，會不會過幾年沒人看得懂這組經典比喻啊？）。</p>
 <p>而我們有了 Api 的地址（URL）之後，就可以<strong>對這個地址上的服務送出一個 Request（請求），服務接受到請求之後，就會給予我們一個 Response（回應）</strong>。</p>
@@ -378,7 +359,7 @@ GET /api/product/1
 <p>……當然，所謂天有不測風雲，API 有 500 Internal Server ERROR，沒有每次打 API 都一定是 OK 的啦，其他什麼 404, 500 動不動就會跑出來。</p>
 <p>就像我們去網路購物的時候，按下購買把購物車清空後，網頁就會告訴我們「訂單成立」或是「結帳失敗」等等，當 API 的使用者將這個要求發送給 API 服務，服務就會告訴使用者針對這個要求的回應。這就是我們之前提到的 HTTP 狀態碼（Status Code）出場的時候了。</p>
 <hr>
-<h3 id="關於-http-status-code">關於 HTTP Status Code</h3>
+<h3 id="什麼是-http-status-code">什麼是 HTTP Status Code</h3>
 <p>在上個小節中我們有提到，<strong>Response 的 Start Line 會帶著一組 HTTP 狀態碼（Status Code）和描述，用來告訴你這次請求的回應</strong>。</p>
 <p>大概就像是<strong>告白</strong>之後的好呀、謝謝你、你是個好人等等，回應也有分成很多種，這邊就稍微紀錄一下平常遇到的幾種狀態。</p>
 <hr>
@@ -435,7 +416,7 @@ GET /api/product/1
 </li>
 </ul>
 <hr>
-<h3 id="關於-stateless">關於 Stateless</h3>
+<h3 id="什麼是-stateless">什麼是 Stateless</h3>
 <blockquote>
 <p>2021/5/4: 發文之後發現忘記提到無狀態了，所以這邊回來補充一下。</p>
 </blockquote>
@@ -857,7 +838,7 @@ GET /api/product/1
 </code></pre></div><p><img src="https://i.imgur.com/0WNEkAm.png" alt=""></p>
 <p>到這邊就確認我們的 API 服務（也就是基本的 CRUD）已經 ON 起來啦！</p>
 <hr>
-<h3 id="中場休息">中場休息</h3>
+<h2 id="小結">小結</h2>
 <p>這邊我們紀錄了一些會用到的 HTTP 基礎知識，並用 Asp.net Core 的 Web API 範本新建了一個 API 服務，也加入了自己設定的 CRUD。</p>
 <p>但要特別注意，雖然我們對外的開口已經建起來了，但這時候的 Card 還只是個用 static 變數假裝的空殼，只要站台重啟就會消失了。</p>
 <p>正所謂「<strong>沒有連到資料庫的 CRUD，就像是沒有加醬汁的料理！</strong>」，我們在下一集就要來把我們的 Api 服務連接到資料庫啦！</p>
@@ -874,8 +855,8 @@ GET /api/product/1
 <ul>
 <li><a href="/post/2021/04/newbie-0-menu">菜雞新訓記 (0): 目錄</a></li>
 <li><a href="/post/2021/04/newbie-1-hello-git">菜雞新訓記 (1): Git 入門這樣做</a></li>
-<li><a href="/post/2021/05/newbie-2-webapi">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧<br/>（上）認識 Api 與建置 Web Api 服務</a></li>
-<li><a href="/post/2021/05/newbie-3-dapper">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧<br/>（下）使用 Dapper 連線到資料庫</a></li>
+<li><a href="/post/2021/05/newbie-2-webapi">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Web Api 服務吧</a></li>
+<li><a href="/post/2021/05/newbie-3-dapper">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫吧</a></li>
 <li><a href="/post/2021/05/newbie-4-swagger">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</a></li>
 <li><a href="/post/2021/10/newbie-5-3-layer-architecture">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a></li>
 </ul>
@@ -969,6 +950,36 @@ GET /api/product/1
 </form>
     </section>
     
+    
+        <section class="widget">
+            <h3 class="widget-title">文章目錄</h3>
+            <ul class="widget-list">
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言基本觀念">前言、基本觀念</a>
+      <ul>
+        <li><a href="#什麼是-web-api">什麼是 Web API</a></li>
+        <li><a href="#什麼是-restful-與-http-method">什麼是 Restful 與 HTTP Method</a></li>
+        <li><a href="#什麼是-http-request-和-response">什麼是 HTTP Request 和 Response</a></li>
+        <li><a href="#什麼是-http-status-code">什麼是 HTTP Status Code</a></li>
+        <li><a href="#什麼是-stateless">什麼是 Stateless</a></li>
+      </ul>
+    </li>
+    <li><a href="#正式開工">正式開工</a>
+      <ul>
+        <li><a href="#新建-net-core-web-api-專案">新建 .net Core Web API 專案</a></li>
+        <li><a href="#動手實作-crud">動手實作 CRUD</a></li>
+      </ul>
+    </li>
+    <li><a href="#小結">小結</a></li>
+    <li><a href="#本系列文章">本系列文章</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+            </ul>
+        </section>
+    
+    
     <section class="widget">
         <h3 class="widget-title">系列文</h3>
 <ul class="widget-list">
@@ -1021,11 +1032,11 @@ GET /api/product/1
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫">菜雞新訓記 (3): 使用 .net Core 來建立簡單的 Api 吧（下）使用 Dapper 連線到資料庫</a>
+        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫吧</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Api 吧（上）認識 Api 與建置 Web Api 服務</a>
+        <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Web Api 服務吧">菜雞新訓記 (2): 使用 .net Core 來建立簡單的 Web Api 服務吧</a>
     </li>
     
     <li>
