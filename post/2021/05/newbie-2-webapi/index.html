@@ -123,7 +123,7 @@
 <h2 id="前言基本觀念">前言、基本觀念</h2>
 <p>我們在 <a href="/post/2021/04/newbie-1-hello-git">上一篇</a> 記錄了新訓第一天的 Git 操作筆記。接著在這篇，我們終於要進入 .net Core 啦！</p>
 <p>目前的規劃是先從建立一個可以使用的、最簡單版本的 Web Api 服務開始，再將各個工具擴增進來。所以後續的文章應該都會以這篇的簡易 API 為基底繼續延伸下去（如果順利的話啦）</p>
-<p>這篇文章的前半段會用來記錄一些<strong>使用或開發 API 常用到的相關知識</strong>，如果對 HTTP 的部分已經有點頭緒，或是迫不及待想直接動手用 .net Core 開 Api 服務的朋友們，可以直接跳到 <a href="#%E5%BB%BA%E7%AB%8B%E5%B0%88%E6%A1%88">建立專案</a> 的部份。那麼，我們開始吧～</p>
+<p>這篇文章的前半段會用來記錄一些<strong>使用或開發 API 常用到的相關知識</strong>，如果對 HTTP 的部分已經有點頭緒，或是迫不及待想直接動手用 .net Core 開 Api 服務的朋友們，可以直接跳到 <a href="#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a> 的部份。那麼，我們開始吧～</p>
 <hr>
 <h3 id="什麼是-web-api">什麼是 Web API</h3>
 <p>我們在物件導向的 <a href="/post/2020/07/oo-7-interface/">介面</a> 時有稍微聊過所謂介面（Interface）的概念：「在兩個系統，或是兩個分層之間要介接的時候，只需要提供我這個功能的接口／介面給對方，就能讓對方知道如何使用」</p>
@@ -155,6 +155,7 @@
 <p>我們用白話一點的方式來理解：大多數時候，我們發出的請求都是「對『什麼東西』做『什麼動作』」，也就是通常會有一個「<strong>動詞</strong>」和一個「<strong>目標</strong>」，Restful 就是從這兩個部份下手來達成共識。</p>
 <p>那我們從「動作」的部分開始，也就是建立「符合 HTTP 語意」的共識：<strong>我們可以利用 HTTP 定義的請求方法（HTTP Method，也被稱為 HTTP 動作）來表達我們的要求</strong>。</p>
 <p>上面推薦過的 Huli 大大這篇<a href="https://medium.com/@hulitw/learning-tcp-ip-http-via-sending-letter-5d3299203660">傳紙條文章</a>中有提到，因為能做的事情太多了，光是一個訂便當相關的動作，既可以訂購便當，也要能查有哪些便當可以訂，或是訂好了卻要換成別的便當等等。因此為了將動作做個統一，就在紙條的 Header 加了欄位，用來<strong>標示這次動作是哪種類型</strong>，這就是所謂的 HTTP 方法。</p>
+<h4 id="常見的-http-method">常見的 HTTP Method</h4>
 <p>我們比較常見的 HTTP 方法有這幾個：</p>
 <ul>
 <li><strong><code>GET</code></strong>
@@ -187,19 +188,22 @@
 </ul>
 <p>其中有幾個部分可能會讓人有點疑惑，這邊稍微整理一下，也歡迎大家補充：</p>
 <hr>
-<p><code>PUT</code> 和 <code>PATCH</code> 都可以用來更新？以產品更新舉例的話：</p>
+<h4 id="put-vs-patch-都是更新">PUT vs PATCH 都是更新？</h4>
+<p>兩者的更新方式不太一樣。通常 PUT 會指整批更新、PATCH 是指部分更新。</p>
+<p>以產品舉例的話：</p>
 <ul>
 <li><code>PUT</code> 比較像是把整個產品資料丟上去，然後整團更新掉</li>
 <li><code>PATCH</code> 則是只更新一部份，像是只丟產品名稱上去，然後就只更新名稱</li>
 </ul>
 <hr>
-<p><code>POST</code> 的萬用動詞是什麼意思？</p>
+<h4 id="post-的萬用動詞是什麼意思">POST 的「萬用動詞」是什麼意思？</h4>
 <ul>
 <li>我們有時還是會遇到不太確定要歸類到哪個動詞，或是其他動詞處理不來的情況，預設就使用 <code>POST</code> 處理</li>
 <li>例如說，以 <code>GET</code> 查詢的時候，參數的規劃有些問題導致於 QueryString 放不太下，就可以考慮改用 <code>POST</code>，並將參數放入 Body</li>
 </ul>
 <hr>
-<p>我在查詢 HTTP 動作的時候（例如維基百科的<a href="https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE#%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95">請求方法</a>），有看到「安全（Safe）」、「冪等（idempotent）」這些用詞，是什麼意思？</p>
+<h4 id="安全safe冪等idempotent">安全（Safe）、冪等（idempotent）</h4>
+<p>在查詢 HTTP 動作的時候（例如維基百科的<a href="https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE#%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95">請求方法</a>），總是會看到「安全（Safe）」、「冪等（idempotent）」這些用詞，是什麼意思？</p>
 <ul>
 <li><strong>安全（Safe）的方法是指沒有對資料進行變更的操作</strong>。例如：
 <ul>
@@ -224,6 +228,7 @@
 </li>
 </ul>
 <hr>
+<h4 id="小小結與推薦閱讀">小小結與推薦閱讀</h4>
 <p>那麼補充就先到這裡。除了上面只列出了我個人平常比較常接觸的 HTTP 方法之外，其他還有 <code>HEAD</code>、<code>TRACE</code> 等等，有興趣的朋友可以再逛逛 MDN 的 <a href="https://developer.mozilla.org/zh-TW/docs/Web/HTTP/Methods">HTTP 請求方法</a>。</p>
 <p>現在我們大概知道了有這些 HTTP 方法可以使用，也因此已經將動作抽離出來了。接著就輪到我們要進行這些動作的「目標」了，這部份則要求：我們在制定路由的時候，應該從「<strong>資源</strong>」的角度下去考慮。</p>
 <p>這相當直覺，例如「新增 訂單」、「查詢 產品」這樣，我們動作後面接續的應該要是一個資源。從這個方式下去定的話，上面的範例應該就會變成：</p>
@@ -372,7 +377,7 @@ GET /api/product/1
 <ul>
 <li><strong>200: 要求成功</strong>。就像是「好呀」</li>
 <li><strong>201: 已建立</strong>。要求新增資源的時候會用到，就像是「OK，那我掛穩交囉」</li>
-<li><strong>204: 無內容</strong>。就像是 雖然點頭了，可是什麼話也沒說</li>
+<li><strong>204: 無內容</strong>。雖然點頭了，可是什麼話也沒說</li>
 </ul>
 <hr>
 <p>3xx: 重新導向</p>
@@ -396,8 +401,8 @@ GET /api/product/1
 <li><strong>500: 內部伺服器錯誤</strong>，大多數問題都會被丟到這一類，我們開發人員頭痛的時候就到了…</li>
 <li><strong>501: 未實作</strong>，通常對一個只提供 <code>GET</code> 的 <code>URL</code> 打 <code>POST</code> 就會看到了。<br/>就像是「我已經結婚囉，謝謝你呢 ^^」</li>
 <li><strong>502: 無效回應</strong>。就像是「我也喜歡哆啦Ａ夢呢」</li>
-<li><strong>503: 伺服器維護或過載</strong>。就像是 追求者太多了，根本沒空回你。</li>
-<li><strong>504: 閘道逾時</strong>。就像是（已讀不回）。</li>
+<li><strong>503: 伺服器維護或過載</strong>。追求者太多了，根本沒空回你。</li>
+<li><strong>504: 閘道逾時</strong>。（已讀不回）。</li>
 </ul>
 <hr>
 <p>對還有哪些 HTTP Status 或是想對每個 HTTP Status 發生的狀況了解得更詳細的朋友，可以參閱以下兩篇：</p>
