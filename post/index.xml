@@ -6,10 +6,32 @@
     <description>Recent content in Posts on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Sat, 16 Oct 2021 23:50:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 28 Nov 2021 20:13:00 +0800</lastBuildDate>
     
 	<atom:link href="https://igouist.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</title>
+      <link>https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/</link>
+      <pubDate>Sun, 28 Nov 2021 20:13:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/2XYv7X2.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;是俺整理公司新訓內容的第六篇文章，目標是&lt;strong&gt;紀錄依賴注入（Dependency Injection）的種類（建構式注入、屬性注入、方法注入）以及 .net Core 中依賴注入的生命週期，並用 .net Core 實作依賴注入，解除分層架構間的耦合，達到以介面分離實作的目標&lt;/strong&gt;。&lt;/p&gt;
+&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
+&lt;p&gt;西元前的某一天，憂心的皇帝在朝堂內繞著柱子走，正巧被路過的廷尉看見。&lt;/p&gt;
+&lt;p&gt;廷尉：「敢問陛下在煩惱什麼呢？」&lt;/p&gt;
+&lt;p&gt;皇帝：『朕這是在想封賞的事兒哪。前朝之所以覆滅，根本的原因就在於大肆封賞臣下，四處分封土地給他們做諸侯。&lt;/p&gt;
+&lt;p&gt;這些諸侯呢，肆意起用自己喜歡的人擔任要職、結黨營私，心情好就 &lt;code&gt;new 將軍(&amp;quot;我ㄉ朋友&amp;quot;);&lt;/code&gt;，&lt;br/&gt;十天就封了十個將軍。這些人若犯了錯，要處理他們還得看諸侯面子；而諸侯一聲令下，這些人便群起造反。&lt;/p&gt;
+&lt;p&gt;並且，這些諸侯之間彼此喜歡直接往來，動不動就在自家裡下命令給 &lt;code&gt;隔壁諸侯.借糧草(100)&lt;/code&gt;，哪天就變成 &lt;code&gt;隔壁諸侯.揪團造反()&lt;/code&gt;。彼此之間偷來暗去，實在難以掌握。&lt;/p&gt;
+&lt;p&gt;最後呢，一個逆賊起來造反，若要將他給辦了，附近諸侯就一起響應，每個都一齊報錯，Exception 成千上百，國家也就這樣滅了，想到這朕就頭痛得很，不知愛卿可有法子？』&lt;/p&gt;
+&lt;p&gt;廷尉想了一想，便說：「陛下，此事要點還是在於諸侯之間&lt;strong&gt;相互依賴、彼此耦合&lt;/strong&gt;，致生禍端。&lt;/p&gt;
+&lt;p&gt;臣有一計，先收回諸侯的人事任命權，使其不可私自 &lt;code&gt;new&lt;/code&gt; 自己人，所有人事異動，須&lt;strong&gt;由中央進行管理與派遣&lt;/strong&gt;。這樣即使諸侯要造反，也不知道下面這群打工仔是不是自己人。大家各司其職，諸侯做好自己的行政作業，打工仔派到崗位就做好自己的工作，彼此不直接依賴，這樣出事的機率就少了。&lt;/p&gt;
+&lt;p&gt;其次，明令禁止諸侯私自往來，對諸侯們進行隔離，若是有公務上的需要，&lt;strong&gt;一律藉由中央提供的接口來溝通&lt;/strong&gt;，彼此之間明訂契約，由中央進行隔離與調派，諸侯間就只需要按照協議好的合約下去合作，這樣勾結的機會也就少了，耦合也就降低了。陛下覺得如何？」&lt;/p&gt;
+&lt;p&gt;皇帝大喜：『如此甚好！治眾如治寡，在於分而治之。此計可有名字？』&lt;/p&gt;
+&lt;p&gt;「此乃－－依賴注入之計！」&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>在 Swagger UI 加上驗證按鈕，讓 Request Header 傳遞 Authorize Token</title>
@@ -208,7 +230,7 @@
 &lt;p&gt;目前的規劃是先從建立一個可以使用的、最簡單版本的 Web Api 服務開始，再將各個工具擴增進來。所以後續的文章應該都會以這篇的簡易 API 為基底繼續延伸下去（如果順利的話啦）&lt;/p&gt;
 &lt;p&gt;這篇文章的前半段會用來記錄一些&lt;strong&gt;使用或開發 API 常用到的相關知識&lt;/strong&gt;，如果對 HTTP 的部分已經有點頭緒，或是迫不及待想直接動手用 .net Core 開 Api 服務的朋友們，可以直接跳到 &lt;a href=&#34;#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5&#34;&gt;正式開工&lt;/a&gt; 的部份。那麼，我們開始吧～&lt;/p&gt;
 &lt;hr&gt;
-&lt;h3 id=&#34;什麼是-web-api&#34;&gt;什麼是 Web API&lt;/h3&gt;
+&lt;h3 id=&#34;什麼是-api&#34;&gt;什麼是 API&lt;/h3&gt;
 &lt;p&gt;我們在物件導向的 &lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-7-interface/&#34;&gt;介面&lt;/a&gt; 時有稍微聊過所謂介面（Interface）的概念：「在兩個系統，或是兩個分層之間要介接的時候，只需要提供我這個功能的接口／介面給對方，就能讓對方知道如何使用」&lt;/p&gt;
 &lt;p&gt;API（Application Programming Interface）也是同樣的道理：&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;在不同的應用程式或服務（Application）之間，使用程式碼（Programming）的方式提供一組 介面（Interface），讓提供方和使用方可以藉由這組介面銜接起來。&lt;/strong&gt;&lt;/p&gt;

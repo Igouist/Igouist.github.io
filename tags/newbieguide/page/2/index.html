@@ -103,6 +103,43 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle/">菜雞與物件導向 (13): 介面隔離原則</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2020-11-15,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a>
+                                    
+                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/itHN6VZ.png" alt=""></p>
+<p>今天要記錄的是介面隔離原則，顧名思義是和介面高度相關的原則。因此在閱讀本篇之前，可能需要先對 <a href="/post/2020/07/oo-7-interface">介面</a> 有一點了解呦。</p>
+<p>事情就從上一篇 <a href="/post/2020/11/oo-12-liskov-substitution-principle">里氏替換原則</a> 的鳥類物流公司開始說起。老闆痛定思痛，決定先用<strong>介面</strong>先規定好物流士們的應徵條件，例如裝貨、卸貨、飛行、必須有帥氣的喙等等。</p>
+<p>這道命令下來後，倉庫們的企鵝都慌了，來檢查的編譯器瘋狂跳出 Error:「您未實作 IBird 的 Fly() 方法！」這下怎麼辦呢，為了要保住飯碗，企鵝們就必須實作出飛行才行，可是企鵝真的就不會飛呀！</p>
+<p>這下子企鵝們只剩下兩個選擇：不實作飛行，但是就不能被當成物流士，最後就會被開除；或是……空實作。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Penguin</span> : IBird
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Fly()
+    {
+      <span style="color:#75715e">// Do nothing;
+</span><span style="color:#75715e"></span>    }
+}
+</code></pre></div><p>企鵝們終於騙過了編譯器檢查員，然而當送貨的命令下來之後，企鵝們再一次卡在倉庫門口發呆，最終物流公司仍然踏上了虧損的老路，再度面臨倒閉危機…</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle/">菜雞與物件導向 (12): 里氏替換原則</a>
                                     </h1>
                                 </header>
@@ -463,52 +500,6 @@
                             </article>
                             <hr color="#D9D9D9" />
                         
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2020/07/oo-3-encapsulation/">菜雞與物件導向 (3): 封裝</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2020-7-12,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a>
-                                    
-                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <p><img src="https://i.imgur.com/cc9DLDo.png" alt=""></p>
-<p>這次我們要介紹的是傳說中的黑盒子：封裝。<strong>封裝和繼承、多型並稱物件導向三大特性</strong>，會是這個順序也是當然的，因為有了封裝才會需要繼承，因為繼承了才會有了多型，因此我們這幾節也按照這個順序快速地看過。</p>
-<p>所謂的封裝，咱同事在他整理的文章 <a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-3_%E5%B0%81%E8%A3%9Dencapsulation%E7%B9%BC%E6%89%BFinheritance%E8%88%87%E5%A4%9A%E5%9E%8Bpolymorphism/">Object Oriented物件導向-3:封裝(Encapsulation)、繼承(Inheritance)與多型(polymorphism)</a> 中的例子就舉得不錯：當你按下鍵盤的Ａ鍵，螢幕隨即出現了Ａ，你不必知道中間發生了什麼事，你只需要知道怎麼操作和最後得到什麼就可以了。</p>
-<p>此外我也看到過販賣機的例子，<strong>當你去販賣機買飲料，你也不需要知道裡面的構造，只要知道你選了飲料投了錢，飲料就會跑出來就行</strong>。</p>
-<p>因此<strong>封裝的概念很直覺：將物件視作一個整體，實作內容隱藏起來，讓使用者只需要知道怎麼使用即可。</strong>（相似的思路，我們後續的介面會再提到）大概就像懶人包的感覺。如果封裝做得夠好，除了可以將程式碼整理得井井有條以外，也能讓物件內部的修改不會影響到使用物件的地方，並且讓物件的使用者直覺地知道如何使用，最終達到降耦合的目標。</p>
-<p>關於封裝的概念，或是會問「什麼是耦合？」的朋友，建議可以看看這篇：<a href="https://ithelp.ithome.com.tw/articles/10203659">實務上的高內聚與低耦合</a></p>
-<p>而從上面的敘述中我們可以察覺到要實現封裝，最重要的就是：<strong>對外的開放程度（存取範圍）的控制</strong>。或是套一句前輩的說法：<strong>給程式碼隱私的空間</strong>。</p>
-<h2 id="存取範圍與存取子">存取範圍與存取子</h2>
-<p>在 C# 之中，類別裡控制可見度是使用修飾子來定義存取範圍，也就是當我們替類別宣告欄位時常看到的 <code>Public</code> 和 <code>Private</code>。</p>
-<ul>
-<li><code>Public</code>: 這是公開的，所有人都看得到</li>
-<li><code>Private</code>: 這是私有的，只有自己看得到</li>
-</ul>
-<p>除了最常用的這兩個以外，還有其他的修飾子可以先知道一下：</p>
-<ul>
-<li><code>Protected</code>: 這是受到保護的，只有自己和繼承的孩子們看得到</li>
-<li><code>internal</code>: 這是內部的，只有身為同一個組件的朋友們看得到</li>
-<li><code>Protected internal</code>：組合上面兩個，也就是可以給同個組件的朋友們，或是其他組件繼承的孩子們看見</li>
-</ul>
-<p>接下來的部分會以最常見的 <code>Public</code> 和 <code>Private</code> 來繼續說明，對存取範圍的這些修飾子有興趣的朋友，可以參照 <a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/accessibility-levels">存取範圍層級</a> 的說明。</p>
-<p>現在我們已經知道了有哪些修飾子可以用來控制存取範圍，但為什麼我們會需要宣告存取範圍的大小呢？其根本是為了<strong>將控制權掌握在物件本身</strong>。</p>
-<p>就像大話設計模式比喻的：物件就像間房子，我們不希望被看光光，可以看見的 <code>Public</code> 就像門和窗，而不該看見的 <code>Private</code> 則是用牆壁隱藏起來，而對於這間房子而言，門窗是可以控制的。</p>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-3-encapsulation/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
                     
 
                     
@@ -569,7 +560,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (6)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
     </li>
     
     <li>
@@ -582,6 +573,10 @@
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/" title="菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/10/swagger-enable-authorize/" title="在 Swagger UI 加上驗證按鈕，讓 Request Header 傳遞 Authorize Token">在 Swagger UI 加上驗證按鈕，讓 Request Header 傳遞 Authorize Token</a>
@@ -619,10 +614,6 @@
         <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧">菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/visual-studio-split-window-in-one-file/" title="Visual Studio: 在同一個檔案分割視窗">Visual Studio: 在同一個檔案分割視窗</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -645,7 +636,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (22)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (23)</a>
     </li>
     
     <li>

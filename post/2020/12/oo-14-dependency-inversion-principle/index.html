@@ -162,7 +162,7 @@
 </blockquote>
 <p>是的，不應該直接去依賴，而是必須藉由抽象來隔開。不應該直接去受到實作的影響，而是只要關注在所需要的功能。</p>
 <p>這部分其實已經破梗完了，我們在 <a href="/post/2020/07/oo-7-interface">介面篇</a> 已經說明過依賴反轉最基本的思維路線。我們並不是用低階模組的功能直接拼湊出高階模組，讓高階模組直接依賴低階模組然後受到影響；而是把關注點放在需要的功能上，用介面隔開實作，解開他們彼此之間的耦合，介面就是模組之間的抽象層。</p>
-<p>同時也要明白一件重要的事：<strong>並不是低階模組的實作提供了抽象層，而是高階模組針對所需要的功能提出了抽象，而低階模組去實現它</strong>。</p>
+<p>同時也要明白一件重要的事：<strong>並不是高階模組去依賴低階模組。而是高階模組提出它需要的功能，低階模組去實作出這些功能、達成高階模組的目標</strong>。</p>
 <p>我們並不是因為有「DB 的連線方法」和「處理會員資料的方法」所以才說「我們有這兩個東西欸，那我們來組成會員查詢功能吧」；而是「我們想做一個會員查詢功能，所以我們需要連線到 DB，然後對這些資料做篩選和處理」</p>
 <p>就如同我們在介面的例子所提的一樣：「老闆為了製造產品（高階模組的目標），開出了工程師的應徵條件（介面），而小明前來應徵（低階模組的實作）」</p>
 <p>如此一來，依賴就「反轉」了。原本是 <code>高階模組 → 低階模組</code> 的關係，變成了 <code>高階模組 → 介面 ← 低階模組</code>。並不是高階去依賴低階，而是低階去依賴高階要求的功能。</p>
@@ -204,6 +204,9 @@
 }
 </code></pre></div><p>在這個例子中，我們利用建構式的方式，從外部傳入該介面的實體來使用。現在撰寫產品程式碼的工作再也不用為了換工程師而改變，也不用因為實作細節或是方法名稱而煩惱，只要照個介面合約使用就可以了。至於要傳遞哪個實體進來，這份工作要交給小明還是小美，就讓控制中心去決定，大家各司其職，落實單一職責。</p>
 <p>當然，注入的方式不只建構式注入，還有設值注入（也就是從外部改變目標的某個屬性值來達到注入）等等；提供 IOC 的方式也不只一種，例如 .net 的 Unity，甚至到了 .net Core 時代 IOC 還直接是內建的功能呢，由於口味眾多，此處暫且按下不表。</p>
+<blockquote>
+<p>補充：下個系列文補了 <a href="/post/2021/11/newbie-6-dependency-injection">使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a>，有興趣的朋友可以接續看看</p>
+</blockquote>
 <h2 id="結語">結語</h2>
 <p>那麼，我們最後再來複習一遍：</p>
 <p><strong>高階模組不應該依賴於低階模組，兩者都應該依賴抽象</strong>。為了解除耦合，必須用介面這種抽象層進行隔離。</p>
@@ -340,7 +343,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (6)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
     </li>
     
     <li>
@@ -353,6 +356,10 @@
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/" title="菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/10/swagger-enable-authorize/" title="在 Swagger UI 加上驗證按鈕，讓 Request Header 傳遞 Authorize Token">在 Swagger UI 加上驗證按鈕，讓 Request Header 傳遞 Authorize Token</a>
@@ -390,10 +397,6 @@
         <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧">菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/visual-studio-split-window-in-one-file/" title="Visual Studio: 在同一個檔案分割視窗">Visual Studio: 在同一個檔案分割視窗</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -416,7 +419,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (22)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (23)</a>
     </li>
     
     <li>
