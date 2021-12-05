@@ -103,6 +103,66 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2021-12-5,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p>從朋友那兒聽到了用 AutoMapper 把串列成員物件攤平成一組串列的問題，發現了 <strong>ConvertUsing</strong> 的好用，這邊就紀錄一下。</p>
+<p>事情是這樣的，首先有一個 <code>Parent</code> 類別，其中包含著兩個成員：<code>Id</code> 和串列的 <code>Child</code> 類別，而 <code>Child</code> 類別則只有一個成員 <code>Val</code>，如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Parent</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+    <span style="color:#66d9ef">public</span> IEnumerable&lt;Child&gt; Children { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Child</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+</code></pre></div><p>另外還有一個 <code>Target</code> 類別，包含 <code>Id</code> 和 <code>Val</code> 兩個成員：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Target</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+</code></pre></div><p>現在的目標是：<strong>將一個有著 Child 串列的 Parent 映射成 Target 串列</strong>。</p>
+<p>也就是說，假設我們的來源是這樣子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> boo = <span style="color:#66d9ef">new</span> Parent
+{
+    Id = <span style="color:#ae81ff">1</span>,
+    Children = <span style="color:#66d9ef">new</span> List&lt;Child&gt;
+    {
+        <span style="color:#66d9ef">new</span> Child { Val = <span style="color:#ae81ff">1</span> },
+        <span style="color:#66d9ef">new</span> Child { Val = <span style="color:#ae81ff">2</span> },
+    }
+};
+</code></pre></div><p>希望可以變成這樣子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> expect = <span style="color:#66d9ef">new</span> List&lt;Target&gt;
+{
+    <span style="color:#66d9ef">new</span> Target { Id = <span style="color:#ae81ff">1</span>, Val = <span style="color:#ae81ff">1</span> },
+    <span style="color:#66d9ef">new</span> Target { Id = <span style="color:#ae81ff">1</span>, Val = <span style="color:#ae81ff">2</span> },
+};
+</code></pre></div><p>我之前遇到的時候，會直覺地將 Child 直接 Map 到 Target，再對 Target 做個 Foreach 來補上 Parent 的 Id。</p>
+<p>這次和朋友討論時，提到了另一個角度：雖然這樣的做法相當直覺快速，但其實並不能保證後續維護的人使用這組 Mappings 時，都知道這裡要補資料；況且此處的對應關係的確是 <code>Parent</code> 到 <code>List&lt;Target&gt;</code>，並非 <code>Child</code> 到 <code>Target</code> 而已，直覺上就怪怪的。若要解決這個問題，可能就要再包裝一層，把 Mapper 隔離出去做個轉換器之類的。</p>
+<p>但想想又覺得 AutoMapper 不可能沒提供這個場景能使用的方法才對，最後餵狗發現 <strong>AutoMapper 確實有提供 <code>ConvertUsing</code> 來讓我們客製化轉換過程</strong>，這邊就紀錄一下。</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2021/12/automapper-convert-using/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a>
                                     </h1>
                                 </header>
@@ -434,82 +494,6 @@
                             </article>
                             <hr color="#D9D9D9" />
                         
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2021-4-5,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <p><img src="https://i.imgur.com/ojI91y9.png" alt="img"></p>
-<p>這是俺整理公司新訓內容的第一篇文章，目標是<strong>整理 Git 相關的筆記</strong>。</p>
-<h2 id="前言推薦資源">前言、推薦資源</h2>
-<p>說來慚愧，前陣子 PTT 和臉書社團都有討論到相關科系畢業卻不會 Git 會不會太誇張，我正是畢業之後才開始用 Git 的那類人囧，相信像我一樣的人並不少，因此這個系列就決定從「<strong>新訓時學到的 Git 的基本操作</strong>」開始記錄。</p>
-<p>開始之前先感謝公司前輩和完善的新手教學，還有第一天就先學 Git 的優良傳統。另外，也感謝相當多優秀的 Git 學習資源，說明得也更為詳細深入，想好好了解 Git 的朋友也可以逛逛，這邊就先推薦一波：</p>
-<ul>
-<li><a href="https://gitbook.tw/">為你自己學 Git</a>
-<ul>
-<li>對新手非常友善。網站點進去後往下拉，可以看到大部分章節都能免費看，佛！</li>
-<li>最有價值的是裡面的各種狀況題。畢竟當你用 Git 不只需要基本操作的時候，呃，祝你好運</li>
-</ul>
-</li>
-<li><a href="https://backlog.com/git-tutorial/tw/">連猴子都能懂的 Git 入門指南</a>
-<ul>
-<li>從入門到進階篇跟過一次的話，基本操作就沒有問題了</li>
-<li>圖解讓人很好理解，而且在教學的實作部分會提供儲存庫讓你下載實作</li>
-</ul>
-</li>
-<li><a href="https://blog.darkthread.net/blog/category/Git">黑暗執行緒的 Git 分類文章</a>
-<ul>
-<li>同場加映：<a href="https://blog.darkthread.net/blog/my-git-cheatsheet/">黑暗執行緒的 Git 指令筆記</a></li>
-<li>黑大出品，品質保證</li>
-</ul>
-</li>
-<li><a href="https://learngitbranching.js.org/?locale=zh_TW">Learn Git Branching</a>
-<ul>
-<li>用遊戲通關的方式認識 Git，對於一些分支的概念會很有幫助</li>
-</ul>
-</li>
-<li><a href="https://ithelp.ithome.com.tw/users/20004901/ironman/525">30 天精通 Git 版本控管</a></li>
-<li><a href="https://git-scm.com/book/zh-tw/v2">Pro Git</a></li>
-</ul>
-<p>接下來我們就從認識 Git 開始吧！</p>
-<hr>
-<h3 id="什麼是-git">什麼是 Git？</h3>
-<p>你發生過以下狀況嗎？</p>
-<ul>
-<li>從沒做過版本控制，結果突然要改回前一版，不知所措</li>
-<li>使用資料夾／壓縮檔板控
-<ul>
-<li>20201201.rar, 20201215_v2.rar, 20201215_首頁.rar&hellip;&hellip;</li>
-<li>空間越吃越兇，東西越來越雜，事情越想越不對勁，但是不敢刪除</li>
-<li>其實不知道每一份實際上改了哪裡，要復原某一段的時候要找半天，不如直接重寫一段</li>
-</ul>
-</li>
-<li>團隊合作／分組報告，各自負責一個區域，結果複製來複製去組不起來，不只需要看眼科，修 BUG 還比寫的時間還多</li>
-<li>看到一段程式碼
-<ul>
-<li>完全不知道為什麼要這樣寫</li>
-<li>或是氣到要死，抓不到戰犯</li>
-</ul>
-</li>
-</ul>
-<p>那麼，你很有可能需要 Git！</p>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
                     
 
                     
@@ -581,6 +565,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/" title="菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a>
     </li>
     
@@ -616,10 +604,6 @@
         <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧">菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -642,7 +626,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (23)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
     </li>
     
     <li>

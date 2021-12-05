@@ -17,20 +17,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>C#: 時區轉換、民國西元、國曆農曆、中文月份週期 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="C#: 時區轉換、民國西元、國曆農曆、中文月份週期 - 伊果的沒人看筆記本">
+    <title>AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2020-08-30T11:58:00&#43;08:00">
+    <meta property="article:published_time" content="2021-12-05T11:20:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2020-08-30T11:58:00&#43;08:00">
+    <meta property="article:modified_time" content="2021-12-05T11:20:00&#43;08:00">
         
-        <meta name="keywords" content="CSharp, DateTime, TimeZoneInfo, TaiwanCalendar, TaiwanLunisolarCalendar, DateTimeFormatInfo, w3HexSchool">
-    <meta name="description" content="紀錄一下 C# 關於時間處理的操作，包括 TimeZoneInfo 的時區資訊，以及使用 TaiwanCalendar 來將西元年轉換成民國年、用 TaiwanLunisolarCalendar 將國曆轉換成農曆，和用 DateTimeFormatInfo 取得周次的中文等等">
+        <meta name="keywords" content="CSharp, AutoMapper">
+    <meta name="description" content="AutoMapper 確實有提供 ConvertUsing 來讓我們客製化轉換過程，這邊就紀錄一下">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/post/2020/08/csharp-timezone/">
+    <meta property="og:url" content="https://igouist.github.io/post/2021/12/automapper-convert-using/">
     <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link defer rel="stylesheet" href="/css/normalize.css">
@@ -96,17 +96,15 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">C#: 時區轉換、民國西元、國曆農曆、中文月份週期</h1>
+                            <h1 class="post-title">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2020-8-30,
+                            2021-12-5,
                         </date>
                         
                         <div class="post-meta">
                             
                                 <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
-                            
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
                             
                         </div>
                         
@@ -120,61 +118,182 @@
                         
 
                         <div class="post-content">
-                            <p>聊到將時間從 UTC 轉到台灣時間，居然還是聽到朋友表示使用 +8 小時的做法，驚為天人。這種做法可能會造成後續的問題，例如時區並不會跟著變動，或是遇到日光節約等特殊狀況就容易出事。和西元民國轉換直接 -1911 一樣不穩定。</p>
-<p>這篇就用來記錄一下之前看過比較優雅的時區轉換方式，順便將先前存著的時間處理相關資料整理一下，方便之後需要時可以馬上回來查詢。</p>
-<h2 id="timezoneinfo-時區資訊">TimeZoneInfo: 時區資訊</h2>
-<p>轉換方式主要參考自 <a href="https://dotblogs.com.tw/supershowwei/2016/10/17/141620">[食譜好菜] DateTime 具有文化特性的格式化及時區的轉換</a> 及 <a href="https://docs.microsoft.com/zh-tw/dotnet/standard/datetime/converting-between-time-zones">在各時區間轉換時間</a>，感謝前人的指引。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 假設現在是要從標準時區 +00:00 轉換到台灣時區，故這邊使用 UtcNow 先取標準世界協調時間
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> nowDateTime = DateTime.UtcNow;
+                            <p>從朋友那兒聽到了用 AutoMapper 把串列成員物件攤平成一組串列的問題，發現了 <strong>ConvertUsing</strong> 的好用，這邊就紀錄一下。</p>
+<p>事情是這樣的，首先有一個 <code>Parent</code> 類別，其中包含著兩個成員：<code>Id</code> 和串列的 <code>Child</code> 類別，而 <code>Child</code> 類別則只有一個成員 <code>Val</code>，如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Parent</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+    <span style="color:#66d9ef">public</span> IEnumerable&lt;Child&gt; Children { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
 
-nowDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-<span style="color:#75715e">// 2020/08/30 15:56:05 +00:00
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Child</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+</code></pre></div><p>另外還有一個 <code>Target</code> 類別，包含 <code>Id</code> 和 <code>Val</code> 兩個成員：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Target</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+</code></pre></div><p>現在的目標是：<strong>將一個有著 Child 串列的 Parent 映射成 Target 串列</strong>。</p>
+<p>也就是說，假設我們的來源是這樣子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> boo = <span style="color:#66d9ef">new</span> Parent
+{
+    Id = <span style="color:#ae81ff">1</span>,
+    Children = <span style="color:#66d9ef">new</span> List&lt;Child&gt;
+    {
+        <span style="color:#66d9ef">new</span> Child { Val = <span style="color:#ae81ff">1</span> },
+        <span style="color:#66d9ef">new</span> Child { Val = <span style="color:#ae81ff">2</span> },
+    }
+};
+</code></pre></div><p>希望可以變成這樣子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> expect = <span style="color:#66d9ef">new</span> List&lt;Target&gt;
+{
+    <span style="color:#66d9ef">new</span> Target { Id = <span style="color:#ae81ff">1</span>, Val = <span style="color:#ae81ff">1</span> },
+    <span style="color:#66d9ef">new</span> Target { Id = <span style="color:#ae81ff">1</span>, Val = <span style="color:#ae81ff">2</span> },
+};
+</code></pre></div><p>我之前遇到的時候，會直覺地將 Child 直接 Map 到 Target，再對 Target 做個 Foreach 來補上 Parent 的 Id。</p>
+<p>這次和朋友討論時，提到了另一個角度：雖然這樣的做法相當直覺快速，但其實並不能保證後續維護的人使用這組 Mappings 時，都知道這裡要補資料；況且此處的對應關係的確是 <code>Parent</code> 到 <code>List&lt;Target&gt;</code>，並非 <code>Child</code> 到 <code>Target</code> 而已，直覺上就怪怪的。若要解決這個問題，可能就要再包裝一層，把 Mapper 隔離出去做個轉換器之類的。</p>
+<p>但想想又覺得 AutoMapper 不可能沒提供這個場景能使用的方法才對，最後餵狗發現 <strong>AutoMapper 確實有提供 <code>ConvertUsing</code> 來讓我們客製化轉換過程</strong>，這邊就紀錄一下。</p>
+<p>在我們註冊映射關係的時候，可以用 <code>ConvertUsing</code> 來直接定義轉換的過程。以這個例子來說，就可以：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
+{
+    cfg
+        .CreateMap&lt;Parent, IEnumerable&lt;Target&gt;&gt;()
+        .ConvertUsing(parent =&gt; parent.Children.Select(child =&gt; <span style="color:#66d9ef">new</span> Target
+        {
+            Id = parent.Id,
+            Val = child.Val
+        }));
+});
+</code></pre></div><p>像這樣告訴 AutoMapper：「從 <code>Parent</code> 轉換到 <code>IEnumerable&lt;Target&gt;</code> 的時候，幫我用 Children 來 Select 出 Target」</p>
+<p>註冊後就可以順利進行轉換了，讓我們直接用 Linqpad 試試：</p>
+<p><img src="https://i.imgur.com/pUSarcn.png" alt="Image"></p>
+<p>如果是比較複雜的狀況，也可以用實作<a href="(https://dotblogs.com.tw/supershowwei/2019/04/22/160442)">型別轉換器</a>（<code>ITypeConverter</code>）的方式來處理。以這個例子來說，就可以：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// c實作從 Parent 轉換到 IEnumerable&lt;Target&gt; 的 ITypeConverter
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ParentToTargetsTypeConverter</span> : ITypeConverter&lt;Parent, IEnumerable&lt;Target&gt;&gt;
+{
+    <span style="color:#75715e">// 轉換方法本體
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;Target&gt; Convert(
+        Parent parent,
+        IEnumerable&lt;Target&gt; targets,
+        ResolutionContext context)
+    {
+        targets = parent.Children.Select(child =&gt; <span style="color:#66d9ef">new</span> Target
+        {
+            Id = parent.Id,
+            Val = child.Val
+        });
+        <span style="color:#66d9ef">return</span> targets;
+    }
+}
+</code></pre></div><p>接著再把轉換器註冊到 <code>ConvertUsing</code> 上，丟實體或是泛型都行：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
+{
+        <span style="color:#75715e">//cfg
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//    .CreateMap&lt;Parent, IEnumerable&lt;Target&gt;&gt;()
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//    .ConvertUsing(new ParentToTargetsTypeConverter());
 </span><span style="color:#75715e"></span>
-<span style="color:#75715e">// ==================================================
+        <span style="color:#75715e">// OR
 </span><span style="color:#75715e"></span>
-<span style="color:#75715e">// 傳統的 直接對時間做計算的方式…
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> addedDateTime = nowDateTime.AddHours(<span style="color:#ae81ff">8</span>);
+        cfg
+            .CreateMap&lt;Parent, IEnumerable&lt;Target&gt;&gt;()
+            .ConvertUsing&lt;ParentToTargetsTypeConverter&gt;();
+});
+</code></pre></div><p>測試轉換：</p>
+<p><img src="https://i.imgur.com/mJXRNXR.png" alt="Image"></p>
+<p>之後當遇到型別轉換的過程並非單純欄位一對一的時候，就可以使用 ConvertUsing 的方式來自行處理。</p>
+<p>最後附上測試用的 Linqpad Code <del>方便我之後回來複製</del></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
+{
+    Sut().Dump();
+}
 
-addedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-<span style="color:#75715e">// 2020/08/30 23:56:05 +00:00
-</span><span style="color:#75715e">// 可以看到儘管時間變動了，時區仍然還在 +00:00
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// ==================================================
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// 使用 TimeZoneInfo 先取得台北時區
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> timeZone = TimeZoneInfo.FindSystemTimeZoneById(<span style="color:#e6db74">&#34;Taipei Standard Time&#34;</span>);
+<span style="color:#66d9ef">public</span> IEnumerable&lt;Target&gt; Sut()
+{
+    <span style="color:#66d9ef">var</span> boo = <span style="color:#66d9ef">new</span> Parent
+    {
+        Id = <span style="color:#ae81ff">1</span>,
+        Children = <span style="color:#66d9ef">new</span> List&lt;Child&gt;
+        {
+            <span style="color:#66d9ef">new</span> Child { Val = <span style="color:#ae81ff">1</span> },
+            <span style="color:#66d9ef">new</span> Child { Val = <span style="color:#ae81ff">2</span> },
+        }
+    };
 
-<span style="color:#75715e">// 再使用 TimeZoneInfo 來變更時間
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> convertedDateTime = TimeZoneInfo.ConvertTime(nowDateTime, timeZone);
+    <span style="color:#66d9ef">var</span> mapper = CreateMapperConfig().CreateMapper();
+    <span style="color:#66d9ef">var</span> result = mapper.Map&lt;Parent, IEnumerable&lt;Target&gt;&gt;(boo);
+    <span style="color:#66d9ef">return</span> result;
+}
 
-convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-<span style="color:#75715e">// 2020/08/30 23:56:05 +08:00
-</span><span style="color:#75715e">// 可以看到除了時間變更以外，時區也切換到 +08:00 了！
-</span></code></pre></div><p>上面取得台北時區的步驟，可以參照 <a href="https://docs.microsoft.com/en-us/previous-versions/windows/embedded/gg154758(v=winembedded.80)">Time Zone IDs</a> 來查詢想要的時區。這樣的時區切換方式，不僅副作用少，不會因為時區沒轉雷到後續接手的人，也省卻了擔心日光節約等等問題，這種事就交給微軟去煩惱吧！</p>
-<p>另外這邊也逐步放一些時區處理相關的參考資料：</p>
-<h2 id="taiwancalendar-西元年轉民國年-br-taiwanlunisolarcalendar-國曆轉農曆">TaiwanCalendar: 西元年轉民國年 <br/> TaiwanLunisolarCalendar: 國曆轉農曆</h2>
-<p>可以參考這篇 <a href="https://kevintsengtw.blogspot.com/2014/06/c.html">基本題 - C# 西元年轉換取得民國年格式字串 - mrkt 的程式學習筆記</a>。</p>
-<p>內文示範了使用 <code>System.Globalization.TaiwanCalendar</code> 和 <code>System.Globalization.TaiwanLunisolarCalendar</code> 來進行安全轉換的作法。</p>
-<p>至少依靠微軟爸爸，比自己加減 1911 來得安全多了囧。</p>
-<h2 id="datetimeformatinfo-月週時間的格式">DateTimeFormatInfo: 月、週、時間的格式</h2>
-<p>不用再傻傻地手刻陣列「星期一」、「星期二」、「星期三」…之類的了，只要用 <code>DateTimeFormatInfo.CurrentInfo</code> 的就好啦：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> MonthCh = DateTimeFormatInfo.CurrentInfo.MonthNames;   <span style="color:#75715e">// 中文月份名稱列表
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> MonthEn = DateTimeFormatInfo.InvariantInfo.MonthNames; <span style="color:#75715e">// 英文月份名稱列表
-</span></code></pre></div><p><img src="https://i.imgur.com/se7XLZy.png" alt=""></p>
-<p>除了月份以外，<code>DateTimeFormatInfo.CurrentInfo</code> 也包含了當地的其他欄位與格式。</p>
-<p>例如 <code>AbbreviatedDayNames</code> 能拿到 週一、週二、週三…；<code>DayNames</code> 則會拿到 星期一、星期二、星期三…</p>
-<p>時間格式的話，<code>FullDateTimePattern</code> 就會拿到 <code>yyyy'年'M'月'd'日' tt hh:mm:ss</code> 等等</p>
-<p>內容還有許多欄位，有興趣的可以用 LinqPad 來 Dump 看看，或是直接翻閱 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.globalization.datetimeformatinfo?view=netcore-3.1">DateTimeFormatInfo</a> 囉！</p>
-<h2 id="參考資料">參考資料</h2>
+<span style="color:#66d9ef">public</span> MapperConfiguration CreateMapperConfig()
+{
+    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
+    {
+        <span style="color:#75715e">// 1. 使用 Lambda
+</span><span style="color:#75715e"></span>        
+        <span style="color:#75715e">//cfg
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//    .CreateMap&lt;Parent, IEnumerable&lt;Target&gt;&gt;()
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//    .ConvertUsing(parent =&gt; parent.Children.Select(child =&gt; new Target
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//    {
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//        Id = parent.Id,
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//        Val = child.Val
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//    }));
+</span><span style="color:#75715e"></span>        
+        <span style="color:#75715e">// 2. 使用 TypeConverter
+</span><span style="color:#75715e"></span>        
+        <span style="color:#75715e">//cfg
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//    .CreateMap&lt;Parent, IEnumerable&lt;Target&gt;&gt;()
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//    .ConvertUsing(new ParentToTargetsTypeConverter());
+</span><span style="color:#75715e"></span>
+        cfg
+            .CreateMap&lt;Parent, IEnumerable&lt;Target&gt;&gt;()
+            .ConvertUsing&lt;ParentToTargetsTypeConverter&gt;();
+    });
+    <span style="color:#66d9ef">return</span> config;
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ParentToTargetsTypeConverter</span> : ITypeConverter&lt;Parent, IEnumerable&lt;Target&gt;&gt;
+{
+    <span style="color:#66d9ef">public</span> IEnumerable&lt;Target&gt; Convert(
+        Parent parent,
+        IEnumerable&lt;Target&gt; targets,
+        ResolutionContext context)
+    {
+        targets = parent.Children.Select(child =&gt; <span style="color:#66d9ef">new</span> Target
+        {
+            Id = parent.Id,
+            Val = child.Val
+        });
+        <span style="color:#66d9ef">return</span> targets;
+    }
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Parent</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+    <span style="color:#66d9ef">public</span> IEnumerable&lt;Child&gt; Children { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Child</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Target</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+</code></pre></div><h2 id="參考資料">參考資料</h2>
 <ul>
-<li><a href="https://kevintsengtw.blogspot.com/2014/06/c.html">基本題 - C# 西元年轉換取得民國年格式字串 - mrkt 的程式學習筆記</a></li>
-<li><a href="https://dotblogs.com.tw/supershowwei/2016/10/17/141620">[食譜好菜] DateTime 具有文化特性的格式化及時區的轉換</a></li>
-<li><a href="https://dotblogs.com.tw/supershowwei/2019/04/15/095324">[桌邊服務] DateTime 本身有沒有包含時區的資訊？</a></li>
-<li><a href="https://dotblogs.com.tw/ricochen/2016/02/12/114642">[C#]UTC時區轉換 - RiCo技術農場</a></li>
-<li><a href="https://blog.miniasp.com/post/2010/04/30/Concept-DateTime-TimeZone">釐清觀念：.NET 日期結構(DateTime) 與 時區轉換</a></li>
-<li><a href="https://blog.darkthread.net/blog/compare-datetime-with-diff-timezone">笨問題 - UTC 與本地時區 DateTime 比較</a></li>
-<li><a href="https://docs.microsoft.com/zh-tw/dotnet/standard/base-types/custom-date-and-time-format-strings?redirectedfrom=MSDN">自訂日期與時間格式字串 - Microsoft Docs</a></li>
-<li><a href="https://docs.microsoft.com/zh-tw/dotnet/standard/datetime/converting-between-time-zones">在各時區間轉換時間 - Microsoft Docs</a></li>
+<li><a href="https://www.jianshu.com/p/47054d92db2a">AutoMapper 之自定义类型转换器(Custom Type Converters) - 简书</a></li>
+<li><a href="https://blog.csdn.net/wulex/article/details/78654555">AutoMapper官方文档(十一)【自定义类型转换器】_极客神殿 - CSDN博客</a></li>
+<li><a href="https://dotblogs.com.tw/supershowwei/2019/04/22/160442">[小菜一碟] C# 中一個古老的好物 - TypeConverter | 軟體主廚的程式料理廚房 - 點部落</a></li>
+<li><a href="https://stackoverflow.com/questions/46725911/automapper-map-single-object-with-list-of-objects-inside-to-just-list">c# - Automapper: Map single object with list of objects inside to just list - Stack Overflow</a></li>
+<li><a href="https://stackoverflow.com/questions/18096034/possible-to-use-automapper-to-map-one-object-to-list-of-objects">c# - Possible to use AutoMapper to map one object to list of objects? - Stack Overflow</a></li>
+<li><a href="https://stackoverflow.com/questions/56987748/use-automapper-to-map-single-object-into-a-list-of-objects">c# - use automapper to map single object into a list of objects - Stack Overflow</a></li>
 </ul>
                         </div>
 
@@ -184,15 +303,15 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/2020/08/csharp-string-interpolation/">C#: 字串插值 (String interpolation) 的格式化</a></li>
-        
-        <li><a href="/post/2020/08/system-environment/">C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑</a></li>
-        
-        <li><a href="/post/2020/07/code-style/">C#: 程式碼風格備忘</a></li>
-        
         <li><a href="/post/2020/07/automapper/">AutoMapper —— 類別轉換超省力</a></li>
         
-        <li><a href="/post/2020/06/electron-net/">Electron.net —— 把網頁包成桌面應用吧</a></li>
+        <li><a href="/post/2021/10/swagger-enable-authorize/">在 Swagger UI 加上驗證按鈕，讓 Request Header 傳遞 Authorize Token</a></li>
+        
+        <li><a href="/post/2020/09/csharp-trulp/">C#: 元組 (Tuple)</a></li>
+        
+        <li><a href="/post/2020/08/csharp-timezone/">C#: 時區轉換、民國西元、國曆農曆、中文月份週期</a></li>
+        
+        <li><a href="/post/2020/08/csharp-string-interpolation/">C#: 字串插值 (String interpolation) 的格式化</a></li>
         
     </ul>
 </div>
@@ -204,16 +323,14 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
                                 
                                 <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
                                 
-                                <li><a href="https://igouist.github.io/tags/dotnet">Dotnet</a></li>
-                                
-                                <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
+                                <li><a href="https://igouist.github.io/tags/automapper">AutoMapper</a></li>
                                 
                             </ul>
                             
                         </div>
                         <hr />
 <p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
-<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f08%2fcsharp-timezone%2f" width="100%" frameborder=0></iframe>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2021%2f12%2fautomapper-convert-using%2f" width="100%" frameborder=0></iframe>
                     </article>
                     
     
@@ -242,20 +359,6 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
 </form>
     </section>
     
-    
-        <section class="widget">
-            <h3 class="widget-title">文章目錄</h3>
-            <ul class="widget-list">
-                <nav id="TableOfContents">
-  <ul>
-    <li><a href="#timezoneinfo-時區資訊">TimeZoneInfo: 時區資訊</a></li>
-    <li><a href="#taiwancalendar-西元年轉民國年-br-taiwanlunisolarcalendar-國曆轉農曆">TaiwanCalendar: 西元年轉民國年 <br/> TaiwanLunisolarCalendar: 國曆轉農曆</a></li>
-    <li><a href="#datetimeformatinfo-月週時間的格式">DateTimeFormatInfo: 月、週、時間的格式</a></li>
-    <li><a href="#參考資料">參考資料</a></li>
-  </ul>
-</nav>
-            </ul>
-        </section>
     
     
     <section class="widget">

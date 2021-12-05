@@ -92,6 +92,67 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列" >AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2021-12-5,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p>從朋友那兒聽到了用 AutoMapper 把串列成員物件攤平成一組串列的問題，發現了 <strong>ConvertUsing</strong> 的好用，這邊就紀錄一下。</p>
+<p>事情是這樣的，首先有一個 <code>Parent</code> 類別，其中包含著兩個成員：<code>Id</code> 和串列的 <code>Child</code> 類別，而 <code>Child</code> 類別則只有一個成員 <code>Val</code>，如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Parent</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+    <span style="color:#66d9ef">public</span> IEnumerable&lt;Child&gt; Children { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Child</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+</code></pre></div><p>另外還有一個 <code>Target</code> 類別，包含 <code>Id</code> 和 <code>Val</code> 兩個成員：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Target</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+}
+</code></pre></div><p>現在的目標是：<strong>將一個有著 Child 串列的 Parent 映射成 Target 串列</strong>。</p>
+<p>也就是說，假設我們的來源是這樣子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> boo = <span style="color:#66d9ef">new</span> Parent
+{
+    Id = <span style="color:#ae81ff">1</span>,
+    Children = <span style="color:#66d9ef">new</span> List&lt;Child&gt;
+    {
+        <span style="color:#66d9ef">new</span> Child { Val = <span style="color:#ae81ff">1</span> },
+        <span style="color:#66d9ef">new</span> Child { Val = <span style="color:#ae81ff">2</span> },
+    }
+};
+</code></pre></div><p>希望可以變成這樣子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> expect = <span style="color:#66d9ef">new</span> List&lt;Target&gt;
+{
+    <span style="color:#66d9ef">new</span> Target { Id = <span style="color:#ae81ff">1</span>, Val = <span style="color:#ae81ff">1</span> },
+    <span style="color:#66d9ef">new</span> Target { Id = <span style="color:#ae81ff">1</span>, Val = <span style="color:#ae81ff">2</span> },
+};
+</code></pre></div><p>我之前遇到的時候，會直覺地將 Child 直接 Map 到 Target，再對 Target 做個 Foreach 來補上 Parent 的 Id。</p>
+<p>這次和朋友討論時，提到了另一個角度：雖然這樣的做法相當直覺快速，但其實並不能保證後續維護的人使用這組 Mappings 時，都知道這裡要補資料；況且此處的對應關係的確是 <code>Parent</code> 到 <code>List&lt;Target&gt;</code>，並非 <code>Child</code> 到 <code>Target</code> 而已，直覺上就怪怪的。若要解決這個問題，可能就要再包裝一層，把 Mapper 隔離出去做個轉換器之類的。</p>
+<p>但想想又覺得 AutoMapper 不可能沒提供這個場景能使用的方法才對，最後餵狗發現 <strong>AutoMapper 確實有提供 <code>ConvertUsing</code> 來讓我們客製化轉換過程</strong>，這邊就紀錄一下。</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2021/12/automapper-convert-using/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/" title="菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧" >菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a>
                                 </h1>
                             </header>
@@ -430,50 +491,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧" >菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2021-5-2,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p><img src="https://i.imgur.com/d2xM94x.png" alt="Image"></p>
-<p>這是俺整理公司新訓內容的第二篇文章，目標是<strong>對 Api, Restful Api, HTTP 等相關的知識點做個筆記，並用 .net Core 建立一個簡易的 Web Api 專案</strong>。</p>
-<h2 id="前言基本觀念">前言、基本觀念</h2>
-<p>我們在 <a href="/post/2021/04/newbie-1-hello-git">上一篇</a> 記錄了新訓第一天的 Git 操作筆記。接著在這篇，我們終於要進入 .net Core 啦！</p>
-<p>目前的規劃是先從建立一個可以使用的、最簡單版本的 Web Api 服務開始，再將各個工具擴增進來。所以後續的文章應該都會以這篇的簡易 API 為基底繼續延伸下去（如果順利的話啦）</p>
-<p>這篇文章的前半段會用來記錄一些<strong>使用或開發 API 常用到的相關知識</strong>，如果對 HTTP 的部分已經有點頭緒，或是迫不及待想直接動手用 .net Core 開 Api 服務的朋友們，可以直接跳到 <a href="#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a> 的部份。那麼，我們開始吧～</p>
-<hr>
-<h3 id="什麼是-api">什麼是 API</h3>
-<p>我們在物件導向的 <a href="/post/2020/07/oo-7-interface/">介面</a> 時有稍微聊過所謂介面（Interface）的概念：「在兩個系統，或是兩個分層之間要介接的時候，只需要提供我這個功能的接口／介面給對方，就能讓對方知道如何使用」</p>
-<p>API（Application Programming Interface）也是同樣的道理：</p>
-<p><strong>在不同的應用程式或服務（Application）之間，使用程式碼（Programming）的方式提供一組 介面（Interface），讓提供方和使用方可以藉由這組介面銜接起來。</strong></p>
-<p>API 最貼切的比喻就是我們在 <a href="/post/2020/07/oo-3-encapsulation">封裝篇</a> 也用過的<strong>販賣機</strong>：販賣機會提供不同飲料的按鈕，當我們選擇了其中一個按鈕按下、投了錢之後，對應的飲料就會掉下來。</p>
-<p>對應回來就是：我們到了某個服務（販賣機），去拿我們想要的資料（飲料），所以呼叫了該服務的某支 API（按鈕）並且提供了一些該 API 要求的資料（投錢），最後 API 就會把我們想要的資料交給我們（飲料）</p>
-<p>再用更實際的例子來說就像是：假設我們想要做一款可以查詢台北市的公車動態的 APP，於是我們到了提供公車動態的服務 <a href="https://ptx.transportdata.tw/MOTC?t=Bus&amp;v=2#!/CityBus/CityBusApi_RealTimeByFrequency">MOTC Transport API v2</a> 去找我們想要的 API，過程中我們可能需要告訴服務我們要查的是台北市，最後服務就會將公車動態的資料交給我們。</p>
-<p>關於 API 的部份，推薦可以先閱讀過 Huli 大大的這兩篇，將基本觀念說明的相當好懂且透徹：</p>
-<ul>
-<li><a href="https://medium.com/@hulitw/learning-tcp-ip-http-via-sending-letter-5d3299203660">從傳紙條輕鬆學習基本網路概念</a></li>
-<li><a href="https://medium.com/@hulitw/ramen-and-api-6238437dc544">從拉麵店的販賣機理解什麼是 API</a></li>
-</ul>
-<p>另外，也推一下我在 CodingBar 看到的這篇 <a href="https://medium.com/codingbar/api-%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E9%BA%BC-%E7%94%A8%E7%99%BD%E8%A9%B1%E6%96%87%E5%B8%B6%E4%BD%A0%E8%AA%8D%E8%AD%98-95f65a9cfc33">API 到底是什麼？ 用白話文帶你認識</a> 和它所引用的影片：</p>
-<iframe src="https://www.youtube.com/embed/zvKadd9Cflc" width="100%" height="480" frameborder="0" scrolling="no" allowfullscreen></iframe>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -559,6 +576,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/" title="菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a>
     </li>
     
@@ -594,10 +615,6 @@
         <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧">菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -620,7 +637,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (23)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
     </li>
     
     <li>
