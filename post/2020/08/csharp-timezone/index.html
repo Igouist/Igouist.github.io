@@ -124,6 +124,9 @@
 <p>這篇就用來記錄一下之前看過比較優雅的時區轉換方式，順便將先前存著的時間處理相關資料整理一下，方便之後需要時可以馬上回來查詢。</p>
 <h2 id="timezoneinfo-時區資訊">TimeZoneInfo: 時區資訊</h2>
 <p>轉換方式主要參考自 <a href="https://dotblogs.com.tw/supershowwei/2016/10/17/141620">[食譜好菜] DateTime 具有文化特性的格式化及時區的轉換</a> 及 <a href="https://docs.microsoft.com/zh-tw/dotnet/standard/datetime/converting-between-time-zones">在各時區間轉換時間</a>，感謝前人的指引。</p>
+<blockquote>
+<p>關於文化特性，也可以參考本站的 <a href="/post/2021/10/csharp-datatime-tostring-cultureinfo">菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記</a> 呦。</p>
+</blockquote>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 假設現在是要從標準時區 +00:00 轉換到台灣時區，故這邊使用 UtcNow 先取標準世界協調時間
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> nowDateTime = DateTime.UtcNow;
 
@@ -155,8 +158,24 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
 <h2 id="taiwancalendar-西元年轉民國年-br-taiwanlunisolarcalendar-國曆轉農曆">TaiwanCalendar: 西元年轉民國年 <br/> TaiwanLunisolarCalendar: 國曆轉農曆</h2>
 <p>可以參考這篇 <a href="https://kevintsengtw.blogspot.com/2014/06/c.html">基本題 - C# 西元年轉換取得民國年格式字串 - mrkt 的程式學習筆記</a>。</p>
 <p>內文示範了使用 <code>System.Globalization.TaiwanCalendar</code> 和 <code>System.Globalization.TaiwanLunisolarCalendar</code> 來進行安全轉換的作法。</p>
-<p>至少依靠微軟爸爸，比自己加減 1911 來得安全多了囧。</p>
-<h2 id="datetimeformatinfo-月週時間的格式">DateTimeFormatInfo: 月、週、時間的格式</h2>
+<p>基本上來說就是指定文化特性中的時間格式（曆法）為農曆，至少依靠微軟爸爸，比自己加減 1911 來得安全多了囧。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> time = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2021</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">01</span>);
+
+<span style="color:#75715e">// 直接從 TaiwanCalendar 取民國年，自組字串時常用
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> taiwanCalendar = <span style="color:#66d9ef">new</span> TaiwanCalendar();
+taiwanCalendar.GetYear(time).Dump(); <span style="color:#75715e">// 110
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// 將文化特性的曆法改成民國年
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;zh-TW&#34;</span>);
+info.DateTimeFormat.Calendar = <span style="color:#66d9ef">new</span> TaiwanCalendar();
+
+<span style="color:#75715e">// 西元年轉民國年(字串)
+</span><span style="color:#75715e"></span>time.ToString(info).Dump(); <span style="color:#75715e">// 110/12/1 00:00:00
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// 民國年(字串)轉西元年
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> timeString = <span style="color:#e6db74">&#34;110/12/1&#34;</span>;
+DateTime.Parse(timeString, info).Dump(); <span style="color:#75715e">// 2021/12/01 00:00:00
+</span></code></pre></div><h2 id="datetimeformatinfo-月週時間的格式">DateTimeFormatInfo: 月、週、時間的格式</h2>
 <p>不用再傻傻地手刻陣列「星期一」、「星期二」、「星期三」…之類的了，只要用 <code>DateTimeFormatInfo.CurrentInfo</code> 的就好啦：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> MonthCh = DateTimeFormatInfo.CurrentInfo.MonthNames;   <span style="color:#75715e">// 中文月份名稱列表
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> MonthEn = DateTimeFormatInfo.InvariantInfo.MonthNames; <span style="color:#75715e">// 英文月份名稱列表
