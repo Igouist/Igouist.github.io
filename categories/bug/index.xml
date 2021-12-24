@@ -6,10 +6,39 @@
     <description>Recent content in Bug on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Sat, 26 Jun 2021 21:53:00 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 04 Oct 2021 22:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://igouist.github.io/categories/bug/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記</title>
+      <link>https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/</link>
+      <pubDate>Mon, 04 Oct 2021 22:00:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/EMdGkwr.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;事發緣由&#34;&gt;事發緣由&lt;/h2&gt;
+&lt;p&gt;在某套件中提供了某方法，它能讓使用者傳入多個參數，該方法再將各個參數組合為 QueryString 去指定的 Url 呼叫 Api 取值。&lt;/p&gt;
+&lt;p&gt;這邊先不論把 Api 接口封裝到套件中的做法，神奇的是同樣的套件、同樣的語法，在不同人的電腦上執行，卻是一個成功一個失敗。&lt;/p&gt;
+&lt;p&gt;經查後發現，該方法的參數中包含一欄型別為 DateTime 的資料，並且會把該欄位的值拿來 ToString() 再做為參數之一傳遞給目標 Api。&lt;/p&gt;
+&lt;p&gt;原來是呼叫失敗的人就是在這個 &lt;code&gt;DateTime.ToString()&lt;/code&gt; 的過程中產生了中文字，使得目標 Api 無法將中文字轉換回 DateTime 而發生了錯誤。&lt;/p&gt;
+&lt;p&gt;也就是說：&lt;strong&gt;同一行 DateTime.ToString() 在不同電腦執行竟然不一樣？！&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;為了讓我們更快了解狀況，現在就簡單地使用 Linqpad 進行測試：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Main()
+{
+    DateTime.Now.ToString().Dump();
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;首先，在我的 Windows 時間設定中，完整時間的格式為 &lt;code&gt;09:40:07&lt;/code&gt; ，也就是 24 小時制。&lt;/p&gt;
+&lt;p&gt;現在讓我們先執行上面這段語法看看：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 2021/10/04 21:00:00
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;接著讓我們變更時間格式看看。&lt;/p&gt;
+&lt;p&gt;以我的 Win10 為例，在 Windows 工具列，也就是畫面的右下角右鍵，選擇 &lt;code&gt;調整日期時間 → 日期時間格式設定 → 變更資料格式&lt;/code&gt;，將時間格式變更為 &lt;code&gt;上午 09:40:07&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;重新啟動 Linqpad 再執行如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 2021/10/04 下午 09:00:00
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;可以看到 &lt;code&gt;下午&lt;/code&gt; 兩個字就蹦出來了！&lt;/p&gt;
+&lt;p&gt;之所以會有這樣的差異，是因為 &lt;code&gt;DateTime.ToString()&lt;/code&gt; 預設轉換的目標格式會是抓取目前執行緒的&lt;strong&gt;文化特性&lt;/strong&gt;。&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！</title>
