@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -125,7 +125,7 @@
 <blockquote>
 <p>註：此處使用的 <code>Dump</code> 是 Linqpad 提供的輸出方法，把它當成 Print 就行了。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
 student.Item1.Dump(); <span style="color:#75715e">// 1
 </span><span style="color:#75715e"></span>student.Item2.Dump(); <span style="color:#75715e">// 王小明
 </span><span style="color:#75715e"></span>
@@ -133,13 +133,13 @@ student.Dump();
 </code></pre></div><p>可以看到 Tuple 的建立相當簡單，只需要用小括號 <code>()</code> 括選起來即可。建立後的內容就會像這樣：</p>
 <p><img src="https://i.imgur.com/H0wJglN.png" alt=""></p>
 <p>但這樣使用就和之前一樣，取出來時只能拿 Item1, Item2，放個幾天根本就不記得 Item1 裡面是啥東西了。這時我們就可以<strong>替成員們取名字</strong>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">(<span style="color:#66d9ef">int</span> ID, <span style="color:#66d9ef">string</span> Name) student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">(<span style="color:#66d9ef">int</span> ID, <span style="color:#66d9ef">string</span> Name) student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
 student.ID.Dump(); <span style="color:#75715e">// 1
 </span><span style="color:#75715e"></span>student.Name.Dump(); <span style="color:#75715e">// 王小明
 </span></code></pre></div><p>如此使用的時候就和一般操作物件的習慣沒有差別，也增加了可讀性。</p>
 <p>到這裡可能感覺只是個方便的變數打包小工具，但其真正順手的地方就在於作為<strong>回傳值</strong>的時候。</p>
 <p>過去要一次回傳多個值，除了使用 Ref 等方式以外，就只能乖乖做一個類別來裝，但有時候傳的東西又相當簡單，實在不太願意就此建立一個類別，又或是事情已經無法挽回，專案虛胖了一堆<strong>米蟲類別</strong>。有了 Tuple 之後，面對這種情況就可以<strong>直接使用 Tuple 解決</strong>，並且替成員們命名之後，既簡便又好讀！</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 回傳型別使用 Tuple
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 回傳型別使用 Tuple
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> (<span style="color:#66d9ef">bool</span> IsSuccess, <span style="color:#66d9ef">string</span> Message) DoSomeThing()
 {
     <span style="color:#75715e">// 做了一堆事情
@@ -153,7 +153,7 @@ student.ID.Dump(); <span style="color:#75715e">// 1
 </span><span style="color:#75715e"></span>	result.Message.Dump(); <span style="color:#75715e">// 操作成功
 </span><span style="color:#75715e"></span>}
 </code></pre></div><p>而當我們作為回傳值使用時，也可以直接原地解封：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 回傳型別使用 Tuple
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 回傳型別使用 Tuple
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> (<span style="color:#66d9ef">bool</span> IsSuccess, <span style="color:#66d9ef">string</span> Message) DoSomeThing()
 {
     <span style="color:#75715e">// 做了一堆事情
@@ -250,7 +250,7 @@ student.ID.Dump(); <span style="color:#75715e">// 1
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -263,6 +263,14 @@ student.ID.Dump(); <span style="color:#75715e">// 1
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -296,14 +304,6 @@ student.ID.Dump(); <span style="color:#75715e">// 1
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -326,7 +326,7 @@ student.ID.Dump(); <span style="color:#75715e">// 1
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -354,7 +354,7 @@ student.ID.Dump(); <span style="color:#75715e">// 1
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

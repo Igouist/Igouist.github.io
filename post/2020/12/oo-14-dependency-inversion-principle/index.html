@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -127,21 +127,21 @@
 <p>我們在之前的 <a href="/post/2020/09/oo-8-cohesion-and-coupling">耦合篇</a> 提過，如果模組和另一個模組之間有關連，那這兩者之間就耦合。以此來看，依賴就是一種耦合的關係，那麼，依賴是健康還是不健康的耦合呢？</p>
 <p>現在讓我們用 <a href="/post/2020/07/oo-5-polymorphism">多型篇</a> 用過的「老闆徵工程師」的例子來舉例一下：現在有間小小公司，老闆請來了小明當工程師，並請他開工撰寫產品程式碼。</p>
 <p>當「撰寫產品程式」對「工程師」直接依賴的時候，狀況可能是這樣的：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
 {
     Ming programmer = <span style="color:#66d9ef">new</span> Ming();
     <span style="color:#66d9ef">var</span> product = programmer.Programming();
     <span style="color:#66d9ef">return</span> product;
 }
 </code></pre></div><p>過一陣子，老闆發現小明寫出來的東西似乎不太行，於是把小明趕走，另外請了小華。這時候因為「工程師」這個實作類別不一樣了，我們就必須要改一次程式碼：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
 {
     Hua programmer = <span style="color:#66d9ef">new</span> Hua();
     <span style="color:#66d9ef">var</span> product = programmer.Programming();
     <span style="color:#66d9ef">return</span> product;
 }
 </code></pre></div><p>又過了好一陣子，老闆又另外請了小美來工作。於是又要再改一次，而且小美的工作方式甚至不叫做 <code>Programming</code>，而是 <code>Coding</code>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
 {
     Mei programmer = <span style="color:#66d9ef">new</span> Mei();
     <span style="color:#66d9ef">var</span> product = programmer.Coding();
@@ -171,7 +171,7 @@
 <p><strong>抽象不應該依賴細節；細節應該依賴抽象。</strong></p>
 </blockquote>
 <p>到這邊我們就推完 <a href="/post/2020/07/oo-7-interface">介面篇</a> 的前提了，請大家再回顧一下介面篇的內容。也就是說，上面的例子改用抽象層隔離之後，就會和介面篇的例子相同，變成：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
 {
     IProgrammer programmer = <span style="color:#66d9ef">new</span> Ming();
     <span style="color:#66d9ef">var</span> product = programmer.Programming();
@@ -187,18 +187,18 @@
 <p>但是，要怎麼把控制中心建立的低階模組，交給高階模組做使用呢？這時候的實作方式就是我們所謂的 <strong>依賴注入 (Dependency Injection)</strong> 了。</p>
 <p>依賴注入說穿了很簡單，就是<strong>用各種姿勢把東西丟進去給類別使用</strong>。</p>
 <p>例如說我們先前提過的 <a href="/post/2020/07/oo-2-constructor-overload">建構式</a>，就是其中一種解決方法。用上面的例子，就會變成：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ProductService</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ProductService</span>
 {
-    <span style="color:#66d9ef">private</span> IProgrammer _programmer;
+    <span style="color:#66d9ef">private</span> IProgrammer <span style="color:#ae81ff">_</span>programmer;
 
     <span style="color:#66d9ef">public</span> ProductService(IProgrammer programmer)
     {
-        <span style="color:#66d9ef">this</span>._programmer = programmer;
+        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>programmer = programmer;
     }
 
     <span style="color:#66d9ef">public</span> Product Work()
     {
-        <span style="color:#66d9ef">var</span> product = <span style="color:#66d9ef">this</span>._programmer.Programming();
+        <span style="color:#66d9ef">var</span> product = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>programmer.Programming();
         <span style="color:#66d9ef">return</span> product;
     }
 }
@@ -343,7 +343,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -356,6 +356,14 @@
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -389,14 +397,6 @@
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -419,7 +419,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -447,7 +447,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

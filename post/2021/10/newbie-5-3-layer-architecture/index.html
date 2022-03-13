@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -203,7 +203,7 @@
 <li>展示層 取得商業邏輯層回覆的資料，回傳給使用者</li>
 </ol>
 <p>大概就是這種感覺。</p>
-<p><img src="https://i.imgur.com/GF7cF9f.jpg" alt="分層架構02" style="zoom:33%;" /></p>
+<img src="https://i.imgur.com/GF7cF9f.jpg" alt="分層架構02" style="zoom:33%;" />
 <p>當然，這邊還是要再提醒一下：分層架構並不是只有三層式架構，根據需求也可能會再增加或是減少。同樣地，<strong>分層架構只是一種「分工的概念」</strong>，並不是只限於軟體，也不一定得就是這三層。</p>
 <p>曾經也有聽過「瀏覽器（展示層）、伺服器（商業邏輯層）、資料庫（資料存取層）」的說法，也看過遊戲是用「整體策略、基本操作」等動作規模去分層的，因此只需要有「把工作依據職責切分到不同層」的概念就可以了，切莫要走火入魔。</p>
 <h3 id="關於-dto">關於 DTO</h3>
@@ -306,7 +306,7 @@
 <p>在這次的範例中，我會採用在公司時的切割標準：各層之間不同方向的通訊都有獨立的 DTO 來負責。</p>
 <p>當然<strong>每一層和每個 DTO 的名稱都是很彈性的</strong>，例如 <a href="https://raychiutw.github.io/2019/%E9%9A%A8%E6%89%8B-Design-Pattern-2-%E8%BB%9F%E9%AB%94%E5%88%86%E5%B1%A4%E8%A8%AD%E8%A8%88%E6%A8%A1%E5%BC%8F-Software-Layered-Architecture-Pattern/">Ray</a> 大大的範例中，Service 和 Repository 的 DTO 部份就是使用 Dto 和 Entity 來命名。</p>
 <p>故這部份還請各位根據專案慣例作調整，我個人還是習慣用這套命名方式來處理。本範例的架構大致上會長這樣：</p>
-<p><img src="https://i.imgur.com/MYmaXpt.jpg" alt="分層架構03" style="zoom:50%;" /></p>
+<img src="https://i.imgur.com/MYmaXpt.jpg" alt="分層架構03" style="zoom:50%;" />
 <p>此外，實作部份主要的參考來源為：</p>
 <ul>
 <li><a href="https://kevintsengtw.blogspot.com/search/label/%E5%88%86%E5%B1%A4%E6%9E%B6%E6%A7%8B">mrkt 的程式學習筆記: ASP.NET MVC 專案分層架構系列</a></li>
@@ -355,7 +355,7 @@
 <h3 id="範例專案背景">範例專案背景</h3>
 <p>接著回到專案的介紹，如果並不是很在乎專案狀況，而是想看實作過程的朋友，請跳到 <a href="#%E5%BB%BA%E7%AB%8B%E5%88%86%E5%B1%A4">建立分層</a> 繼續閱讀。</p>
 <p>我們會使用這個系列的 ProjectN 專案繼續操作。該專案在先前的 <a href="/post/2021/05/newbie-2-webapi/">Api</a> 和 <a href="/post/2021/05/newbie-3-dapper/">Dapper</a> 章節中，已經建立了一個對卡牌資料表進行 CRUD 的 <code>CardController</code>。詳細部份就不附了（畢竟這篇都會打掉嘛）大致上長這樣：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
 <span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
 </span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
 {
@@ -424,7 +424,7 @@
 }
 
 </code></pre></div><p>其中用來回傳顯示卡片內容的 Card 類別為了和分層的 DTO 命名一致，已經改為 <code>CardViewModel</code>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 卡片
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardViewModel</span>
@@ -460,7 +460,7 @@
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
 }
 </code></pre></div><p>以及當新增及修改卡片時使用的 <code>CardParameter</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 卡片參數
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardParameter</span>
@@ -493,7 +493,7 @@
 </code></pre></div><p>如果像本節開頭提到的，並沒有切分查詢和傳入的 DTO 時，這兩個就有可能使用同一個 Model，遇到這種狀況還請不要太驚慌了。</p>
 <p>不過既然已經提到說不採用共用 Model 而是全部獨立的原因是「常會有多條件的查詢參數」之類的，這邊就補一下查詢列表用的參數吧。</p>
 <p>如此如此，在 <code>Parameter</code> 資料夾下新增了一個 <code>CardSearchParameter</code>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 卡片搜尋參數
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardSearchParameter</span>
@@ -535,7 +535,7 @@
 }
 </code></pre></div><p>請注意因為參數是選填的，所以部分欄位使用的是 Nullable。畢竟在卡牌遊戲中，想查詢「攻擊力３以下的卡片」是很平常的需求嘛。</p>
 <p>接著這個參數就放回到 <code>CardController</code> 的 <code>GetList()</code> 裡面作為參數吧：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 查詢卡片列表
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
@@ -568,7 +568,7 @@
 <h3 id="加入參考">加入參考</h3>
 <p>建立完類別庫之後，接著我們就要來<strong>加入參考</strong>，也就是設定這些庫之間的依賴方向。</p>
 <p>一般的分層架構的依賴關係會是從上到下，也就是 展示層 → 商業邏輯層 → 資料存取層，然後他們三個都參考共用層。</p>
-<p><img src="https://i.imgur.com/uYlhVjn.jpg" alt="分層架構05" style="zoom:33%;" /></p>
+<img src="https://i.imgur.com/uYlhVjn.jpg" alt="分層架構05" style="zoom:33%;" />
 <p>現在讓我們從最外圍開始：對 <code>ProjectN</code> （或是你 WEB／API 等等所在的專案）右鍵 → 加入 → 專案參考</p>
 <p><img src="https://i.imgur.com/SB841e8.png" alt="image-20210921162356712"></p>
 <p>然後讓它參考我們的 Service 層以及共用的 Common：</p>
@@ -596,7 +596,7 @@
 <p><img src="https://i.imgur.com/vr5RTrG.png" alt="image-20210921194022072"></p>
 <p><img src="https://i.imgur.com/CAMytoF.png" alt="image-20210921194110374"></p>
 <p>如此一來就會建立一個空的介面。啊，記得加上 <code>Public</code> 呦。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 卡片管理服務
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> ICardService
@@ -604,7 +604,7 @@
 
 }
 </code></pre></div><p>接著讓我們補上 CRUD 的五個方法，如果是去 Controller 複製的朋友要注意這邊的 DTO 已經不同囉：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 卡片管理服務
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> ICardService
@@ -650,7 +650,7 @@
 <p>畢竟這個範例只有單線，已經是最最最簡單的狀況了，還是有蠻多亂七八糟的地方是難以表達的…屆時再請各位切身體會了。</p>
 <p>所以請容我再貼一次九成像的 DTO 吧 XD。此外，因為都九成像了，呈現的時候就先不加上欄位註解囉。</p>
 <p>關於存放的位置，我個人習慣會再開一個 <code>Models</code> 或是 <code>Dtos</code> 的資料夾來放這些 DTO，如果功能比較多的就再多一層做個分類。本範例的 DTO 路徑如註解。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// ProjectN.Service.Dtos.ResultModel
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// ProjectN.Service.Dtos.ResultModel
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardResultModel</span>
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
@@ -690,7 +690,7 @@
 <p><img src="https://i.imgur.com/ScSGHFK.png" alt="image-20210921200831418"></p>
 <p>接著就讓我們用同樣的節奏來處理 Repository 吧。</p>
 <p>首先仍然是先建立一個 <code>Interface</code> 資料夾、<code>建立一個 </code>ICardRepository，並加上我們的 CRUD 五天王：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 卡片管理服務
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> ICardRepository
@@ -731,7 +731,7 @@
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">bool</span> Delete(<span style="color:#66d9ef">int</span> id);
 }
 </code></pre></div><p>接著是我們的 DTO 們：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// ProjectN.Repository.Dtos.DataModel
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// ProjectN.Repository.Dtos.DataModel
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardDataModel</span>
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
@@ -787,13 +787,13 @@
 <p>第一步就是建立實作的資料夾，方便和 <code>Interface</code> 做個區隔，所以這邊在 Repository 建立一個 <code>Implement</code> 資料夾，並在裡面建立 <code>CardRepository</code> ：</p>
 <p><img src="https://i.imgur.com/mxPAvRb.png" alt="image-20210926181827673"></p>
 <p>建立之後，別忘記把類別改為 <code>Public</code> 並告訴他我們要實作介面 <code>ICardRepository</code>（記得 using）：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardRepository</span> : ICardRepository
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardRepository</span> : ICardRepository
 {
 
 }
 </code></pre></div><p>接著 IDE 通常都會提醒一下說你有哪些要求沒有做到，這邊就讓我偷懶一下直接讓 IDE 產生空方法：</p>
 <p><img src="https://i.imgur.com/nJIaMAR.png" alt="image-20210926182828485"></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardRepository</span> : ICardRepository
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardRepository</span> : ICardRepository
 {
     <span style="color:#66d9ef">public</span> IEnumerable&lt;CardDataModel&gt; GetList(CardSearchCondition info)
     {
@@ -826,7 +826,7 @@
 <p>補充：為了避免我之後回來抄的時候想不起來，這邊也放一下資料表目前狀況好了：
 <img src="https://i.imgur.com/8qhFQBb.png" alt="image-20211002135411755"></p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 卡片管理
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e">/// &lt;seealso cref=&#34;ProjectN.Repository.Interface.ICardRepository&#34; /&gt;
@@ -835,7 +835,7 @@
     <span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 連線字串
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span> _connectString = <span style="color:#e6db74">@&#34;Server=(LocalDB)\MSSQLLocalDB;Database=Newbie;Trusted_Connection=True;&#34;</span>;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span> <span style="color:#ae81ff">_</span>connectString = <span style="color:#e6db74">@&#34;Server=(LocalDB)\MSSQLLocalDB;Database=Newbie;Trusted_Connection=True;&#34;</span>;
 
     <span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片列表
@@ -896,7 +896,7 @@
             sql += <span style="color:#e6db74">$&#34; WHERE {string.Join(&#34;</span> AND <span style="color:#e6db74">&#34;, sqlQuery)} &#34;</span>;
         }
 
-        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(<span style="color:#ae81ff">_</span>connectString))
         {
             <span style="color:#66d9ef">var</span> result = conn.Query&lt;CardDataModel&gt;(sql, parameter);
             <span style="color:#66d9ef">return</span> result;
@@ -920,7 +920,7 @@
         <span style="color:#66d9ef">var</span> parameters = <span style="color:#66d9ef">new</span> DynamicParameters();
         parameters.Add(<span style="color:#e6db74">&#34;Id&#34;</span>, id, System.Data.DbType.Int32);
 
-        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(<span style="color:#ae81ff">_</span>connectString))
         {
             <span style="color:#66d9ef">var</span> result = conn.QueryFirstOrDefault&lt;CardDataModel&gt;(sql, parameters);
             <span style="color:#66d9ef">return</span> result;
@@ -952,7 +952,7 @@
 </span><span style="color:#e6db74">                SELECT @@IDENTITY;
 </span><span style="color:#e6db74">            &#34;</span>;
 
-        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(<span style="color:#ae81ff">_</span>connectString))
         {
             <span style="color:#66d9ef">var</span> result = conn.Execute(sql, condition);
             <span style="color:#66d9ef">return</span> result &gt; <span style="color:#ae81ff">0</span>;
@@ -985,7 +985,7 @@
         parameters.AddDynamicParams(condition);
         parameters.Add(<span style="color:#e6db74">&#34;Id&#34;</span>, id, System.Data.DbType.Int32);
 
-        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(<span style="color:#ae81ff">_</span>connectString))
         {
             <span style="color:#66d9ef">var</span> result = conn.Execute(sql, parameters);
             <span style="color:#66d9ef">return</span> result &gt; <span style="color:#ae81ff">0</span>;
@@ -1008,7 +1008,7 @@
         <span style="color:#66d9ef">var</span> parameters = <span style="color:#66d9ef">new</span> DynamicParameters();
         parameters.Add(<span style="color:#e6db74">&#34;Id&#34;</span>, id, System.Data.DbType.Int32);
 
-        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(<span style="color:#ae81ff">_</span>connectString))
         {
             <span style="color:#66d9ef">var</span> result = conn.Execute(sql, parameters);
             <span style="color:#66d9ef">return</span> result &gt; <span style="color:#ae81ff">0</span>;
@@ -1024,7 +1024,7 @@
 <p>首先一樣先建立實作用的資料夾，並建立 <code>CardService</code>：</p>
 <p><img src="https://i.imgur.com/rJ4rMgs.png" alt="image-20211003091808904"></p>
 <p>並且讓 IDE 幫忙把要實作的介面都先列出來：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
 {
     <span style="color:#66d9ef">public</span> IEnumerable&lt;CardResultModel&gt; GetList(CardSearchInfo info)
     {
@@ -1054,16 +1054,16 @@
 </code></pre></div><p>那因為這個範例還沒有什麼需要注意的商業邏輯，因此我們就先在 Service 做一個承上（Controller）啟下（Repository）的動作。</p>
 <p>也就是說每個方法負責去接收 Controller 的請求，並呼叫 Repository 來完成工作，並用 AutoMapper 來進行過程的轉換。</p>
 <p>因此我們的 Service 要能夠呼叫到 Repository 和 Mapper，現在先讓我們把 Repository 當作私有成員建立進來：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
 {
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardRepository _cardRepository;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardRepository <span style="color:#ae81ff">_</span>cardRepository;
 
     <span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 建構式
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> CardService()
     {
-        <span style="color:#66d9ef">this</span>._cardRepository = <span style="color:#66d9ef">new</span> CardRepository();
+        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository = <span style="color:#66d9ef">new</span> CardRepository();
     }
 
     <span style="color:#75715e">// 其他實作部分
@@ -1074,7 +1074,7 @@
 <p>補充：當專案還有 Mappings, Enum（列舉）和其他設定檔等等，資料夾就會變得挺多的。</p>
 <p>這種時候，也可以把這類基礎建設相關的都放到 <code>Infrastructure</code> 資料夾做個整理，閱讀和操作上會比較舒服。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ServiceMappings</span> : Profile
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ServiceMappings</span> : Profile
 {
     <span style="color:#66d9ef">public</span> ServiceMappings()
     {
@@ -1087,10 +1087,10 @@
     }
 }
 </code></pre></div><p>接著讓我們也把 AutoMapper 的部份放到建構式裡面吧：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
 {
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IMapper _mapper;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardRepository _cardRepository;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IMapper <span style="color:#ae81ff">_</span>mapper;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardRepository <span style="color:#ae81ff">_</span>cardRepository;
 
     <span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 建構式
@@ -1100,25 +1100,25 @@
         <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
 			cfg.AddProfile&lt;ServiceMappings&gt;());
 
-        <span style="color:#66d9ef">this</span>._mapper = config.CreateMapper();
-        <span style="color:#66d9ef">this</span>._cardRepository = <span style="color:#66d9ef">new</span> CardRepository();
+        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper = config.CreateMapper();
+        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository = <span style="color:#66d9ef">new</span> CardRepository();
     }
     
     <span style="color:#75715e">// 其他實作部分
 </span><span style="color:#75715e"></span>}
 </code></pre></div><p>接著就化身為無情的串接機器，把各個實作接起來。</p>
 <p>例如說 查詢列表 <code>GetList</code>，標準流程就是 轉換參數 DTO、呼叫目標方法、轉換回傳 DTO：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 查詢卡片列表
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e">/// &lt;param name=&#34;info&#34;&gt;&lt;/param&gt;
 </span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> IEnumerable&lt;CardResultModel&gt; GetList(CardSearchInfo info)
 {
-    <span style="color:#66d9ef">var</span> condition = <span style="color:#66d9ef">this</span>._mapper.Map&lt;CardSearchInfo, CardSearchCondition&gt;(info);
-    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>._cardRepository.GetList(condition);
+    <span style="color:#66d9ef">var</span> condition = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;CardSearchInfo, CardSearchCondition&gt;(info);
+    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository.GetList(condition);
 
-    <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._mapper.Map&lt;
+    <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;
         IEnumerable&lt;CardDataModel&gt;, 
     	IEnumerable&lt;CardResultModel&gt;&gt;(data);
 
@@ -1129,26 +1129,26 @@
 <p>叮嚀一下：如果感覺公開方法裡面做的事情太多的話，還請考慮是不是職責太複雜、並嘗試適當地拆出私有方法或其他類別呦。</p>
 </blockquote>
 <p>那麼這邊就直接補上剩下的方法，貼上整個 <code>CardService</code> 吧：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 卡片管理
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e">/// &lt;seealso cref=&#34;ProjectN.Service.Interface.ICardService&#34; /&gt;
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
 {
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IMapper _mapper;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardRepository _cardRepository;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IMapper <span style="color:#ae81ff">_</span>mapper;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardRepository <span style="color:#ae81ff">_</span>cardRepository;
 
     <span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 建構式
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> CardService()
     {
-        <span style="color:#66d9ef">this</span>._cardRepository = <span style="color:#66d9ef">new</span> CardRepository();
+        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository = <span style="color:#66d9ef">new</span> CardRepository();
 
         <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt; 
 			cfg.AddProfile&lt;ServiceMappings&gt;());
 
-        <span style="color:#66d9ef">this</span>._mapper = config.CreateMapper();
+        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper = config.CreateMapper();
     }
 
     <span style="color:#75715e">/// &lt;summary&gt;
@@ -1158,10 +1158,10 @@
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;CardResultModel&gt; GetList(CardSearchInfo info)
     {
-        <span style="color:#66d9ef">var</span> condition = <span style="color:#66d9ef">this</span>._mapper.Map&lt;CardSearchInfo, CardSearchCondition&gt;(info);
-        <span style="color:#66d9ef">var</span> cards = <span style="color:#66d9ef">this</span>._cardRepository.GetList(condition);
+        <span style="color:#66d9ef">var</span> condition = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;CardSearchInfo, CardSearchCondition&gt;(info);
+        <span style="color:#66d9ef">var</span> cards = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository.GetList(condition);
 
-        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._mapper.Map&lt;
+        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;
             IEnumerable&lt;CardDataModel&gt;, 
         	IEnumerable&lt;CardResultModel&gt;&gt;(cards);
 
@@ -1175,8 +1175,8 @@
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> CardResultModel Get(<span style="color:#66d9ef">int</span> id)
     {
-        <span style="color:#66d9ef">var</span> card = <span style="color:#66d9ef">this</span>._cardRepository.Get(id);
-        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._mapper.Map&lt;CardDataModel, CardResultModel&gt;(card);
+        <span style="color:#66d9ef">var</span> card = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository.Get(id);
+        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;CardDataModel, CardResultModel&gt;(card);
         <span style="color:#66d9ef">return</span> result;
     }
 
@@ -1187,8 +1187,8 @@
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Insert(CardInfo info)
     {
-        <span style="color:#66d9ef">var</span> condition = <span style="color:#66d9ef">this</span>._mapper.Map&lt;CardInfo, CardCondition&gt;(info);
-        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._cardRepository.Insert(condition);
+        <span style="color:#66d9ef">var</span> condition = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;CardInfo, CardCondition&gt;(info);
+        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository.Insert(condition);
         <span style="color:#66d9ef">return</span> result;
     }
 
@@ -1200,8 +1200,8 @@
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Update(<span style="color:#66d9ef">int</span> id, CardInfo info)
     {
-        <span style="color:#66d9ef">var</span> condition = <span style="color:#66d9ef">this</span>._mapper.Map&lt;CardInfo, CardCondition&gt;(info);
-        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._cardRepository.Update(id, condition);
+        <span style="color:#66d9ef">var</span> condition = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;CardInfo, CardCondition&gt;(info);
+        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository.Update(id, condition);
         <span style="color:#66d9ef">return</span> result;
     }
 
@@ -1212,14 +1212,14 @@
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Delete(<span style="color:#66d9ef">int</span> id)
     {
-        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._cardRepository.Delete(id);
+        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository.Delete(id);
         <span style="color:#66d9ef">return</span> result;
     }
 }
 </code></pre></div><h3 id="實作-controller">實作 Controller</h3>
 <p>最後就是讓我們的 Controller 來接上 Service 的介面，把方法公開出去啦！</p>
 <p>同樣的也先放一下 Mappings：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ControllerMappings</span> : Profile
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ControllerMappings</span> : Profile
 {
     <span style="color:#66d9ef">public</span> ControllerMappings()
     {
@@ -1232,7 +1232,7 @@
     }
 }
 </code></pre></div><p>最後一樣把 Controller 的各方法補上：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 卡片管理
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e">/// &lt;seealso cref=&#34;Microsoft.AspNetCore.Mvc.ControllerBase&#34; /&gt;
@@ -1240,8 +1240,8 @@
 <span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
 </span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
 {
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IMapper _mapper;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardService _cardService;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IMapper <span style="color:#ae81ff">_</span>mapper;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardService <span style="color:#ae81ff">_</span>cardService;
 
     <span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 建構式
@@ -1251,8 +1251,8 @@
         <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
         	cfg.AddProfile&lt;ControllerMappings&gt;());
 
-        <span style="color:#66d9ef">this</span>._mapper = config.CreateMapper();
-        <span style="color:#66d9ef">this</span>._cardService = <span style="color:#66d9ef">new</span> CardService();
+        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper = config.CreateMapper();
+        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService = <span style="color:#66d9ef">new</span> CardService();
     }
 
     <span style="color:#75715e">/// &lt;summary&gt;
@@ -1264,13 +1264,13 @@
     <span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetList(
 <span style="color:#a6e22e">        [FromQuery]</span> CardSearchParameter parameter)
     {
-        <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>._mapper.Map&lt;
+        <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;
             CardSearchParameter, 
         	CardSearchInfo&gt;(parameter);
 
-        <span style="color:#66d9ef">var</span> cards = <span style="color:#66d9ef">this</span>._cardService.GetList(info);
+        <span style="color:#66d9ef">var</span> cards = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.GetList(info);
 
-        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._mapper.Map&lt;
+        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;
             IEnumerable&lt;CardResultModel&gt;,
         	IEnumerable&lt;CardViewModel&gt;&gt;(cards);
 
@@ -1292,9 +1292,9 @@
     <span style="color:#66d9ef">public</span> CardViewModel Get(
 <span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id)
     {
-        <span style="color:#66d9ef">var</span> card = <span style="color:#66d9ef">this</span>._cardService.Get(id);
+        <span style="color:#66d9ef">var</span> card = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.Get(id);
 
-        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._mapper.Map&lt;
+        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;
             CardResultModel,
         	CardViewModel&gt;(card);
 
@@ -1310,11 +1310,11 @@
     <span style="color:#66d9ef">public</span> IActionResult Insert(
 <span style="color:#a6e22e">        [FromBody]</span> CardParameter parameter)
     {
-        <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>._mapper.Map&lt;
+        <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;
             CardParameter,
         	CardInfo&gt;(parameter);
 
-        <span style="color:#66d9ef">var</span> isInsertSuccess = <span style="color:#66d9ef">this</span>._cardService.Insert(info);
+        <span style="color:#66d9ef">var</span> isInsertSuccess = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.Insert(info);
         <span style="color:#66d9ef">if</span> (isInsertSuccess)
         {
             <span style="color:#66d9ef">return</span> Ok();
@@ -1334,17 +1334,17 @@
 <span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id,
 <span style="color:#a6e22e">        [FromBody]</span> CardParameter parameter)
     {
-        <span style="color:#66d9ef">var</span> targetCard = <span style="color:#66d9ef">this</span>._cardService.Get(id);
+        <span style="color:#66d9ef">var</span> targetCard = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.Get(id);
         <span style="color:#66d9ef">if</span> (targetCard <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
         {
             <span style="color:#66d9ef">return</span> NotFound();
         }
 
-        <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>._mapper.Map&lt;
+        <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;
             CardParameter,
         	CardInfo&gt;(parameter);
 
-        <span style="color:#66d9ef">var</span> isUpdateSuccess = <span style="color:#66d9ef">this</span>._cardService.Update(id, info);
+        <span style="color:#66d9ef">var</span> isUpdateSuccess = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.Update(id, info);
         <span style="color:#66d9ef">if</span> (isUpdateSuccess)
         {
             <span style="color:#66d9ef">return</span> Ok();
@@ -1362,7 +1362,7 @@
     <span style="color:#66d9ef">public</span> IActionResult Delete(
 <span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id)
     {
-        <span style="color:#66d9ef">this</span>._cardService.Delete(id);
+        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.Delete(id);
         <span style="color:#66d9ef">return</span> Ok();
     }
 }
@@ -1427,7 +1427,7 @@
 <h2 id="小結">小結</h2>
 <p>本篇記錄了為什麼要分層，以及我個人平常開新專案的分層步驟。最後總結一下幾個點：</p>
 <ul>
-<li>分層是為了分離關注點。讓每一層的職責明確、專注在各自的工作</li>
+<li>分層是為了<strong>分離關注點</strong>。讓每一層的職責明確、專注在各自的工作</li>
 <li>分層帶來的好處：
 <ul>
 <li>修改時能更快鎖定目標、縮小範圍</li>
@@ -1445,10 +1445,10 @@
 </li>
 <li>常見的三層式架構：
 <ul>
-<li>展示層：負責和外部使用者互動</li>
-<li>商業邏輯層：負責處理商業規則和相關的邏輯處理</li>
-<li>資料存取層：負責存取資料的相關操作</li>
-<li>共用層：負責擴充方法等不屬於任何一層的共用模組</li>
+<li><strong>展示層</strong>：負責和外部使用者互動</li>
+<li><strong>商業邏輯層</strong>：負責處理商業規則和相關的邏輯處理</li>
+<li><strong>資料存取層</strong>：負責存取資料的相關操作</li>
+<li><strong>共用層</strong>：負責擴充方法等不屬於任何一層的共用模組</li>
 </ul>
 </li>
 <li>資料傳輸物件（DTO）
@@ -1493,6 +1493,7 @@
 <li><a href="/post/2021/05/newbie-4-swagger">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a></li>
 <li><a href="/post/2021/10/newbie-5-3-layer-architecture">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a></li>
 <li><a href="/post/2021/11/newbie-6-dependency-injection">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a></li>
+<li><a href="/post/2022/03/newbie-7-fluent-validation">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a></li>
 </ul>
                         </div>
 
@@ -1614,7 +1615,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -1627,6 +1628,14 @@
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -1660,14 +1669,6 @@
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -1690,7 +1691,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -1718,7 +1719,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

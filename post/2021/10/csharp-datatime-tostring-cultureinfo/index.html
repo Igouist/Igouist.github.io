@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -128,23 +128,23 @@
 <p>原來是呼叫失敗的人就是在這個 <code>DateTime.ToString()</code> 的過程中產生了中文字，使得目標 Api 無法將中文字轉換回 DateTime 而發生了錯誤。</p>
 <p>也就是說：<strong>同一行 DateTime.ToString() 在不同電腦執行竟然不一樣？！</strong></p>
 <p>為了讓我們更快了解狀況，現在就簡單地使用 Linqpad 進行測試：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
 {
     DateTime.Now.ToString().Dump();
 }
 </code></pre></div><p>首先，在我的 Windows 時間設定中，完整時間的格式為 <code>09:40:07</code> ，也就是 24 小時制。</p>
 <p>現在讓我們先執行上面這段語法看看：</p>
-<pre><code>// 2021/10/04 21:00:00
+<pre tabindex="0"><code>// 2021/10/04 21:00:00
 </code></pre><p>接著讓我們變更時間格式看看。</p>
 <p>以我的 Win10 為例，在 Windows 工具列，也就是畫面的右下角右鍵，選擇 <code>調整日期時間 → 日期時間格式設定 → 變更資料格式</code>，將時間格式變更為 <code>上午 09:40:07</code>。</p>
 <p>重新啟動 Linqpad 再執行如下：</p>
-<pre><code>// 2021/10/04 下午 09:00:00
+<pre tabindex="0"><code>// 2021/10/04 下午 09:00:00
 </code></pre><p>可以看到 <code>下午</code> 兩個字就蹦出來了！</p>
 <p>之所以會有這樣的差異，是因為 <code>DateTime.ToString()</code> 預設轉換的目標格式會是抓取目前執行緒的<strong>文化特性</strong>。</p>
 <h2 id="文化特性">文化特性</h2>
 <p>在 CSharp 中有個專門負責處理文化特性、地區設定等在地化處理的類別：<strong>CultureInfo</strong>。舉凡國家地區的資訊、時間日期的格式、字串的排序方式等等，都是它的工作。</p>
 <p>要取得當前的文化特性，我們可以使用 <code>CultureInfo.CurrentCulture</code>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">CultureInfo.CurrentCulture.Dump(); <span style="color:#75715e">// zh-TW
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">CultureInfo.CurrentCulture.Dump(); <span style="color:#75715e">// zh-TW
 </span></code></pre></div><p>可以看到我們目前的文化特性是 <code>zh-TW</code>，這個格式叫做 <a href="https://zh.wikipedia.org/wiki/IETF%E8%AA%9E%E8%A8%80%E6%A8%99%E7%B1%A4">IETF 語言標籤</a>，其中 <code>zh</code> 是指語言，<code>TW</code> 則是地區。例如說 <code>en-US</code> 就是「英語，美國」。</p>
 <blockquote>
 <p>補充：關於語言標籤，有需要查詢的朋友可以翻看看 <a href="http://www.i18nguy.com/unicode/language-identifiers.html">i18n 的 RFC 3066 表</a>。
@@ -164,7 +164,7 @@
 <h3 id="datetimeformat">DateTimeFormat</h3>
 <p><code>DateTimeFormat</code> 是用來放跟 <code>DateTime</code> 相關的設定值的，其中包含了該文化的日期時間的顯示格式。</p>
 <p>我們同樣用 Linqpad 看一下裡面有些什麼：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">CultureInfo.CurrentCulture.DateTimeFormat.Dump();
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">CultureInfo.CurrentCulture.DateTimeFormat.Dump();
 </code></pre></div><p><img src="https://i.imgur.com/P843qZ0.png" alt="Image"></p>
 <p>可以看到裡面包含了一年有哪些月份和名稱、一週有哪些日子和名稱，以及一堆時間格式。</p>
 <p>那一堆時間格式主要是對照 <a href="https://docs.microsoft.com/zh-tw/dotnet/standard/base-types/standard-date-and-time-format-strings">標準日期和時間格式字串</a> 的。</p>
@@ -173,7 +173,7 @@
 <p>關於這部分的欄位內容，可以參照 Vito 大大的 <a href="http://vito-note.blogspot.com/2012/03/blog-post_28.html#%E9%A1%AF%E7%A4%BA%E8%88%87%E6%96%87%E5%8C%96%E7%89%B9%E6%80%A7%E7%9B%B8%E9%97%9C%E7%9A%84%E8%B3%87%E8%A8%8A">使用文化特性</a> 這篇文章，裡面的整理已經相當詳細，供各位參考。</p>
 </blockquote>
 <p>現在讓我們用 <code>Thread.CurrentThread.CurrentCulture</code> 來更改當前執行緒的時間，並用完整日期時間模式（<code>&quot;F&quot;</code>）來測試看看：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> date = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2006</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>);
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> date = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2006</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>);
 
 Thread.CurrentThread.CurrentCulture = <span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;zh-tw&#34;</span>);
 date.ToString(<span style="color:#e6db74">&#34;F&#34;</span>).Dump(); <span style="color:#75715e">// 2006年1月2日 03:04:05
@@ -184,13 +184,13 @@ date.ToString(<span style="color:#e6db74">&#34;F&#34;</span>).Dump(); <span styl
 Thread.CurrentThread.CurrentCulture = <span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;en-us&#34;</span>);
 date.ToString(<span style="color:#e6db74">&#34;F&#34;</span>).Dump(); <span style="color:#75715e">// Monday, January 2, 2006 3:04:05 AM
 </span></code></pre></div><p>當然，在 ToString 的時候直接扔文化特性進去也是可以的：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> date = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2006</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>);
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> date = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2006</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>);
 
 date.ToString(<span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;zh-tw&#34;</span>)).Dump(); <span style="color:#75715e">// 2006/1/2 03:04:05
 </span><span style="color:#75715e"></span>date.ToString(<span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;zh-cn&#34;</span>)).Dump(); <span style="color:#75715e">// 2006/1/2 3:04:05
 </span><span style="color:#75715e"></span>date.ToString(<span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;en-us&#34;</span>)).Dump(); <span style="color:#75715e">// 1/2/2006 3:04:05 AM
 </span></code></pre></div><p>而本篇起因的翻船事件，我們可以試著觀察一下 <code>CultureInfo</code> 的預設曆法，也就是 <code>Calendar</code> 的內容：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
 {
 	CultureInfo.CurrentCulture.Calendar.Dump();
 	CultureInfo.CurrentUICulture.Calendar.Dump();
@@ -220,11 +220,11 @@ date.ToString(<span style="color:#66d9ef">new</span> CultureInfo(<span style="co
 <h3 id="numberformat">NumberFormat</h3>
 <p>除了日期格式以外，數值也是各個文化常常不同的部份。在 <code>CultureInfo</code> 中的 <code>NumberFormat</code> 就是用來處理數值相關的格式。</p>
 <p>我們同樣用 Linqpad 看一下裡面有些什麼：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">CultureInfo.CurrentCulture.NumberFormat.Dump();
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">CultureInfo.CurrentCulture.NumberFormat.Dump();
 </code></pre></div><p><img src="https://i.imgur.com/yqswJrJ.png" alt="Image"></p>
 <p>可以看見裡面包含了 <code>CurrencySymbol</code> 貨幣符號、<code>PercentSymbol</code> 百分比符號、<code>CurrencyNegativePattern</code> 貨幣負數格式 等等數值相關的設定。</p>
 <p>現在讓我們使用 <code>ToString(&quot;C&quot;)</code> 來指定轉換為貨幣格式，並且丟不同的文化特性進去看看吧：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> price = -<span style="color:#ae81ff">49.99</span>;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> price = -<span style="color:#ae81ff">49.99</span>;
 
 price.ToString(<span style="color:#e6db74">&#34;C&#34;</span>, <span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;zh-tw&#34;</span>)).Dump(); <span style="color:#75715e">// -NT$49.99
 </span><span style="color:#75715e"></span>price.ToString(<span style="color:#e6db74">&#34;C&#34;</span>, <span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;zh-cn&#34;</span>)).Dump(); <span style="color:#75715e">// ¥-49.99
@@ -240,7 +240,7 @@ price.ToString(<span style="color:#e6db74">&#34;C&#34;</span>, <span style="colo
 <p>讓我們看看文檔是怎麼說明的：「取得與文化特性無關的 (不變的) CultureInfo 物件」、「<strong>不區分文化特性的文化特性不區分文化特性</strong>」（也太饒舌）</p>
 <p>也就是說，只要使用約定好一起使用這組不變的文化特性，就可以保證大家的格式都是同一套囉。</p>
 <p>使用的時候可以 <code>CultureInfo.InvariantCulture</code> 或是直接 <code>new CultureInfo(&quot;&quot;)</code> 就可以取得這組不變的文化特性。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> culinfo = CultureInfo.InvariantCulture;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> culinfo = CultureInfo.InvariantCulture;
 
 <span style="color:#66d9ef">var</span> date = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2006</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>);
 date.ToString(culinfo).Dump(); <span style="color:#75715e">// 01/02/2006 03:04:05
@@ -360,7 +360,7 @@ price.ToString(<span style="color:#e6db74">&#34;C&#34;</span>, culinfo).Dump(); 
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -373,6 +373,14 @@ price.ToString(<span style="color:#e6db74">&#34;C&#34;</span>, culinfo).Dump(); 
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -406,14 +414,6 @@ price.ToString(<span style="color:#e6db74">&#34;C&#34;</span>, culinfo).Dump(); 
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -436,7 +436,7 @@ price.ToString(<span style="color:#e6db74">&#34;C&#34;</span>, culinfo).Dump(); 
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -464,7 +464,7 @@ price.ToString(<span style="color:#e6db74">&#34;C&#34;</span>, culinfo).Dump(); 
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

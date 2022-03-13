@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -147,7 +147,7 @@
 <p>如果有點進去看 Huli 大大的文章，尤其是 <a href="https://medium.com/@hulitw/learning-tcp-ip-http-via-sending-letter-5d3299203660">傳紙條</a> 那一篇的話，應該會察覺到在資料交換的過程中，最重要的一環就是建立共識，或者說是建立原則以降低溝通成本。</p>
 <p>Restful 想做的也是同一件事：只要大家都有一個制定路由的共識，就可以降低閱讀和維護成本。</p>
 <p>原先的 API 在路由的制定上並沒有什麼原則，幾乎就是看提供者爽怎麼訂就怎麼訂：</p>
-<pre><code>/api/create-order
+<pre tabindex="0"><code>/api/create-order
 /api/getProduct?id=1
 /api/productDetailByProductId
 </code></pre><p>但這樣就會造成額外的溝通成本。</p>
@@ -232,7 +232,7 @@
 <p>那麼補充就先到這裡。除了上面只列出了我個人平常比較常接觸的 HTTP 方法之外，其他還有 <code>HEAD</code>、<code>TRACE</code> 等等，有興趣的朋友可以再逛逛 MDN 的 <a href="https://developer.mozilla.org/zh-TW/docs/Web/HTTP/Methods">HTTP 請求方法</a>。</p>
 <p>現在我們大概知道了有這些 HTTP 方法可以使用，也因此已經將動作抽離出來了。接著就輪到我們要進行這些動作的「目標」了，這部份則要求：我們在制定路由的時候，應該從「<strong>資源</strong>」的角度下去考慮。</p>
 <p>這相當直覺，例如「新增 訂單」、「查詢 產品」這樣，我們動作後面接續的應該要是一個資源。從這個方式下去定的話，上面的範例應該就會變成：</p>
-<pre><code>POST /api/order
+<pre tabindex="0"><code>POST /api/order
 GET /api/product/1
 </code></pre><p>很明確就能夠看出<strong>意圖</strong>。這邊就讓我們來看看微軟的 <a href="https://docs.microsoft.com/zh-tw/azure/architecture/best-practices/api-design#define-operations-in-terms-of-http-methods">Web Api 設計</a> 文中的範例表格：</p>
 <table>
@@ -299,14 +299,14 @@ GET /api/product/1
 <p><img src="https://i.imgur.com/kdK0xo1.png" alt=""></p>
 <p>或者是可以直接參考 NotFalse 技術客的這篇 <a href="https://notfalse.net/39/http-message-format">HTTP/1.1 — 訊息格式 (Message Format)</a>，裡面對 HTTP 請求格式的各個部分上色並逐步講解的方式讓我蠻喜歡的，相當清楚。</p>
 <p>接著就讓我們來看一下訊息的格式，通常會分成三個比較主要的區塊：<strong>Start Line</strong>、<strong>Header</strong>、<strong>Body</strong>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-JSON" data-lang="JSON"><span style="color:#960050;background-color:#1e0010">HTTP/</span><span style="color:#ae81ff">1.1</span> <span style="color:#ae81ff">200</span> <span style="color:#960050;background-color:#1e0010">OK</span> <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Start</span> <span style="color:#960050;background-color:#1e0010">Line</span>
-
-<span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Header</span>
-<span style="color:#960050;background-color:#1e0010">Content-Type:</span> <span style="color:#960050;background-color:#1e0010">application/json;</span> <span style="color:#960050;background-color:#1e0010">charset=utf</span><span style="color:#ae81ff">-8</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-JSON" data-lang="JSON"><span style="color:#960050;background-color:#1e0010">HTTP/</span><span style="color:#ae81ff">1.1</span> <span style="color:#ae81ff">200</span> <span style="color:#960050;background-color:#1e0010">OK</span> <span style="color:#75715e">// Start Line
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// Header
+</span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">Content-Type:</span> <span style="color:#960050;background-color:#1e0010">application/json;</span> <span style="color:#960050;background-color:#1e0010">charset=utf</span><span style="color:#ae81ff">-8</span>
 <span style="color:#960050;background-color:#1e0010">Date:</span> <span style="color:#960050;background-color:#1e0010">Mon,</span> <span style="color:#ae81ff">26</span> <span style="color:#960050;background-color:#1e0010">Apr</span> <span style="color:#ae81ff">2021</span> <span style="color:#ae81ff">14</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">00</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">31</span> <span style="color:#960050;background-color:#1e0010">GMT</span>
 
-<span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Body</span>
-{
+<span style="color:#75715e">// Body
+</span><span style="color:#75715e"></span>{
   <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;nike&#34;</span>,
   <span style="color:#f92672">&#34;category&#34;</span>: <span style="color:#e6db74">&#34;shoes&#34;</span>
 }
@@ -320,11 +320,11 @@ GET /api/product/1
 <p>以寄信來舉例的話，Header 就像是外面的 寄信人、收件人等資訊，而 Body 則是裡面的信件內文。但要注意，一個訊息並不一定要有 Body，就像我們也可以只寄送明信片一樣。很常聽到的一個比喻就是：GET 就像明信片、POST 就像是包裹，中間就是需不需要附加 Body 的差別。</p>
 <p>當 GET 的時候，我們通常並不會用到 Body，如果有需要附上參數的話，GET 我們會放到 QueryString（就是接續在往指後面，常常見到的 ?a=1&amp;b=2 那串）。</p>
 <p>例如說取得產品列表，我們需要向 <code>/product</code> 發出 <code>GET</code> 請求，同時我們又只想要類別是鞋子、關鍵字為 Nike 的產品，那我們組出來的整個 URL 和 QueryString 可能就是這樣的：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-JSON" data-lang="JSON"><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">/product?category=shoes&amp;keyword=nike</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-JSON" data-lang="JSON"><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">/product?category=shoes&amp;keyword=nike</span>
 
 <span style="color:#960050;background-color:#1e0010">/*</span> <span style="color:#960050;background-color:#1e0010">這邊會有一些</span> <span style="color:#960050;background-color:#1e0010">Header</span> <span style="color:#960050;background-color:#1e0010">*/</span>
 </code></pre></div><p>其他的場景，例如 POST 時，如果有需要附上資料，我們通常會用到 Json 或 XML 之類的格式放到 Body 中。例如我們現在要新增一筆新的產品，是叫做 Nike 的鞋子，那可能就會附上：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-JSON" data-lang="JSON"><span style="color:#960050;background-color:#1e0010">POST</span> <span style="color:#960050;background-color:#1e0010">/product</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-JSON" data-lang="JSON"><span style="color:#960050;background-color:#1e0010">POST</span> <span style="color:#960050;background-color:#1e0010">/product</span>
 
 <span style="color:#960050;background-color:#1e0010">/*</span> <span style="color:#960050;background-color:#1e0010">這邊會有一些</span> <span style="color:#960050;background-color:#1e0010">Header</span> <span style="color:#960050;background-color:#1e0010">*/</span>
 
@@ -333,7 +333,7 @@ GET /api/product/1
   <span style="color:#f92672">&#34;category&#34;</span>: <span style="color:#e6db74">&#34;shoes&#34;</span>
 }
 </code></pre></div><p>如果是 XML 的話，可能就會是這樣表示：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-XML" data-lang="XML"><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-XML" data-lang="XML"><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
 <span style="color:#f92672">&lt;root&gt;</span>
   <span style="color:#f92672">&lt;name&gt;</span>nike<span style="color:#f92672">&lt;/name&gt;</span>
   <span style="color:#f92672">&lt;category&gt;</span>shoes<span style="color:#f92672">&lt;/category&gt;</span>
@@ -344,19 +344,19 @@ GET /api/product/1
 <p>備註：關於 JSON 如果不太了解的朋友，可以參閱 <a href="http://miniaspreading.github.io/guide-to-json/1-what-is-json.html">JSON精要讀書紀錄</a></p>
 </blockquote>
 <p>最後再複習一次，當我們呼叫一個 API 的時候，我們可能會送出一個 HTTP Request（請求）</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-JSON" data-lang="JSON"><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">/product/</span><span style="color:#ae81ff">1</span> <span style="color:#960050;background-color:#1e0010">HTTP/</span><span style="color:#ae81ff">1.1</span> <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Start</span> <span style="color:#960050;background-color:#1e0010">Line</span>
-
-<span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Header</span>
-<span style="color:#960050;background-color:#1e0010">user-agent:</span> <span style="color:#960050;background-color:#1e0010">Mozilla/</span><span style="color:#ae81ff">5.0</span> <span style="color:#960050;background-color:#1e0010">(Windows</span> <span style="color:#960050;background-color:#1e0010">NT</span> <span style="color:#ae81ff">10.0</span><span style="color:#960050;background-color:#1e0010">;</span> <span style="color:#960050;background-color:#1e0010">Win</span><span style="color:#ae81ff">64</span><span style="color:#960050;background-color:#1e0010">;</span> <span style="color:#960050;background-color:#1e0010">x</span><span style="color:#ae81ff">64</span><span style="color:#960050;background-color:#1e0010">)</span> <span style="color:#960050;background-color:#1e0010">//...其他一堆標頭</span>
-</code></pre></div><p>然後服務就會回給我們一個 HTTP Response（回應）</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-JSON" data-lang="JSON"><span style="color:#960050;background-color:#1e0010">HTTP/</span><span style="color:#ae81ff">1.1</span> <span style="color:#ae81ff">200</span> <span style="color:#960050;background-color:#1e0010">OK</span> <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Start</span> <span style="color:#960050;background-color:#1e0010">Line</span>
-
-<span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Header</span>
-<span style="color:#960050;background-color:#1e0010">Content-Type:</span> <span style="color:#960050;background-color:#1e0010">application/json;</span> <span style="color:#960050;background-color:#1e0010">charset=utf</span><span style="color:#ae81ff">-8</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-JSON" data-lang="JSON"><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">/product/</span><span style="color:#ae81ff">1</span> <span style="color:#960050;background-color:#1e0010">HTTP/</span><span style="color:#ae81ff">1.1</span> <span style="color:#75715e">// Start Line
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// Header
+</span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">user-agent:</span> <span style="color:#960050;background-color:#1e0010">Mozilla/</span><span style="color:#ae81ff">5.0</span> <span style="color:#960050;background-color:#1e0010">(Windows</span> <span style="color:#960050;background-color:#1e0010">NT</span> <span style="color:#ae81ff">10.0</span><span style="color:#960050;background-color:#1e0010">;</span> <span style="color:#960050;background-color:#1e0010">Win</span><span style="color:#ae81ff">64</span><span style="color:#960050;background-color:#1e0010">;</span> <span style="color:#960050;background-color:#1e0010">x</span><span style="color:#ae81ff">64</span><span style="color:#960050;background-color:#1e0010">)</span> <span style="color:#75715e">//...其他一堆標頭
+</span></code></pre></div><p>然後服務就會回給我們一個 HTTP Response（回應）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-JSON" data-lang="JSON"><span style="color:#960050;background-color:#1e0010">HTTP/</span><span style="color:#ae81ff">1.1</span> <span style="color:#ae81ff">200</span> <span style="color:#960050;background-color:#1e0010">OK</span> <span style="color:#75715e">// Start Line
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// Header
+</span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">Content-Type:</span> <span style="color:#960050;background-color:#1e0010">application/json;</span> <span style="color:#960050;background-color:#1e0010">charset=utf</span><span style="color:#ae81ff">-8</span>
 <span style="color:#960050;background-color:#1e0010">Date:</span> <span style="color:#960050;background-color:#1e0010">Mon,</span> <span style="color:#ae81ff">26</span> <span style="color:#960050;background-color:#1e0010">Apr</span> <span style="color:#ae81ff">2021</span> <span style="color:#ae81ff">14</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">00</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">31</span> <span style="color:#960050;background-color:#1e0010">GMT</span>
 
-<span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">Body</span>
-{
+<span style="color:#75715e">// Body
+</span><span style="color:#75715e"></span>{
   <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;nike&#34;</span>,
   <span style="color:#f92672">&#34;category&#34;</span>: <span style="color:#e6db74">&#34;shoes&#34;</span>
 }
@@ -491,7 +491,7 @@ GET /api/product/1
 <p>至於 <code>Controller</code> 的職責仍然沒有什麼變化，就是個第一線的交通警察。所以先前做過 MVC 的朋友大概會覺得比較親近一些吧。大概。</p>
 </blockquote>
 <p>這邊可以看到 <code>WeatherForecast.cs</code> 只是個用在 <code>WeatherForecastController</code> 的天氣資料類別。所以我們直接打開 <code>WeatherForecastController</code> 來觀察一下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
 <span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
 </span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WeatherForecastController</span> : ControllerBase
 {
@@ -501,11 +501,11 @@ GET /api/product/1
         <span style="color:#e6db74">&#34;Warm&#34;</span>, <span style="color:#e6db74">&#34;Balmy&#34;</span>, <span style="color:#e6db74">&#34;Hot&#34;</span>, <span style="color:#e6db74">&#34;Sweltering&#34;</span>, <span style="color:#e6db74">&#34;Scorching&#34;</span>
     };
 
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;WeatherForecastController&gt; _logger;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;WeatherForecastController&gt; <span style="color:#ae81ff">_l</span>ogger;
 
     <span style="color:#66d9ef">public</span> WeatherForecastController(ILogger&lt;WeatherForecastController&gt; logger)
     {
-        _logger = logger;
+        <span style="color:#ae81ff">_l</span>ogger = logger;
     }
 <span style="color:#a6e22e">
 </span><span style="color:#a6e22e">    [HttpGet]</span>
@@ -555,7 +555,7 @@ GET /api/product/1
 <p>現在應該會是這個樣子：</p>
 <p><img src="https://i.imgur.com/b6hcSaw.png" alt=""></p>
 <p>接著讓我們打開 <code>Card.cs</code>，加上卡片的各個欄位：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 卡片
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
@@ -578,20 +578,20 @@ GET /api/product/1
 </code></pre></div><p>完成卡片類別的建立之後，讓我們前往 <code>Controller</code>，新建一個 <code>CardController.cs</code>：</p>
 <p><img src="https://i.imgur.com/XRbNmT4.png" alt=""></p>
 <p>我們打開 <code>CardController.cs</code>。這個類別裡面現在應該是空空如也：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span>
 {
     <span style="color:#75715e">// 啥也沒有
 </span><span style="color:#75715e"></span>}
 </code></pre></div><p>接著我們就開始逐步施工吧（這邊的步驟可以去隔壁抄 <code>WeatherForecastController.cs</code> 也 OK 啦）</p>
 <p>首先，我們要先繼承 <code>ControllerBase</code> 取得控制器該有的方法和成員。接著，我們要加上 <code>[ApiController]</code> 的屬性給這個類別，讓他知道他現在負責搞 API 了。</p>
 <p>如果過程中跑出紅線的話，就按一下燈泡或用 <code>Alt + Enter</code> 把該 using 的東西給 using 進來。現在應該會像這樣：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
 {
     <span style="color:#75715e">// 啥也沒有
 </span><span style="color:#75715e"></span>}
 </code></pre></div><p>接著讓我們加上 <code>Route</code>，因為我們按照資源下去設計的話，<code>Route</code> 多半也是 <code>/card</code> 這樣子的路徑，因此我們繼續使用 <code>[Route(&quot;[controller]&quot;)]</code> 就可以了。如果各位要做的 API 資源在這邊需要客製化，再自己改成想要的字串即可。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
 <span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
 </span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
 {
@@ -601,28 +601,28 @@ GET /api/product/1
 <blockquote>
 <p>備註：我們會在下一個章節把這部分更改為連線資料庫去變更真正的資料，這邊就先用私有成員假裝一下唄。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
 <span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
 </span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
 {
     <span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 測試用的資料集合
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> List&lt;Card&gt; _cards = <span style="color:#66d9ef">new</span> List&lt;Card&gt;();
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> List&lt;Card&gt; <span style="color:#ae81ff">_</span>cards = <span style="color:#66d9ef">new</span> List&lt;Card&gt;();
 }
 </code></pre></div><p>這樣事前工作已經準備完畢了，讓我們來加上操作方法吧！</p>
 <p>首先先來一個查詢所有卡片的 Function，同樣用 <code>[HttpGet]</code> 來標明這是個 <code>GET</code> 方法，並且<strong>因為我們沒有特別指定路由，所以目前就是接著類別 <code>CardController</code> 的 <code>/card</code>，也就是 <code>GET /card</code></strong>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 查詢卡片列表
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
 </span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpGet]</span>
 <span style="color:#66d9ef">public</span> List&lt;Card&gt; GetList()
 {
-    <span style="color:#66d9ef">return</span> _cards;
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">_</span>cards;
 }
 </code></pre></div><p>然後讓我們加上一個單獨查詢單張卡片的方法：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 查詢卡片
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
@@ -631,7 +631,7 @@ GET /api/product/1
 <span style="color:#a6e22e">[Route(&#34;{id}&#34;)]</span>
 <span style="color:#66d9ef">public</span> Card Get([FromRoute] <span style="color:#66d9ef">int</span> id)
 {
-    <span style="color:#66d9ef">return</span> _cards.FirstOrDefault(card =&gt; card.Id == id);
+    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">_</span>cards.FirstOrDefault(card =&gt; card.Id == id);
 }
 </code></pre></div><p>可以注意到我們用 <code>Route</code> 來指定了這個方法的 URL，<strong>並且用 <code>{id}</code> 的方式告訴 API 說這一格是參數 <code>int id</code> 所在的位置</strong>。</p>
 <p>這樣的話這個方法的 Route 就會變成 <code>GET /card/1</code>（查詢 ID 為 1 的卡片） 這種感覺。實際使用的時候我們會很經常用 <code>{參數}</code> 這種方法來把參數加入到 Route 並制定 Function 對應的 URL，以此達到符合 Restful 的感覺。</p>
@@ -642,7 +642,7 @@ GET /api/product/1
 </blockquote>
 <p>接著讓我們加入新增卡片，還有編輯卡片的方法吧，在這之前我們先建立一個 <code>Parameter</code> 資料夾，用來放一些傳入的參數，並且新增一個 <code>CardParameter</code> 來當作我們新增和修改卡片的參數類別：</p>
 <p><img src="https://i.imgur.com/fiqBwZM.png" alt=""></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 卡片參數
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardParameter</span>
@@ -663,7 +663,7 @@ GET /api/product/1
 <p>基本上就像即使是同一張表，我們也會根據顯示的狀況來製作成不同的 <code>ViewModel</code> 一樣，我們也會根據傳入的狀況來決定 <code>Parameter</code> 的範圍。這個部份我們會在分層架構的時候再介紹一次，現在只要大致有<strong>可以把「顯示用類別」和「參數用類別」拆成不同的類別來進行出入口管制</strong>的概念就可以。</p>
 </blockquote>
 <p>建立完參數之後，我們就可以回到 <code>CardController</code> 來加上新增和更新的方法：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 新增卡片
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
@@ -671,10 +671,10 @@ GET /api/product/1
 </span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpPost]</span>
 <span style="color:#66d9ef">public</span> IActionResult Insert([FromBody] CardParameter parameter)
 {
-    _cards.Add(<span style="color:#66d9ef">new</span> Card
+    <span style="color:#ae81ff">_</span>cards.Add(<span style="color:#66d9ef">new</span> Card
     {
-        Id = _cards.Any() 
-          ? _cards.Max(card =&gt; card.Id) + <span style="color:#ae81ff">1</span>
+        Id = <span style="color:#ae81ff">_</span>cards.Any() 
+          ? <span style="color:#ae81ff">_</span>cards.Max(card =&gt; card.Id) + <span style="color:#ae81ff">1</span>
           : <span style="color:#ae81ff">0</span>, <span style="color:#75715e">// 臨時防呆，如果沒東西就從 0 開始
 </span><span style="color:#75715e"></span>        Name = parameter.Name,
         Description = parameter.Description
@@ -695,7 +695,7 @@ GET /api/product/1
 <span style="color:#a6e22e">    [FromRoute]</span> <span style="color:#66d9ef">int</span> id,
 <span style="color:#a6e22e">    [FromBody]</span> CardParameter parameter)
 {
-    <span style="color:#66d9ef">var</span> targetCard = _cards.FirstOrDefault(card =&gt; card.Id == id);
+    <span style="color:#66d9ef">var</span> targetCard = <span style="color:#ae81ff">_</span>cards.FirstOrDefault(card =&gt; card.Id == id);
     <span style="color:#66d9ef">if</span> (targetCard <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
     {
         <span style="color:#66d9ef">return</span> NotFound();
@@ -710,7 +710,7 @@ GET /api/product/1
 <p>聰明的朋友看 return 的方法名稱應該已經猜到了，這就是我們前面提過的 <a href="#%E9%97%9C%E6%96%BC-http-status-code">HTTP Status</a>。當然前面查詢成功的時候和這邊的 <code>Ok()</code> 一樣是 <code>200</code> 的狀態，此外還有代表 <code>400</code> 的 <code>BadRequest()</code>、代表 <code>404</code> 的 <code>NotFound()</code> 等等。</p>
 <p>除此之外，我們也不是每次都會回傳 <code>IActionResult</code>，可能也會是自訂的錯誤型別等等，所以也看過使用 <code>Response.StatusCode</code> 來直接設定 Http Status Code 的做法，例如 <code>Response.StatusCode = 200;</code> 之後再進行回傳的做法，各位再視情況使用吧。</p>
 <p>現在 CRUD 四大天王，我們已經只剩下 D 了，現在就來把刪除卡片的方法補上吧：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 刪除卡片
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
@@ -719,18 +719,18 @@ GET /api/product/1
 <span style="color:#a6e22e">[Route(&#34;{id}&#34;)]</span>
 <span style="color:#66d9ef">public</span> IActionResult Delete([FromRoute] <span style="color:#66d9ef">int</span> id)
 {
-    _cards.RemoveAll(card =&gt; card.Id == id);
+    <span style="color:#ae81ff">_</span>cards.RemoveAll(card =&gt; card.Id == id);
     <span style="color:#66d9ef">return</span> Ok();
 }
 </code></pre></div><p>這樣四大天王（包含查詢列表通常是五個）就到齊了，現在的 <code>CardController</code> 應該是長這樣的：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
 <span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
 </span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
 {
     <span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 測試用的資料集合
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> List&lt;Card&gt; _cards = <span style="color:#66d9ef">new</span> List&lt;Card&gt;();
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> List&lt;Card&gt; <span style="color:#ae81ff">_</span>cards = <span style="color:#66d9ef">new</span> List&lt;Card&gt;();
 
     <span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片列表
@@ -739,7 +739,7 @@ GET /api/product/1
 </span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpGet]</span>
     <span style="color:#66d9ef">public</span> List&lt;Card&gt; GetList()
     {
-        <span style="color:#66d9ef">return</span> _cards;
+        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">_</span>cards;
     }
 
     <span style="color:#75715e">/// &lt;summary&gt;
@@ -751,7 +751,7 @@ GET /api/product/1
 <span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
     <span style="color:#66d9ef">public</span> Card Get([FromRoute] <span style="color:#66d9ef">int</span> id)
     {
-        <span style="color:#66d9ef">return</span> _cards.FirstOrDefault(card =&gt; card.Id == id);
+        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">_</span>cards.FirstOrDefault(card =&gt; card.Id == id);
     }
 
     <span style="color:#75715e">/// &lt;summary&gt;
@@ -762,10 +762,10 @@ GET /api/product/1
 </span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpPost]</span>
     <span style="color:#66d9ef">public</span> IActionResult Insert([FromBody] CardParameter parameter)
     {
-        _cards.Add(<span style="color:#66d9ef">new</span> Card
+        <span style="color:#ae81ff">_</span>cards.Add(<span style="color:#66d9ef">new</span> Card
         {
-            Id = _cards.Any() 
-                ? _cards.Max(card =&gt; card.Id) + <span style="color:#ae81ff">1</span>
+            Id = <span style="color:#ae81ff">_</span>cards.Any() 
+                ? <span style="color:#ae81ff">_</span>cards.Max(card =&gt; card.Id) + <span style="color:#ae81ff">1</span>
                 : <span style="color:#ae81ff">0</span>, <span style="color:#75715e">// 臨時防呆，如果沒東西就從 0 開始
 </span><span style="color:#75715e"></span>            Name = parameter.Name,
             Description = parameter.Description
@@ -786,7 +786,7 @@ GET /api/product/1
 <span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id,
 <span style="color:#a6e22e">        [FromBody]</span> CardParameter parameter)
     {
-        <span style="color:#66d9ef">var</span> targetCard = _cards.FirstOrDefault(card =&gt; card.Id == id);
+        <span style="color:#66d9ef">var</span> targetCard = <span style="color:#ae81ff">_</span>cards.FirstOrDefault(card =&gt; card.Id == id);
         <span style="color:#66d9ef">if</span> (targetCard <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
         {
             <span style="color:#66d9ef">return</span> NotFound();
@@ -807,7 +807,7 @@ GET /api/product/1
 <span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
     <span style="color:#66d9ef">public</span> IActionResult Delete([FromRoute] <span style="color:#66d9ef">int</span> id)
     {
-        _cards.RemoveAll(card =&gt; card.Id == id);
+        <span style="color:#ae81ff">_</span>cards.RemoveAll(card =&gt; card.Id == id);
         <span style="color:#66d9ef">return</span> Ok();
     }
 }
@@ -818,28 +818,28 @@ GET /api/product/1
 </blockquote>
 <p>讓我們打開 Powershell，繼續使用 <code>Invoke-RestMethod</code> 來呼叫 API 試試看，別忘了 Port 要換成你啟動專案時 IIS 掛上去的 Port</p>
 <p>首先讓我們新增一張卡片：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card `
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card `
  -Method <span style="color:#e6db74">&#39;POST&#39;</span> `
  -Headers @{ <span style="color:#e6db74">&#34;Content-Type&#34;</span> = <span style="color:#e6db74">&#34;application/json&#34;</span>; } `
  -Body <span style="color:#e6db74">&#34;{</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">name</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">: </span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">mycard</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">,</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">description</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">: </span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">sample card</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">}&#34;</span>
 </code></pre></div><p>接著讓我們查詢看看所有卡片，看看新增的卡片在不在：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card | ConvertTo-Json
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card | ConvertTo-Json
 </code></pre></div><p><img src="https://i.imgur.com/IvHYdZR.png" alt=""></p>
 <p>既然卡片已經存在了，讓我們試試看編輯，把「我的卡片」改成「我們的卡片」，<del>打倒富農份子</del>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card/0 `
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card/0 `
  -Method <span style="color:#e6db74">&#39;PUT&#39;</span> `
  -Headers @{ <span style="color:#e6db74">&#34;Content-Type&#34;</span> = <span style="color:#e6db74">&#34;application/json&#34;</span>; } `
  -Body <span style="color:#e6db74">&#34;{</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">name</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">: </span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">ourcard</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">,</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">description</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">: </span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">sample card</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">}&#34;</span>
 </code></pre></div><p>並且用查詢單張卡片的方式來查詢卡片資料：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card/0 | ConvertTo-Json
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card/0 | ConvertTo-Json
 </code></pre></div><p><img src="https://i.imgur.com/FjFHdSt.png" alt=""></p>
 <p>如果編輯的卡片不存在，會噴出 404：</p>
 <p><img src="https://i.imgur.com/j6Dom6l.png" alt=""></p>
 <p>最後讓我們來試試刪除：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card/0 `
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card/0 `
  -Method <span style="color:#e6db74">&#39;DELETE&#39;</span>
 </code></pre></div><p>然後同樣使用查詢全部，應該要沒有任何卡片了：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card | ConvertTo-Json
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span>44304/card | ConvertTo-Json
 </code></pre></div><p><img src="https://i.imgur.com/0WNEkAm.png" alt=""></p>
 <p>到這邊就確認我們的 API 服務（也就是基本的 CRUD）已經 ON 起來啦！</p>
 <hr>
@@ -865,6 +865,7 @@ GET /api/product/1
 <li><a href="/post/2021/05/newbie-4-swagger">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a></li>
 <li><a href="/post/2021/10/newbie-5-3-layer-architecture">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a></li>
 <li><a href="/post/2021/11/newbie-6-dependency-injection">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a></li>
+<li><a href="/post/2022/03/newbie-7-fluent-validation">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a></li>
 </ul>
 <h2 id="參考資料">參考資料</h2>
 <ul>
@@ -995,7 +996,7 @@ GET /api/product/1
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -1008,6 +1009,14 @@ GET /api/product/1
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -1041,14 +1050,6 @@ GET /api/product/1
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -1071,7 +1072,7 @@ GET /api/product/1
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -1099,7 +1100,7 @@ GET /api/product/1
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

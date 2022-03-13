@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -144,22 +144,22 @@
 <p>就像大話設計模式比喻的：物件就像間房子，我們不希望被看光光，可以看見的 <code>Public</code> 就像門和窗，而不該看見的 <code>Private</code> 則是用牆壁隱藏起來，而對於這間房子而言，門窗是可以控制的。</p>
 <p>對於這部分的範例，我覺得 <a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/using-properties">微軟文件的範例</a> 裡設定月份的區塊已經能很清楚表達了。但為了這篇文章的一致性，還是硬擠著一個範例出來：</p>
 <p>某一天，我們突然決定讓使用者可以傳入卡牌敘述了，但是卡牌上能顯示的字數有限，只能顯示 30 個字，因此首先我們先把卡牌敘述改成私有的：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name;
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Level;
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack;
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> _description; <span style="color:#75715e">// 更改為私有的
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> <span style="color:#ae81ff">_d</span>escription; <span style="color:#75715e">// 更改為私有的
 </span><span style="color:#75715e"></span>
     <span style="color:#75715e">/* 一些其他方法 */</span>
 }
 </code></pre></div><p>呃可能第一步就會讓人有些疑惑：「啊你要給人家傳東西進來還改私有？」但等等，且聽我娓娓道來：<strong>C# 中的屬性，是用 <code>Set</code> 和 <code>Get</code> 兩個方法去存取的</strong>，又稱做<a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/restricting-accessor-accessibility">存取子</a>。這兩個看門仔也就擔當了房屋的門窗、出入境時的海關、古代大戰中的關隘這類「控制進出通道」的角色。</p>
 <p>現在讓我們試著規劃出我們的門和窗，在上面的例子中，我們想要當卡牌的敘述進來時，保持在 30 個字：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
 {
     <span style="color:#75715e">// 略
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> _description;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> <span style="color:#ae81ff">_d</span>escription;
 
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description
     {
@@ -167,7 +167,7 @@
         {
             <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">value</span>.Length &gt; <span style="color:#ae81ff">0</span> &amp;&amp; <span style="color:#66d9ef">value</span>.Length &lt; <span style="color:#ae81ff">30</span>)
             {
-                <span style="color:#66d9ef">this</span>._description = <span style="color:#66d9ef">value</span>;
+                <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_d</span>escription = <span style="color:#66d9ef">value</span>;
             }
             <span style="color:#66d9ef">else</span>
             {
@@ -176,7 +176,7 @@
         }
         <span style="color:#66d9ef">get</span>
         {
-            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>._description;
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_d</span>escription;
         }
     }
     <span style="color:#75715e">/* 一些其他方法 */</span>
@@ -185,7 +185,7 @@
 <p>那可能有些朋友會有疑惑：那為什麼我不能直接對外開放卡牌敘述，然後修改的時候檢查完再傳進來 set 就好了呢？這個就牽涉到一些「改太多地方了我要死啦」的悲情故事，這邊再舉個例子給大家體會一下。</p>
 <p>例如說，我們的卡片現在加入了戰力指數系統，這個戰力是預先從卡片的各項資訊計算好，並存放在資料庫的，並且因為計算的關係可能有小數點後十位之類的，那我們拿出來的時候可能會長這樣：<code>Power: 99.256256</code></p>
 <p>而在建立類別的時候，也很自然地選用了 <code>double</code> 來處理，於是現在類別就長這樣：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Power;
 }
@@ -193,26 +193,26 @@
 <p>假設我們又因為一些原因並不打算直接修改從資料表取出來時的數值，又或者是已經改了然後被前輩電，因為記 Log 或是什麼戰力對決(?)功能還會需要用到原本的戰力數值，因此物件存放的戰力數值必須和資料表中的一致等等</p>
 <p>如果先前直接開放存取，那麼這下子要改的地方就變成「所有使用到這個屬性的地方」，再要是當場看到 Visual Studio 上面寫：<code>99 個參考</code>，那可能當場整個腦子就直接下班了。</p>
 <p>但如果我們是使用 <code>get</code> 和 <code>set</code> 的方式去處理的話，那麼我們只需要修改 <code>get</code> 存取子的規則，讓它讀取的時候幫忙四捨五入到小數點第二位就好了：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
 {   
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">double</span> _power;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">double</span> <span style="color:#ae81ff">_</span>power;
     
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Power 
     { 
-        <span style="color:#66d9ef">set</span> { <span style="color:#66d9ef">this</span>._power = <span style="color:#66d9ef">value</span>; } 
-        <span style="color:#66d9ef">get</span> { <span style="color:#66d9ef">return</span> Math.Round(<span style="color:#66d9ef">this</span>._power, <span style="color:#ae81ff">2</span>);}
+        <span style="color:#66d9ef">set</span> { <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>power = <span style="color:#66d9ef">value</span>; } 
+        <span style="color:#66d9ef">get</span> { <span style="color:#66d9ef">return</span> Math.Round(<span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>power, <span style="color:#ae81ff">2</span>);}
     }
 }
 </code></pre></div><p>這樣應該就能看出使用 <code>get</code> 和 <code>set</code> 去把攔位封裝起來的好處了，也就是：<strong>把「資料進出時加以處理的主導權」留在物件本身</strong>。</p>
 <p>而在 C# 裡，如果你並沒有（或是說「還沒有」）要特別針對存取另做額外處理，可以直接使用<strong>自動實作</strong>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">set</span>; <span style="color:#66d9ef">get</span>; }
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">set</span>; <span style="color:#66d9ef">get</span>; }
 </code></pre></div><p>這樣實際上就會自動幫你建立一個私有屬性，並且只能經由這個公開屬性的 <code>set</code> 和 <code>get</code> 進行存取。</p>
 <p>藉由自動實作來簡化寫法之後，例如唯讀就可以這樣寫：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; }
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; }
 </code></pre></div><p>或是</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">set</span>; }
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">set</span>; }
 </code></pre></div><p>使用自動實作時，若要加上預設值的話請這樣寫</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; } = <span style="color:#e6db74">&#34;這是一張卡牌。&#34;</span>;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; } = <span style="color:#e6db74">&#34;這是一張卡牌。&#34;</span>;
 </code></pre></div><p>可以說是方便很多。將來如果要針對設值給值的地方進行修改，也會比較方便一點。</p>
 <p>稍微了解了上面提到的存取範圍、存取子、自動實作這些工具之後，現在，我們就可以決定外部的使用者能看到物件的哪些部份了。</p>
 <h2 id="隱藏複雜度">隱藏複雜度</h2>
@@ -223,8 +223,8 @@
 <p>兩個物件之間「知道」得越多，其耦合就越高。替換和修改時互相牽連的機會和規模也越大，因此封裝可以說是物件導向的基石也不為過。封裝的好或不好（亦即物件是否足夠內聚，其職責是否單一，暴露內部資訊的多寡等等），直接關係到整個架構的優劣，不可謂不慎。</p>
 <blockquote>
 <p>補充：封裝的核心在於「隱藏複雜資訊」。而我們前段所提到需要注意的幾個部份：</p>
-<p>「物件是否內聚」可以參照 <a href="post/2020/09/oo-8-cohesion-and-coupling">菜雞與物件導向 (8): 內聚、耦合</a></p>
-<p>「職責是否單一」可以參照 <a href="/post/2020/09/oo-9-single-responsibility-principle">菜雞與物件導向 (10): 單一職責原則</a></p>
+<p>「物件是否內聚」可以參照 <a href="/post/2020/09/oo-8-cohesion-and-coupling">菜雞與物件導向 (8): 內聚、耦合</a></p>
+<p>「職責是否單一」可以參照 <a href="/post/2020/10/oo-10-single-responsibility-principle">菜雞與物件導向 (10): 單一職責原則</a></p>
 <p>這些概念之間彼此相扣，此處就先按下不表。</p>
 </blockquote>
 <p>封裝的部分就講到這裡，並不是很難理解，但是要封裝得好，或是說知道怎樣才算封裝得好，還是需要經驗，不是我這種菜雞一時半刻能理得白說得清的。這邊只能先把紀錄的重點放在存取範圍的控制，接著我們就繼續來看 <a href="/post/2020/07/oo-4-inheritance">繼承</a> 吧。</p>
@@ -362,7 +362,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -375,6 +375,14 @@
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -408,14 +416,6 @@
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -438,7 +438,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -466,7 +466,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

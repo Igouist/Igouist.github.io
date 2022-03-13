@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -99,6 +99,43 @@
                     
 
                     
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2022-3-13,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/3bxkWWn.png" alt="Image"></p>
+<p>這是俺整理公司新訓內容的第七篇文章，目標是紀錄 Fluent Validation 這個好用套件。</p>
+<p><strong>Fluent Validation 可以幫我們將 Api 傳入的參數的檢查用更口語、更乾淨的方式去處理</strong>，除了可以將檢查邏輯拆分成單獨的 Validator 類別，更提供了許多內建的檢查規則和自訂的彈性，相當方便。</p>
+<p>藉由使用 Fluent Validation 來管理參數的檢查邏輯，就可以和 Controller 本身的工作做簡單的拆分，達到關注點分離的目標。現在就讓我們來認識一下 Fluent Validation 吧。</p>
+<h2 id="前言">前言</h2>
+<p>西元前的某一天，憂心的皇帝在朝堂內繞著柱子走，突然大臣奪門而入。</p>
+<p>大臣：「陛下！敵軍已經攻到國境內啦！」</p>
+<p>皇帝大驚：『邊境的那些檢查站和關口難道都陷落了嗎？不可能！』</p>
+<p>大臣：「陛下，有內奸和敵國勾結，檢查站完全沒檢查！髒資料已經闖進來了！」</p>
+<p>皇帝喊了一聲：『怎麼可能！讓朕看看！』就打開 Controller 和前一個專案的 Git Log，這一看差點就昏了過去。</p>
+<p>原來 Controller 的舊程式碼就已經很亂了，檢查參數的條件 if/else 和其他呼叫的方法、組裝資料都雜在一起。結果這次專案改動時，某一行就被內奸改壞了，關鍵的參數竟然沒檢查到！</p>
+<p>『可，可惡！來人啊，把工程師推出午門斬首！』</p>
+<p>「皇上！他已經離職啦！」</p>
+<p>皇帝跌坐在地，懊悔地說：『如果當初有好好把檢查參數跟實際組資料的部份都拆開的話，也許就不會這樣了…』</p>
+<p>「是啊，如果我們有用 Fluent Validation…！」</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
                         
                             <article class="post">
                                 <header>
@@ -463,51 +500,6 @@
                             </article>
                             <hr color="#D9D9D9" />
                         
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle/">菜雞與物件導向 (14): 依賴反轉原則</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2020-12-13,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a>
-                                    
-                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <p><img src="https://i.imgur.com/ywiHuis.png" alt=""></p>
-<p>在聊依賴反轉之前，先讓我們聊聊什麼是依賴，所謂的依賴就是一種「受到某個東西影響、牽制」的狀態。例如說如果有個像我一樣的肥宅每天一定要來一片雞排才能療癒身心，那我就是依賴雞排；同樣的，如果有個大叔不抽菸就會全身不舒服，就是對香菸有所依賴。當有「必須要藉由某個人事物來達到目的」的狀況時，就是依賴。</p>
-<p>而在程式設計裡面的概念也差不多，如果<strong>Ａ模組直接受到Ｂ模組的影響，我們就稱Ａ依賴了Ｂ</strong>，最明顯的狀況就是Ａ模組需要藉由Ｂ模組的實例來完成某個功能的時候，例如「匯出報表」功能建立了一個「Excel 控制類別」的實例以建立檔案；或是「會員查詢」功能建立了一個「DB 連線」的實例來進入資料庫取得會員資料，諸如此類由Ａ模組直接藉由Ｂ模組的實例來完成想要的動作，就是依賴。</p>
-<h2 id="依賴與耦合">依賴與耦合</h2>
-<p>我們在之前的 <a href="/post/2020/09/oo-8-cohesion-and-coupling">耦合篇</a> 提過，如果模組和另一個模組之間有關連，那這兩者之間就耦合。以此來看，依賴就是一種耦合的關係，那麼，依賴是健康還是不健康的耦合呢？</p>
-<p>現在讓我們用 <a href="/post/2020/07/oo-5-polymorphism">多型篇</a> 用過的「老闆徵工程師」的例子來舉例一下：現在有間小小公司，老闆請來了小明當工程師，並請他開工撰寫產品程式碼。</p>
-<p>當「撰寫產品程式」對「工程師」直接依賴的時候，狀況可能是這樣的：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
-{
-    Ming programmer = <span style="color:#66d9ef">new</span> Ming();
-    <span style="color:#66d9ef">var</span> product = programmer.Programming();
-    <span style="color:#66d9ef">return</span> product;
-}
-</code></pre></div><p>過一陣子，老闆發現小明寫出來的東西似乎不太行，於是把小明趕走，另外請了小華。這時候因為「工程師」這個實作類別不一樣了，我們就必須要改一次程式碼：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
-{
-    Hua programmer = <span style="color:#66d9ef">new</span> Hua();
-    <span style="color:#66d9ef">var</span> product = programmer.Programming();
-    <span style="color:#66d9ef">return</span> product;
-}
-</code></pre></div>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
                     
 
                     
@@ -564,7 +556,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -577,6 +569,14 @@
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -610,14 +610,6 @@
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -640,7 +632,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -668,7 +660,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

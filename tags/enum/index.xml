@@ -6,11 +6,7 @@
     <description>Recent content in Enum on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Sun, 14 Jun 2020 21:27:00 +0800</lastBuildDate>
-    
-	<atom:link href="https://igouist.github.io/tags/enum/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 14 Jun 2020 21:27:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/tags/enum/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>C#: 位元旗標 (Bit flag) 與列舉</title>
       <link>https://igouist.github.io/post/2020/06/bit-flags-and-enum/</link>
@@ -20,7 +16,7 @@
       <description>&lt;p&gt;前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。&lt;/p&gt;
 &lt;p&gt;平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告個 Boolean 來處理。但這次遇到的是同時有多個「有／沒有」的狀況，但我遇到的程式碼並沒有分成多個 Bool 去做處理，而是直接儲存成一個數值。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;由於「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列的話，就只需要一個數字就可以紀錄或傳遞給其他系統了&lt;/strong&gt;。例如最常見的用處是在權限系統，若有「讀」、「寫」、「執行」等權限，那麼我們按照這個順序去排列，當 &lt;code&gt;讀＝可、寫＝不可、執行＝可&lt;/code&gt; 的時候，就記做 &lt;code&gt;101&lt;/code&gt; = &lt;code&gt;5&lt;/code&gt;。這種直接用一組位元表示狀態的方式就叫做&lt;strong&gt;位元旗標（Bit flag）&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;1 讀   = 可
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;1 讀   = 可
 0 寫   = 不可
 1 執行 = 可
 
@@ -30,7 +26,7 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。&lt;/p&gt;
 &lt;h2 id=&#34;enum--flags&#34;&gt;Enum &amp;amp; Flags&lt;/h2&gt;
 &lt;p&gt;在 C# 中已經有方便的工具可以處理數字列表，我們可以建立一個叫做 SkillEnum 的&lt;strong&gt;列舉（Enum）&lt;/strong&gt;，並且按照上面說明的，將老闆提到的每個技能各自用一個位元來表示。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[Flags]&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[Flags]&lt;/span&gt;
 &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;enum&lt;/span&gt; SkillEnum
 {
     C = &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,     &lt;span style=&#34;color:#75715e&#34;&gt;// 0001
@@ -43,7 +39,7 @@
 &lt;p&gt;只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用 ToString() 也能更方便看見旗標內容&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;有了這個列舉之後，我們就可以&lt;strong&gt;表達不同排列組合的狀況&lt;/strong&gt;了。例如：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;* C: C
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;* C: C
 * P: PHP
 * S: SQL
 * J: Java

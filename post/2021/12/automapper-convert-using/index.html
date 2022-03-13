@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -120,7 +120,7 @@
                         <div class="post-content">
                             <p>從朋友那兒聽到了用 <a href="/post/2020/07/automapper">AutoMapper</a> 把串列成員物件攤平成一組串列的問題，發現了 <strong>ConvertUsing</strong> 的好用，這邊就紀錄一下。</p>
 <p>事情是這樣的，首先有一個 <code>Parent</code> 類別，其中包含著兩個成員：<code>Id</code> 和串列的 <code>Child</code> 類別，而 <code>Child</code> 類別則只有一個成員 <code>Val</code>，如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Parent</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Parent</span>
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
     <span style="color:#66d9ef">public</span> IEnumerable&lt;Child&gt; Children { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
@@ -131,14 +131,14 @@
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
 }
 </code></pre></div><p>另外還有一個 <code>Target</code> 類別，包含 <code>Id</code> 和 <code>Val</code> 兩個成員：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Target</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Target</span>
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
 }
 </code></pre></div><p>現在的目標是：<strong>將一個有著 Child 串列的 Parent 映射成 Target 串列</strong>。</p>
 <p>也就是說，假設我們的來源是這樣子：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> boo = <span style="color:#66d9ef">new</span> Parent
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> boo = <span style="color:#66d9ef">new</span> Parent
 {
     Id = <span style="color:#ae81ff">1</span>,
     Children = <span style="color:#66d9ef">new</span> List&lt;Child&gt;
@@ -148,7 +148,7 @@
     }
 };
 </code></pre></div><p>希望可以變成這樣子：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> expect = <span style="color:#66d9ef">new</span> List&lt;Target&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> expect = <span style="color:#66d9ef">new</span> List&lt;Target&gt;
 {
     <span style="color:#66d9ef">new</span> Target { Id = <span style="color:#ae81ff">1</span>, Val = <span style="color:#ae81ff">1</span> },
     <span style="color:#66d9ef">new</span> Target { Id = <span style="color:#ae81ff">1</span>, Val = <span style="color:#ae81ff">2</span> },
@@ -157,7 +157,7 @@
 <p>這次和朋友討論時，提到了另一個角度：雖然這樣的做法相當直覺快速，但其實並不能保證後續維護的人使用這組 Mappings 時，都知道這裡要補資料；況且此處的對應關係的確是 <code>Parent</code> 到 <code>List&lt;Target&gt;</code>，並非 <code>Child</code> 到 <code>Target</code> 而已，直覺上就怪怪的。若要解決這個問題，可能就要再包裝一層，把 Mapper 隔離出去做個轉換器之類的。</p>
 <p>但想想又覺得 AutoMapper 不可能沒提供這個場景能使用的方法才對，最後餵狗發現 <strong>AutoMapper 確實有提供 <code>ConvertUsing</code> 來讓我們客製化轉換過程</strong>，這邊就紀錄一下。</p>
 <p>在我們註冊映射關係的時候，可以用 <code>ConvertUsing</code> 來直接定義轉換的過程。以這個例子來說，就可以：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
 {
     cfg
         .CreateMap&lt;Parent, IEnumerable&lt;Target&gt;&gt;()
@@ -171,7 +171,7 @@
 <p>註冊後就可以順利進行轉換了，讓我們直接用 Linqpad 試試：</p>
 <p><img src="https://i.imgur.com/pUSarcn.png" alt="Image"></p>
 <p>如果是比較複雜的狀況，也可以用實作<a href="(https://dotblogs.com.tw/supershowwei/2019/04/22/160442)">型別轉換器</a>（<code>ITypeConverter</code>）的方式來處理。以這個例子來說，就可以：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// c實作從 Parent 轉換到 IEnumerable&lt;Target&gt; 的 ITypeConverter
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// c實作從 Parent 轉換到 IEnumerable&lt;Target&gt; 的 ITypeConverter
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ParentToTargetsTypeConverter</span> : ITypeConverter&lt;Parent, IEnumerable&lt;Target&gt;&gt;
 {
     <span style="color:#75715e">// 轉換方法本體
@@ -189,7 +189,7 @@
     }
 }
 </code></pre></div><p>接著再把轉換器註冊到 <code>ConvertUsing</code> 上，丟實體或是泛型都行：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
 {
         <span style="color:#75715e">//cfg
 </span><span style="color:#75715e"></span>        <span style="color:#75715e">//    .CreateMap&lt;Parent, IEnumerable&lt;Target&gt;&gt;()
@@ -205,7 +205,7 @@
 <p><img src="https://i.imgur.com/mJXRNXR.png" alt="Image"></p>
 <p>之後當遇到型別轉換的過程並非單純欄位一對一的時候，就可以使用 ConvertUsing 的方式來自行處理。</p>
 <p>最後附上測試用的 Linqpad Code <del>方便我之後回來複製</del></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
 {
     Sut().Dump();
 }
@@ -374,7 +374,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -387,6 +387,14 @@
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -420,14 +428,6 @@
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -450,7 +450,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -478,7 +478,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

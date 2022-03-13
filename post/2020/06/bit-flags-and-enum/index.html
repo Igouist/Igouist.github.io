@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -123,7 +123,7 @@
                             <p>前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。</p>
 <p>平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告個 Boolean 來處理。但這次遇到的是同時有多個「有／沒有」的狀況，但我遇到的程式碼並沒有分成多個 Bool 去做處理，而是直接儲存成一個數值。</p>
 <p><strong>由於「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列的話，就只需要一個數字就可以紀錄或傳遞給其他系統了</strong>。例如最常見的用處是在權限系統，若有「讀」、「寫」、「執行」等權限，那麼我們按照這個順序去排列，當 <code>讀＝可、寫＝不可、執行＝可</code> 的時候，就記做 <code>101</code> = <code>5</code>。這種直接用一組位元表示狀態的方式就叫做<strong>位元旗標（Bit flag）</strong></p>
-<pre><code>1 讀   = 可
+<pre tabindex="0"><code>1 讀   = 可
 0 寫   = 不可
 1 執行 = 可
 
@@ -133,7 +133,7 @@
 </code></pre><p>假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。</p>
 <h2 id="enum--flags">Enum &amp; Flags</h2>
 <p>在 C# 中已經有方便的工具可以處理數字列表，我們可以建立一個叫做 SkillEnum 的<strong>列舉（Enum）</strong>，並且按照上面說明的，將老闆提到的每個技能各自用一個位元來表示。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[Flags]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[Flags]</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> SkillEnum
 {
     C = <span style="color:#ae81ff">1</span>,     <span style="color:#75715e">// 0001
@@ -146,7 +146,7 @@
 <p>只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用 ToString() 也能更方便看見旗標內容</p>
 </blockquote>
 <p>有了這個列舉之後，我們就可以<strong>表達不同排列組合的狀況</strong>了。例如：</p>
-<pre><code>* C: C
+<pre tabindex="0"><code>* C: C
 * P: PHP
 * S: SQL
 * J: Java
@@ -159,21 +159,21 @@ J S P C
 1 1 1 1 =&gt; 全部都會
 </code></pre><h2 id="查詢--and">查詢 =&gt; AND</h2>
 <p>那麼假使今天來的新人 Bob，他會 C, PHP 兩種語言，那現在他的資料欄位，就會是這兩種語言對應的位置為 1，其餘為 0，也就是 <code>0011</code> =  <code>3</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> BobSkills = <span style="color:#ae81ff">3</span>;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> BobSkills = <span style="color:#ae81ff">3</span>;
 <span style="color:#75715e">// var BobSkills = 0b_0011; // C + PHP
 </span></code></pre></div><p>當 <strong>查詢</strong> 的時候，就將 Bob 的數值和目標數值做 <strong><code>AND</code></strong> 運算。例如說我們想知道 Bob 會不會 C，就可以將 <code>3</code>（二進位 <code>0011</code>） 和代表 C 的 <code>1</code> （二進位 <code>0001</code>） 做 <code>&amp;</code>，即可知道 Bob 會不會 C。</p>
-<pre><code>    J S P C
+<pre tabindex="0"><code>    J S P C
     0 0 1 1 Bob
 AND 0 0 0 1 SkillEnum.C
 -----------
     0 0 0 1 =&gt; 1 &gt; 0 =&gt; True
-</code></pre><pre><code>    J S P C
+</code></pre><pre tabindex="0"><code>    J S P C
     0 0 1 1 Bob
 AND 1 0 0 0 SkillEnum.Java
 -----------
     0 0 0 0 =&gt; 0 =&gt; False
 </code></pre><p>也就是必須要 <strong>同個位置的值都是 1</strong>，在這邊就是指 Bob 的技能中 Java 的欄位，和 SkillEnum 中對應的欄位都要是 1 的時候，才會有數值。否則就會是 0：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> BobSkills = <span style="color:#ae81ff">3</span>;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> BobSkills = <span style="color:#ae81ff">3</span>;
 <span style="color:#75715e">// var BobSkills = 0b_0011; // C + PHP
 </span><span style="color:#75715e"></span>
 <span style="color:#75715e">// 確認是否有某個 Flag，使用 And(&amp;)
@@ -185,14 +185,14 @@ AND 1 0 0 0 SkillEnum.Java
 </span></code></pre></div><h2 id="賦予--or">賦予 =&gt; OR</h2>
 <p>那假設 Bob 經過一番苦練，又掌握了 SQL 這門語言呢？當我們要 <strong>賦予</strong> 的時候，就需要用 <strong><code>OR</code></strong>。</p>
 <p>也就是當 <strong>兩者之間任一為 1</strong> 的時候，在這邊也就是當 Bob 的技能和我們要求給他的 SkillEnum 同位置只要有一個是 1，那就會有數值：</p>
-<pre><code>    J S P C
+<pre tabindex="0"><code>    J S P C
     0 0 1 1 Bob
  OR 0 1 0 0 SkillEnum.SQL
 -----------
     0 1 1 1 =&gt; New Bob
 </code></pre><p>例如說原本 Bob 不會 SQL，所以 SQL 那一欄就會是 0 。而我們把它和 SkillEnum.SQL（也就是只有 SQL 那一欄是 1 ）做 OR 運算後，接著我們只要將運算好的結果再賦值給 Bob，這樣 Bob 的 SQL 欄位就會變成 1 了，同時也不會影響到其他欄位。</p>
 <p>現在我們就可以用 <code>OR</code> 把 SQL 的技能傳授給 Bob：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
 <span style="color:#e6db74">$&#34;Bob 會使用 SQL 嗎？{Convert.ToBoolean(isBobKnowSQL)}&#34;</span>.Dump(); <span style="color:#75715e">// False
 </span><span style="color:#75715e"></span>
 <span style="color:#75715e">// 賦予某個 Flag，使用 OR (|)
@@ -206,7 +206,7 @@ isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum
 <p>當我們要 <strong>移除</strong> 某一項旗標的時候，只需要使用 <strong><code>XOR</code></strong> 就行了。<strong><code>XOR</code> 是指互斥，就像磁碟兩極一樣。當兩者不同為 1，若相同時則為 0</strong>。</p>
 <p>因此當 Bob 代表 SQL 的欄位為 1 的時候，我們再將 SQL 為 1 的 的數值丟進去做 XOR，就可以把<strong>兩者同時為 <code>1</code> 的欄位給變回 0</strong>，並且讓原本為 1 的欄位持續為 1，原本為 0 的欄位持續為 0，達到移除指定目標的效果。</p>
 <p>但在使用上要注意，必須<strong>先確認目標欄位的確有數值</strong>，也就是 Bob 是真的已經會 SQL，<strong>否則</strong>若原本不會 (0) 的將不小心學會 (0 XOR 1 =&gt; 1)。</p>
-<pre><code>    J S P C
+<pre tabindex="0"><code>    J S P C
     0 1 1 1 Bob
 XOR 0 1 0 0 SkillEnum.SQL
 -----------
@@ -214,7 +214,7 @@ XOR 0 1 0 0 SkillEnum.SQL
 
 // 警告：使用 XOR 之前一定要先檢查，若原本是關閉 (0) 的將會被打開 (0 XOR 1 =&gt; 1)
 </code></pre><p>現在我們就讓 Bob 忘記他曾經學過的 SQL：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
 <span style="color:#e6db74">$&#34;Bob 會使用 SQL 嗎？{Convert.ToBoolean(isBobKnowSQL)}&#34;</span>.Dump(); <span style="color:#75715e">// True
 </span><span style="color:#75715e"></span>
 <span style="color:#75715e">// 挪除某個 Flag，使用 XOR (^)
@@ -226,7 +226,7 @@ isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum
 </span></code></pre></div><h2 id="多項賦予--or-or-or">多項賦予 =&gt; OR, OR, OR</h2>
 <p>隨著 Bob 逐漸老去，公司也招來了新員工。如今換成 Bob 來幫他維護技能表了，那我們要怎麼用 SkillEnum 給這個菜雞<strong>預設值</strong>呢？</p>
 <p>聰明的你應該能猜出其實這也就是賦值！只要把<strong>有的項目全部 OR 起來</strong>就可以了，這位新菜雞他會 C, SQL, Java：</p>
-<pre><code>    J S P C
+<pre tabindex="0"><code>    J S P C
     0 0 0 0 Newbie
  OR 0 0 0 1 SkillEnum.C
  OR 0 1 0 0 SkillEnum.SQL
@@ -234,7 +234,7 @@ isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum
 -----------
     1 1 0 1 =&gt; 13 =&gt; Newbie's Skills
 </code></pre><p>那麼現在就讓我們用 C# 實作：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 賦與多個值 ＝ 一路 OR 下去
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 賦與多個值 ＝ 一路 OR 下去
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> NewbieSkills =    
     (<span style="color:#66d9ef">int</span>)SkillEnum.C |   
     (<span style="color:#66d9ef">int</span>)SkillEnum.SQL |     
@@ -245,7 +245,7 @@ isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum
 </span></code></pre></div><h2 id="列出內容--foreach-flags">列出內容 =&gt; Foreach, Flags</h2>
 <p>那如果我想要確認現在有哪些欄位是開啟的呢？例如說，當我們要確認 Bob 會哪些程式語言的時候怎麼做呢？</p>
 <p>既然用 AND 可以查詢其中一個位置，那麼只要將列舉和位元用迴圈逐一 AND 出來，就可以還原 Bob 的列表囉</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> enumCount = Enum.GetNames(<span style="color:#66d9ef">typeof</span>(SkillEnum)).Count();
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> enumCount = Enum.GetNames(<span style="color:#66d9ef">typeof</span>(SkillEnum)).Count();
 <span style="color:#66d9ef">var</span> NewbieSkillsList = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt;();
 
 <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">var</span> i = <span style="color:#ae81ff">0</span>; i &lt; enumCount; i++)
@@ -254,7 +254,7 @@ isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum
 <span style="color:#e6db74">$&#34;Newbie 會的語言有：{String.Join(&#34;</span>, <span style="color:#e6db74">&#34;, NewbieSkillsList)}&#34;</span>.Dump();
 <span style="color:#75715e">// C, SQL, Java
 </span></code></pre></div><p>不過上面這個依序列印的方式還是太麻煩了。如果有像前半段提到的，<strong>替 Enum 加上 <code>[Flags]</code> 標籤</strong>的話，用起來就更簡單了：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#e6db74">$&#34;Newbie 掌握的技能為：{(SkillEnum)NewbieSkills}&#34;</span>.Dump(); 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#e6db74">$&#34;Newbie 掌握的技能為：{(SkillEnum)NewbieSkills}&#34;</span>.Dump(); 
 <span style="color:#75715e">// C, SQL, Java
 </span></code></pre></div><p>最後再總結一下：</p>
 <ul>
@@ -375,7 +375,7 @@ isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -388,6 +388,14 @@ isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -421,14 +429,6 @@ isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -451,7 +451,7 @@ isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -479,7 +479,7 @@ isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

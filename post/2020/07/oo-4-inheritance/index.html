@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -137,12 +137,12 @@
 <p>另外，我們在後續的<a href="/post/2020/11/oo-12-liskov-substitution-principle">里氏替換原則</a>也會提到繼承需要注意的一些問題，此處暫且按下不表。</p>
 <p>那麼我們就回到卡牌的例子：</p>
 <p>假使我們的卡牌現在有了功能卡，這類卡牌在遊戲王叫做魔法卡，而在爐石稱之為法術，雖然這也是一種卡片，但和前面提過的戰士和怪獸等等顯然完全不同。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MagicCard</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MagicCard</span>
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name;
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost; <span style="color:#75715e">// 資源花費
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> Magic Effect; <span style="color:#75715e">// 法術效果
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> _description;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> <span style="color:#ae81ff">_d</span>escription;
 
     <span style="color:#66d9ef">public</span> MagicCard() { <span style="color:#75715e">/* 建構式 */</span>}
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#75715e">/* set; get; */</span>} 
@@ -150,28 +150,28 @@
 </code></pre></div><p>魔法卡並沒有攻擊力和生命值，只有對應的法術效果。同時，我們發現卡牌有資源花費的需要，像是爐石戰記或是殺戮尖塔這類有資源的遊戲，打出卡片的時候會需要花費水晶等資源，藉此限制玩家一回合內能使用的策略。</p>
 <p>現在我們明顯可以發現兩個問題：這兩個種類的卡片，都是卡片呀！而且，內容有一半都是重複的。這是我們該使用繼承的時機了。</p>
 <p>首先我們將原本的卡片更改為 怪獸卡。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MonsterCard</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MonsterCard</span>
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name;
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost;
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack;
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> _description;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> <span style="color:#ae81ff">_d</span>escription;
 
     <span style="color:#66d9ef">public</span> MonsterCard() { <span style="color:#75715e">/* 建構式 */</span>}
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#75715e">/* set; get; */</span>} 
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Hit(MonsterCard target) { <span style="color:#75715e">/* 一些痛揍其他怪獸卡的方法 */</span> }
 }
 </code></pre></div><p>接著我們開始設計基底類別：卡片。我們可以觀察到，怪獸卡和魔法卡相同的部分有：名稱、敘述和卡片花費。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> _description;
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">string</span> <span style="color:#ae81ff">_d</span>escription;
 
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#75715e">/* set; get; */</span>} 
 }
 </code></pre></div><p>將原本的怪獸卡和魔法卡改成繼承自卡片類別，並且將重複的部份移除，直接取用基底類別的內容就好。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MonsterCard</span> : Card
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MonsterCard</span> : Card
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack;
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health;
@@ -186,7 +186,7 @@
     <span style="color:#66d9ef">public</span> MagicCard() { <span style="color:#75715e">/* 建構式 */</span>}
 }
 </code></pre></div><p>可以看到我們在 C# 的繼承方式是使用 <code>類別 : 基底類別</code> 的方式來宣告。並且也能發現，怪獸卡的內容變簡潔了。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> MonsterCard(name: <span style="color:#e6db74">&#34;哥布林&#34;</span>, attack: <span style="color:#ae81ff">3</span>, health: <span style="color:#ae81ff">2</span>);
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> MonsterCard(name: <span style="color:#e6db74">&#34;哥布林&#34;</span>, attack: <span style="color:#ae81ff">3</span>, health: <span style="color:#ae81ff">2</span>);
 <span style="color:#66d9ef">var</span> warrior = <span style="color:#66d9ef">new</span> MonsterCard(name: <span style="color:#e6db74">&#34;戰士&#34;</span>, attack: <span style="color:#ae81ff">4</span>, health: <span style="color:#ae81ff">3</span>);
 warrior.Description = <span style="color:#e6db74">&#34;他是一個專殺哥布林的戰士！&#34;</span>;
 warrior.Hit(goblin);
@@ -310,7 +310,7 @@ warrior.Hit(goblin);
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -323,6 +323,14 @@ warrior.Hit(goblin);
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -356,14 +364,6 @@ warrior.Hit(goblin);
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -386,7 +386,7 @@ warrior.Hit(goblin);
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -414,7 +414,7 @@ warrior.Hit(goblin);
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -204,7 +204,7 @@
 <p>Git 現在已經有相當多的 GUI 可以使用，真的很多。我個人在家的時候是使用 <a href="https://desktop.github.com/">GitHub Desktop</a>、在公司大多時候使用 Visual Studio 內建的 Git 工具。此外，也見過朋友和同事使用 <a href="https://www.gitkraken.com/">GitKraken</a>、<a href="https://git-fork.com/">Fork</a> 等等。關於這些 Git 的 GUI，可以參考官方整理的 <a href="https://git-scm.com/downloads/guis">GUI Clients</a> 頁面。</p>
 <p>但由於我個人忘記指令的狀況頗為嚴重，而且也不是每個環境都有 GUI 可以用。因此這篇有關 Git 的部分將會以 CLI 指令為主進行紀錄。使用 GUI 介面的朋友也不用擔心，現在的介面都做得很精簡，<s>而且這篇也寫得很淺，</s>很簡單就能找到各指令對應的操作。</p>
 <p>確認我們已經有 Git 之後，接著就必須先跟 Git 說我們是誰、信箱是什麼：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git config --global user.name <span style="color:#e6db74">&#34;I am INEVITABL&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git config --global user.name <span style="color:#e6db74">&#34;I am INEVITABL&#34;</span>
 git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.com&#34;</span>
 </code></pre></div><p>這樣就會把設定好的名稱和信箱存到 config 裡面。如果要查看現在有的 config，可以輸入<br/> <code>git config --list</code></p>
 <blockquote>
@@ -223,9 +223,9 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 <p>題外話：既然都打指令了，也可以試試來建立資料夾 <br/>Powershell 用 <code>New-Item C:\hello-git -ItemType &quot;directory&quot;</code> <br/>隔壁棚 Linux 請用 <code>mkdir</code> 來試試。<br/>不過基於懶惰，上面的示範是滑鼠右鍵建立的，耶嘿</p>
 </blockquote>
 <p>接著讓我們先移動過去資料夾：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">cd C:\hello-git
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">cd C:\hello-git
 </code></pre></div><p>並且<strong>使用 <code>git init</code> 將 Git 初始化</strong>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git init
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git init
 </code></pre></div><p><img src="https://i.imgur.com/WIckbA1.png" alt=""></p>
 <p>如此一來，這個資料夾就成為了「<strong>工作區（Working directory）</strong>」，也就是「歸我 Git 管啦！」的意思</p>
 <p>同時，我們也能在原本的 hello-git 資料夾中，發現多了一個 <code>.git</code> 的隱藏檔案：</p>
@@ -243,19 +243,19 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 <p><img src="https://i.imgur.com/J7ByoFh.png" alt=""></p>
 <p>可以看到 Git 已經發現 A.txt 的存在了，但它也告訴我們，它還沒有把 A.txt 放在 <s>眼裡</s> 追蹤目標中</p>
 <p>我們要用 <code>git add</code> 指令，Git 才會把這個變更納入這次的動作中：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git add A.txt
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git add A.txt
 </code></pre></div><p><img src="https://i.imgur.com/fFlY2rK.png" alt=""></p>
 <p>現在可以看到我們新增檔案這個動作已經被 Git 捕捉到了。</p>
 <p>前面有提過，<strong>我們在 <code>git init</code> 之後，當下的資料夾就會變成「工作區」，而 .git 則會成為「儲存庫」。在這兩者之間，還會有一層「暫存區（Staging Area）」</strong>（有些朋友會叫做「索引區（index）」，對象是一樣的）。</p>
 <p>這三者之間的工作流程就像是一條工廠輸送帶：</p>
-<pre><code>工作區（Working directory）→ 暫存區（Staging Area）→ 儲存庫（Repository）
+<pre tabindex="0"><code>工作區（Working directory）→ 暫存區（Staging Area）→ 儲存庫（Repository）
 </code></pre><p>而這個 <strong><code>add</code></strong> 加入檔案的過程，其實就是將我們 <strong>在工作區所做的變更，加入到暫存區（Staging Area）</strong></p>
 <p>所以我們新增檔案、變更內容等等，其實都要跟 Git 用 <code>add</code> 指令打聲招呼，說「我有動這個哦，幫我看著一下」，Git 才會把這些變更的對象放到暫存區裡，等待後續丟到儲存庫的動作。</p>
 <p>那有些朋友可能就會問啦：我工作的時候處理的檔案一定很多個啊，每個都要 add 豈不是累死？</p>
 <p>不用擔心，當有多個檔案要 <code>add</code> 的時候，我們可以加上參數 <code>-A</code>，也就是：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git add -A
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git add -A
 </code></pre></div><p>或是</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git add --all
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git add --all
 </code></pre></div><p>這樣就會直接把所有變更抓進來囉。</p>
 <p>當然，懶還要更懶，事實上現在的 GUI 工具，例如我接觸的 GitHub Desktop、Visual Studio 等等，其實都會自動幫忙 Add 了，真是貼心。</p>
 <p><img src="https://i.imgur.com/dARJCu3.png" alt=""></p>
@@ -264,7 +264,7 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 <p>完成了一項功能？　Commit！<br/>解了一個ＢＵＧ？　Commit！<br/>下班了？　Commit！<br/>地震了？　Commit！</p>
 <p>如果你有在使用 Git，Commit 絕對是你使用最多次的功能。<strong>當我們 Commit 之後，暫存區的變更就會寫入儲存庫，到這個步驟我們才真正地存檔成功。</strong></p>
 <p>現在讓我們來完成這次變更吧：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git commit -m <span style="color:#e6db74">&#34;Add A.txt&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git commit -m <span style="color:#e6db74">&#34;Add A.txt&#34;</span>
 </code></pre></div><p><img src="https://i.imgur.com/riSISaf.png" alt=""></p>
 <p>有看到 ~ file changed 就代表我們已經成功 Commit，把變更存進儲存庫囉！</p>
 <hr>
@@ -319,7 +319,7 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 <h3 id="commit-和-add-的-combo-技">Commit 和 Add 的 Combo 技</h3>
 <p>讓我們延續一下 Add 章節的「懶還要更懶」，現在當我們完成一個變更，就要先 Add 到暫存區，再 Commit 到儲存庫。如果覺得這個兩步驟驗證很麻煩的話要怎麼辦呢？</p>
 <p>其實可以使用 Combo 技，一次搞定 Add 和 Commit，那就是 <code>-a</code>，例如</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git commit -a -m <span style="color:#e6db74">&#34;Update A.txt&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git commit -a -m <span style="color:#e6db74">&#34;Update A.txt&#34;</span>
 </code></pre></div><p>但要注意這個招式只對已經在版本控制內的檔案有效，如果是新來的也還是要先去報到呦。</p>
 <p>關於這段 <code>工作區 -Add→ 暫存區 -Commit→ 儲存庫</code> 的說明，也可以參見這篇為你自己學 Git 的<a href="https://gitbook.tw/chapters/using-git/working-staging-and-repository.html">工作區、暫存區與儲存庫</a>，裡面用倉庫和廣場的比喻個人覺得很貼切。</p>
 <hr>
@@ -332,7 +332,7 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 <p>現在讓我們來試試看，先新增一個 <code>Ignoreme.txt</code> 檔案，接著再新增一個 <code>.gitignore</code>：</p>
 <p><img src="https://i.imgur.com/4QWKh8Y.png" alt=""></p>
 <p>然後在 <code>.gitignore</code> 中加上：</p>
-<pre><code>ignoreme.txt
+<pre tabindex="0"><code>ignoreme.txt
 </code></pre><p>接著，讓我們再次呼叫　<code>git status</code> 確認當前的狀態</p>
 <p><img src="https://i.imgur.com/k0sNgcN.png" alt=""></p>
 <p>可以發現居然只有剛剛新增的 <code>.gitignore</code>，Git 真的就裝作沒看到 <code>Ignoreme.txt</code> 了！</p>
@@ -367,7 +367,7 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 </ul>
 <blockquote>
 <p>題外話：如果有朋友在 windows 上，例如 powershell 使用 <code>git log</code> 或 git 相關指令有出現<strong>中文亂碼</strong>的情形，可以參考以下的語法進行調整：</p>
-<pre><code>git config --global core.quotepath false         # 引用路徑的檔案名稱
+<pre tabindex="0"><code>git config --global core.quotepath false         # 引用路徑的檔案名稱
 git config --global gui.encoding utf-8           # GUI 編碼
 git config --global i18n.commit.encoding utf-8   # Commit 編碼
 git config --global i18n.logoutputencoding utf-8 # Log 編碼
@@ -460,14 +460,14 @@ $env:LESSCHARSET='utf-8'                         # Less 分頁的環境變數
 </blockquote>
 <p>既然我們已經學會存檔，也能看過去都存了哪些檔了，是時候該學學讀檔了吧！</p>
 <p>大多數的遊戲都有「上一步」、「悔棋」、「恢復上一動！懷疑啊？」這類的動作，在 Git 中則是叫做 <code>Revert</code>。</p>
-<p>不過「我這一步完全不算」，<strong><code>Revert</code> 比較像是「我再把棋子移回去就是了」的概念</strong>。也就是說，雖然是悔棋，但是這個悔棋本身也算是一步的意思。</p>
+<p>不過比起「我這一步完全不算」，<strong><code>Revert</code> 比較像是「我再把棋子移回去就是了」的概念</strong>。也就是說，雖然是悔棋，但是這個悔棋本身也算是一步的意思。</p>
 <p>這個部份直接試看看會比較好了解，讓我們把 A.txt 打開，並且把內容改成</p>
-<pre><code>Hello world. HAHAHA.
+<pre tabindex="0"><code>Hello world. HAHAHA.
 </code></pre><p>緊接著直接 <code>Commit -a -m &quot;HAHA&quot;</code>，現在的 Git Log 應該會長得像這樣：</p>
 <p><img src="https://i.imgur.com/WWGzQQh.png" alt=""></p>
 <p>然後可能我們去吃個飯，越想越不對勁，回來決定不要這次 Commit 了。</p>
 <p>現在讓我們試試 Revert：</p>
-<pre><code>git revert HEAD  --no-edit
+<pre tabindex="0"><code>git revert HEAD  --no-edit
 </code></pre><p><img src="https://i.imgur.com/P7kJY5C.png" alt=""></p>
 <p>接著再確認一次 Log：</p>
 <p><img src="https://i.imgur.com/lqLNNYX.png" alt=""></p>
@@ -500,7 +500,7 @@ Revert 所 Revert 掉的 Commit，夠直覺吧！</p>
 <p>我們可以從 <code>git log</code> 中看見還沒做 <code>a657</code> 的前一個 Commit 是 <code>6fbe Add gitignore</code>，或是我們也可以直接用 <code>a657^</code> 來直接指定 <code>a657</code> 的前一個 Commit。先讓我們用 <code>diff</code> 偷看一下目的地和當前的差異。</p>
 <p><img src="https://i.imgur.com/ltpNAm7.png" alt=""></p>
 <p>可以看到 A.txt 的在當時的內容是 <code>Hello!</code>，這就是我們要的。這時候我們就可以使用 <code>reset</code></p>
-<pre><code>git reset --hard a657^
+<pre tabindex="0"><code>git reset --hard a657^
 </code></pre><p><img src="https://i.imgur.com/TdP0vZf.png" alt=""></p>
 <p>Git 跟我們說「你已經回到了 <code>6fbe</code> 這個 Commit 囉」接著讓我們確認看看 A.txt：</p>
 <p><img src="https://i.imgur.com/ijZA2K2.png" alt=""></p>
@@ -564,7 +564,7 @@ Revert 所 Revert 掉的 Commit，夠直覺吧！</p>
 <p>接著將這兩個新檔案 Add 進來並且 Commit：</p>
 <p><img src="https://i.imgur.com/qXwq3WC.png" alt=""></p>
 <p>可以看到我們的 master 分支位於最新的 Commit 07672f4 上了，接著我們要從這裡<br/> <strong>用 <code>git branch</code> 拉出一條新的分支</strong>：</p>
-<pre><code>git branch Branch-B
+<pre tabindex="0"><code>git branch Branch-B
 </code></pre><blockquote>
 <p>補充：<strong>分支拉出來的 Commit 點稱為 <code>Base</code></strong>。由於任兩個 Branch 一定會找得到一個共同的 base，因此我們在對分支間做合併和比較時，並不是將整份拿出來做大量核對，而是從這個 Base 當作基準點來進行變更的比較。這個 base 的概念和我們後續的 <a href="#%E5%90%88%E4%BD%B5merge">合併</a>、<a href="#%E8%A1%9D%E7%AA%81conflict">衝突</a> 等操作會比較相關。</p>
 </blockquote>
@@ -572,7 +572,7 @@ Revert 所 Revert 掉的 Commit，夠直覺吧！</p>
 <p>補充：如果建立分支的時候不小心取錯名字之類的，可以先偷看後面的 <a href="#%E6%9F%A5%E7%9C%8B%E5%88%86%E6%94%AF%E5%88%97%E8%A1%A8%E5%88%AA%E9%99%A4%E5%88%86%E6%94%AF">查詢分支列表、刪除分支</a> 的小節。如果一切順利的話，我們後續在 <del>利用完分支</del> 跑完整個流程才會進行分支的刪除，請繼續看下去囉～</p>
 </blockquote>
 <p>建立分支後，我們再<strong>使用 <code>git checkout</code> 簽出分支</strong>：</p>
-<pre><code>git checkout Branch-B
+<pre tabindex="0"><code>git checkout Branch-B
 </code></pre><p>應該可以看到 Git 告訴你已經切換到 Branch-B 了，我們也可以用 <code>git status</code> 來進行確認：</p>
 <p><img src="https://i.imgur.com/mrektkG.png" alt=""></p>
 <blockquote>
@@ -582,7 +582,7 @@ Revert 所 Revert 掉的 Commit，夠直覺吧！</p>
 <p>確認我們現在是在 Branch-B 分支之後，現在請把 B.txt 刪除，並且 Commit：</p>
 <p><img src="https://i.imgur.com/2cxGS7c.png" alt=""></p>
 <p>接著，讓我們切換回 Master 分支：</p>
-<pre><code>git checkout master
+<pre tabindex="0"><code>git checkout master
 </code></pre><p>觀察一下，B.txt 是不是復活了？</p>
 <p>現在我們可以再練習一次：新建一條 Branch-C 並簽出，並且刪除 C.txt 後 Commit。</p>
 <p>如果覺得每次都要先新建分支，再跳過去做兩步很麻煩的朋友，可以試試 <code>git checkout -b Branch-C</code>，就可以在簽出的同時建立分支囉。</p>
@@ -620,7 +620,7 @@ Revert 所 Revert 掉的 Commit，夠直覺吧！</p>
 </blockquote>
 <p>不管是新功能的開發，問題的修復，效能的測試等等，<strong>大多數以上的分支最終都是需要合併回來的</strong>。每個專案大概就像那種機器人合體戰隊的動畫的每一集一樣，最後都要來 Merge 一下，可以說是避無可避。</p>
 <p>我們在前面一節有開出了兩個分支：Branch-B 和 Branch-C，現在讓我們把他們合而為一。首先，讓我們先簽出到 Branch-B：</p>
-<pre><code>git checkout Branch-B
+<pre tabindex="0"><code>git checkout Branch-B
 </code></pre><p>接著<strong>使用 <code>git merge</code> 指令來用 Branch-B 分支把 Branch-C 分支給吃進來</strong>：</p>
 <p><img src="https://i.imgur.com/9G1qj6g.png" alt=""></p>
 <p>這時候可以觀察看看 <code>hello-git</code> 資料夾，B.txt 和 C.txt 應該都已經消失了。</p>
@@ -640,20 +640,20 @@ Revert 所 Revert 掉的 Commit，夠直覺吧！</p>
 <p>現在讓我們來實際操作看看吧：</p>
 <p>首先，讓我們先確認自己在 master，然後新建並簽出一支新的分支 <code>Branch-X</code>。</p>
 <p>如果要同時做簽出並且新建分支的話，可以在 <code>checkout</code> 的時候加上 <code>-b</code> 試試：</p>
-<pre><code>git checkout -b Branch-X
+<pre tabindex="0"><code>git checkout -b Branch-X
 </code></pre><p>然後，將 A.txt 的內容改成 <code>Hello X!</code>：</p>
 <p><img src="https://i.imgur.com/WeFQiSM.png" alt=""></p>
 <p>並且 Commit：</p>
-<pre><code>git commit -a -m &quot;Hello X!&quot;
+<pre tabindex="0"><code>git commit -a -m &quot;Hello X!&quot;
 </code></pre><p>緊接著，讓我們回到 master，重新建立並簽出另一支分支 <code>Branch-Y</code>：</p>
-<pre><code>git checkout master
+<pre tabindex="0"><code>git checkout master
 git checkout -b Branch-Y
 </code></pre><p>這次我們把 A.txt 的內容改成 <code>Hello Y!</code>：</p>
 <p><img src="https://i.imgur.com/us5hqzk.png" alt=""></p>
 <p>並且 Commit：</p>
-<pre><code>git commit -a -m &quot;Hello Y!&quot;
+<pre tabindex="0"><code>git commit -a -m &quot;Hello Y!&quot;
 </code></pre><p>現在，我們手頭上有 Branch-X 和 Branch-Y 兩條分支了，並且他們都變更過了 A.txt，現在我們直接用 Branch-Y 來合併 Branch-X：</p>
-<pre><code>git merge Branch-X
+<pre tabindex="0"><code>git merge Branch-X
 </code></pre><p><img src="https://i.imgur.com/4j9GJmA.png" alt=""></p>
 <p>可以看到 Git 跳出訊息跟你說<strong>自動合併失敗（Automatic merge failed）</strong>，要求你進行修復。</p>
 <p>並且 <code>git status</code> 也會告訴你，你有未處理的 merge 問題，A.txt 這個檔案都有被變更到：</p>
@@ -675,7 +675,7 @@ git checkout -b Branch-Y
 <p>在處理分支的時候還有另一種合併方式，就是使用 Rebase。</p>
 <p>我們在前面分支的章節有稍微提起過，分支的 base 是建立出分支的 Commit，也是分支和其他分支比較的基準點。<strong>而 rebase 就是「重新設定基準點」的意思</strong>。</p>
 <p>剛剛在 merge 的時候，我們已經將 Branch-X 併入了 Branch-Y ，現在就試試用 rebase 的方式，將 Branch-X 併入 master 吧。</p>
-<pre><code>git checkout master
+<pre tabindex="0"><code>git checkout master
 git rebase Branch-Y
 </code></pre><p>這樣就會將 master 的 base 重新設定到 Branch-Y 分支上囉，因為我們的狀況比較簡單，所以比較像是 master 推進到了  Branch-Y 的進度，讓我們用 <code>git log</code> 確認一下當前的狀況吧：</p>
 <p><img src="https://i.imgur.com/sBPfJRR.png" alt=""></p>
@@ -691,7 +691,7 @@ git rebase Branch-Y
 <p><img src="https://i.imgur.com/QPcfALx.png" alt=""></p>
 <p>前面加上 * 號的就是當前所在的分支，如果已經和遠端儲存庫連線的朋友，也可以使用 <code>-r</code> 參數來看遠端儲存庫上的分支，用 <code>-a</code> 來看本地和遠端的所有分支。另外，遠端儲存庫的分支將會用 <code>remotes/</code> 開頭。</p>
 <p>由於前面示範合併和衝突的分支們的工作都已經告一段落了，我們現在就要稍微清理一下它們。要刪除分支，只需要加上 <code>-d</code> 參數就可以了，像現在這個例子就是：</p>
-<pre><code>git branch -d Branch-B
+<pre tabindex="0"><code>git branch -d Branch-B
 git branch -d Branch-C
 git branch -d Branch-X
 git branch -d Branch-Y
@@ -750,14 +750,14 @@ git branch -d Branch-Y
 <p>現在讓我們鏡頭回到棚內的 git 指令，首先 <code>git status</code> 確保 Commit 等動作都已經完成：</p>
 <p><img src="https://i.imgur.com/Nci6Yvd.png" alt=""></p>
 <p>接著讓我們<strong>用 <code>git remote add</code> 來增加叫做 <code>origin</code> 的遠端儲存庫到這個儲存庫中</strong>，完成了之後再用 <code>git remote</code> 確認遠端儲存庫列表是不是已經有 <code>origin</code> 了：</p>
-<pre><code>git remote add origin https://github.com/yourGithubName/yourGithubRepository.git
+<pre tabindex="0"><code>git remote add origin https://github.com/yourGithubName/yourGithubRepository.git
 git remote
 </code></pre><p><img src="https://i.imgur.com/WFqrEAu.png" alt=""></p>
 <p>因為 Github 的主要分支已經改成使用 <code>Main</code> 了，因此我們順應一下，也用 <code>git branch -M</code> 把 master 分支改名成 Main 吧</p>
-<pre><code>git branch -M main
+<pre tabindex="0"><code>git branch -M main
 </code></pre><p><img src="https://i.imgur.com/vNFIUiQ.png" alt=""></p>
 <p>完成之後，就可以開始上傳囉。在 Git 中，<strong>推送到遠端儲存庫只要使用 <code>push</code> 指令就可以了，語法是 <code>git push {遠端儲存庫名稱} {要推送的分支}</code></strong>，例如我們現在的推送就是：</p>
-<pre><code>git push origin main
+<pre tabindex="0"><code>git push origin main
 </code></pre><p><img src="https://i.imgur.com/Ubdt85H.png" alt=""></p>
 <p>推送完成後，讓我們再回到 Github 上查看：</p>
 <p><img src="https://i.imgur.com/SNLyXDy.png" alt=""></p>
@@ -780,14 +780,14 @@ git remote
 <p>拉到最下面，加上 Commit Message，並且按下 Commit Changes</p>
 <p><img src="https://i.imgur.com/GRpH0el.png" alt=""></p>
 <p>現在遠端儲存庫已經有了一個變更，但是我們本機還不知道呢！接著就讓我們實際操作一下，首先我們需要取得遠端的資訊，這時候就可以<strong>用 <code>fetch</code> 來擷取遠端儲存庫的資訊</strong>回來：</p>
-<pre><code>git fetch
+<pre tabindex="0"><code>git fetch
 </code></pre><p><img src="https://i.imgur.com/InviqZr.png" alt=""></p>
 <p>可以看見 Git 從遠端儲存庫抓了資訊回來，這時候我們如果查看 <code>git log</code>，並加上 <code>--all</code> 來顯示全部分支的話：</p>
 <p><img src="https://i.imgur.com/JBEalid.png" alt=""></p>
 <p>可以看見有一個 <code>origin/main</code> 的分支超越了我們的 <code>main</code> 分支了，這也就是在 <code>origin</code> 遠端儲存庫的 <code>main</code> 分支的意思。這時候我們就可以知道，遠端儲存庫的進度比起我們本機的還要更新。</p>
 <p>那麼要怎麼讓本機的進度追上呢？其實 <code>main</code> 和 <code>origin/main</code> 也就是兩條分支，所以只要使用 <code>merge</code> 就可以把進度往前推。</p>
 <p>當然我們也可以不用這麼麻煩，可以直接<strong>使用 <code>pull</code> 指令來提取遠端儲存庫對應的分支直接和本機現在的分支進行合併，也就是 <code>fetch</code> + <code>merge</code></strong>。這樣就是從雲端下載最新檔囉！現在就讓我們試試吧：</p>
-<pre><code>git pull origin main
+<pre tabindex="0"><code>git pull origin main
 </code></pre><p><code>pull</code> 語法的邏輯和 <code>push</code> 是一樣的。當我們 <code>pull</code> 下來後，就可以 <code>git log</code> 來確認一下記錄囉：</p>
 <p><img src="https://i.imgur.com/945NY8u.png" alt=""></p>
 <p>可以看到我們的 <code>main</code> 分支已經跟上 <code>origin/main</code> 的進度囉！</p>
@@ -800,7 +800,7 @@ git remote
 <p><img src="https://i.imgur.com/WY6HnKT.png" alt=""></p>
 <p>分別是各個命令列下載方式對應的連結、Github Desktop 專用的開啟方式，還有最常用到的 ZIP 下載方式。</p>
 <p>我個人是比較常下載壓縮檔來解壓縮啦，不過都已經用指令到這裡了，就讓我們來試試 <strong><code>git clone</code></strong> 吧：</p>
-<pre><code>git clone https://github.com/yourGithubName/yourGithubRepository.git
+<pre tabindex="0"><code>git clone https://github.com/yourGithubName/yourGithubRepository.git
 </code></pre><p><img src="https://i.imgur.com/TmPSidi.png" alt=""></p>
 <p>接著在 <code>GitRepos</code> 裡面就生出來一個 <code>hello-git</code> 啦，進入後檔案也都在呢：</p>
 <p><img src="https://i.imgur.com/qJ9RVQN.png" alt=""></p>
@@ -832,6 +832,7 @@ git remote
 <li><a href="/post/2021/05/newbie-4-swagger">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a></li>
 <li><a href="/post/2021/10/newbie-5-3-layer-architecture">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a></li>
 <li><a href="/post/2021/11/newbie-6-dependency-injection">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a></li>
+<li><a href="/post/2022/03/newbie-7-fluent-validation">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a></li>
 </ul>
                         </div>
 
@@ -958,7 +959,7 @@ git remote
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -971,6 +972,14 @@ git remote
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -1004,14 +1013,6 @@ git remote
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -1034,7 +1035,7 @@ git remote
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -1062,7 +1063,7 @@ git remote
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

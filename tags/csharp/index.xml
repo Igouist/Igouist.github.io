@@ -6,10 +6,29 @@
     <description>Recent content in CSharp on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Sun, 05 Dec 2021 11:20:00 +0800</lastBuildDate>
-    
-	<atom:link href="https://igouist.github.io/tags/csharp/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Sun, 13 Mar 2022 20:03:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/tags/csharp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</title>
+      <link>https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/</link>
+      <pubDate>Sun, 13 Mar 2022 20:03:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/3bxkWWn.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;這是俺整理公司新訓內容的第七篇文章，目標是紀錄 Fluent Validation 這個好用套件。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Fluent Validation 可以幫我們將 Api 傳入的參數的檢查用更口語、更乾淨的方式去處理&lt;/strong&gt;，除了可以將檢查邏輯拆分成單獨的 Validator 類別，更提供了許多內建的檢查規則和自訂的彈性，相當方便。&lt;/p&gt;
+&lt;p&gt;藉由使用 Fluent Validation 來管理參數的檢查邏輯，就可以和 Controller 本身的工作做簡單的拆分，達到關注點分離的目標。現在就讓我們來認識一下 Fluent Validation 吧。&lt;/p&gt;
+&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
+&lt;p&gt;西元前的某一天，憂心的皇帝在朝堂內繞著柱子走，突然大臣奪門而入。&lt;/p&gt;
+&lt;p&gt;大臣：「陛下！敵軍已經攻到國境內啦！」&lt;/p&gt;
+&lt;p&gt;皇帝大驚：『邊境的那些檢查站和關口難道都陷落了嗎？不可能！』&lt;/p&gt;
+&lt;p&gt;大臣：「陛下，有內奸和敵國勾結，檢查站完全沒檢查！髒資料已經闖進來了！」&lt;/p&gt;
+&lt;p&gt;皇帝喊了一聲：『怎麼可能！讓朕看看！』就打開 Controller 和前一個專案的 Git Log，這一看差點就昏了過去。&lt;/p&gt;
+&lt;p&gt;原來 Controller 的舊程式碼就已經很亂了，檢查參數的條件 if/else 和其他呼叫的方法、組裝資料都雜在一起。結果這次專案改動時，某一行就被內奸改壞了，關鍵的參數竟然沒檢查到！&lt;/p&gt;
+&lt;p&gt;『可，可惡！來人啊，把工程師推出午門斬首！』&lt;/p&gt;
+&lt;p&gt;「皇上！他已經離職啦！」&lt;/p&gt;
+&lt;p&gt;皇帝跌坐在地，懊悔地說：『如果當初有好好把檢查參數跟實際組資料的部份都拆開的話，也許就不會這樣了…』&lt;/p&gt;
+&lt;p&gt;「是啊，如果我們有用 Fluent Validation…！」&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</title>
@@ -19,7 +38,7 @@
       <guid>https://igouist.github.io/post/2021/12/automapper-convert-using/</guid>
       <description>&lt;p&gt;從朋友那兒聽到了用 &lt;a href=&#34;https://igouist.github.io/post/2020/07/automapper&#34;&gt;AutoMapper&lt;/a&gt; 把串列成員物件攤平成一組串列的問題，發現了 &lt;strong&gt;ConvertUsing&lt;/strong&gt; 的好用，這邊就紀錄一下。&lt;/p&gt;
 &lt;p&gt;事情是這樣的，首先有一個 &lt;code&gt;Parent&lt;/code&gt; 類別，其中包含著兩個成員：&lt;code&gt;Id&lt;/code&gt; 和串列的 &lt;code&gt;Child&lt;/code&gt; 類別，而 &lt;code&gt;Child&lt;/code&gt; 類別則只有一個成員 &lt;code&gt;Val&lt;/code&gt;，如下：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Parent&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Parent&lt;/span&gt;
 {
     &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Id { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
     &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;Child&amp;gt; Children { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
@@ -30,14 +49,14 @@
     &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt; Val { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;另外還有一個 &lt;code&gt;Target&lt;/code&gt; 類別，包含 &lt;code&gt;Id&lt;/code&gt; 和 &lt;code&gt;Val&lt;/code&gt; 兩個成員：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Target&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Target&lt;/span&gt;
 {
     &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Id { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
     &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt; Val { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;現在的目標是：&lt;strong&gt;將一個有著 Child 串列的 Parent 映射成 Target 串列&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;也就是說，假設我們的來源是這樣子：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; boo = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Parent
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; boo = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Parent
 {
     Id = &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,
     Children = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; List&amp;lt;Child&amp;gt;
@@ -47,7 +66,7 @@
     }
 };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;希望可以變成這樣子：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; expect = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; List&amp;lt;Target&amp;gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; expect = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; List&amp;lt;Target&amp;gt;
 {
     &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Target { Id = &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, Val = &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; },
     &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Target { Id = &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, Val = &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt; },
@@ -105,17 +124,17 @@
 &lt;p&gt;原來是呼叫失敗的人就是在這個 &lt;code&gt;DateTime.ToString()&lt;/code&gt; 的過程中產生了中文字，使得目標 Api 無法將中文字轉換回 DateTime 而發生了錯誤。&lt;/p&gt;
 &lt;p&gt;也就是說：&lt;strong&gt;同一行 DateTime.ToString() 在不同電腦執行竟然不一樣？！&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;為了讓我們更快了解狀況，現在就簡單地使用 Linqpad 進行測試：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Main()
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Main()
 {
     DateTime.Now.ToString().Dump();
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;首先，在我的 Windows 時間設定中，完整時間的格式為 &lt;code&gt;09:40:07&lt;/code&gt; ，也就是 24 小時制。&lt;/p&gt;
 &lt;p&gt;現在讓我們先執行上面這段語法看看：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;// 2021/10/04 21:00:00
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// 2021/10/04 21:00:00
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;接著讓我們變更時間格式看看。&lt;/p&gt;
 &lt;p&gt;以我的 Win10 為例，在 Windows 工具列，也就是畫面的右下角右鍵，選擇 &lt;code&gt;調整日期時間 → 日期時間格式設定 → 變更資料格式&lt;/code&gt;，將時間格式變更為 &lt;code&gt;上午 09:40:07&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;重新啟動 Linqpad 再執行如下：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;// 2021/10/04 下午 09:00:00
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// 2021/10/04 下午 09:00:00
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;可以看到 &lt;code&gt;下午&lt;/code&gt; 兩個字就蹦出來了！&lt;/p&gt;
 &lt;p&gt;之所以會有這樣的差異，是因為 &lt;code&gt;DateTime.ToString()&lt;/code&gt; 預設轉換的目標格式會是抓取目前執行緒的&lt;strong&gt;文化特性&lt;/strong&gt;。&lt;/p&gt;</description>
     </item>
@@ -155,7 +174,7 @@
       <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TuGp6Lk.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;事發緣由&#34;&gt;事發緣由&lt;/h2&gt;
 &lt;p&gt;在 .net Framework 4.6.2 MVC 的 ApiController 中，某個查詢資料列表的方法除了提供查詢條件的參數以外，還有提供選擇性的分頁參數。也就是像這樣子：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
 &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;Boo&amp;gt; GetBoos(
 &lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; SearchBooParameter parameter,
 &lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; PagingParameter paging = &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;)
@@ -164,7 +183,7 @@
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;}
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;由於需要調整該功能的預設排序，改為由大到小，又不想背負更改大量共用的 &lt;code&gt;PagingParameter&lt;/code&gt; 去影響到其他使用到的地方，決定在 Controller 這裡簡單用預測值加上判斷處理一下就好&lt;/p&gt;
 &lt;p&gt;相信著「若使用者沒有傳遞 paging 相關的參數，應該就會是給定的預設值 &lt;code&gt;null&lt;/code&gt; 吧！」的我，用了 &lt;code&gt;if (paging is null)&lt;/code&gt; 進行判斷：若是 &lt;code&gt;null&lt;/code&gt; 的情況就將其中用來標示排序方向的成員 &lt;code&gt;isDesc&lt;/code&gt; 設定為 true，開開心心交差。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
 &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;Boo&amp;gt; GetBoos(
 &lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; SearchBooParameter parameter,
 &lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; PagingParameter paging = &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;)
@@ -275,7 +294,7 @@
 &lt;p&gt;過程中嘗試了安裝 openssl-libs（會找不到該套件）、下載 Dotnet 的 tar.gz ，再直接對執行檔下 Dotnet 指令起站台（雖然網站起得來，但執行者會是當下的登入身分，也就是 &amp;lsquo;&#39;@連線進來的IP-伺服器位置，而非由本機執行。後續如果有連線資料庫等檢查權限的地方就很容易出錯）&lt;/p&gt;
 &lt;p&gt;最後在 Dotnet Core 的 issue 翻到這篇 &lt;a href=&#34;https://github.com/dotnet/core/issues/930&#34;&gt;Cannot install .NET Core 2.0 on Amazon Linux AMI&lt;/a&gt; 才成功解決。&lt;/p&gt;
 &lt;p&gt;首先先將 openssl-libs 的 SPEC 抓下來，然後給 &lt;a href=&#34;http://linux.vbird.org/linux_basic/0520softwaremanager/0520rpmtarball.php&#34;&gt;RPM&lt;/a&gt; 建置一下。這兩句可以參考一下這篇 &lt;a href=&#34;https://medium.com/linux-%E9%96%8B%E7%99%BC%E5%85%A5%E9%96%80/rpm-%E6%89%93%E5%8C%85-%E7%94%B1%E4%B8%80%E7%AB%85%E4%B8%8D%E9%80%9A%E5%88%B0%E5%8B%95%E6%89%8B%E6%BF%AB%E7%94%A8-%E4%BA%8C-df9eea70bd7b&#34;&gt;RPM 打包︰由一竅不通到動手濫用 (二)&lt;/a&gt; 的說明。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;wget https://github.com/dotnet/core/files/2186067/openssl-libs-ami.spec.txt
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;wget https://github.com/dotnet/core/files/2186067/openssl-libs-ami.spec.txt
 rpmbuild --bb openssl-libs-ami.spec.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
@@ -291,7 +310,7 @@ rpmbuild --bb openssl-libs-ami.spec.txt
 &lt;blockquote&gt;
 &lt;p&gt;註：此處使用的 &lt;code&gt;Dump&lt;/code&gt; 是 Linqpad 提供的輸出方法，把它當成 Print 就行了。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; student = (&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;王小明&amp;#34;&lt;/span&gt;);
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; student = (&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;王小明&amp;#34;&lt;/span&gt;);
 student.Item1.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 1
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;student.Item2.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 王小明
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
@@ -299,7 +318,7 @@ student.Dump();
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以看到 Tuple 的建立相當簡單，只需要用小括號 &lt;code&gt;()&lt;/code&gt; 括選起來即可。建立後的內容就會像這樣：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://i.imgur.com/H0wJglN.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;但這樣使用就和之前一樣，取出來時只能拿 Item1, Item2，放個幾天根本就不記得 Item1 裡面是啥東西了。這時我們就可以&lt;strong&gt;替成員們取名字&lt;/strong&gt;：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; ID, &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Name) student = (&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;王小明&amp;#34;&lt;/span&gt;);
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; ID, &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Name) student = (&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;王小明&amp;#34;&lt;/span&gt;);
 student.ID.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 1
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;student.Name.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 王小明
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如此使用的時候就和一般操作物件的習慣沒有差別，也增加了可讀性。&lt;/p&gt;</description>
@@ -318,7 +337,7 @@ student.ID.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 1
 &lt;blockquote&gt;
 &lt;p&gt;關於文化特性，也可以參考本站的 &lt;a href=&#34;https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo&#34;&gt;菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp;amp; CultureInfo 文化特性小筆記&lt;/a&gt; 呦。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 假設現在是要從標準時區 +00:00 轉換到台灣時區，故這邊使用 UtcNow 先取標準世界協調時間
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 假設現在是要從標準時區 +00:00 轉換到台灣時區，故這邊使用 UtcNow 先取標準世界協調時間
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; nowDateTime = DateTime.UtcNow;
 
 nowDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yyyy/MM/dd H:mm:ss zzz&amp;#34;&lt;/span&gt;).Dump();
@@ -354,18 +373,18 @@ convertedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yy
       
       <guid>https://igouist.github.io/post/2020/08/csharp-string-interpolation/</guid>
       <description>&lt;p&gt;自從 C# 有了 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/tokens/interpolated&#34;&gt;字串插值&lt;/a&gt; 這東西之後，我就一直是愛用者。畢竟比起 &lt;code&gt;string.format&lt;/code&gt; 這東西可是看起來優雅多了。例如：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; message = &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;哈囉，{userName} 您的點數將於 {cutoffTime} 到期。&amp;#34;&lt;/span&gt;;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; message = &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;哈囉，{userName} 您的點數將於 {cutoffTime} 到期。&amp;#34;&lt;/span&gt;;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;簡潔又明瞭，一眼就能理解字串內容。實在是挺方便，後來發現這東西還有一些延伸用法，這邊就稍加紀錄一下：&lt;/p&gt;
 &lt;p&gt;字串插值中能夠做&lt;strong&gt;簡易計算&lt;/strong&gt;，例如：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; message = &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;您輸入的數值為：{a}、{b}。他們相加為：{a + b}&amp;#34;&lt;/span&gt;;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; message = &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;您輸入的數值為：{a}、{b}。他們相加為：{a + b}&amp;#34;&lt;/span&gt;;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;同時，在字串插值時可以針對內容作格式化，只需要用 &lt;code&gt;:&lt;/code&gt; 來區隔，妥善運用可以省下一堆 &lt;code&gt;ToString()&lt;/code&gt; 的空間。&lt;/p&gt;
 &lt;p&gt;例如當我們要將&lt;strong&gt;時間&lt;/strong&gt;格式化的時候，就可以：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; date = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DateTime(&lt;span style=&#34;color:#ae81ff&#34;&gt;2020&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt;);
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; date = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DateTime(&lt;span style=&#34;color:#ae81ff&#34;&gt;2020&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt;);
 &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; message = &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;您的商品已於 {date:yyyy/MM/dd} 抵達。&amp;#34;&lt;/span&gt;;
 &lt;span style=&#34;color:#75715e&#34;&gt;// 您的商品已於 2020/08/09 抵達。
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;另外，&lt;strong&gt;數值&lt;/strong&gt;當然也可以格式化，不過數值的應用比較複雜，主要是用來定下小數點、百分比等符號的位置。
 可以參見 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/standard/base-types/custom-numeric-format-strings&#34;&gt;自訂數值格式字串 - Microsoft Docs&lt;/a&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; cost = &lt;span style=&#34;color:#ae81ff&#34;&gt;2100&lt;/span&gt;;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; cost = &lt;span style=&#34;color:#ae81ff&#34;&gt;2100&lt;/span&gt;;
 &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; message1 = &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;您的商品一共是 {cost:#,###} 元&amp;#34;&lt;/span&gt;;
 &lt;span style=&#34;color:#75715e&#34;&gt;// 用 # 可以替數字預留位置
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 您的商品一共是 2,100 元
@@ -438,7 +457,7 @@ convertedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yy
       <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/naCjLay.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;我就直接說了，有用前面的程式碼區塊的人，絕對執行不了。因為我們建立哥布林和戰士這兩張卡片的時候，根本就沒有給他們數值呀！&lt;/p&gt;
 &lt;p&gt;雖然可以先呼叫出來再賦值…&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; goblin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card();
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; goblin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card();
 goblin.Name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;哥布林&amp;#34;&lt;/span&gt;;
 goblin.Attack = &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;;
 goblin.Health = &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;;
@@ -448,7 +467,7 @@ goblin.Health = &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;;
 &lt;h2 id=&#34;建構式&#34;&gt;建構式&lt;/h2&gt;
 &lt;p&gt;事實上，&lt;strong&gt;當我們呼叫 &lt;code&gt;new Card()&lt;/code&gt; 的時候&lt;/strong&gt;（不覺得這個 () 很有呼叫方法的感覺嗎？）&lt;strong&gt;我們就是正在調用 Card 的建構式&lt;/strong&gt;。而當我們沒有特別去定義建構式的時候，就會直接使用內建的建構式去幫我們產生物件。&lt;/p&gt;
 &lt;p&gt;現在我們替 Card 新增一個建構式：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Card&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Card&lt;/span&gt;
 {
     &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card (&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; attack, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; health)
     {
@@ -459,7 +478,7 @@ goblin.Health = &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;;
     &lt;span style=&#34;color:#75715e&#34;&gt;/* ... 其他屬性和方法 */&lt;/span&gt;
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在 C# 的時候，建構式必須和類別同名，且不需要定義回傳類型。當我們有了建構式，剛剛的例子就可以改寫成：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; goblin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card(name: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;哥布林&amp;#34;&lt;/span&gt;, attack: &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, health: &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;);
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; goblin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card(name: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;哥布林&amp;#34;&lt;/span&gt;, attack: &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, health: &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;);
 &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; warrior = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card(name: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;戰士&amp;#34;&lt;/span&gt; , attack: &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;, health: &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;);
 warrior.Hit(goblin);
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;建構式也就是建立這個物件時執行的函式&lt;/strong&gt;，通常會用來進行初始化，也就是做一些建立物件必要的準備。例如傳遞必要屬性或是建構需要的其他物件、或是給予私有屬性初始值等等，例如說我們的卡牌一建立，就會需要知道它的名字和戰鬥力，這樣才有卡牌的感覺，而不該像一些 &lt;a href=&#34;https://zh.wikipedia.org/wiki/%E6%AD%A6%E8%97%A4%E9%81%8A%E6%88%B2&#34;&gt;壞決鬥者&lt;/a&gt; 邊打牌邊偷偷印卡。&lt;/p&gt;</description>
@@ -509,7 +528,7 @@ warrior.Hit(goblin);
       <description>&lt;p&gt;前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。&lt;/p&gt;
 &lt;p&gt;平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告個 Boolean 來處理。但這次遇到的是同時有多個「有／沒有」的狀況，但我遇到的程式碼並沒有分成多個 Bool 去做處理，而是直接儲存成一個數值。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;由於「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列的話，就只需要一個數字就可以紀錄或傳遞給其他系統了&lt;/strong&gt;。例如最常見的用處是在權限系統，若有「讀」、「寫」、「執行」等權限，那麼我們按照這個順序去排列，當 &lt;code&gt;讀＝可、寫＝不可、執行＝可&lt;/code&gt; 的時候，就記做 &lt;code&gt;101&lt;/code&gt; = &lt;code&gt;5&lt;/code&gt;。這種直接用一組位元表示狀態的方式就叫做&lt;strong&gt;位元旗標（Bit flag）&lt;/strong&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;1 讀   = 可
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;1 讀   = 可
 0 寫   = 不可
 1 執行 = 可
 
@@ -519,7 +538,7 @@ warrior.Hit(goblin);
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。&lt;/p&gt;
 &lt;h2 id=&#34;enum--flags&#34;&gt;Enum &amp;amp; Flags&lt;/h2&gt;
 &lt;p&gt;在 C# 中已經有方便的工具可以處理數字列表，我們可以建立一個叫做 SkillEnum 的&lt;strong&gt;列舉（Enum）&lt;/strong&gt;，並且按照上面說明的，將老闆提到的每個技能各自用一個位元來表示。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[Flags]&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[Flags]&lt;/span&gt;
 &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;enum&lt;/span&gt; SkillEnum
 {
     C = &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,     &lt;span style=&#34;color:#75715e&#34;&gt;// 0001
@@ -532,7 +551,7 @@ warrior.Hit(goblin);
 &lt;p&gt;只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用 ToString() 也能更方便看見旗標內容&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;有了這個列舉之後，我們就可以&lt;strong&gt;表達不同排列組合的狀況&lt;/strong&gt;了。例如：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;* C: C
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;* C: C
 * P: PHP
 * S: SQL
 * J: Java

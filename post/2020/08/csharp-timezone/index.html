@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -127,7 +127,7 @@
 <blockquote>
 <p>關於文化特性，也可以參考本站的 <a href="/post/2021/10/csharp-datatime-tostring-cultureinfo">菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記</a> 呦。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 假設現在是要從標準時區 +00:00 轉換到台灣時區，故這邊使用 UtcNow 先取標準世界協調時間
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 假設現在是要從標準時區 +00:00 轉換到台灣時區，故這邊使用 UtcNow 先取標準世界協調時間
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> nowDateTime = DateTime.UtcNow;
 
 nowDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
@@ -159,7 +159,7 @@ convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss z
 <p>可以參考這篇 <a href="https://kevintsengtw.blogspot.com/2014/06/c.html">基本題 - C# 西元年轉換取得民國年格式字串 - mrkt 的程式學習筆記</a>。</p>
 <p>內文示範了使用 <code>System.Globalization.TaiwanCalendar</code> 和 <code>System.Globalization.TaiwanLunisolarCalendar</code> 來進行安全轉換的作法。</p>
 <p>基本上來說就是指定文化特性中的時間格式（曆法）為農曆，至少依靠微軟爸爸，比自己加減 1911 來得安全多了囧。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> time = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2021</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">01</span>);
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> time = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2021</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">01</span>);
 
 <span style="color:#75715e">// 直接從 TaiwanCalendar 取民國年，自組字串時常用
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> taiwanCalendar = <span style="color:#66d9ef">new</span> TaiwanCalendar();
@@ -177,7 +177,7 @@ info.DateTimeFormat.Calendar = <span style="color:#66d9ef">new</span> TaiwanCale
 DateTime.Parse(timeString, info).Dump(); <span style="color:#75715e">// 2021/12/01 00:00:00
 </span></code></pre></div><h2 id="datetimeformatinfo-月週時間的格式">DateTimeFormatInfo: 月、週、時間的格式</h2>
 <p>不用再傻傻地手刻陣列「星期一」、「星期二」、「星期三」…之類的了，只要用 <code>DateTimeFormatInfo.CurrentInfo</code> 的就好啦：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> MonthCh = DateTimeFormatInfo.CurrentInfo.MonthNames;   <span style="color:#75715e">// 中文月份名稱列表
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> MonthCh = DateTimeFormatInfo.CurrentInfo.MonthNames;   <span style="color:#75715e">// 中文月份名稱列表
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> MonthEn = DateTimeFormatInfo.InvariantInfo.MonthNames; <span style="color:#75715e">// 英文月份名稱列表
 </span></code></pre></div><p><img src="https://i.imgur.com/se7XLZy.png" alt=""></p>
 <p>除了月份以外，<code>DateTimeFormatInfo.CurrentInfo</code> 也包含了當地的其他欄位與格式。</p>
@@ -287,7 +287,7 @@ DateTime.Parse(timeString, info).Dump(); <span style="color:#75715e">// 2021/12/
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -300,6 +300,14 @@ DateTime.Parse(timeString, info).Dump(); <span style="color:#75715e">// 2021/12/
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -333,14 +341,6 @@ DateTime.Parse(timeString, info).Dump(); <span style="color:#75715e">// 2021/12/
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -363,7 +363,7 @@ DateTime.Parse(timeString, info).Dump(); <span style="color:#75715e">// 2021/12/
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -391,7 +391,7 @@ DateTime.Parse(timeString, info).Dump(); <span style="color:#75715e">// 2021/12/
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

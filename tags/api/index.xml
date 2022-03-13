@@ -6,11 +6,7 @@
     <description>Recent content in api on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Sun, 03 Oct 2021 14:00:00 +0800</lastBuildDate>
-    
-	<atom:link href="https://igouist.github.io/tags/api/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 03 Oct 2021 14:00:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/tags/api/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</title>
       <link>https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/</link>
@@ -46,7 +42,7 @@
       <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TuGp6Lk.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;事發緣由&#34;&gt;事發緣由&lt;/h2&gt;
 &lt;p&gt;在 .net Framework 4.6.2 MVC 的 ApiController 中，某個查詢資料列表的方法除了提供查詢條件的參數以外，還有提供選擇性的分頁參數。也就是像這樣子：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
 &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;Boo&amp;gt; GetBoos(
 &lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; SearchBooParameter parameter,
 &lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; PagingParameter paging = &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;)
@@ -55,7 +51,7 @@
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;}
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;由於需要調整該功能的預設排序，改為由大到小，又不想背負更改大量共用的 &lt;code&gt;PagingParameter&lt;/code&gt; 去影響到其他使用到的地方，決定在 Controller 這裡簡單用預測值加上判斷處理一下就好&lt;/p&gt;
 &lt;p&gt;相信著「若使用者沒有傳遞 paging 相關的參數，應該就會是給定的預設值 &lt;code&gt;null&lt;/code&gt; 吧！」的我，用了 &lt;code&gt;if (paging is null)&lt;/code&gt; 進行判斷：若是 &lt;code&gt;null&lt;/code&gt; 的情況就將其中用來標示排序方向的成員 &lt;code&gt;isDesc&lt;/code&gt; 設定為 true，開開心心交差。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
 &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;Boo&amp;gt; GetBoos(
 &lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; SearchBooParameter parameter,
 &lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; PagingParameter paging = &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;)

@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -121,7 +121,7 @@
                             <p><img src="https://i.imgur.com/TuGp6Lk.png" alt="Image"></p>
 <h2 id="事發緣由">事發緣由</h2>
 <p>在 .net Framework 4.6.2 MVC 的 ApiController 中，某個查詢資料列表的方法除了提供查詢條件的參數以外，還有提供選擇性的分頁參數。也就是像這樣子：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[HttpGet]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[HttpGet]</span>
 <span style="color:#66d9ef">public</span> IEnumerable&lt;Boo&gt; GetBoos(
 <span style="color:#a6e22e">    [FromUri]</span> SearchBooParameter parameter,
 <span style="color:#a6e22e">    [FromUri]</span> PagingParameter paging = <span style="color:#66d9ef">null</span>)
@@ -130,7 +130,7 @@
 </span><span style="color:#75715e"></span>}
 </code></pre></div><p>由於需要調整該功能的預設排序，改為由大到小，又不想背負更改大量共用的 <code>PagingParameter</code> 去影響到其他使用到的地方，決定在 Controller 這裡簡單用預測值加上判斷處理一下就好</p>
 <p>相信著「若使用者沒有傳遞 paging 相關的參數，應該就會是給定的預設值 <code>null</code> 吧！」的我，用了 <code>if (paging is null)</code> 進行判斷：若是 <code>null</code> 的情況就將其中用來標示排序方向的成員 <code>isDesc</code> 設定為 true，開開心心交差。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[HttpGet]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[HttpGet]</span>
 <span style="color:#66d9ef">public</span> IEnumerable&lt;Boo&gt; GetBoos(
 <span style="color:#a6e22e">    [FromUri]</span> SearchBooParameter parameter,
 <span style="color:#a6e22e">    [FromUri]</span> PagingParameter paging = <span style="color:#66d9ef">null</span>)
@@ -149,7 +149,7 @@
 <p>因此如果遇到要給定預設值的場合，還是得乖乖地針對型別中的成員做設定比較保險，例如 <code>bool isDesc { get; set; } = true</code>。另外，因為完全沒給 QueryString 的時候還是會是 null，故該有的參數檢查仍然不能漏了。</p>
 <h2 id="測試案例">測試案例</h2>
 <p><strong>.net Framework 4.7.2 Web Api - FromUri</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[RoutePrefix(&#34;api&#34;)]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[RoutePrefix(&#34;api&#34;)]</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ValuesController</span> : ApiController
 {
 <span style="color:#a6e22e">    [HttpGet, Route(&#34;Test&#34;)]</span>
@@ -167,7 +167,7 @@
 </code></pre></div><p><code>/api/test</code> =&gt; It&rsquo;s NULL!</p>
 <p><code>/api/test?a=2</code> =&gt; False</p>
 <p>若改為必須參數，而不是選擇性參數呢：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[HttpGet, Route(&#34;Test&#34;)]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[HttpGet, Route(&#34;Test&#34;)]</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test([FromUri] SimplyParameter parameter)
 {
     <span style="color:#66d9ef">return</span> parameter?.IsSuccess.ToString() ?? <span style="color:#e6db74">&#34;It&#39;s NULL!&#34;</span>; <span style="color:#75715e">// False
@@ -176,7 +176,7 @@
 <p><code>/api/test?a=2</code> =&gt; False</p>
 <p>看起來最大的差異點在於<strong>有沒有給 QueryString</strong>。</p>
 <p>現在讓我們對 Model 給定預設值，並加入建構式並觀察執行順序：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[RoutePrefix(&#34;api&#34;)]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[RoutePrefix(&#34;api&#34;)]</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ValuesController</span> : ApiController
 {
 <span style="color:#a6e22e">    [HttpGet, Route(&#34;Test&#34;)]</span>
@@ -211,7 +211,7 @@
 </ol>
 <p>看起來當有傳遞 QueryString 的時候，就會先建立需要的 Model 再逐一嘗試設值。</p>
 <p>接著讓我們試試看，當 <code>[FromUri]</code> 的複雜型別不只一個的時候會怎麼運作呢：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[RoutePrefix(&#34;api&#34;)]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[RoutePrefix(&#34;api&#34;)]</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ValuesController</span> : ApiController
 {
 <span style="color:#a6e22e">    [HttpGet, Route(&#34;Test&#34;)]</span>
@@ -251,14 +251,14 @@
 <p><code>/api/test?parameter.IsSuccess=true</code></p>
 <p>即使已經具名指定了 SimplyParameter，但動作和 <code>IsSuccess=true</code> 仍然一樣</p>
 <p>最後，我們加入一個簡單型別試試看，也就是改為如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test(
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test(
 <span style="color:#a6e22e">    [FromUri]</span> SimplyParameter parameter = <span style="color:#66d9ef">null</span>,
 <span style="color:#a6e22e">    [FromUri]</span> AnotherSimplyParameter parameterAnother = <span style="color:#66d9ef">null</span>,
 <span style="color:#a6e22e">    [FromUri]</span> <span style="color:#66d9ef">string</span> hello = <span style="color:#e6db74">&#34;world!&#34;</span>)
 </code></pre></div><p><code>/api/test</code> =&gt; hello = &ldquo;world!&quot;;</p>
 <p><code>/api/test?a=2</code> =&gt; hello = &ldquo;world!&quot;;</p>
 <p>簡單型別的預設值在運作上非常直覺，沒有什麼太大的問題。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[HttpGet, Route(&#34;Test&#34;)]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[HttpGet, Route(&#34;Test&#34;)]</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test(
 <span style="color:#a6e22e">    [FromUri]</span> <span style="color:#66d9ef">string</span> hello,
 <span style="color:#a6e22e">    [FromUri]</span> SimplyParameter parameter = <span style="color:#66d9ef">null</span>,
@@ -282,7 +282,7 @@
 </ul>
 <h2 id="同場加映">同場加映</h2>
 <p><strong>.net Core 3.1 Web Api - FromQuery</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[ApiController]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[ApiController]</span>
 <span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
 </span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TestController</span> : ControllerBase
 {
@@ -382,7 +382,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -395,6 +395,14 @@
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -428,14 +436,6 @@
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -458,7 +458,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -486,7 +486,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

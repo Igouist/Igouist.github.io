@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -150,7 +150,7 @@
 <p>首先要先登入，輸入 <code>heroku login</code> 之後，便會開啟瀏覽器進行登入驗證，如果成功會看見登入訊息</p>
 <p><img src="https://i.imgur.com/fOifmbs.png" alt=""></p>
 <p>接著就可以移到專案的資料夾，將專案和 Heroku 做連接</p>
-<pre><code># 先移動到專案的資料夾
+<pre tabindex="0"><code># 先移動到專案的資料夾
 $ cd my-project/
 
 # Git 初始化
@@ -161,7 +161,7 @@ $ heroku git:remote -a Heroku的APP名稱
 </code></pre><p><img src="https://i.imgur.com/TumTYwP.png" alt=""></p>
 <h2 id="環境設定及測試">環境設定及測試</h2>
 <p>這邊由於前面提到訂便當系統有部分要調整的關係，因此只使用 <a href="/post/2020/04/bandon-3-line-notify/">我要訂便當(3) 的 Lint Notify 測試版</a> 的 Line Notify 上去試試看。上一集的簡單 Line Notify 程式碼如下，這邊命名為 <code>myApp.py</code>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> requests
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> requests
 
 <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">lineNotifyMessage</span>(token, msg):
     headers <span style="color:#f92672">=</span> {
@@ -185,7 +185,7 @@ result <span style="color:#f92672">=</span> lineNotifyMessage(token, message)
 <p>不過 Heroku 還不知道怎麼建我們的服務，因此這邊還需要新增幾個設定的檔案：</p>
 <h3 id="procfile">Procfile</h3>
 <p>用來告訴 Heroku 怎麼運行我們的服務</p>
-<pre><code>worker: python myApp.py
+<pre tabindex="0"><code>worker: python myApp.py
 </code></pre><p>這行的意思是：<code>worker</code> 的運行方式是 <code>python myApp.py</code> 這行命令，<strong>Heroku 會根據這個文件的內容去建 dynos 容器來運行我們的應用服務</strong>。</p>
 <p>像上面的參考文章在建置 Flask 時，就將運行 <code>web</code> 的命令設定為 <code>gunicorn flask_app:app</code> 讓 <a href="https://www.jianshu.com/p/52d8e3deaa16">Gunicorn</a> 去起網站來跑。</p>
 <p>由於這次的示範組只是個小腳本，因此我們宣告個 worker 而不是網站方便之後處理。當宣告的運行是 <code>web</code> 時，Heroku 還會幫忙接 HTTP 的內容，當然想包裝成 Web APP 的朋友，也可以參考上面的文章將腳本包裝成簡單的 Flask。</p>
@@ -193,10 +193,10 @@ result <span style="color:#f92672">=</span> lineNotifyMessage(token, message)
 <p>這邊另外要注意的地方有兩個：這個檔案是不需要副檔名的，而且大小寫請正確。我在碰壁的過程中有遇到本機測試可以但推送上去就不行的情況，後來發現是打成全小寫了，改成字首大寫就正常，因此這邊提醒一下大家。</p>
 <h3 id="requirementstxt">requirements.txt</h3>
 <p>用來標示需要安裝的套件，逐行列出套件即可，也可以用 <code>套件名稱==版本號</code> 的方式指定套件版本。由於測試的程式碼只用到 requests，因此這邊列上 requests 就可以了。</p>
-<pre><code>requests
+<pre tabindex="0"><code>requests
 </code></pre><h3 id="runtimetxt">runtime.txt</h3>
 <p>用來標示 Python 的版本，這篇文當下的版本為</p>
-<pre><code>python-3.7.6
+<pre tabindex="0"><code>python-3.7.6
 </code></pre><h3 id="本機測試">本機測試</h3>
 <p>到目前為止沒意外的話應該會包含這些東西
 <img src="https://i.imgur.com/cinuyWc.png" alt=""></p>
@@ -207,7 +207,7 @@ result <span style="color:#f92672">=</span> lineNotifyMessage(token, message)
 <p>如果一切安好，就可以開始嘗試部署囉</p>
 <h2 id="部署至-heroku">部署至 Heroku</h2>
 <p>Heroku 的部署只需要用 Git 推送上去就可以了，也就是只需要</p>
-<pre><code># 把所有檔案都加到這次變更
+<pre tabindex="0"><code># 把所有檔案都加到這次變更
 $ git add .
 
 # Commit 所有變動（記得標註解，養成好習慣）
@@ -359,7 +359,7 @@ $ git push heroku master
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -372,6 +372,14 @@ $ git push heroku master
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -405,14 +413,6 @@ $ git push heroku master
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -435,7 +435,7 @@ $ git push heroku master
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -463,7 +463,7 @@ $ git push heroku master
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -103,6 +103,51 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle/">菜雞與物件導向 (14): 依賴反轉原則</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2020-12-13,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a>
+                                    
+                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/ywiHuis.png" alt=""></p>
+<p>在聊依賴反轉之前，先讓我們聊聊什麼是依賴，所謂的依賴就是一種「受到某個東西影響、牽制」的狀態。例如說如果有個像我一樣的肥宅每天一定要來一片雞排才能療癒身心，那我就是依賴雞排；同樣的，如果有個大叔不抽菸就會全身不舒服，就是對香菸有所依賴。當有「必須要藉由某個人事物來達到目的」的狀況時，就是依賴。</p>
+<p>而在程式設計裡面的概念也差不多，如果<strong>Ａ模組直接受到Ｂ模組的影響，我們就稱Ａ依賴了Ｂ</strong>，最明顯的狀況就是Ａ模組需要藉由Ｂ模組的實例來完成某個功能的時候，例如「匯出報表」功能建立了一個「Excel 控制類別」的實例以建立檔案；或是「會員查詢」功能建立了一個「DB 連線」的實例來進入資料庫取得會員資料，諸如此類由Ａ模組直接藉由Ｂ模組的實例來完成想要的動作，就是依賴。</p>
+<h2 id="依賴與耦合">依賴與耦合</h2>
+<p>我們在之前的 <a href="/post/2020/09/oo-8-cohesion-and-coupling">耦合篇</a> 提過，如果模組和另一個模組之間有關連，那這兩者之間就耦合。以此來看，依賴就是一種耦合的關係，那麼，依賴是健康還是不健康的耦合呢？</p>
+<p>現在讓我們用 <a href="/post/2020/07/oo-5-polymorphism">多型篇</a> 用過的「老闆徵工程師」的例子來舉例一下：現在有間小小公司，老闆請來了小明當工程師，並請他開工撰寫產品程式碼。</p>
+<p>當「撰寫產品程式」對「工程師」直接依賴的時候，狀況可能是這樣的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
+{
+    Ming programmer = <span style="color:#66d9ef">new</span> Ming();
+    <span style="color:#66d9ef">var</span> product = programmer.Programming();
+    <span style="color:#66d9ef">return</span> product;
+}
+</code></pre></div><p>過一陣子，老闆發現小明寫出來的東西似乎不太行，於是把小明趕走，另外請了小華。這時候因為「工程師」這個實作類別不一樣了，我們就必須要改一次程式碼：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
+{
+    Hua programmer = <span style="color:#66d9ef">new</span> Hua();
+    <span style="color:#66d9ef">var</span> product = programmer.Programming();
+    <span style="color:#66d9ef">return</span> product;
+}
+</code></pre></div>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle/">菜雞與物件導向 (13): 介面隔離原則</a>
                                     </h1>
                                 </header>
@@ -124,7 +169,7 @@
 <p>事情就從上一篇 <a href="/post/2020/11/oo-12-liskov-substitution-principle">里氏替換原則</a> 的鳥類物流公司開始說起。老闆痛定思痛，決定先用<strong>介面</strong>先規定好物流士們的應徵條件，例如裝貨、卸貨、飛行、必須有帥氣的喙等等。</p>
 <p>這道命令下來後，倉庫們的企鵝都慌了，來檢查的編譯器瘋狂跳出 Error:「您未實作 IBird 的 Fly() 方法！」這下怎麼辦呢，為了要保住飯碗，企鵝們就必須實作出飛行才行，可是企鵝真的就不會飛呀！</p>
 <p>這下子企鵝們只剩下兩個選擇：不實作飛行，但是就不能被當成物流士，最後就會被開除；或是……空實作。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Penguin</span> : IBird
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Penguin</span> : IBird
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Fly()
     {
@@ -348,7 +393,7 @@
 <p><strong>我不在乎你是誰，我只在乎你能做什麼。</strong></p>
 <p>由於介面基本上就是封裝繼承多型抽象之大雜燴，所以我們把前面的小明小華例子稍微修改來用吧。也就是以公司徵人的方式去理解介面。</p>
 <p>介面就像是老闆開出來的要求列表，例如說：要會寫 C#、要會寫 SQL、要會 VB…等等，於是老闆就貼出了徵人啟示，要求新來的員工必須要有 <code>IProgrammer</code> 寫的能力：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> IProgrammer
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> IProgrammer
 {
     <span style="color:#66d9ef">void</span> WriteCSharp();
     <span style="color:#66d9ef">void</span> WriteSQL();
@@ -356,7 +401,7 @@
 }
 </code></pre></div><p>特別注意和前面多型的例子的不同處，<strong>介面只需要先定義好該做的事，裡面怎麼做不需要管；所以只需要宣告要求的方法，不需要撰寫方法本體</strong>。</p>
 <p>於是今天小華就又(?)來面試了，但是他其實並不會寫 C#：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Hua</span> : IProgrammer
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Hua</span> : IProgrammer
 {
     <span style="color:#75715e">// Error: Hua 未實作 IProgrammer.WriteCSharp()
 </span><span style="color:#75715e"></span>
@@ -399,7 +444,7 @@
 <p>有些類別就是這樣，它們負責定義共通的那些特性，<strong>然而它們本身不應該被實體化成一個物件，這種類別我們就應該把它們標記為抽象類別</strong>。</p>
 <p><strong>抽象類別在 C# 裡用 <code>abstract</code> 這個修飾詞來表示</strong>，可以加在類別或方法上。例如 <code>abstract class Animal</code> 就代表動物這個類別是個抽象類別，它不能被實例化。</p>
 <p>而當加在方法上時，例如 <code>public abstract void Eat()</code> 就是代表這個進食的方法無法被叫用，只能由繼承者去重新定義這個方法。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Animal</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Animal</span>
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">void</span> Eat();
@@ -408,7 +453,7 @@
 <p><del>所謂「欲戴王冠，必 Override」</del>，這時候就必須使用<strong>覆寫（<code>override</code>）</strong>。</p>
 <p>覆寫是指對於像是前述的抽象方法時，在同名的方法前加上 <code>override</code> 關鍵字就可以讓程式知道你要覆寫這個方法（你不覆寫的話，編譯器還會生氣）。</p>
 <p>例如前述的 Eat，狗就可以用 <code>public override void Eat()</code> 的方式去覆寫吃東西這個方法：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span> : Animal
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span> : Animal
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;Black&#34;</span>;
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Eat()
@@ -448,7 +493,7 @@
 <p>在此可以先推菜鳥工程師肉豬的這篇 <a href="https://matthung0807.blogspot.com/2018/02/java-overload.html">Java 什麼是多載(Overload), 覆寫(Override), 多型(Polymorphism)</a> 中的說明。其中可以從例子看到儘管狗跟鳥都是繼承自動物這個類別，但對於「移動」這個方法，他們實作的方式並不一樣。這就是多型的範例。</p>
 <p>我個人更喜歡用職位的方式去理解多型。</p>
 <p>被繼承者就像是該職位的工作，例如說：<code>Programmer</code> 要會寫 C#、要會寫 SQL、要會 VB…等等，於是老闆就貼出了徵人啟示，要求新來的員工必須要有 <code>Programmer</code> 寫的能力：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Programmer</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Programmer</span>
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> WriteCSharp()
     {
@@ -465,39 +510,6 @@
 }
 </code></pre></div>……
                                     <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-5-polymorphism/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2020/07/oo-4-inheritance/">菜雞與物件導向 (4): 繼承</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2020-7-12,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a>
-                                    
-                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <p><img src="https://i.imgur.com/g9FZ3WN.png" alt=""></p>
-<p>接著要介紹的是繼承 aka 物件導向三大特性之王 aka 濫用榜 Ko.1 ，繼承的強大幾乎和它的惡名一樣可怕，給一個從聊聊程式的這篇 <a href="https://dotblogs.com.tw/initials/2016/06/10/171117">[心得整理] c# 物件導向程式 - 2.封裝、繼承、多型的三大特性</a> 摘過來的例子就可以略知一二了：</p>
-<p><img src="https://i.imgur.com/IFV4xjr.png" alt=""></p>
-<p>什麼也不做，僅僅只是繼承而已，就取得了繼承對象（C# 中稱為基底類別）近乎全部的內容，真是太可怕了。在 C# 中，繼承可以取得基底類別除了 <code>Private</code> 以外所有的內容，例如 <code>Protected</code> 更是表明就是只給繼承使用的。</p>
-<p>由此可見，在減少重複程式碼的路上，繼承無疑達到了全新的高度。</p>
-<p>那麼繼承代表的是什麼意思呢？大多的網站都能直接說明：<strong>繼承是一種「is-a」的關係。當你能說出Ａ是一個Ｂ的時候，就代表你認為Ａ可以繼承自Ｂ</strong>。</p>
-<p>最直覺的繼承例子就是<strong>物種的分類</strong>。舉例來說，狗跟貓都是哺乳類，因此他們都可以繼承到一些哺乳類共通的特徵（例如哺乳、用肺呼吸）。藉由繼承，我們可以把這些哺乳類共有的特徵全部放在哺乳類這個物件，再由狗和貓分別去繼承哺乳類，藉此讓他們都能得到哺乳類的特徵，再進一步發展出自己的特徵和行為，甚至重新定義基底類別的方法為自己所用。因此，像大話設計模式就將繼承說明如：繼承者是對於被繼承者的一種特殊化。</p>
-<p>如此一來，當我們需要修改哺乳類的定義的時候，<strong>只需要修改一個地方，而繼承了哺乳類的這些物件（C# 中稱為衍生類別）全都能夠一起修改到，大大地減少了跑來跑去修改的次數，也讓程式碼的重複大幅度地減少</strong>。</p>
-<p>然而也因為如此，繼承最大的惡名出現了：<strong>繼承享受了取用基底類別內容的好處，卻也必須背負牽一髮動全身的風險</strong>。</p>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-4-inheritance/">閱讀全文</a></p>
                                 </div>
                             </article>
                             <hr color="#D9D9D9" />
@@ -562,7 +574,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -575,6 +587,14 @@
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -608,14 +628,6 @@
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -638,7 +650,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -666,7 +678,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

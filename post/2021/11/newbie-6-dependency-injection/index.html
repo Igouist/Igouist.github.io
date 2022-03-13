@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -152,14 +152,14 @@
 </blockquote>
 <p>接著讓我們從之前依賴反轉的範例開始吧：假設現在有間小小公司，老闆請來了小明當工程師，並請他開工撰寫產品程式碼。</p>
 <p>當「撰寫產品程式」對「工程師」直接依賴的時候，狀況可能是這樣的：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work() <span style="color:#75715e">// 撰寫產品程式
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work() <span style="color:#75715e">// 撰寫產品程式
 </span><span style="color:#75715e"></span>{
     Ming programmer = <span style="color:#66d9ef">new</span> Ming();
     <span style="color:#66d9ef">var</span> product = programmer.Programming();
     <span style="color:#66d9ef">return</span> product;
 }
 </code></pre></div><p>過一陣子，老闆發現小明寫出來的東西似乎不太行，於是把小明趕走，另外請了小華。這時候因為用到的類別不一樣了，我們就必須要改一次程式碼：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
 {
     Hua programmer = <span style="color:#66d9ef">new</span> Hua(); <span style="color:#75715e">// 把小明改成小華
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> product = programmer.Programming();
@@ -167,7 +167,7 @@
 }
 </code></pre></div><!--more-->
 <p>又過了好一陣子，老闆又另外請了小美來工作。於是又要再改一次，而且小美的工作方式甚至不叫做 <code>Programming</code>，而是 <code>Coding</code>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
 {
     Mei programmer = <span style="color:#66d9ef">new</span> Mei(); <span style="color:#75715e">// 把小華改成小美
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> product = programmer.Coding(); <span style="color:#75715e">// 呼叫方法也要改
@@ -186,7 +186,7 @@
 <p>而用工程師的例子來看，應該是要這樣的：「老闆為了製造產品（高階模組的目標），開出了工程師的應徵條件（介面），而小明前來應徵（低階模組的實作）」</p>
 <p>如此一來，依賴就「反轉」了。原本是 <code>高階模組 → 低階模組</code> 的關係，變成了 <code>高階模組 → 介面 ← 低階模組</code>。</p>
 <p>現在讓我們把上面例子的「工程師」改成介面，如此一來就會變成：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 工程師的介面
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 工程師的介面
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> IProgrammer
 {
     <span style="color:#66d9ef">void</span> Programming();
@@ -219,21 +219,21 @@
 <h3 id="建構式注入">建構式注入</h3>
 <p>建構式注入顧名思義就是<strong>從建立物件時的建構式進行注入</strong>。</p>
 <p>現在假設我們有個「法師」的類別，並且它有個屬性用來表示他目前裝備的法術：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Wizard</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Wizard</span>
 {
     <span style="color:#75715e">// 只有建構式時會給值，所以可以順手加上 readonly 防止被變動
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ISpell _spell;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ISpell <span style="color:#ae81ff">_</span>spell;
 
     <span style="color:#75715e">// 在建構式決定要裝備什麼法術
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> Wizard(ISpell spell)
     {
-        <span style="color:#66d9ef">this</span>._spell = spell;
+        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>spell = spell;
     }
 }
 
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> ISpell { } <span style="color:#75715e">// 法術介面
 </span></code></pre></div><p>而建立物件時也使用建構式來傳遞：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
 {
     <span style="color:#66d9ef">var</span> spell = <span style="color:#66d9ef">new</span> Fireball();
     <span style="color:#66d9ef">var</span> wizard = <span style="color:#66d9ef">new</span> Wizard(spell);
@@ -248,7 +248,7 @@
 <p><strong>方法注入適用於「呼叫方法時需要注入不同的依賴對象」時</strong>。例如說該方法在不同地方被呼叫的依賴對象不一樣，又或者是第一次呼叫和第二次呼叫時的依賴對象不一樣。</p>
 <p>這時候我們就可以<strong>在呼叫方法的時候才把依賴對象一起丟進去</strong>，讓使用端來決定要注入什麼。</p>
 <p>例如說我們的法師可以隨身攜帶法術卷軸，使用卷軸就可以放出對應的法術，因此法師類別就會有一個使用法術卷軸的方法。而我們想要等到施法的時候再決定要用哪個卷軸的咒語，這時候就可以把這件事情交給外部決定：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Wizard</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Wizard</span>
 {
     <span style="color:#75715e">// 施放指定的法術卷軸
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Enchant(ISpellScroll scroll)
@@ -263,7 +263,7 @@
     <span style="color:#66d9ef">void</span> CastSpell();<span style="color:#960050;background-color:#1e0010">$$</span>
 }
 </code></pre></div><p>那我們等到實際使用（使用卷軸施法）的時候再把依賴對象（卷軸）丟進去即可</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
 {
 	<span style="color:#66d9ef">var</span> wizard = <span style="color:#66d9ef">new</span> Wizard();
 	<span style="color:#66d9ef">var</span> scroll = <span style="color:#66d9ef">new</span> LevitationCharmScroll();
@@ -286,10 +286,10 @@
 <h3 id="屬性注入">屬性注入</h3>
 <p>接著讓我們來看看屬性注入，顧名思義就是<strong>從公開的屬性丟進去</strong>，因此有時候也會被叫做設值注入。</p>
 <p>通常我們會在 <strong>「外部使用者要能夠隨時切換依賴對象」或是「類別已經有預設值了，但希望提供使用者可以覆寫掉預設值的彈性」時用到屬性注入</strong>，例如說我們的法師同時只能裝備／記得一個法術，預設是火球術，但同時我們又想要可以從外部來替換裝備中的法術：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Wizard</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Wizard</span>
 {
 	<span style="color:#75715e">// 因為屬性注入的特性，請不要 readonly
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> ISpell _spell; 
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> ISpell <span style="color:#ae81ff">_</span>spell; 
     
     <span style="color:#75715e">// 提供屬性給外部控制
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> ISpell Spell
@@ -297,15 +297,15 @@
         <span style="color:#66d9ef">get</span> 
         { 
             <span style="color:#75715e">// 屬性注入的時候要注意: 如果沒有預設值很容易會發生錯誤
-</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">this</span>._spell <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>spell <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
             {
-                <span style="color:#66d9ef">this</span>._spell = <span style="color:#66d9ef">new</span> Fireball();
+                <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>spell = <span style="color:#66d9ef">new</span> Fireball();
             }
-            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>._spell; 
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>spell; 
         }
         <span style="color:#66d9ef">set</span> 
         { 
-            <span style="color:#66d9ef">this</span>._spell = <span style="color:#66d9ef">value</span>; 
+            <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>spell = <span style="color:#66d9ef">value</span>; 
         }
     }
 }
@@ -313,7 +313,7 @@
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> ISpell {} <span style="color:#75715e">// 法術介面
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Fireball</span> : ISpell { } <span style="color:#75715e">// 火球術
 </span></code></pre></div><p>使用的時候就可以直接對屬性賦值，例如我們現在有個法師就不想用火球術，而是使用邪王炎殺黑龍波：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
 {
     <span style="color:#66d9ef">var</span> wizard = <span style="color:#66d9ef">new</span> Wizard();
     <span style="color:#66d9ef">var</span> spell = <span style="color:#66d9ef">new</span> DragonOfTheDarknessFlame();
@@ -346,7 +346,7 @@
 </blockquote>
 <p>我們得有一個地方來做我們的組合根，註冊介面和實體的關係，並讓它可以將實體注入進來。也就是要告訴應用程式：「某某介面 對應的就是 某某實作，請幫我在需要到的時候丟進來。」</p>
 <p>在 .net Core 中，<strong>我們可以在 <code>Startup.cs</code> 的 <code>ConfigureServices</code> 註冊我們需要的服務</strong>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
 {
 	services.AddControllers();
 
@@ -355,14 +355,14 @@
 </code></pre></div><p>例如在先前的 <a href="/post/2021/05/newbie-4-swagger">Swagger</a> 我們就在這裡用套件提供的 <code>AddSwaggerGen()</code> 註冊過 Swagger UI 服務。</p>
 <h3 id="使用-addscoped-來註冊介面對應的實作類別">使用 <code>AddScoped</code> 來註冊介面對應的實作類別</h3>
 <p>而當我們要註冊我們的介面和實作時，例如說我們有一個 <code>ITestService</code> 的介面，希望告訴 DI 容器對應的實作是 <code>TestService</code>，我們就可以<strong>使用 <code>AddScoped&lt;&gt;</code> 來註冊對應關係</strong>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 註冊 ITestService 的實作為 TestService
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 註冊 ITestService 的實作為 TestService
 </span><span style="color:#75715e"></span>services.AddScoped&lt;ITestService, TestService&gt;();
 </code></pre></div><p>如此一來，當 DI 容器發現要注入 <code>ITestService</code> 的場合，就會替我們建構 <code>TestService</code> 並注入。</p>
 <p><img src="https://i.imgur.com/Y5BexuX.png" alt="Image"></p>
 <p>例如說我們的 <code>TestController</code> 的建構式部分如下，可以看到我們有使用建構式注入：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> TestController(ITestService testService)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> TestController(ITestService testService)
 {
-	<span style="color:#66d9ef">this</span>._testService = testService;
+	<span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>testService = testService;
 }
 </code></pre></div><p><strong>當 <code>TestController</code> 建立的時候，DI 容器就會知道需要 <code>ITestService</code> 來注入，並找到我們註冊的 <code>TestService</code> 
 來注入到 <code>TestController</code>。</strong></p>
@@ -371,13 +371,13 @@
 <p>有些朋友可能會有疑問：我的物件建立時還需要做一些處理才能建立，沒辦法直接告訴 <code>AddScoped</code> 就完事了。</p>
 <p>不用擔心，<code>AddScoped</code> 也提供了委派的做法，讓我們可以直接告訴 DI 容器這個實作的產生方法，這個產生過程中我們就能進行一些操作，現在讓我們來示範一次。</p>
 <p>假設我們的 <code>TestService</code> 必須要傳遞一個服務 Token 的字串進去，就會像是這樣：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddScoped&lt;ITestService&gt;(sp =&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddScoped&lt;ITestService&gt;(sp =&gt;
 {
 	<span style="color:#66d9ef">var</span> token = <span style="color:#e6db74">@&#34;TestServiceToken&#34;</span>;
 	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> TestService(token);
 });
 </code></pre></div><p>那如果不只是字串這種寫死的狀況，而是我們基於一些原因，想要指定拿到註冊中其他服務的實作的話，就可以使用委派傳入的 ServiceProvider 來取得目前註冊的內容，例如這個 token 其實是另一個 <code>ITokenService</code> 提供的話：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddScoped&lt;ITestService&gt;(sp =&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddScoped&lt;ITestService&gt;(sp =&gt;
 {
 	<span style="color:#66d9ef">var</span> tokenService = sp.GetRequiredService&lt;ITokenService&gt;();
 	<span style="color:#66d9ef">var</span> token = tokenService.Get();
@@ -434,17 +434,17 @@
 <h2 id="實作">實作</h2>
 <p>現在我們稍微了解了 .net Core 裡的注入方式，接著就延續我們在 <a href="/post/2021/10/newbie-5-3-layer-architecture">分層架構</a> 篇的進度，來把依賴注入導入到我們本系列的 ProjectN 菜雞專案吧。在上一期，我們利用分層的概念將整個流程拆分成 Controller, Service, Repository 三個主要區塊。</p>
 <p>其中有直接依賴的部分，會在 Controller 銜接到 Service 以及 Service 銜接到 Repository 的部份。例如：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
 {
-	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardRepository _cardRepository;
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardRepository <span style="color:#ae81ff">_</span>cardRepository;
 
 	<span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e"></span>	<span style="color:#75715e">/// 建構式
 </span><span style="color:#75715e"></span>	<span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span>	<span style="color:#66d9ef">public</span> CardService()
 	{
-		<span style="color:#66d9ef">this</span>._cardRepository = <span style="color:#66d9ef">new</span> CardRepository();
+		<span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository = <span style="color:#66d9ef">new</span> CardRepository();
 	}
 }
 </code></pre></div><p>可以注意到我們在 <code>CardService</code> 裡面直接 new 了 <code>CardRepository</code> 來使用，這就是直接依賴。</p>
@@ -457,20 +457,20 @@
 </blockquote>
 <h3 id="開始重構為建構式注入">開始重構為建構式注入</h3>
 <p>現在讓我們改成使用建構式注入吧：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
 {
-	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardRepository _cardRepository;
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardRepository <span style="color:#ae81ff">_</span>cardRepository;
 
 	<span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e"></span>	<span style="color:#75715e">/// 建構式
 </span><span style="color:#75715e"></span>	<span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span>	<span style="color:#66d9ef">public</span> CardService(ICardRepository cardRepository)
 	{
-		<span style="color:#66d9ef">this</span>._cardRepository = cardRepository;
+		<span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository = cardRepository;
 	}
 }
 </code></pre></div><p>接著為了要讓 DI 容器知道 <code>ICardRepository</code> 對應的實作是 <code>CardRepository</code>，讓我們前往 <code>Startup.cs</code> 的 <code>ConfigureServices</code> 把它註冊起來：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
 {
 	<span style="color:#75715e">// 註冊 ICardRepository 的實作為 CardRepository
 </span><span style="color:#75715e"></span>	services.AddScoped&lt;ICardRepository, CardRepository&gt;();
@@ -484,22 +484,22 @@
 <p>並且由於這個範例的組合根在展示層，因此和<a href="/post/2021/10/newbie-5-3-layer-architecture">上篇</a>的三層式架構圖略有不同，展示層也會依賴到資料存取層，還請注意。</p>
 </blockquote>
 <p>接著讓我們如法炮製，把 Controller 裡直接依賴的 Service 也拆開吧：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
 <span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
 </span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
 {
-	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardService _cardService;
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardService <span style="color:#ae81ff">_</span>cardService;
 
 	<span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e"></span>	<span style="color:#75715e">/// 建構式
 </span><span style="color:#75715e"></span>	<span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span>	<span style="color:#66d9ef">public</span> CardController(ICardService cardService)
 	{
-		<span style="color:#66d9ef">this</span>._cardService = cardService;
+		<span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService = cardService;
 	}
 }
 </code></pre></div><p>然後補上註冊。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
 {
 	services.AddScoped&lt;ICardService, CardService&gt;();
 
@@ -512,7 +512,7 @@
 </code></pre></div><p>最後再將前面系列用到的一些工具，例如 <a href="/post/2020/07/automapper">AutoMapper</a>, <a href="/post/2021/05/newbie-3-dapper/">Dapper</a> 給注入好（這部分就請根據自己專案的內容調整囉），就完成啦。</p>
 <p>那我們前面有提到，可以用「告訴 DI 容器該物件的產生方法」來做一些額外的事情，這邊就讓我們優化一下。</p>
 <p>我們在先前的 <code>CardRepository</code> 有用私有欄位來存放連線字串：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 卡片管理
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e">/// &lt;seealso cref=&#34;ProjectN.Repository.Interface.ICardRepository&#34; /&gt;
@@ -521,10 +521,10 @@
 	<span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e"></span>	<span style="color:#75715e">/// 連線字串
 </span><span style="color:#75715e"></span>	<span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span> _connectString = <span style="color:#e6db74">@&#34;Server=(LocalDB)\MSSQLLocalDB;Database=Newbie;Trusted_Connection=True;&#34;</span>;
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span> <span style="color:#ae81ff">_</span>connectString = <span style="color:#e6db74">@&#34;Server=(LocalDB)\MSSQLLocalDB;Database=Newbie;Trusted_Connection=True;&#34;</span>;
 }
 </code></pre></div><p>現在我們希望連線字串不要寫死在類別裡，而是用建構式注入的方式丟進去，就會變成：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 卡片管理
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e">/// &lt;seealso cref=&#34;ProjectN.Repository.Interface.ICardRepository&#34; /&gt;
@@ -533,15 +533,15 @@
 	<span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e"></span>	<span style="color:#75715e">/// 連線字串
 </span><span style="color:#75715e"></span>	<span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span> _connectString;
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span> <span style="color:#ae81ff">_</span>connectString;
 
 	<span style="color:#66d9ef">public</span> CardRepository(<span style="color:#66d9ef">string</span> connectString)
 	{
-		<span style="color:#66d9ef">this</span>._connectString = connectString;
+		<span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>connectString = connectString;
 	}
 }
 </code></pre></div><p>接著讓我們回到註冊 <code>ICardRepository</code> 的地方，因為 <code>CardRepository</code> 的建構式現在必須要提供連線字串了，所以我們要改一下 <code>AddScoped</code> 的寫法，把連線字串丟給它：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddScoped&lt;ICardRepository&gt;(sp =&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddScoped&lt;ICardRepository&gt;(sp =&gt;
 {
 	<span style="color:#66d9ef">var</span> connectString = <span style="color:#e6db74">@&#34;Server=(LocalDB)\MSSQLLocalDB;Database=Newbie;Trusted_Connection=True;&#34;</span>;
 	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> CardRepository(connectString);
@@ -559,7 +559,7 @@
 </ul>
 </blockquote>
 <p>因此這邊就把連線字串丟到 <code>appsettings.json</code>，增加一欄 <code>ConnectionString</code>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
   <span style="color:#f92672">&#34;Logging&#34;</span>: {
     <span style="color:#f92672">&#34;LogLevel&#34;</span>: {
       <span style="color:#f92672">&#34;Default&#34;</span>: <span style="color:#e6db74">&#34;Information&#34;</span>,
@@ -571,23 +571,23 @@
   <span style="color:#f92672">&#34;ConnectionString&#34;</span>: <span style="color:#e6db74">&#34;Server=(LocalDB)\\MSSQLLocalDB;Database=Newbie;Trusted_Connection=True;&#34;</span>
 }
 </code></pre></div><p>接著回到 <code>Startup</code> 的建構式，建立一個連線字串的欄位 <code>_connectionString</code> 然後把連線字串讀出來：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Startup</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Startup</span>
 {
-	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span> _connectionString;
+	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span> <span style="color:#ae81ff">_</span>connectionString;
 
 	<span style="color:#66d9ef">public</span> Startup(IConfiguration configuration)
 	{
 		Configuration = configuration;
-		<span style="color:#66d9ef">this</span>._connectionString = configuration.GetValue&lt;<span style="color:#66d9ef">string</span>&gt;(<span style="color:#e6db74">&#34;ConnectionString&#34;</span>);
+		<span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>connectionString = configuration.GetValue&lt;<span style="color:#66d9ef">string</span>&gt;(<span style="color:#e6db74">&#34;ConnectionString&#34;</span>);
 	}
 }
 </code></pre></div><p>這樣我們就完成了 <code>Startup</code> 的連線字串注入囉，只要再把這個字串提供給 <code>CardRepository</code> 就行了：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddScoped&lt;ICardRepository&gt;(sp =&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddScoped&lt;ICardRepository&gt;(sp =&gt;
 {
-	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> CardRepository(_connectionString);
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> CardRepository(<span style="color:#ae81ff">_</span>connectionString);
 });
 </code></pre></div><p>如果沒有多個類別共用同一個連線方法的話，我們也可以直接從組態拿就行了：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddScoped&lt;ICardRepository&gt;(sp =&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddScoped&lt;ICardRepository&gt;(sp =&gt;
 {
 	<span style="color:#66d9ef">var</span> connectionString = <span style="color:#66d9ef">this</span>.Configuration.GetValue&lt;<span style="color:#66d9ef">string</span>&gt;(<span style="color:#e6db74">&#34;ConnectionString&#34;</span>);
 	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> CardRepository(connectionString);
@@ -595,7 +595,7 @@
 </code></pre></div><p>再請根據狀況靈活地運用 <code>Configuration.GetValue</code> 吧！</p>
 <h3 id="補充組合根請稍作分類">補充：組合根請稍作分類</h3>
 <p>這邊補充一下，在實務上由於一個應用程式的注入可能有數十個，因此我們會稍微用註解或可摺疊的 <code>#Region</code> 來分段一下，例如：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
 {
     <span style="color:#75715e">// Service
 </span><span style="color:#75715e"></span>	services.AddScoped&lt;ICardService, CardService&gt;();
@@ -627,7 +627,7 @@
 </span><span style="color:#75715e"></span>	services.AddControllers();
 }
 </code></pre></div><p>而前幾個月的時候，敝司某服務的註冊數量多到一個連滑鼠中鍵滾輪都會痛哭的程度。咱同事就利用對 <code>IServiceCollection</code> 做擴充方法的方式，將組合根分類並切出去管理：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// ProjectN.DIExtensions
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// ProjectN.DIExtensions
 </span><span style="color:#75715e"></span>
 <span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// Service 相關註冊
@@ -700,7 +700,7 @@
 <p>又或是像<strong>過度注入</strong>：當我們用建構式注入的時候，有時候會發現其中幾個類別的建構式會變得超級肥，可能光是傳入參數就多達二三十個等等。</p>
 <p>這時候其實就是一種警示：這個類別為什麼會依賴這個多個對象？是不是這個類別負責的<a href="/post/2020/10/oo-10-single-responsibility-principle">職責</a>太多了？</p>
 <p>諸如此類，依賴注入其實可以<strong>幫助我們重新梳理我們類別的邊界和耦合關係</strong>，讓我們注意到一些需要重構的徵象。這也是最近跟著同事重構的心得哪。</p>
-<p>那麼今天就先到這兒，祝各位解耦順利、斷開魂結。那麼，我們下次見～</p>
+<p>那麼今天就先到這兒，祝各位解耦順利、斷開魂結。那麼，我們<a href="/post/2022/03/newbie-7-fluent-validation">下次</a>見～</p>
 <h2 id="參考資料">參考資料</h2>
 <ul>
 <li><a href="https://www.tenlong.com.tw/products/9789864344987">依賴注入：原理、實作與設計模式 (Dependency Injection: Principles, Practices, Patterns, 2/e)</a></li>
@@ -731,6 +731,7 @@
 <li><a href="/post/2021/05/newbie-4-swagger">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a></li>
 <li><a href="/post/2021/10/newbie-5-3-layer-architecture">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a></li>
 <li><a href="/post/2021/11/newbie-6-dependency-injection">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a></li>
+<li><a href="/post/2022/03/newbie-7-fluent-validation">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a></li>
 </ul>
                         </div>
 
@@ -852,7 +853,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -865,6 +866,14 @@
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -898,14 +907,6 @@
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -928,7 +929,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -956,7 +957,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

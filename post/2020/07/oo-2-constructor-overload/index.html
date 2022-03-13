@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -123,7 +123,7 @@
                             <p><img src="https://i.imgur.com/naCjLay.png" alt=""></p>
 <p>我就直接說了，有用前面的程式碼區塊的人，絕對執行不了。因為我們建立哥布林和戰士這兩張卡片的時候，根本就沒有給他們數值呀！</p>
 <p>雖然可以先呼叫出來再賦值…</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card();
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card();
 goblin.Name = <span style="color:#e6db74">&#34;哥布林&#34;</span>;
 goblin.Attack = <span style="color:#ae81ff">3</span>;
 goblin.Health = <span style="color:#ae81ff">2</span>;
@@ -133,7 +133,7 @@ goblin.Health = <span style="color:#ae81ff">2</span>;
 <h2 id="建構式">建構式</h2>
 <p>事實上，<strong>當我們呼叫 <code>new Card()</code> 的時候</strong>（不覺得這個 () 很有呼叫方法的感覺嗎？）<strong>我們就是正在調用 Card 的建構式</strong>。而當我們沒有特別去定義建構式的時候，就會直接使用內建的建構式去幫我們產生物件。</p>
 <p>現在我們替 Card 新增一個建構式：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
 {
     <span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">int</span> attack, <span style="color:#66d9ef">int</span> health)
     {
@@ -144,7 +144,7 @@ goblin.Health = <span style="color:#ae81ff">2</span>;
     <span style="color:#75715e">/* ... 其他屬性和方法 */</span>
 }
 </code></pre></div><p>在 C# 的時候，建構式必須和類別同名，且不需要定義回傳類型。當我們有了建構式，剛剛的例子就可以改寫成：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;哥布林&#34;</span>, attack: <span style="color:#ae81ff">3</span>, health: <span style="color:#ae81ff">2</span>);
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;哥布林&#34;</span>, attack: <span style="color:#ae81ff">3</span>, health: <span style="color:#ae81ff">2</span>);
 <span style="color:#66d9ef">var</span> warrior = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;戰士&#34;</span> , attack: <span style="color:#ae81ff">4</span>, health: <span style="color:#ae81ff">3</span>);
 warrior.Hit(goblin);
 </code></pre></div><p><strong>建構式也就是建立這個物件時執行的函式</strong>，通常會用來進行初始化，也就是做一些建立物件必要的準備。例如傳遞必要屬性或是建構需要的其他物件、或是給予私有屬性初始值等等，例如說我們的卡牌一建立，就會需要知道它的名字和戰鬥力，這樣才有卡牌的感覺，而不該像一些 <a href="https://zh.wikipedia.org/wiki/%E6%AD%A6%E8%97%A4%E9%81%8A%E6%88%B2">壞決鬥者</a> 邊打牌邊偷偷印卡。</p>
@@ -154,7 +154,7 @@ warrior.Hit(goblin);
 <h2 id="多載">多載</h2>
 <p>當然，有了建構式就會有更多問題。現在我們只有一個方法可以建立卡牌了，這無疑是相當不彈性的，例如說我希望預設的攻擊力和血量就是四呢？實際上我們經常會遇到需要用不同素材去建立一個物件的場合，這時候就必須得提到另一個要點：多載了。</p>
 <p><strong>多載指的就是可以有很多個同樣名字的方法，各自去接不同的參數</strong>。例如說我們的 Card 建構式就可以利用多載來改造一下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
 {
     <span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">int</span> attack, <span style="color:#66d9ef">int</span> health)
     {
@@ -179,7 +179,7 @@ warrior.Hit(goblin);
 }
 </code></pre></div><p>如此一來，我們在建立卡片的時候就能夠有更多選擇了，現在我們可以根據狀況給予需要的參數，剩下的就交給建構式去處理就好。</p>
 <p>實務上，如果規則或是建立的步驟一致的話，為了能夠把規則集中到一個地方方便修改，並且減少多餘的程式碼。我們通常會試著讓其他的建構式去呼叫主要的建構式，在 C# 中，呼叫自己的建構式是使用 <code>: this()</code> 來進行的，例如：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">int</span> attack, <span style="color:#66d9ef">int</span> health)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">int</span> attack, <span style="color:#66d9ef">int</span> health)
 {
     <span style="color:#66d9ef">this</span>.Name = name;
     <span style="color:#66d9ef">this</span>.Attack = attack;
@@ -207,7 +207,7 @@ warrior.Hit(goblin);
 <p>註：看不到圖片的可以直接看 <a href="https://github.com/AutoMapper/AutoMapper/blob/master/src/AutoMapper/IMapper.cs">Github</a></p>
 </blockquote>
 <p>當然隨著多載的應用越來越稀鬆平常，時至今日，我們只要使用<strong>選擇性參數</strong>就可以輕鬆達到一樣的效果囉：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name = <span style="color:#e6db74">&#34;Noname&#34;</span>, <span style="color:#66d9ef">int</span> attack = <span style="color:#ae81ff">5</span>, <span style="color:#66d9ef">int</span> health = <span style="color:#ae81ff">5</span>)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name = <span style="color:#e6db74">&#34;Noname&#34;</span>, <span style="color:#66d9ef">int</span> attack = <span style="color:#ae81ff">5</span>, <span style="color:#66d9ef">int</span> health = <span style="color:#ae81ff">5</span>)
 {
     <span style="color:#66d9ef">this</span>.Name = name;
     <span style="color:#66d9ef">this</span>.Attack = attack;
@@ -345,7 +345,7 @@ warrior.Hit(goblin);
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -358,6 +358,14 @@ warrior.Hit(goblin);
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -391,14 +399,6 @@ warrior.Hit(goblin);
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -421,7 +421,7 @@ warrior.Hit(goblin);
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -449,7 +449,7 @@ warrior.Hit(goblin);
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

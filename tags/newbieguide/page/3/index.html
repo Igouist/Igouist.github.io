@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -103,6 +103,39 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2020/07/oo-4-inheritance/">菜雞與物件導向 (4): 繼承</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2020-7-12,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a>
+                                    
+                                        <a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/g9FZ3WN.png" alt=""></p>
+<p>接著要介紹的是繼承 aka 物件導向三大特性之王 aka 濫用榜 Ko.1 ，繼承的強大幾乎和它的惡名一樣可怕，給一個從聊聊程式的這篇 <a href="https://dotblogs.com.tw/initials/2016/06/10/171117">[心得整理] c# 物件導向程式 - 2.封裝、繼承、多型的三大特性</a> 摘過來的例子就可以略知一二了：</p>
+<p><img src="https://i.imgur.com/IFV4xjr.png" alt=""></p>
+<p>什麼也不做，僅僅只是繼承而已，就取得了繼承對象（C# 中稱為基底類別）近乎全部的內容，真是太可怕了。在 C# 中，繼承可以取得基底類別除了 <code>Private</code> 以外所有的內容，例如 <code>Protected</code> 更是表明就是只給繼承使用的。</p>
+<p>由此可見，在減少重複程式碼的路上，繼承無疑達到了全新的高度。</p>
+<p>那麼繼承代表的是什麼意思呢？大多的網站都能直接說明：<strong>繼承是一種「is-a」的關係。當你能說出Ａ是一個Ｂ的時候，就代表你認為Ａ可以繼承自Ｂ</strong>。</p>
+<p>最直覺的繼承例子就是<strong>物種的分類</strong>。舉例來說，狗跟貓都是哺乳類，因此他們都可以繼承到一些哺乳類共通的特徵（例如哺乳、用肺呼吸）。藉由繼承，我們可以把這些哺乳類共有的特徵全部放在哺乳類這個物件，再由狗和貓分別去繼承哺乳類，藉此讓他們都能得到哺乳類的特徵，再進一步發展出自己的特徵和行為，甚至重新定義基底類別的方法為自己所用。因此，像大話設計模式就將繼承說明如：繼承者是對於被繼承者的一種特殊化。</p>
+<p>如此一來，當我們需要修改哺乳類的定義的時候，<strong>只需要修改一個地方，而繼承了哺乳類的這些物件（C# 中稱為衍生類別）全都能夠一起修改到，大大地減少了跑來跑去修改的次數，也讓程式碼的重複大幅度地減少</strong>。</p>
+<p>然而也因為如此，繼承最大的惡名出現了：<strong>繼承享受了取用基底類別內容的好處，卻也必須背負牽一髮動全身的風險</strong>。</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-4-inheritance/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2020/07/oo-3-encapsulation/">菜雞與物件導向 (3): 封裝</a>
                                     </h1>
                                 </header>
@@ -168,7 +201,7 @@
                                     <p><img src="https://i.imgur.com/naCjLay.png" alt=""></p>
 <p>我就直接說了，有用前面的程式碼區塊的人，絕對執行不了。因為我們建立哥布林和戰士這兩張卡片的時候，根本就沒有給他們數值呀！</p>
 <p>雖然可以先呼叫出來再賦值…</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card();
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card();
 goblin.Name = <span style="color:#e6db74">&#34;哥布林&#34;</span>;
 goblin.Attack = <span style="color:#ae81ff">3</span>;
 goblin.Health = <span style="color:#ae81ff">2</span>;
@@ -178,7 +211,7 @@ goblin.Health = <span style="color:#ae81ff">2</span>;
 <h2 id="建構式">建構式</h2>
 <p>事實上，<strong>當我們呼叫 <code>new Card()</code> 的時候</strong>（不覺得這個 () 很有呼叫方法的感覺嗎？）<strong>我們就是正在調用 Card 的建構式</strong>。而當我們沒有特別去定義建構式的時候，就會直接使用內建的建構式去幫我們產生物件。</p>
 <p>現在我們替 Card 新增一個建構式：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
 {
     <span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">int</span> attack, <span style="color:#66d9ef">int</span> health)
     {
@@ -189,7 +222,7 @@ goblin.Health = <span style="color:#ae81ff">2</span>;
     <span style="color:#75715e">/* ... 其他屬性和方法 */</span>
 }
 </code></pre></div><p>在 C# 的時候，建構式必須和類別同名，且不需要定義回傳類型。當我們有了建構式，剛剛的例子就可以改寫成：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;哥布林&#34;</span>, attack: <span style="color:#ae81ff">3</span>, health: <span style="color:#ae81ff">2</span>);
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;哥布林&#34;</span>, attack: <span style="color:#ae81ff">3</span>, health: <span style="color:#ae81ff">2</span>);
 <span style="color:#66d9ef">var</span> warrior = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;戰士&#34;</span> , attack: <span style="color:#ae81ff">4</span>, health: <span style="color:#ae81ff">3</span>);
 warrior.Hit(goblin);
 </code></pre></div><p><strong>建構式也就是建立這個物件時執行的函式</strong>，通常會用來進行初始化，也就是做一些建立物件必要的準備。例如傳遞必要屬性或是建構需要的其他物件、或是給予私有屬性初始值等等，例如說我們的卡牌一建立，就會需要知道它的名字和戰鬥力，這樣才有卡牌的感覺，而不該像一些 <a href="https://zh.wikipedia.org/wiki/%E6%AD%A6%E8%97%A4%E9%81%8A%E6%88%B2">壞決鬥者</a> 邊打牌邊偷偷印卡。</p>……
@@ -227,7 +260,7 @@ warrior.Hit(goblin);
 <p>物件導向試圖讓抽象的程式碼，更貼近於我們的實際生活，其認為一切是由各式各樣的人事物互動所組成的，因此有了物件這個共通、最基本的概念。</p>
 <p>關於把概念抽象化成物件的過程，可以參考 <a href="https://ithelp.ithome.com.tw/articles/10201905">一個語言如果不改變你的思考方式，就不值得學？談程式語言的本質</a> 這篇，對於抽象化的部份我認為描述得很好。</p>
 <p>現在我們知道，物件就是用來表達「我們知道的某個東西」，且可以是「任何東西」，例如說狗就是一個物件，食物也是一個物件。而這些物件之間會彼此互動，例如說狗有吃東西這個<strong>動作</strong>，我們就能夠試著用物件來表達「狗吃食物」這個動作；同時物件也會有一些專屬於它的<strong>特徵</strong>，例如說狗可能有名字、毛色等等。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">Dog afu = <span style="color:#66d9ef">new</span> Dog(); <span style="color:#75715e">// 阿福是一隻狗
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">Dog afu = <span style="color:#66d9ef">new</span> Dog(); <span style="color:#75715e">// 阿福是一隻狗
 </span><span style="color:#75715e"></span>Console.Write(afu.Color); <span style="color:#75715e">// 阿福是黑色的
 </span><span style="color:#75715e"></span>afu.Eat(food); <span style="color:#75715e">// 阿福會吃食物
 </span></code></pre></div><p>理解物件的概念是相當直覺且迅速的，畢竟你我身邊有著數不清的東西，它們都是一件一件的物件，但這樣的理解還不夠明確。</p>
@@ -236,7 +269,7 @@ warrior.Hit(goblin);
 <p>狗是單純一個物件，還是很多個物件組合而成的？狗肺是物件嗎？細胞是物件嗎？我們要做到什麼程度呢？</p>
 <p>我們需要選擇怎麼去描述「狗」，我們需要將它用程式碼的方式定義出來。</p>
 <p><strong>我們需要類別</strong>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span>
 {
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color;
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Eat(IFood food) { <span style="color:#75715e">/* 進食與消化之類的 */</span> };
@@ -438,7 +471,7 @@ warrior.Hit(goblin);
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -451,6 +484,14 @@ warrior.Hit(goblin);
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -484,14 +525,6 @@ warrior.Hit(goblin);
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -514,7 +547,7 @@ warrior.Hit(goblin);
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -542,7 +575,7 @@ warrior.Hit(goblin);
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

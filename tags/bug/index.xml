@@ -6,11 +6,7 @@
     <description>Recent content in Bug on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Mon, 04 Oct 2021 22:00:00 +0800</lastBuildDate>
-    
-	<atom:link href="https://igouist.github.io/tags/bug/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 04 Oct 2021 22:00:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/tags/bug/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記</title>
       <link>https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/</link>
@@ -25,17 +21,17 @@
 &lt;p&gt;原來是呼叫失敗的人就是在這個 &lt;code&gt;DateTime.ToString()&lt;/code&gt; 的過程中產生了中文字，使得目標 Api 無法將中文字轉換回 DateTime 而發生了錯誤。&lt;/p&gt;
 &lt;p&gt;也就是說：&lt;strong&gt;同一行 DateTime.ToString() 在不同電腦執行竟然不一樣？！&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;為了讓我們更快了解狀況，現在就簡單地使用 Linqpad 進行測試：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Main()
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Main()
 {
     DateTime.Now.ToString().Dump();
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;首先，在我的 Windows 時間設定中，完整時間的格式為 &lt;code&gt;09:40:07&lt;/code&gt; ，也就是 24 小時制。&lt;/p&gt;
 &lt;p&gt;現在讓我們先執行上面這段語法看看：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;// 2021/10/04 21:00:00
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// 2021/10/04 21:00:00
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;接著讓我們變更時間格式看看。&lt;/p&gt;
 &lt;p&gt;以我的 Win10 為例，在 Windows 工具列，也就是畫面的右下角右鍵，選擇 &lt;code&gt;調整日期時間 → 日期時間格式設定 → 變更資料格式&lt;/code&gt;，將時間格式變更為 &lt;code&gt;上午 09:40:07&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;重新啟動 Linqpad 再執行如下：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;// 2021/10/04 下午 09:00:00
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;// 2021/10/04 下午 09:00:00
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;可以看到 &lt;code&gt;下午&lt;/code&gt; 兩個字就蹦出來了！&lt;/p&gt;
 &lt;p&gt;之所以會有這樣的差異，是因為 &lt;code&gt;DateTime.ToString()&lt;/code&gt; 預設轉換的目標格式會是抓取目前執行緒的&lt;strong&gt;文化特性&lt;/strong&gt;。&lt;/p&gt;</description>
     </item>
@@ -49,7 +45,7 @@
       <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TuGp6Lk.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;事發緣由&#34;&gt;事發緣由&lt;/h2&gt;
 &lt;p&gt;在 .net Framework 4.6.2 MVC 的 ApiController 中，某個查詢資料列表的方法除了提供查詢條件的參數以外，還有提供選擇性的分頁參數。也就是像這樣子：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
 &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;Boo&amp;gt; GetBoos(
 &lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; SearchBooParameter parameter,
 &lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; PagingParameter paging = &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;)
@@ -58,7 +54,7 @@
 &lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;}
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;由於需要調整該功能的預設排序，改為由大到小，又不想背負更改大量共用的 &lt;code&gt;PagingParameter&lt;/code&gt; 去影響到其他使用到的地方，決定在 Controller 這裡簡單用預測值加上判斷處理一下就好&lt;/p&gt;
 &lt;p&gt;相信著「若使用者沒有傳遞 paging 相關的參數，應該就會是給定的預設值 &lt;code&gt;null&lt;/code&gt; 吧！」的我，用了 &lt;code&gt;if (paging is null)&lt;/code&gt; 進行判斷：若是 &lt;code&gt;null&lt;/code&gt; 的情況就將其中用來標示排序方向的成員 &lt;code&gt;isDesc&lt;/code&gt; 設定為 true，開開心心交差。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
 &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;Boo&amp;gt; GetBoos(
 &lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; SearchBooParameter parameter,
 &lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; PagingParameter paging = &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;)
@@ -114,7 +110,7 @@
 &lt;p&gt;過程中嘗試了安裝 openssl-libs（會找不到該套件）、下載 Dotnet 的 tar.gz ，再直接對執行檔下 Dotnet 指令起站台（雖然網站起得來，但執行者會是當下的登入身分，也就是 &amp;lsquo;&#39;@連線進來的IP-伺服器位置，而非由本機執行。後續如果有連線資料庫等檢查權限的地方就很容易出錯）&lt;/p&gt;
 &lt;p&gt;最後在 Dotnet Core 的 issue 翻到這篇 &lt;a href=&#34;https://github.com/dotnet/core/issues/930&#34;&gt;Cannot install .NET Core 2.0 on Amazon Linux AMI&lt;/a&gt; 才成功解決。&lt;/p&gt;
 &lt;p&gt;首先先將 openssl-libs 的 SPEC 抓下來，然後給 &lt;a href=&#34;http://linux.vbird.org/linux_basic/0520softwaremanager/0520rpmtarball.php&#34;&gt;RPM&lt;/a&gt; 建置一下。這兩句可以參考一下這篇 &lt;a href=&#34;https://medium.com/linux-%E9%96%8B%E7%99%BC%E5%85%A5%E9%96%80/rpm-%E6%89%93%E5%8C%85-%E7%94%B1%E4%B8%80%E7%AB%85%E4%B8%8D%E9%80%9A%E5%88%B0%E5%8B%95%E6%89%8B%E6%BF%AB%E7%94%A8-%E4%BA%8C-df9eea70bd7b&#34;&gt;RPM 打包︰由一竅不通到動手濫用 (二)&lt;/a&gt; 的說明。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;wget https://github.com/dotnet/core/files/2186067/openssl-libs-ami.spec.txt
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;wget https://github.com/dotnet/core/files/2186067/openssl-libs-ami.spec.txt
 rpmbuild --bb openssl-libs-ami.spec.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>

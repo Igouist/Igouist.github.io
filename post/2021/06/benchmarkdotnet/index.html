@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -160,7 +160,7 @@
 <li>藍方選手：用 <code>new List&lt;&gt;</code> 來建立空串列</li>
 </ul>
 <p>因為我們是要測試兩者做出空串列的差異，至少也要有個類別：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 協力單位，用來當成串列的填充物
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span>
@@ -173,7 +173,7 @@
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar5 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
 }
 </code></pre></div><p>然後讓我們開始正式的佈置，先讓我們<strong>開一個 Class 來當作擂台</strong>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 測試用擂台
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EmptyVSNewList</span>
@@ -181,14 +181,14 @@
 
 }
 </code></pre></div><p>然後請紅方選手上擂台：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 紅方選手
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 紅方選手
 </span><span style="color:#75715e"></span><span style="color:#a6e22e">[Benchmark]</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Empty()
 {
     Enumerable.Empty&lt;Foo&gt;();
 }
 </code></pre></div><p>以及我們的藍方選手：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 藍方選手
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 藍方選手
 </span><span style="color:#75715e"></span><span style="color:#a6e22e">[Benchmark]</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> NewList()
 {
@@ -200,7 +200,7 @@
 <p>但為了閱讀方便，本篇後續會整理成比較簡單的 lambda 寫法，請不要太在意。</p>
 </blockquote>
 <p>選手們就定位之後，<strong>替他們加上 <code>[Benchmark]</code> 的屬性，作為參賽的證明</strong>。現在擂台上應該是長這樣的：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 測試用擂台
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EmptyVSNewList</span>
@@ -220,10 +220,10 @@
     }
 }
 </code></pre></div><p>接著，讓我們回到 <code>Main</code> 方法（或任何你要進行比試的地方），加上：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> summary = BenchmarkRunner.Run&lt;EmptyVSNewList&gt;();
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> summary = BenchmarkRunner.Run&lt;EmptyVSNewList&gt;();
 </code></pre></div><p>讓 BenchmarkRunner 去抓泛型裡面有 <code>[Benchmark]</code> 的選手進行測試。</p>
 <p>以我們這次示範的主控台應用程式來說，可能就會像這樣：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">namespace</span> BenchmarkDotnetTest
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">namespace</span> BenchmarkDotnetTest
 {
     <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
     {
@@ -277,7 +277,7 @@
 <p><img src="https://i.imgur.com/UN7wXuS.gif" alt=""></p>
 <p>最後就會有測試結果出爐啦：</p>
 <p><img src="https://i.imgur.com/9UEWxFg.png" alt=""></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">// * Summary *
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">// * Summary *
 
 BenchmarkDotNet=v0.13.0, OS=Windows 10.0.18363.1556 (1909/November2019Update/19H2)
 Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical cores
@@ -293,7 +293,7 @@ Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical core
 </code></pre></div><p>這邊可以看到當年統計課熟悉的那些平均值、標準差等等（不過平常戰效能的時候都直接看平均時間比較多啦）</p>
 <blockquote>
 <p>補充：可以在擂台的類別上（在這個例子中就是 <code>EmptyVSNewList</code>）加上<br/> <strong><code>[MinColumn, MaxColumn]</code></strong> 的 Attribute，就會多出最大值和最小值的資訊囉。例如：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">|  Method |      Mean |     Error |    StdDev |    Median |       Min |       Max |
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">|  Method |      Mean |     Error |    StdDev |    Median |       Min |       Max |
 |-------- |----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|
 |   Empty | 0.0005 ns | 0.0015 ns | 0.0014 ns | 0.0000 ns | 0.0000 ns | 0.0054 ns |
 | NewList | 3.7158 ns | 0.0490 ns | 0.0459 ns | 3.7072 ns | 3.6365 ns | 3.8187 ns |
@@ -303,7 +303,7 @@ Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical core
 <p>就像我們前面提到的：效能比較的時候，<strong>除了時間以外，也不能忘了空間</strong>！也就是說，我們還必須考量到記憶體的用量才可以。</p>
 <p>我們在前一段知道了 <code>Enumerable.Empty</code> 比 <code>new List&lt;&gt;</code> 快，但是記憶體的使用呢？現在就讓我們來確認一下吧。</p>
 <p>想要加上記憶體的測試，我們只需要在擂台的類別上，加上 <code>[MemoryDiagnoser]</code> 就行啦：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 測試用擂台
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span><span style="color:#a6e22e">[MemoryDiagnoser]</span>
@@ -314,7 +314,7 @@ Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical core
 }
 </code></pre></div><p>接著讓我們看看結果：</p>
 <p><img src="https://i.imgur.com/D1hIAFl.png" alt=""></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">// * Summary *
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">// * Summary *
 
 BenchmarkDotNet=v0.13.0, OS=Windows 10.0.18363.1556 (1909/November2019Update/19H2)
 Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical cores
@@ -339,7 +339,7 @@ Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical core
 <p>現在我們已經考量了執行時間和記憶體，接下來要問的就是：<strong>那在不同的啟動環境之下會有差別嗎？</strong></p>
 <p>例如說同樣的比較，在 .NET Core 跟 .NET framework 都成立嗎？不需要開好幾個專案來測，在 BenchmarkDotnet，我們可以用 <code>Jobs</code> 來搞定。</p>
 <p>現在讓我們試試看在擂台上掛上對應 .NET Core 的 <code>[SimpleJob(RuntimeMoniker.NetCoreApp30)]</code> 和 .NET Framework 4.7.2 的 <code>[SimpleJob(RuntimeMoniker.Net472)]</code> 來試試吧：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 測試用擂台
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span><span style="color:#a6e22e">[MemoryDiagnoser]</span>
@@ -351,14 +351,14 @@ Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical core
 <span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> NewList() =&gt; <span style="color:#66d9ef">new</span> List&lt;Foo&gt;();
 }
 </code></pre></div><p>接著我們要編輯專案檔，<strong>用多目標的方式把指定的框架加上去</strong>，否則直接執行的話會跑出 <code>N/A</code>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;TargetFrameworks&gt;</span>netcoreapp3.0;net472<span style="color:#f92672">&lt;/TargetFrameworks&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;TargetFrameworks&gt;</span>netcoreapp3.0;net472<span style="color:#f92672">&lt;/TargetFrameworks&gt;</span>
 <span style="color:#f92672">&lt;PlatformTarget&gt;</span>AnyCPU<span style="color:#f92672">&lt;/PlatformTarget&gt;</span>
 </code></pre></div><blockquote>
 <p>小提示：專案檔就是 .csproj，除了直接開啟編輯外，也可以從 <code>方案總管 -&gt; (對專案右鍵) -&gt; 編輯專案檔</code> 來開啟呦。</p>
 <p>此外，多目標的說明和加入方式，也可以參照 Gelis 技術隨筆 的這篇 <a href="http://gelis-dotnet.blogspot.com/2019/12/targetframeworks-net72-netstandard21.html">使用多目標 TargetFrameworks 來讓 net72 可參考 .netstandard2.1 通過編譯並可使用</a></p>
 </blockquote>
 <p>以示範專案為例，加入後的 <code>csproj</code> 檔案的 <code>&lt;PropertyGroup&gt;</code> 可能會長得這樣：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;PropertyGroup&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;PropertyGroup&gt;</span>
     <span style="color:#f92672">&lt;OutputType&gt;</span>Exe<span style="color:#f92672">&lt;/OutputType&gt;</span>
     <span style="color:#f92672">&lt;TargetFrameworks&gt;</span>netcoreapp3.0;net472<span style="color:#f92672">&lt;/TargetFrameworks&gt;</span>
     <span style="color:#f92672">&lt;PlatformTarget&gt;</span>AnyCPU<span style="color:#f92672">&lt;/PlatformTarget&gt;</span>
@@ -368,7 +368,7 @@ Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical core
 </blockquote>
 <p>現在讓我們來執行一次試試吧：</p>
 <p><img src="https://i.imgur.com/UqhTEPp.png" alt=""></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">// * Summary *
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">// * Summary *
 
 BenchmarkDotNet=v0.13.0, OS=Windows 10.0.18363.1556 (1909/November2019Update/19H2)
 Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical cores
@@ -389,7 +389,7 @@ Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical core
 <h2 id="使用-exporters-來產生報表">使用 Exporters 來產生報表</h2>
 <p>現在確定哪一組寫法效能比較好了。想要說服大大改用新寫法，怎麼辦呢？當然是 <del>自己偷偷改</del> 要拿出證據說服大大啦！</p>
 <p>剛好，BenchmarkDotnet 也提供了產出報表的功能，並且可以輸出成 HTML、Markdown 等格式，只需要加上對應的屬性就可以囉，例如 <strong><code>[HtmlExporter]</code></strong>、<strong><code>[CsvExporter]</code></strong>，現在讓我們一股腦都丟上去看看：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 測試用擂台
 </span><span style="color:#75715e">/// &lt;/summary&gt;
 </span><span style="color:#75715e"></span><span style="color:#a6e22e">[HtmlExporter]</span>
@@ -420,7 +420,7 @@ Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical core
 <h2 id="用-params-來指定數值">用 Params 來指定數值</h2>
 <p>最後補充一下：有時候我們測試的對象，可能也會受到內容物的影響。</p>
 <p>例如一些純計算的方法，可能就會受到數值大小的影響，這時候我們就可以<strong>使用 <code>Params</code> 的屬性來指定數值</strong>，並觀察不同狀況下的表現。例如：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ParamsTest</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ParamsTest</span>
 {
 <span style="color:#a6e22e">    [Params(10, 10000)]</span>
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> A { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
@@ -431,7 +431,7 @@ Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical core
 </span><span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cul() =&gt; A * B;
 }
 </code></pre></div><p>這樣跑出來的結果就會按照指定的數值分組囉：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">| Method |     A |     B |      Mean |     Error |    StdDev | Median |
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">| Method |     A |     B |      Mean |     Error |    StdDev | Median |
 |------- |------ |------ |----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|-------<span style="color:#960050;background-color:#1e0010">:</span>|
 |    Cul |    10 |     2 | 0.0000 ns | 0.0000 ns | 0.0000 ns | 0.0 ns |
 |    Cul |    10 | 20000 | 0.0000 ns | 0.0000 ns | 0.0000 ns | 0.0 ns |
@@ -439,7 +439,7 @@ Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical core
 |    Cul | 10000 | 20000 | 0.0008 ns | 0.0015 ns | 0.0023 ns | 0.0 ns |
 </code></pre></div><p>如果想要把指定的數值另外拉出來做成串列，比較好維護和測試的話，也可以<strong>用 <code>ParamsSource</code> 來指定數值的來源</strong>。</p>
 <p>例如上面的例子，也可以改寫成：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ParamsTest</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ParamsTest</span>
 {
     <span style="color:#66d9ef">public</span> IEnumerable&lt;<span style="color:#66d9ef">int</span>&gt; SourceA =&gt; <span style="color:#66d9ef">new</span> [] { <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">10000</span> };
     <span style="color:#66d9ef">public</span> IEnumerable&lt;<span style="color:#66d9ef">int</span>&gt; SourceB =&gt; <span style="color:#66d9ef">new</span> [] {  <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">20000</span> };
@@ -563,7 +563,7 @@ Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical core
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -576,6 +576,14 @@ Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical core
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -609,14 +617,6 @@ Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical core
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -639,7 +639,7 @@ Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical core
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -667,7 +667,7 @@ Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical core
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>

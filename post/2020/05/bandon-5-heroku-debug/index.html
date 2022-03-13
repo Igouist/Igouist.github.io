@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.74.3" />
+    <meta name="generator" content="Hugo 0.92.2">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -148,13 +148,13 @@
 <p>幸好後來有找到這篇 <a href="https://medium.com/@mikelcbrowne/running-chromedriver-with-python-selenium-on-heroku-acc1566d161c">Running ChromeDriver with Python Selenium on Heroku</a>，裡面有說明如何順利在 Heroku 上跑 Selenium，實在是相當感謝，這邊也記錄一下。</p>
 <p>我們在前面 <a href="/post/2020/05/bandon-4-heroku/">我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku</a> 有提到，Heroku 有建置包這東西來協助建置專案，也提到 Python 是 heroku-buildpack-python。這邊就是建置包去建出 webdriver，因此使用 <code>heroku buildpacks:add</code> 的指令去加入 <code>heroku-buildpack-chromedriver heroku buildpa</code> 這個建置包。</p>
 <p>加入完畢之後，要設定 heroku 的 config 去指定 chrome 和 chrome driver 的路徑</p>
-<pre><code>heroku config:set GOOGLE_CHROME_BIN=/app/.apt/usr/bin/google_chrome
+<pre tabindex="0"><code>heroku config:set GOOGLE_CHROME_BIN=/app/.apt/usr/bin/google_chrome
 heroku config:set CHROMEDRIVER_PATH=/app/.chromedriver/bin/chromedriver
 </code></pre><p>最後只要修改程式就可以囉，一樣先指定好路徑</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">GOOGLE_CHROME_PATH <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;/app/.apt/usr/bin/google_chrome&#39;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">GOOGLE_CHROME_PATH <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;/app/.apt/usr/bin/google_chrome&#39;</span>
 CHROMEDRIVER_PATH <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;/app/.chromedriver/bin/chromedriver&#39;</span>
 </code></pre></div><p>並且在設定 selenium 的部份加上一些 chrome 的參數</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">chrome_options<span style="color:#f92672">.</span>add_argument(<span style="color:#e6db74">&#39;--disable-gpu&#39;</span>)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">chrome_options<span style="color:#f92672">.</span>add_argument(<span style="color:#e6db74">&#39;--disable-gpu&#39;</span>)
 chrome_options<span style="color:#f92672">.</span>add_argument(<span style="color:#e6db74">&#39;--no-sandbox&#39;</span>)
 chrome_options<span style="color:#f92672">.</span>binary_location <span style="color:#f92672">=</span> GOOGLE_CHROME_PATH
 </code></pre></div><p>在初始化 <code>webdriver.Chrome</code> 一併傳入就可以囉！說起來之前 chrome 被我改壞時，也是靠 -no-sandbox 才開起來的，關於 sandbox ，可以看 Google 的 <a href="https://www.google.com/googlebooks/chrome/med_26.html">這篇漫畫</a>，或是這篇 <a href="https://www.inside.com.tw/article/14031-google-chrome-browser-10-years-history">Inside 的簡單介紹</a>。</p>
@@ -281,7 +281,7 @@ chrome_options<span style="color:#f92672">.</span>binary_location <span style="c
     </li>
     
     <li>
-        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (7)</a>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
     </li>
     
     <li>
@@ -294,6 +294,14 @@ chrome_options<span style="color:#f92672">.</span>binary_location <span style="c
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni －－ 實用的 Chrome 分頁書籤搜尋欄">Omni －－ 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
     
     <li>
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
@@ -327,14 +335,6 @@ chrome_options<span style="color:#f92672">.</span>binary_location <span style="c
         <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單">C#: BenchmarkDotnet —— 效能測試好簡單</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-4-swagger/" title="菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -357,7 +357,7 @@ chrome_options<span style="color:#f92672">.</span>binary_location <span style="c
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (24)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (25)</a>
     </li>
     
     <li>
@@ -385,7 +385,7 @@ chrome_options<span style="color:#f92672">.</span>binary_location <span style="c
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (14)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (15)</a>
     </li>
     
     <li>
