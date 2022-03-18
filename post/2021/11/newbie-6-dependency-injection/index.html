@@ -242,7 +242,8 @@
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Fireball</span> : ISpell { } <span style="color:#75715e">// 火球術
 </span></code></pre></div><p>由於建構式注入比較符合封裝的「管控邊界」精神、能明確地讓維護者一看就知道哪些東西會被注入，因此<strong>絕大部分的時候都應該使用建構式注入</strong>，只有特殊情況可以使用方法注入和屬性注入。而到了 .net Core 的時代，預設的 DI 容器更是只提供建構式注入。所以理想的情況下，建構式注入應該要是最熟悉的注入方式。</p>
 <blockquote>
-<p>註：要注意，對建構式做多載可能會造成 DI 容器混淆，不知道要選哪個建構式才好。因此設計類別時盡量以一個建構式為主，或是先了解一下使用的 DI 容器有沒有特別的處理方式再決定。</p>
+<p>補充：要注意，對建構式做多載可能會造成 DI 容器混淆，不知道要選哪個建構式才好。因此設計類別時盡量以一個建構式為主，或是先了解一下使用的 DI 容器有沒有特別的處理方式再決定。</p>
+<p>關於在 .net Core 裡面對多個建構式的對象註冊 DI 的作法，可以參閱黑大的這篇 <a href="https://blog.darkthread.net/blog/aspnet-core-di-multi-constructors/">ASP.NET Core DI 之多建構式問題</a></p>
 </blockquote>
 <h3 id="方法注入">方法注入</h3>
 <p><strong>方法注入適用於「呼叫方法時需要注入不同的依賴對象」時</strong>。例如說該方法在不同地方被呼叫的依賴對象不一樣，又或者是第一次呼叫和第二次呼叫時的依賴對象不一樣。</p>
