@@ -121,7 +121,8 @@
                             <p><img src="https://i.imgur.com/p6aSDH9.png" alt="Image"></p>
 <p>這是俺整理公司新訓內容的第七篇文章，目標是紀錄 FluentValidation 這個好用套件。</p>
 <p><strong>FluentValidation 可以幫我們將 Api 傳入的參數的檢查用更口語、更乾淨的方式去處理</strong>，除了可以將檢查邏輯拆分成單獨的 Validator 類別，更提供了許多內建的檢查規則和自訂的彈性，相當方便。</p>
-<p>並且因為將參數的檢查邏輯整理出去，就可以和 Controller 本身的工作做簡單的拆分，達到關注點分離的目標。現在就讓我們來認識一下這個好用工具吧！</p>
+<p>並且因為將參數的檢查邏輯整理出去，就可以和 Controller 本身的工作做簡單的拆分，達到關注點分離的目標。</p>
+<p>現在就讓我們來認識一下這個好用工具吧！首先要從很久很久以前開始說起…</p>
 <h2 id="前言">前言</h2>
 <p>西元前的某一天，憂心的皇帝在朝堂內繞著柱子走，突然大臣奪門而入。</p>
 <p>大臣：「陛下！敵軍已經攻到國境內啦！」</p>
@@ -134,9 +135,9 @@
 <p>皇帝跌坐在地，懊悔地說：『如果當初有好好把檢查參數跟實際組資料的部份都拆開的話，也許就不會這樣了…』</p>
 <p>「是啊，如果我們有用 FluentValidation…！」</p>
 <h2 id="專案現況">專案現況</h2>
-<p>在上一章我們終於解決掉<a href="/post/2021/11/newbie-6-dependency-injection">依賴注入</a>了，這章就輕鬆一點，來介紹新訓時前輩介紹的好用套件 FluentValidation 吧。</p>
-<p><a href="https://fluentvalidation.net/">FluentValidation</a> 是一套能幫我們把傳入參數的分離出去、用更口語化的方式去撰寫的工具。</p>
-<p>不過這樣說感覺還是挺籠統的，就讓我們直接回到本系列的 API 服務當範例吧。</p>
+<p>大臣提到的 <a href="https://fluentvalidation.net/">FluentValidation</a> 是一套能幫我們把傳入參數的分離出去、用更口語化的方式去撰寫的工具。</p>
+<p>如果當時他們有使用 FluentValidation 來把驗證的邏輯和規則跟原本很亂的 Controller 切分的話，說不定就能及時發現問題吧，可惜哪。</p>
+<p>當然這樣說感覺還是挺籠統的，就讓我們直接回到本系列的卡牌管理 API 服務當範例吧！</p>
 <p>假設我們在新增一張新的卡牌時，會針對裡面的欄位做一連串檢查：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 新增卡片
