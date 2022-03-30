@@ -8,13 +8,13 @@
     <language>zh-Hant-TW</language>
     <lastBuildDate>Sun, 13 Mar 2022 20:03:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/tags/csharp/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>菜雞新訓記 (7): 使用 FluentValidation 來驗證參數吧</title>
+      <title>菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧</title>
       <link>https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/</link>
       <pubDate>Sun, 13 Mar 2022 20:03:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/p6aSDH9.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;這是俺整理公司新訓內容的第七篇文章，目標是紀錄 FluentValidation 這個好用套件。&lt;/p&gt;
+&lt;p&gt;這是俺整理公司新訓內容的第七篇文章，目標是紀錄 Fluent Validation 這個好用套件。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;FluentValidation 可以幫我們將 Api 傳入的參數的檢查用更口語、更乾淨的方式去處理&lt;/strong&gt;，除了可以將檢查邏輯拆分成單獨的 Validator 類別，更提供了許多內建的檢查規則和自訂的彈性，相當方便。&lt;/p&gt;
 &lt;p&gt;並且因為將參數的檢查邏輯整理出去，就可以和 Controller 本身的工作做簡單的拆分，達到關注點分離的目標。&lt;/p&gt;
 &lt;p&gt;現在就讓我們來認識一下這個好用工具吧！首先要從很久很久以前開始說起…&lt;/p&gt;
@@ -23,12 +23,16 @@
 &lt;p&gt;大臣：「陛下！敵軍已經攻到國境內啦！」&lt;/p&gt;
 &lt;p&gt;皇帝大驚：『邊境的那些檢查站和關口難道都陷落了嗎？不可能！』&lt;/p&gt;
 &lt;p&gt;大臣：「陛下，有內奸和敵國勾結，檢查站完全沒檢查！髒資料已經闖進來了！」&lt;/p&gt;
-&lt;p&gt;皇帝喊了一聲：『怎麼可能！讓朕看看！』就打開 Controller 和前一個專案的 Git Log，這一看差點就昏了過去。&lt;/p&gt;
+&lt;p&gt;皇帝喊了一聲：『怎麼可能！讓朕看看！』就打開 Controller 和前一個版本的 Git Log，這一看差點就昏了過去。&lt;/p&gt;
 &lt;p&gt;原來 Controller 的舊程式碼就已經很亂了，檢查參數的條件 if/else 和其他呼叫的方法、組裝資料都雜在一起。結果這次專案改動時，某一行就被內奸改壞了，關鍵的參數竟然沒檢查到！&lt;/p&gt;
 &lt;p&gt;『可，可惡！來人啊，把工程師推出午門斬首！』&lt;/p&gt;
 &lt;p&gt;「皇上！他已經離職啦！」&lt;/p&gt;
 &lt;p&gt;皇帝跌坐在地，懊悔地說：『如果當初有好好把檢查參數跟實際組資料的部份都拆開的話，也許就不會這樣了…』&lt;/p&gt;
-&lt;p&gt;「是啊，如果我們有用 FluentValidation…！」&lt;/p&gt;</description>
+&lt;p&gt;「是啊，如果我們有用 Fluent Validation…！」&lt;/p&gt;
+&lt;h2 id=&#34;專案現況&#34;&gt;專案現況&lt;/h2&gt;
+&lt;p&gt;大臣提到的 &lt;a href=&#34;https://fluentvalidation.net/&#34;&gt;FluentValidation&lt;/a&gt; 是一套能幫我們把傳入參數的分離出去、用更口語化的方式去撰寫的工具。&lt;/p&gt;
+&lt;p&gt;……如果當時他們有使用 Fluent Validation 來把驗證的邏輯和規則跟原本很亂的 Controller 切分的話，說不定就能及時發現問題吧，大概。&lt;/p&gt;
+&lt;p&gt;為了不要步上他們的後塵，就讓我們直接回到本系列的卡牌管理 API 服務來加上這個好用工具吧！&lt;/p&gt;</description>
     </item>
     
     <item>

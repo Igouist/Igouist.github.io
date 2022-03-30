@@ -17,8 +17,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>菜雞新訓記 (7): 使用 FluentValidation 來驗證參數吧 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="菜雞新訓記 (7): 使用 FluentValidation 來驗證參數吧 - 伊果的沒人看筆記本">
+    <title>菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
     <meta property="article:published_time" content="2022-03-13T20:03:00&#43;08:00">
@@ -96,7 +96,7 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">菜雞新訓記 (7): 使用 FluentValidation 來驗證參數吧</h1>
+                            <h1 class="post-title">菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧</h1>
                         </header>
                         <date class="post-meta meta-date">
                             2022-3-13,
@@ -119,7 +119,7 @@
 
                         <div class="post-content">
                             <p><img src="https://i.imgur.com/p6aSDH9.png" alt="Image"></p>
-<p>這是俺整理公司新訓內容的第七篇文章，目標是紀錄 FluentValidation 這個好用套件。</p>
+<p>這是俺整理公司新訓內容的第七篇文章，目標是紀錄 Fluent Validation 這個好用套件。</p>
 <p><strong>FluentValidation 可以幫我們將 Api 傳入的參數的檢查用更口語、更乾淨的方式去處理</strong>，除了可以將檢查邏輯拆分成單獨的 Validator 類別，更提供了許多內建的檢查規則和自訂的彈性，相當方便。</p>
 <p>並且因為將參數的檢查邏輯整理出去，就可以和 Controller 本身的工作做簡單的拆分，達到關注點分離的目標。</p>
 <p>現在就讓我們來認識一下這個好用工具吧！首先要從很久很久以前開始說起…</p>
@@ -128,16 +128,16 @@
 <p>大臣：「陛下！敵軍已經攻到國境內啦！」</p>
 <p>皇帝大驚：『邊境的那些檢查站和關口難道都陷落了嗎？不可能！』</p>
 <p>大臣：「陛下，有內奸和敵國勾結，檢查站完全沒檢查！髒資料已經闖進來了！」</p>
-<p>皇帝喊了一聲：『怎麼可能！讓朕看看！』就打開 Controller 和前一個專案的 Git Log，這一看差點就昏了過去。</p>
+<p>皇帝喊了一聲：『怎麼可能！讓朕看看！』就打開 Controller 和前一個版本的 Git Log，這一看差點就昏了過去。</p>
 <p>原來 Controller 的舊程式碼就已經很亂了，檢查參數的條件 if/else 和其他呼叫的方法、組裝資料都雜在一起。結果這次專案改動時，某一行就被內奸改壞了，關鍵的參數竟然沒檢查到！</p>
 <p>『可，可惡！來人啊，把工程師推出午門斬首！』</p>
 <p>「皇上！他已經離職啦！」</p>
 <p>皇帝跌坐在地，懊悔地說：『如果當初有好好把檢查參數跟實際組資料的部份都拆開的話，也許就不會這樣了…』</p>
-<p>「是啊，如果我們有用 FluentValidation…！」</p>
+<p>「是啊，如果我們有用 Fluent Validation…！」</p>
 <h2 id="專案現況">專案現況</h2>
 <p>大臣提到的 <a href="https://fluentvalidation.net/">FluentValidation</a> 是一套能幫我們把傳入參數的分離出去、用更口語化的方式去撰寫的工具。</p>
-<p>如果當時他們有使用 FluentValidation 來把驗證的邏輯和規則跟原本很亂的 Controller 切分的話，說不定就能及時發現問題吧，可惜哪。</p>
-<p>當然這樣說感覺還是挺籠統的，就讓我們直接回到本系列的卡牌管理 API 服務當範例吧！</p>
+<p>……如果當時他們有使用 Fluent Validation 來把驗證的邏輯和規則跟原本很亂的 Controller 切分的話，說不定就能及時發現問題吧，大概。</p>
+<p>為了不要步上他們的後塵，就讓我們直接回到本系列的卡牌管理 API 服務來加上這個好用工具吧！</p>
 <p>假設我們在新增一張新的卡牌時，會針對裡面的欄位做一連串檢查：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 新增卡片
@@ -191,15 +191,15 @@
     <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
 }
 </code></pre></div><p>可以看到這個新增卡片的方法中，真正操作的只有最後呼叫相關服務來寫入資料的部份，前面就是針對參數做一整串的 if 檢查。隨著傳入參數要檢查的東西變多，檢查的過程也會越來越大坨。</p>
-<p>這時候，<strong>只要有了 FluentValidation，我們就可以在參數檢查上做得更好！</strong></p>
-<h2 id="安裝-fluentvalidation">安裝 FluentValidation</h2>
+<p>這時候，<strong>只要有了 Fluent Validation，我們就可以在參數檢查上做得更好！</strong></p>
+<h2 id="安裝-fluent-validation">安裝 Fluent Validation</h2>
 <p>因為我們的示範專案是 .net Core 的 Api，所以讓我們安裝 FluentValidation.AspNetCore</p>
 <p><img src="https://i.imgur.com/5ubV1VG.png" alt=""></p>
 <blockquote>
-<p>註：這包裡面包含了 FluentValidation 本體和支援 Dotnet Core 的 DI（DependencyInjection）工具。如果習慣將驗證部分拆成其他類別庫，或是不需要 DI 的朋友可以嘗試安裝 FluentValidation 就好。</p>
+<p>註：這包裡面包含了 Fluent Validation 本體和支援 Dotnet Core 的 DI（DependencyInjection）工具。如果習慣將驗證部分拆成其他類別庫，或是不需要 DI 的朋友可以嘗試安裝 Fluent Validation 就好。</p>
 </blockquote>
 <h2 id="撰寫-validator">撰寫 Validator</h2>
-<p>要使用 FluentValidation 來驗證參數，<strong>首先我們必須建立一個針對該參數的驗證器（Validator），並繼承 <code>AbstractValidator&lt;T&gt;</code></strong>。</p>
+<p>要使用 Fluent Validation 來驗證參數，<strong>首先我們必須建立一個針對該參數的驗證器（Validator），並繼承 <code>AbstractValidator&lt;T&gt;</code></strong>。</p>
 <p>其中 <code>&lt;T&gt;</code> 的泛型選擇驗證對象的類別即可，接著就可以在 Validator 的建構式來註冊我們要的驗證邏輯。</p>
 <p>現在就讓我們針對前面例子的 <code>CardParameter</code> 來建立 <code>CardParameterValidator</code> 吧：</p>
 <p><img src="https://i.imgur.com/BWDZX6R.png" alt=""></p>
@@ -218,7 +218,7 @@
 }
 </code></pre></div><h3 id="使用內建的驗證規則">使用內建的驗證規則</h3>
 <p>現在我們已經針對 <code>CardParameter</code> 建立了驗證器，接著讓我們處理驗證邏輯的部分吧。</p>
-<p>當我們要驗證某個欄位的時候，就需要使用 <code>RuleFor</code> 來告訴驗證器現在驗證的欄位，後面再利用 FluentValidation 提供的各種驗證語法來進行驗證。</p>
+<p>當我們要驗證某個欄位的時候，就需要使用 <code>RuleFor</code> 來告訴驗證器現在驗證的欄位，後面再利用 Fluent Validation 提供的各種驗證語法來進行驗證。</p>
 <p>例如我們前面的「卡片的攻擊力不應為負數」，也就是 Attack 必須大於等於０，這邊就可以使用 <code>GreaterThanOrEqualTo</code>：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則
@@ -578,7 +578,7 @@
 <p><img src="https://i.imgur.com/omN0dax.png" alt="Image"></p>
 <p>可以看到回傳的確變成了我們驗證失敗的訊息。</p>
 <h2 id="註冊-validator-來自動進行驗證">註冊 Validator 來自動進行驗證</h2>
-<p>不過都已經到了 .net Core 時代，<a href="/post/2021/11/newbie-6-dependency-injection/">依賴注入</a> 已經是內建的功能下，還要用 <code>new</code> 一個驗證器這種直接依賴的方式還是有點不太舒服……所以 FluentValidation 也有提供自動驗證的作法！</p>
+<p>不過都已經到了 .net Core 時代，<a href="/post/2021/11/newbie-6-dependency-injection/">依賴注入</a> 已經是內建的功能下，還要用 <code>new</code> 一個驗證器這種直接依賴的方式還是有點不太舒服……所以 Fluent Validation 也有提供自動驗證的作法！</p>
 <p>首先讓我們到熟悉的 <code>Startup.cs</code> → <code>ConfigureServices</code> 進行註冊：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddFluentValidation();
 services.AddTransient&lt;IValidator&lt;CardParameter&gt;, CardParameterValidator&gt;();
@@ -609,11 +609,11 @@ services.AddTransient&lt;IValidator&lt;CardParameter&gt;, CardParameterValidator
 }
 </code></pre></div><p>然後讓我們用 Swagger 再試一次看看：</p>
 <p><img src="https://i.imgur.com/YLRkBg0.png" alt="Image"></p>
-<p>可以看到 FluentValidation 自動幫我們擋了下來！</p>
+<p>可以看到 Fluent Validation 自動幫我們擋了下來！</p>
 <h2 id="小結">小結</h2>
 <p>當檢查參數的過程越來越冗長，為了做到關注點分離、讓方法本體更專注在流程上的處理，我們會選擇將檢查參數的邏輯拆分出去，例如拆成一個私有的 Function 等等。</p>
-<p>這時候 FluentValidation 就提供了我們一個更棒、更優雅的選擇。</p>
-<p>本篇稍微記錄了 FluentValidation 的基本用法，足夠應付大多數的使用場景。簡單小結如下：</p>
+<p>這時候 Fluent Validation 就提供了我們一個更棒、更優雅的選擇。</p>
+<p>本篇稍微記錄了 Fluent Validation 的基本用法，足夠應付大多數的使用場景。簡單小結如下：</p>
 <ul>
 <li>繼承 <code>AbstractValidator&lt;T&gt;</code> 來實作我們的驗證器
 <ul>
@@ -659,12 +659,12 @@ services.AddTransient&lt;IValidator&lt;CardParameter&gt;, CardParameterValidator
 <p>那麼，我們下回見～</p>
 <h2 id="參考資料">參考資料</h2>
 <ul>
-<li><a href="https://dotblogs.com.tw/supershowwei/2016/04/30/005529">料理佳餚 - 讓 FluentValidation 把參數的檢查條件口語化 | 軟體主廚的程式料理廚房 - 點部落 (dotblogs.com.tw)</a></li>
+<li><a href="https://dotblogs.com.tw/supershowwei/2016/04/30/005529">料理佳餚 - 讓 Fluent Validation 把參數的檢查條件口語化 | 軟體主廚的程式料理廚房 - 點部落 (dotblogs.com.tw)</a></li>
 <li><a href="https://progressbar.tw/posts/117">C# .Net MVC 06. 驗證參數- 透過FluentValidation (progressbar.tw)</a></li>
 <li><a href="https://eugenesu0515.github.io/2021/08/24/fluent-validation/">DotnetCore 後端驗證神器:Fluent Validation | Eugene&rsquo;s Blog (eugenesu0515.github.io)</a></li>
-<li><a href="https://docs.fluentvalidation.net/en/latest/aspnet.html">ASP.NET Core — FluentValidation documentation</a></li>
+<li><a href="https://docs.fluentvalidation.net/en/latest/aspnet.html">ASP.NET Core — Fluent Validation documentation</a></li>
 <li><a href="https://dotblogs.com.tw/shadowkk/2019/07/23/140127">Fluent Validation 使用ActionFilter來驗證參數 | 菜鳥工程師訓練營 - 點部落 (dotblogs.com.tw)</a></li>
-<li><a href="https://www.xcode.me/post/5849">基于 .NET 的 FluentValidation 验证教程-零度 (xcode.me)</a></li>
+<li><a href="https://www.xcode.me/post/5849">基于 .NET 的 Fluent Validation 验证教程-零度 (xcode.me)</a></li>
 <li><a href="https://docs.fluentvalidation.net/en/latest/built-in-validators.html">FluentValidation documentation</a></li>
 </ul>
 <h2 id="同系列文章">同系列文章</h2>
@@ -676,7 +676,7 @@ services.AddTransient&lt;IValidator&lt;CardParameter&gt;, CardParameterValidator
 <li><a href="/post/2021/05/newbie-4-swagger">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a></li>
 <li><a href="/post/2021/10/newbie-5-3-layer-architecture">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a></li>
 <li><a href="/post/2021/11/newbie-6-dependency-injection">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a></li>
-<li><a href="/post/2022/03/newbie-7-fluent-validation">菜雞新訓記 (7): 使用 FluentValidation 來驗證傳入參數吧</a></li>
+<li><a href="/post/2022/03/newbie-7-fluent-validation">菜雞新訓記 (7): 使用 Fluent Validation 來驗證傳入參數吧</a></li>
 </ul>
 <h2 id="附錄fluentvalidation-內建驗證方法-小抄">附錄：FluentValidation 內建驗證方法 小抄</h2>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
@@ -710,7 +710,7 @@ services.AddTransient&lt;IValidator&lt;CardParameter&gt;, CardParameterValidator
 {
     <span style="color:#66d9ef">public</span> CardValidator()
     {
-        <span style="color:#75715e">// FluentValidation 的 驗證器請參照
+        <span style="color:#75715e">// Fluent Validation 的 驗證器請參照
 </span><span style="color:#75715e"></span>        <span style="color:#75715e">// https://docs.fluentvalidation.net/en/latest/built-in-validators.html
 </span><span style="color:#75715e"></span>
 		<span style="color:#75715e">// 驗證失敗時即停止
@@ -879,7 +879,7 @@ services.AddTransient&lt;IValidator&lt;CardParameter&gt;, CardParameterValidator
   <ul>
     <li><a href="#前言">前言</a></li>
     <li><a href="#專案現況">專案現況</a></li>
-    <li><a href="#安裝-fluentvalidation">安裝 FluentValidation</a></li>
+    <li><a href="#安裝-fluent-validation">安裝 Fluent Validation</a></li>
     <li><a href="#撰寫-validator">撰寫 Validator</a>
       <ul>
         <li><a href="#使用內建的驗證規則">使用內建的驗證規則</a></li>
@@ -927,7 +927,7 @@ services.AddTransient&lt;IValidator&lt;CardParameter&gt;, CardParameterValidator
 <ul class="widget-list">
     
     <li>
-        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 FluentValidation 來驗證參數吧">菜雞新訓記 (7): 使用 FluentValidation 來驗證參數吧</a>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧</a>
     </li>
     
     <li>
