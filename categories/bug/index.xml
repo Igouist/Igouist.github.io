@@ -15,11 +15,11 @@
       <guid>https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/EMdGkwr.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;事發緣由&#34;&gt;事發緣由&lt;/h2&gt;
-&lt;p&gt;在某套件中提供了某方法，它能讓使用者傳入多個參數，該方法再將各個參數組合為 QueryString 去指定的 Url 呼叫 Api 取值。&lt;/p&gt;
-&lt;p&gt;這邊先不論把 Api 接口封裝到套件中的做法，神奇的是同樣的套件、同樣的語法，在不同人的電腦上執行，卻是一個成功一個失敗。&lt;/p&gt;
-&lt;p&gt;經查後發現，該方法的參數中包含一欄型別為 DateTime 的資料，並且會把該欄位的值拿來 ToString() 再做為參數之一傳遞給目標 Api。&lt;/p&gt;
-&lt;p&gt;原來是呼叫失敗的人就是在這個 &lt;code&gt;DateTime.ToString()&lt;/code&gt; 的過程中產生了中文字，使得目標 Api 無法將中文字轉換回 DateTime 而發生了錯誤。&lt;/p&gt;
-&lt;p&gt;也就是說：&lt;strong&gt;同一行 DateTime.ToString() 在不同電腦執行竟然不一樣？！&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;咱們內部套件中有個方法，會將各個參數組合為 QueryString 去打指定的 Api。就是這麼稀鬆平常的場景，神奇的事情就發生了。&lt;/p&gt;
+&lt;p&gt;同樣的套件、同樣的語法，在團隊中兩個人的電腦上安裝執行，卻是一個成功一個失敗。&lt;/p&gt;
+&lt;p&gt;原來該方法的參數中，包含一欄型別為 DateTime 的資料，並且會把該欄位的值拿來 ToString() 再做為參數傳遞給目標 Api。&lt;/p&gt;
+&lt;p&gt;而呼叫失敗的人就是在這個 &lt;code&gt;DateTime.ToString()&lt;/code&gt; 的過程中&lt;strong&gt;產生了中文字&lt;/strong&gt;，使得目標 Api 接到參數後，無法將中文字轉換回 DateTime 而發生了錯誤。&lt;/p&gt;
+&lt;p&gt;問題就浮現了：&lt;strong&gt;同一行 DateTime.ToString() 在不同電腦執行的結果竟然不一樣？！&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;為了讓我們更快了解狀況，現在就簡單地使用 Linqpad 進行測試：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Main()
 {

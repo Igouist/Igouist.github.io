@@ -285,11 +285,11 @@
                                 <div class="post-content">
                                     <p><img src="https://i.imgur.com/EMdGkwr.png" alt="Image"></p>
 <h2 id="事發緣由">事發緣由</h2>
-<p>在某套件中提供了某方法，它能讓使用者傳入多個參數，該方法再將各個參數組合為 QueryString 去指定的 Url 呼叫 Api 取值。</p>
-<p>這邊先不論把 Api 接口封裝到套件中的做法，神奇的是同樣的套件、同樣的語法，在不同人的電腦上執行，卻是一個成功一個失敗。</p>
-<p>經查後發現，該方法的參數中包含一欄型別為 DateTime 的資料，並且會把該欄位的值拿來 ToString() 再做為參數之一傳遞給目標 Api。</p>
-<p>原來是呼叫失敗的人就是在這個 <code>DateTime.ToString()</code> 的過程中產生了中文字，使得目標 Api 無法將中文字轉換回 DateTime 而發生了錯誤。</p>
-<p>也就是說：<strong>同一行 DateTime.ToString() 在不同電腦執行竟然不一樣？！</strong></p>
+<p>咱們內部套件中有個方法，會將各個參數組合為 QueryString 去打指定的 Api。就是這麼稀鬆平常的場景，神奇的事情就發生了。</p>
+<p>同樣的套件、同樣的語法，在團隊中兩個人的電腦上安裝執行，卻是一個成功一個失敗。</p>
+<p>原來該方法的參數中，包含一欄型別為 DateTime 的資料，並且會把該欄位的值拿來 ToString() 再做為參數傳遞給目標 Api。</p>
+<p>而呼叫失敗的人就是在這個 <code>DateTime.ToString()</code> 的過程中<strong>產生了中文字</strong>，使得目標 Api 接到參數後，無法將中文字轉換回 DateTime 而發生了錯誤。</p>
+<p>問題就浮現了：<strong>同一行 DateTime.ToString() 在不同電腦執行的結果竟然不一樣？！</strong></p>
 <p>為了讓我們更快了解狀況，現在就簡單地使用 Linqpad 進行測試：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
 {
