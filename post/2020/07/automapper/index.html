@@ -162,6 +162,12 @@
 <p>註：對於欄位之間有使用 <code>ForMember</code> 來處理過內容再轉換的型別，建議在轉換型別時，也就是實際 mapper.Map() 的時候，稍做註解提醒一下。</p>
 <p>尤其是會將 Mapper 的 Config 集中整理的架構裡更應該要對額外的操作做揭露，這樣對彼此都好。真的。</p>
 </blockquote>
+<blockquote>
+<p>補充：AutoMapper 在轉換像是 <code>IEnumerable&lt;T&gt;</code> 這類的集合時，預設會將來源為 Null 的成員轉換成空集合（而非 Null）</p>
+<p>如果希望 Null 就好好轉換成 Null 的朋友，可以在建立設定檔時用 <code>cfg.AllowNullCollections = true;</code> 來讓所有為 Null 的空集合轉換對象都乖乖保持 Null</p>
+<p>也能夠在 ForMember 的時候使用 AllowNull 來針對欄位指定規則。例如 <code>ForMember(x =&gt; x.Members, y =&gt; y.AllowNull())</code></p>
+<p>需要更詳細說明的朋友，也可以參照官方文檔的 <a href="https://docs.automapper.org/en/stable/Lists-and-arrays.html#handling-null-collections">Handling null collections</a> 一節</p>
+</blockquote>
 <h3 id="忽略指定的欄位">忽略指定的欄位</h3>
 <p>除了會有欄位名稱和來源的不同以外，最常遇到的應該就是兩個類別之間大多數欄位雖然對映，但某幾個欄位是沒有對映的。例如傳送給前端使用時一併送出其他來源的資料，但資料由資料表取出時並沒有這個欄位，必須轉換以後再呼叫別的方法去補上資料。<strong>如果直接使用 Map 來進行轉換，就會發生找不到對映欄位的錯誤。這時候就可以使用 <code>Ignore</code> 來忽略掉指定的欄位</strong>。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
