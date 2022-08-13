@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-92586970-4"></script>
+    <script async>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-92586970-4');
+    </script>
+
+    <meta name="generator" content="Hugo 0.92.2">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>queue | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="queue - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+        
+        
+    <meta name="description" content="queue">
+        
+    <meta name="author" content="Igouist">
+    <meta property="og:url" content="https://igouist.github.io/tags/queue/">
+    <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link defer rel="stylesheet" href="/css/normalize.css">
+    
+    <link defer rel="stylesheet" href="/css/style.css">
+    <link defer rel="alternate" type="application/rss+xml+xml" href="https://igouist.github.io/tags/queue/index.xml" title="伊果的沒人看筆記本" />
+    <script async type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    
+    <script data-ad-client="ca-pub-2119949858103459" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script async>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "[map[]]",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+</head>
+
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp-and-dotnet/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    
+                    <h3 class="archive-title">
+                        包含標籤
+                        <span class="keyword">queue</span>
+                        的文章
+                    </h3>
+                    
+
+                    
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2022/08/azure-service-bus/">使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2022-8-13,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/azure">Azure</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/5Vube9E.png" alt="Image"></p>
+<p>在工作上遇到在兩個 Azure 工具間建立訊息佇列（Message Queue）的需求，因此接觸到了 Azure Service Bus（中文：服務匯流排 <del>燴牛排？</del>），在前輩的協助下建立了一組簡單的 Demo，這就來筆記一下。</p>
+<h2 id="什麼是訊息佇列message-queue-mq">什麼是訊息佇列（Message Queue, MQ）</h2>
+<p>首先讓我們簡單認識一下訊息佇列。假設我們有生產者和消費者兩個服務，其中<strong>生產者負責產生資料，而消費者負責消費這些資料</strong>：</p>
+<p><img src="https://i.imgur.com/mg4lXJk.png" alt="Image"></p>
+<p>各位也可以這樣理解：生產者就像是壽司師傅，他會不斷的捏壽司出來；而這時候來了一位大胃王顧客，他就是消費者，會不斷地把壽司吃掉</p>
+<p><img src="https://i.imgur.com/Sk16WdC.png" alt="Image"></p>
+<p>大概對這兩個角色有點認識就行了。那麼，假設我們有兩組 API 服務：其中一個是負責寫入 Log 的服務，而另一個是產品服務。</p>
+<p>產品服務會將 Log 內容丟給 Log 服務去紀錄 Log，這時候產生了這些日誌資料的產品服務就是生產者，而消費這些日誌資料去寫 Log 的服務就是消費者。</p>
+<p>也就是：<strong><code>產品服務（生產者） —— 資料 —&gt; Log 服務（消費者）</code></strong> 這樣的狀況。</p>
+<p>然而像這樣<strong>直接相依的兩個服務，可能就會遇到一些問題：像是消費者突然掛掉，導致生產者也跟著掛掉；又或是消費者的變動和擴展會連帶影響到生產者必須跟著變動等等。</strong></p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2022/08/azure-service-bus/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                    
+
+                    
+
+
+
+
+
+                </div>
+            </div>
+
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    
+    
+    <section class="widget">
+        <h3 class="widget-title">系列文</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E6%88%91%E8%A6%81%E8%A8%82%E4%BE%BF%E7%95%B6/">我要訂便當 (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/08/azure-service-bus/" title="使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧">使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/08/snispate/" title="Snispate —— 方便的截圖小幫手，放下剪取工具和小畫家吧">Snispate —— 方便的截圖小幫手，放下剪取工具和小畫家吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/06/wox-and-everything/" title="使用 Wox &amp; Everything 在 Windows 上得到良好的搜尋體驗">使用 Wox &amp; Everything 在 Windows 上得到良好的搜尋體驗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/06/angle-sharp/" title="C#: 使用 AngleSharp 爬蟲工具來抓取網頁內容吧">C#: 使用 AngleSharp 爬蟲工具來抓取網頁內容吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/06/elder-ring-clear/" title="艾爾登法環　白金！">艾爾登法環　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni —— 實用的 Chrome 分頁書籤搜尋欄">Omni —— 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/" title="菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/10/swagger-enable-authorize/" title="在 Swagger UI 加上驗證按鈕，讓 Request Header 傳遞 Authorize Token">在 Swagger UI 加上驗證按鈕，讓 Request Header 傳遞 Authorize Token</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/azure/">azure (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/bug/">bug (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (26)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/life/">life (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (17)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (18)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (47)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/anglesharp/">anglesharp</a>
+    
+    <a href="https://igouist.github.io/tags/api/">api</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/azure/">azure</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/benchmarkdotnet/">benchmarkdotnet</a>
+    
+    <a href="https://igouist.github.io/tags/bug/">bug</a>
+    
+    <a href="https://igouist.github.io/tags/chrome/">chrome</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/dapper/">dapper</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/game/">game</a>
+    
+    <a href="https://igouist.github.io/tags/git/">git</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/life/">life</a>
+    
+    <a href="https://igouist.github.io/tags/linux/">linux</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/queue/">queue</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/service-bus/">service-bus</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/swagger/">swagger</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/windows/">windows</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">蹭一下</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://kevintsengtw.blogspot.com/" title="mrkt">mrkt 的程式學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://raychiutw.github.io/" title="ray">Ray&#39;s Notes</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">小東西</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+
+    <section class="widget">
+    <h3 class="widget-title">放個廣告加減賺</h3>
+    <ul class="widget-list">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-2119949858103459"
+            data-ad-slot="9031038367"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </ul>
+</section>
+
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019-2022 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        
+        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+        
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>

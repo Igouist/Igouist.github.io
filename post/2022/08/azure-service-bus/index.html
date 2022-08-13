@@ -1,0 +1,1086 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-92586970-4"></script>
+    <script async>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-92586970-4');
+    </script>
+
+    <meta name="generator" content="Hugo 0.92.2">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧 - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2022-08-13T16:50:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2022-08-13T16:50:00&#43;08:00">
+        
+        <meta name="keywords" content="azure service bus, service bus, service bus queue, service bus topic, dotnet core service bus">
+    <meta name="description" content="這篇我們稍微紀錄了訊息佇列（Message Queue）的用途：拆分生產者和消費者的直接依賴，在中間架設佇列來傳遞訊息。以及這樣做的幾個好處：解除耦合、提高擴展、非同步和提供了緩衝區。接著介紹了 Azure 的訊息佇列服務：Azure Service Bus，並對其中的兩種模式：佇列和主題，各做了簡單的範例。最後補充了一些範例能優化的方向；使用 IAzureClientFactory 來注入 Client、保持 Sender 等連線重複使用，以及將連線字串拆出到組態處理。">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/post/2022/08/azure-service-bus/">
+    <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link defer rel="stylesheet" href="/css/normalize.css">
+    
+        <link defer rel="stylesheet" href="/css/prism.css">
+    
+    <link defer rel="stylesheet" href="/css/style.css">
+    <script async type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    
+    <script data-ad-client="ca-pub-2119949858103459" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script async>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "[map[]]",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp-and-dotnet/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2022-8-13,
+                        </date>
+                        
+                        <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/azure">Azure</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+
+                        <div class="post-content">
+                            <p><img src="https://i.imgur.com/5Vube9E.png" alt="Image"></p>
+<p>在工作上遇到在兩個 Azure 工具間建立訊息佇列（Message Queue）的需求，因此接觸到了 Azure Service Bus（中文：服務匯流排 <del>燴牛排？</del>），在前輩的協助下建立了一組簡單的 Demo，這就來筆記一下。</p>
+<h2 id="什麼是訊息佇列message-queue-mq">什麼是訊息佇列（Message Queue, MQ）</h2>
+<p>首先讓我們簡單認識一下訊息佇列。假設我們有生產者和消費者兩個服務，其中<strong>生產者負責產生資料，而消費者負責消費這些資料</strong>：</p>
+<p><img src="https://i.imgur.com/mg4lXJk.png" alt="Image"></p>
+<p>各位也可以這樣理解：生產者就像是壽司師傅，他會不斷的捏壽司出來；而這時候來了一位大胃王顧客，他就是消費者，會不斷地把壽司吃掉</p>
+<p><img src="https://i.imgur.com/Sk16WdC.png" alt="Image"></p>
+<p>大概對這兩個角色有點認識就行了。那麼，假設我們有兩組 API 服務：其中一個是負責寫入 Log 的服務，而另一個是產品服務。</p>
+<p>產品服務會將 Log 內容丟給 Log 服務去紀錄 Log，這時候產生了這些日誌資料的產品服務就是生產者，而消費這些日誌資料去寫 Log 的服務就是消費者。</p>
+<p>也就是：<strong><code>產品服務（生產者） —— 資料 —&gt; Log 服務（消費者）</code></strong> 這樣的狀況。</p>
+<p>然而像這樣<strong>直接相依的兩個服務，可能就會遇到一些問題：像是消費者突然掛掉，導致生產者也跟著掛掉；又或是消費者的變動和擴展會連帶影響到生產者必須跟著變動等等。</strong></p>
+<p>這樣說可能有些模糊。就以上面提到的 Log 服務來說，在直接呼叫 API 的情況下，我們常常會需要在產品服務中直接明確寫出 Log 服務的資訊，像是站台位址、API 路由之類的。</p>
+<p>但當 Log 服務的站台或方法有變動，我們就被迫要修改產品服務對應的程式碼；而如果我們今天想要擴展 Log 服務的站台，就會需要修改產品服務裡關於 Log 服務的資訊。</p>
+<p>而今天如果 Log 服務短暫掛掉了，可能就會連帶讓我們的產品服務一起掛掉，就算有進行簡單的錯誤處理，當時該記的 Log 內容也就遺失了。</p>
+<p>那面對這些問題的時候怎麼辦呢？這時候我們就可以<strong>在中間加一條佇列</strong>：</p>
+<p><img src="https://i.imgur.com/zrgm8JC.png" alt="Image"></p>
+<p>用前面的壽司店來說就是這樣（很堅持要用壽司舉例）：</p>
+<p><img src="https://i.imgur.com/J6aksgo.png" alt="Image"></p>
+<p>我們加入訊息佇列之後得到的好處有：</p>
+<ul>
+<li><strong>解除耦合</strong>
+<ul>
+<li>生產者不需要知道消費者的資訊，消費者的變動也不會直接影響到生產者</li>
+</ul>
+</li>
+<li><strong>提高擴展性</strong>
+<ul>
+<li>即使我們要增加消費者的數量，變成三個消費者來處理這些資料，也只要讓佇列處理轉發就好，而不用影響生產者</li>
+</ul>
+</li>
+<li><strong>非同步</strong>
+<ul>
+<li>生產者現在只要把訊息丟到佇列就可以回頭繼續做自己的事了，不用管也不用等待消費者處理這些訊息</li>
+</ul>
+</li>
+<li><strong>緩衝</strong>
+<ul>
+<li>佇列讓消費者多了一段緩衝區，即使消費者忙不過來，也有佇列可以讓訊息好好排隊</li>
+</ul>
+</li>
+</ul>
+<p>除此之外還可以玩一些花式處理，例如藉由佇列來做到限制流量等等，此處先按下不表。</p>
+<p>現在我們大概知道訊息佇列在幹嘛了。接著就讓我們來玩玩 Azure Service Bus 這個訊息佇列服務吧！</p>
+<blockquote>
+<p>想更了解 Message Queue 的朋友，也可以閱讀以下的參考資料呦：</p>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s?__biz=MzI4Njg5MDA5NA==&amp;mid=2247485080&amp;idx=1&amp;sn=f223feb9256727bde4387d918519766b">什么是消息队列？ - Java3y (qq.com)</a></li>
+<li><a href="http://ningg.top/message-queue-intro/">消息队列（Message Queue）基本概念 | NingG 个人博客</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10238631">Message Queue - (1) - iT 邦幫忙 (ithome.com.tw)</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10209296">Producer Consumer 模式 - iT 邦幫忙 (ithome.com.tw)</a></li>
+<li><a href="https://aws.amazon.com/tw/message-queue/">什麼是訊息佇列？ (amazon.com)</a></li>
+</ul>
+</blockquote>
+<h2 id="建立-azure-service-bus-資源">建立 Azure Service Bus 資源</h2>
+<blockquote>
+<p>小提示：Azure Service Bus 是一項收費服務，你可能會想先了解<a href="https://azure.microsoft.com/zh-tw/pricing/details/service-bus/">定價</a></p>
+</blockquote>
+<p>首先讓我們先到 <a href="https://portal.azure.com/#home">Azure</a>，建立一個新的資源：</p>
+<p><img src="https://i.imgur.com/s0klgGc.png" alt="Image"></p>
+<p>找到 Service Bus 並新建它：</p>
+<p><img src="https://i.imgur.com/ngSiiJm.png" alt="Image"></p>
+<p><img src="https://i.imgur.com/2TepYi8.png" alt="Image"></p>
+<p>接著選擇要掛資源的帳戶和群組後，替我們的 Service Bus 取個好記的名字。</p>
+<p>這邊示範的方案當然就直接選最便宜的 XD</p>
+<p><img src="https://i.imgur.com/6N744Nr.png" alt="Image"></p>
+<p>除了基本設定以外，這邊還能變更最低 TLS 版本（維護老舊專案者注意，或是準備<a href="https://blog.darkthread.net/blog/net35-tls12-issue/">踩雷</a>）等等，可以頁籤都戳一戳。</p>
+<p>確認之後就可以勇敢按下「審核 + 建立」囉！</p>
+<p>按下後會部署個幾分鐘，部屬完畢之後就可以直接前往資源：</p>
+<p><img src="https://i.imgur.com/oPmqwpi.png" alt="Image"></p>
+<p>抵達我們的 Service Bus 資源頁面：</p>
+<p><img src="https://i.imgur.com/CvH4MgL.png" alt="Image"></p>
+<p>這樣我們就成功建立 Service Bus 啦！</p>
+<h2 id="建立佇列queue">建立佇列（Queue）</h2>
+<p>接著就讓我們來建立一條佇列吧，首先讓我們再看一眼微軟把拔提供的佇列概念圖：</p>
+<p><img src="https://i.imgur.com/Oi1GOqz.png" alt="Image"></p>
+<p>回到 Azure 的 Service Bus 資源頁面，讓我們在畫面上點選建立佇列：</p>
+<p><img src="https://i.imgur.com/lwNmNQR.png" alt="Image"></p>
+<p>並且取個好名字，等等發訊息的時候會用到：</p>
+<p><img src="https://i.imgur.com/6ONWYWT.png" alt="Image"></p>
+<blockquote>
+<p>這邊會需要注意一下「最大傳遞計數」（Maximum Delivery Count），簡單來說就是這封訊息會嘗試傳遞幾次，如果超過次數都沒有傳遞成功就會被丟到無效信件。可以參閱<a href="https://docs.microsoft.com/zh-tw/azure/service-bus-messaging/service-bus-dead-letter-queues#maximum-delivery-count">服務匯流排寄不出的信件佇列的概觀</a>中的「最大傳遞計數」小節</p>
+</blockquote>
+<blockquote>
+<p>這篇我們不會用到下面選項的<a href="https://docs.microsoft.com/zh-tw/azure/service-bus-messaging/service-bus-partitioning">資料分割</a>、到期自動轉<a href="https://docs.microsoft.com/zh-tw/azure/service-bus-messaging/service-bus-dead-letter-queues">無效信件</a>等功能，有興趣的朋友可以再自己研究一下呦～</p>
+</blockquote>
+<p>建立完就會出現在我們 Service Bus 的頁面下方囉：</p>
+<p><img src="https://i.imgur.com/Jbzbei8.png" alt="Image"></p>
+<h2 id="取得-servicebus-的連線字串">取得 ServiceBus 的連線字串</h2>
+<p>接著為了讓我們後續可以順利連線，先到左邊的 <strong>「設定 &gt; 共用存取原則」拿到我們的連線字串</strong>：</p>
+<p><img src="https://i.imgur.com/zYkN3cQ.png" alt="Image"></p>
+<p>這邊直接使用預設的原則，如果有需要控管不同使用者的權限，例如說某組連線字串只能接收或讀取等等，也可以在這邊新增原則來管理。</p>
+<h2 id="將訊息放入佇列">將訊息放入佇列</h2>
+<p>現在 Queue 已經建立起來了，接著就是要嘗試把訊息丟到 Queue 裡面囉！</p>
+<p>為了方便測試，這邊就採用 Visual Studio 內建的 API 樣板，直接在 Controller 簡單建立一個範例，要實際應用在專案中的朋友請再依據專案架構自行調整。</p>
+<p>那麼就讓我們開始吧，首先我們會需要安裝 <strong>Azure.Messaging.ServiceBus</strong> 這個套件包：</p>
+<p><img src="https://i.imgur.com/zXuFLdw.png" alt="Image"></p>
+<p>接著是我們本次的範例用 Controller，以及尚未實作傳送訊息的 Function：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// Service Bus Queue 示範用 Controller
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">[ApiController]</span>
+<span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">QueueController</span> : ControllerBase
+{
+    <span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 將訊息放入佇列
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpPost]</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Enqueue([FromBody] <span style="color:#66d9ef">string</span> context)
+    {
+        <span style="color:#75715e">// 我們要在這裡實作傳送訊息到 Queue 的方法
+</span><span style="color:#75715e"></span>    }
+}
+</code></pre></div><h3 id="傳送一則訊息到佇列">傳送一則訊息到佇列</h3>
+<p>接著讓我們來傳送訊息吧，這邊會需要：</p>
+<ul>
+<li>用 ServiceBus 的連線字串建立 <code>ServiceBusClient</code></li>
+<li>用 Queue 的名稱，從 <code>ServiceBusClient</code> 建立 <code>ServiceBusSender</code></li>
+<li>用 <code>ServiceBusSender</code> 來傳送訊息到 Queue</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 將訊息放入佇列
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpPost]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Enqueue([FromBody] <span style="color:#66d9ef">string</span> context)
+{
+    <span style="color:#75715e">// 用 ServiceBus 的連線字串建立 Client
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 連線字串可以在 Azure ServiceBus 頁面的共用存取原則找到
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// ServiceBusClient 用完記得要呼叫 DisposeAsync() 來關掉
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 或是直接使用 await using 包起來
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
+    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
+
+    <span style="color:#75715e">// 傳遞 Queue 的名字給 CreateSender 方法來建立 Sender
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 和 ServiceBusClient 一樣，有提供 DisposeAsync 方法來關閉
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 或是直接使用 await using 包起來
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
+    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var sender = client.CreateSender(queueName);
+
+    <span style="color:#75715e">// 將要傳送的訊息包裝成 ServiceBusMessage
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 並使用 ServiceBusSender.SendMessageAsync 傳送出去
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> message = <span style="color:#66d9ef">new</span> ServiceBusMessage(context);
+    <span style="color:#66d9ef">await</span> sender.SendMessageAsync(message);
+}
+</code></pre></div><p>提醒一下將來會跑回來複製貼上的我和各位朋朋：記得把連線字串跟佇列名稱改成你的！</p>
+<p>現在讓我們來呼叫ＡＰＩ，丟個 <code>&quot;Hello&quot;</code> 進去試試：</p>
+<p><img src="https://i.imgur.com/ioXGear.png" alt="Image"></p>
+<p>接著到 Azure Service Bus 的 Queue 介面瞧瞧：</p>
+<p><img src="https://i.imgur.com/1zTEnWt.png" alt="Image"></p>
+<p>Queue 也確實收到一則訊息了，看來我們成功把 Hello 丟進去啦！</p>
+<h3 id="傳送一批訊息到佇列">傳送一批訊息到佇列</h3>
+<p>當然在實務上，我們有時候會想要傳一卡車的訊息；例如我們剛處理完一批客戶，想把它們丟到佇列去讓另一個服務做點事，這時候如果還得一封一封塞訊息就有點怪怪的。</p>
+<p>雖然我們可以直接粗暴地把 Sender 的 <code>SendMessageAsync</code> 加個 <code>s</code> 變成 <code>SendMessagesAsync</code>，這樣它就能接收串列的 <code>IEnumerable&lt;ServiceBusMessage&gt;</code> 了（真貼心啊 Azure）</p>
+<p>不過，我們還可以選擇使用 <a href="https://docs.microsoft.com/en-us/dotnet/api/azure.messaging.servicebus.servicebusmessagebatch">ServiceBusMessageBatch</a> 這個工具來幫我們一次發他個一批訊息。</p>
+<p>這邊也示範一下。<del>讓我之後可以回來抄</del></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 將一堆訊息放入佇列
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;param name=&#34;context&#34;&gt;&lt;/param&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpPost(&#34;Batch&#34;)]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task EnqueueBatch([FromBody] <span style="color:#66d9ef">string</span> context)
+{
+    <span style="color:#75715e">// 把訊息重複個十次，假裝我們有很多訊息
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> contexts = Enumerable.Repeat(context, <span style="color:#ae81ff">10</span>);
+    
+    <span style="color:#75715e">// 和單則訊息的場合一樣：先建立 Client 及 Sender
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
+    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
+    
+    <span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
+    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var sender = client.CreateSender(queueName);
+
+    <span style="color:#75715e">// 從 Sender 來建立一批訊息（類似郵差包的感覺）
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">using</span> var messageBatch = <span style="color:#66d9ef">await</span> sender.CreateMessageBatchAsync();
+
+    <span style="color:#75715e">// 將訊息逐一嘗試放到這批訊息中（把信塞到郵差包的感覺）
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> text <span style="color:#66d9ef">in</span> contexts)
+    {
+        <span style="color:#66d9ef">var</span> message = <span style="color:#66d9ef">new</span> ServiceBusMessage(text);
+        <span style="color:#66d9ef">if</span> (messageBatch.TryAddMessage(message) <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">false</span>)
+        {
+            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(<span style="color:#e6db74">&#34;放入訊息失敗&#34;</span>);
+        }
+    }
+
+    <span style="color:#75715e">// 把整個郵差包丟出去
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> sender.SendMessagesAsync(messageBatch);
+}
+</code></pre></div><p>直接多十條訊息，看起來沒問題：</p>
+<p><img src="https://i.imgur.com/iZxuUqu.png" alt="Image"></p>
+<h3 id="傳送物件到佇列">傳送物件到佇列</h3>
+<p>Ｑ：我要傳的東西不是 string 而是物件怎麼辦？</p>
+<p>Ａ：山不轉路轉，就用 <code>JsonSerializer.Serialize</code> 轉成 Json 再傳。</p>
+<p>好的結案。</p>
+<h2 id="從佇列取出訊息">從佇列取出訊息</h2>
+<p>現在我們已經可以把訊息丟到 Queue 中了，接下來當然就是要拿出來囉！</p>
+<p>拿出來的時候也有幾個不同的姿勢，接著就讓我們一一介紹下：</p>
+<h3 id="從佇列中讀取一則訊息">從佇列中讀取一則訊息</h3>
+<p>就像我們要寫入訊息的時候，要從 <code>ServiceBusClient</code> 建立一個 <code>ServiceBusSender</code> 一樣，當我們要寄送訊息的時候，也要從 <code>ServiceBusClient</code> 建立一個 <code>ServiceBusReceiver</code> 來幫我們處理訊息：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 取出佇列中的單則訊息
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpGet(&#34;Receive&#34;)]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">string</span>&gt; Receive()
+{
+    <span style="color:#75715e">// 和發送訊息的場合差不多：先建立 Client 及 Receiver
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
+    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
+
+    <span style="color:#75715e">// 和前面的 ServiceBusSender 一樣，有提供 DisposeAsync 方法讓我們用完時關閉
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 或是直接使用 await using 包起來
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
+    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var receiver = client.CreateReceiver(queueName);
+
+    <span style="color:#75715e">// 使用 ReceiveMessageAsync 來把訊息讀取出來
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> message = <span style="color:#66d9ef">await</span> receiver.ReceiveMessageAsync();
+    <span style="color:#66d9ef">var</span> body = message.Body.ToString();
+
+    <span style="color:#75715e">// 告訴 Service Bus 這個訊息有成功處理了
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> receiver.CompleteMessageAsync(message);
+    <span style="color:#66d9ef">return</span> body;
+}
+</code></pre></div><p>過程相當的簡單，只需要叫 <code>ServiceBusReceiver</code> 幫忙拿出來就好。現在讓我們呼叫試試：</p>
+<p><img src="https://i.imgur.com/H9v2PdJ.png" alt="Image"></p>
+<p>成功取得我們前面放進去的訊息囉！</p>
+<h3 id="從佇列中持續讀取訊息">從佇列中持續讀取訊息</h3>
+<p>前面提到的 <code>ServiceBusReceiver</code> 可以從佇列中取出一則訊息，但大多時候訊息的接收方是被動的，也就說接收方其實並不知道發送方傳訊息了沒、現在有沒有訊息，更不用說主動去取出訊息了。</p>
+<p>因此通常的作法是採用被動接收訊息再進行處理的方式：<strong>事先註冊好處理訊息的事件，當有訊息進來的時候就按照指示去進行處理</strong>，這時候我們就會需要用到 <code>ServiceBusProcessor</code>。</p>
+<p>並且當 <code>ServiceBusProcessor</code> 建立之後，我們會需要告訴他兩件事：我們想怎麼處理訊息、出錯的時候該怎麼辦。</p>
+<p>這些都設定完之後，<code>ServiceBusProcessor</code> 就會上工站崗。只要有訊息進來，它就會按照我們給的小抄去執行</p>
+<p>整理一下，我們接收 Service Queue 的訊息時會需要：</p>
+<ul>
+<li>用 ServiceBus 的連線字串建立 <code>ServiceBusClient</code></li>
+<li>用 Queue 的名稱，從 <code>ServiceBusClient</code> 建立 <code>ServiceBusProcessor</code></li>
+<li>設定接收到訊息之後的處理方式 <code>ProcessMessageAsync</code></li>
+<li>設定出錯時的處理方式 <code>ProcessErrorAsync</code></li>
+<li>讓 <code>ServiceBusProcessor</code> 持續接收訊息</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 取出佇列中的訊息
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Dequeue()
+{
+    <span style="color:#75715e">// 和發送訊息的場合差不多：先建立 Client 及 Processor
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
+    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
+
+    <span style="color:#75715e">// 和前面的 ServiceBusSender 一樣，有提供 DisposeAsync 方法讓我們用完時關閉
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 或是直接使用 await using 包起來
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
+    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var processor = client.CreateProcessor(queueName);
+
+    <span style="color:#75715e">// 告訴 Processor 我們想怎麼處理訊息
+</span><span style="color:#75715e"></span>    processor.ProcessMessageAsync += MessageHandler;
+    processor.ProcessErrorAsync += ErrorHandler;
+
+    <span style="color:#75715e">// 讓 Processor 上工，開始接收訊息
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> processor.StartProcessingAsync();
+
+    <span style="color:#75715e">// 實際上會掛著讓 processor 一直處理送來的訊息
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 這邊示範而已就意思意思跑個一下下
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> Task.Delay(<span style="color:#ae81ff">1000</span>);
+
+    <span style="color:#75715e">// 讓 Processor 下班休息
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> processor.StopProcessingAsync();
+}
+
+<span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 處理佇列訊息
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task MessageHandler(ProcessMessageEventArgs args)
+{
+    <span style="color:#75715e">// 從訊息的 Body 取出我們發送時塞進去的內容
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> message = args.Message.Body.ToString();
+
+    <span style="color:#75715e">// 對訊息內容做你想做的事
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 這邊就印出來看個一眼意思意思
+</span><span style="color:#75715e"></span>    Console.WriteLine(message);
+
+    <span style="color:#75715e">// 告訴 Service Bus 這個訊息有成功處理了
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> args.CompleteMessageAsync(args.Message);
+}
+
+<span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 處理佇列錯誤訊息
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task ErrorHandler(ProcessErrorEventArgs args)
+{
+    <span style="color:#75715e">// 從訊息中取出錯誤訊息$$
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> exception = args.Exception.ToString();
+
+    <span style="color:#75715e">// 對訊息做一些錯誤處理，例如存到日誌系統之類的
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 這邊也印出來看個一眼意思意思
+</span><span style="color:#75715e"></span>    Console.WriteLine(exception);
+}
+</code></pre></div><p>接著就讓我們呼叫看看：</p>
+<p><img src="https://i.imgur.com/hKoP1bD.png" alt="Image"></p>
+<p>可以看見我們確實收到了前面發送的「Hello」，接收大成功！</p>
+<h3 id="補充在-servicebus-explorer-確認訊息">補充：在 ServiceBus Explorer 確認訊息</h3>
+<p>除了直接在程式中接收訊息以外，我們在 Azure 的頁面上其實也能確認傳遞中的訊息內容。</p>
+<p>首先到佇列左側的列表找到「<strong>Service Bus Explorer</strong>」，就可以確認目前佇列和無效信件中的訊息數量。</p>
+<p>點下從頭查看後，就可以看見訊息列表的內容，並點擊訊息查看本文和屬性：</p>
+<p><img src="https://i.imgur.com/Uy6MDui.png" alt="Image"></p>
+<p>在找問題的時候還蠻好用，想確認訊息內容的時候可以試試。</p>
+<h2 id="建立主題topic">建立主題（Topic）</h2>
+<p>除了佇列（Queue）以外，Service Bus 還提供了另一種傳輸模式：主題（Topic）</p>
+<p>讓我們看一下微軟把拔提供的主題概念圖，可以和前面佇列的圖做一下比較：</p>
+<p><img src="https://i.imgur.com/9DwGFgL.png" alt="Image"></p>
+<p>簡單來說就是傳送出去之後，會有<strong>多個接收者</strong>等著收訊息。</p>
+<p>現在就讓我們回到 Azure Service Bus 的頁面，點選上方的「＋主題」來建立新主題吧：</p>
+<p><img src="https://i.imgur.com/pHdPOvz.png" alt="Image"></p>
+<blockquote>
+<p>小提示：主題（Topic）是標準定價層才提供的功能。如果是使用最便宜的基本定價層的朋友，「＋主題」的按鈕應該會反灰的，這時候就要需要從 Service Bus 概觀頁面的「定價層」變更到標準（Standard）才能建立主題。</p>
+<p>當然不同定價層的價格也會不一樣，要記得確認一下價格呦！</p>
+</blockquote>
+<p>接著就和前面的佇列一樣取個好名字：</p>
+<p><img src="https://i.imgur.com/r51t3f8.png" alt="Image"></p>
+<p>建立完就會出現在我們的 ServiceBus 服務中囉：</p>
+<p><img src="https://i.imgur.com/kF998IO.png" alt="Image"></p>
+<p><strong>和單純一對一的佇列不一樣，我們還會需要替主題建立訂用帳戶（Subscriptions）</strong>，這樣主題才知道它到底要把訊息送給哪些對象。</p>
+<p>現在讓我們進入主題的頁面，並找到訂用帳戶：</p>
+<p><img src="https://i.imgur.com/vNJpXfl.png" alt="Image"></p>
+<p>進去之後讓我們來新增訂用帳戶：</p>
+<p><img src="https://i.imgur.com/wRUeMO2.png" alt="Image"></p>
+<p>首先當然是要取個好名字，這邊就先用 Sub1 來當作一號訂閱者的暱稱吧：</p>
+<p><img src="https://i.imgur.com/rQvOrlM.png" alt="Image"></p>
+<blockquote>
+<p>這邊和佇列的時候一樣，要注意「最大傳遞計數」（Maximum Delivery Count），簡單來說就是這封訊息會嘗試傳遞幾次，如果超過次數都沒有傳遞成功就會被丟到無效信件。可以參閱 <a href="https://docs.microsoft.com/zh-tw/azure/service-bus-messaging/service-bus-dead-letter-queues#maximum-delivery-count">服務匯流排寄不出的信件佇列的概觀</a>。</p>
+</blockquote>
+<blockquote>
+<p>另一個要注意的部份是「啟用工作階段」（Session）：簡單來說就是保證訊息的先進先出（FIFO），藉由在訊息中傳遞 SessionID，然後根據訊息的 SessionID 和接收者建立連線之後發送，讓同個工作階段的訊息按照順序發送到同個對象進行處理。</p>
+<p>這功能在佇列和主題都可以使用，但要定價層在標準和以上才支援。當你有多台機器在接收訊息時會對工作階段比較有感覺（例如說 SessionID 寫死然後開了很多台來處理訊息，結果因為工作階段會全部卡在同一台囧）</p>
+<p>詳細可以參閱 <a href="https://docs.microsoft.com/zh-tw/azure/service-bus-messaging/message-sessions#session-features">Azure 服務匯流排訊息工作階段</a>，圖片說明會比較好理解。</p>
+</blockquote>
+<p>建立完畢之後回到訂用帳戶就會看到囉，這邊為了等等能夠示範傳遞訊息給多個訂用者，所以也順便開了 Sub2：</p>
+<p><img src="https://i.imgur.com/q3xkzdQ.png" alt="Image"></p>
+<p>這樣就完成了主題的建立啦！接著讓我們回到程式中來撰寫訊息吧～</p>
+<h2 id="將訊息放入主題">將訊息放入主題</h2>
+<p>基本上來說，訊息放入主題的方式就和放入佇列的方式一樣：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 將訊息放入主題
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpPost]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Enqueue([FromBody] <span style="color:#66d9ef">string</span> context)
+{
+    <span style="color:#75715e">// 用 ServiceBus 的連線字串建立 Client
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 連線字串可以在 Azure ServiceBus 頁面的共用存取原則找到
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// ServiceBusClient 用完記得要呼叫 DisposeAsync() 來關掉
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 或是直接使用 await using 包起來
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
+    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
+
+    <span style="color:#75715e">// 傳遞 Topic 的名字給 CreateSender 方法來建立 Sender
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 和 ServiceBusClient 一樣，有提供 DisposeAsync 方法來關閉
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 或是直接使用 await using 包起來
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> topicName = <span style="color:#e6db74">&#34;YOUR TOPIC NAME&#34;</span>;
+    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var sender = client.CreateSender(topicName);
+
+    <span style="color:#75715e">// 將要傳送的訊息包裝成 ServiceBusMessage
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 並使用 ServiceBusSender.SendMessageAsync 傳送出去
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> message = <span style="color:#66d9ef">new</span> ServiceBusMessage(context);
+    <span style="color:#66d9ef">await</span> sender.SendMessageAsync(message);
+}
+</code></pre></div><p>不用當成大家來找碴，因為真的就是一樣的放法。畢竟 <code>CreateSender</code> 的參數名稱是這樣的：</p>
+<p><img src="https://i.imgur.com/nvj36PO.png" alt="Image"></p>
+<p>事不宜遲，我們馬上就來傳一封訊息試試：</p>
+<p><img src="https://i.imgur.com/oiL6TD9.png" alt="Image"></p>
+<p>這時候再到我們的主題下的訂用帳戶，可以看見訂用帳戶中已經有訊息囉：</p>
+<p><img src="https://i.imgur.com/quyH7n9.png" alt="Image"></p>
+<p>因為主題會傳送給所有訂用帳戶，所以兩個訂用帳戶都會分別收到這則訊息，讓我們也確認一眼吧：</p>
+<p><img src="https://i.imgur.com/uoy84gu.png" alt="Image"></p>
+<p>看來我們很順利地把訊息傳送出去啦！那因為整批放入的方式也和佇列一樣，這邊就不再贅述。接下來就讓我們把訊息取出來試試吧～</p>
+<h2 id="從主題中讀取訊息">從主題中讀取訊息</h2>
+<p>就像前面寫入訊息到主題和寫入佇列長得九成像一樣，讀取也是差不多的。最大的差別是在<strong>建立 Processor 時，需要多給訂用帳戶名稱</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 需要同時告訴 Processor 主題名稱和訂用帳戶名稱
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
+<span style="color:#66d9ef">var</span> subscriptionName = <span style="color:#e6db74">&#34;Sub1&#34;</span>;
+<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var processor = client.CreateProcessor(topicName, subscriptionName);
+</code></pre></div><p>讓我們修改成 Topic 名稱以及剛剛的訂用帳戶 Sub1 之後執行看看：</p>
+<p><img src="https://i.imgur.com/udHkpxn.png" alt="Image"></p>
+<p>可以看見訂用帳戶 Sub1 的訊息也消耗掉了：</p>
+<p><img src="https://i.imgur.com/lpLy4Rd.png" alt="Image"></p>
+<p>而訂用帳戶 Sub2 的訊息還在，當我們使用 Sub2 來建立 Processor 並接收訊息之後才會消失：</p>
+<p><img src="https://i.imgur.com/MvOgIL5.png" alt="Image"></p>
+<p>其餘的部份都和處理佇列的時候一樣。但為了版面一致 <del>我之後回來複製的時候方便</del> 這邊還是附上程式碼：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 取出主題中的訊息
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpGet]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Dequeue()
+{
+    <span style="color:#75715e">// 和發送訊息的場合差不多：先建立 Client 及 Processor
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
+    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
+
+    <span style="color:#75715e">// 和前面的 ServiceBusSender 一樣，有提供 DisposeAsync 方法讓我們用完時關閉
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 或是直接使用 await using 包起來
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 和佇列不一樣的是：需要同時告訴 Processor 主題名稱和訂用帳戶名稱
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> topicName = <span style="color:#e6db74">&#34;YOUR TOPIC NAME&#34;</span>;
+    <span style="color:#66d9ef">var</span> subscriptionName = <span style="color:#e6db74">&#34;YOUR SUBSCRIPTION NAME&#34;</span>;
+    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var processor = client.CreateProcessor(topicName, subscriptionName);
+
+    <span style="color:#75715e">// 告訴 Processor 我們想怎麼處理訊息
+</span><span style="color:#75715e"></span>    processor.ProcessMessageAsync += MessageHandler;
+    processor.ProcessErrorAsync += ErrorHandler;
+
+    <span style="color:#75715e">// 讓 Processor 上工，開始接收訊息
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> processor.StartProcessingAsync();
+
+    <span style="color:#75715e">// 實際上會掛著讓 processor 一直處理送來的訊息
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 這邊就意思意思跑個一下下
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> Task.Delay(<span style="color:#ae81ff">1000</span>);
+
+    <span style="color:#75715e">// 讓 Processor 下班休息
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> processor.StopProcessingAsync();
+}
+
+<span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 處理主題訊息
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task MessageHandler(ProcessMessageEventArgs args)
+{
+    <span style="color:#75715e">// 從訊息的 Body 取出我們發送時塞進去的內容
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> message = args.Message.Body.ToString();
+    
+    <span style="color:#75715e">// 對訊息內容做你想做的事。這邊就印出來看個一眼意思意思
+</span><span style="color:#75715e"></span>    Console.WriteLine(message);
+
+    <span style="color:#75715e">// 告訴 Service Bus 這個訊息有成功處理了
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> args.CompleteMessageAsync(args.Message);
+}
+
+<span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// 處理主題錯誤訊息
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task ErrorHandler(ProcessErrorEventArgs args)
+{
+    <span style="color:#75715e">// 從訊息中取出錯誤訊息
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> exception = args.Exception.ToString();
+
+    <span style="color:#75715e">// 對訊息做錯誤處理，例如存到日誌系統之類的。這邊也印出來看個一眼意思意思
+</span><span style="color:#75715e"></span>    Console.WriteLine(exception);
+}
+</code></pre></div><h2 id="稍作整理">稍作整理</h2>
+<p>我們已經介紹完了 ServiceBus 的兩種主要工具：佇列和主題的基本操作。</p>
+<p>接下來我將稍微對現在的範例程式碼做點簡單的整理，給有興趣的朋友參考。</p>
+<p>其餘的朋友可以直接跳到最後的<a href="#%E5%B0%8F%E7%B5%90">小結</a>。</p>
+<h3 id="使用-iazureclientfactory-搭配依賴注入來建立-azure-client">使用 IAzureClientFactory 搭配依賴注入來建立 Azure Client</h3>
+<p>在範例中我們總是直接 <code>new ServiceBusClient</code>。但根據<a href="https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-performance-improvements?tabs=net-standard-sdk-2#reusing-factories-and-clients">官方建議</a>，ServiceBusClient 應該只建立一份並重複使用，以避免重新連線之類的效能損失。</p>
+<p>針對 <code>ServiceBusClient</code> 的建立和管理，我們可以使用 <code>IAzureClientFactory</code> 來讓它自動控制，替我們管理 Client 的實例和連線，用起來就像 <code>HttpClientFactory</code> 一樣。</p>
+<p>要使用 <code>IAzureClientFactory</code>，我們需要先安裝 <code>Microsoft.Extensions.Azure</code> 套件：</p>
+<p><img src="https://i.imgur.com/vvFZGCE.png" alt="Image"></p>
+<p>現在讓我們移動到 <code>Program.cs</code> 並加上 ServiceBusClient 的註冊：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">builder.Services.AddAzureClients(clientsBuilder =&gt;
+{
+    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
+    
+    clientsBuilder
+        .AddServiceBusClient(connectionString)
+        .WithName(<span style="color:#e6db74">&#34;ServiceBusClient&#34;</span>);
+});
+</code></pre></div><p>看起來應該會像這樣：</p>
+<p><img src="https://i.imgur.com/Uo0IR1g.png" alt="Image"></p>
+<blockquote>
+<p>註：示範專案是使用 .Net 6。如果是使用其他版本或其他 DI 工具的朋友，請再按照自己的狀況調整吧！</p>
+<p>例如在 <code>HostBuilder</code> 的場合，可能就要在 <code>ConfigureServices</code> 中進行配置等等，只能祝各位好運。</p>
+</blockquote>
+<blockquote>
+<p>註：除了 <code>WithName</code> 替 Client 實例取名以外，也可以呼叫 <code>ConfigureOptions</code> 來對 ServiceBusClient 進行各式各樣的設定</p>
+<p>關於 ServiceBusClient 的設定內容可以參閱 <a href="https://docs.microsoft.com/en-us/dotnet/api/azure.messaging.servicebus.servicebusclientoptions">ServiceBusClientOptions</a></p>
+<p>而關於 AddAzureClients 的註冊則可以參閱 <a href="https://stackoverflow.com/questions/68688838/how-to-register-servicebusclient-for-dependency-injection">How to register ServiceBusClient for dependency injection? - stackoverflow</a></p>
+</blockquote>
+<p>現在我們註冊完了。接著只需要回到使用的類別讓 <code>IAzureClientFactory</code> 注入進來就可以囉：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// Service Bus Queue + IAzureClientFactory 示範用 Controller
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">[ApiController]</span>
+<span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">QueueWithDiController</span> : ControllerBase
+{
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ServiceBusClient <span style="color:#ae81ff">_</span>serviceBusClient;
+
+    <span style="color:#66d9ef">public</span> QueueWithDiController(
+        IAzureClientFactory&lt;ServiceBusClient&gt; azureClientFactory)
+    {
+        <span style="color:#75715e">// 使用注入進來的 IAzureClientFactory 來建立 ServiceBusClient
+</span><span style="color:#75715e"></span>        <span style="color:#ae81ff">_</span>serviceBusClient = azureClientFactory.CreateClient(name: <span style="color:#e6db74">&#34;ServiceBusClient&#34;</span>);
+    }
+}
+</code></pre></div><p>接著我們就可以把原本範例中的呼叫也改成使用這個 Client 來操作囉：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
+<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var sender = <span style="color:#ae81ff">_</span>serviceBusClient.CreateSender(queueName);
+</code></pre></div><blockquote>
+<p>註：在前面的<a href="https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-performance-improvements?tabs=net-standard-sdk-2#reusing-factories-and-clients">官方建議</a>中，除了 <code>ServiceBusClient</code> 以外，其實也建議 <code>ServiceBusSender</code>、<code>ServiceBusReceiver</code>、<code>ServiceBusProcessor</code> 這幾個也應該要維持單例，保持和伺服器的連線以減少建立連線的效能和時間損失。</p>
+<p><code>ServiceBusClient</code> 已經藉由前面提到的 <code>IAzureClientFactory</code> 來解決；而像是 <code>ServiceBusSender</code> 的後面三項，我們就需要根據專案的狀況來規劃如何重複使用。</p>
+<p>例如只需要一個 Sender 的場合，我們可以直接在注入的時候註冊成單例；而要和多個 Queue 連線所以需要多個 Sender 的時候，就可以考慮建立一個工廠來管理，並且在工廠裡面優先返回已經建好的實例等等。這部份就請再各位朋友保持柔軟的彈性來處理。</p>
+</blockquote>
+<h3 id="將連線字串抽取到-config">將連線字串抽取到 Config</h3>
+<p>把鏡頭回到我們註冊的地方：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">builder.Services.AddAzureClients(clientsBuilder =&gt;
+{
+    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
+    
+    clientsBuilder
+        .AddServiceBusClient(connectionString)
+        .WithName(<span style="color:#e6db74">&#34;ServiceBusClient&#34;</span>);
+});
+</code></pre></div><p>可以看到現在的連線字串是寫死在 <code>Program.cs</code> 中的（即使是前面的範例也是直接寫死在 Controller）</p>
+<p>但實務上我們大多會將連線字串放在設定檔，例如 Config 或 Appsettings，方便在正式環境或是 Azure 服務上運行時，能夠由外部去設定 or 變更組態來置換連線字串。因此這邊也應該要改成從組態中進行讀取。</p>
+<p>首先讓我們把連線字串丟到 <code>appsettings.json</code> 的 <code>ConnectionStrings</code> 區塊：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#e6db74">&#34;ConnectionStrings&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+    <span style="color:#f92672">&#34;ServiceBus&#34;</span>: <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>
+}
+</code></pre></div><p>那麼我們就可以更彈性靈活地使用連線字串來註冊 Client 囉：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">builder.Services.AddAzureClients(clientsBuilder =&gt;
+{
+    <span style="color:#66d9ef">var</span> connectionString = builder.Configuration
+        .GetConnectionString(<span style="color:#e6db74">&#34;ServiceBus&#34;</span>);
+    
+    clientsBuilder
+        .AddServiceBusClient(connectionString)
+        .WithName(<span style="color:#e6db74">&#34;ServiceBusClient&#34;</span>);
+});
+</code></pre></div><h2 id="小結">小結</h2>
+<p>這篇我們稍微紀錄了訊息佇列（Message Queue）的用途：拆分生產者和消費者的直接依賴，在中間架設佇列來傳遞訊息。以及這樣做的幾個好處：解除耦合、提高擴展、非同步和提供了緩衝區。</p>
+<p>接著介紹了 Azure 的訊息佇列服務：Azure Service Bus，並對其中的兩種模式：佇列和主題，各做了簡單的操作範例。</p>
+<p>最後補充了一些範例能優化的方向；使用 IAzureClientFactory 來注入 Client、保持 Sender 等連線重複使用，以及將連線字串拆出到組態處理。</p>
+<p>當然還有一些進階的使用場景，例如<a href="https://docs.microsoft.com/zh-tw/azure/service-bus-messaging/service-bus-transactions">交易處理</a>、<a href="https://docs.microsoft.com/zh-tw/azure/service-bus-messaging/service-bus-geo-dr">異地複寫</a>等等，但因為這邊還沒有接觸過，就交給需要深入了解的朋朋自行研究囉。</p>
+<p>這算是我第一次接觸 Azure 相關的工具，加減筆記一下簡單的使用場景（傳入訊息到佇列／從佇列取出訊息），範例也已經丟到 <a href="https://github.com/Igouist/ServiceBusDemo">Github</a> 上囉，有缺漏的也歡迎各位朋朋幫忙補充，感謝感謝。</p>
+<p>那麼今天的紀錄就到這邊囉，希望以後還能回來抄。<del>總不會筆記寫完就要改用 RabbitMQ 了吧囧</del></p>
+<h2 id="參考資料">參考資料</h2>
+<ul>
+<li><a href="https://www.dotblogs.com.tw/supershowwei/2022/02/13/221639">[食譜好菜] 比 Azure Queue Storage 功能更完整的 Message Queue 服務 - Azure Service Bus | 軟體主廚的程式料理廚房 - 點部落 (dotblogs.com.tw)</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10240878">訊息服務站 - ServiceBus - iT 邦幫忙：：一起幫忙解決難題，拯救 IT 人的一天 (ithome.com.tw)</a></li>
+<li><a href="https://docs.microsoft.com/zh-tw/azure/service-bus-messaging/service-bus-dotnet-get-started-with-queues">開始使用 Azure 服務匯流排佇列 (.NET) - Azure Service Bus | Microsoft Docs</a></li>
+<li><a href="https://github.com/MicrosoftDocs/azure-docs.zh-tw/blob/master/articles/service-bus-messaging/service-bus-dotnet-get-started-with-queues.md">在 Azure 服務匯流排佇列 (.NET) 中傳送和接收訊息 (github.com)</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10161086">使用 Python 操作 Azure Service Bus Queues - iT 邦幫忙 (ithome.com.tw)</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10161209">使用 Python 操作 Service Bus Topics/Subscriptions - iT 邦幫忙 (ithome.com.tw)</a></li>
+<li><a href="https://www.cnblogs.com/AllenMaster/p/14000933.html">Azure Service Bus（一）入门简介 - Grant_Allen - 博客园 (cnblogs.com)</a></li>
+<li><a href="https://dotblogs.com.tw/AceLee/2019/07/18/195448">建立 Azure Service Bus | 程式碼學習不歸路 - 點部落 (dotblogs.com.tw)</a></li>
+<li><a href="https://dotblogs.com.tw/AceLee/2019/07/18/205733">透過 Service Bus Queue trigger Azure Function | 程式碼學習不歸路 - 點部落 (dotblogs.com.tw)</a></li>
+<li><a href="https://docs.microsoft.com/zh-tw/azure/service-bus-messaging/service-bus-azure-and-service-bus-queues-compared-contrasted">比較 Azure 佇列儲存體和服務匯流排佇列 - Azure Service Bus | Microsoft Docs</a></li>
+<li><a href="https://docs.microsoft.com/zh-tw/azure/event-grid/compare-messaging-services">比較 Azure 傳訊服務 - Azure Event Grid | Microsoft Docs</a></li>
+</ul>
+                        </div>
+
+                        
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/azure">azure</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/service-bus">service-bus</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/queue">queue</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                        <hr />
+<p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2022%2f08%2fazure-service-bus%2f" width="100%" frameborder=0></iframe>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    
+        <section class="widget">
+            <h3 class="widget-title">文章目錄</h3>
+            <ul class="widget-list">
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#什麼是訊息佇列message-queue-mq">什麼是訊息佇列（Message Queue, MQ）</a></li>
+    <li><a href="#建立-azure-service-bus-資源">建立 Azure Service Bus 資源</a></li>
+    <li><a href="#建立佇列queue">建立佇列（Queue）</a></li>
+    <li><a href="#取得-servicebus-的連線字串">取得 ServiceBus 的連線字串</a></li>
+    <li><a href="#將訊息放入佇列">將訊息放入佇列</a>
+      <ul>
+        <li><a href="#傳送一則訊息到佇列">傳送一則訊息到佇列</a></li>
+        <li><a href="#傳送一批訊息到佇列">傳送一批訊息到佇列</a></li>
+        <li><a href="#傳送物件到佇列">傳送物件到佇列</a></li>
+      </ul>
+    </li>
+    <li><a href="#從佇列取出訊息">從佇列取出訊息</a>
+      <ul>
+        <li><a href="#從佇列中讀取一則訊息">從佇列中讀取一則訊息</a></li>
+        <li><a href="#從佇列中持續讀取訊息">從佇列中持續讀取訊息</a></li>
+        <li><a href="#補充在-servicebus-explorer-確認訊息">補充：在 ServiceBus Explorer 確認訊息</a></li>
+      </ul>
+    </li>
+    <li><a href="#建立主題topic">建立主題（Topic）</a></li>
+    <li><a href="#將訊息放入主題">將訊息放入主題</a></li>
+    <li><a href="#從主題中讀取訊息">從主題中讀取訊息</a></li>
+    <li><a href="#稍作整理">稍作整理</a>
+      <ul>
+        <li><a href="#使用-iazureclientfactory-搭配依賴注入來建立-azure-client">使用 IAzureClientFactory 搭配依賴注入來建立 Azure Client</a></li>
+        <li><a href="#將連線字串抽取到-config">將連線字串抽取到 Config</a></li>
+      </ul>
+    </li>
+    <li><a href="#小結">小結</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+            </ul>
+        </section>
+    
+    
+    <section class="widget">
+        <h3 class="widget-title">系列文</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E6%88%91%E8%A6%81%E8%A8%82%E4%BE%BF%E7%95%B6/">我要訂便當 (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/08/azure-service-bus/" title="使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧">使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/08/snispate/" title="Snispate —— 方便的截圖小幫手，放下剪取工具和小畫家吧">Snispate —— 方便的截圖小幫手，放下剪取工具和小畫家吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/06/wox-and-everything/" title="使用 Wox &amp; Everything 在 Windows 上得到良好的搜尋體驗">使用 Wox &amp; Everything 在 Windows 上得到良好的搜尋體驗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/06/angle-sharp/" title="C#: 使用 AngleSharp 爬蟲工具來抓取網頁內容吧">C#: 使用 AngleSharp 爬蟲工具來抓取網頁內容吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/06/elder-ring-clear/" title="艾爾登法環　白金！">艾爾登法環　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni —— 實用的 Chrome 分頁書籤搜尋欄">Omni —— 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/" title="菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/10/swagger-enable-authorize/" title="在 Swagger UI 加上驗證按鈕，讓 Request Header 傳遞 Authorize Token">在 Swagger UI 加上驗證按鈕，讓 Request Header 傳遞 Authorize Token</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/azure/">azure (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/bug/">bug (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (26)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/life/">life (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (17)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (18)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (47)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/anglesharp/">anglesharp</a>
+    
+    <a href="https://igouist.github.io/tags/api/">api</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/azure/">azure</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/benchmarkdotnet/">benchmarkdotnet</a>
+    
+    <a href="https://igouist.github.io/tags/bug/">bug</a>
+    
+    <a href="https://igouist.github.io/tags/chrome/">chrome</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/dapper/">dapper</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/game/">game</a>
+    
+    <a href="https://igouist.github.io/tags/git/">git</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/life/">life</a>
+    
+    <a href="https://igouist.github.io/tags/linux/">linux</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/queue/">queue</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/service-bus/">service-bus</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/swagger/">swagger</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/windows/">windows</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">蹭一下</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://kevintsengtw.blogspot.com/" title="mrkt">mrkt 的程式學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://raychiutw.github.io/" title="ray">Ray&#39;s Notes</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">小東西</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+
+    <section class="widget">
+    <h3 class="widget-title">放個廣告加減賺</h3>
+    <ul class="widget-list">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-2119949858103459"
+            data-ad-slot="9031038367"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </ul>
+</section>
+
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019-2022 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        
+        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
+</body>
+</html>
