@@ -574,6 +574,9 @@
 <p>接下來我將稍微對現在的範例程式碼做點簡單的整理，給有興趣的朋友參考。</p>
 <p>其餘的朋友可以直接跳到最後的<a href="#%E5%B0%8F%E7%B5%90">小結</a>。</p>
 <h3 id="使用-iazureclientfactory-搭配依賴注入來建立-azure-client">使用 IAzureClientFactory 搭配依賴注入來建立 Azure Client</h3>
+<blockquote>
+<p>這一小節會用到 .Net Core 的依賴注入，還沒有概念的朋友可以參照 <a href="/post/2021/11/newbie-6-dependency-injection">使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a></p>
+</blockquote>
 <p>在範例中我們總是直接 <code>new ServiceBusClient</code>。但根據<a href="https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-performance-improvements?tabs=net-standard-sdk-2#reusing-factories-and-clients">官方建議</a>，ServiceBusClient 應該只建立一份並重複使用，以避免重新連線之類的效能損失。</p>
 <p>針對 <code>ServiceBusClient</code> 的建立和管理，我們可以使用 <code>IAzureClientFactory</code> 來讓它自動控制，替我們管理 Client 的實例和連線，用起來就像 <code>HttpClientFactory</code> 一樣。</p>
 <p>要使用 <code>IAzureClientFactory</code>，我們需要先安裝 <code>Microsoft.Extensions.Azure</code> 套件：</p>
