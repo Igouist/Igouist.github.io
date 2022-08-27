@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-92586970-4"></script>
+    <script async>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-92586970-4');
+    </script>
+
+    <meta name="generator" content="Hugo 0.92.2">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2022-08-27T10:09:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2022-08-27T10:09:00&#43;08:00">
+        
+        <meta name="keywords" content="azure service bus, azure functions servicebus trigger, maxAutoRenewDuration">
+    <meta name="description" content="當發現需要執行很久的 ServiceBus Trigger Function 有重複執行的情況出現時，可以嘗試加上訊息鎖定最大持續時間的設定，例如 maxAutoLockRenewalDuration 或是 maxAutoRenewDuration">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/">
+    <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link defer rel="stylesheet" href="/css/normalize.css">
+    
+        <link defer rel="stylesheet" href="/css/prism.css">
+    
+    <link defer rel="stylesheet" href="/css/style.css">
+    <script async type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    
+    <script data-ad-client="ca-pub-2119949858103459" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script async>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "[map[]]",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp-and-dotnet/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2022-8-27,
+                        </date>
+                        
+                        <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/azure">Azure</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/bug">Bug</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+
+                        <div class="post-content">
+                            <p><img src="https://i.imgur.com/00WQGqR.png" alt="Image"></p>
+<h2 id="tldr">TL;DR</h2>
+<p>當發現<strong>需要執行很久的 ServiceBus Trigger Function 有重複執行的情況</strong>出現時，可以嘗試到<a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-bindings-service-bus?tabs=in-process%2Cextensionv5%2Cextensionv3&amp;pivots=programming-language-csharp#hostjson-settings">官方的 Host.json 設定指引</a>，按照 SDK 版本找到對應的「<strong>訊息鎖定最大持續時間</strong>」設定，例如 maxAutoLockRenewalDuration（延伸模組 5.x+）或 maxAutoRenewDuration（Functions 2.x），並加入專案的 Host.json</p>
+<p><strong>因為 ServiceBus 在傳遞訊息之後，如果超過一段時間（MaxAutoRenewDuration）內沒有得到回應，就會解除信件的鎖並嘗試重新傳遞</strong>，這時候如果原先的 Function 仍在執行，就會一前一後重複執行 Function 並發生許多光怪陸離的事，例如寫入兩筆資訊、重複複製資料之類的。</p>
+<p>建議如果調整了有 ServiceBus Trigger Function 的 Azure Functions Timeout 設定時，或是發現某支 ServiceBus Trigger 的 Functions 執行時間過長，就要一併注意 MaxAutoRenewDuration 的設定，避免重複執行的情況出現。</p>
+<h2 id="事發原由">事發原由</h2>
+<p>工作時將一段需要呼叫其他 API、執行相當久的程式片段搬上 Azure Functions，並使用 <a href="/post/2022/08/azure-service-bus">Service Bus</a> 來傳遞訊息觸發 Functions 執行，這時卻發現 <strong>Function 被執行了兩次</strong>！</p>
+<p>現在就讓我們來重建當時的情況吧。首先我們有個 Service Bus Trigger 的 Azure Function，這邊就直接從 Visual Studio 提供的<a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/dotnet-isolated-process-guide">已隔離（Isolated）</a>範本進行建立。</p>
+<p>為了重現執行很久的特點，我們讓它 Delay 個八分鐘，並在開始和結束的時候告訴我們一下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
+</span><span style="color:#75715e">/// ServiceBus Trigger 測試用 Function
+</span><span style="color:#75715e">/// &lt;/summary&gt;
+</span><span style="color:#75715e">/// &lt;param name=&#34;myQueueItem&#34;&gt;My queue item.&lt;/param&gt;
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">[Function(&#34;ServiceBusTriggerSample&#34;)]</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Run(
+<span style="color:#a6e22e">    [ServiceBusTrigger(
+</span><span style="color:#a6e22e">        queueName: &#34;%QueueName%&#34;,
+</span><span style="color:#a6e22e">        Connection = &#34;ServiceBus&#34;)]</span>
+    <span style="color:#66d9ef">string</span> myQueueItem)
+{
+    <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;開始處理訊息: {myQueueItem}&#34;</span>, myQueueItem);
+
+    <span style="color:#66d9ef">await</span> Task.Delay(<span style="color:#66d9ef">new</span> TimeSpan(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">0</span>));
+    
+    <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;結束處理訊息: {myQueueItem}&#34;</span>, myQueueItem);
+}
+</code></pre></div><p>並且簡單地用之前 <a href="/post/2022/08/azure-service-bus">Service Bus 文章</a> 的範例送個 &ldquo;Hello&rdquo; 進去 Queue 裡，準備觸發 Function：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">async</span> Task Main()
+{
+	<span style="color:#66d9ef">var</span> context = <span style="color:#e6db74">&#34;Hello!&#34;</span>;
+	
+	<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(<span style="color:#ae81ff">_</span>connectionString);
+	<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var sender = client.CreateSender(<span style="color:#ae81ff">_</span>queueName);
+	<span style="color:#66d9ef">var</span> message = <span style="color:#66d9ef">new</span> ServiceBusMessage(context);
+	<span style="color:#66d9ef">await</span> sender.SendMessageAsync(message);
+}
+</code></pre></div><p>在 Function 接收到訊息後，讓我們觀察 Console：</p>
+<p><img src="https://i.imgur.com/dBFWz2p.png" alt="Image"></p>
+<p><strong>可以發現第一次執行尚未結束的時候，大概經過五分鐘就又執行了第二次！</strong></p>
+<h2 id="調整訊息鎖定最大持續時間">調整訊息鎖定最大持續時間</h2>
+<p>原先以為是 Function 執行失敗導致 ServiceBus 重新傳遞之類的狀況，但找了老半天沒有頭緒，嘗試了調整一些設定也沒有起色，陷入了深深的混亂</p>
+<p><img src="https://i.imgur.com/UY3EhoA.png" alt="Image"></p>
+<p>幸好天無絕人之路，最終在 <a href="https://stackoverflow.com/questions/62752905/azure-function-service-bus-trigger-running-multiple-times">Stackoverflow</a> 海巡的時候了發現一線生機！</p>
+<p>原來 Azure Functions 的 Service Bus Trigger 有個「<strong>訊息鎖定最大持續時間</strong>」設定！</p>
+<p>當 Service Bus 傳遞訊息到 Function 的時候，Function 會根據執行結果告訴 Service Bus 該訊息要標記成功或是失敗；但如果訊息就這麼一去不回時，Service Bus 會先觀望一下，<strong>直到超過了「訊息鎖定最大持續時間」就會下令解除訊息的鎖定，嘗試重新傳遞</strong>。</p>
+<p>這次的事件就是因為我們即使調長了 Timeout 時間，但當該 Function 執行超過預設的鎖定時間（五分鐘）時，Service Bus 再度傳遞了訊息，才導致 Function 重複被執行而造成各種奇怪的資料錯誤</p>
+<p>那麼這個「訊息鎖定最大持續時間」怎麼設定呢？我們可以參照<a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-bindings-service-bus?tabs=in-process%2Cextensionv5%2Cextensionv3&amp;pivots=programming-language-csharp#hostjson-settings">官方的 Host.json 設定指引</a>，按照 SDK 版本找到對應的「訊息鎖定最大持續時間」設定，例如 maxAutoLockRenewalDuration（延伸模組 5.x+）或 maxAutoRenewDuration（Functions 2.x），並加入專案的 Host.json。</p>
+<p>現在讓我們在範例專案加入 maxAutoRenewDuration 的設定，這邊就改成比前面的執行時間八分鐘更長的十分鐘：</p>
+<p><img src="https://i.imgur.com/TTpXELd.png" alt="Image"></p>
+<p>接著再重新傳遞一次訊息：</p>
+<p><img src="https://i.imgur.com/2epGiF9.png" alt="Image"></p>
+<p>可以看到過程中沒有重新傳遞訊息了，大功告成！</p>
+<p>總之，學到了調整 ServiceBus Trigger Function 的 Azure Functions Timeout 設定時，或是發現某支 ServiceBus Trigger 的 Functions 執行時間過長，就要一併注意 MaxAutoRenewDuration 的設定，避免重複執行。</p>
+<p>如此如此，這般這般，一天又平安的過去了，感謝 Stackoverflow 大大們的努力。</p>
+<h2 id="參考資料">參考資料</h2>
+<ul>
+<li><a href="https://stackoverflow.com/questions/62752905/azure-function-service-bus-trigger-running-multiple-times">Azure function service bus trigger running multiple times - Stockoverflow</a></li>
+<li><a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-bindings-service-bus?tabs=in-process%2Cfunctionsv2%2Cextensionv3&amp;pivots=programming-language-csharp#hostjson-settings">Azure Functions 的 Azure 服務匯流排繫結 | Microsoft Docs</a></li>
+</ul>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2022/08/azure-service-bus/">使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/azure">azure</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/service-bus">service-bus</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/azure-functions">azure-functions</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/queue">queue</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                        <hr />
+<p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2022%2f08%2fazure-function-servicebus-trigger-max-auto-renew-duration%2f" width="100%" frameborder=0></iframe>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    
+    
+    <section class="widget">
+        <h3 class="widget-title">系列文</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E6%88%91%E8%A6%81%E8%A8%82%E4%BE%BF%E7%95%B6/">我要訂便當 (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/" title="菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions">菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/08/devtoys/" title="DevToys —— 開發人員的瑞士刀工具箱">DevToys —— 開發人員的瑞士刀工具箱</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/08/azure-service-bus/" title="使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧">使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/08/snispate/" title="Snispate —— 方便的截圖小幫手，放下剪取工具和小畫家吧">Snispate —— 方便的截圖小幫手，放下剪取工具和小畫家吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/06/wox-and-everything/" title="使用 Wox &amp; Everything 在 Windows 上得到良好的搜尋體驗">使用 Wox &amp; Everything 在 Windows 上得到良好的搜尋體驗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/06/angle-sharp/" title="C#: 使用 AngleSharp 爬蟲工具來抓取網頁內容吧">C#: 使用 AngleSharp 爬蟲工具來抓取網頁內容吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/06/elder-ring-clear/" title="艾爾登法環　白金！">艾爾登法環　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni —— 實用的 Chrome 分頁書籤搜尋欄">Omni —— 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/azure/">azure (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/bug/">bug (4)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (26)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/life/">life (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (17)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (19)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (47)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/anglesharp/">anglesharp</a>
+    
+    <a href="https://igouist.github.io/tags/api/">api</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/azure/">azure</a>
+    
+    <a href="https://igouist.github.io/tags/azure-functions/">azure-functions</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/benchmarkdotnet/">benchmarkdotnet</a>
+    
+    <a href="https://igouist.github.io/tags/bug/">bug</a>
+    
+    <a href="https://igouist.github.io/tags/chrome/">chrome</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/dapper/">dapper</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/game/">game</a>
+    
+    <a href="https://igouist.github.io/tags/git/">git</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/life/">life</a>
+    
+    <a href="https://igouist.github.io/tags/linux/">linux</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/queue/">queue</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/service-bus/">service-bus</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/swagger/">swagger</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/windows/">windows</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">蹭一下</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://kevintsengtw.blogspot.com/" title="mrkt">mrkt 的程式學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://raychiutw.github.io/" title="ray">Ray&#39;s Notes</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">小東西</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+
+    <section class="widget">
+    <h3 class="widget-title">放個廣告加減賺</h3>
+    <ul class="widget-list">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-2119949858103459"
+            data-ad-slot="9031038367"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </ul>
+</section>
+
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019-2022 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        
+        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
+</body>
+</html>

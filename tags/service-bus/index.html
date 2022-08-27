@@ -103,6 +103,35 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/">菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2022-8-27,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/azure">Azure</a>
+                                    
+                                        <a href="https://igouist.github.io/categories/bug">Bug</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/00WQGqR.png" alt="Image"></p>
+<h2 id="tldr">TL;DR</h2>
+<p>當發現<strong>需要執行很久的 ServiceBus Trigger Function 有重複執行的情況</strong>出現時，可以嘗試到<a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-bindings-service-bus?tabs=in-process%2Cextensionv5%2Cextensionv3&amp;pivots=programming-language-csharp#hostjson-settings">官方的 Host.json 設定指引</a>，按照 SDK 版本找到對應的「<strong>訊息鎖定最大持續時間</strong>」設定，例如 maxAutoLockRenewalDuration（延伸模組 5.x+）或 maxAutoRenewDuration（Functions 2.x），並加入專案的 Host.json</p>
+<p><strong>因為 ServiceBus 在傳遞訊息之後，如果超過一段時間（MaxAutoRenewDuration）內沒有得到回應，就會解除信件的鎖並嘗試重新傳遞</strong>，這時候如果原先的 Function 仍在執行，就會一前一後重複執行 Function 並發生許多光怪陸離的事，例如寫入兩筆資訊、重複複製資料之類的。</p>
+<p>建議如果調整了有 ServiceBus Trigger Function 的 Azure Functions Timeout 設定時，或是發現某支 ServiceBus Trigger 的 Functions 執行時間過長，就要一併注意 MaxAutoRenewDuration 的設定，避免重複執行的情況出現。</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2022/08/azure-service-bus/">使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧</a>
                                     </h1>
                                 </header>
@@ -180,6 +209,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/" title="菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions">菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2022/08/devtoys/" title="DevToys —— 開發人員的瑞士刀工具箱">DevToys —— 開發人員的瑞士刀工具箱</a>
     </li>
     
@@ -215,10 +248,6 @@
         <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/" title="菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -237,11 +266,11 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/azure/">azure (1)</a>
+        <a href="https://igouist.github.io/categories/azure/">azure (2)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/bug/">bug (3)</a>
+        <a href="https://igouist.github.io/categories/bug/">bug (4)</a>
     </li>
     
     <li>
@@ -298,6 +327,8 @@
     <a href="https://igouist.github.io/tags/automation/">automation</a>
     
     <a href="https://igouist.github.io/tags/azure/">azure</a>
+    
+    <a href="https://igouist.github.io/tags/azure-functions/">azure-functions</a>
     
     <a href="https://igouist.github.io/tags/bandon/">bandon</a>
     
