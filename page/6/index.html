@@ -92,6 +92,60 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2020/07/oo-6-abstract-override/" title="菜雞與物件導向 (6): 抽象、覆寫" >菜雞與物件導向 (6): 抽象、覆寫</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-7-12,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a></span>
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/Y2gHFsr.png" alt=""></p>
+<blockquote>
+<p>備註：這邊的抽象是指程式語言中的抽象類別，而非抽象化</p>
+</blockquote>
+<p>抽象的概念很直接，請回想一下前面的例子就可以了：</p>
+<p>當我們在用卡牌的例子時，雖然怪獸卡跟魔法卡都繼承了 Card 這個類別，但是我們仍然能 <br/> <code>new Card()</code> 來建立一張新卡牌，那…怪怪的吧，這張卡牌到底是什麼呀，空白的卡片嗎？</p>
+<p>又或是動物的例子，我們的狗跟貓都繼承了哺乳類，那我們能實例化一個哺乳類嗎？我們的狗跟鳥都是動物，那我們能實例化一個動物嗎？</p>
+<p>小明跟小華都繼承了工程師，那我們能 new 一個工程師嗎…？</p>
+<p>有些類別就是這樣，它們負責定義共通的那些特性，<strong>然而它們本身不應該被實體化成一個物件，這種類別我們就應該把它們標記為抽象類別</strong>。</p>
+<p><strong>抽象類別在 C# 裡用 <code>abstract</code> 這個修飾詞來表示</strong>，可以加在類別或方法上。例如 <code>abstract class Animal</code> 就代表動物這個類別是個抽象類別，它不能被實例化。</p>
+<p>而當加在方法上時，例如 <code>public abstract void Eat()</code> 就是代表這個進食的方法無法被叫用，只能由繼承者去重新定義這個方法。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Animal</span>
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">void</span> Eat();
+}
+</code></pre></div><p>那麼繼承者們，也就是衍生類別如何去重新定義父類別的方法呢？</p>
+<p><del>所謂「欲戴王冠，必 Override」</del>，這時候就必須使用<strong>覆寫（<code>override</code>）</strong>。</p>
+<p>覆寫是指對於像是前述的抽象方法時，在同名的方法前加上 <code>override</code> 關鍵字就可以讓程式知道你要覆寫這個方法（你不覆寫的話，編譯器還會生氣）。</p>
+<p>例如前述的 Eat，狗就可以用 <code>public override void Eat()</code> 的方式去覆寫吃東西這個方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span> : Animal
+{
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;Black&#34;</span>;
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Eat()
+    {
+        <span style="color:#75715e">/* 嚼嚼嚼 */</span>
+    }
+}
+</code></pre></div>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-6-abstract-override/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2020/07/oo-5-polymorphism/" title="菜雞與物件導向 (5): 多型" >菜雞與物件導向 (5): 多型</a>
                                 </h1>
                             </header>
@@ -488,69 +542,6 @@ warrior.Hit(goblin);
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2020/06/bit-flags-and-enum/" title="C#: 位元旗標 (Bit flag) 與列舉" >C#: 位元旗標 (Bit flag) 與列舉</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-6-14,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p>前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。</p>
-<p>平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告個 Boolean 來處理。但這次遇到的是同時有多個「有／沒有」的狀況，但我遇到的程式碼並沒有分成多個 Bool 去做處理，而是直接儲存成一個數值。</p>
-<p><strong>由於「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列的話，就只需要一個數字就可以紀錄或傳遞給其他系統了</strong>。例如最常見的用處是在權限系統，若有「讀」、「寫」、「執行」等權限，那麼我們按照這個順序去排列，當 <code>讀＝可、寫＝不可、執行＝可</code> 的時候，就記做 <code>101</code> = <code>5</code>。這種直接用一組位元表示狀態的方式就叫做<strong>位元旗標（Bit flag）</strong></p>
-<pre tabindex="0"><code>1 讀   = 可
-0 寫   = 不可
-1 執行 = 可
-
-/* 橫放 */
-=&gt; 101 (2進位) 
-=&gt; 5 
-</code></pre><p>假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。</p>
-<h2 id="enum--flags">Enum &amp; Flags</h2>
-<p>在 C# 中已經有方便的工具可以處理數字列表，我們可以建立一個叫做 SkillEnum 的<strong>列舉（Enum）</strong>，並且按照上面說明的，將老闆提到的每個技能各自用一個位元來表示。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[Flags]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> SkillEnum
-{
-    C = <span style="color:#ae81ff">1</span>,     <span style="color:#75715e">// 0001
-</span><span style="color:#75715e"></span>    PHP = <span style="color:#ae81ff">2</span>,   <span style="color:#75715e">// 0010
-</span><span style="color:#75715e"></span>    SQL = <span style="color:#ae81ff">4</span>,   <span style="color:#75715e">// 0100
-</span><span style="color:#75715e"></span>    Java = <span style="color:#ae81ff">8</span>,  <span style="color:#75715e">// 1000
-</span><span style="color:#75715e"></span>}
-</code></pre></div><blockquote>
-<p>註：<code>[Flags]</code>的標籤是指 C# 專門提供給位元旗標使用的 Enum，請參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.flagsattribute?view=netcore-3.1">FlagsAttribute</a>。</p>
-<p>只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用 ToString() 也能更方便看見旗標內容</p>
-</blockquote>
-<p>有了這個列舉之後，我們就可以<strong>表達不同排列組合的狀況</strong>了。例如：</p>
-<pre tabindex="0"><code>* C: C
-* P: PHP
-* S: SQL
-* J: Java
-===========
-J S P C
-0 0 0 0 =&gt; 什麼都不會
-0 0 0 1 =&gt; 只會 C
-0 0 1 1 =&gt; 同時會 C 和 PHP
-1 0 1 0 =&gt; 同時 PHP 和 Java
-1 1 1 1 =&gt; 全部都會
-</code></pre>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2020/06/bit-flags-and-enum/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -644,6 +635,10 @@ J S P C
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/" title="使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間">使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/" title="菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions">菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions</a>
     </li>
     
@@ -677,10 +672,6 @@ J S P C
     
     <li>
         <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni —— 實用的 Chrome 分頁書籤搜尋欄">Omni —— 實用的 Chrome 分頁書籤搜尋欄</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
     </li>
     
 </ul>
@@ -726,6 +717,10 @@ J S P C
     
     <li>
         <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (17)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/powershell/">powershell (1)</a>
     </li>
     
     <li>
@@ -802,6 +797,8 @@ J S P C
     <a href="https://igouist.github.io/tags/ide/">ide</a>
     
     <a href="https://igouist.github.io/tags/life/">life</a>
+    
+    <a href="https://igouist.github.io/tags/line-notify/">line-notify</a>
     
     <a href="https://igouist.github.io/tags/linux/">linux</a>
     

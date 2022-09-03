@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-92586970-4"></script>
+    <script async>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-92586970-4');
+    </script>
+
+    <meta name="generator" content="Hugo 0.92.2">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間 - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2022-09-03T14:40:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2022-09-03T14:40:00&#43;08:00">
+        
+        <meta name="keywords" content="powershell, line-notify, motc api">
+    <meta name="description" content="使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/">
+    <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link defer rel="stylesheet" href="/css/normalize.css">
+    
+        <link defer rel="stylesheet" href="/css/prism.css">
+    
+    <link defer rel="stylesheet" href="/css/style.css">
+    <script async type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    
+    <script data-ad-client="ca-pub-2119949858103459" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script async>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "[map[]]",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp-and-dotnet/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2022-9-3,
+                        </date>
+                        
+                        <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/powershell">powershell</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+
+                        <div class="post-content">
+                            <p><img src="https://i.imgur.com/BLYVPi7.png" alt="Image"></p>
+<p>事情發生在一個風和日麗的平凡下午：</p>
+<blockquote>
+<p>我：（把手上的事情弄到一個段落再下班吧）<br/>
+～～十分鐘過後～～<br/>
+我：差不多可以走了，看一下公車還有多久<br/>
+公車：（一分鐘前離站）<br/></p>
+</blockquote>
+<p>這時候才明白愛恨情仇，最傷最痛是後悔。如果我早知道公車快到站了，也許我就不會錯過。</p>
+<p>抱著這股傷痛，決定乾脆寫個小腳本，每天下班提醒我一下，避免重蹈覆轍。</p>
+<p>綜上所述！目標是：<strong>每天下班前十分鐘，告訴我下一班到達的公車時間</strong></p>
+<p>因此至少能夠拆分成三個階段：</p>
+<ul>
+<li>每天下班前十分鐘（定時執行）</li>
+<li>告訴我（通知功能）</li>
+<li>下一班到達的公車時間（查詢資訊）</li>
+</ul>
+<p>那麼，我們開始吧！</p>
+<h2 id="使用-motc-api-服務取得公車資訊">使用 MOTC API 服務取得公車資訊</h2>
+<p>首先，最重要的是要有資料來源。幸好我們先前在 <a href="/post/2021/05/newbie-2-webapi">Api 筆記</a>的時候，就有介紹過<strong>公共運輸動態服務 <a href="https://ptx.transportdata.tw/MOTC?t=Bus&amp;v=2#">MOTC Transport API</a></strong>，我們只需要使用這組 API 就能輕鬆拿到公車資訊了，感謝開發該服務的朋朋。</p>
+<p>我們的場景是在辦公室查詢下一班目標公車到站時間，比對了 Swagger 上提供的中文敘述後，決定嘗試看看「市區公車之預估到站資料」（<code>EstimatedTimeOfArrival/City/{City}/{RouteName}</code>） 這支 API</p>
+<blockquote>
+<p>註：為了避免被查水表，以下就用台北的 307 號公車為例，並假設目標站點是「台北車站（忠孝）」</p>
+</blockquote>
+<p>嘗試把縣市和公車路線名稱代入後，可以取得公車行經的站牌資訊，其中就有我們最想要的估計到站時間（秒）：</p>
+<p><img src="https://i.imgur.com/GQ9wdqG.png" alt="Image"></p>
+<p>接著讓我們調整一下參數，把取前幾筆的 <code>$top</code> 調大一點，來取得我們目標站點台北車站的站牌 ID：</p>
+<p><img src="https://i.imgur.com/mixE42V.png" alt="Image"></p>
+<p>有了站牌 ID，我們就可以根據 <a href="https://motc-ptx-api-documentation.gitbook.io/motc-ptx-api-documentation/api-te-se/odata">官方提供的查詢語法</a> 來篩選出目標站牌：</p>
+<p><img src="https://i.imgur.com/Njwg0fh.png" alt="Image"></p>
+<p>如果有需要指定回程，也可以再加上 <code>and direction eq 1</code> 的條件。</p>
+<p>如此一來我們就可以呼叫 MOTC API 來取得目標站牌＋指定公車的到站估計時間囉：</p>
+<p><img src="https://i.imgur.com/fkwZZpB.png" alt="Image"></p>
+<blockquote>
+<p>註：沒有申請<a href="https://motc-ptx-api-documentation.gitbook.io/motc-ptx-api-documentation/hui-yuan-shen-qing/membertype">會員</a>的話有每日 50 次的使用上限，不過這次的目標也就下班打那一次，十分足夠了 XD</p>
+</blockquote>
+<h2 id="使用-powershell-呼叫-api-取得資料">使用 Powershell 呼叫 API 取得資料</h2>
+<p>現在已經保障了資料來源，接下來就是要有個腳本來去打 API 拿資料回來囉！</p>
+<p>基於 <del>懶惰</del> 方便的原則，決定用 Powershell 寫個小東西直接打資料回來就好。</p>
+<p>這邊就直接用路線名稱和站牌 ID 來串 Uri，並且直接用 <strong>Invoke-RestMethod</strong> 來呼叫 API 吧：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$busName <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;307&#39;</span> <span style="color:#75715e"># 公車路線名稱</span>
+$stopId <span style="color:#f92672">=</span> <span style="color:#ae81ff">15250</span>  <span style="color:#75715e"># 站台 ID</span>
+
+<span style="color:#75715e"># 呼叫 MOTC API 取得公車資訊</span>
+$uri <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/Taipei/</span><span style="color:#66d9ef">$(</span>$busName<span style="color:#66d9ef">)</span><span style="color:#e6db74">?%24filter=StopId%20eq%20&#39;</span>$stopId<span style="color:#e6db74">&#39;&amp;%24top=1&amp;%24format=JSON&#34;</span>
+
+$response <span style="color:#f92672">=</span> Invoke-RestMethod -Uri $uri
+
+<span style="color:#75715e"># 把結果轉成 Json 確認一下</span>
+$response | ConvertTo-Json
+</code></pre></div><blockquote>
+<p>小提醒：原本我們下的 <code>$filter = StopId eq '15250'</code> 的參數，其中 <code>$</code> 和空白符在 Uri 會轉換成 HTML 編碼的 <code>%24($)</code> 和 <code>%20(空白)</code>，並不是亂碼，請不要緊張</p>
+</blockquote>
+<p>另存成 <code>.ps1</code> 檔案來測試一下：</p>
+<p><img src="https://i.imgur.com/nVZb7aV.png" alt="Image"></p>
+<p>看來查詢資料已經沒有問題了，接下來就是通知快要下班的我了</p>
+<h2 id="使用-powershell-彈出通知視窗初版">使用 Powershell 彈出通知視窗（初版）</h2>
+<p>第一次嘗試採用了彈跳視窗，想了一想還是順手記錄下來好了</p>
+<p>首先將我們目標的 <code>EstimateTime</code> 取出來，然後顯示還有幾分鐘到站、預計幾點幾分到站</p>
+<p>最後用 <code>Wscript.Shell</code> 來顯示彈跳視窗：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$estimateSec <span style="color:#f92672">=</span> $response.EstimateTime
+
+<span style="color:#75715e"># 組裝要顯示的訊息</span>
+$estimateMin <span style="color:#f92672">=</span> $estimateSec / <span style="color:#ae81ff">60</span>
+$estimateTime <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Get-date<span style="color:#f92672">)</span>.AddSeconds<span style="color:#f92672">(</span>$estimateSec<span style="color:#f92672">)</span>.ToString<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;HH:mm&#34;</span><span style="color:#f92672">)</span>
+$message <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Bus </span><span style="color:#66d9ef">$(</span>$busName<span style="color:#66d9ef">)</span><span style="color:#e6db74"> - EstimateTime: in </span><span style="color:#66d9ef">$(</span><span style="color:#f92672">[</span>Math<span style="color:#f92672">]</span>::Floor<span style="color:#f92672">(</span>$estimateMin<span style="color:#66d9ef">)</span><span style="color:#e6db74">) minute(s), </span>$estimateTime<span style="color:#e6db74">&#34;</span>
+
+<span style="color:#75715e"># 使用彈跳視窗將預計抵達的時間列印出來</span>
+$wshell <span style="color:#f92672">=</span> New-Object -ComObject Wscript.Shell
+$wshell.Popup<span style="color:#f92672">(</span>$message<span style="color:#f92672">)</span>
+</code></pre></div><p>雖然運作順利，但是……</p>
+<p><img src="https://i.imgur.com/psyAP4Y.png" alt="Image"></p>
+<p>總覺得有點不是很好看啊，而且工作到一半在畫面正中間跳出這個會煩死吧囧</p>
+<h2 id="使用-powershell-傳送-line-notify">使用 Powershell 傳送 Line Notify</h2>
+<p>就在此時一個靈光乍現，對呀我<a href="/post/2020/04/bandon-3-line-notify/">之前爬訂便當的時候</a>不是用過 <strong>Line Notify</strong> 嗎！</p>
+<p>當下一個直衝 <a href="https://notify-bot.line.me/zh_TW/">Line Notify</a> 高速申請權杖：</p>
+<p><img src="https://i.imgur.com/StPJo9W.png" alt="Image"></p>
+<p><img src="https://i.imgur.com/W43nwLq.png" alt="Image"></p>
+<p><img src="https://i.imgur.com/Ahl9FoN.png" alt="Image"></p>
+<p>複製權杖之後，衝回 Powershell，<a href="http://chienleebug.blogspot.com/2017/10/powersehllline-notify.html">前人教學抄起來</a>，Invoke-RestMethod 就直接打下去：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 使用 Line Notify 傳送通知</span>
+$lineUri <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://notify-api.line.me/api/notify&#39;</span>
+$lineToken <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Bearer YOUR_LINE_TOKEN&#39;</span>
+$header <span style="color:#f92672">=</span> @<span style="color:#f92672">{</span> Authorization <span style="color:#f92672">=</span> $lineToken <span style="color:#f92672">}</span>
+$body <span style="color:#f92672">=</span> @<span style="color:#f92672">{</span> message <span style="color:#f92672">=</span> $message <span style="color:#f92672">}</span>
+Invoke-RestMethod -Uri $lineUri -Method Post -Headers $header -Body $body
+</code></pre></div><p>Line 也不負期望地彈出來：</p>
+<p><img src="https://i.imgur.com/BVGpNzg.png" alt="Image"></p>
+<p>大功告成！搞定拿資料和通知的部分啦～</p>
+<blockquote>
+<p>補充：如果訊息內容有使用<strong>中文</strong>的朋友，請注意編碼問題。必須存成 <strong>Utf-8 with BOM</strong>，否則會出現亂碼：</p>
+<p><img src="https://i.imgur.com/5n7a7ht.png" alt="Image"></p>
+<p>這時候就需要更改編碼為 Utf-8 with BOM；</p>
+<p><img src="https://i.imgur.com/S5S5Pgu.png" alt="Image"></p>
+<p>再重新嘗試一次就會正常了：</p>
+<p><img src="https://i.imgur.com/mMuRRTT.png" alt="Image"></p>
+<p>原本卡在這步搞不定，正好黑暗執行緒大大發了篇 <a href="https://blog.darkthread.net/blog/ps1-encoding-issue/">PowerShell .ps1 檔 UTF-8 編碼問題之變形錯誤</a>，才知道 PowerShell 5.x 有編碼解析的問題，改成 Utf-8 with BOM 順利完工。這邊補充給各位朋朋，望周知</p>
+</blockquote>
+<p>到這邊 Powershell 的部份就處理好了，目前會長這樣：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$busName <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;307&#39;</span> <span style="color:#75715e"># 公車路線名稱</span>
+$stopId <span style="color:#f92672">=</span> <span style="color:#ae81ff">15250</span>  <span style="color:#75715e"># 站台 ID</span>
+
+<span style="color:#75715e"># 呼叫 MOTC API 取得公車資訊</span>
+$uri <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/Taipei/</span><span style="color:#66d9ef">$(</span>$busName<span style="color:#66d9ef">)</span><span style="color:#e6db74">?%24filter=StopId%20eq%20&#39;</span>$stopId<span style="color:#e6db74">&#39;&amp;%24top=1&amp;%24format=JSON&#34;</span>
+$response <span style="color:#f92672">=</span> Invoke-RestMethod -Uri $uri
+$estimateSec <span style="color:#f92672">=</span> $response.EstimateTime
+
+<span style="color:#75715e"># 組裝要顯示的訊息</span>
+$estimateMin <span style="color:#f92672">=</span> $estimateSec / <span style="color:#ae81ff">60</span>
+$estimateTime <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Get-date<span style="color:#f92672">)</span>.AddSeconds<span style="color:#f92672">(</span>$estimateSec<span style="color:#f92672">)</span>.ToString<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;HH:mm&#34;</span><span style="color:#f92672">)</span>
+$message <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Bus </span><span style="color:#66d9ef">$(</span>$busName<span style="color:#66d9ef">)</span><span style="color:#e6db74"> - EstimateTime: in </span><span style="color:#66d9ef">$(</span><span style="color:#f92672">[</span>Math<span style="color:#f92672">]</span>::Floor<span style="color:#f92672">(</span>$estimateMin<span style="color:#66d9ef">)</span><span style="color:#e6db74">) minute(s), </span>$estimateTime<span style="color:#e6db74">&#34;</span>
+
+<span style="color:#75715e"># 使用 Line Notify 傳送通知</span>
+$lineUri <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://notify-api.line.me/api/notify&#39;</span>
+$lineToken <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Bearer YOUR_LINE_TOKEN&#39;</span>
+$header <span style="color:#f92672">=</span> @<span style="color:#f92672">{</span> Authorization <span style="color:#f92672">=</span> $lineToken <span style="color:#f92672">}</span>
+$body <span style="color:#f92672">=</span> @<span style="color:#f92672">{</span> message <span style="color:#f92672">=</span> $message <span style="color:#f92672">}</span>
+Invoke-RestMethod -Uri $lineUri -Method Post -Headers $header -Body $body
+</code></pre></div><h2 id="使用-工作排程器-定時執行-powershell-腳本">使用 工作排程器 定時執行 Powershell 腳本</h2>
+<p>秉持著前面選擇 Powershell 的 <del>偷懶</del> 簡單精神，這邊的定時執行就直接使用 Windows 內建的工作排程器來處理：</p>
+<p><img src="https://i.imgur.com/R7o2WFS.png" alt="Image"></p>
+<p>因為我們的場景相對簡單，只有要在特定時間幫我們呼叫 Powershell 腳本，因此直接選擇「建立基本動作」</p>
+<p><img src="https://i.imgur.com/gQU0yt3.png" alt="Image"></p>
+<p><img src="https://i.imgur.com/SUlz1VH.png" alt="Image"></p>
+<p>接著讓我們選擇每週，並指定平日的時候再執行：</p>
+<p><img src="https://i.imgur.com/v2qCs5B.png" alt="Image"></p>
+<p><img src="https://i.imgur.com/jlEruE3.png" alt="Image"></p>
+<p>最後選擇啟動程式，讓工作排程器開啟 Powershell 並呼叫我們的腳本：</p>
+<p><img src="https://i.imgur.com/SapHUwE.png" alt="Image"></p>
+<p>這邊的「程式或指令碼」輸入 <code>powershell</code>，接著在「新增引數」的部份告訴 Powershell 我們要執行的腳本 <code>-File &quot;C:\Scripts\BusReminder.ps1&quot;</code>（記得換成你的腳本路徑呦）</p>
+<p><img src="https://i.imgur.com/7KV6Q6o.png" alt="Image"></p>
+<blockquote>
+<p>註：沒有調整過<a href="/post/2020/08/powershell-beauty/#%E5%9F%B7%E8%A1%8C%E5%8E%9F%E5%89%87">執行原則</a>的朋友們，可以在引數上加入 <code>-ExecutionPolicy Bypass</code> 來關閉警告，也就是 <code> -ExecutionPolicy Bypass -File &quot;C:\Scripts\BusReminder.ps1&quot;</code> 這樣子的感覺</p>
+</blockquote>
+<blockquote>
+<p>註：如果跟我一樣會把腳本做成 Function 並存成 psm1 檔案的朋朋，這邊的引數會需要變成跟 Profile 一樣的處理方式，先 Import 進來再呼叫方法（這邊假設為 <code>Run-BusNotify()</code>）例如，：<code>Import-Module &quot;C:\Scripts\BusReminder.psm1&quot;;Run-BusNotify;</code></p>
+</blockquote>
+<p>接著只需要完成就可以在排程中找到囉，馬上就來執行看看是不是正常運作吧：</p>
+<p><img src="https://i.imgur.com/1MLM21I.png" alt="Image"></p>
+<p><img src="https://i.imgur.com/Pu8YilJ.png" alt="Image"></p>
+<p><img src="https://i.imgur.com/R8Ls97x.png" alt="Image"></p>
+<p>大功告成！</p>
+<h2 id="後日談">後日談</h2>
+<p>自從有了公車到站提醒後，下班再也沒有煩惱了呢</p>
+<blockquote>
+<p>提醒：公車還有十分鐘　<br/>
+我：（還有十分鐘耶，把手上的事情弄到一個段落再下班吧）<br/>
+～～弄了十五分鐘～～<br/>
+公車：（離站）<br/>
+我：(ﾟдﾟ)</p>
+</blockquote>
+<p>這時候才明白科技終究是有極限的。</p>
+<h2 id="參考資料">參考資料</h2>
+<ul>
+<li><a href="http://chienleebug.blogspot.com/2017/10/powersehllline-notify.html">[PowerSehll] 使用LINE Notify發送訊息 (chienleebug.blogspot.com)</a></li>
+<li><a href="https://ghostyguo.pixnet.net/blog/post/359754775-%E8%A8%AD%E5%AE%9Awindows%E6%8E%92%E7%A8%8B%E5%99%A8%E5%9F%B7%E8%A1%8Cpowershell-script">設定 Windows 排程器執行 powershell script @ No More Codes (pixnet.net)</a></li>
+<li><a href="https://motc-ptx-api-documentation.gitbook.io/motc-ptx-api-documentation/">入門指南 - motc-ptx-api-documentation (gitbook.io)</a></li>
+<li><a href="https://blog.darkthread.net/blog/ps1-encoding-issue/">PowerShell .ps1 檔 UTF-8 編碼問題之變形錯誤 - 黑暗執行緒 (darkthread.net)</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10032205">使用 Windows PowerShell 顯示彈出式的對話視窗 - iT 邦幫忙 (ithome.com.tw)</a></li>
+</ul>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2020/04/bandon-3-line-notify/">我要訂便當 (3): 用 Python &#43; Line Notify 傳送通知</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/powershell">powershell</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/line-notify">line-notify</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                        <hr />
+<p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2022%2f09%2fbus-reminder-1-powershell-and-windows-task-scheduler%2f" width="100%" frameborder=0></iframe>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    
+        <section class="widget">
+            <h3 class="widget-title">文章目錄</h3>
+            <ul class="widget-list">
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#使用-motc-api-服務取得公車資訊">使用 MOTC API 服務取得公車資訊</a></li>
+    <li><a href="#使用-powershell-呼叫-api-取得資料">使用 Powershell 呼叫 API 取得資料</a></li>
+    <li><a href="#使用-powershell-彈出通知視窗初版">使用 Powershell 彈出通知視窗（初版）</a></li>
+    <li><a href="#使用-powershell-傳送-line-notify">使用 Powershell 傳送 Line Notify</a></li>
+    <li><a href="#使用-工作排程器-定時執行-powershell-腳本">使用 工作排程器 定時執行 Powershell 腳本</a></li>
+    <li><a href="#後日談">後日談</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+            </ul>
+        </section>
+    
+    
+    <section class="widget">
+        <h3 class="widget-title">系列文</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E6%88%91%E8%A6%81%E8%A8%82%E4%BE%BF%E7%95%B6/">我要訂便當 (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/" title="使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間">使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/" title="菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions">菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/08/devtoys/" title="DevToys —— 開發人員的瑞士刀工具箱">DevToys —— 開發人員的瑞士刀工具箱</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/08/azure-service-bus/" title="使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧">使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/08/snispate/" title="Snispate —— 方便的截圖小幫手，放下剪取工具和小畫家吧">Snispate —— 方便的截圖小幫手，放下剪取工具和小畫家吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/06/wox-and-everything/" title="使用 Wox &amp; Everything 在 Windows 上得到良好的搜尋體驗">使用 Wox &amp; Everything 在 Windows 上得到良好的搜尋體驗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/06/angle-sharp/" title="C#: 使用 AngleSharp 爬蟲工具來抓取網頁內容吧">C#: 使用 AngleSharp 爬蟲工具來抓取網頁內容吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/06/elder-ring-clear/" title="艾爾登法環　白金！">艾爾登法環　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni —— 實用的 Chrome 分頁書籤搜尋欄">Omni —— 實用的 Chrome 分頁書籤搜尋欄</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/azure/">azure (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/bug/">bug (4)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (26)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/life/">life (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (17)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/powershell/">powershell (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (19)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (47)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/anglesharp/">anglesharp</a>
+    
+    <a href="https://igouist.github.io/tags/api/">api</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/azure/">azure</a>
+    
+    <a href="https://igouist.github.io/tags/azure-functions/">azure-functions</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/benchmarkdotnet/">benchmarkdotnet</a>
+    
+    <a href="https://igouist.github.io/tags/bug/">bug</a>
+    
+    <a href="https://igouist.github.io/tags/chrome/">chrome</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/dapper/">dapper</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/game/">game</a>
+    
+    <a href="https://igouist.github.io/tags/git/">git</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/life/">life</a>
+    
+    <a href="https://igouist.github.io/tags/line-notify/">line-notify</a>
+    
+    <a href="https://igouist.github.io/tags/linux/">linux</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/queue/">queue</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/service-bus/">service-bus</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/swagger/">swagger</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/windows/">windows</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">蹭一下</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://kevintsengtw.blogspot.com/" title="mrkt">mrkt 的程式學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://raychiutw.github.io/" title="ray">Ray&#39;s Notes</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">小東西</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+
+    <section class="widget">
+    <h3 class="widget-title">放個廣告加減賺</h3>
+    <ul class="widget-list">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-2119949858103459"
+            data-ad-slot="9031038367"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </ul>
+</section>
+
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019-2022 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        
+        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
+</body>
+</html>
