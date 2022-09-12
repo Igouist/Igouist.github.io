@@ -126,7 +126,7 @@
 <p><strong>因為 ServiceBus 在傳遞訊息之後，如果超過一段時間（MaxAutoRenewDuration）內沒有得到回應，就會解除信件的鎖並嘗試重新傳遞</strong>，這時候如果原先的 Function 仍在執行，就會一前一後重複執行 Function 並發生許多光怪陸離的事，例如寫入兩筆資訊、重複複製資料之類的。</p>
 <p>建議如果調整了有 ServiceBus Trigger Function 的 Azure Functions Timeout 設定時，或是發現某支 ServiceBus Trigger 的 Functions 執行時間過長，就要一併注意 MaxAutoRenewDuration 的設定，避免重複執行的情況出現。</p>
 <h2 id="事發原由">事發原由</h2>
-<p>工作時將一段需要呼叫其他 API、執行相當久的程式片段搬上 Azure Functions，並使用 <a href="/post/2022/08/azure-service-bus">Service Bus</a> 來傳遞訊息觸發 Functions 執行，這時卻發現 <strong>Function 被執行了兩次</strong>！</p>
+<p>工作時將一段需要呼叫其他 API、執行相當久的程式片段搬上 <a href="/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/">Azure Functions</a>，並使用 <a href="/post/2022/08/azure-service-bus">Service Bus</a> 來傳遞訊息觸發 Functions 執行，這時卻發現 <strong>Function 被執行了兩次</strong>！</p>
 <p>現在就讓我們來重建當時的情況吧。首先我們有個 Service Bus Trigger 的 Azure Function，這邊就直接從 Visual Studio 提供的<a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/dotnet-isolated-process-guide">已隔離（Isolated）</a>範本進行建立。</p>
 <p>為了重現執行很久的特點，我們讓它 Delay 個八分鐘，並在開始和結束的時候告訴我們一下：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
@@ -265,6 +265,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/" title="使用 Azure Functions &#43; Line Notify 來定時提醒公車到站時間">使用 Azure Functions &#43; Line Notify 來定時提醒公車到站時間</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/" title="使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間">使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間</a>
     </li>
     
@@ -300,10 +304,6 @@
         <a href="https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/" title="菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧">菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni —— 實用的 Chrome 分頁書籤搜尋欄">Omni —— 實用的 Chrome 分頁書籤搜尋欄</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -322,7 +322,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/azure/">azure (2)</a>
+        <a href="https://igouist.github.io/categories/azure/">azure (3)</a>
     </li>
     
     <li>

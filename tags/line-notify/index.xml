@@ -6,7 +6,26 @@
     <description>Recent content in line-notify on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Sat, 03 Sep 2022 14:40:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/tags/line-notify/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 12 Sep 2022 23:51:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/tags/line-notify/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用 Azure Functions &#43; Line Notify 來定時提醒公車到站時間</title>
+      <link>https://igouist.github.io/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/</link>
+      <pubDate>Mon, 12 Sep 2022 23:51:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/WX17auT.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在上週的 &lt;a href=&#34;https://igouist.github.io/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler&#34;&gt;使用 Powershell + 工作排程器 + Line Notify 來定時提醒公車到站時間&lt;/a&gt;，我們利用工作排程器來定時觸發腳本，藉此用 Line 提醒我下班的公車還有多久才來。&lt;/p&gt;
+&lt;p&gt;做完之後靈機一動，對呀！最近上班挺常接觸到 &lt;a href=&#34;https://azure.microsoft.com/zh-tw/services/functions/&#34;&gt;Azure Functions&lt;/a&gt; 這個方便東東，不如就把這個小提醒給架設到 Azure Functions 上吧！&lt;/p&gt;
+&lt;p&gt;這樣就省卻了特定主機要開著掛工作排程器的困擾，又可以用香香的 Azure 工具來控制監聽的開關，豈不美哉。&lt;/p&gt;
+&lt;p&gt;如此如此這般這般，讓我們開始建立 Azure Functions 服務吧！&lt;/p&gt;
+&lt;h2 id=&#34;建立-azure-functions-資源&#34;&gt;建立 Azure Functions 資源&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Azure Functions 是 Azure 推出的一款無伺服器（Serverless）服務，簡單來說就是伺服器之類的麻煩事就交給 Azure 去處理，我們只要專心寫功能就好&lt;/strong&gt;。對我這種愛寫小腳本的偷懶工程師來說，可以說是香到爆的服務。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;小提醒：Azure Functions 是一款收費服務，使用前請務必確認&lt;a href=&#34;https://azure.microsoft.com/zh-tw/pricing/details/functions/&#34;&gt;定價&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;在這篇文章撰寫當下，Azure Functions 有提供每月免費執行一百萬次的授權，對我們每天一次的公車通知來說綽綽有餘了（我們應該不會搭這麼多趟吧…？）&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
     <item>
       <title>使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間</title>
       <link>https://igouist.github.io/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/</link>
@@ -19,7 +38,8 @@
 &lt;p&gt;我：（把手上的事情弄到一個段落再下班吧）&lt;br/&gt;
 ～～十分鐘過後～～&lt;br/&gt;
 我：差不多可以走了，看一下公車還有多久&lt;br/&gt;
-公車：（一分鐘前離站）&lt;br/&gt;&lt;/p&gt;
+公車：（一分鐘前離站）&lt;br/&gt;
+我：(ﾟдﾟ)&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;這時候才明白愛恨情仇，最傷最痛是後悔。如果我早知道公車快到站了，也許我就不會錯過。&lt;/p&gt;
 &lt;p&gt;抱著這股傷痛，決定乾脆寫個小腳本，每天下班提醒我一下，避免重蹈覆轍。&lt;/p&gt;
