@@ -17,20 +17,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>菜雞與物件導向 (8): 內聚、耦合 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="菜雞與物件導向 (8): 內聚、耦合 - 伊果的沒人看筆記本">
+    <title>在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2020-09-13T23:56:00&#43;08:00">
+    <meta property="article:published_time" content="2022-09-18T10:55:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2020-09-13T23:56:00&#43;08:00">
+    <meta property="article:modified_time" content="2022-09-18T10:55:00&#43;08:00">
         
-        <meta name="keywords" content="Object-Oriented, Cohesion, Coupling, 內聚, 耦合, w3HexSchool">
-    <meta name="description" content="內聚 (Cohesion) 是指把用到的東西都打包到一處，該有的自己都有了，可以自己 Carry 整場不用看豬隊友臉色的能力；耦合 (Coupling) 則是指兩者之間的關聯越緊密，彼此互相影響越大，其耦合度就越高。例如說繼承就是強耦合的代表，而介面就是降低耦合的手段之一。">
+        <meta name="keywords" content="chrome, 翻譯">
+    <meta name="description" content="在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling/">
+    <meta property="og:url" content="https://igouist.github.io/post/2022/09/imtranslator/">
     <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link defer rel="stylesheet" href="/css/normalize.css">
@@ -96,17 +96,15 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">菜雞與物件導向 (8): 內聚、耦合</h1>
+                            <h1 class="post-title">在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2020-9-13,
+                            2022-9-18,
                         </date>
                         
                         <div class="post-meta">
                             
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a></span>
-                            
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/tools">tools</a></span>
                             
                         </div>
                         
@@ -120,93 +118,27 @@
                         
 
                         <div class="post-content">
-                            <p><img src="https://i.imgur.com/cgxW9yZ.png" alt=""></p>
-<p>做為前後段落的分水嶺，這篇文章我將紀錄一下 <strong>「內聚」(Cohesion)</strong> 和 <strong>「耦合」(Coupling)</strong>，這兩者是評估一個類別或元件的重要概念。</p>
-<p>在實務上，為了提升擴展性，降低維護成本等因素，我們對於單個類別或元件，會有著 <strong>「低耦合」</strong> 及 <strong>「高內聚」</strong> 的期待。例如我們在 <a href="/post/2020/07/oo-3-encapsulation">菜雞與物件導向 (3): 封裝</a> 中，我們就有提到封裝的好壞相當重要，其中也包含了「提高類別內的內聚性，降低對外的耦合性」。那麼，到底什麼是內聚，什麼又是耦合呢？</p>
-<h2 id="內聚">內聚</h2>
-<blockquote>
-<p><strong>「把需要的程式和資料都包裝在同一個模組內，使得該模組能夠做為一個單獨的個體執行」</strong></p>
-</blockquote>
-<p>白話一點說，就是就是把用到的東西都打包到一處，該有的自己都有了，所以即使單獨一個人也能完成工作的能力、可以自己 Carry 整場不用看豬隊友臉色的能力。越能自己單幹，越不需要依賴其他類別的時候，內聚力也就越高。</p>
-<p>也就是說：如果你的類別什麼都要依賴其他類別，像小嬰兒一樣需要呵護照顧，那內聚力就很低。反之，如果像野外求生大師，啥都靠自己，那內聚力就超高。</p>
-<p><strong>內聚代表的是該模組的獨立性，當這個模組可以獨力完成工作，就代表我們能夠重複使用它，且不需要擔心影響到其他模組。</strong></p>
-<p>並且也基於這點，我們不用擔心變動這個模組時需要先處理其他的模組，因為這個工作所需的都包含在模組內了，這樣就可以<strong>單獨修改</strong>該模組，減少維護成本。</p>
-<p>例如你的筆已經包含了所有寫字工具的條件，具有墨水跟筆芯等等，可以只使用筆就完成寫字這個工作。那麼我們就可以隨身帶著，在任何需要的時候重複使用它，而不用擔心我們會不會漏了什麼必要零件沒有帶出門。同時，如果我們需要換筆芯或墨水，我們也知道要更換的部份就在筆裡面，不需要去找鉛筆盒中別的地方。</p>
-<p>而我們在物件導向的世界中，是將不同的邏輯和功能，封裝成不同的物件，藉由這些物件的互動來構築我們抽象化的世界和想法。為了隱藏這些物件內部的複雜性，同時又保持物件的整體性，讓物件能真的符合我們概念中的「一個」物件，那麼<strong>追求高內聚就是必然的</strong>。內聚，是物件的一種美德。</p>
-<p>然而，<strong>盲目地追求高內聚是很危險的</strong>。只要你希望，當然可以寫出一個超級內聚的類別，但這代表什麼呢？</p>
-<p>為了提高內聚，把所有相關的東西都一股腦塞進同一個類別，越塞越多越塞越多，沒那麼相關的東西也硬塞在一起。從模組變成義大利麵，再從義大利麵變成大補帖，最後終於變成<a href="https://en.wikipedia.org/wiki/God_object">神</a>。這樣實際上根本就不內聚，類別裡面就是一堆散沙，<strong>功能一大堆動輒數千行，改個 Bug 先看三千行程式碼</strong>，維護者莫不痛哭流涕…</p>
-<p>又或是為了避免上面的狀況，限制了功能範圍。但卻又為了能獨立作業，為了不依賴別人，硬是把別的地方已經有的功能複製一份過來，用到的東西都複製複製複製進來，人人都有一份。最後遇到修改時，<strong>要改這又要改那，等著改的地方遍地開花</strong>，維護成本暴增，維護者再度痛哭流涕…</p>
-<p>到這邊應該能瞭解到<strong>完全內聚是不可能也不應該的</strong>，過於執著就會走火入魔。那麼怎樣的內聚算是剛剛好呢？或是說，一個良好的高內聚？這就牽涉到這段程式碼的<strong>意圖</strong>了。</p>
-<p><strong>良好的內聚應該只關注在一件事情上，並適時地將不屬於自身職責的工作交給別人</strong>，達到所謂「<a href="https://ithelp.ithome.com.tw/articles/10203659">該內聚而內聚，該耦合而耦合</a>」。</p>
-<blockquote>
-<p>所謂「只關注一件事情」、「不屬於自身職責」云云，我們在之後的 <a href="/post/2020/10/oo-10-single-responsibility-principle">單一職責原則</a> 會更進一步地說明。且先按下不表。</p>
-</blockquote>
-<p>為了減少重複程式碼，和降低維護的困難，不管怎樣互動都是不可避免的。那既然我們的物件多多少少都得依賴別人，就不能不提到耦合了。</p>
-<h2 id="耦合">耦合</h2>
-<blockquote>
-<p><strong>「如果模組和另一個模組有關聯，那這兩者之間就耦合」</strong></p>
-</blockquote>
-<p>耦合的定義就是這麼寬廣。不管是接收另一個物件傳入的值，或者是共用同個全域變數，更何況我中有你你中有我，都是耦合。</p>
-<p>當兩者之間的關聯越緊密，越無法分離，其耦合度就越高。例如說<a href="/post/2020/07/oo-4-inheritance">繼承</a>關係就是強耦合的代表。</p>
-<p>當我們的目標放在減少重複的程式碼時，就會有多個模組共用同一段程式碼的情形發生，也會造成這些模組和這段重複使用的程式碼彼此耦合。</p>
-<p>那當我們為了其中一個使用者修改了這段程式碼，就會連帶影響其他用到的地方。變成<strong>改了這裡壞那裡，修了那裡壞這裡</strong>的詭異情況。這也就是我們追求降低耦合的最大原因。</p>
-<p>彼此關聯就會彼此牽連，因此我們要讓彼此之間保持一個<strong>舒適的距離</strong>。</p>
-<p>注意，是舒適的距離，而不是不相往來，從這點來看，<strong>健康的內聚就是健康的耦合</strong>。</p>
-<h2 id="內聚與耦合">內聚與耦合</h2>
-<blockquote>
-<p><strong>內聚是模組的獨立性，耦合則是模組的關聯性</strong></p>
-</blockquote>
-<p>「低內聚高耦合」的組合，牽一髮動全身，改個一行程式碼動輒就是大規模傷害，我們甚至不能切分模組，完全和物件的精神背道而馳，這是萬不能接受的。</p>
-<p>「高內聚低耦合」則是大家所追求的目標。為了讓每個物件各自獨立又能彼此互動，從物件導向中<a href="/post/2020/07/oo-3-encapsulation">封裝</a>的角度出發，這個方向絕對是正確的。</p>
-<p>但所謂過猶不及，若是太過火變成「超高內聚無耦合」，又會變成可怕的 All in one 融合怪物或是 Ctrl C VVVVV 的複製大軍……</p>
-<p>不健康的內聚和不健康的耦合都是問題，內聚和耦合這兩者就像天秤的兩端，我們的目標就是找到那個合適的平衡點，也就是<strong>健康的高內聚低耦合</strong>才是我們所追求的。</p>
-<p>同時也可以注意到內聚和耦合會發生的問題，例如修改時影響其他物件導致壞一整片，又或是修改時太多地方要改成本過高，總是圍繞在擴展和維護，基本上就是<strong>面對改變時會發生的問題</strong>。</p>
-<p>就像基因的優劣在於適應環境並生存下去的能力，程式碼也是如此。為了協助我們追求健康的高內聚低耦合目標，也<strong>為了讓我們面對改變（遭遇災難）時有個方針，因此才有了一些原則</strong>。</p>
-<p>就像我們前面敘述內聚時一直迴避的這些問題：</p>
-<ul>
-<li>怎樣才是適合的內聚？怎樣才是健康的耦合？</li>
-<li>如果說過高的內聚會塞太多功能或複製重複功能而變成怪物，過低的內聚則會四處拈花惹草，那我們要怎麼知道這個類別或元件的功能範圍剛剛好？</li>
-</ul>
-<p>這些問題的參考準則，就在於我們之後要介紹的「<a href="/post/2020/10/oo-10-single-responsibility-principle">單一職責原則</a>」！</p>
-<h2 id="小結">小結</h2>
-<p>過了兩個月再度接續這個系列，一回來就是一篇碎碎念充當預告片，總之就先交代一下內聚和耦合的概念。</p>
-<p>但要真的達到健康的內聚和健康的耦合，不造神、不亂依賴、物件裡面高內聚、物件彼此低耦合，就必須要有一些原則。</p>
-<p>所以<a href="/post/2020/09/oo-9-solid">下回</a>開始就要進入物件導向五大原則的段落了，那麼，我們下次見！</p>
-<blockquote>
-<p>註：內聚跟耦合算是相當重要又基礎的觀念，我個人也還在摸索，只聞其聲不見其影。想要更了解這兩個概念的朋友，可以將參考資料的文章都看過一遍，我個人覺得頗有幫助，尤其是<a href="https://ithelp.ithome.com.tw/articles/10203659">實務上的高內聚與低耦合</a>、<a href="http://teddy-chen-tw.blogspot.com/2011/12/1.html">搞笑談軟工</a>兩篇，值得特別推薦。</p>
-</blockquote>
-<blockquote>
-<p>本系列下一篇：<a href="/post/2020/09/oo-9-solid">菜雞與物件導向 (9): SOLID</a></p>
-</blockquote>
-<h2 id="參考資料">參考資料</h2>
-<ul>
-<li><a href="https://ithelp.ithome.com.tw/articles/10203659">實務上的高內聚與低耦合</a></li>
-<li><a href="http://teddy-chen-tw.blogspot.com/2011/12/1.html">亂談軟體設計（1）：Cohesion and Coupling - 搞笑談軟工</a></li>
-<li><a href="https://ithelp.ithome.com.tw/articles/10191761">斷開鎖鏈! 低耦合、高內聚</a></li>
-<li><a href="https://ithelp.ithome.com.tw/articles/10206839">如何寫高品質 function (內聚性篇)</a></li>
-<li><a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-5_%E5%85%A7%E8%81%9Acohesion%E8%80%A6%E5%90%88coupling/">Object Oriented物件導向-5:內聚(Cohesion)、耦合(Coupling) - Sian</a></li>
-<li><a href="https://youtu.be/e0UOuQ_lCUY">Fred 聊聊 SOLID 設計原則</a></li>
-</ul>
-<h2 id="同系列文章">同系列文章</h2>
-<ul>
-<li><a href="/post/2020/07/oo-0-object-oriented">菜雞與物件導向 (0): 前言</a></li>
-<li><a href="/post/2020/07/oo-1-class-object">菜雞與物件導向 (1): 類別、物件</a></li>
-<li><a href="/post/2020/07/oo-2-constructor-overload">菜雞與物件導向 (2): 建構式、多載</a></li>
-<li><a href="/post/2020/07/oo-3-encapsulation">菜雞與物件導向 (3): 封裝</a></li>
-<li><a href="/post/2020/07/oo-4-inheritance">菜雞與物件導向 (4): 繼承</a></li>
-<li><a href="/post/2020/07/oo-5-polymorphism">菜雞與物件導向 (5): 多型</a></li>
-<li><a href="/post/2020/07/oo-6-abstract-override">菜雞與物件導向 (6): 抽象、覆寫</a></li>
-<li><a href="/post/2020/07/oo-7-interface">菜雞與物件導向 (7): 介面</a></li>
-<li><a href="/post/2020/09/oo-8-cohesion-and-coupling">菜雞與物件導向 (8): 內聚、耦合</a></li>
-<li><a href="/post/2020/09/oo-9-solid">菜雞與物件導向 (9): SOLID</a></li>
-<li><a href="/post/2020/10/oo-10-single-responsibility-principle">菜雞與物件導向 (10): 單一職責原則</a></li>
-<li><a href="/post/2020/10/oo-11-open-closed-principle">菜雞與物件導向 (11): 開放封閉原則</a></li>
-<li><a href="/post/2020/11/oo-12-liskov-substitution-principle">菜雞與物件導向 (12): 里氏替換原則</a></li>
-<li><a href="/post/2020/11/oo-13-interface-segregation-principle">菜雞與物件導向 (13): 介面隔離原則</a></li>
-<li><a href="/post/2020/12/oo-14-dependency-inversion-principle">菜雞與物件導向 (14): 依賴反轉原則</a></li>
-<li><a href="/post/2020/12/oo-15-least-knowledge-principle">菜雞與物件導向 (15): 最少知識原則</a></li>
-<li><a href="/post/2021/01/oo-ex1-end2020">菜雞與物件導向 (Ex1): 小結</a></li>
-</ul>
+                            <p><img src="https://i.imgur.com/0XXKTrd.png" alt="Image"></p>
+<p>嗨各位朋朋，又到了替文章數灌水的好用工具時間！</p>
+<p>今天要介紹的是 <a href="https://chrome.google.com/webstore/detail/imtranslator-translator-d/noaijdpnepcgjemiklgfkcfbkokogabh?hl=zh-TW">ImTranslator</a>，它是一款 Chrome 的翻譯套件。由於有<strong>嵌入式翻譯（Inline Translator）</strong>，意外地在辦公室的詢問度還蠻高的，這就來寫一篇介紹來推廣給和我一樣英文苦手的朋朋們！</p>
+<p>首先讓我們到 <a href="https://chrome.google.com/webstore/detail/imtranslator-translator-d/noaijdpnepcgjemiklgfkcfbkokogabh?hl=zh-TW">Chrome 線上應用程式商店的 ImTranslator 頁面</a> 將套件安裝到瀏覽器中：</p>
+<p><img src="https://i.imgur.com/v8ADxhi.png" alt="Image"></p>
+<p>安裝完之後預設會是翻譯成世界語，因此我們要先到擴充功能選項調整一下語言：</p>
+<p><img src="https://i.imgur.com/UekSSix.png" alt="Image"></p>
+<p>可以看到左邊有四種翻譯模式，我們先把翻譯語言都調整一下：</p>
+<p><img src="https://i.imgur.com/6WJqXzZ.png" alt="Image"></p>
+<p>這邊也可以更改翻譯來源，我個人是都用預設的 Google 翻譯。此外像是嵌入式翻譯結果的文字顏色也可以在這邊修改。</p>
+<p>接著我們來看看這四種翻譯模式吧：</p>
+<p>首先是我個人最常用的嵌入式翻譯（Inline Translator），只要將翻譯目標的句子反白起來，按下 <strong>Alt + C</strong>，就會在翻譯目標的句子後方插入翻譯結果：</p>
+<p><img src="https://i.imgur.com/bE49bME.png" alt="Image"></p>
+<p>接著是彈出視窗（Pop-up Bubble），顧名思義就是彈出式視窗。不過由於我不喜歡彈一塊視窗出來擋畫面，平常都是關閉的，只有嵌入式翻譯會讓版面跑版的時候才從右鍵選單使用：</p>
+<p><img src="https://i.imgur.com/llDpDnC.png" alt="Image"></p>
+<p>接著是窗口翻譯（ImTranslator），就是彈出視窗的獨立視窗版，好處是可以用滑鼠拖移：</p>
+<p><img src="https://i.imgur.com/vNKPRY4.png" alt="Image"></p>
+<p>最後是網頁翻譯（Webpage Translation），不過這功能就和 Chrome 右鍵的「翻譯成 繁體（中文）」意思一樣，就不再贅述，我也沒用過。</p>
+<p>看過一輪上面的翻譯模式後，應該可以發現這套件最香的還是嵌入式翻譯，可以中英對照對我這種不擅長英文又怕被機器翻譯幹掉術語的人來說真是一大救贖，善哉善哉。</p>
+<p><del>我相信真的有人用中英對照來練習英文閱讀啦，但我是真的看不懂= =a</del></p>
+<p>這邊就推薦給各位和我一樣的朋朋，省卻複製貼上到 Google 翻譯的時間吧！</p>
                         </div>
 
                         
@@ -215,15 +147,11 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/2020/07/oo-7-interface/">菜雞與物件導向 (7): 介面</a></li>
+        <li><a href="/post/2022/03/omni/">Omni —— 實用的 Chrome 分頁書籤搜尋欄</a></li>
         
-        <li><a href="/post/2020/07/oo-6-abstract-override/">菜雞與物件導向 (6): 抽象、覆寫</a></li>
+        <li><a href="/post/2022/08/devtoys/">DevToys —— 開發人員的瑞士刀工具箱</a></li>
         
-        <li><a href="/post/2020/07/oo-5-polymorphism/">菜雞與物件導向 (5): 多型</a></li>
-        
-        <li><a href="/post/2020/07/oo-4-inheritance/">菜雞與物件導向 (4): 繼承</a></li>
-        
-        <li><a href="/post/2020/07/oo-3-encapsulation/">菜雞與物件導向 (3): 封裝</a></li>
+        <li><a href="/post/2022/08/snispate/">Snispate —— 方便的截圖小幫手，放下剪取工具和小畫家吧</a></li>
         
     </ul>
 </div>
@@ -233,18 +161,16 @@
                             
                             <ul class="clearfix">
                                 
-                                <li><a href="https://igouist.github.io/tags/newbieguide">NewbieGuide</a></li>
+                                <li><a href="https://igouist.github.io/tags/chrome">chrome</a></li>
                                 
-                                <li><a href="https://igouist.github.io/tags/object-oriented">Object-Oriented</a></li>
-                                
-                                <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
+                                <li><a href="https://igouist.github.io/tags/tools">tools</a></li>
                                 
                             </ul>
                             
                         </div>
                         <hr />
 <p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
-<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f09%2foo-8-cohesion-and-coupling%2f" width="100%" frameborder=0></iframe>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2022%2f09%2fimtranslator%2f" width="100%" frameborder=0></iframe>
                     </article>
                     
     
@@ -273,22 +199,6 @@
 </form>
     </section>
     
-    
-        <section class="widget">
-            <h3 class="widget-title">文章目錄</h3>
-            <ul class="widget-list">
-                <nav id="TableOfContents">
-  <ul>
-    <li><a href="#內聚">內聚</a></li>
-    <li><a href="#耦合">耦合</a></li>
-    <li><a href="#內聚與耦合">內聚與耦合</a></li>
-    <li><a href="#小結">小結</a></li>
-    <li><a href="#參考資料">參考資料</a></li>
-    <li><a href="#同系列文章">同系列文章</a></li>
-  </ul>
-</nav>
-            </ul>
-        </section>
     
     
     <section class="widget">
