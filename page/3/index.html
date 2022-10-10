@@ -92,6 +92,48 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2021/06/zero-width-space/" title="菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！" >菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2021-6-26,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/bug">bug</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/bS6EGIL.png" alt=""></p>
+<p>這週遇到個想不到的坑，特別來記錄一下。故事是這樣的－－</p>
+<p>在需要呼叫其他 API 服務時，發生了以下怪事：</p>
+<ul>
+<li>打某支查詢 API，突然查不到任何東西，或是跳出參數錯誤</li>
+<li>有些<strong>需要用參數組成 URL 的 API 跑出 Not Found</strong>
+<ul>
+<li>第一組資料呼叫成功，第二組突然路徑錯誤</li>
+</ul>
+</li>
+<li>寫入的時候，<strong>資料莫名其妙多了個 <code>?</code></strong>
+<ul>
+<li>例如原先的資料是 <code>ABC</code>，不知怎地變成了 <code>ABC?</code></li>
+</ul>
+</li>
+</ul>
+<p>由於這些操作都涉及到同一個參數，直覺上就是我們這邊給的參數出了點問題，馬上進入找犯人的環節。直接中斷點標記下去，反覆觀察該字串，但它就是一個普通的字串 <code>&quot;ABC&quot;</code>，完全看不出什麼端倪。</p>
+<p>正要覺得參數沒有問題的時候，赫然發現組出來的 Url 相當不對勁：在該參數的後方，多出了 <strong><code>%E2%80%8B</code></strong> 這串神秘東西！</p>
+<p>當下我驚呆了，我們傳出去的 Url 裡，並不是預想的 <code>/api/product/ABC</code>，而是 <code>/api/product/ABC%e2%80%8b</code>！真是赤裸裸的背叛！這串鬼東西到底是什麼來頭？！</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2021/06/zero-width-space/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/" title="C#: BenchmarkDotnet —— 效能測試好簡單" >C#: BenchmarkDotnet —— 效能測試好簡單</a>
                                 </h1>
                             </header>
@@ -431,43 +473,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2021/01/oo-ex1-end2020/" title="菜雞與物件導向 (Ex1): 小結" >菜雞與物件導向 (Ex1): 小結</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2021-1-1,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p><img src="https://i.imgur.com/hycMTRZ.png" alt=""></p>
-<p>隨著 2020 進到了 2021，菜雞與物件導向也推進到了五大原則結束，可以暫時告一段落了。</p>
-<p>最初和朋友約好了要把公司新訓學到的東西做個整理（廣告一下他的部落格：<a href="https://sunnyday0932.github.io/">Sian</a>），只是沒想到因為太常發廢文偷懶，大半年才推進到物件導向的基礎而已，甚至占不到新訓內容的十分之一。希望 2021 能繼續推進，把這部份的坑給填一填，然後把前面的文章也重構一下，只是按照我的個性，可能又會忍不住開新的坑吧，哈哈。</p>
-<p>至於物件導向相關的心得和紀錄，也就是這個系列，偶而有想到或是有所體悟的時候再發上來吧，暫時想先把前面隨手寫凌亂文章給整一整先。在這個十幾篇的短系列，記錄了從類別與物件開始，到耦合、內聚及五大原則，每個主題的心得。這邊稍微做個小整理：</p>
-<h3 id="類別物件post202007oo-1-class-object"><a href="/post/2020/07/oo-1-class-object">類別、物件</a></h3>
-<ul>
-<li>物件就是用來表達「我們知道的某個東西」，<strong>物件導向是用物件彼此互動的方式來建立架構</strong></li>
-<li>類別去定義我們要的物件有什麼特徵、有什麼功能，再從類別中實例化（也就是根據設計圖產生）物件出來使用</li>
-</ul>
-<h3 id="建構式多載post202007oo-2-constructor-overload"><a href="/post/2020/07/oo-2-constructor-overload">建構式、多載</a></h3>
-<ul>
-<li>建構式用來在建立物件時就進行一些我們想要的操作，例如狗狗的毛色等等天生的東西，或是這個建立這個物件的必須素材</li>
-<li>多載指的就是可以有很多個同樣名字的方法，各自去接不同的參數，讓同個目標的函式可以<strong>根據傳入的參數不同做不一樣的處理</strong></li>
-</ul>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2021/01/oo-ex1-end2020/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -565,6 +570,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2022/10/jmeter/" title="使用 JMeter 來對 API 壓力測試吧">使用 JMeter 來對 API 壓力測試吧</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2022/10/sony-wh-1000xm5/" title="Sony WH-1000XM5 使用一週心得">Sony WH-1000XM5 使用一週心得</a>
     </li>
     
@@ -598,10 +607,6 @@
     
     <li>
         <a href="https://igouist.github.io/post/2022/06/wox-and-everything/" title="使用 Wox &amp; Everything 在 Windows 上得到良好的搜尋體驗">使用 Wox &amp; Everything 在 Windows 上得到良好的搜尋體驗</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2022/06/angle-sharp/" title="C#: 使用 AngleSharp 爬蟲工具來抓取網頁內容吧">C#: 使用 AngleSharp 爬蟲工具來抓取網頁內容吧</a>
     </li>
     
 </ul>
@@ -662,7 +667,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (19)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (20)</a>
     </li>
     
     <li>
