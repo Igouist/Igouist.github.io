@@ -141,7 +141,7 @@
 <iframe src="https://www.youtube.com/embed/zvKadd9Cflc" width="100%" height="480" frameborder="0" scrolling="no" allowfullscreen></iframe>
 <hr>
 <h3 id="什麼是-restful-api">什麼是 Restful API</h3>
-<p>都提到 API 了，當然不能不提 Restful 了。Restful 說起來比較像是 API 界的一種流派，大概就像「飛天御劍流」之於「劍道」的關係一樣。只不過因為 Restful 太 Restful（？），所以幾乎已經成為主流了。</p>
+<p>都提到 API 了，當然不能不提 Restful 了。<strong>Restful 說起來比較像是 API 界的一種流派</strong>，大概就像「飛天御劍流」之於「劍道」的關係一樣。只不過因為 Restful 太 Restful（？），所以幾乎已經成為主流了。</p>
 <p>那麼 Restful 到底是什麼呢？</p>
 <p>前一段我們有提過，API 的一個重點是：提供我這個功能需要的接口／介面給對方，就能讓對方知道如何使用。</p>
 <p>如果有點進去看 Huli 大大的文章，尤其是 <a href="https://medium.com/@hulitw/learning-tcp-ip-http-via-sending-letter-5d3299203660">傳紙條</a> 那一篇的話，應該會察覺到在資料交換的過程中，最重要的一環就是建立共識，或者說是建立原則以降低溝通成本。</p>
@@ -227,6 +227,8 @@
 </ul>
 </li>
 </ul>
+<p>當我們知道一支 API 是不是安全的、是不是冪等的，也就可以幫助我們知道這支 API 能不能重試，當遇到某些問題時能不能大膽地再打一次請求過去。</p>
+<p>例如說連續查詢兩次並不會對資料進行任何變動，就可以原地重查一次；但面對扣款這種危險狀況，我們當然就不會想再扣一次錢。當我們確實按照安全和冪等這些特性來運用 HTTP 動詞，就可以讓使用端得到這些資訊。</p>
 <hr>
 <h4 id="小小結與推薦閱讀">小小結與推薦閱讀</h4>
 <p>那麼補充就先到這裡。除了上面只列出了我個人平常比較常接觸的 HTTP 方法之外，其他還有 <code>HEAD</code>、<code>TRACE</code> 等等，有興趣的朋友可以再逛逛 MDN 的 <a href="https://developer.mozilla.org/zh-TW/docs/Web/HTTP/Methods">HTTP 請求方法</a>。</p>
@@ -270,9 +272,17 @@ GET /api/product/1
 </tbody>
 </table>
 <br/>
-<p>這邊大致上有個感覺就行了，畢竟 Restful 是一種風格，並沒有強烈的規定。因此只要記得設計 Api 的時候，按照上面這個方向去處理即可。</p>
+<p>這邊大致上有個感覺就行了，畢竟 Restful 是一種風格，並沒有強烈的規定，只要符合共識和約束，就可以算是 Restful 了。</p>
+<p>在微軟把拔的 <a href="https://learn.microsoft.com/zh-tw/azure/architecture/best-practices/api-design">RESTful Web API 設計</a> 中，援引了 Leonard Richardson 的 API 成熟度模型：</p>
+<ul>
+<li>等級 0：定義一個 URI，而所有的作業對此 URI 都是 POST 要求</li>
+<li>等級 1：針對個別資源建立不同的 URI</li>
+<li>等級 2：使用 HTTP 方法來定義資源上的作業</li>
+<li>等級 3：使用<a href="https://learn.microsoft.com/zh-tw/azure/architecture/best-practices/api-design#use-hateoas-to-enable-navigation-to-related-resources">超媒體 (HATEOAS)</a></li>
+</ul>
+<p>目前就內文所述，大多數的已發行 API 約略是等級 2 附近，也就是這次介紹的：使用 HTTP 動詞 + 從資源出發的設計方針。只要掌握這個方向，基本上就沒什麼問題了。</p>
 <p>同樣的，這個訂立的原則，也就得仰賴多去看人家的 Api 怎麼設計來培養了。但只要把握幾個重點：建立共識、提高可讀性，還有設計的時候好好和來介接的夥伴喬一下，基本上就不會有什麼差錯啦，畢竟這東西很彈性的。</p>
-<p>最後推一下這兩篇 Restful API 相關的文章：</p>
+<p>當然，本篇只是稍微說明而已，非常鼓勵各位朋友再進一步搜尋了解。最後推一下這兩篇 Restful API 相關的文章：</p>
 <ul>
 <li><a href="https://progressbar.tw/posts/53">休息(REST)式架構? 寧靜式(RESTful)的Web API是現在的潮流？</a>
 <ul>
@@ -1275,8 +1285,14 @@ GET /api/product/1
         <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
         
         
+        <br/>
+        <span>
+          &nbsp;&nbsp;Post Count： 83
+        </span>
         
-        <span id="busuanzi_container_site_pv"> PV： <span id="busuanzi_value_site_pv"></span></span>
+          <span id="busuanzi_container_site_pv">, PV： <span id="busuanzi_value_site_pv"></span></span>
+          <div>
+        </div>
         
     </div>
 </footer>
