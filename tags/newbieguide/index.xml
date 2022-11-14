@@ -554,14 +554,26 @@
       
       <guid>https://igouist.github.io/post/2020/07/oo-3-encapsulation/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/cc9DLDo.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;這次我們要介紹的是傳說中的黑盒子：封裝。&lt;strong&gt;封裝和繼承、多型並稱物件導向三大特性&lt;/strong&gt;，會是這個順序也是當然的，因為有了封裝才會需要繼承，因為繼承了才會有了多型，因此我們這幾節也按照這個順序快速地看過。&lt;/p&gt;
-&lt;p&gt;所謂的封裝，咱同事在他整理的文章 &lt;a href=&#34;https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-3_%E5%B0%81%E8%A3%9Dencapsulation%E7%B9%BC%E6%89%BFinheritance%E8%88%87%E5%A4%9A%E5%9E%8Bpolymorphism/&#34;&gt;Object Oriented物件導向-3:封裝(Encapsulation)、繼承(Inheritance)與多型(polymorphism)&lt;/a&gt; 中的例子就舉得不錯：當你按下鍵盤的Ａ鍵，螢幕隨即出現了Ａ，你不必知道中間發生了什麼事，你只需要知道怎麼操作和最後得到什麼就可以了。&lt;/p&gt;
+&lt;p&gt;這次我們要介紹的是傳說中的黑盒子：封裝。&lt;/p&gt;
+&lt;p&gt;封裝和&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-4-inheritance&#34;&gt;繼承&lt;/a&gt;、&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-5-polymorphism&#34;&gt;多型&lt;/a&gt;並稱物件導向三大特性，我們接下來也會按照這個順序快速地介紹。&lt;/p&gt;
+&lt;p&gt;所謂的封裝有兩個重點：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;控制物件和外部進行互動的出入口&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;隱藏物件內部的細節資訊&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;強者我同事整理的&lt;a href=&#34;https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-3_%E5%B0%81%E8%A3%9Dencapsulation%E7%B9%BC%E6%89%BFinheritance%E8%88%87%E5%A4%9A%E5%9E%8Bpolymorphism/&#34;&gt;文章&lt;/a&gt;裡的例子就舉得不錯：當你按下鍵盤的Ａ鍵，螢幕隨即出現了Ａ，你不必知道中間發生了什麼事，你只需要知道怎麼操作和最後得到什麼就可以了。&lt;/p&gt;
+&lt;p&gt;其中鍵盤提供的按鍵，就是我們對電腦進行互動的出入口；而電腦實際上做了什麼事情，也被隱藏了起來，讓我們只需要關注結果就好。&lt;/p&gt;
 &lt;p&gt;此外我也看到過販賣機的例子，&lt;strong&gt;當你去販賣機買飲料，你也不需要知道裡面的構造，只要知道你選了飲料投了錢，飲料就會跑出來就行&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;因此&lt;strong&gt;封裝的概念很直覺：將物件視作一個整體，實作內容隱藏起來，讓使用者只需要知道怎麼使用即可。&lt;/strong&gt;（相似的思路，我們後續的介面會再提到）大概就像懶人包的感覺。&lt;/p&gt;
-&lt;p&gt;如果封裝做得夠好，除了可以將程式碼整理得井井有條以外，也能讓物件內部的修改不會影響到使用物件的地方，並且讓物件的使用者直覺地知道如何使用，最終達到降耦合的目標。&lt;/p&gt;
-&lt;p&gt;關於封裝的概念，或是會問「什麼是耦合？」的朋友，建議可以看看這篇：&lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10203659&#34;&gt;實務上的高內聚與低耦合&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;而從上面的敘述中我們可以察覺到要實現封裝，最重要的就是：&lt;strong&gt;對外的開放程度（存取範圍）的控制&lt;/strong&gt;。或是套一句前輩的說法：&lt;strong&gt;給程式碼隱私的空間&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;從上面的兩個例子，相信大家已經掌握到封裝的概念了：&lt;strong&gt;將物件視作一個整體，把內部的實作內容隱藏起來，讓使用者只需要知道怎麼使用這個物件即可。&lt;/strong&gt;（相似的思路，我們後續的&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-7-interface&#34;&gt;介面&lt;/a&gt;會再提到）&lt;/p&gt;
+&lt;p&gt;如果封裝做得夠好，除了可以將程式碼整理得井井有條以外，也能讓物件內部的修改不會直接影響到使用物件的地方，達成了降耦合的目標&lt;/p&gt;
+&lt;p&gt;並且也能讓物件的使用者直覺地知道如何使用物件提供的方法，如此使用者就可以專注在更高層次的抽象，而不用被物件內部的細節所干擾。&lt;/p&gt;
+&lt;p&gt;最後，從上面的敘述中我們可以察覺到要實現封裝，最重要的就是：&lt;strong&gt;對外的開放程度（存取範圍）的控制&lt;/strong&gt;。或是套一句前輩的說法：&lt;strong&gt;給程式碼隱私的空間&lt;/strong&gt;。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;補充：如果想問「什麼是耦合？」的朋友，建議可以看看這篇：&lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10203659&#34;&gt;實務上的高內聚與低耦合&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;或是參照本系列後續的 &lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;內聚與耦合&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;h2 id=&#34;存取範圍與存取子&#34;&gt;存取範圍與存取子&lt;/h2&gt;
+&lt;p&gt;先讓我們從存取範圍開始說起吧，因為我個人慣用的是 C#，因此就介紹一下 C# 是怎麼控制存取範圍的。&lt;/p&gt;
 &lt;p&gt;在 C# 之中，類別裡控制可見度是使用修飾子來定義存取範圍，也就是當我們替類別宣告欄位時常看到的 &lt;code&gt;Public&lt;/code&gt; 和 &lt;code&gt;Private&lt;/code&gt;。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;Public&lt;/code&gt;: 這是公開的，所有人都看得到&lt;/li&gt;
