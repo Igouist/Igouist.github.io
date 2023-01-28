@@ -92,6 +92,40 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2022/08/azure-service-bus/" title="使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧" >使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2022-8-13,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/azure">Azure</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/5Vube9E.png" alt="Image"></p>
+<p>在工作上遇到在兩個 Azure 工具間建立訊息佇列（Message Queue）的需求，因此接觸到了 Azure Service Bus（中文：服務匯流排 <del>燴牛排？</del>），在前輩的協助下建立了一組簡單的 Demo，這就來筆記一下。</p>
+<h2 id="什麼是訊息佇列message-queue-mq">什麼是訊息佇列（Message Queue, MQ）</h2>
+<p>首先讓我們簡單認識一下訊息佇列。假設我們有生產者和消費者兩個服務，其中<strong>生產者負責產生資料，而消費者負責消費這些資料</strong>：</p>
+<p><img src="https://i.imgur.com/mg4lXJk.png" alt="Image"></p>
+<p>各位也可以這樣理解：生產者就像是壽司師傅，他會不斷的捏壽司出來；而這時候來了一位大胃王顧客，他就是消費者，會不斷地把壽司吃掉</p>
+<p><img src="https://i.imgur.com/Sk16WdC.png" alt="Image"></p>
+<p>大概對這兩個角色有點認識就行了。那麼，假設我們有兩組 API 服務：其中一個是負責寫入 Log 的服務，而另一個是產品服務。</p>
+<p>產品服務會將 Log 內容丟給 Log 服務去紀錄 Log，這時候產生了這些日誌資料的產品服務就是生產者，而消費這些日誌資料去寫 Log 的服務就是消費者。</p>
+<p>也就是：<strong><code>產品服務（生產者） —— 資料 —&gt; Log 服務（消費者）</code></strong> 這樣的狀況。</p>
+<p>然而像這樣<strong>直接相依的兩個服務，可能就會遇到一些問題：像是消費者突然掛掉，導致生產者也跟著掛掉；又或是消費者的變動和擴展會連帶影響到生產者必須跟著變動等等。</strong></p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2022/08/azure-service-bus/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2022/08/snispate/" title="Snispate —— 方便的截圖小幫手，放下剪取工具和小畫家吧" >Snispate —— 方便的截圖小幫手，放下剪取工具和小畫家吧</a>
                                 </h1>
                             </header>
@@ -406,52 +440,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/" title="菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記" >菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2021-10-4,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/bug">bug</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p><img src="https://i.imgur.com/EMdGkwr.png" alt="Image"></p>
-<h2 id="事發緣由">事發緣由</h2>
-<p>咱們內部套件中有個方法，會將各個參數組合為 QueryString 去打指定的 Api。就是這麼稀鬆平常的場景，神奇的事情就發生了。</p>
-<p>同樣的套件、同樣的語法，在團隊中兩個人的電腦上安裝執行，卻是一個成功一個失敗。</p>
-<p>原來該方法的參數中，包含一欄型別為 DateTime 的資料，並且會把該欄位的值拿來 ToString() 再做為參數傳遞給目標 Api。</p>
-<p>而呼叫失敗的人就是在這個 <code>DateTime.ToString()</code> 的過程中<strong>產生了中文字</strong>，使得目標 Api 接到參數後，無法將中文字轉換回 DateTime 而發生了錯誤。</p>
-<p>問題就浮現了：<strong>同一行 DateTime.ToString() 在不同電腦執行的結果竟然不一樣？！</strong></p>
-<p>為了讓我們更快了解狀況，現在就簡單地使用 Linqpad 進行測試：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
-{
-    DateTime.Now.ToString().Dump();
-}
-</code></pre></div><p>首先，在我的 Windows 時間設定中，完整時間的格式為 <code>09:40:07</code> ，也就是 24 小時制。</p>
-<p>現在讓我們先執行上面這段語法看看：</p>
-<pre tabindex="0"><code>// 2021/10/04 21:00:00
-</code></pre><p>接著讓我們變更時間格式看看。</p>
-<p>以我的 Win10 為例，在 Windows 工具列，也就是畫面的右下角右鍵，選擇 <code>調整日期時間 → 日期時間格式設定 → 變更資料格式</code>，將時間格式變更為 <code>上午 09:40:07</code>。</p>
-<p>重新啟動 Linqpad 再執行如下：</p>
-<pre tabindex="0"><code>// 2021/10/04 下午 09:00:00
-</code></pre><p>可以看到 <code>下午</code> 兩個字就蹦出來了！</p>
-<p>之所以會有這樣的差異，是因為 <code>DateTime.ToString()</code> 預設轉換的目標格式會是抓取目前執行緒的<strong>文化特性</strong>。</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -549,6 +537,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2023/01/polyglot-notebooks/" title="Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧">Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2023/01/nioh/" title="仁王＆仁王２　白金！">仁王＆仁王２　白金！</a>
     </li>
     
@@ -584,10 +576,6 @@
         <a href="https://igouist.github.io/post/2022/08/devtoys/" title="DevToys —— 開發人員的瑞士刀工具箱">DevToys —— 開發人員的瑞士刀工具箱</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2022/08/azure-service-bus/" title="使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧">使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -614,7 +602,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (26)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (27)</a>
     </li>
     
     <li>
@@ -646,7 +634,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (20)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (21)</a>
     </li>
     
     <li>
@@ -810,14 +798,14 @@
 </div>
 <footer id="footer">
     <div class="container">
-        &copy; 2019-2022 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        &copy; 2019-2023 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
         Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
         <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
         
         
         <br/>
         <span>
-          &nbsp;&nbsp;Post Count： 85
+          &nbsp;&nbsp;Post Count： 86
         </span>
         
           <span id="busuanzi_container_site_pv">, PV： <span id="busuanzi_value_site_pv"></span></span>
