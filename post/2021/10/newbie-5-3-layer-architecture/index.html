@@ -590,8 +590,7 @@
 </blockquote>
 <p>接著，讓我們開始著手處理介面的部分吧，先讓我們在 <code>Service</code> 中新增一個叫做 <code>Interface</code> 的資料夾來放我們的介面。</p>
 <p><img src="https://i.imgur.com/FATU0lt.png" alt="image-20210921182347662"></p>
-<p>接著因為是做卡片管理的 CRUD，當然要用 Card 當前綴。並且由於習慣的關係，只要是 Interface 我會在最前面加上一個</p>
-<p><code>I</code> 來標示，所以讓我們在該資料夾下建立一個 <code>ICardService</code>：</p>
+<p>接著因為是做卡片管理的 CRUD，當然要用 Card 當前綴。並且由於習慣的關係，只要是 Interface 我會在最前面加上一個 <code>I</code> 來標示，所以讓我們在該資料夾下建立一個 <code>ICardService</code>：</p>
 <p><img src="https://i.imgur.com/vr5RTrG.png" alt="image-20210921194022072"></p>
 <p><img src="https://i.imgur.com/CAMytoF.png" alt="image-20210921194110374"></p>
 <p>如此一來就會建立一個空的介面。啊，記得加上 <code>Public</code> 呦。</p>
@@ -688,7 +687,7 @@
 <p>現在我們的 Service 層應該會是這個樣子的：</p>
 <p><img src="https://i.imgur.com/ScSGHFK.png" alt="image-20210921200831418"></p>
 <p>接著就讓我們用同樣的節奏來處理 Repository 吧。</p>
-<p>首先仍然是先建立一個 <code>Interface</code> 資料夾、<code>建立一個 </code>ICardRepository，並加上我們的 CRUD 五天王：</p>
+<p>首先仍然是先建立一個 <code>Interface</code> 資料夾、建立一個 <code>ICardRepository</code>，並加上我們的 CRUD 五天王：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
 </span><span style="color:#75715e">/// 卡片管理服務
 </span><span style="color:#75715e">/// &lt;/summary&gt;
@@ -1374,7 +1373,7 @@
 <h3 id="關於重複建立-dto-的問題">關於重複建立 DTO 的問題</h3>
 <p>Q: 資料處理給商業邏輯要開一個 DataModel，商業邏輯出去又要開一個 ResultModel……每次都要開一堆重複的 DTO 很麻煩！一定要這樣做嗎？</p>
 <p>A: 不一定。</p>
-<p>我這邊也遇過一些系統，由於場景相對單純，存取上基本只有增修查改，商業邏輯也多是驗證和內容資料的處理，因此就採用一個 Dto 貫穿三層的方式進行。例如說跟訂單有關的就只使用一個 OrderDto、跟產品有關的就只用一個 ProductDto 這樣，整體用起來會比較像是一個實體對應一個 Dto的感覺。</p>
+<p>我這邊也遇過一些系統，由於場景相對單純，存取上基本只有增修查改，商業邏輯也多是驗證和內容資料的處理，因此就採用一個 Dto 貫穿三層的方式進行。例如說跟訂單有關的就只使用一個 OrderDto、跟產品有關的就只用一個 ProductDto 這樣，整體用起來會比較像是一個實體對應一個 Dto 的感覺。</p>
 <p>我個人認為「要不要把各層之間溝通用的 DTO 都獨立出來」，基本上就是在問這個系統：</p>
 <ul>
 <li>會不會有「你對資料表比較熟悉，負責資料存取層；我對外制定規格，負責展示層」等等，這種<strong>需要針對分層去分工的時候？</strong></li>
@@ -1424,7 +1423,8 @@
 <p>另外在使用上也要注意呼叫對象是否有經過一些複雜的商業處理，如果那正是你要的，例如說你就是要訂單計算之後的結果，那當然沒有問題；倘若只是需要乾淨的資料，也可以乾脆往下去依賴 Repository 就可以，避免商業邏輯間意料之外的耦合。</p>
 <p>所以請不要被從上到下這個方向束縛了，Service 也可以是厚厚的一層。</p>
 <h2 id="小結">小結</h2>
-<p>本篇記錄了為什麼要分層，以及我個人平常開新專案的分層步驟。最後總結一下幾個點：</p>
+<p>本篇記錄了為什麼要分層，以及我個人平常開新專案的分層步驟。</p>
+<p>最後針對分層架構，總結一下幾個筆記重點：</p>
 <ul>
 <li>分層是為了<strong>分離關注點</strong>。讓每一層的職責明確、專注在各自的工作</li>
 <li>分層帶來的好處：
@@ -1453,7 +1453,7 @@
 <li>資料傳輸物件（DTO）
 <ul>
 <li>層與層之間需要資料的傳遞，因此我們會建立只有欄位沒有方法的 DTO 來傳輸資料</li>
-<li>DTO 的轉換挺麻煩的，這時候就可以考慮使用 AutoMapper</li>
+<li>DTO 的轉換挺麻煩的，這時候就可以考慮使用 AutoMapper 這類工具</li>
 </ul>
 </li>
 <li>分層本身是分工的概念
