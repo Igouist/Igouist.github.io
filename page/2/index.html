@@ -92,6 +92,48 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/" title="使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間" >使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2022-9-3,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/powershell">powershell</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/BLYVPi7.png" alt="Image"></p>
+<p>事情發生在一個風和日麗的平凡下午：</p>
+<blockquote>
+<p>我：（把手上的事情弄到一個段落再下班吧）<br/>
+～～十分鐘過後～～<br/>
+我：差不多可以走了，看一下公車還有多久<br/>
+公車：（一分鐘前離站）<br/>
+我：(ﾟдﾟ)</p>
+</blockquote>
+<p>這時候才明白愛恨情仇，最傷最痛是後悔。如果我早知道公車快到站了，也許我就不會錯過。</p>
+<p>抱著這股傷痛，決定乾脆寫個小腳本，每天下班提醒我一下，避免重蹈覆轍。</p>
+<p>綜上所述！目標是：<strong>每天下班前十分鐘，告訴我下一班到達的公車時間</strong></p>
+<p>因此至少能夠拆分成三個階段：</p>
+<ul>
+<li>每天下班前十分鐘（定時執行）</li>
+<li>告訴我（通知功能）</li>
+<li>下一班到達的公車時間（查詢資訊）</li>
+</ul>
+<p>那麼，我們開始吧！</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/" title="菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions" >菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions</a>
                                 </h1>
                             </header>
@@ -369,67 +411,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列" >AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2021-12-5,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p>從朋友那兒聽到了用 <a href="/post/2020/07/automapper">AutoMapper</a> 把串列成員物件攤平成一組串列的問題，發現了 <strong>ConvertUsing</strong> 的好用，這邊就紀錄一下。</p>
-<p>事情是這樣的，首先有一個 <code>Parent</code> 類別，其中包含著兩個成員：<code>Id</code> 和串列的 <code>Child</code> 類別，而 <code>Child</code> 類別則只有一個成員 <code>Val</code>，如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Parent</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> IEnumerable&lt;Child&gt; Children { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Child</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-</code></pre></div><p>另外還有一個 <code>Target</code> 類別，包含 <code>Id</code> 和 <code>Val</code> 兩個成員：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Target</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-</code></pre></div><p>現在的目標是：<strong>將一個有著 Child 串列的 Parent 映射成 Target 串列</strong>。</p>
-<p>也就是說，假設我們的來源是這樣子：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> boo = <span style="color:#66d9ef">new</span> Parent
-{
-    Id = <span style="color:#ae81ff">1</span>,
-    Children = <span style="color:#66d9ef">new</span> List&lt;Child&gt;
-    {
-        <span style="color:#66d9ef">new</span> Child { Val = <span style="color:#ae81ff">1</span> },
-        <span style="color:#66d9ef">new</span> Child { Val = <span style="color:#ae81ff">2</span> },
-    }
-};
-</code></pre></div><p>希望可以變成這樣子：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> expect = <span style="color:#66d9ef">new</span> List&lt;Target&gt;
-{
-    <span style="color:#66d9ef">new</span> Target { Id = <span style="color:#ae81ff">1</span>, Val = <span style="color:#ae81ff">1</span> },
-    <span style="color:#66d9ef">new</span> Target { Id = <span style="color:#ae81ff">1</span>, Val = <span style="color:#ae81ff">2</span> },
-};
-</code></pre></div><p>我之前遇到的時候，會直覺地將 Child 直接 Map 到 Target，再對 Target 做個 Foreach 來補上 Parent 的 Id。</p>
-<p>這次和朋友討論時，提到了另一個角度：雖然這樣的做法相當直覺快速，但其實並不能保證後續維護的人使用這組 Mappings 時，都知道這裡要補資料；況且此處的對應關係的確是 <code>Parent</code> 到 <code>List&lt;Target&gt;</code>，並非 <code>Child</code> 到 <code>Target</code> 而已，直覺上就怪怪的。若要解決這個問題，可能就要再包裝一層，把 Mapper 隔離出去做個轉換器之類的。</p>
-<p>但想想又覺得 AutoMapper 不可能沒提供這個場景能使用的方法才對，最後餵狗發現 <strong>AutoMapper 確實有提供 <code>ConvertUsing</code> 來讓我們客製化轉換過程</strong>，這邊就紀錄一下。</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2021/12/automapper-convert-using/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -527,6 +508,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2023/04/wolong/" title="臥龍：蒼天殞落　白金！">臥龍：蒼天殞落　白金！</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2023/01/banner-2-midjourney-and-canva/" title="使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗">使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗</a>
     </li>
     
@@ -560,10 +545,6 @@
     
     <li>
         <a href="https://igouist.github.io/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/" title="使用 Azure Functions &#43; Line Notify 來定時提醒公車到站時間">使用 Azure Functions &#43; Line Notify 來定時提醒公車到站時間</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/" title="使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間">使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間</a>
     </li>
     
 </ul>
@@ -604,7 +585,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/life/">life (5)</a>
+        <a href="https://igouist.github.io/categories/life/">life (6)</a>
     </li>
     
     <li>
@@ -803,7 +784,7 @@
         
         <br/>
         <span>
-          &nbsp;&nbsp;Post Count： 88
+          &nbsp;&nbsp;Post Count： 89
         </span>
         
           <span id="busuanzi_container_site_pv">, PV： <span id="busuanzi_value_site_pv"></span></span>
