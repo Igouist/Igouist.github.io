@@ -172,36 +172,36 @@
 <p>如果要確認目前的執行原則，可以使用 <code>Get-ExecutionPolicy</code></p>
 <p>這個分類也是為了保護使用者，不要亂執行一些來路不行了奇怪腳本，整個電腦打包起來送人。不過我們身為 <del>白目</del> 工程師，難免會有要裝套件和自己寫腳本的時候，這邊就直接調整為 Unrestricted 全面開啟吧！</p>
 <p>調整執行原則的語法如下（必須在系統管理員身分時才有效果呦）</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Set-ExecutionPolicy Unrestricted
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Set-ExecutionPolicy Unrestricted
 </code></pre></div><p>調整完就可以繼續下載囉！</p>
 <p>像我重灌的狀況，提示會如下圖，如果已經安裝過 Nuget 提供者，提示應該會更少。</p>
 <p><img src="https://i.imgur.com/UoGkW7o.png" alt=""></p>
 <h2 id="安裝-oh-my-posh">安裝 oh-my-posh</h2>
-<blockquote>
-<p>更新：Oh-my-posh 也可以從 Microsoft 搜尋並安裝囉！</p>
-<p><img src="https://i.imgur.com/3WoVsvL.jpg" alt="Image"></p>
-</blockquote>
 <p>接著讓我們安裝 oh-my-posh：</p>
 <pre tabindex="0"><code>Install-Module oh-my-posh
 </code></pre><p><img src="https://i.imgur.com/LQuE2hD.png" alt=""></p>
 <p>安裝完畢後就可以來試試看囉！</p>
+<blockquote>
+<p>更新：Oh-my-posh 也可以從 Microsoft 搜尋並安裝囉！</p>
+<p><img src="https://i.imgur.com/3WoVsvL.jpg" alt="Image"></p>
+</blockquote>
 <h2 id="設定主題">設定主題</h2>
 <blockquote>
 <p>更新：由於 Oh-my-posh 設定主題的語法已經改變，因此移除 2020 時的內容，改為 2023 重灌電腦時找到的指令。</p>
 <p>因為 Oh-my-posh 還蠻頻繁更新的，建議後續的操作可以開著 <a href="https://ohmyposh.dev/docs/installation/customize">Oh My Posh</a> 的官方文檔來排查一下</p>
 </blockquote>
-<p>要更改主題的話，我們會需要使用 <code>oh-my-posh init pwsh</code> 這個指令，並且將該主題的 Json 檔案傳遞給 <code>--config</code>，例如：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">oh-my-posh init pwsh --config <span style="color:#e6db74">&#34;$env:POSH_THEMES_PATH/powerlevel10k_rainbow.omp.json&#34;</span> | Invoke-Expression
+<p><strong>要更改主題的話，我們會需要使用 <code>oh-my-posh init pwsh</code> 這個指令，並且將該主題的 Json 檔案傳遞給 <code>--config</code></strong>，例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">oh-my-posh init pwsh --config <span style="color:#e6db74">&#34;</span>$env<span style="color:#e6db74">:POSH_THEMES_PATH/powerlevel10k_rainbow.omp.json&#34;</span> | Invoke-Expression
 </code></pre></div><p>我們丟了一個 powerlevel10k_rainbow 這個主題的 Json 檔案路徑給 oh-my-posh，然後呼叫 <code>Invoke-Expression</code> 執行它，這時候主題就會變啦～</p>
 <blockquote>
-<p>補充：這邊用到一組環境變數：<code>$env:POSH_THEMES_PATH</code> 實際上是一個資料夾路徑，Oh-my-posh 安裝的主題都會放在這個資料夾裡：</p>
+<p>補充：這邊用到一組環境變數 <code>$env:POSH_THEMES_PATH</code> 實際上是一個資料夾路徑，Oh-my-posh 安裝的主題都會放在這個資料夾裡：</p>
 <p><img src="https://i.imgur.com/lWBHJc3.jpg" alt="Image"></p>
 <p>如果你有自己下載的主題，可以也丟到 <code>POSH_THEMES_PATH</code> 的位置，或是直接更改 <code>--config</code> 的路徑就可以了。</p>
 </blockquote>
 <p>每個主題的樣式都不大一樣，可以翻一下 Oh-my-posh 的 <a href="https://ohmyposh.dev/docs/themes">Themes</a> 頁面挑個喜歡的。</p>
 <h2 id="撰寫腳本">撰寫腳本</h2>
 <p>聰明的你一定發現了，每次重開都要重輸入一次 <code>init</code> 實在是很麻煩。因此我們接著要設定讓它能一打開就載入主題。</p>
-<p>當 Powershell 開啟時，預設會去讀取使用者的設定檔，我們就是要把這些指定加到設定檔裡，讓 Powershell 一打開就能美美的。</p>
+<p><strong>當 Powershell 開啟時，預設會去讀取使用者的設定檔（Profile）</strong>，我們就是要把這些指定加到設定檔裡，讓 Powershell 一打開就能美美的。</p>
 <p>在 Powershell 裡輸入 <code>$PROFILE</code> 就能取得當前的設定檔位置，通常來說會在 <code>我的文件\WindowsPowerShell</code> 底下。</p>
 <p><img src="https://i.imgur.com/kRKV112.png" alt=""></p>
 <blockquote>
