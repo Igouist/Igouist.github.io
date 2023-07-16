@@ -150,7 +150,7 @@
 <h2 id="安裝-posh-git">安裝 posh-git</h2>
 <p>然而我們並不打算在此停止！因緣際會之下，我拜讀了這篇 <a href="https://blog.poychang.net/setting-powershell-theme-with-oh-my-posh/">使用 oh-my-posh 美化 PowerShell 樣式</a>，頓時驚為天人，跟預設的（請自己再拉回去比對第一張圖）實在是相當有差距，於是當時就直接安裝下來了。</p>
 <p>畢竟這是第二次安裝了，接下來的區段就記錄一下安裝 <a href="https://github.com/JanDeDobbeleer/oh-my-posh">oh-my-posh</a> 主題的流程。<strong>oh-my-posh</strong> 是受到 Linux 上 <a href="https://github.com/ohmyzsh/ohmyzsh">oh-my-zsh</a> 的<strong>啟發</strong>誕生的，總之就是個挺讚讚的主題載入工具。</p>
-<p>而且安裝相當方便，只要使用 <code>Install-Module</code> 指令，就能從 <a href="https://www.powershellgallery.com/">PowerShell Gallery</a> 把模組安裝下來囉！</p>
+<p>而且安裝相當方便，只需要從 Microsoft Store 或直接打 <code>Install-Module</code> 指令，就能從 <a href="https://www.powershellgallery.com/">PowerShell Gallery</a> 把模組安裝下來囉！</p>
 <p>在安裝 oh-my-posh 之前，由於顯示的內容包含 Git ，因此我們還要先下載另一個套件 <code>posh-git</code>。讓我們用<strong>系統管理員</strong>身份開啟 Powershell，並輸入以下指令來進行安裝：</p>
 <pre tabindex="0"><code>Install-Module posh-git
 </code></pre><p>到這一步，會有幾種狀況：</p>
@@ -174,29 +174,33 @@
 <p>調整執行原則的語法如下（必須在系統管理員身分時才有效果呦）</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">Set-ExecutionPolicy Unrestricted
 </code></pre></div><p>調整完就可以繼續下載囉！</p>
-<h2 id="安裝-oh-my-posh">安裝 oh-my-posh</h2>
-<blockquote>
-<p><strong>因為 Oh-my-posh 還蠻頻繁更新的，目前的安裝方式已經改變。請參考 <a href="https://ohmyposh.dev/docs/installation/windows">Oh My Posh 的官方文檔</a> 來進行安裝呦</strong></p>
-</blockquote>
 <p>像我重灌的狀況，提示會如下圖，如果已經安裝過 Nuget 提供者，提示應該會更少。</p>
 <p><img src="https://i.imgur.com/UoGkW7o.png" alt=""></p>
+<h2 id="安裝-oh-my-posh">安裝 oh-my-posh</h2>
+<blockquote>
+<p>更新：Oh-my-posh 也可以從 Microsoft 搜尋並安裝囉！</p>
+<p><img src="https://i.imgur.com/3WoVsvL.jpg" alt="Image"></p>
+</blockquote>
 <p>接著讓我們安裝 oh-my-posh：</p>
 <pre tabindex="0"><code>Install-Module oh-my-posh
 </code></pre><p><img src="https://i.imgur.com/LQuE2hD.png" alt=""></p>
 <p>安裝完畢後就可以來試試看囉！</p>
 <h2 id="設定主題">設定主題</h2>
-<p>使用主題之前必須把套件用 <code>Import-Module</code> 給拉進來，現在就讓我們試試我最常用的 <code>Paradox</code> 這個主題：</p>
-<pre tabindex="0"><code>Import-Module posh-git
-Import-Module oh-my-posh
-Set-Theme Paradox
-</code></pre><p><img src="https://i.imgur.com/6ApNyRX.png" alt=""></p>
 <blockquote>
-<p>補充：oh-my-posh 改版之後一些語法有改變，如果有在 <code>Set-Theme</code> 這步的時候遇到「無法辨識…」問題的朋友，可以嘗試改成用 <code>Set-PoshPrompt -Theme Paradox</code> 試試看。</p>
+<p>更新：由於 Oh-my-posh 設定主題的語法已經改變，因此移除 2020 時的內容，改為 2023 重灌電腦時找到的指令。</p>
+<p>因為 Oh-my-posh 還蠻頻繁更新的，建議後續的操作可以開著 <a href="https://ohmyposh.dev/docs/installation/customize">Oh My Posh</a> 的官方文檔來排查一下</p>
 </blockquote>
-<p>可以很明確看到，當我們 <code>Set-Theme</code> 之後，輸入的部份就變囉！Paradox 主題包含電腦名稱、當前位置、Git 提示及時間等資訊。</p>
-<p>每個主題的樣式都不大一樣，可以看前面提過的這篇<a href="https://blog.poychang.net/setting-powershell-theme-with-oh-my-posh/">使用 oh-my-posh 美化 PowerShell 樣式</a>，內文很貼心地把樣式的呈現效果都做成圖片了，可以再從裡面挑喜歡的使用，或是用 <code>Get-Theme</code> 看看有哪些主題，一個一個試穿看看。</p>
+<p>要更改主題的話，我們會需要使用 <code>oh-my-posh init pwsh</code> 這個指令，並且將該主題的 Json 檔案傳遞給 <code>--config</code>，例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">oh-my-posh init pwsh --config <span style="color:#e6db74">&#34;$env:POSH_THEMES_PATH/powerlevel10k_rainbow.omp.json&#34;</span> | Invoke-Expression
+</code></pre></div><p>我們丟了一個 powerlevel10k_rainbow 這個主題的 Json 檔案路徑給 oh-my-posh，然後呼叫 <code>Invoke-Expression</code> 執行它，這時候主題就會變啦～</p>
+<blockquote>
+<p>補充：這邊用到一組環境變數：<code>$env:POSH_THEMES_PATH</code> 實際上是一個資料夾路徑，Oh-my-posh 安裝的主題都會放在這個資料夾裡：</p>
+<p><img src="https://i.imgur.com/lWBHJc3.jpg" alt="Image"></p>
+<p>如果你有自己下載的主題，可以也丟到 <code>POSH_THEMES_PATH</code> 的位置，或是直接更改 <code>--config</code> 的路徑就可以了。</p>
+</blockquote>
+<p>每個主題的樣式都不大一樣，可以翻一下 Oh-my-posh 的 <a href="https://ohmyposh.dev/docs/themes">Themes</a> 頁面挑個喜歡的。</p>
 <h2 id="撰寫腳本">撰寫腳本</h2>
-<p>聰明的你一定發現了，每次重開都要重輸入一次 <code>Import-Module</code> 和 <code>Set-Theme</code> 實在是很麻煩。因此我們接著要設定讓它能一打開就載入主題。</p>
+<p>聰明的你一定發現了，每次重開都要重輸入一次 <code>init</code> 實在是很麻煩。因此我們接著要設定讓它能一打開就載入主題。</p>
 <p>當 Powershell 開啟時，預設會去讀取使用者的設定檔，我們就是要把這些指定加到設定檔裡，讓 Powershell 一打開就能美美的。</p>
 <p>在 Powershell 裡輸入 <code>$PROFILE</code> 就能取得當前的設定檔位置，通常來說會在 <code>我的文件\WindowsPowerShell</code> 底下。</p>
 <p><img src="https://i.imgur.com/kRKV112.png" alt=""></p>
@@ -222,23 +226,24 @@ Set-Theme Paradox
 </blockquote>
 <p>接著我們就前往此處去修改 Powershell 的腳本，如果發現並沒有這個檔案，那還請自己建立一個，檔名和路徑請和 <code>$PROFILE</code> 一致，像我就取 <code>Microsoft.PowerShell_profile.ps1</code></p>
 <p><img src="https://i.imgur.com/eJ8A5iY.png" alt=""></p>
-<p>之後開啟檔案，貼上我們引入套件和設定主題的指令</p>
-<pre tabindex="0"><code>Import-Module posh-git
-Import-Module oh-my-posh
-Set-Theme Paradox
-</code></pre><blockquote>
+<p>之後開啟檔案，貼上我們引入套件和設定主題的指令：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ps1" data-lang="ps1">oh-my-posh init pwsh --config <span style="color:#e6db74">&#34;$env:POSH_THEMES_PATH/powerlevel10k_rainbow.omp.json&#34;</span> | Invoke-Expression
+</code></pre></div><blockquote>
 <p>再次補充：oh-my-posh 改版之後一些語法有改變，如果有在 <code>Set-Theme</code> 這步的時候遇到「無法辨識…」問題的朋友，可以嘗試改成用 <code>Set-PoshPrompt -Theme Paradox</code> 試試看。</p>
 </blockquote>
 <p>接著讓我們重開 Powershell</p>
-<p><img src="https://i.imgur.com/pQ7KVg3.png" alt=""></p>
+<p><img src="https://i.imgur.com/1kYjQSO.jpg" alt="Image"></p>
 <p>可以看見它已經順利載入主題囉！</p>
-<blockquote>
+<p>因為我覺得切主題前跑那些 Powershell 提示之類的有點醜，所以我會回去 Profile 補一行 Clear：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ps1" data-lang="ps1">oh-my-posh init pwsh --config <span style="color:#e6db74">&#34;$env:POSH_THEMES_PATH/powerlevel10k_rainbow.omp.json&#34;</span> | Invoke-Expression
+clear
+</code></pre></div><blockquote>
 <p>也可以在這裡寫一些 function 來使用，像我個人之前做 <a href="/post/2020/03/bandon-1-selenium">我要訂便當</a> 因為懶得每次都 cd 到腳本所在的位置還要 Pyhton 執行，所以就直接包成 <code>Get-Bandon</code> 的方法直接叫，真的舒服，推薦嘗試</p>
 </blockquote>
-<p>如果有想要自己試試新增主題，或是想像我一樣做小修改的，可以到 <code>C:\Program Files\WindowsPowerShell\Modules</code> 裡面找到 <code>oh-my-posh\{版號}\Themes</code> 就可以找到主題列表囉！</p>
-<p>例如說把 <code>Paradox.psm1</code> 開啟後，就可以看見組出那一串資訊的過程，也就可以隨意更改囉。我就特愛把 <code>&gt;</code> 改成 <code>°д°:</code> 感覺活潑多了（？）</p>
+<p>如果有想要自己試試新增主題，或是想像我一樣做小修改的，可以到 <code>$env:POSH_THEMES_PATH</code> 這個路徑的資料夾，找到 <code>.omp.json</code> 檔案來動手</p>
+<p>例如說把 <code>powerlevel10k_rainbow.omp.json</code> 開啟後，就可以看見組出那一串資訊的過程，也就可以隨意更改囉。我就特愛把一些 icon 都改成 <code>°д°</code>，感覺活潑多了（？）</p>
 <blockquote>
-<p>補充：該路徑會根據安裝 <code>oh-my-posh</code> 的位置而變動，基本上按照前面提到的四個設定檔位置找找看 Modules 應該就能找到</p>
+<p>補充：該路徑會根據安裝 <code>oh-my-posh</code> 的位置而變動，基本上開 Powershell 直接從環境變數的路徑下去找比較快。真的找不到的話也可以下載別人的主題改一改，再修改 `&ndash;config`` 的路徑指到自己改好的 json 就好囉</p>
 </blockquote>
 <p>順便提一下，載入使用者設定對用到 Powershell 的地方都有效喲！</p>
 <p>例如 Visual Studio Code 的 Powershell</p>
@@ -249,6 +254,8 @@ Set-Theme Paradox
 <p>那麼今天就到這裡，最後再把完成品跟預設狀況比對一次吧～</p>
 <p><img src="https://i.imgur.com/JE6BTSU.png" alt=""></p>
 <p><img src="https://i.imgur.com/99DaSVP.png" alt=""></p>
+<p>2023 回來更新文章，順便附個現況：</p>
+<p><img src="https://i.imgur.com/JOVI7hg.jpg" alt="Image"></p>
 <p>同場加映：</p>
 <p>跟朋友志得意滿地說明了 Powershell 美化作戰後，對方只說了淡淡的一句</p>
 <p>「哦，我都直接 <a href="https://cmder.app/">Cmder</a>」</p>
