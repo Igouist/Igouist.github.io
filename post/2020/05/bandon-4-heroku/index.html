@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -161,26 +161,26 @@ $ heroku git:remote -a Heroku的APP名稱
 </code></pre><p><img src="https://i.imgur.com/TumTYwP.png" alt=""></p>
 <h2 id="環境設定及測試">環境設定及測試</h2>
 <p>這邊由於前面提到訂便當系統有部分要調整的關係，因此只使用 <a href="/post/2020/04/bandon-3-line-notify/">我要訂便當(3) 的 Lint Notify 測試版</a> 的 Line Notify 上去試試看。上一集的簡單 Line Notify 程式碼如下，這邊命名為 <code>myApp.py</code>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> requests
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">lineNotifyMessage</span>(token, msg):
-    headers <span style="color:#f92672">=</span> {
-        <span style="color:#e6db74">&#34;Authorization&#34;</span>: <span style="color:#e6db74">&#34;Bearer &#34;</span> <span style="color:#f92672">+</span> token,
-        <span style="color:#e6db74">&#34;Content-Type&#34;</span>: <span style="color:#e6db74">&#34;application/x-www-form-urlencoded&#34;</span>
-    }
-
-    payload <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;message&#39;</span>: msg}
-    r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>post(
-        <span style="color:#e6db74">&#34;https://notify-api.line.me/api/notify&#34;</span>,
-        headers<span style="color:#f92672">=</span>headers,
-        params<span style="color:#f92672">=</span>payload)
-    <span style="color:#66d9ef">return</span> r<span style="color:#f92672">.</span>status_code
-
-
-message <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Line Notify + Heroku 測試&#39;</span>
-token <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;YOUR TOKEN&#39;</span>
-result <span style="color:#f92672">=</span> lineNotifyMessage(token, message)
-</code></pre></div><p>接著除了主要的 py 檔以外，還需要一些檔案去告訴 Heroku 怎麼處理我們的服務。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> requests
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">lineNotifyMessage</span>(token, msg):
+</span></span><span style="display:flex;"><span>    headers <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;Authorization&#34;</span>: <span style="color:#e6db74">&#34;Bearer &#34;</span> <span style="color:#f92672">+</span> token,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;Content-Type&#34;</span>: <span style="color:#e6db74">&#34;application/x-www-form-urlencoded&#34;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    payload <span style="color:#f92672">=</span> {<span style="color:#e6db74">&#39;message&#39;</span>: msg}
+</span></span><span style="display:flex;"><span>    r <span style="color:#f92672">=</span> requests<span style="color:#f92672">.</span>post(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;https://notify-api.line.me/api/notify&#34;</span>,
+</span></span><span style="display:flex;"><span>        headers<span style="color:#f92672">=</span>headers,
+</span></span><span style="display:flex;"><span>        params<span style="color:#f92672">=</span>payload)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> r<span style="color:#f92672">.</span>status_code
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>message <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Line Notify + Heroku 測試&#39;</span>
+</span></span><span style="display:flex;"><span>token <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;YOUR TOKEN&#39;</span>
+</span></span><span style="display:flex;"><span>result <span style="color:#f92672">=</span> lineNotifyMessage(token, message)
+</span></span></code></pre></div><p>接著除了主要的 py 檔以外，還需要一些檔案去告訴 Heroku 怎麼處理我們的服務。</p>
 <p>事實上我第一次是直接就把 py 傳上去 Heroku 然後建置大失敗，還好 Google 了一陣有前人指點，這邊的設定部份參照自 <a href="https://blog.techbridge.cc/2020/03/08/how-to-use-heroku-to-deploy-clear-mysql-db-web-app-tutorial/">如何使用 Heroku 部屬一個 Web App 網頁應用程式</a>，特此感謝。</p>
 <p>不過 Heroku 還不知道怎麼建我們的服務，因此這邊還需要新增幾個設定的檔案：</p>
 <h3 id="procfile">Procfile</h3>
@@ -211,7 +211,7 @@ result <span style="color:#f92672">=</span> lineNotifyMessage(token, message)
 $ git add .
 
 # Commit 所有變動（記得標註解，養成好習慣）
-$ git commit -am &quot;這是Commit註解&quot;
+$ git commit -am &#34;這是Commit註解&#34;
 
 # 推送
 $ git push heroku master

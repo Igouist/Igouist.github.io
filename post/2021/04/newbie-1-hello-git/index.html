@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -204,9 +204,9 @@
 <p>Git 現在已經有相當多的 GUI 可以使用，真的很多。我個人在家的時候是使用 <a href="https://desktop.github.com/">GitHub Desktop</a>、在公司大多時候使用 Visual Studio 內建的 Git 工具。此外，也見過朋友和同事使用 <a href="https://www.gitkraken.com/">GitKraken</a>、<a href="https://git-fork.com/">Fork</a> 等等。關於這些 Git 的 GUI，可以參考官方整理的 <a href="https://git-scm.com/downloads/guis">GUI Clients</a> 頁面。</p>
 <p>但由於我個人忘記指令的狀況頗為嚴重，而且也不是每個環境都有 GUI 可以用。因此這篇有關 Git 的部分將會以 CLI 指令為主進行紀錄。使用 GUI 介面的朋友也不用擔心，現在的介面都做得很精簡，<s>而且這篇也寫得很淺，</s>很簡單就能找到各指令對應的操作。</p>
 <p>確認我們已經有 Git 之後，接著就必須先跟 Git 說我們是誰、信箱是什麼：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git config --global user.name <span style="color:#e6db74">&#34;I am INEVITABL&#34;</span>
-git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.com&#34;</span>
-</code></pre></div><p>這樣就會把設定好的名稱和信箱存到 config 裡面。如果要查看現在有的 config，可以輸入<br/> <code>git config --list</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>git config --global user.name <span style="color:#e6db74">&#34;I am INEVITABL&#34;</span>
+</span></span><span style="display:flex;"><span>git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.com&#34;</span>
+</span></span></code></pre></div><p>這樣就會把設定好的名稱和信箱存到 config 裡面。如果要查看現在有的 config，可以輸入<br/> <code>git config --list</code></p>
 <blockquote>
 <p>另外也還能指定編譯器、新增別名等等，可以參照 <a href="https://gitbook.tw/chapters/config/convenient-settings.html">其它方便的設定 - 為你自己學 Git</a></p>
 </blockquote>
@@ -223,10 +223,10 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 <p>題外話：既然都打指令了，也可以試試來建立資料夾 <br/>Powershell 用 <code>New-Item C:\hello-git -ItemType &quot;directory&quot;</code> <br/>隔壁棚 Linux 請用 <code>mkdir</code> 來試試。<br/>不過基於懶惰，上面的示範是滑鼠右鍵建立的，耶嘿</p>
 </blockquote>
 <p>接著讓我們先移動過去資料夾：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">cd C:\hello-git
-</code></pre></div><p>並且<strong>使用 <code>git init</code> 將 Git 初始化</strong>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git init
-</code></pre></div><p><img src="https://i.imgur.com/WIckbA1.png" alt=""></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>cd C:\hello-git
+</span></span></code></pre></div><p>並且<strong>使用 <code>git init</code> 將 Git 初始化</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>git init
+</span></span></code></pre></div><p><img src="https://i.imgur.com/WIckbA1.png" alt=""></p>
 <p>如此一來，這個資料夾就成為了「<strong>工作區（Working directory）</strong>」，也就是「歸我 Git 管啦！」的意思</p>
 <p>同時，我們也能在原本的 hello-git 資料夾中，發現多了一個 <code>.git</code> 的隱藏檔案：</p>
 <p><img src="https://i.imgur.com/3hgT4eP.png" alt=""></p>
@@ -243,8 +243,8 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 <p><img src="https://i.imgur.com/J7ByoFh.png" alt=""></p>
 <p>可以看到 Git 已經發現 A.txt 的存在了，但它也告訴我們，它還沒有把 A.txt 放在 <s>眼裡</s> 追蹤目標中</p>
 <p>我們要用 <code>git add</code> 指令，Git 才會把這個變更納入這次的動作中：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git add A.txt
-</code></pre></div><p><img src="https://i.imgur.com/fFlY2rK.png" alt=""></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>git add A.txt
+</span></span></code></pre></div><p><img src="https://i.imgur.com/fFlY2rK.png" alt=""></p>
 <p>現在可以看到我們新增檔案這個動作已經被 Git 捕捉到了。</p>
 <p>前面有提過，<strong>我們在 <code>git init</code> 之後，當下的資料夾就會變成「工作區」，而 .git 則會成為「儲存庫」。在這兩者之間，還會有一層「暫存區（Staging Area）」</strong>（有些朋友會叫做「索引區（index）」，對象是一樣的）。</p>
 <p>這三者之間的工作流程就像是一條工廠輸送帶：</p>
@@ -253,10 +253,10 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 <p>所以我們新增檔案、變更內容等等，其實都要跟 Git 用 <code>add</code> 指令打聲招呼，說「我有動這個哦，幫我看著一下」，Git 才會把這些變更的對象放到暫存區裡，等待後續丟到儲存庫的動作。</p>
 <p>那有些朋友可能就會問啦：我工作的時候處理的檔案一定很多個啊，每個都要 add 豈不是累死？</p>
 <p>不用擔心，當有多個檔案要 <code>add</code> 的時候，我們可以加上參數 <code>-A</code>，也就是：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git add -A
-</code></pre></div><p>或是</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git add --all
-</code></pre></div><p>這樣就會直接把所有變更抓進來囉。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>git add -A
+</span></span></code></pre></div><p>或是</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>git add --all
+</span></span></code></pre></div><p>這樣就會直接把所有變更抓進來囉。</p>
 <p>當然，懶還要更懶，事實上現在的 GUI 工具，例如我接觸的 GitHub Desktop、Visual Studio 等等，其實都會自動幫忙 Add 了，真是貼心。</p>
 <p><img src="https://i.imgur.com/dARJCu3.png" alt=""></p>
 <p>當我們把變更從工作區用 add 丟到暫存區之後，要怎麼再從暫存區丟進儲存庫呢？這時候就要使用 <code>Commit</code> 了！</p>
@@ -264,8 +264,8 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 <p>完成了一項功能？　Commit！<br/>解了一個ＢＵＧ？　Commit！<br/>下班了？　Commit！<br/>地震了？　Commit！</p>
 <p>如果你有在使用 Git，Commit 絕對是你使用最多次的功能。<strong>當我們 Commit 之後，暫存區的變更就會寫入儲存庫，到這個步驟我們才真正地存檔成功。</strong></p>
 <p>現在讓我們來完成這次變更吧：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git commit -m <span style="color:#e6db74">&#34;Add A.txt&#34;</span>
-</code></pre></div><p><img src="https://i.imgur.com/riSISaf.png" alt=""></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>git commit -m <span style="color:#e6db74">&#34;Add A.txt&#34;</span>
+</span></span></code></pre></div><p><img src="https://i.imgur.com/riSISaf.png" alt=""></p>
 <p>有看到 ~ file changed 就代表我們已經成功 Commit，把變更存進儲存庫囉！</p>
 <hr>
 <h3 id="commit-的訊息">Commit 的訊息</h3>
@@ -291,7 +291,7 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 <p>趁開始學習 Git 的時候就培養好的 Commit 習慣，將來一定都會派上用場。現在我也和同事一起嘗試著這套作法，畢竟通常救到的都是未來的自己嘛，哈哈。</p>
 <blockquote>
 <p>關於 Commit Message 的部分，可以參照這幾篇呦：<br/>
-。 <a href="https://wadehuanglearning.blogspot.com/2019/05/commit-commit-commit-why-what-commit.html">Git Commit Message 這樣寫會更好，替專案引入規範與範例</a><br/> 
+。 <a href="https://wadehuanglearning.blogspot.com/2019/05/commit-commit-commit-why-what-commit.html">Git Commit Message 這樣寫會更好，替專案引入規範與範例</a><br/>
 。 <a href="https://blog.louie.lu/2017/03/21/%E5%A6%82%E4%BD%95%E5%AF%AB%E4%B8%80%E5%80%8B-git-commit-message/">如何寫一個 Git Commit Message | louie_lu&rsquo;s blog</a><br/>
 。 <a href="http://blog.fourdesire.com/2018/07/03/%e6%92%b0%e5%af%ab%e6%9c%89%e6%95%88%e7%9a%84-git-commit-message/">撰寫有效的 Git Commit Message</a><br/>
 。 <a href="https://heidiliu2020.github.io/git-commit-message/">[學習筆記] 如何撰好的 Git Commit Message - Heidi&rsquo;s Blog</a><br/>
@@ -324,8 +324,8 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 <h3 id="commit-和-add-的-combo-技">Commit 和 Add 的 Combo 技</h3>
 <p>讓我們延續一下 Add 章節的「懶還要更懶」，現在當我們完成一個變更，就要先 Add 到暫存區，再 Commit 到儲存庫。如果覺得這個兩步驟驗證很麻煩的話要怎麼辦呢？</p>
 <p>其實可以使用 Combo 技，一次搞定 Add 和 Commit，那就是 <code>-a</code>，例如</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">git commit -a -m <span style="color:#e6db74">&#34;Update A.txt&#34;</span>
-</code></pre></div><p>但要注意這個招式只對已經在版本控制內的檔案有效，如果是新來的也還是要先去報到呦。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>git commit -a -m <span style="color:#e6db74">&#34;Update A.txt&#34;</span>
+</span></span></code></pre></div><p>但要注意這個招式只對已經在版本控制內的檔案有效，如果是新來的也還是要先去報到呦。</p>
 <p>關於這段 <code>工作區 -Add→ 暫存區 -Commit→ 儲存庫</code> 的說明，也可以參見這篇為你自己學 Git 的<a href="https://gitbook.tw/chapters/using-git/working-staging-and-repository.html">工作區、暫存區與儲存庫</a>，裡面用倉庫和廣場的比喻個人覺得很貼切。</p>
 <hr>
 <h3 id="加入-gitignore-忽略檔案">加入 .gitignore 忽略檔案</h3>
@@ -376,7 +376,7 @@ git config --global user.email <span style="color:#e6db74">&#34;Thanos@Gemmai1.c
 git config --global gui.encoding utf-8           # GUI 編碼
 git config --global i18n.commit.encoding utf-8   # Commit 編碼
 git config --global i18n.logoutputencoding utf-8 # Log 編碼
-$env:LESSCHARSET='utf-8'                         # Less 分頁的環境變數
+$env:LESSCHARSET=&#39;utf-8&#39;                         # Less 分頁的環境變數
 </code></pre><p>其中環境變數需要直接前往 <code>系統內容 &gt; 進階 &gt; 環境變數</code> 並新增到系統變數上，否則每次重開 powershell 都要重打一次。</p>
 <p>主要是因為一些歷史原因，Windows 在這塊並沒有全面支持 Utf-8，因此需要告訴 Git 我們要以 utf-8 作為編碼，並且也把 Git 用到的 Less 分頁等環境變數設定好。感謝 CSDN 的這篇 <a href="https://blog.csdn.net/FollowGodSteps/article/details/96271359">PowerShell | git log 中文亂碼問題解決</a> 和 Github 上的 <a href="https://gist.github.com/nightire/5069597">Nightire 大大</a>。</p>
 <p>但是如果你是 <a href="https://docs.microsoft.com/zh-tw/windows/wsl/install-win10">在 Windows 也要安裝 Ubuntu，我就是要 Bashhhhh</a> 的朋友就當我沒說。</p>
@@ -649,14 +649,14 @@ Revert 所 Revert 掉的 Commit，夠直覺吧！</p>
 </code></pre><p>然後，將 A.txt 的內容改成 <code>Hello X!</code>：</p>
 <p><img src="https://i.imgur.com/WeFQiSM.png" alt=""></p>
 <p>並且 Commit：</p>
-<pre tabindex="0"><code>git commit -a -m &quot;Hello X!&quot;
+<pre tabindex="0"><code>git commit -a -m &#34;Hello X!&#34;
 </code></pre><p>緊接著，讓我們回到 master，重新建立並簽出另一支分支 <code>Branch-Y</code>：</p>
 <pre tabindex="0"><code>git checkout master
 git checkout -b Branch-Y
 </code></pre><p>這次我們把 A.txt 的內容改成 <code>Hello Y!</code>：</p>
 <p><img src="https://i.imgur.com/us5hqzk.png" alt=""></p>
 <p>並且 Commit：</p>
-<pre tabindex="0"><code>git commit -a -m &quot;Hello Y!&quot;
+<pre tabindex="0"><code>git commit -a -m &#34;Hello Y!&#34;
 </code></pre><p>現在，我們手頭上有 Branch-X 和 Branch-Y 兩條分支了，並且他們都變更過了 A.txt，現在我們直接用 Branch-Y 來合併 Branch-X：</p>
 <pre tabindex="0"><code>git merge Branch-X
 </code></pre><p><img src="https://i.imgur.com/4j9GJmA.png" alt=""></p>

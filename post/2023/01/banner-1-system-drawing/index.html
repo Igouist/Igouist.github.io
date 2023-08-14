@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -135,311 +135,311 @@
 <p>稍微搜尋一下發現 .Net 已經有 System.Drawing 這個工具可以幫我們完成這些簡單的圖片任務，事不宜遲馬上就來嘗試！</p>
 <h2 id="開工">開工</h2>
 <p>首先第一步，當然是先畫出橫幅底圖，<strong>這邊就讓我們先建立圖片，並且用 <code>Graph.Clear</code> 先塗個黑色好辨識</strong>，長寬就參照先前產生器的長 315 寬 850：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
-{
-	<span style="color:#66d9ef">int</span> width = <span style="color:#ae81ff">850</span>;
-	<span style="color:#66d9ef">int</span> height = <span style="color:#ae81ff">315</span>;
-
-	<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> img = <span style="color:#66d9ef">new</span> Bitmap(width, height))
-	{
-		<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> graph = Graphics.FromImage(img))
-		{
-            <span style="color:#75715e">// 先塗個黑色當底
-</span><span style="color:#75715e"></span>			graph.Clear(Color.Black);
-		}
-        <span style="color:#75715e">// Linqpad 的打印語法，可以直接顯示圖片
-</span><span style="color:#75715e"></span>		img.Dump(); 
-	}
-}
-</code></pre></div><p><img src="https://i.imgur.com/qEh3RSj.jpg" alt="Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> width = <span style="color:#ae81ff">850</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> height = <span style="color:#ae81ff">315</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> img = <span style="color:#66d9ef">new</span> Bitmap(width, height))
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> graph = Graphics.FromImage(img))
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 先塗個黑色當底</span>
+</span></span><span style="display:flex;"><span>			graph.Clear(Color.Black);
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Linqpad 的打印語法，可以直接顯示圖片</span>
+</span></span><span style="display:flex;"><span>		img.Dump(); 
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="https://i.imgur.com/qEh3RSj.jpg" alt="Image"></p>
 <p>接著讓我們開始加入主標題，這邊就用先前 Fluent Validation 文章的標題當作示範，直接<strong>用 <code>Graph.DrawString</code> 把文字寫到圖片中間</strong>。</p>
 <blockquote>
 <p>註：這邊的字型是<a href="https://www.sentyfont.com/index.htm">漢儀新蒂</a>的<a href="https://www.sentyfont.com/chalk.htm">黑板報體</a>，可以替換成自己電腦裡有的字體</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
-{
-	<span style="color:#66d9ef">int</span> width = <span style="color:#ae81ff">850</span>;
-	<span style="color:#66d9ef">int</span> height = <span style="color:#ae81ff">315</span>;
-
-    <span style="color:#75715e">// 主標題相關設定：字型、大小、顏色
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> title = <span style="color:#e6db74">&#34;使用 Fluent Validation \n來驗證參數吧&#34;</span>;
-	<span style="color:#66d9ef">var</span> fontName = <span style="color:#e6db74">&#34;Hanyi Senty Chalk Original&#34;</span>;
-	<span style="color:#66d9ef">var</span> fontSize = <span style="color:#ae81ff">36</span>;
-	<span style="color:#66d9ef">var</span> fontColor = Color.White;
-
-	<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> img = <span style="color:#66d9ef">new</span> Bitmap(width, height))
-	{
-		<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> graph = Graphics.FromImage(img))
-		{
-			graph.Clear(Color.Black);
-
-            <span style="color:#75715e">// 建立一下文字和筆刷
-</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">var</span> font = <span style="color:#66d9ef">new</span> Font(fontName, fontSize);
-			<span style="color:#66d9ef">var</span> brush = <span style="color:#66d9ef">new</span> SolidBrush(fontColor);
-
-            <span style="color:#75715e">// 設定一下位置，Banner 的字當然要置中
-</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">var</span> rect = <span style="color:#66d9ef">new</span> Rectangle(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, width, height);
-			<span style="color:#66d9ef">var</span> format = <span style="color:#66d9ef">new</span> StringFormat()
-			{
-				Alignment = StringAlignment.Center,
-				LineAlignment = StringAlignment.Center
-			};
-
-            <span style="color:#75715e">// 直接把整個標題畫到圖上
-</span><span style="color:#75715e"></span>			graph.DrawString(title, font, brush, rect, format);
-		}
-		img.Dump();
-	}
-}
-</code></pre></div><p><img src="https://i.imgur.com/DDFKJFx.jpg" alt="Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> width = <span style="color:#ae81ff">850</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> height = <span style="color:#ae81ff">315</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 主標題相關設定：字型、大小、顏色</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> title = <span style="color:#e6db74">&#34;使用 Fluent Validation \n來驗證參數吧&#34;</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> fontName = <span style="color:#e6db74">&#34;Hanyi Senty Chalk Original&#34;</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> fontSize = <span style="color:#ae81ff">36</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> fontColor = Color.White;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> img = <span style="color:#66d9ef">new</span> Bitmap(width, height))
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> graph = Graphics.FromImage(img))
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			graph.Clear(Color.Black);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 建立一下文字和筆刷</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> font = <span style="color:#66d9ef">new</span> Font(fontName, fontSize);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> brush = <span style="color:#66d9ef">new</span> SolidBrush(fontColor);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 設定一下位置，Banner 的字當然要置中</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> rect = <span style="color:#66d9ef">new</span> Rectangle(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, width, height);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> format = <span style="color:#66d9ef">new</span> StringFormat()
+</span></span><span style="display:flex;"><span>			{
+</span></span><span style="display:flex;"><span>				Alignment = StringAlignment.Center,
+</span></span><span style="display:flex;"><span>				LineAlignment = StringAlignment.Center
+</span></span><span style="display:flex;"><span>			};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 直接把整個標題畫到圖上</span>
+</span></span><span style="display:flex;"><span>			graph.DrawString(title, font, brush, rect, format);
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		img.Dump();
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="https://i.imgur.com/DDFKJFx.jpg" alt="Image"></p>
 <p>我們順利地把標題顯示在圖的正中間，好像有那麼一點搞頭了。</p>
 <p>接下來我們要加入關鍵字的顏色。原先的字典檔產生器可以用 <code>% %</code> 來把要標顏色的關鍵字框起來，例如：「使用 %Fluent Validation% 來驗證參數吧」這樣就知道「Fluent Validation」是關鍵字，需要上色。</p>
 <p>因此這邊最快的做法就是用 <code>%</code> 來切割，再照著「一般顏色、<code>%</code>、關鍵字顏色、<code>%</code>、一般顏色」的順序輪流上色就好了。上色也只需要<strong>替換設定筆刷的 <code>SolidBrush</code> 就好</strong>，非常簡單：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
-{
-	<span style="color:#66d9ef">int</span> width = <span style="color:#ae81ff">850</span>;
-	<span style="color:#66d9ef">int</span> height = <span style="color:#ae81ff">315</span>;
-
-	<span style="color:#66d9ef">var</span> title = <span style="color:#e6db74">&#34;使用%Fluent Validation%\n來驗證參數吧&#34;</span>;
-	<span style="color:#66d9ef">var</span> fontName = <span style="color:#e6db74">&#34;Hanyi Senty Chalk Original&#34;</span>;
-	<span style="color:#66d9ef">var</span> fontSize = <span style="color:#ae81ff">36</span>;
-	<span style="color:#66d9ef">var</span> fontColor = Color.White;
-
-    <span style="color:#75715e">// 加入關鍵字要用的第二組文字顏色
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> fontSubColor = Color.Goldenrod; 
-
-	<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> img = <span style="color:#66d9ef">new</span> Bitmap(width, height))
-	{
-		<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> graph = Graphics.FromImage(img))
-		{
-			graph.Clear(Color.Black);
-
-			<span style="color:#66d9ef">var</span> font = <span style="color:#66d9ef">new</span> Font(fontName, fontSize);
-			<span style="color:#66d9ef">var</span> brush = <span style="color:#66d9ef">new</span> SolidBrush(fontColor);
-
-            <span style="color:#75715e">// 加入了關鍵字用的第二組筆刷
-</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">var</span> subBrush = <span style="color:#66d9ef">new</span> SolidBrush(fontSubColor);
-
-			<span style="color:#66d9ef">var</span> rect = <span style="color:#66d9ef">new</span> Rectangle(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, width, height);
-			<span style="color:#66d9ef">var</span> format = <span style="color:#66d9ef">new</span> StringFormat()
-			{
-				Alignment = StringAlignment.Center,
-				LineAlignment = StringAlignment.Center
-			};
-
-            <span style="color:#75715e">// 為了照一般色、關鍵字色、一般色的順序上色，需要先把標題做拆分
-</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">var</span> words = title.Split(<span style="color:#e6db74">&#39;%&#39;</span>);
-			<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">var</span> i = <span style="color:#ae81ff">0</span>; i &lt; words.Count(); i++)
-			{
-				<span style="color:#75715e">// 有 %% 圈選起來的字詞，使用特殊色 ex: %API%
-</span><span style="color:#75715e"></span>				<span style="color:#66d9ef">var</span> thisBrush = i % <span style="color:#ae81ff">2</span> == <span style="color:#ae81ff">0</span>
-					? brush
-					: subBrush;
-
-                <span style="color:#75715e">// 改成分別將每一組字畫到圖上
-</span><span style="color:#75715e"></span>				graph.DrawString(words[i], font, thisBrush, rect, format);
-			}
-		}
-		img.Dump();
-	}
-}
-</code></pre></div><p><img src="https://i.imgur.com/mQuunSa.jpg" alt="Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> width = <span style="color:#ae81ff">850</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> height = <span style="color:#ae81ff">315</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> title = <span style="color:#e6db74">&#34;使用%Fluent Validation%\n來驗證參數吧&#34;</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> fontName = <span style="color:#e6db74">&#34;Hanyi Senty Chalk Original&#34;</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> fontSize = <span style="color:#ae81ff">36</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> fontColor = Color.White;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 加入關鍵字要用的第二組文字顏色</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> fontSubColor = Color.Goldenrod; 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> img = <span style="color:#66d9ef">new</span> Bitmap(width, height))
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> graph = Graphics.FromImage(img))
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			graph.Clear(Color.Black);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> font = <span style="color:#66d9ef">new</span> Font(fontName, fontSize);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> brush = <span style="color:#66d9ef">new</span> SolidBrush(fontColor);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 加入了關鍵字用的第二組筆刷</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> subBrush = <span style="color:#66d9ef">new</span> SolidBrush(fontSubColor);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> rect = <span style="color:#66d9ef">new</span> Rectangle(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, width, height);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> format = <span style="color:#66d9ef">new</span> StringFormat()
+</span></span><span style="display:flex;"><span>			{
+</span></span><span style="display:flex;"><span>				Alignment = StringAlignment.Center,
+</span></span><span style="display:flex;"><span>				LineAlignment = StringAlignment.Center
+</span></span><span style="display:flex;"><span>			};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 為了照一般色、關鍵字色、一般色的順序上色，需要先把標題做拆分</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> words = title.Split(<span style="color:#e6db74">&#39;%&#39;</span>);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">var</span> i = <span style="color:#ae81ff">0</span>; i &lt; words.Count(); i++)
+</span></span><span style="display:flex;"><span>			{
+</span></span><span style="display:flex;"><span>				<span style="color:#75715e">// 有 %% 圈選起來的字詞，使用特殊色 ex: %API%</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">var</span> thisBrush = i % <span style="color:#ae81ff">2</span> == <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>					? brush
+</span></span><span style="display:flex;"><span>					: subBrush;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 改成分別將每一組字畫到圖上</span>
+</span></span><span style="display:flex;"><span>				graph.DrawString(words[i], font, thisBrush, rect, format);
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		img.Dump();
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="https://i.imgur.com/mQuunSa.jpg" alt="Image"></p>
 <p>好的完蛋。</p>
 <p>因為前面的 <code>Graph.DrawString</code> 是無腦把整個 <code>title</code> 丟進去產生，因此文字的位置只需要在 <code>StringFormat</code> 指定個 <code>Center</code> 讓他置中就沒問題了。但</p>
 <p>現在又要切關鍵字啥的，全部指定在中間當然就會疊在一起囧。這下子就只能自行計算長度了。</p>
 <p>因為用 <code>%</code> 切完關鍵字之後會有很多段字，最直接的做法還是先嘗試抓到上一段字的結束位置，再繼續寫下一段字在後面，這時候我們就可以用上<strong>計算文字大小的 <code>graph.MeasureString</code></strong>，馬上進行調整：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
-{
-	<span style="color:#66d9ef">int</span> width = <span style="color:#ae81ff">850</span>;
-	<span style="color:#66d9ef">int</span> height = <span style="color:#ae81ff">315</span>;
-
-	<span style="color:#66d9ef">var</span> title = <span style="color:#e6db74">&#34;使用%Fluent Validation%\n來驗證參數吧&#34;</span>;
-	<span style="color:#66d9ef">var</span> fontName = <span style="color:#e6db74">&#34;Hanyi Senty Chalk Original&#34;</span>;
-	<span style="color:#66d9ef">var</span> fontSize = <span style="color:#ae81ff">36</span>;
-	<span style="color:#66d9ef">var</span> fontColor = Color.White;
-	<span style="color:#66d9ef">var</span> fontSubColor = Color.Goldenrod;
-
-	<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span>  img = <span style="color:#66d9ef">new</span> Bitmap(width, height))
-	{
-		<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> graph = Graphics.FromImage(img))
-		{
-			graph.Clear(Color.Black);
-
-			<span style="color:#66d9ef">var</span> font = <span style="color:#66d9ef">new</span> Font(fontName, fontSize);
-			<span style="color:#66d9ef">var</span> brush = <span style="color:#66d9ef">new</span> SolidBrush(fontColor);
-			<span style="color:#66d9ef">var</span> subBrush = <span style="color:#66d9ef">new</span> SolidBrush(fontSubColor);
-
-			<span style="color:#66d9ef">var</span> rect = <span style="color:#66d9ef">new</span> Rectangle(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, width, height);
-			<span style="color:#66d9ef">var</span> format = <span style="color:#66d9ef">new</span> StringFormat()
-			{
-                <span style="color:#75715e">// 放棄直接指定置中的語法
-</span><span style="color:#75715e"></span>				<span style="color:#75715e">//Alignment = StringAlignment.Center,
-</span><span style="color:#75715e"></span>				<span style="color:#75715e">//LineAlignment = StringAlignment.Center
-</span><span style="color:#75715e"></span>			};
-
-			<span style="color:#66d9ef">var</span> words = title.Split(<span style="color:#e6db74">&#39;%&#39;</span>);
-			<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">var</span> i = <span style="color:#ae81ff">0</span>; i &lt; words.Count(); i++)
-			{
-				<span style="color:#75715e">// 有 %% 圈選起來的字詞，使用特殊色 ex: %API%
-</span><span style="color:#75715e"></span>				<span style="color:#66d9ef">var</span> thisBrush = i % <span style="color:#ae81ff">2</span> == <span style="color:#ae81ff">0</span>
-					? brush
-					: subBrush;
-
-				graph.DrawString(words[i], font, thisBrush, rect, format);
-
-				<span style="color:#75715e">// 嘗試計算每一段字的長度，然後重新調整位置
-</span><span style="color:#75715e"></span>                <span style="color:#75715e">// 讓下一段字可以接著繼續寫
-</span><span style="color:#75715e"></span>				<span style="color:#66d9ef">var</span> wordWidthFloat = graph.MeasureString(words[i], font).Width;
-				<span style="color:#66d9ef">var</span> wordWidth = Convert.ToInt16(wordWidthFloat);
-				rect.Offset(wordWidth, <span style="color:#ae81ff">0</span>);
-			}
-		}
-		img.Dump();
-	}
-}
-</code></pre></div><p><img src="https://i.imgur.com/7XKKyuH.jpg" alt="Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> width = <span style="color:#ae81ff">850</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> height = <span style="color:#ae81ff">315</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> title = <span style="color:#e6db74">&#34;使用%Fluent Validation%\n來驗證參數吧&#34;</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> fontName = <span style="color:#e6db74">&#34;Hanyi Senty Chalk Original&#34;</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> fontSize = <span style="color:#ae81ff">36</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> fontColor = Color.White;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> fontSubColor = Color.Goldenrod;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span>  img = <span style="color:#66d9ef">new</span> Bitmap(width, height))
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> graph = Graphics.FromImage(img))
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			graph.Clear(Color.Black);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> font = <span style="color:#66d9ef">new</span> Font(fontName, fontSize);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> brush = <span style="color:#66d9ef">new</span> SolidBrush(fontColor);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> subBrush = <span style="color:#66d9ef">new</span> SolidBrush(fontSubColor);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> rect = <span style="color:#66d9ef">new</span> Rectangle(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, width, height);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> format = <span style="color:#66d9ef">new</span> StringFormat()
+</span></span><span style="display:flex;"><span>			{
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 放棄直接指定置中的語法</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#75715e">//Alignment = StringAlignment.Center,</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#75715e">//LineAlignment = StringAlignment.Center</span>
+</span></span><span style="display:flex;"><span>			};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> words = title.Split(<span style="color:#e6db74">&#39;%&#39;</span>);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">var</span> i = <span style="color:#ae81ff">0</span>; i &lt; words.Count(); i++)
+</span></span><span style="display:flex;"><span>			{
+</span></span><span style="display:flex;"><span>				<span style="color:#75715e">// 有 %% 圈選起來的字詞，使用特殊色 ex: %API%</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">var</span> thisBrush = i % <span style="color:#ae81ff">2</span> == <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>					? brush
+</span></span><span style="display:flex;"><span>					: subBrush;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				graph.DrawString(words[i], font, thisBrush, rect, format);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				<span style="color:#75715e">// 嘗試計算每一段字的長度，然後重新調整位置</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 讓下一段字可以接著繼續寫</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">var</span> wordWidthFloat = graph.MeasureString(words[i], font).Width;
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">var</span> wordWidth = Convert.ToInt16(wordWidthFloat);
+</span></span><span style="display:flex;"><span>				rect.Offset(wordWidth, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		img.Dump();
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="https://i.imgur.com/7XKKyuH.jpg" alt="Image"></p>
 <p>看起來使用 <code>Graph.MeasureString</code> 先抓到字段的長度再繼續寫下去是可行的。同時我們也知道了幾件事：</p>
 <p>因為 <code>StringAlignment.Center</code> 的置中已經被拿掉了，現在我們除了要自行計算長度，還得要自己指定起始位置了，不然會跑回左上角。這時候就需要<strong>回來調整處理位置的 <code>Rectangle</code></strong>。</p>
 <p>幸好圖片的長寬都是我們先知道的，所以這部分直接用整個 Banner 的長度除以二先定位到正中間，然後再往左邊移整行字的長度的一半，這樣就可以讓這行字置中且左右對稱了！</p>
 <p>除了起始位置以外，還可以看到 <code>\n</code> 切出去的第二行字的開始位置也會被第一行字的結束位置影響到，這代表我們換行顯示的時候需要重新調整位置。</p>
 <p>至於第一行要顯示的高度，就要直接測一下了。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
-{
-	<span style="color:#66d9ef">int</span> width = <span style="color:#ae81ff">850</span>;
-	<span style="color:#66d9ef">int</span> height = <span style="color:#ae81ff">315</span>;
-
-	<span style="color:#66d9ef">var</span> title = <span style="color:#e6db74">&#34;使用%Fluent Validation%\n來%驗證參數%吧&#34;</span>;
-	<span style="color:#66d9ef">var</span> fontName = <span style="color:#e6db74">&#34;Hanyi Senty Chalk Original&#34;</span>;
-	<span style="color:#66d9ef">var</span> fontSize = <span style="color:#ae81ff">36</span>;
-	<span style="color:#66d9ef">var</span> fontColor = Color.White;
-	<span style="color:#66d9ef">var</span> fontSubColor = Color.Goldenrod;
-
-	<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span>  img = <span style="color:#66d9ef">new</span> Bitmap(width, height))
-	{
-		<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> graph = Graphics.FromImage(img))
-		{
-			graph.Clear(Color.Black);
-
-			<span style="color:#66d9ef">var</span> font = <span style="color:#66d9ef">new</span> Font(fontName, fontSize);
-			<span style="color:#66d9ef">var</span> brush = <span style="color:#66d9ef">new</span> SolidBrush(fontColor);
-			<span style="color:#66d9ef">var</span> subBrush = <span style="color:#66d9ef">new</span> SolidBrush(fontSubColor);
-
-			<span style="color:#66d9ef">var</span> rect = <span style="color:#66d9ef">new</span> Rectangle(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, width, height);
-			<span style="color:#66d9ef">var</span> format = <span style="color:#66d9ef">new</span> StringFormat();
-
-            <span style="color:#75715e">// 先把每一行字都拆開，方便後續換行處理
-</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">var</span> contents = title.Split(<span style="color:#e6db74">&#39;\n&#39;</span>);
-			<span style="color:#66d9ef">var</span> lines = <span style="color:#ae81ff">0</span>;
-
-			<span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> content <span style="color:#66d9ef">in</span> contents)
-			{
-                <span style="color:#75715e">// 每一行的開頭重新定位起始位置
-</span><span style="color:#75715e"></span>				<span style="color:#66d9ef">var</span> contentWidthFloat = graph.MeasureString(content, font).Width;
-				<span style="color:#66d9ef">var</span> contentWidth = Convert.ToInt16(contentWidthFloat);
-
-                <span style="color:#75715e">// 先從整張圖的寬度抓到正中間，再往左移動這行字的一半，讓整行可以置中
-</span><span style="color:#75715e"></span>				<span style="color:#66d9ef">var</span> setX = (width / <span style="color:#ae81ff">2</span>) - (contentWidth / <span style="color:#ae81ff">2</span>);
-                <span style="color:#75715e">// 先抓整張圖中間偏上的位置，然後換行的時候就往下移動一個字的高度
-</span><span style="color:#75715e"></span>				<span style="color:#66d9ef">var</span> setY = height / <span style="color:#ae81ff">5</span> + lines * font.Height;
-
-                <span style="color:#75715e">// 中英文混著抓距離的話有時候點歪歪的= = 這邊加個值方便手動校正起始點
-</span><span style="color:#75715e"></span>				<span style="color:#66d9ef">var</span> widthset = <span style="color:#ae81ff">20</span>;
-
-                <span style="color:#75715e">// 重新定位要寫字上去的起始點
-</span><span style="color:#75715e"></span>				rect.Location = <span style="color:#66d9ef">new</span> Point(setX + widthset, setY); 
-
-				<span style="color:#66d9ef">var</span> words = content.Split(<span style="color:#e6db74">&#39;%&#39;</span>);
-				<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">var</span> i = <span style="color:#ae81ff">0</span>; i &lt; words.Count(); i++)
-				{
-					<span style="color:#66d9ef">var</span> thisBrush = i % <span style="color:#ae81ff">2</span> == <span style="color:#ae81ff">0</span>
-						? brush
-						: subBrush;
-
-					graph.DrawString(words[i], font, thisBrush, rect, format);
-
-					<span style="color:#66d9ef">var</span> wordWidthFloat = graph.MeasureString(words[i], font).Width;
-					<span style="color:#66d9ef">var</span> wordWidth = Convert.ToInt16(wordWidthFloat);
-					rect.Offset(wordWidth, <span style="color:#ae81ff">0</span>);
-				}
-
-				lines++;
-			}
-
-		}
-		img.Dump();
-	}
-}
-</code></pre></div><p><img src="https://i.imgur.com/8jdsGY3.jpg" alt="Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> width = <span style="color:#ae81ff">850</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> height = <span style="color:#ae81ff">315</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> title = <span style="color:#e6db74">&#34;使用%Fluent Validation%\n來%驗證參數%吧&#34;</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> fontName = <span style="color:#e6db74">&#34;Hanyi Senty Chalk Original&#34;</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> fontSize = <span style="color:#ae81ff">36</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> fontColor = Color.White;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> fontSubColor = Color.Goldenrod;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span>  img = <span style="color:#66d9ef">new</span> Bitmap(width, height))
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> graph = Graphics.FromImage(img))
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			graph.Clear(Color.Black);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> font = <span style="color:#66d9ef">new</span> Font(fontName, fontSize);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> brush = <span style="color:#66d9ef">new</span> SolidBrush(fontColor);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> subBrush = <span style="color:#66d9ef">new</span> SolidBrush(fontSubColor);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> rect = <span style="color:#66d9ef">new</span> Rectangle(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, width, height);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> format = <span style="color:#66d9ef">new</span> StringFormat();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 先把每一行字都拆開，方便後續換行處理</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> contents = title.Split(<span style="color:#e6db74">&#39;\n&#39;</span>);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">var</span> lines = <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> content <span style="color:#66d9ef">in</span> contents)
+</span></span><span style="display:flex;"><span>			{
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 每一行的開頭重新定位起始位置</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">var</span> contentWidthFloat = graph.MeasureString(content, font).Width;
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">var</span> contentWidth = Convert.ToInt16(contentWidthFloat);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 先從整張圖的寬度抓到正中間，再往左移動這行字的一半，讓整行可以置中</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">var</span> setX = (width / <span style="color:#ae81ff">2</span>) - (contentWidth / <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 先抓整張圖中間偏上的位置，然後換行的時候就往下移動一個字的高度</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">var</span> setY = height / <span style="color:#ae81ff">5</span> + lines * font.Height;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 中英文混著抓距離的話有時候點歪歪的= = 這邊加個值方便手動校正起始點</span>
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">var</span> widthset = <span style="color:#ae81ff">20</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 重新定位要寫字上去的起始點</span>
+</span></span><span style="display:flex;"><span>				rect.Location = <span style="color:#66d9ef">new</span> Point(setX + widthset, setY); 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">var</span> words = content.Split(<span style="color:#e6db74">&#39;%&#39;</span>);
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">var</span> i = <span style="color:#ae81ff">0</span>; i &lt; words.Count(); i++)
+</span></span><span style="display:flex;"><span>				{
+</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">var</span> thisBrush = i % <span style="color:#ae81ff">2</span> == <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>						? brush
+</span></span><span style="display:flex;"><span>						: subBrush;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>					graph.DrawString(words[i], font, thisBrush, rect, format);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">var</span> wordWidthFloat = graph.MeasureString(words[i], font).Width;
+</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">var</span> wordWidth = Convert.ToInt16(wordWidthFloat);
+</span></span><span style="display:flex;"><span>					rect.Offset(wordWidth, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>				}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				lines++;
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		img.Dump();
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="https://i.imgur.com/8jdsGY3.jpg" alt="Image"></p>
 <p>看起來主標題差不多有達到想要的效果了，順便多加了一組關鍵字測一下。<del>程式碼的巢狀也越疊越多了哦</del></p>
 <p>是時候來加個副標題了。副標題通常都比較簡單，像上面的範例只是用來標個系列文名稱</p>
 <p>這邊直接抓主標題的程式碼稍微改一下，接在主標題後面操作就好</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> subTitle = <span style="color:#e6db74">&#34;菜雞新訓記‧七&#34;</span>;
-<span style="color:#66d9ef">var</span> subFontSize = <span style="color:#ae81ff">20</span>;
-<span style="color:#75715e">// 中間處理主標題的部分省略...
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// 副標題
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">if</span> (subTitle != <span style="color:#66d9ef">null</span> &amp;&amp;
-    <span style="color:#66d9ef">string</span>.IsNullOrEmpty(subTitle) <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">false</span>)
-{
-    <span style="color:#75715e">// 副標題的字型，只有大小先跟主標題不一樣，高度則往下抓一些避免蓋到主標
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> subFont = <span style="color:#66d9ef">new</span> Font(fontName, subFontSize);
-    <span style="color:#66d9ef">var</span> subRect = <span style="color:#66d9ef">new</span> Rectangle(<span style="color:#ae81ff">0</span>, height - height / <span style="color:#ae81ff">4</span>, width, height);
-
-    <span style="color:#66d9ef">var</span> subFormat = <span style="color:#66d9ef">new</span> StringFormat()
-    {
-        Alignment = StringAlignment.Center,
-        LineAlignment = StringAlignment.Near
-    };
-
-    graph.DrawString(subTitle, subFont, brush, subRect, subFormat);
-}
-</code></pre></div><p><img src="https://i.imgur.com/3wlBfzT.jpg" alt="Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> subTitle = <span style="color:#e6db74">&#34;菜雞新訓記‧七&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> subFontSize = <span style="color:#ae81ff">20</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 中間處理主標題的部分省略...</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 副標題</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (subTitle != <span style="color:#66d9ef">null</span> &amp;&amp;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span>.IsNullOrEmpty(subTitle) <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">false</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 副標題的字型，只有大小先跟主標題不一樣，高度則往下抓一些避免蓋到主標</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> subFont = <span style="color:#66d9ef">new</span> Font(fontName, subFontSize);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> subRect = <span style="color:#66d9ef">new</span> Rectangle(<span style="color:#ae81ff">0</span>, height - height / <span style="color:#ae81ff">4</span>, width, height);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> subFormat = <span style="color:#66d9ef">new</span> StringFormat()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Alignment = StringAlignment.Center,
+</span></span><span style="display:flex;"><span>        LineAlignment = StringAlignment.Near
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    graph.DrawString(subTitle, subFont, brush, subRect, subFormat);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="https://i.imgur.com/3wlBfzT.jpg" alt="Image"></p>
 <p>這樣就搞定啦！</p>
 <p>最後稍微整理一下程式碼，把主標和副標會用到的參數包個類別，方便後面需要調整的時候可以用：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BannerString</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> FontName { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;Hanyi Senty Chalk Original&#34;</span>;
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Content { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#66d9ef">string</span>.Empty;
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> FontSize { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#ae81ff">36</span>;
-    <span style="color:#66d9ef">public</span> Color MainColor { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = Color.White;
-    <span style="color:#66d9ef">public</span> Color SubColor { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = Color.Goldenrod;
-}
-</code></pre></div><p>製作 Banner 的語法也先裝起來，改成傳遞上面包好類別的函式。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BannerString</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> FontName { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;Hanyi Senty Chalk Original&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Content { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#66d9ef">string</span>.Empty;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> FontSize { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#ae81ff">36</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Color MainColor { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = Color.White;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Color SubColor { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = Color.Goldenrod;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>製作 Banner 的語法也先裝起來，改成傳遞上面包好類別的函式。</p>
 <p>用來調整位置的偏移值也抽出來放著方便隨時調整：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">int</span> widthset = <span style="color:#ae81ff">20</span>;
-
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> GenerateBanner(
-    BannerString title,
-    BannerString subTitle = <span style="color:#66d9ef">null</span>,
-    <span style="color:#66d9ef">int</span> width = <span style="color:#ae81ff">850</span>,
-    <span style="color:#66d9ef">int</span> height = <span style="color:#ae81ff">315</span>)
-{
-    <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> img = <span style="color:#66d9ef">new</span> Bitmap(width, height))
-    {
-        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> graph = Graphics.FromImage(img))
-        {
-            <span style="color:#75715e">// 上面的程式碼本體
-</span><span style="color:#75715e"></span>        }
-    }
-}
-</code></pre></div><p>這樣後續回來使用這個腳本就可以直接改外面的參數就好啦！</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
-{   
-   <span style="color:#66d9ef">var</span> title = <span style="color:#66d9ef">new</span> BannerString
-   {
-       Content = <span style="color:#e6db74">&#34;使用%Fluent Validation%\n來%驗證參數%吧&#34;</span>,
-       FontSize = <span style="color:#ae81ff">40</span>
-   };
-   
-   <span style="color:#66d9ef">var</span> subTitle = <span style="color:#66d9ef">new</span> BannerString
-   {
-       Content = <span style="color:#e6db74">&#34;菜雞新訓記‧七&#34;</span>,
-       FontSize = <span style="color:#ae81ff">20</span>
-   };
-   
-   GenerateBanner(title, subTitle);
-}
-</code></pre></div><p><img src="https://i.imgur.com/3wlBfzT.jpg" alt="Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">int</span> widthset = <span style="color:#ae81ff">20</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> GenerateBanner(
+</span></span><span style="display:flex;"><span>    BannerString title,
+</span></span><span style="display:flex;"><span>    BannerString subTitle = <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> width = <span style="color:#ae81ff">850</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> height = <span style="color:#ae81ff">315</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> img = <span style="color:#66d9ef">new</span> Bitmap(width, height))
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> graph = Graphics.FromImage(img))
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 上面的程式碼本體</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這樣後續回來使用這個腳本就可以直接改外面的參數就好啦！</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>{   
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">var</span> title = <span style="color:#66d9ef">new</span> BannerString
+</span></span><span style="display:flex;"><span>   {
+</span></span><span style="display:flex;"><span>       Content = <span style="color:#e6db74">&#34;使用%Fluent Validation%\n來%驗證參數%吧&#34;</span>,
+</span></span><span style="display:flex;"><span>       FontSize = <span style="color:#ae81ff">40</span>
+</span></span><span style="display:flex;"><span>   };
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span>   <span style="color:#66d9ef">var</span> subTitle = <span style="color:#66d9ef">new</span> BannerString
+</span></span><span style="display:flex;"><span>   {
+</span></span><span style="display:flex;"><span>       Content = <span style="color:#e6db74">&#34;菜雞新訓記‧七&#34;</span>,
+</span></span><span style="display:flex;"><span>       FontSize = <span style="color:#ae81ff">20</span>
+</span></span><span style="display:flex;"><span>   };
+</span></span><span style="display:flex;"><span>   
+</span></span><span style="display:flex;"><span>   GenerateBanner(title, subTitle);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="https://i.imgur.com/3wlBfzT.jpg" alt="Image"></p>
 <p>存完收工！</p>
 <h2 id="小結">小結</h2>
 <p>雖然這個工具的場景挺侷限的，但寫小腳本的過程也還算有趣，<del>雖然調位置的時候已經有點沒耐心，快要打開小畫家了</del></p>

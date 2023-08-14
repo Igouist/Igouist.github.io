@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -194,69 +194,69 @@
 <p>這樣其他資訊的頁面就填寫完了，可以按下建立囉！</p>
 <p><img src="https://i.imgur.com/STp7otF.png" alt="Image"></p>
 <p>建立後會看到 Visual Studio 已經使用我們剛剛的設置建立了一個 Function 及 Timer Trigger，時間也填好了（如果後續還要調整時間，就修改 <code>TimerTrigger</code> 的值就好）：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Function1</span>
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger <span style="color:#ae81ff">_l</span>ogger;
-
-    <span style="color:#66d9ef">public</span> Function1(
-        ILoggerFactory loggerFactory)
-    {
-        <span style="color:#ae81ff">_l</span>ogger = loggerFactory.CreateLogger&lt;Function1&gt;();
-    }
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">    [Function(&#34;Function1&#34;)]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Run([TimerTrigger(<span style="color:#e6db74">&#34;0 45 9 * * *&#34;</span>)] MyInfo myTimer)
-    {
-        <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">$&#34;C# Timer trigger function executed at: {DateTime.Now}&#34;</span>);
-        <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">$&#34;Next timer schedule at: {myTimer.ScheduleStatus.Next}&#34;</span>);
-    }
-}
-</code></pre></div><p>為了後續管理方便，我們先改個名。這邊就叫做 <code>BusReminderFunctions</code> 吧：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BusReminderFunctions</span>
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger <span style="color:#ae81ff">_l</span>ogger;
-
-    <span style="color:#66d9ef">public</span> BusReminderFunctions(
-        ILoggerFactory loggerFactory)
-    {
-        <span style="color:#ae81ff">_l</span>ogger = loggerFactory.CreateLogger&lt;BusReminderFunctions&gt;();
-    }
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">    [Function(&#34;BusReminder-TimerTrigger&#34;)]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> RunTimerTrigger([TimerTrigger(<span style="color:#e6db74">&#34;0 45 9 * * *&#34;</span>)] MyInfo myTimer)
-    {
-        <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">$&#34;C# Timer trigger function executed at: {DateTime.Now}&#34;</span>);
-        <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">$&#34;Next timer schedule at: {myTimer.ScheduleStatus.Next}&#34;</span>);
-    }
-}
-</code></pre></div><p>並且為了測試方便，我們再增加一個 <a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-bindings-http-webhook-trigger?tabs=isolated-process%2Cfunctionsv2&amp;pivots=programming-language-csharp">HttpTrigger</a>，這時候會需要先去 Nuget 安裝相關的套件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Function1</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger _logger;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Function1(
+</span></span><span style="display:flex;"><span>        ILoggerFactory loggerFactory)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _logger = loggerFactory.CreateLogger&lt;Function1&gt;();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Function(&#34;Function1&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Run([TimerTrigger(<span style="color:#e6db74">&#34;0 45 9 * * *&#34;</span>)] MyInfo myTimer)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _logger.LogInformation(<span style="color:#e6db74">$&#34;C# Timer trigger function executed at: {DateTime.Now}&#34;</span>);
+</span></span><span style="display:flex;"><span>        _logger.LogInformation(<span style="color:#e6db74">$&#34;Next timer schedule at: {myTimer.ScheduleStatus.Next}&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>為了後續管理方便，我們先改個名。這邊就叫做 <code>BusReminderFunctions</code> 吧：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BusReminderFunctions</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger _logger;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> BusReminderFunctions(
+</span></span><span style="display:flex;"><span>        ILoggerFactory loggerFactory)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _logger = loggerFactory.CreateLogger&lt;BusReminderFunctions&gt;();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Function(&#34;BusReminder-TimerTrigger&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> RunTimerTrigger([TimerTrigger(<span style="color:#e6db74">&#34;0 45 9 * * *&#34;</span>)] MyInfo myTimer)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _logger.LogInformation(<span style="color:#e6db74">$&#34;C# Timer trigger function executed at: {DateTime.Now}&#34;</span>);
+</span></span><span style="display:flex;"><span>        _logger.LogInformation(<span style="color:#e6db74">$&#34;Next timer schedule at: {myTimer.ScheduleStatus.Next}&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>並且為了測試方便，我們再增加一個 <a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-bindings-http-webhook-trigger?tabs=isolated-process%2Cfunctionsv2&amp;pivots=programming-language-csharp">HttpTrigger</a>，這時候會需要先去 Nuget 安裝相關的套件</p>
 <p>搜尋 <code>Microsoft.Azure.Functions.Worker.Extensions</code> 就會看到各種 Trigger，這邊就安裝一下 Http 需要的套件吧：</p>
 <p><img src="https://i.imgur.com/d4WDrue.png" alt="Image"></p>
 <p>現在讓我們回到 Functions，增加一個 <code>HttpTrigger</code>，調整一下非同步，並建立一個私有方法 <code>TrackBusAsync</code>，讓 <code>HttpTrigger</code> 和 <code>TimerTrigger</code> 都去呼叫這個方法，這樣我們就可以定時觸發也可以手動觸發它，後續測試起來也比較方便：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[Function(&#34;BusReminder-TimerTrigger&#34;)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task RunTimerTrigger([TimerTrigger(<span style="color:#e6db74">&#34;0 45 9 * * *&#34;</span>)] MyInfo myTimer)
-{
-    <span style="color:#66d9ef">await</span> TrackBusAsync();
-}
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">[Function(&#34;BusReminder&#34;)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;HttpResponseData&gt; HttpTrigger(
-<span style="color:#a6e22e">    [HttpTrigger(AuthorizationLevel.Anonymous, &#34;get&#34;, &#34;post&#34;)]</span> HttpRequestData req,
-    FunctionContext executionContext)
-{
-    <span style="color:#66d9ef">await</span> TrackBusAsync();
-
-    <span style="color:#66d9ef">var</span> response = req.CreateResponse(HttpStatusCode.OK);
-    <span style="color:#66d9ef">await</span> response.WriteAsJsonAsync&lt;<span style="color:#66d9ef">object</span>&gt;(<span style="color:#66d9ef">new</span> { result = <span style="color:#66d9ef">true</span> });
-
-    <span style="color:#66d9ef">return</span> response;
-}
-
-<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task TrackBusAsync()
-{
-    <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
-}
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[Function(&#34;BusReminder-TimerTrigger&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task RunTimerTrigger([TimerTrigger(<span style="color:#e6db74">&#34;0 45 9 * * *&#34;</span>)] MyInfo myTimer)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> TrackBusAsync();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Function(&#34;BusReminder&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;HttpResponseData&gt; HttpTrigger(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpTrigger(AuthorizationLevel.Anonymous, &#34;get&#34;, &#34;post&#34;)]</span> HttpRequestData req,
+</span></span><span style="display:flex;"><span>    FunctionContext executionContext)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> TrackBusAsync();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> response = req.CreateResponse(HttpStatusCode.OK);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> response.WriteAsJsonAsync&lt;<span style="color:#66d9ef">object</span>&gt;(<span style="color:#66d9ef">new</span> { result = <span style="color:#66d9ef">true</span> });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> response;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task TrackBusAsync()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
 <p>補充：HttpTrigger 的參數有三個部份，可以拆分成：</p>
 <ul>
 <li>授權層級：Anonymous, Admin 之類的，可參照<a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-bindings-http-webhook-trigger?tabs=isolated-process%2Cfunctionsv2&amp;pivots=programming-language-csharp#http-auth">授權層級</a></li>
@@ -289,70 +289,70 @@
 <p><img src="https://i.imgur.com/c4y1dQy.png" alt="Image"></p>
 <p>有個大概的認識之後，現在讓我們填入一些值吧。</p>
 <p>現在我希望能從組態中，使用 <a href="https://docs.microsoft.com/zh-tw/aspnet/core/fundamentals/configuration/options?view=aspnetcore-6.0">IOptions</a> 取得查詢公車估計時間相關的設定，因此我先建立了一個 Class <code>BusTrackerOption</code>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 公車到站監聽設定
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BusTrackerOption</span>
-{
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 公車路線名稱
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> RouteName { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 要預估到站的站牌 ID
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> StopId { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 公車路線行進方向
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Direction { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#ae81ff">0</span>;
-}
-</code></pre></div><p>並且到 <code>local.settings.json</code> 加上組態。這邊要特別提到的是：原本我們在 <code>appsettings.json</code> 加上組態，會用這種階層式的寫法：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
-    <span style="color:#f92672">&#34;BusTracker&#34;</span>: {
-      <span style="color:#f92672">&#34;RouteName&#34;</span>: <span style="color:#e6db74">&#34;307&#34;</span>,
-      <span style="color:#f92672">&#34;StopId&#34;</span> : <span style="color:#ae81ff">15250</span>,
-      <span style="color:#f92672">&#34;Direction&#34;</span>: <span style="color:#ae81ff">0</span> 
-    }
-}
-</code></pre></div><p>但我們前面已經看到了，<strong>在 Azure 上的組態實際上是一個單層的列表。因此我們會使用 <code>__</code> 當作分隔符號來將設定攤平，並放到 <code>local.settings.json</code> 的 <code>Values</code> 裡</strong>（如果是連線字串就放到 <code>ConnectionStrings</code> 裡），也就是像這樣：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
-  <span style="color:#f92672">&#34;Values&#34;</span>: {
-    <span style="color:#75715e">// ...這裡會有其他組態設定
-</span><span style="color:#75715e"></span>
-    <span style="color:#75715e">// 加上 BusTracker 的 參數，用 __ 來表示階層
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">&#34;BusTracker__RouteName&#34;</span>: <span style="color:#ae81ff">307</span>,
-    <span style="color:#f92672">&#34;BusTracker__StopId&#34;</span>: <span style="color:#ae81ff">15250</span>,
-    <span style="color:#f92672">&#34;BusTracker__Direction&#34;</span>: <span style="color:#ae81ff">0</span>
-  }
-}
-</code></pre></div><p>接著讓我們到 <code>Program.cs</code> 來將 json 的設定值繫結到 <code>BusTrackerOption</code>，Section 名稱要記得和 json 中的階層名稱對上</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 注意 Azure Functions 的 settings.json 的階層要用 __ 來區隔
-</span><span style="color:#75715e"></span>services.AddOptions();
-services.Configure&lt;BusTrackerOption&gt;(hostContext.Configuration.GetSection(<span style="color:#e6db74">&#34;BusTracker&#34;</span>));
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 公車到站監聽設定</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BusTrackerOption</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 公車路線名稱</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> RouteName { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 要預估到站的站牌 ID</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> StopId { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 公車路線行進方向</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Direction { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>並且到 <code>local.settings.json</code> 加上組態。這邊要特別提到的是：原本我們在 <code>appsettings.json</code> 加上組態，會用這種階層式的寫法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;BusTracker&#34;</span>: {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;RouteName&#34;</span>: <span style="color:#e6db74">&#34;307&#34;</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;StopId&#34;</span> : <span style="color:#ae81ff">15250</span>,
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">&#34;Direction&#34;</span>: <span style="color:#ae81ff">0</span> 
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>但我們前面已經看到了，<strong>在 Azure 上的組態實際上是一個單層的列表。因此我們會使用 <code>__</code> 當作分隔符號來將設定攤平，並放到 <code>local.settings.json</code> 的 <code>Values</code> 裡</strong>（如果是連線字串就放到 <code>ConnectionStrings</code> 裡），也就是像這樣：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;Values&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ...這裡會有其他組態設定
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 加上 BusTracker 的 參數，用 __ 來表示階層
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">&#34;BusTracker__RouteName&#34;</span>: <span style="color:#ae81ff">307</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;BusTracker__StopId&#34;</span>: <span style="color:#ae81ff">15250</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;BusTracker__Direction&#34;</span>: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著讓我們到 <code>Program.cs</code> 來將 json 的設定值繫結到 <code>BusTrackerOption</code>，Section 名稱要記得和 json 中的階層名稱對上</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 注意 Azure Functions 的 settings.json 的階層要用 __ 來區隔</span>
+</span></span><span style="display:flex;"><span>services.AddOptions();
+</span></span><span style="display:flex;"><span>services.Configure&lt;BusTrackerOption&gt;(hostContext.Configuration.GetSection(<span style="color:#e6db74">&#34;BusTracker&#34;</span>));
+</span></span></code></pre></div><blockquote>
 <p>註：如果像我一樣開 .Net 6，只看到 <code>HostBuilder</code> 的朋友，可以自行加入 <code>ConfigureServices((hostContext, services) =&gt; {})</code> 的部份來註冊，如下：</p>
 <p><img src="https://i.imgur.com/I6DFiRl.png" alt="Image"></p>
 </blockquote>
 <p>接著就可以回到我們的 <code>BusReminderFunctions</code> 來把 <code>IOptions&lt;BusTrackerOption&gt;</code> 注入進來：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BusReminderFunctions</span>
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger <span style="color:#ae81ff">_l</span>ogger;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> BusTrackerOption <span style="color:#ae81ff">_</span>busTrackerOption;
-
-    <span style="color:#66d9ef">public</span> BusReminderFunctions(
-        ILoggerFactory loggerFactory,
-        IOptions&lt;BusTrackerOption&gt; busTrackerOption)
-    {
-        <span style="color:#ae81ff">_l</span>ogger = loggerFactory.CreateLogger&lt;BusReminderFunctions&gt;();
-        <span style="color:#ae81ff">_</span>busTrackerOption = busTrackerOption.Value;
-    }
-
-    <span style="color:#75715e">// ...略
-</span><span style="color:#75715e"></span>}
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BusReminderFunctions</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger _logger;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> BusTrackerOption _busTrackerOption;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> BusReminderFunctions(
+</span></span><span style="display:flex;"><span>        ILoggerFactory loggerFactory,
+</span></span><span style="display:flex;"><span>        IOptions&lt;BusTrackerOption&gt; busTrackerOption)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _logger = loggerFactory.CreateLogger&lt;BusReminderFunctions&gt;();
+</span></span><span style="display:flex;"><span>        _busTrackerOption = busTrackerOption.Value;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ...略</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
 <p>對依賴注入還不太熟悉的朋友，可以在這邊的建構式裡宣告出 <code>BusTrackerOption</code> 並賦值即可。但還是推薦閱讀<a href="/post/2021/11/newbie-6-dependency-injection/">依賴注入</a>的筆記來了解一下呦</p>
 </blockquote>
 <p>現在公車路線等組態都準備得差不多了，只剩下回傳時候要用來接收資料的 Model 還沒開。這時候就直接偷懶，拿 <a href="https://ptx.transportdata.tw/MOTC?t=Bus&amp;v=2#">MOTC Transport API</a> 的 Swagger 打回來的 Json，直接到 <a href="https://json2csharp.com/">Json2Cshrp</a> 之類的轉換網站直接產生 C# Class 就好了：</p>
@@ -361,59 +361,59 @@ services.Configure&lt;BusTrackerOption&gt;(hostContext.Configuration.GetSection(
 <p>記得轉換結果的 <code>Class Root</code> 要改個名稱，這邊就直接取名叫做 <code>BusEstimateInfo</code> 吧：</p>
 <p><img src="https://i.imgur.com/9SoUyu9.png" alt="Image"></p>
 <p>現在我們有傳過去的參數，也有接回來的 Model 了，讓我們來開一個私有方法，從 MOTC API 取回資料吧：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 查詢公車估計到站時間
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;param name=&#34;routeName&#34;&gt;路線名稱&lt;/param&gt;
-</span><span style="color:#75715e">/// &lt;param name=&#34;stopId&#34;&gt;站牌 ID&lt;/param&gt;
-</span><span style="color:#75715e">/// &lt;param name=&#34;direction&#34;&gt;去返程&lt;/param&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task&lt;BusEstimateInfo&gt; FetchBusEstimateTime(
-    <span style="color:#66d9ef">string</span> routeName,
-    <span style="color:#66d9ef">int</span> stopId,
-    <span style="color:#66d9ef">int</span> direction = <span style="color:#ae81ff">0</span>)
-{
-    <span style="color:#66d9ef">var</span> api = <span style="color:#e6db74">$&#34;https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/Taipei/{routeName}&#34;</span>;
-
-    <span style="color:#75715e">// 將站牌 ID 及路線方向 加入到查詢參數中
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> filter = <span style="color:#e6db74">$&#34;stopId eq &#39;{stopId}&#39;&#34;</span>;
-    <span style="color:#66d9ef">if</span> (direction != <span style="color:#ae81ff">0</span>)
-    {
-        filter += <span style="color:#e6db74">$&#34; and direction eq {direction}&#34;</span>;
-    }
-
-    <span style="color:#66d9ef">var</span> query = <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">string</span>&gt;()
-    {
-<span style="color:#a6e22e">        [&#34;$filter&#34;]</span> = filter,
-<span style="color:#a6e22e">        [&#34;$top&#34;]</span> = <span style="color:#ae81ff">1.</span>ToString(),
-<span style="color:#a6e22e">        [&#34;$format&#34;]</span> = <span style="color:#e6db74">&#34;JSON&#34;</span>
-    };
-
-    <span style="color:#75715e">// 使用套件 Microsoft.AspNetCore.WebUtilities 提供的 QueryHelpers 
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 直接組出帶 QueryString 的 Url
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> url = QueryHelpers.AddQueryString(api, query);
-
-    <span style="color:#75715e">// 建立 request；注意直接呼叫 API 會要求驗證
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 必須將 Header 掛成瀏覽器才能吃到每日 50 次的呼叫額度
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> request = <span style="color:#66d9ef">new</span> HttpRequestMessage
-    {
-        Method = HttpMethod.Get,
-        RequestUri = <span style="color:#66d9ef">new</span> Uri(url)
-    };
-    request.Headers.Add(<span style="color:#e6db74">&#34;User-Agent&#34;</span>, <span style="color:#e6db74">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64)&#34;</span>);
-
-    <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> HttpClient();
-
-    <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.SendAsync(request);
-    <span style="color:#66d9ef">if</span> (response.IsSuccessStatusCode <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">false</span>)
-    {
-        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(response.StatusCode.ToString());
-    }
-
-    <span style="color:#66d9ef">var</span> body = <span style="color:#66d9ef">await</span> response.Content.ReadAsStringAsync();
-    <span style="color:#66d9ef">var</span> result = JsonSerializer.Deserialize&lt;IEnumerable&lt;BusEstimateInfo&gt;&gt;(body)?.FirstOrDefault();
-    <span style="color:#66d9ef">return</span> result ?? <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(<span style="color:#e6db74">&#34;呼叫 API 失敗，無法取得估計到站資訊&#34;</span>);
-}
-</code></pre></div><p>這支呼叫 API 的 Method 步驟相當簡單：組出參數，呼叫 API，取回資料。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 查詢公車估計到站時間</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;routeName&#34;&gt;路線名稱&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;stopId&#34;&gt;站牌 ID&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;direction&#34;&gt;去返程&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task&lt;BusEstimateInfo&gt; FetchBusEstimateTime(
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> routeName,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> stopId,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> direction = <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> api = <span style="color:#e6db74">$&#34;https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/Taipei/{routeName}&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 將站牌 ID 及路線方向 加入到查詢參數中</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> filter = <span style="color:#e6db74">$&#34;stopId eq &#39;{stopId}&#39;&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (direction != <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        filter += <span style="color:#e6db74">$&#34; and direction eq {direction}&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> query = <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">string</span>&gt;()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [&#34;$filter&#34;]</span> = filter,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [&#34;$top&#34;]</span> = <span style="color:#ae81ff">1.</span>ToString(),
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [&#34;$format&#34;]</span> = <span style="color:#e6db74">&#34;JSON&#34;</span>
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 使用套件 Microsoft.AspNetCore.WebUtilities 提供的 QueryHelpers </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 直接組出帶 QueryString 的 Url</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> url = QueryHelpers.AddQueryString(api, query);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 建立 request；注意直接呼叫 API 會要求驗證</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 必須將 Header 掛成瀏覽器才能吃到每日 50 次的呼叫額度</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> request = <span style="color:#66d9ef">new</span> HttpRequestMessage
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Method = HttpMethod.Get,
+</span></span><span style="display:flex;"><span>        RequestUri = <span style="color:#66d9ef">new</span> Uri(url)
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>    request.Headers.Add(<span style="color:#e6db74">&#34;User-Agent&#34;</span>, <span style="color:#e6db74">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64)&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> HttpClient();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.SendAsync(request);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (response.IsSuccessStatusCode <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">false</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(response.StatusCode.ToString());
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> body = <span style="color:#66d9ef">await</span> response.Content.ReadAsStringAsync();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> result = JsonSerializer.Deserialize&lt;IEnumerable&lt;BusEstimateInfo&gt;&gt;(body)?.FirstOrDefault();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> result ?? <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(<span style="color:#e6db74">&#34;呼叫 API 失敗，無法取得估計到站資訊&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這支呼叫 API 的 Method 步驟相當簡單：組出參數，呼叫 API，取回資料。</p>
 <p>這邊有偷懶不想組字串，直接使用 <code>Microsoft.AspNetCore.WebUtilities</code> 的 <code>QueryHelpers.AddQueryString</code> 來把 GET 的 QueryString 參數組到 Url 裡，不想多安裝一個套件的朋友也可以自己手動組。</p>
 <blockquote>
 <p>註：<a href="https://motc-ptx-api-documentation.gitbook.io/motc-ptx-api-documentation/hui-yuan-shen-qing/membertype">MOTC 的 文件</a> 有提到非會員一天有 50 次的免費 Swagger 呼叫次數，實測如果是從程式呼叫時會需要吃驗證，要掛 Header 假裝成瀏覽器才能取得資料，不確定是不是還有其他限制。如果是要給自己開發的工具或產品使用的話，還是可以考慮了解一下 MOTC 的會員制度。</p>
@@ -422,51 +422,51 @@ services.Configure&lt;BusTrackerOption&gt;(hostContext.Configuration.GetSection(
 <p>註：這邊的 HttpClient 也可以直接改用注入 <a href="https://docs.microsoft.com/zh-tw/dotnet/architecture/microservices/implement-resilient-applications/use-httpclientfactory-to-implement-resilient-http-requests">HttpClientFactory</a> 的方式來製作。可以參照 Yowko&rsquo;s Notes 的這篇：<a href="https://blog.yowko.com/httpclient/">在 .NET Core 與 .NET Framework 上使用 HttpClientFactory</a></p>
 </blockquote>
 <p>現在取得公車資料的 <code>FetchBusEstimateTime</code> 已經建好了，讓我們調整一下外面的 Trigger 和共通的私有方法，來把 <code>BusTrackerOption</code> 的資訊帶到參數裡吧：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> BusReminderFunctions(
-    IOptions&lt;BusTrackerOption&gt; busTrackerOption,
-    ILoggerFactory loggerFactory)
-{
-    <span style="color:#ae81ff">_</span>busTrackerOption = busTrackerOption.Value;
-    <span style="color:#ae81ff">_l</span>ogger = loggerFactory.CreateLogger&lt;BusReminderFunctions&gt;();
-}
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">[Function(&#34;BusReminder-TimerTrigger&#34;)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task RunTimerTrigger([TimerTrigger(<span style="color:#e6db74">&#34;0 45 9 * * *&#34;</span>)] MyInfo myTimer)
-{
-    <span style="color:#66d9ef">var</span> routeName = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>busTrackerOption.RouteName;
-    <span style="color:#66d9ef">var</span> stopId = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>busTrackerOption.StopId;
-    <span style="color:#66d9ef">var</span> direction = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>busTrackerOption.Direction;
-
-    <span style="color:#66d9ef">await</span> TrackBusAsync(routeName, stopId, direction);
-}
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">[Function(&#34;BusReminder&#34;)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;HttpResponseData&gt; HttpTrigger(
-<span style="color:#a6e22e">    [HttpTrigger(AuthorizationLevel.Anonymous, &#34;get&#34;, &#34;post&#34;)]</span> HttpRequestData req,
-    FunctionContext executionContext)
-{
-    <span style="color:#66d9ef">var</span> routeName = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>busTrackerOption.RouteName;
-    <span style="color:#66d9ef">var</span> stopId = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>busTrackerOption.StopId;
-    <span style="color:#66d9ef">var</span> direction = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>busTrackerOption.Direction;
-
-    <span style="color:#66d9ef">await</span> TrackBusAsync(routeName, stopId, direction);
-
-    <span style="color:#66d9ef">var</span> response = req.CreateResponse(HttpStatusCode.OK);
-    <span style="color:#66d9ef">await</span> response.WriteAsJsonAsync&lt;<span style="color:#66d9ef">object</span>&gt;(<span style="color:#66d9ef">new</span> { result = <span style="color:#66d9ef">true</span> });
-
-    <span style="color:#66d9ef">return</span> response;
-}
-
-<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task TrackBusAsync(
-    <span style="color:#66d9ef">string</span> routeName,
-    <span style="color:#66d9ef">int</span> stopId,
-    <span style="color:#66d9ef">int</span> direction = <span style="color:#ae81ff">0</span>)
-{
-    <span style="color:#66d9ef">var</span> busEstimateInfo = <span style="color:#66d9ef">await</span> FetchBusEstimateTime(routeName, stopId, direction);
-
-    <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
-}
-</code></pre></div><p>就像前面提到的，我們在這邊讓 <code>TimerTrigger</code> 和 <code>HttpTrigger</code> 取出 <code>BusTrackerOption</code> 的公車相關參數，例如公車路線名稱後，再傳遞到共用的 <code>TrackBusAsync</code>，現在第一部份的查詢公車資訊已經完工，就讓我們先添加上去。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> BusReminderFunctions(
+</span></span><span style="display:flex;"><span>    IOptions&lt;BusTrackerOption&gt; busTrackerOption,
+</span></span><span style="display:flex;"><span>    ILoggerFactory loggerFactory)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    _busTrackerOption = busTrackerOption.Value;
+</span></span><span style="display:flex;"><span>    _logger = loggerFactory.CreateLogger&lt;BusReminderFunctions&gt;();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Function(&#34;BusReminder-TimerTrigger&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task RunTimerTrigger([TimerTrigger(<span style="color:#e6db74">&#34;0 45 9 * * *&#34;</span>)] MyInfo myTimer)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> routeName = <span style="color:#66d9ef">this</span>._busTrackerOption.RouteName;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> stopId = <span style="color:#66d9ef">this</span>._busTrackerOption.StopId;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> direction = <span style="color:#66d9ef">this</span>._busTrackerOption.Direction;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> TrackBusAsync(routeName, stopId, direction);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Function(&#34;BusReminder&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;HttpResponseData&gt; HttpTrigger(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpTrigger(AuthorizationLevel.Anonymous, &#34;get&#34;, &#34;post&#34;)]</span> HttpRequestData req,
+</span></span><span style="display:flex;"><span>    FunctionContext executionContext)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> routeName = <span style="color:#66d9ef">this</span>._busTrackerOption.RouteName;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> stopId = <span style="color:#66d9ef">this</span>._busTrackerOption.StopId;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> direction = <span style="color:#66d9ef">this</span>._busTrackerOption.Direction;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> TrackBusAsync(routeName, stopId, direction);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> response = req.CreateResponse(HttpStatusCode.OK);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> response.WriteAsJsonAsync&lt;<span style="color:#66d9ef">object</span>&gt;(<span style="color:#66d9ef">new</span> { result = <span style="color:#66d9ef">true</span> });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> response;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task TrackBusAsync(
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> routeName,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> stopId,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> direction = <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> busEstimateInfo = <span style="color:#66d9ef">await</span> FetchBusEstimateTime(routeName, stopId, direction);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>就像前面提到的，我們在這邊讓 <code>TimerTrigger</code> 和 <code>HttpTrigger</code> 取出 <code>BusTrackerOption</code> 的公車相關參數，例如公車路線名稱後，再傳遞到共用的 <code>TrackBusAsync</code>，現在第一部份的查詢公車資訊已經完工，就讓我們先添加上去。</p>
 <blockquote>
 <p>註：這邊之所以要讓查詢參數交由外面決定，就是以後如果我想把 <code>HttpTrigger</code> 改成可以從外部呼叫 API 時可以指定公車路線之類的參數，又或者是將來要註冊多組公車路線到資料庫之類的改動時，可以不用再動「查詢公車到站資訊」之類的邏輯。<del>畢竟懶惰的訣竅在於提早準備</del></p>
 </blockquote>
@@ -480,94 +480,94 @@ services.Configure&lt;BusTrackerOption&gt;(hostContext.Configuration.GetSection(
 <p><img src="https://i.imgur.com/Ahl9FoN.png" alt="Image"></p>
 </blockquote>
 <p>好的回想完畢，現在讓我們把拿到的 Line Notify Token 也丟到 <code>local.settings.json</code> 的 <code>Values</code> 裡方便管理：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
-  <span style="color:#f92672">&#34;Values&#34;</span>: {
-    <span style="color:#75715e">// ...這裡會有其他組態設定
-</span><span style="color:#75715e"></span>
-    <span style="color:#75715e">// 加上 LineNotify 的 Token，用 __ 來表示階層
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">&#34;LineNotify__Token&#34;</span>: <span style="color:#e6db74">&#34;YOUR LINE NOTIFY TOKEN&#34;</span>
-  }
-}
-</code></pre></div><p>一樣建立一個 Class，方便後續用 <code>IOption</code> 從組態中取得值：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LineNotifyOptions</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Token { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-</code></pre></div><p>接著到 <code>Program.cs</code> 來將 json 的設定值繫結到 <code>LineNotifyOptions</code>，Section 名稱要記得和 json 中的名稱對上：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.Configure&lt;LineNotifyOption&gt;(hostContext.Configuration.GetSection(<span style="color:#e6db74">&#34;LineNotify&#34;</span>));
-</code></pre></div><p><img src="https://i.imgur.com/61Fs36d.png" alt="Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;Values&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ...這裡會有其他組態設定
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 加上 LineNotify 的 Token，用 __ 來表示階層
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">&#34;LineNotify__Token&#34;</span>: <span style="color:#e6db74">&#34;YOUR LINE NOTIFY TOKEN&#34;</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>一樣建立一個 Class，方便後續用 <code>IOption</code> 從組態中取得值：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LineNotifyOptions</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Token { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著到 <code>Program.cs</code> 來將 json 的設定值繫結到 <code>LineNotifyOptions</code>，Section 名稱要記得和 json 中的名稱對上：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.Configure&lt;LineNotifyOption&gt;(hostContext.Configuration.GetSection(<span style="color:#e6db74">&#34;LineNotify&#34;</span>));
+</span></span></code></pre></div><p><img src="https://i.imgur.com/61Fs36d.png" alt="Image"></p>
 <p>接著就可以回到我們的 <code>BusReminderFunctions</code> 來把 <code>IOptions&lt;LineNotifyOptions&gt;</code> 注入進來：</p>
 <p><img src="https://i.imgur.com/aYwNOod.png" alt="Image"></p>
 <p>這樣從 Config 取得 Token 的準備就完成了，現在讓我們來撰寫傳送訊息的方法本體吧</p>
 <p><strong>發送 Line Notify 實際上就是傳送一個 Post 請求到 <code>/api/notify</code>，並將 Token 放到 Header 的 <code>Authorization</code>、訊息丟到 Body 就行了</strong>，因此我們可以直接把這方法包裝成接收到訊息就傳遞給 API：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 發送 Line Notify 通知
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;param name=&#34;message&#34;&gt;The message.&lt;/param&gt;
-</span><span style="color:#75715e">/// &lt;exception cref=&#34;System.Exception&#34;&gt;發送失敗&lt;/exception&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task SendLineNotify(<span style="color:#66d9ef">string</span> message)
-{
-    <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrEmpty(<span style="color:#ae81ff">_l</span>ineNotifyOptions.Token))
-    {
-        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(<span style="color:#e6db74">&#34;取得 Line Notify Token 失敗&#34;</span>);
-    }
-
-    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> lineNotifyApi = <span style="color:#e6db74">&#34;https://notify-api.line.me/api/notify&#34;</span>;
-    <span style="color:#66d9ef">var</span> requestBody = <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">string</span>&gt;
-    {
-<span style="color:#a6e22e">        [&#34;message&#34;]</span> = message
-    };
-
-    <span style="color:#66d9ef">var</span> request = <span style="color:#66d9ef">new</span> HttpRequestMessage
-    {
-        Method = HttpMethod.Post,
-        RequestUri = <span style="color:#66d9ef">new</span> Uri(lineNotifyApi),
-        Content = <span style="color:#66d9ef">new</span> FormUrlEncodedContent(requestBody)
-    };
-    request.Headers.Add(<span style="color:#e6db74">&#34;Authorization&#34;</span>, <span style="color:#e6db74">$&#34;Bearer {_lineNotifyOptions.Token}&#34;</span>);
-
-    <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> HttpClient();
-    <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.SendAsync(request);
-
-    <span style="color:#66d9ef">if</span> (response.IsSuccessStatusCode <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">false</span>)
-    {
-        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(<span style="color:#e6db74">&#34;Line Notify 發送失敗&#34;</span>);
-    }
-}
-</code></pre></div><p>現在我們也已經有了傳送訊息的方法，是時候把它們倆串起來了！</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 發送 Line Notify 通知</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;message&#34;&gt;The message.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;exception cref=&#34;System.Exception&#34;&gt;發送失敗&lt;/exception&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task SendLineNotify(<span style="color:#66d9ef">string</span> message)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrEmpty(_lineNotifyOptions.Token))
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(<span style="color:#e6db74">&#34;取得 Line Notify Token 失敗&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> lineNotifyApi = <span style="color:#e6db74">&#34;https://notify-api.line.me/api/notify&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> requestBody = <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">string</span>&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [&#34;message&#34;]</span> = message
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> request = <span style="color:#66d9ef">new</span> HttpRequestMessage
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Method = HttpMethod.Post,
+</span></span><span style="display:flex;"><span>        RequestUri = <span style="color:#66d9ef">new</span> Uri(lineNotifyApi),
+</span></span><span style="display:flex;"><span>        Content = <span style="color:#66d9ef">new</span> FormUrlEncodedContent(requestBody)
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>    request.Headers.Add(<span style="color:#e6db74">&#34;Authorization&#34;</span>, <span style="color:#e6db74">$&#34;Bearer {_lineNotifyOptions.Token}&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> HttpClient();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> response = <span style="color:#66d9ef">await</span> client.SendAsync(request);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (response.IsSuccessStatusCode <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">false</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(<span style="color:#e6db74">&#34;Line Notify 發送失敗&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>現在我們也已經有了傳送訊息的方法，是時候把它們倆串起來了！</p>
 <h3 id="組合查詢公車資訊與發送到站通知">組合查詢公車資訊與發送到站通知</h3>
 <p>先把鏡頭回到我們讓 Trigger 們共用的 <code>TrackBusAsync</code> 方法：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task TrackBusAsync(
-    <span style="color:#66d9ef">string</span> routeName,
-    <span style="color:#66d9ef">int</span> stopId,
-    <span style="color:#66d9ef">int</span> direction = <span style="color:#ae81ff">0</span>)
-{
-    <span style="color:#66d9ef">var</span> busEstimateInfo = <span style="color:#66d9ef">await</span> FetchBusEstimateTime(routeName, stopId, direction);
-
-    <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
-}
-</code></pre></div><p>可以看到我們已經嘗試取得公車資訊，現在我們要組裝訊息，然後傳遞到剛剛撰寫的 Line Notify 通知方法裡。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task TrackBusAsync(
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> routeName,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> stopId,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> direction = <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> busEstimateInfo = <span style="color:#66d9ef">await</span> FetchBusEstimateTime(routeName, stopId, direction);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>可以看到我們已經嘗試取得公車資訊，現在我們要組裝訊息，然後傳遞到剛剛撰寫的 Line Notify 通知方法裡。</p>
 <p>而我想要的訊息是這樣的：「您追蹤的公車 307 將在 10 分鐘後（18:00）抵達 台北車站（忠孝）」</p>
 <p>因此我會需要計算出剩餘的分數，以及抵達時間，再從前面拿到的公車資訊來組成訊息並傳遞到方法中：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task TrackBusAsync(
-    <span style="color:#66d9ef">string</span> routeName,
-    <span style="color:#66d9ef">int</span> stopId,
-    <span style="color:#66d9ef">int</span> direction = <span style="color:#ae81ff">0</span>)
-{
-    <span style="color:#66d9ef">var</span> busEstimateInfo = <span style="color:#66d9ef">await</span> FetchBusEstimateTime(routeName, stopId, direction);
-
-    <span style="color:#75715e">// 將預估幾秒後抵達 轉換成 預估幾分鐘後抵達
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> estimateMin = <span style="color:#66d9ef">new</span> TimeSpan(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, busEstimateInfo.EstimateTime).Minutes;
-    
-    <span style="color:#75715e">// 取得台北時區的目前時間，並和預估秒數計算出預估抵達時間
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> timeZone = TimeZoneInfo.FindSystemTimeZoneById(<span style="color:#e6db74">&#34;Taipei Standard Time&#34;</span>);
-    <span style="color:#66d9ef">var</span> convertedTime = TimeZoneInfo.ConvertTime(DateTime.UtcNow, timeZone);
-    <span style="color:#66d9ef">var</span> estimateTime = convertedTime.AddSeconds(busEstimateInfo.EstimateTime).ToString(<span style="color:#e6db74">&#34;HH:mm&#34;</span>);
-
-    <span style="color:#66d9ef">var</span> message = <span style="color:#e6db74">$&#34;您追蹤的公車 {busEstimateInfo.RouteName.Zh_tw} 將在 {estimateMin} 分鐘後（{estimateTime}）抵達 {busEstimateInfo.StopName.Zh_tw}&#34;</span>;
-    <span style="color:#66d9ef">await</span> SendLineNotify(message);
-}
-</code></pre></div><p>這邊要特別注意取得時間的部份，因為在伺服器的時間會是 UTC+0，因此我們這邊使用 <code>TimeZoneInfo.ConvertTime</code> 轉換成台北時區的時間。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task TrackBusAsync(
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> routeName,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> stopId,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> direction = <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> busEstimateInfo = <span style="color:#66d9ef">await</span> FetchBusEstimateTime(routeName, stopId, direction);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 將預估幾秒後抵達 轉換成 預估幾分鐘後抵達</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> estimateMin = <span style="color:#66d9ef">new</span> TimeSpan(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, busEstimateInfo.EstimateTime).Minutes;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 取得台北時區的目前時間，並和預估秒數計算出預估抵達時間</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> timeZone = TimeZoneInfo.FindSystemTimeZoneById(<span style="color:#e6db74">&#34;Taipei Standard Time&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> convertedTime = TimeZoneInfo.ConvertTime(DateTime.UtcNow, timeZone);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> estimateTime = convertedTime.AddSeconds(busEstimateInfo.EstimateTime).ToString(<span style="color:#e6db74">&#34;HH:mm&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> message = <span style="color:#e6db74">$&#34;您追蹤的公車 {busEstimateInfo.RouteName.Zh_tw} 將在 {estimateMin} 分鐘後（{estimateTime}）抵達 {busEstimateInfo.StopName.Zh_tw}&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> SendLineNotify(message);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這邊要特別注意取得時間的部份，因為在伺服器的時間會是 UTC+0，因此我們這邊使用 <code>TimeZoneInfo.ConvertTime</code> 轉換成台北時區的時間。</p>
 <blockquote>
 <p>註：像這種丟到雲端平台的服務，會時常遇到時區時間的轉換。單純的時間轉換可以參照之前筆記的 <a href="https://igouist.github.io/post/2020/08/csharp-timezone/">C#: 時區轉換、民國西元、國曆農曆、中文月份週期</a></p>
 <p>或是可以嘗試更優雅的 DateTimeOffset，請參考 <a href="https://demo.tc/post/%E9%82%84%E5%9C%A8%E7%94%A8%20DateTime%20%E5%97%8E%EF%BC%9F%E8%A9%A6%E8%A9%A6%20DateTimeOffset%20%E5%90%A7">還在用 DateTime 嗎？試試 DateTimeOffset 吧 - demo小鋪</a></p>

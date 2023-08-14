@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -165,20 +165,20 @@
 <p>我們在之前的 <a href="/post/2020/09/oo-8-cohesion-and-coupling">耦合篇</a> 提過，如果模組和另一個模組之間有關連，那這兩者之間就耦合。以此來看，依賴就是一種耦合的關係，那麼，依賴是健康還是不健康的耦合呢？</p>
 <p>現在讓我們用 <a href="/post/2020/07/oo-5-polymorphism">多型篇</a> 用過的「老闆徵工程師」的例子來舉例一下：現在有間小小公司，老闆請來了小明當工程師，並請他開工撰寫產品程式碼。</p>
 <p>當「撰寫產品程式」對「工程師」直接依賴的時候，狀況可能是這樣的：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
-{
-    Ming programmer = <span style="color:#66d9ef">new</span> Ming();
-    <span style="color:#66d9ef">var</span> product = programmer.Programming();
-    <span style="color:#66d9ef">return</span> product;
-}
-</code></pre></div><p>過一陣子，老闆發現小明寫出來的東西似乎不太行，於是把小明趕走，另外請了小華。這時候因為「工程師」這個實作類別不一樣了，我們就必須要改一次程式碼：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
-{
-    Hua programmer = <span style="color:#66d9ef">new</span> Hua();
-    <span style="color:#66d9ef">var</span> product = programmer.Programming();
-    <span style="color:#66d9ef">return</span> product;
-}
-</code></pre></div>……
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Product Work()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Ming programmer = <span style="color:#66d9ef">new</span> Ming();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> product = programmer.Programming();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> product;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>過一陣子，老闆發現小明寫出來的東西似乎不太行，於是把小明趕走，另外請了小華。這時候因為「工程師」這個實作類別不一樣了，我們就必須要改一次程式碼：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Product Work()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Hua programmer = <span style="color:#66d9ef">new</span> Hua();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> product = programmer.Programming();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> product;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>……
                                     <p class="readmore"><a href="https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle/">閱讀全文</a></p>
                                 </div>
                             </article>
@@ -270,12 +270,12 @@
                                 
                                 <div class="post-content">
                                     <p>最近遇到在 Amazon Linux AMI 要安裝 .net Core 3.1 環境的時候，會一直跳出<br/> <code>Requires: openssl-libs</code> 而無法安裝的問題，儘管明明已經有 openssl 了，但還是解析失敗找不到依賴，過程一直碰壁，因此在這邊紀錄一下。</p>
-<p>過程中嘗試了安裝 openssl-libs（會找不到該套件）、下載 Dotnet 的 tar.gz ，再直接對執行檔下 Dotnet 指令起站台（雖然網站起得來，但執行者會是當下的登入身分，也就是 &lsquo;'@連線進來的IP-伺服器位置，而非由本機執行。後續如果有連線資料庫等檢查權限的地方就很容易出錯）</p>
+<p>過程中嘗試了安裝 openssl-libs（會找不到該套件）、下載 Dotnet 的 tar.gz ，再直接對執行檔下 Dotnet 指令起站台（雖然網站起得來，但執行者會是當下的登入身分，也就是 &lsquo;&rsquo;@連線進來的IP-伺服器位置，而非由本機執行。後續如果有連線資料庫等檢查權限的地方就很容易出錯）</p>
 <p>最後在 Dotnet Core 的 issue 翻到這篇 <a href="https://github.com/dotnet/core/issues/930">Cannot install .NET Core 2.0 on Amazon Linux AMI</a> 才成功解決。</p>
 <p>首先先將 openssl-libs 的 SPEC 抓下來，然後給 RPM 建置一下。這兩句可以參考一下這篇 <a href="https://medium.com/linux-%E9%96%8B%E7%99%BC%E5%85%A5%E9%96%80/rpm-%E6%89%93%E5%8C%85-%E7%94%B1%E4%B8%80%E7%AB%85%E4%B8%8D%E9%80%9A%E5%88%B0%E5%8B%95%E6%89%8B%E6%BF%AB%E7%94%A8-%E4%BA%8C-df9eea70bd7b">RPM 打包︰由一竅不通到動手濫用 (二)</a> 的說明。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget https://github.com/dotnet/core/files/2186067/openssl-libs-ami.spec.txt
-rpmbuild --bb openssl-libs-ami.spec.txt
-</code></pre></div>……
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wget https://github.com/dotnet/core/files/2186067/openssl-libs-ami.spec.txt
+</span></span><span style="display:flex;"><span>rpmbuild --bb openssl-libs-ami.spec.txt
+</span></span></code></pre></div>……
                                     <p class="readmore"><a href="https://igouist.github.io/post/2020/11/bugs-install-dotnet-core-on-amazon-ami-requires-openssl/">閱讀全文</a></p>
                                 </div>
                             </article>
@@ -305,14 +305,14 @@ rpmbuild --bb openssl-libs-ami.spec.txt
 <p>事情就從上一篇 <a href="/post/2020/11/oo-12-liskov-substitution-principle">里氏替換原則</a> 的鳥類物流公司開始說起。老闆痛定思痛，決定先用<strong>介面</strong>先規定好物流士們的應徵條件，例如裝貨、卸貨、飛行、必須有帥氣的喙等等。</p>
 <p>這道命令下來後，倉庫們的企鵝都慌了，來檢查的編譯器瘋狂跳出 Error:「您未實作 IBird 的 Fly() 方法！」這下怎麼辦呢，為了要保住飯碗，企鵝們就必須實作出飛行才行，可是企鵝真的就不會飛呀！</p>
 <p>這下子企鵝們只剩下兩個選擇：不實作飛行，但是就不能被當成物流士，最後就會被開除；或是……空實作。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Penguin</span> : IBird
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Fly()
-    {
-      <span style="color:#75715e">// Do nothing;
-</span><span style="color:#75715e"></span>    }
-}
-</code></pre></div><p>企鵝們終於騙過了編譯器檢查員，然而當送貨的命令下來之後，企鵝們再一次卡在倉庫門口發呆，最終物流公司仍然踏上了虧損的老路，再度面臨倒閉危機…</p>……
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Penguin</span> : IBird
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Fly()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// Do nothing;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>企鵝們終於騙過了編譯器檢查員，然而當送貨的命令下來之後，企鵝們再一次卡在倉庫門口發呆，最終物流公司仍然踏上了虧損的老路，再度面臨倒閉危機…</p>……
                                     <p class="readmore"><a href="https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle/">閱讀全文</a></p>
                                 </div>
                             </article>

@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -137,117 +137,117 @@
 <h2 id="加入-authorize-設置">加入 Authorize 設置</h2>
 <p>首先讓我們先找到註冊 Swagger 產生器的地方，以先前的 Swagger 介紹文為例的話，會是在  <code>Startup.cs</code> 的 <code>ConfigureServices</code> 裡的 <code>AddSwaggerGen</code>。</p>
 <p>裡面可能已經有包含 API 簡介等欄位，例如：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 註冊 Swagger 產生器
-</span><span style="color:#75715e"></span>services.AddSwaggerGen(options =&gt;
-{
-    <span style="color:#75715e">// API 服務簡介
-</span><span style="color:#75715e"></span>    options.SwaggerDoc(<span style="color:#e6db74">&#34;v1&#34;</span>, <span style="color:#66d9ef">new</span> OpenApiInfo
-    {
-        Version = <span style="color:#e6db74">&#34;v1&#34;</span>,
-        Title = <span style="color:#e6db74">&#34;JWT Demo&#34;</span>,
-        Description = <span style="color:#e6db74">&#34;菜雞嘗試 JWT 的範例 API&#34;</span>,
-        TermsOfService = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/&#34;</span>),
-        Contact = <span style="color:#66d9ef">new</span> OpenApiContact
-        {
-            Name = <span style="color:#e6db74">&#34;Igouist&#34;</span>,
-            Email = <span style="color:#66d9ef">string</span>.Empty,
-            Url = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/about/&#34;</span>),
-        }
-    });
-
-    <span style="color:#75715e">// 讀取 XML 檔案產生 API 說明
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> xmlFile = <span style="color:#e6db74">$&#34;{Assembly.GetExecutingAssembly().GetName().Name}.xml&#34;</span>;
-    <span style="color:#66d9ef">var</span> xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    options.IncludeXmlComments(xmlPath);
-});
-</code></pre></div><p>首先讓我們用 Security Scheme 來告訴 Swagger 我們的驗證資訊吧。在 <code>AddSwaggerGen</code> 中加上 <code>AddSecurityDefinition</code>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">options.AddSecurityDefinition(<span style="color:#e6db74">&#34;Bearer&#34;</span>, 
-    <span style="color:#66d9ef">new</span> OpenApiSecurityScheme
-    {
-        Name = <span style="color:#e6db74">&#34;Authorization&#34;</span>,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = <span style="color:#e6db74">&#34;Bearer&#34;</span>,
-        BearerFormat = <span style="color:#e6db74">&#34;JWT&#34;</span>,
-        In = ParameterLocation.Header,
-        Description = <span style="color:#e6db74">&#34;JWT Authorization&#34;</span>
-    });
-</code></pre></div><p>加了之後就能在 Swagger UI 看見我們的 Authorize 按鈕囉：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 註冊 Swagger 產生器</span>
+</span></span><span style="display:flex;"><span>services.AddSwaggerGen(options =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// API 服務簡介</span>
+</span></span><span style="display:flex;"><span>    options.SwaggerDoc(<span style="color:#e6db74">&#34;v1&#34;</span>, <span style="color:#66d9ef">new</span> OpenApiInfo
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Version = <span style="color:#e6db74">&#34;v1&#34;</span>,
+</span></span><span style="display:flex;"><span>        Title = <span style="color:#e6db74">&#34;JWT Demo&#34;</span>,
+</span></span><span style="display:flex;"><span>        Description = <span style="color:#e6db74">&#34;菜雞嘗試 JWT 的範例 API&#34;</span>,
+</span></span><span style="display:flex;"><span>        TermsOfService = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/&#34;</span>),
+</span></span><span style="display:flex;"><span>        Contact = <span style="color:#66d9ef">new</span> OpenApiContact
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Name = <span style="color:#e6db74">&#34;Igouist&#34;</span>,
+</span></span><span style="display:flex;"><span>            Email = <span style="color:#66d9ef">string</span>.Empty,
+</span></span><span style="display:flex;"><span>            Url = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/about/&#34;</span>),
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 讀取 XML 檔案產生 API 說明</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> xmlFile = <span style="color:#e6db74">$&#34;{Assembly.GetExecutingAssembly().GetName().Name}.xml&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+</span></span><span style="display:flex;"><span>    options.IncludeXmlComments(xmlPath);
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>首先讓我們用 Security Scheme 來告訴 Swagger 我們的驗證資訊吧。在 <code>AddSwaggerGen</code> 中加上 <code>AddSecurityDefinition</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>options.AddSecurityDefinition(<span style="color:#e6db74">&#34;Bearer&#34;</span>, 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> OpenApiSecurityScheme
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Name = <span style="color:#e6db74">&#34;Authorization&#34;</span>,
+</span></span><span style="display:flex;"><span>        Type = SecuritySchemeType.ApiKey,
+</span></span><span style="display:flex;"><span>        Scheme = <span style="color:#e6db74">&#34;Bearer&#34;</span>,
+</span></span><span style="display:flex;"><span>        BearerFormat = <span style="color:#e6db74">&#34;JWT&#34;</span>,
+</span></span><span style="display:flex;"><span>        In = ParameterLocation.Header,
+</span></span><span style="display:flex;"><span>        Description = <span style="color:#e6db74">&#34;JWT Authorization&#34;</span>
+</span></span><span style="display:flex;"><span>    });
+</span></span></code></pre></div><p>加了之後就能在 Swagger UI 看見我們的 Authorize 按鈕囉：</p>
 <p><img src="https://i.imgur.com/Opk7XZW.png" alt="Image"></p>
 <p>點開就會看到我們上面定義的內容：</p>
 <p><img src="https://i.imgur.com/SpvrFXG.png" alt="Image"></p>
 <p>不過現在還不會作用，我們還得讓全部的呼叫都自動加上這個 Token 才行。接著在 <code>AddSwaggerGen</code> 中加上 <code>AddSecurityRequirement</code>，並且讓他去抓我們前面設定好 &ldquo;Bearer&rdquo; 的 SecurityScheme：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">options.AddSecurityRequirement(
-    <span style="color:#66d9ef">new</span> OpenApiSecurityRequirement
-    {
-        {
-            <span style="color:#66d9ef">new</span> OpenApiSecurityScheme
-            {
-                Reference = <span style="color:#66d9ef">new</span> OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = <span style="color:#e6db74">&#34;Bearer&#34;</span>
-                }
-            },
-            <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">string</span>[] {}
-        }
-    });
-</code></pre></div><p>注意 <code>Id</code> 要和我們上一步加入的 <code>Scheme</code> 一致呦。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>options.AddSecurityRequirement(
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> OpenApiSecurityRequirement
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">new</span> OpenApiSecurityScheme
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                Reference = <span style="color:#66d9ef">new</span> OpenApiReference
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    Type = ReferenceType.SecurityScheme,
+</span></span><span style="display:flex;"><span>                    Id = <span style="color:#e6db74">&#34;Bearer&#34;</span>
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">string</span>[] {}
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    });
+</span></span></code></pre></div><p>注意 <code>Id</code> 要和我們上一步加入的 <code>Scheme</code> 一致呦。</p>
 <blockquote>
 <p>補充：OpenApiSecurityRequirement 是一個 Dictionary，所以中間那層 <code>{}</code> 不要忘囉</p>
 </blockquote>
 <p>加完之後現在的 <code>AddSwaggerGen</code> 大概是這個樣子的：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 註冊 Swagger 產生器
-</span><span style="color:#75715e"></span>services.AddSwaggerGen(options =&gt;
-{
-    <span style="color:#75715e">// API 服務簡介
-</span><span style="color:#75715e"></span>    options.SwaggerDoc(<span style="color:#e6db74">&#34;v1&#34;</span>, <span style="color:#66d9ef">new</span> OpenApiInfo
-    {
-        Version = <span style="color:#e6db74">&#34;v1&#34;</span>,
-        Title = <span style="color:#e6db74">&#34;JWT Demo&#34;</span>,
-        Description = <span style="color:#e6db74">&#34;菜雞嘗試 JWT 的範例 API&#34;</span>,
-        TermsOfService = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/&#34;</span>),
-        Contact = <span style="color:#66d9ef">new</span> OpenApiContact
-        {
-            Name = <span style="color:#e6db74">&#34;Igouist&#34;</span>,
-            Email = <span style="color:#66d9ef">string</span>.Empty,
-            Url = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/about/&#34;</span>),
-        }
-    });
-
-    <span style="color:#75715e">// Authorization
-</span><span style="color:#75715e"></span>    options.AddSecurityDefinition(<span style="color:#e6db74">&#34;Bearer&#34;</span>, 
-    <span style="color:#66d9ef">new</span> OpenApiSecurityScheme
-        {
-            Name = <span style="color:#e6db74">&#34;Authorization&#34;</span>,
-            Type = SecuritySchemeType.ApiKey,
-            Scheme = <span style="color:#e6db74">&#34;Bearer&#34;</span>,
-            BearerFormat = <span style="color:#e6db74">&#34;JWT&#34;</span>,
-            In = ParameterLocation.Header,
-            Description = <span style="color:#e6db74">&#34;JWT Authorization&#34;</span>
-        });
-
-    options.AddSecurityRequirement(
-        <span style="color:#66d9ef">new</span> OpenApiSecurityRequirement
-        {
-            {
-                <span style="color:#66d9ef">new</span> OpenApiSecurityScheme
-                {
-                    Reference = <span style="color:#66d9ef">new</span> OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = <span style="color:#e6db74">&#34;Bearer&#34;</span>
-                    }
-                },
-                <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">string</span>[] {}
-            }
-        });
-
-    <span style="color:#75715e">// 讀取 XML 檔案產生 API 說明
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> xmlFile = <span style="color:#e6db74">$&#34;{Assembly.GetExecutingAssembly().GetName().Name}.xml&#34;</span>;
-    <span style="color:#66d9ef">var</span> xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    options.IncludeXmlComments(xmlPath);
-});
-</code></pre></div><h2 id="完工測試">完工測試</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 註冊 Swagger 產生器</span>
+</span></span><span style="display:flex;"><span>services.AddSwaggerGen(options =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// API 服務簡介</span>
+</span></span><span style="display:flex;"><span>    options.SwaggerDoc(<span style="color:#e6db74">&#34;v1&#34;</span>, <span style="color:#66d9ef">new</span> OpenApiInfo
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Version = <span style="color:#e6db74">&#34;v1&#34;</span>,
+</span></span><span style="display:flex;"><span>        Title = <span style="color:#e6db74">&#34;JWT Demo&#34;</span>,
+</span></span><span style="display:flex;"><span>        Description = <span style="color:#e6db74">&#34;菜雞嘗試 JWT 的範例 API&#34;</span>,
+</span></span><span style="display:flex;"><span>        TermsOfService = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/&#34;</span>),
+</span></span><span style="display:flex;"><span>        Contact = <span style="color:#66d9ef">new</span> OpenApiContact
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Name = <span style="color:#e6db74">&#34;Igouist&#34;</span>,
+</span></span><span style="display:flex;"><span>            Email = <span style="color:#66d9ef">string</span>.Empty,
+</span></span><span style="display:flex;"><span>            Url = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/about/&#34;</span>),
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Authorization</span>
+</span></span><span style="display:flex;"><span>    options.AddSecurityDefinition(<span style="color:#e6db74">&#34;Bearer&#34;</span>, 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> OpenApiSecurityScheme
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Name = <span style="color:#e6db74">&#34;Authorization&#34;</span>,
+</span></span><span style="display:flex;"><span>            Type = SecuritySchemeType.ApiKey,
+</span></span><span style="display:flex;"><span>            Scheme = <span style="color:#e6db74">&#34;Bearer&#34;</span>,
+</span></span><span style="display:flex;"><span>            BearerFormat = <span style="color:#e6db74">&#34;JWT&#34;</span>,
+</span></span><span style="display:flex;"><span>            In = ParameterLocation.Header,
+</span></span><span style="display:flex;"><span>            Description = <span style="color:#e6db74">&#34;JWT Authorization&#34;</span>
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    options.AddSecurityRequirement(
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> OpenApiSecurityRequirement
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">new</span> OpenApiSecurityScheme
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    Reference = <span style="color:#66d9ef">new</span> OpenApiReference
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        Type = ReferenceType.SecurityScheme,
+</span></span><span style="display:flex;"><span>                        Id = <span style="color:#e6db74">&#34;Bearer&#34;</span>
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                },
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">string</span>[] {}
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 讀取 XML 檔案產生 API 說明</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> xmlFile = <span style="color:#e6db74">$&#34;{Assembly.GetExecutingAssembly().GetName().Name}.xml&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+</span></span><span style="display:flex;"><span>    options.IncludeXmlComments(xmlPath);
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><h2 id="完工測試">完工測試</h2>
 <p>接著就讓我們啟動試試吧！</p>
 <p>首先讓我們把登入的 Token 放到 Authorization 按鈕的欄位裡，不要忘記加上 Bearer：</p>
 <p><img src="https://i.imgur.com/R0kbhqC.png" alt="Image"></p>

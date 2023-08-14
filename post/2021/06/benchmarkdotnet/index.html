@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -160,113 +160,113 @@
 <li>藍方選手：用 <code>new List&lt;&gt;</code> 來建立空串列</li>
 </ul>
 <p>因為我們是要測試兩者做出空串列的差異，至少也要有個類別：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 協力單位，用來當成串列的填充物
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span>
-{
-    <span style="color:#66d9ef">public</span> Guid Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar1 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar2 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar3 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar4 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar5 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-</code></pre></div><p>然後讓我們開始正式的佈置，先讓我們<strong>開一個 Class 來當作擂台</strong>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 測試用擂台
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EmptyVSNewList</span>
-{
-
-}
-</code></pre></div><p>然後請紅方選手上擂台：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 紅方選手
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[Benchmark]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Empty()
-{
-    Enumerable.Empty&lt;Foo&gt;();
-}
-</code></pre></div><p>以及我們的藍方選手：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 藍方選手
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[Benchmark]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> NewList()
-{
-    <span style="color:#66d9ef">new</span> List&lt;Foo&gt;();
-}
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 協力單位，用來當成串列的填充物</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Guid Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar1 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar2 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar3 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar4 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar5 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>然後讓我們開始正式的佈置，先讓我們<strong>開一個 Class 來當作擂台</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 測試用擂台</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EmptyVSNewList</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>然後請紅方選手上擂台：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 紅方選手</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Benchmark]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Empty()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Enumerable.Empty&lt;Foo&gt;();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>以及我們的藍方選手：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 藍方選手</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Benchmark]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> NewList()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> List&lt;Foo&gt;();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
 <p>補充：要直接 <code>Empty() =&gt; Enumerable.Empty&lt;Foo&gt;();</code> 也是可以的。</p>
 <p>我個人習慣都用同一個準備好的 BenchmarkDotnet 擂台，複製改改裡面的內容就拿來測試了，所以乖乖寫出整個 Function 改起來比較方便 XD</p>
 <p>但為了閱讀方便，本篇後續會整理成比較簡單的 lambda 寫法，請不要太在意。</p>
 </blockquote>
 <p>選手們就定位之後，<strong>替他們加上 <code>[Benchmark]</code> 的屬性，作為參賽的證明</strong>。現在擂台上應該是長這樣的：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 測試用擂台
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EmptyVSNewList</span>
-{
-    <span style="color:#75715e">// 紅方選手
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [Benchmark]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Empty()
-    {
-        Enumerable.Empty&lt;Foo&gt;();
-    }
-
-    <span style="color:#75715e">// 藍方選手
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [Benchmark]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> NewList()
-    {
-        <span style="color:#66d9ef">new</span> List&lt;Foo&gt;();
-    }
-}
-</code></pre></div><p>接著，讓我們回到 <code>Main</code> 方法（或任何你要進行比試的地方），加上：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> summary = BenchmarkRunner.Run&lt;EmptyVSNewList&gt;();
-</code></pre></div><p>讓 BenchmarkRunner 去抓泛型裡面有 <code>[Benchmark]</code> 的選手進行測試。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 測試用擂台</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EmptyVSNewList</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 紅方選手</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Benchmark]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Empty()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Enumerable.Empty&lt;Foo&gt;();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 藍方選手</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Benchmark]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> NewList()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> List&lt;Foo&gt;();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著，讓我們回到 <code>Main</code> 方法（或任何你要進行比試的地方），加上：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> summary = BenchmarkRunner.Run&lt;EmptyVSNewList&gt;();
+</span></span></code></pre></div><p>讓 BenchmarkRunner 去抓泛型裡面有 <code>[Benchmark]</code> 的選手進行測試。</p>
 <p>以我們這次示範的主控台應用程式來說，可能就會像這樣：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">namespace</span> BenchmarkDotnetTest
-{
-    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
-    {
-        <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
-        {
-            <span style="color:#66d9ef">var</span> summary = BenchmarkRunner.Run&lt;EmptyVSNewList&gt;();
-        }
-    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 測試用擂台
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EmptyVSNewList</span>
-    {
-        <span style="color:#75715e">// 紅方選手
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">        [Benchmark]</span>
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Empty()
-        {
-            Enumerable.Empty&lt;Foo&gt;();
-        }
-
-        <span style="color:#75715e">// 藍方選手
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">        [Benchmark]</span>
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> NewList()
-        {
-            <span style="color:#66d9ef">new</span> List&lt;Foo&gt;();
-        }
-    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 協力單位，用來當成串列的填充物
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span>
-    {
-        <span style="color:#66d9ef">public</span> Guid Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar1 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar2 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar3 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar4 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar5 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    }
-}
-</code></pre></div><p>這樣就安排妥當啦！（其實也就加個測試用的 Class 和讓兩個測試方法而已囧）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> BenchmarkDotnetTest
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Program</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> Main(<span style="color:#66d9ef">string</span>[] args)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> summary = BenchmarkRunner.Run&lt;EmptyVSNewList&gt;();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 測試用擂台</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EmptyVSNewList</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 紅方選手</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Benchmark]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Empty()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Enumerable.Empty&lt;Foo&gt;();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 藍方選手</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [Benchmark]</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> NewList()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">new</span> List&lt;Foo&gt;();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 協力單位，用來當成串列的填充物</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> Guid Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar1 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar2 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar3 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar4 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Bar5 { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這樣就安排妥當啦！（其實也就加個測試用的 Class 和讓兩個測試方法而已囧）</p>
 <p>BenchmarkDotnet 必須在 release 環境下啟動，先讓我們切換一下組態：</p>
 <p><img src="https://i.imgur.com/iKmHI8C.png" alt=""></p>
 <blockquote>
@@ -277,57 +277,57 @@
 <p><img src="https://i.imgur.com/UN7wXuS.gif" alt=""></p>
 <p>最後就會有測試結果出爐啦：</p>
 <p><img src="https://i.imgur.com/9UEWxFg.png" alt=""></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">// * Summary *
-
-BenchmarkDotNet=v0.13.0, OS=Windows 10.0.18363.1556 (1909/November2019Update/19H2)
-Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical cores
-.NET SDK=5.0.300
-  <span style="color:#66d9ef">[Host]</span>     <span style="color:#960050;background-color:#1e0010">:</span> .NET Core 3.1.15 (CoreCLR 4.700.21.21202, CoreFX 4.700.21.21402), X64 RyuJIT  <span style="color:#66d9ef">[AttachedDebugger]</span>
-  DefaultJob <span style="color:#960050;background-color:#1e0010">:</span> .NET Core 3.1.15 (CoreCLR 4.700.21.21202, CoreFX 4.700.21.21402), X64 RyuJIT
-
-
-|  Method |      Mean |     Error |    StdDev |    Median |
-|-------- |----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|
-|   Empty | 0.0016 ns | 0.0067 ns | 0.0062 ns | 0.0000 ns |
-| NewList | 3.6262 ns | 0.0554 ns | 0.0491 ns | 3.6267 ns |
-</code></pre></div><p>這邊可以看到當年統計課熟悉的那些平均值、標準差等等（不過平常戰效能的時候都直接看平均時間比較多啦）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>// * Summary *
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>BenchmarkDotNet=v0.13.<span style="color:#ae81ff">0</span>, OS=Windows <span style="color:#ae81ff">10.0</span>.18363.1556 (<span style="color:#ae81ff">1909</span>/November2019Update/19H2)
+</span></span><span style="display:flex;"><span>Intel Core i7-<span style="color:#ae81ff">7700</span> CPU <span style="color:#ae81ff">3</span>.60GHz (Kaby Lake), <span style="color:#ae81ff">1</span> CPU, <span style="color:#ae81ff">8</span> logical and <span style="color:#ae81ff">4</span> physical cores
+</span></span><span style="display:flex;"><span>.NET SDK=<span style="color:#ae81ff">5.0</span>.300
+</span></span><span style="display:flex;"><span>  [<span style="color:#66d9ef">Host</span>]     <span style="color:#960050;background-color:#1e0010">:</span> .NET Core <span style="color:#ae81ff">3.1</span>.15 (CoreCLR <span style="color:#ae81ff">4.700</span>.21.<span style="color:#ae81ff">21202</span>, CoreFX <span style="color:#ae81ff">4.700</span>.21.<span style="color:#ae81ff">21402</span>), X64 RyuJIT  [<span style="color:#66d9ef">AttachedDebugger</span>]
+</span></span><span style="display:flex;"><span>  DefaultJob <span style="color:#960050;background-color:#1e0010">:</span> .NET Core <span style="color:#ae81ff">3.1</span>.15 (CoreCLR <span style="color:#ae81ff">4.700</span>.21.<span style="color:#ae81ff">21202</span>, CoreFX <span style="color:#ae81ff">4.700</span>.21.<span style="color:#ae81ff">21402</span>), X64 RyuJIT
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>|  Method |      Mean |     Error |    StdDev |    Median |
+</span></span><span style="display:flex;"><span>|-------- |----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|
+</span></span><span style="display:flex;"><span>|   Empty | <span style="color:#ae81ff">0.0016</span> ns | <span style="color:#ae81ff">0.0067</span> ns | <span style="color:#ae81ff">0.0062</span> ns | <span style="color:#ae81ff">0.0000</span> ns |
+</span></span><span style="display:flex;"><span>| NewList | <span style="color:#ae81ff">3.6262</span> ns | <span style="color:#ae81ff">0.0554</span> ns | <span style="color:#ae81ff">0.0491</span> ns | <span style="color:#ae81ff">3.6267</span> ns |
+</span></span></code></pre></div><p>這邊可以看到當年統計課熟悉的那些平均值、標準差等等（不過平常戰效能的時候都直接看平均時間比較多啦）</p>
 <blockquote>
 <p>補充：可以在擂台的類別上（在這個例子中就是 <code>EmptyVSNewList</code>）加上<br/> <strong><code>[MinColumn, MaxColumn]</code></strong> 的 Attribute，就會多出最大值和最小值的資訊囉。例如：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">|  Method |      Mean |     Error |    StdDev |    Median |       Min |       Max |
-|-------- |----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|
-|   Empty | 0.0005 ns | 0.0015 ns | 0.0014 ns | 0.0000 ns | 0.0000 ns | 0.0054 ns |
-| NewList | 3.7158 ns | 0.0490 ns | 0.0459 ns | 3.7072 ns | 3.6365 ns | 3.8187 ns |
-</code></pre></div></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>|  Method |      Mean |     Error |    StdDev |    Median |       Min |       Max |
+</span></span><span style="display:flex;"><span>|-------- |----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|
+</span></span><span style="display:flex;"><span>|   Empty | <span style="color:#ae81ff">0.0005</span> ns | <span style="color:#ae81ff">0.0015</span> ns | <span style="color:#ae81ff">0.0014</span> ns | <span style="color:#ae81ff">0.0000</span> ns | <span style="color:#ae81ff">0.0000</span> ns | <span style="color:#ae81ff">0.0054</span> ns |
+</span></span><span style="display:flex;"><span>| NewList | <span style="color:#ae81ff">3.7158</span> ns | <span style="color:#ae81ff">0.0490</span> ns | <span style="color:#ae81ff">0.0459</span> ns | <span style="color:#ae81ff">3.7072</span> ns | <span style="color:#ae81ff">3.6365</span> ns | <span style="color:#ae81ff">3.8187</span> ns |
+</span></span></code></pre></div></blockquote>
 <p>現在第一階段的結果出爐啦：<code>Enumerable.Empty</code> 比 <code>new List&lt;&gt;</code> 快了好幾倍呢！</p>
 <h2 id="使用-memorydiagnoser-加上記憶體的比較">使用 MemoryDiagnoser 加上記憶體的比較</h2>
 <p>就像我們前面提到的：效能比較的時候，<strong>除了時間以外，也不能忘了空間</strong>！也就是說，我們還必須考量到記憶體的用量才可以。</p>
 <p>我們在前一段知道了 <code>Enumerable.Empty</code> 比 <code>new List&lt;&gt;</code> 快，但是記憶體的使用呢？現在就讓我們來確認一下吧。</p>
 <p>想要加上記憶體的測試，我們只需要在擂台的類別上，加上 <code>[MemoryDiagnoser]</code> 就行啦：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 測試用擂台
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[MemoryDiagnoser]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EmptyVSNewList</span>
-{
-<span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Empty() =&gt; Enumerable.Empty&lt;Foo&gt;();
-<span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> NewList() =&gt; <span style="color:#66d9ef">new</span> List&lt;Foo&gt;();
-}
-</code></pre></div><p>接著讓我們看看結果：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 測試用擂台</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[MemoryDiagnoser]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EmptyVSNewList</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Empty() =&gt; Enumerable.Empty&lt;Foo&gt;();
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> NewList() =&gt; <span style="color:#66d9ef">new</span> List&lt;Foo&gt;();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著讓我們看看結果：</p>
 <p><img src="https://i.imgur.com/D1hIAFl.png" alt=""></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">// * Summary *
-
-BenchmarkDotNet=v0.13.0, OS=Windows 10.0.18363.1556 (1909/November2019Update/19H2)
-Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical cores
-.NET SDK=5.0.300
-  <span style="color:#66d9ef">[Host]</span>     <span style="color:#960050;background-color:#1e0010">:</span> .NET Core 3.1.15 (CoreCLR 4.700.21.21202, CoreFX 4.700.21.21402), X64 RyuJIT  <span style="color:#66d9ef">[AttachedDebugger]</span>
-  DefaultJob <span style="color:#960050;background-color:#1e0010">:</span> .NET Core 3.1.15 (CoreCLR 4.700.21.21202, CoreFX 4.700.21.21402), X64 RyuJIT
-
-
-|  Method |      Mean |     Error |    StdDev |    Median |  Gen 0 | Gen 1 | Gen 2 | Allocated |
-|-------- |----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|-------<span style="color:#960050;background-color:#1e0010">:</span>|------<span style="color:#960050;background-color:#1e0010">:</span>|------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|
-|   Empty | 0.0028 ns | 0.0048 ns | 0.0040 ns | 0.0000 ns |      - |     - |     - |         - |
-| NewList | 3.8114 ns | 0.0877 ns | 0.1077 ns | 3.8019 ns | 0.0077 |     - |     - |      32 B |
-</code></pre></div><p>可以注意到，<code>Empty</code> 根本沒有動用到記憶體，反而是 <code>new List&lt;&gt;</code> 占了一些空間，還觸發了 GC。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>// * Summary *
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>BenchmarkDotNet=v0.13.<span style="color:#ae81ff">0</span>, OS=Windows <span style="color:#ae81ff">10.0</span>.18363.1556 (<span style="color:#ae81ff">1909</span>/November2019Update/19H2)
+</span></span><span style="display:flex;"><span>Intel Core i7-<span style="color:#ae81ff">7700</span> CPU <span style="color:#ae81ff">3</span>.60GHz (Kaby Lake), <span style="color:#ae81ff">1</span> CPU, <span style="color:#ae81ff">8</span> logical and <span style="color:#ae81ff">4</span> physical cores
+</span></span><span style="display:flex;"><span>.NET SDK=<span style="color:#ae81ff">5.0</span>.300
+</span></span><span style="display:flex;"><span>  [<span style="color:#66d9ef">Host</span>]     <span style="color:#960050;background-color:#1e0010">:</span> .NET Core <span style="color:#ae81ff">3.1</span>.15 (CoreCLR <span style="color:#ae81ff">4.700</span>.21.<span style="color:#ae81ff">21202</span>, CoreFX <span style="color:#ae81ff">4.700</span>.21.<span style="color:#ae81ff">21402</span>), X64 RyuJIT  [<span style="color:#66d9ef">AttachedDebugger</span>]
+</span></span><span style="display:flex;"><span>  DefaultJob <span style="color:#960050;background-color:#1e0010">:</span> .NET Core <span style="color:#ae81ff">3.1</span>.15 (CoreCLR <span style="color:#ae81ff">4.700</span>.21.<span style="color:#ae81ff">21202</span>, CoreFX <span style="color:#ae81ff">4.700</span>.21.<span style="color:#ae81ff">21402</span>), X64 RyuJIT
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>|  Method |      Mean |     Error |    StdDev |    Median |  Gen <span style="color:#ae81ff">0</span> | Gen <span style="color:#ae81ff">1</span> | Gen <span style="color:#ae81ff">2</span> | Allocated |
+</span></span><span style="display:flex;"><span>|-------- |----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|-------<span style="color:#960050;background-color:#1e0010">:</span>|------<span style="color:#960050;background-color:#1e0010">:</span>|------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|
+</span></span><span style="display:flex;"><span>|   Empty | <span style="color:#ae81ff">0.0028</span> ns | <span style="color:#ae81ff">0.0048</span> ns | <span style="color:#ae81ff">0.0040</span> ns | <span style="color:#ae81ff">0.0000</span> ns |      - |     - |     - |         - |
+</span></span><span style="display:flex;"><span>| NewList | <span style="color:#ae81ff">3.8114</span> ns | <span style="color:#ae81ff">0.0877</span> ns | <span style="color:#ae81ff">0.1077</span> ns | <span style="color:#ae81ff">3.8019</span> ns | <span style="color:#ae81ff">0.0077</span> |     - |     - |      <span style="color:#ae81ff">32</span> B |
+</span></span></code></pre></div><p>可以注意到，<code>Empty</code> 根本沒有動用到記憶體，反而是 <code>new List&lt;&gt;</code> 占了一些空間，還觸發了 GC。</p>
 <p>由於 <code>Enumerable.Empty</code> 在時間和空間都拿下了分數，因此這邊宣布：「在需要回傳空串列的場合，使用 <code>Enumerable.Empty</code> 會比 <code>new List&lt;&gt;</code> 更好一些」－－<strong>正確</strong>！</p>
 <blockquote>
 <p>這邊補一下前面提到的 StackOverflow 回答：<br/>
@@ -339,75 +339,75 @@ Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical core
 <p>現在我們已經考量了執行時間和記憶體，接下來要問的就是：<strong>那在不同的啟動環境之下會有差別嗎？</strong></p>
 <p>例如說同樣的比較，在 .NET Core 跟 .NET framework 都成立嗎？不需要開好幾個專案來測，在 BenchmarkDotnet，我們可以用 <code>Jobs</code> 來搞定。</p>
 <p>現在讓我們試試看在擂台上掛上對應 .NET Core 的 <code>[SimpleJob(RuntimeMoniker.NetCoreApp30)]</code> 和 .NET Framework 4.7.2 的 <code>[SimpleJob(RuntimeMoniker.Net472)]</code> 來試試吧：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 測試用擂台
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[MemoryDiagnoser]</span>
-<span style="color:#a6e22e">[SimpleJob(RuntimeMoniker.Net472)]</span>
-<span style="color:#a6e22e">[SimpleJob(RuntimeMoniker.NetCoreApp30)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EmptyVSNewList</span>
-{
-<span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Empty() =&gt; Enumerable.Empty&lt;Foo&gt;();
-<span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> NewList() =&gt; <span style="color:#66d9ef">new</span> List&lt;Foo&gt;();
-}
-</code></pre></div><p>接著我們要編輯專案檔，<strong>用多目標的方式把指定的框架加上去</strong>，否則直接執行的話會跑出 <code>N/A</code>。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;TargetFrameworks&gt;</span>netcoreapp3.0;net472<span style="color:#f92672">&lt;/TargetFrameworks&gt;</span>
-<span style="color:#f92672">&lt;PlatformTarget&gt;</span>AnyCPU<span style="color:#f92672">&lt;/PlatformTarget&gt;</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 測試用擂台</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[MemoryDiagnoser]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[SimpleJob(RuntimeMoniker.Net472)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[SimpleJob(RuntimeMoniker.NetCoreApp30)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EmptyVSNewList</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Empty() =&gt; Enumerable.Empty&lt;Foo&gt;();
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> NewList() =&gt; <span style="color:#66d9ef">new</span> List&lt;Foo&gt;();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著我們要編輯專案檔，<strong>用多目標的方式把指定的框架加上去</strong>，否則直接執行的話會跑出 <code>N/A</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;TargetFrameworks&gt;</span>netcoreapp3.0;net472<span style="color:#f92672">&lt;/TargetFrameworks&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;PlatformTarget&gt;</span>AnyCPU<span style="color:#f92672">&lt;/PlatformTarget&gt;</span>
+</span></span></code></pre></div><blockquote>
 <p>小提示：專案檔就是 .csproj，除了直接開啟編輯外，也可以從 <code>方案總管 -&gt; (對專案右鍵) -&gt; 編輯專案檔</code> 來開啟呦。</p>
 <p>此外，多目標的說明和加入方式，也可以參照 Gelis 技術隨筆 的這篇 <a href="http://gelis-dotnet.blogspot.com/2019/12/targetframeworks-net72-netstandard21.html">使用多目標 TargetFrameworks 來讓 net72 可參考 .netstandard2.1 通過編譯並可使用</a></p>
 </blockquote>
 <p>以示範專案為例，加入後的 <code>csproj</code> 檔案的 <code>&lt;PropertyGroup&gt;</code> 可能會長得這樣：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;PropertyGroup&gt;</span>
-    <span style="color:#f92672">&lt;OutputType&gt;</span>Exe<span style="color:#f92672">&lt;/OutputType&gt;</span>
-    <span style="color:#f92672">&lt;TargetFrameworks&gt;</span>netcoreapp3.0;net472<span style="color:#f92672">&lt;/TargetFrameworks&gt;</span>
-    <span style="color:#f92672">&lt;PlatformTarget&gt;</span>AnyCPU<span style="color:#f92672">&lt;/PlatformTarget&gt;</span>
-<span style="color:#f92672">&lt;/PropertyGroup&gt;</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;PropertyGroup&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;OutputType&gt;</span>Exe<span style="color:#f92672">&lt;/OutputType&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;TargetFrameworks&gt;</span>netcoreapp3.0;net472<span style="color:#f92672">&lt;/TargetFrameworks&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PlatformTarget&gt;</span>AnyCPU<span style="color:#f92672">&lt;/PlatformTarget&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/PropertyGroup&gt;</span>
+</span></span></code></pre></div><blockquote>
 <p>小提示：更改版本之後，如果編譯有發生遺失資源檔的錯誤，可以先卸載專案再重新載入試試呦。</p>
 </blockquote>
 <p>現在讓我們來執行一次試試吧：</p>
 <p><img src="https://i.imgur.com/UqhTEPp.png" alt=""></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">// * Summary *
-
-BenchmarkDotNet=v0.13.0, OS=Windows 10.0.18363.1556 (1909/November2019Update/19H2)
-Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical cores
-.NET SDK=5.0.300
-  <span style="color:#66d9ef">[Host]</span>               <span style="color:#960050;background-color:#1e0010">:</span> .NET Core 3.1.15 (CoreCLR 4.700.21.21202, CoreFX 4.700.21.21402), X64 RyuJIT  <span style="color:#66d9ef">[AttachedDebugger]</span>
-  .NET Core 3.0        <span style="color:#960050;background-color:#1e0010">:</span> .NET Core 3.1.15 (CoreCLR 4.700.21.21202, CoreFX 4.700.21.21402), X64 RyuJIT
-  .NET Framework 4.7.2 <span style="color:#960050;background-color:#1e0010">:</span> .NET Framework 4.8 (4.8.4341.0), X64 RyuJIT
-
-
-|  Method |                  Job |              Runtime |      Mean |     Error |    StdDev |    Median |  Gen 0 | Gen 1 | Gen 2 | Allocated |
-|-------- |--------------------- |--------------------- |----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|-------<span style="color:#960050;background-color:#1e0010">:</span>|------<span style="color:#960050;background-color:#1e0010">:</span>|------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|
-|   Empty |        .NET Core 3.0 |        .NET Core 3.0 | 0.0563 ns | 0.0310 ns | 0.0583 ns | 0.0370 ns |      - |     - |     - |         - |
-| NewList |        .NET Core 3.0 |        .NET Core 3.0 | 3.7849 ns | 0.0734 ns | 0.0686 ns | 3.7755 ns | 0.0077 |     - |     - |      32 B |
-|   Empty | .NET Framework 4.7.2 | .NET Framework 4.7.2 | 2.4641 ns | 0.0754 ns | 0.0806 ns | 2.4815 ns |      - |     - |     - |         - |
-| NewList | .NET Framework 4.7.2 | .NET Framework 4.7.2 | 7.9914 ns | 0.1877 ns | 0.5139 ns | 7.8857 ns | 0.0096 |     - |     - |      40 B |
-</code></pre></div><p>可以看到測試結果變成了兩組：<strong>在 <code>.NET Core 3.0</code> 和 <code>.NET Framework 4.7.2</code> 都進行了測試</strong>！</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>// * Summary *
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>BenchmarkDotNet=v0.13.<span style="color:#ae81ff">0</span>, OS=Windows <span style="color:#ae81ff">10.0</span>.18363.1556 (<span style="color:#ae81ff">1909</span>/November2019Update/19H2)
+</span></span><span style="display:flex;"><span>Intel Core i7-<span style="color:#ae81ff">7700</span> CPU <span style="color:#ae81ff">3</span>.60GHz (Kaby Lake), <span style="color:#ae81ff">1</span> CPU, <span style="color:#ae81ff">8</span> logical and <span style="color:#ae81ff">4</span> physical cores
+</span></span><span style="display:flex;"><span>.NET SDK=<span style="color:#ae81ff">5.0</span>.300
+</span></span><span style="display:flex;"><span>  [<span style="color:#66d9ef">Host</span>]               <span style="color:#960050;background-color:#1e0010">:</span> .NET Core <span style="color:#ae81ff">3.1</span>.15 (CoreCLR <span style="color:#ae81ff">4.700</span>.21.<span style="color:#ae81ff">21202</span>, CoreFX <span style="color:#ae81ff">4.700</span>.21.<span style="color:#ae81ff">21402</span>), X64 RyuJIT  [<span style="color:#66d9ef">AttachedDebugger</span>]
+</span></span><span style="display:flex;"><span>  .NET Core <span style="color:#ae81ff">3.0</span>        <span style="color:#960050;background-color:#1e0010">:</span> .NET Core <span style="color:#ae81ff">3.1</span>.15 (CoreCLR <span style="color:#ae81ff">4.700</span>.21.<span style="color:#ae81ff">21202</span>, CoreFX <span style="color:#ae81ff">4.700</span>.21.<span style="color:#ae81ff">21402</span>), X64 RyuJIT
+</span></span><span style="display:flex;"><span>  .NET Framework <span style="color:#ae81ff">4.7</span>.2 <span style="color:#960050;background-color:#1e0010">:</span> .NET Framework <span style="color:#ae81ff">4.8</span> (<span style="color:#ae81ff">4.8</span>.4341.<span style="color:#ae81ff">0</span>), X64 RyuJIT
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>|  Method |                  Job |              Runtime |      Mean |     Error |    StdDev |    Median |  Gen <span style="color:#ae81ff">0</span> | Gen <span style="color:#ae81ff">1</span> | Gen <span style="color:#ae81ff">2</span> | Allocated |
+</span></span><span style="display:flex;"><span>|-------- |--------------------- |--------------------- |----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|-------<span style="color:#960050;background-color:#1e0010">:</span>|------<span style="color:#960050;background-color:#1e0010">:</span>|------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|
+</span></span><span style="display:flex;"><span>|   Empty |        .NET Core <span style="color:#ae81ff">3.0</span> |        .NET Core <span style="color:#ae81ff">3.0</span> | <span style="color:#ae81ff">0.0563</span> ns | <span style="color:#ae81ff">0.0310</span> ns | <span style="color:#ae81ff">0.0583</span> ns | <span style="color:#ae81ff">0.0370</span> ns |      - |     - |     - |         - |
+</span></span><span style="display:flex;"><span>| NewList |        .NET Core <span style="color:#ae81ff">3.0</span> |        .NET Core <span style="color:#ae81ff">3.0</span> | <span style="color:#ae81ff">3.7849</span> ns | <span style="color:#ae81ff">0.0734</span> ns | <span style="color:#ae81ff">0.0686</span> ns | <span style="color:#ae81ff">3.7755</span> ns | <span style="color:#ae81ff">0.0077</span> |     - |     - |      <span style="color:#ae81ff">32</span> B |
+</span></span><span style="display:flex;"><span>|   Empty | .NET Framework <span style="color:#ae81ff">4.7</span>.2 | .NET Framework <span style="color:#ae81ff">4.7</span>.2 | <span style="color:#ae81ff">2.4641</span> ns | <span style="color:#ae81ff">0.0754</span> ns | <span style="color:#ae81ff">0.0806</span> ns | <span style="color:#ae81ff">2.4815</span> ns |      - |     - |     - |         - |
+</span></span><span style="display:flex;"><span>| NewList | .NET Framework <span style="color:#ae81ff">4.7</span>.2 | .NET Framework <span style="color:#ae81ff">4.7</span>.2 | <span style="color:#ae81ff">7.9914</span> ns | <span style="color:#ae81ff">0.1877</span> ns | <span style="color:#ae81ff">0.5139</span> ns | <span style="color:#ae81ff">7.8857</span> ns | <span style="color:#ae81ff">0.0096</span> |     - |     - |      <span style="color:#ae81ff">40</span> B |
+</span></span></code></pre></div><p>可以看到測試結果變成了兩組：<strong>在 <code>.NET Core 3.0</code> 和 <code>.NET Framework 4.7.2</code> 都進行了測試</strong>！</p>
 <p>現在我們知道不管是在 Core 還是 Framework，用 <code>Enumerable.Empty</code> 來建立空串列都比 <code>new List&lt;&gt;</code> 快、也更省資源了。</p>
 <h2 id="使用-exporters-來產生報表">使用 Exporters 來產生報表</h2>
 <p>現在確定哪一組寫法效能比較好了。想要說服大大改用新寫法，怎麼辦呢？當然是 <del>自己偷偷改</del> 要拿出證據說服大大啦！</p>
 <p>剛好，BenchmarkDotnet 也提供了產出報表的功能，並且可以輸出成 HTML、Markdown 等格式，只需要加上對應的屬性就可以囉，例如 <strong><code>[HtmlExporter]</code></strong>、<strong><code>[CsvExporter]</code></strong>，現在讓我們一股腦都丟上去看看：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 測試用擂台
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HtmlExporter]</span>
-<span style="color:#a6e22e">[AsciiDocExporter]</span>
-<span style="color:#a6e22e">[CsvExporter]</span>
-<span style="color:#a6e22e">[CsvMeasurementsExporter]</span>
-<span style="color:#a6e22e">[PlainExporter]</span>
-<span style="color:#a6e22e">[RPlotExporter]</span>
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">[MemoryDiagnoser]</span>
-<span style="color:#a6e22e">[SimpleJob(RuntimeMoniker.Net472)]</span>
-<span style="color:#a6e22e">[SimpleJob(RuntimeMoniker.NetCoreApp30)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EmptyVSNewList</span>
-{
-<span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Empty() =&gt; Enumerable.Empty&lt;Foo&gt;();
-<span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> NewList() =&gt; <span style="color:#66d9ef">new</span> List&lt;Foo&gt;();
-} 
-</code></pre></div><p>當我們執行的時候，會存一份 Log 在 <code>.\BenchmarkDotNet.Artifacts</code> 裡面</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 測試用擂台</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HtmlExporter]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[AsciiDocExporter]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[CsvExporter]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[CsvMeasurementsExporter]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[PlainExporter]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[RPlotExporter]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">[MemoryDiagnoser]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[SimpleJob(RuntimeMoniker.Net472)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[SimpleJob(RuntimeMoniker.NetCoreApp30)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EmptyVSNewList</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Empty() =&gt; Enumerable.Empty&lt;Foo&gt;();
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> NewList() =&gt; <span style="color:#66d9ef">new</span> List&lt;Foo&gt;();
+</span></span><span style="display:flex;"><span>} 
+</span></span></code></pre></div><p>當我們執行的時候，會存一份 Log 在 <code>.\BenchmarkDotNet.Artifacts</code> 裡面</p>
 <p>而當我們有指定輸出報表，當執行完畢之後，報表就會產生在 Log 的 <code>result</code>，也就是 <code>.\BenchmarkDotNet.Artifacts\results</code> 裡面。</p>
 <p>以我的環境為例，就會產生在專案裡的 <code>\bin\Release\netcoreapp3.0\BenchmarkDotNet.Artifacts\results</code>：</p>
 <p><img src="https://i.imgur.com/O2VCMNC.png" alt=""></p>
@@ -420,39 +420,39 @@ Intel Core i7-7700 CPU 3.60GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical core
 <h2 id="用-params-來指定數值">用 Params 來指定數值</h2>
 <p>最後補充一下：有時候我們測試的對象，可能也會受到內容物的影響。</p>
 <p>例如一些純計算的方法，可能就會受到數值大小的影響，這時候我們就可以<strong>使用 <code>Params</code> 的屬性來指定數值</strong>，並觀察不同狀況下的表現。例如：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ParamsTest</span>
-{
-<span style="color:#a6e22e">    [Params(10, 10000)]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> A { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">    [Params(2, 20000)]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> B { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cul() =&gt; A * B;
-}
-</code></pre></div><p>這樣跑出來的結果就會按照指定的數值分組囉：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">| Method |     A |     B |      Mean |     Error |    StdDev | Median |
-|------- |------ |------ |----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|-------<span style="color:#960050;background-color:#1e0010">:</span>|
-|    Cul |    10 |     2 | 0.0000 ns | 0.0000 ns | 0.0000 ns | 0.0 ns |
-|    Cul |    10 | 20000 | 0.0000 ns | 0.0000 ns | 0.0000 ns | 0.0 ns |
-|    Cul | 10000 |     2 | 0.0071 ns | 0.0146 ns | 0.0200 ns | 0.0 ns |
-|    Cul | 10000 | 20000 | 0.0008 ns | 0.0015 ns | 0.0023 ns | 0.0 ns |
-</code></pre></div><p>如果想要把指定的數值另外拉出來做成串列，比較好維護和測試的話，也可以<strong>用 <code>ParamsSource</code> 來指定數值的來源</strong>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ParamsTest</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Params(10, 10000)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> A { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Params(2, 20000)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> B { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cul() =&gt; A * B;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這樣跑出來的結果就會按照指定的數值分組囉：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>| Method |     A |     B |      Mean |     Error |    StdDev | Median |
+</span></span><span style="display:flex;"><span>|------- |------ |------ |----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|----------<span style="color:#960050;background-color:#1e0010">:</span>|-------<span style="color:#960050;background-color:#1e0010">:</span>|
+</span></span><span style="display:flex;"><span>|    Cul |    <span style="color:#ae81ff">10</span> |     <span style="color:#ae81ff">2</span> | <span style="color:#ae81ff">0.0000</span> ns | <span style="color:#ae81ff">0.0000</span> ns | <span style="color:#ae81ff">0.0000</span> ns | <span style="color:#ae81ff">0.0</span> ns |
+</span></span><span style="display:flex;"><span>|    Cul |    <span style="color:#ae81ff">10</span> | <span style="color:#ae81ff">20000</span> | <span style="color:#ae81ff">0.0000</span> ns | <span style="color:#ae81ff">0.0000</span> ns | <span style="color:#ae81ff">0.0000</span> ns | <span style="color:#ae81ff">0.0</span> ns |
+</span></span><span style="display:flex;"><span>|    Cul | <span style="color:#ae81ff">10000</span> |     <span style="color:#ae81ff">2</span> | <span style="color:#ae81ff">0.0071</span> ns | <span style="color:#ae81ff">0.0146</span> ns | <span style="color:#ae81ff">0.0200</span> ns | <span style="color:#ae81ff">0.0</span> ns |
+</span></span><span style="display:flex;"><span>|    Cul | <span style="color:#ae81ff">10000</span> | <span style="color:#ae81ff">20000</span> | <span style="color:#ae81ff">0.0008</span> ns | <span style="color:#ae81ff">0.0015</span> ns | <span style="color:#ae81ff">0.0023</span> ns | <span style="color:#ae81ff">0.0</span> ns |
+</span></span></code></pre></div><p>如果想要把指定的數值另外拉出來做成串列，比較好維護和測試的話，也可以<strong>用 <code>ParamsSource</code> 來指定數值的來源</strong>。</p>
 <p>例如上面的例子，也可以改寫成：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ParamsTest</span>
-{
-    <span style="color:#66d9ef">public</span> IEnumerable&lt;<span style="color:#66d9ef">int</span>&gt; SourceA =&gt; <span style="color:#66d9ef">new</span> [] { <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">10000</span> };
-    <span style="color:#66d9ef">public</span> IEnumerable&lt;<span style="color:#66d9ef">int</span>&gt; SourceB =&gt; <span style="color:#66d9ef">new</span> [] {  <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">20000</span> };
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">    [ParamsSource(nameof(SourceA))]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> A { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">    [ParamsSource(nameof(SourceB))]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> B { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-<span style="color:#a6e22e">
-</span><span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cul() =&gt; A * B;
-}
-</code></pre></div><p>效果會是一樣的，而且也比較好管理。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ParamsTest</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;<span style="color:#66d9ef">int</span>&gt; SourceA =&gt; <span style="color:#66d9ef">new</span> [] { <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">10000</span> };
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;<span style="color:#66d9ef">int</span>&gt; SourceB =&gt; <span style="color:#66d9ef">new</span> [] {  <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">20000</span> };
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [ParamsSource(nameof(SourceA))]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> A { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [ParamsSource(nameof(SourceB))]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> B { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Benchmark]</span> <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cul() =&gt; A * B;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>效果會是一樣的，而且也比較好管理。</p>
 <h2 id="結語與參考資料">結語與參考資料</h2>
 <p>我們的 <code>Enumerable.Empty</code> vs <code>new List&lt;&gt;</code> 對決也告一段落了。</p>
 <p>當然，BenchmarkDotNet 能做到的事還有很多，例如 <a href="https://benchmarkdotnet.org/articles/configs/filters.html">用 Filter 來篩選指定的測試案例</a>、<a href="https://benchmarkdotnet.org/articles/features/baselines.html">把某個測試案例作為基準案例</a> 等等進階用法，還有更多的 <a href="https://benchmarkdotnet.org/articles/features/statistics.html">統計資訊</a>。但目前還沒有接觸到，這邊就先不提了，有需要的朋友再翻一下參考資料唄。</p>

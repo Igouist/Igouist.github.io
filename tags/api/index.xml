@@ -66,28 +66,28 @@
       <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TuGp6Lk.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;事發緣由&#34;&gt;事發緣由&lt;/h2&gt;
 &lt;p&gt;在 .net Framework 4.6.2 MVC 的 ApiController 中，某個查詢資料列表的方法除了提供查詢條件的參數以外，還有提供選擇性的分頁參數。也就是像這樣子：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;Boo&amp;gt; GetBoos(
-&lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; SearchBooParameter parameter,
-&lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; PagingParameter paging = &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;)
-{
-    &lt;span style=&#34;color:#75715e&#34;&gt;// 呼叫 Service 查資料...
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;由於需要調整該功能的預設排序，改為由大到小，又不想背負更改大量共用的 &lt;code&gt;PagingParameter&lt;/code&gt; 去影響到其他使用到的地方，決定在 Controller 這裡簡單用預測值加上判斷處理一下就好&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;Boo&amp;gt; GetBoos(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; SearchBooParameter parameter,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; PagingParameter paging = &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 呼叫 Service 查資料...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;由於需要調整該功能的預設排序，改為由大到小，又不想背負更改大量共用的 &lt;code&gt;PagingParameter&lt;/code&gt; 去影響到其他使用到的地方，決定在 Controller 這裡簡單用預測值加上判斷處理一下就好&lt;/p&gt;
 &lt;p&gt;相信著「若使用者沒有傳遞 paging 相關的參數，應該就會是給定的預設值 &lt;code&gt;null&lt;/code&gt; 吧！」的我，用了 &lt;code&gt;if (paging is null)&lt;/code&gt; 進行判斷：若是 &lt;code&gt;null&lt;/code&gt; 的情況就將其中用來標示排序方向的成員 &lt;code&gt;isDesc&lt;/code&gt; 設定為 true，開開心心交差。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;Boo&amp;gt; GetBoos(
-&lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; SearchBooParameter parameter,
-&lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; PagingParameter paging = &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;)
-{
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (paging &lt;span style=&#34;color:#66d9ef&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;)
-    {
-        paging = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; PagingParameter();
-        paging.isDesc = &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;// 預設由大到小
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    }
-    &lt;span style=&#34;color:#75715e&#34;&gt;// 呼叫 Service 查資料...
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;但實際使用之後發現：即使只有傳入查詢條件參數、未傳遞 paging 時，資料仍然由小到大顯示，且 &lt;code&gt;paging.isDesc&lt;/code&gt; 竟然是 false，並未被更改到。也就是說，即使未傳遞 paging，它也並不是 null！&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;Boo&amp;gt; GetBoos(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; SearchBooParameter parameter,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;    [FromUri]&lt;/span&gt; PagingParameter paging = &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (paging &lt;span style=&#34;color:#66d9ef&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        paging = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; PagingParameter();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        paging.isDesc = &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;// 預設由大到小&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 呼叫 Service 查資料...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;但實際使用之後發現：即使只有傳入查詢條件參數、未傳遞 paging 時，資料仍然由小到大顯示，且 &lt;code&gt;paging.isDesc&lt;/code&gt; 竟然是 false，並未被更改到。也就是說，即使未傳遞 paging，它也並不是 null！&lt;/p&gt;
 &lt;p&gt;實測之後發現：若在呼叫該 API 的時候，給定一個完全無關的參數，例如 &lt;code&gt;?a=1&lt;/code&gt;，則 paging 還是會被建立一個實體出來，並無視 &lt;code&gt;= null&lt;/code&gt; 這個預設值。因此就導致了非預期（＝跟我想的不一樣啊！）的行為。&lt;/p&gt;
 &lt;p&gt;這邊直接先講結論：&lt;strong&gt;如果有傳遞 QueryString 的任何參數時，不管這些參數跟指定的類別有沒有關係，放在 &lt;code&gt;[FromUri]&lt;/code&gt; 的複雜型別都會先建立出實體，再嘗試和 QueryString 的內容進行比對與設值&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;設定在 &lt;code&gt;[FromUri]&lt;/code&gt; 的複雜型別身上的預設值，像是 &lt;code&gt;[FromUri] PagingParameter paging = null&lt;/code&gt; 只有完全沒給任何 QueryString 的時候才會吃到。（不過因為預設值只能是常數的關係，基本上就是指 defualt 的 null）&lt;/p&gt;

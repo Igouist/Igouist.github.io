@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -121,82 +121,82 @@
                             <p><img src="https://i.imgur.com/TuGp6Lk.png" alt="Image"></p>
 <h2 id="事發緣由">事發緣由</h2>
 <p>在 .net Framework 4.6.2 MVC 的 ApiController 中，某個查詢資料列表的方法除了提供查詢條件的參數以外，還有提供選擇性的分頁參數。也就是像這樣子：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[HttpGet]</span>
-<span style="color:#66d9ef">public</span> IEnumerable&lt;Boo&gt; GetBoos(
-<span style="color:#a6e22e">    [FromUri]</span> SearchBooParameter parameter,
-<span style="color:#a6e22e">    [FromUri]</span> PagingParameter paging = <span style="color:#66d9ef">null</span>)
-{
-    <span style="color:#75715e">// 呼叫 Service 查資料...
-</span><span style="color:#75715e"></span>}
-</code></pre></div><p>由於需要調整該功能的預設排序，改為由大到小，又不想背負更改大量共用的 <code>PagingParameter</code> 去影響到其他使用到的地方，決定在 Controller 這裡簡單用預測值加上判斷處理一下就好</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-CSharp" data-lang="CSharp"><span style="display:flex;"><span><span style="color:#a6e22e">[HttpGet]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IEnumerable&lt;Boo&gt; GetBoos(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromUri]</span> SearchBooParameter parameter,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromUri]</span> PagingParameter paging = <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 呼叫 Service 查資料...</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>由於需要調整該功能的預設排序，改為由大到小，又不想背負更改大量共用的 <code>PagingParameter</code> 去影響到其他使用到的地方，決定在 Controller 這裡簡單用預測值加上判斷處理一下就好</p>
 <p>相信著「若使用者沒有傳遞 paging 相關的參數，應該就會是給定的預設值 <code>null</code> 吧！」的我，用了 <code>if (paging is null)</code> 進行判斷：若是 <code>null</code> 的情況就將其中用來標示排序方向的成員 <code>isDesc</code> 設定為 true，開開心心交差。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[HttpGet]</span>
-<span style="color:#66d9ef">public</span> IEnumerable&lt;Boo&gt; GetBoos(
-<span style="color:#a6e22e">    [FromUri]</span> SearchBooParameter parameter,
-<span style="color:#a6e22e">    [FromUri]</span> PagingParameter paging = <span style="color:#66d9ef">null</span>)
-{
-    <span style="color:#66d9ef">if</span> (paging <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
-    {
-        paging = <span style="color:#66d9ef">new</span> PagingParameter();
-        paging.isDesc = <span style="color:#66d9ef">true</span>; <span style="color:#75715e">// 預設由大到小
-</span><span style="color:#75715e"></span>    }
-    <span style="color:#75715e">// 呼叫 Service 查資料...
-</span><span style="color:#75715e"></span>}
-</code></pre></div><p>但實際使用之後發現：即使只有傳入查詢條件參數、未傳遞 paging 時，資料仍然由小到大顯示，且 <code>paging.isDesc</code> 竟然是 false，並未被更改到。也就是說，即使未傳遞 paging，它也並不是 null！</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-CSharp" data-lang="CSharp"><span style="display:flex;"><span><span style="color:#a6e22e">[HttpGet]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IEnumerable&lt;Boo&gt; GetBoos(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromUri]</span> SearchBooParameter parameter,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromUri]</span> PagingParameter paging = <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (paging <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        paging = <span style="color:#66d9ef">new</span> PagingParameter();
+</span></span><span style="display:flex;"><span>        paging.isDesc = <span style="color:#66d9ef">true</span>; <span style="color:#75715e">// 預設由大到小</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 呼叫 Service 查資料...</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>但實際使用之後發現：即使只有傳入查詢條件參數、未傳遞 paging 時，資料仍然由小到大顯示，且 <code>paging.isDesc</code> 竟然是 false，並未被更改到。也就是說，即使未傳遞 paging，它也並不是 null！</p>
 <p>實測之後發現：若在呼叫該 API 的時候，給定一個完全無關的參數，例如 <code>?a=1</code>，則 paging 還是會被建立一個實體出來，並無視 <code>= null</code> 這個預設值。因此就導致了非預期（＝跟我想的不一樣啊！）的行為。</p>
 <p>這邊直接先講結論：<strong>如果有傳遞 QueryString 的任何參數時，不管這些參數跟指定的類別有沒有關係，放在 <code>[FromUri]</code> 的複雜型別都會先建立出實體，再嘗試和 QueryString 的內容進行比對與設值</strong>。</p>
 <p>設定在 <code>[FromUri]</code> 的複雜型別身上的預設值，像是 <code>[FromUri] PagingParameter paging = null</code> 只有完全沒給任何 QueryString 的時候才會吃到。（不過因為預設值只能是常數的關係，基本上就是指 defualt 的 null）</p>
 <p>因此如果遇到要給定預設值的場合，還是得乖乖地針對型別中的成員做設定比較保險，例如 <code>bool isDesc { get; set; } = true</code>。另外，因為完全沒給 QueryString 的時候還是會是 null，故該有的參數檢查仍然不能漏了。</p>
 <h2 id="測試案例">測試案例</h2>
 <p><strong>.net Framework 4.7.2 Web Api - FromUri</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[RoutePrefix(&#34;api&#34;)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ValuesController</span> : ApiController
-{
-<span style="color:#a6e22e">    [HttpGet, Route(&#34;Test&#34;)]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test([FromUri] SimplyParameter parameter = <span style="color:#66d9ef">null</span>)
-    {
-        <span style="color:#66d9ef">return</span> parameter?.IsSuccess.ToString() ?? <span style="color:#e6db74">&#34;It&#39;s NULL!&#34;</span>; <span style="color:#75715e">// False
-</span><span style="color:#75715e"></span>    }
-    
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimplyParameter</span>
-    {
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> IsSuccess { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Message { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    }
-}
-</code></pre></div><p><code>/api/test</code> =&gt; It&rsquo;s NULL!</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-CSharp" data-lang="CSharp"><span style="display:flex;"><span><span style="color:#a6e22e">[RoutePrefix(&#34;api&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ValuesController</span> : ApiController
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet, Route(&#34;Test&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test([FromUri] SimplyParameter parameter = <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> parameter?.IsSuccess.ToString() ?? <span style="color:#e6db74">&#34;It&#39;s NULL!&#34;</span>; <span style="color:#75715e">// False</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimplyParameter</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> IsSuccess { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Message { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>/api/test</code> =&gt; It&rsquo;s NULL!</p>
 <p><code>/api/test?a=2</code> =&gt; False</p>
 <p>若改為必須參數，而不是選擇性參數呢：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[HttpGet, Route(&#34;Test&#34;)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test([FromUri] SimplyParameter parameter)
-{
-    <span style="color:#66d9ef">return</span> parameter?.IsSuccess.ToString() ?? <span style="color:#e6db74">&#34;It&#39;s NULL!&#34;</span>; <span style="color:#75715e">// False
-</span><span style="color:#75715e"></span>}
-</code></pre></div><p><code>/api/test</code> =&gt; It&rsquo;s NULL!</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-CSharp" data-lang="CSharp"><span style="display:flex;"><span><span style="color:#a6e22e">[HttpGet, Route(&#34;Test&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test([FromUri] SimplyParameter parameter)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> parameter?.IsSuccess.ToString() ?? <span style="color:#e6db74">&#34;It&#39;s NULL!&#34;</span>; <span style="color:#75715e">// False</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>/api/test</code> =&gt; It&rsquo;s NULL!</p>
 <p><code>/api/test?a=2</code> =&gt; False</p>
 <p>看起來最大的差異點在於<strong>有沒有給 QueryString</strong>。</p>
 <p>現在讓我們對 Model 給定預設值，並加入建構式並觀察執行順序：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[RoutePrefix(&#34;api&#34;)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ValuesController</span> : ApiController
-{
-<span style="color:#a6e22e">    [HttpGet, Route(&#34;Test&#34;)]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test([FromUri] SimplyParameter parameter = <span style="color:#66d9ef">null</span>)
-    {
-        <span style="color:#66d9ef">return</span> parameter?.IsSuccess.ToString() ?? <span style="color:#e6db74">&#34;It&#39;s NULL!&#34;</span>; <span style="color:#75715e">// False
-</span><span style="color:#75715e"></span>    }
-
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimplyParameter</span>
-    {
-        <span style="color:#66d9ef">public</span> SimplyParameter()
-        {
-            Console.WriteLine(<span style="color:#e6db74">&#34;I&#39;m Creating!&#34;</span>);
-        }
-        
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> IsSuccess { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#66d9ef">true</span>;
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Message { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;It&#39;s me!&#34;</span>;
-    }
-}
-</code></pre></div><p><code>/api/test?a=2</code> =&gt; True</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-CSharp" data-lang="CSharp"><span style="display:flex;"><span><span style="color:#a6e22e">[RoutePrefix(&#34;api&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ValuesController</span> : ApiController
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet, Route(&#34;Test&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test([FromUri] SimplyParameter parameter = <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> parameter?.IsSuccess.ToString() ?? <span style="color:#e6db74">&#34;It&#39;s NULL!&#34;</span>; <span style="color:#75715e">// False</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimplyParameter</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> SimplyParameter()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;I&#39;m Creating!&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> IsSuccess { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Message { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;It&#39;s me!&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>/api/test?a=2</code> =&gt; True</p>
 <p>並且在 &ldquo;It&rsquo;s me!&rdquo; 下中斷點，可以觀察到在進入 Test 前，的確建立了 SimplyParameter 並給予預設值</p>
 <p><code>/api/test?IsSuccess=true</code></p>
 <p>中斷點的執行順序為：</p>
@@ -211,59 +211,59 @@
 </ol>
 <p>看起來當有傳遞 QueryString 的時候，就會先建立需要的 Model 再逐一嘗試設值。</p>
 <p>接著讓我們試試看，當 <code>[FromUri]</code> 的複雜型別不只一個的時候會怎麼運作呢：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[RoutePrefix(&#34;api&#34;)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ValuesController</span> : ApiController
-{
-<span style="color:#a6e22e">    [HttpGet, Route(&#34;Test&#34;)]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test(
-<span style="color:#a6e22e">        [FromUri]</span> SimplyParameter parameter = <span style="color:#66d9ef">null</span>,
-<span style="color:#a6e22e">        [FromUri]</span> AnotherSimplyParameter parameterAnother = <span style="color:#66d9ef">null</span>)
-    {
-        <span style="color:#66d9ef">return</span> parameter?.IsSuccess.ToString() ?? <span style="color:#e6db74">&#34;It&#39;s NULL!&#34;</span>; <span style="color:#75715e">// False
-</span><span style="color:#75715e"></span>    }
-
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimplyParameter</span>
-    {
-        <span style="color:#66d9ef">public</span> SimplyParameter()
-        {
-            Console.WriteLine(<span style="color:#e6db74">&#34;I&#39;m Creating!&#34;</span>);
-        }
-
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> IsSuccess { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#66d9ef">true</span>;
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Message { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;It&#39;s me!&#34;</span>;
-    }
-
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AnotherSimplyParameter</span>
-    {
-        <span style="color:#66d9ef">public</span> AnotherSimplyParameter()
-        {
-            Console.WriteLine(<span style="color:#e6db74">&#34;I, Another me, are Creating!&#34;</span>);
-        }
-
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Idx { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#ae81ff">999</span>;
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;WOW&#34;</span>;
-    }
-}
-</code></pre></div><p><code>/api/test?a=2</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-CSharp" data-lang="CSharp"><span style="display:flex;"><span><span style="color:#a6e22e">[RoutePrefix(&#34;api&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ValuesController</span> : ApiController
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet, Route(&#34;Test&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [FromUri]</span> SimplyParameter parameter = <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [FromUri]</span> AnotherSimplyParameter parameterAnother = <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> parameter?.IsSuccess.ToString() ?? <span style="color:#e6db74">&#34;It&#39;s NULL!&#34;</span>; <span style="color:#75715e">// False</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimplyParameter</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> SimplyParameter()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;I&#39;m Creating!&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> IsSuccess { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Message { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;It&#39;s me!&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AnotherSimplyParameter</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> AnotherSimplyParameter()
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Console.WriteLine(<span style="color:#e6db74">&#34;I, Another me, are Creating!&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Idx { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#ae81ff">999</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;WOW&#34;</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>/api/test?a=2</code></p>
 <p>SimplyParameter 和 AnotherSimplyParameter 會依照 <code>Test()</code> 中傳入的順序，各自經歷一次上述的流程，故兩者都不會是 Null</p>
 <p><code>/api/test?IsSuccess=true</code></p>
 <p>即使傳入的參數只有其中一個 Model 具有符合的欄位，但由於上述的順序是「先建立，再比對」，故仍然會按上述流程分別建立兩者，仍然不會是 Null</p>
 <p><code>/api/test?parameter.IsSuccess=true</code></p>
 <p>即使已經具名指定了 SimplyParameter，但動作和 <code>IsSuccess=true</code> 仍然一樣</p>
 <p>最後，我們加入一個簡單型別試試看，也就是改為如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test(
-<span style="color:#a6e22e">    [FromUri]</span> SimplyParameter parameter = <span style="color:#66d9ef">null</span>,
-<span style="color:#a6e22e">    [FromUri]</span> AnotherSimplyParameter parameterAnother = <span style="color:#66d9ef">null</span>,
-<span style="color:#a6e22e">    [FromUri]</span> <span style="color:#66d9ef">string</span> hello = <span style="color:#e6db74">&#34;world!&#34;</span>)
-</code></pre></div><p><code>/api/test</code> =&gt; hello = &ldquo;world!&quot;;</p>
-<p><code>/api/test?a=2</code> =&gt; hello = &ldquo;world!&quot;;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-CSharp" data-lang="CSharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromUri]</span> SimplyParameter parameter = <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromUri]</span> AnotherSimplyParameter parameterAnother = <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromUri]</span> <span style="color:#66d9ef">string</span> hello = <span style="color:#e6db74">&#34;world!&#34;</span>)
+</span></span></code></pre></div><p><code>/api/test</code> =&gt; hello = &ldquo;world!&rdquo;;</p>
+<p><code>/api/test?a=2</code> =&gt; hello = &ldquo;world!&rdquo;;</p>
 <p>簡單型別的預設值在運作上非常直覺，沒有什麼太大的問題。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[HttpGet, Route(&#34;Test&#34;)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test(
-<span style="color:#a6e22e">    [FromUri]</span> <span style="color:#66d9ef">string</span> hello,
-<span style="color:#a6e22e">    [FromUri]</span> SimplyParameter parameter = <span style="color:#66d9ef">null</span>,
-<span style="color:#a6e22e">    [FromUri]</span> AnotherSimplyParameter parameterAnother = <span style="color:#66d9ef">null</span>)
-</code></pre></div><p><code>/api/test?hello=A</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-CSharp" data-lang="CSharp"><span style="display:flex;"><span><span style="color:#a6e22e">[HttpGet, Route(&#34;Test&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Test(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromUri]</span> <span style="color:#66d9ef">string</span> hello,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromUri]</span> SimplyParameter parameter = <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromUri]</span> AnotherSimplyParameter parameterAnother = <span style="color:#66d9ef">null</span>)
+</span></span></code></pre></div><p><code>/api/test?hello=A</code></p>
 <p>即使我們已經給了作為必要參數的簡單型別值，但由於同樣是從 Uri 來的，並不會在把值丟給簡單型別後就停止，兩個可選的複雜型別仍然會被建立</p>
 <h2 id="小結">小結</h2>
 <ul>
@@ -282,23 +282,23 @@
 </ul>
 <h2 id="同場加映">同場加映</h2>
 <p><strong>.net Core 3.1 Web Api - FromQuery</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#a6e22e">[ApiController]</span>
-<span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
-</span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TestController</span> : ControllerBase
-{
-<span style="color:#a6e22e">    [HttpGet]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Get([FromQuery] SimplyParameter parameter = <span style="color:#66d9ef">null</span>)
-    {
-        <span style="color:#66d9ef">return</span> parameter?.IsSuccess.ToString() ?? <span style="color:#e6db74">&#34;It&#39;s NULL!&#34;</span>; <span style="color:#75715e">// False
-</span><span style="color:#75715e"></span>    }
-}
-
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimplyParameter</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> IsSuccess { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Message { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-</code></pre></div><p><code>/test</code> =&gt; False</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-CSharp" data-lang="CSharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TestController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Get([FromQuery] SimplyParameter parameter = <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> parameter?.IsSuccess.ToString() ?? <span style="color:#e6db74">&#34;It&#39;s NULL!&#34;</span>; <span style="color:#75715e">// False</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimplyParameter</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> IsSuccess { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Message { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>/test</code> =&gt; False</p>
 <p>不愧是 Core，直接就建實體了，畢竟都說是 <code>FromQuery</code> 了嘛。既然都直接說會從 Query 來了，就沒在跟你五四三看有沒有 QueryString 的啦 XD</p>
 <h2 id="參考資料">參考資料</h2>
 <ul>

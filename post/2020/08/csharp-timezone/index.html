@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -127,59 +127,59 @@
 <blockquote>
 <p>關於文化特性，也可以參考本站的 <a href="/post/2021/10/csharp-datatime-tostring-cultureinfo">菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記</a> 呦。</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 假設現在是要從標準時區 +00:00 轉換到台灣時區，故這邊使用 UtcNow 先取標準世界協調時間
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> nowDateTime = DateTime.UtcNow;
-
-nowDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-<span style="color:#75715e">// 2020/08/30 15:56:05 +00:00
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// ==================================================
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// 傳統的 直接對時間做計算的方式…
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> addedDateTime = nowDateTime.AddHours(<span style="color:#ae81ff">8</span>);
-
-addedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-<span style="color:#75715e">// 2020/08/30 23:56:05 +00:00
-</span><span style="color:#75715e">// 可以看到儘管時間變動了，時區仍然還在 +00:00
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// ==================================================
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// 使用 TimeZoneInfo 先取得台北時區
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> timeZone = TimeZoneInfo.FindSystemTimeZoneById(<span style="color:#e6db74">&#34;Taipei Standard Time&#34;</span>);
-
-<span style="color:#75715e">// 再使用 TimeZoneInfo 來變更時間
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> convertedDateTime = TimeZoneInfo.ConvertTime(nowDateTime, timeZone);
-
-convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-<span style="color:#75715e">// 2020/08/30 23:56:05 +08:00
-</span><span style="color:#75715e">// 可以看到除了時間變更以外，時區也切換到 +08:00 了！
-</span></code></pre></div><p>上面取得台北時區的步驟，可以參照 <a href="https://docs.microsoft.com/en-us/previous-versions/windows/embedded/gg154758(v=winembedded.80)">Time Zone IDs</a> 來查詢想要的時區。這樣的時區切換方式，不僅副作用少，不會因為時區沒轉雷到後續接手的人，也省卻了擔心日光節約等等問題，這種事就交給微軟去煩惱吧！</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 假設現在是要從標準時區 +00:00 轉換到台灣時區，故這邊使用 UtcNow 先取標準世界協調時間</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> nowDateTime = DateTime.UtcNow;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nowDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 2020/08/30 15:56:05 +00:00</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ==================================================</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 傳統的 直接對時間做計算的方式…</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> addedDateTime = nowDateTime.AddHours(<span style="color:#ae81ff">8</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>addedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 2020/08/30 23:56:05 +00:00</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 可以看到儘管時間變動了，時區仍然還在 +00:00</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ==================================================</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用 TimeZoneInfo 先取得台北時區</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> timeZone = TimeZoneInfo.FindSystemTimeZoneById(<span style="color:#e6db74">&#34;Taipei Standard Time&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 再使用 TimeZoneInfo 來變更時間</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> convertedDateTime = TimeZoneInfo.ConvertTime(nowDateTime, timeZone);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 2020/08/30 23:56:05 +08:00</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 可以看到除了時間變更以外，時區也切換到 +08:00 了！</span>
+</span></span></code></pre></div><p>上面取得台北時區的步驟，可以參照 <a href="https://docs.microsoft.com/en-us/previous-versions/windows/embedded/gg154758(v=winembedded.80)">Time Zone IDs</a> 來查詢想要的時區。這樣的時區切換方式，不僅副作用少，不會因為時區沒轉雷到後續接手的人，也省卻了擔心日光節約等等問題，這種事就交給微軟去煩惱吧！</p>
 <p>另外這邊也逐步放一些時區處理相關的參考資料：</p>
 <h2 id="taiwancalendar-西元年轉民國年-br-taiwanlunisolarcalendar-國曆轉農曆">TaiwanCalendar: 西元年轉民國年 <br/> TaiwanLunisolarCalendar: 國曆轉農曆</h2>
 <p>可以參考這篇 <a href="https://kevintsengtw.blogspot.com/2014/06/c.html">基本題 - C# 西元年轉換取得民國年格式字串 - mrkt 的程式學習筆記</a>。</p>
 <p>內文示範了使用 <code>System.Globalization.TaiwanCalendar</code> 和 <code>System.Globalization.TaiwanLunisolarCalendar</code> 來進行安全轉換的作法。</p>
 <p>基本上來說就是指定文化特性中的時間格式（曆法）為農曆，至少依靠微軟爸爸，比自己加減 1911 來得安全多了囧。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> time = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2021</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">01</span>);
-
-<span style="color:#75715e">// 直接從 TaiwanCalendar 取民國年，自組字串時常用
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> taiwanCalendar = <span style="color:#66d9ef">new</span> TaiwanCalendar();
-taiwanCalendar.GetYear(time).Dump(); <span style="color:#75715e">// 110
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// 將文化特性的曆法改成民國年
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;zh-TW&#34;</span>);
-info.DateTimeFormat.Calendar = <span style="color:#66d9ef">new</span> TaiwanCalendar();
-
-<span style="color:#75715e">// 西元年轉民國年(字串)
-</span><span style="color:#75715e"></span>time.ToString(info).Dump(); <span style="color:#75715e">// 110/12/1 00:00:00
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">// 民國年(字串)轉西元年
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> timeString = <span style="color:#e6db74">&#34;110/12/1&#34;</span>;
-DateTime.Parse(timeString, info).Dump(); <span style="color:#75715e">// 2021/12/01 00:00:00
-</span></code></pre></div><h2 id="datetimeformatinfo-月週時間的格式">DateTimeFormatInfo: 月、週、時間的格式</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> time = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2021</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">01</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 直接從 TaiwanCalendar 取民國年，自組字串時常用</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> taiwanCalendar = <span style="color:#66d9ef">new</span> TaiwanCalendar();
+</span></span><span style="display:flex;"><span>taiwanCalendar.GetYear(time).Dump(); <span style="color:#75715e">// 110</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 將文化特性的曆法改成民國年</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;zh-TW&#34;</span>);
+</span></span><span style="display:flex;"><span>info.DateTimeFormat.Calendar = <span style="color:#66d9ef">new</span> TaiwanCalendar();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 西元年轉民國年(字串)</span>
+</span></span><span style="display:flex;"><span>time.ToString(info).Dump(); <span style="color:#75715e">// 110/12/1 00:00:00</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 民國年(字串)轉西元年</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> timeString = <span style="color:#e6db74">&#34;110/12/1&#34;</span>;
+</span></span><span style="display:flex;"><span>DateTime.Parse(timeString, info).Dump(); <span style="color:#75715e">// 2021/12/01 00:00:00</span>
+</span></span></code></pre></div><h2 id="datetimeformatinfo-月週時間的格式">DateTimeFormatInfo: 月、週、時間的格式</h2>
 <p>不用再傻傻地手刻陣列「星期一」、「星期二」、「星期三」…之類的了，只要用 <code>DateTimeFormatInfo.CurrentInfo</code> 的就好啦：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> MonthCh = DateTimeFormatInfo.CurrentInfo.MonthNames;   <span style="color:#75715e">// 中文月份名稱列表
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> MonthEn = DateTimeFormatInfo.InvariantInfo.MonthNames; <span style="color:#75715e">// 英文月份名稱列表
-</span></code></pre></div><p><img src="https://i.imgur.com/se7XLZy.png" alt=""></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> MonthCh = DateTimeFormatInfo.CurrentInfo.MonthNames;   <span style="color:#75715e">// 中文月份名稱列表</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> MonthEn = DateTimeFormatInfo.InvariantInfo.MonthNames; <span style="color:#75715e">// 英文月份名稱列表</span>
+</span></span></code></pre></div><p><img src="https://i.imgur.com/se7XLZy.png" alt=""></p>
 <p>除了月份以外，<code>DateTimeFormatInfo.CurrentInfo</code> 也包含了當地的其他欄位與格式。</p>
 <p>例如 <code>AbbreviatedDayNames</code> 能拿到 週一、週二、週三…；<code>DayNames</code> 則會拿到 星期一、星期二、星期三…</p>
 <p>時間格式的話，<code>FullDateTimePattern</code> 就會拿到 <code>yyyy'年'M'月'd'日' tt hh:mm:ss</code> 等等</p>

@@ -43,20 +43,20 @@
 &lt;p&gt;我們在之前的 &lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;耦合篇&lt;/a&gt; 提過，如果模組和另一個模組之間有關連，那這兩者之間就耦合。以此來看，依賴就是一種耦合的關係，那麼，依賴是健康還是不健康的耦合呢？&lt;/p&gt;
 &lt;p&gt;現在讓我們用 &lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-5-polymorphism&#34;&gt;多型篇&lt;/a&gt; 用過的「老闆徵工程師」的例子來舉例一下：現在有間小小公司，老闆請來了小明當工程師，並請他開工撰寫產品程式碼。&lt;/p&gt;
 &lt;p&gt;當「撰寫產品程式」對「工程師」直接依賴的時候，狀況可能是這樣的：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Product Work()
-{
-    Ming programmer = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Ming();
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; product = programmer.Programming();
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; product;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;過一陣子，老闆發現小明寫出來的東西似乎不太行，於是把小明趕走，另外請了小華。這時候因為「工程師」這個實作類別不一樣了，我們就必須要改一次程式碼：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Product Work()
-{
-    Hua programmer = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Hua();
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; product = programmer.Programming();
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; product;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Product Work()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Ming programmer = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Ming();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; product = programmer.Programming();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; product;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;過一陣子，老闆發現小明寫出來的東西似乎不太行，於是把小明趕走，另外請了小華。這時候因為「工程師」這個實作類別不一樣了，我們就必須要改一次程式碼：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Product Work()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Hua programmer = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Hua();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; product = programmer.Programming();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; product;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -98,12 +98,12 @@
       
       <guid>https://igouist.github.io/post/2020/11/bugs-install-dotnet-core-on-amazon-ami-requires-openssl/</guid>
       <description>&lt;p&gt;最近遇到在 Amazon Linux AMI 要安裝 .net Core 3.1 環境的時候，會一直跳出&lt;br/&gt; &lt;code&gt;Requires: openssl-libs&lt;/code&gt; 而無法安裝的問題，儘管明明已經有 openssl 了，但還是解析失敗找不到依賴，過程一直碰壁，因此在這邊紀錄一下。&lt;/p&gt;
-&lt;p&gt;過程中嘗試了安裝 openssl-libs（會找不到該套件）、下載 Dotnet 的 tar.gz ，再直接對執行檔下 Dotnet 指令起站台（雖然網站起得來，但執行者會是當下的登入身分，也就是 &amp;lsquo;&#39;@連線進來的IP-伺服器位置，而非由本機執行。後續如果有連線資料庫等檢查權限的地方就很容易出錯）&lt;/p&gt;
+&lt;p&gt;過程中嘗試了安裝 openssl-libs（會找不到該套件）、下載 Dotnet 的 tar.gz ，再直接對執行檔下 Dotnet 指令起站台（雖然網站起得來，但執行者會是當下的登入身分，也就是 &amp;lsquo;&amp;rsquo;@連線進來的IP-伺服器位置，而非由本機執行。後續如果有連線資料庫等檢查權限的地方就很容易出錯）&lt;/p&gt;
 &lt;p&gt;最後在 Dotnet Core 的 issue 翻到這篇 &lt;a href=&#34;https://github.com/dotnet/core/issues/930&#34;&gt;Cannot install .NET Core 2.0 on Amazon Linux AMI&lt;/a&gt; 才成功解決。&lt;/p&gt;
 &lt;p&gt;首先先將 openssl-libs 的 SPEC 抓下來，然後給 RPM 建置一下。這兩句可以參考一下這篇 &lt;a href=&#34;https://medium.com/linux-%E9%96%8B%E7%99%BC%E5%85%A5%E9%96%80/rpm-%E6%89%93%E5%8C%85-%E7%94%B1%E4%B8%80%E7%AB%85%E4%B8%8D%E9%80%9A%E5%88%B0%E5%8B%95%E6%89%8B%E6%BF%AB%E7%94%A8-%E4%BA%8C-df9eea70bd7b&#34;&gt;RPM 打包︰由一竅不通到動手濫用 (二)&lt;/a&gt; 的說明。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;wget https://github.com/dotnet/core/files/2186067/openssl-libs-ami.spec.txt
-rpmbuild --bb openssl-libs-ami.spec.txt
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;wget https://github.com/dotnet/core/files/2186067/openssl-libs-ami.spec.txt
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;rpmbuild --bb openssl-libs-ami.spec.txt
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -117,14 +117,14 @@ rpmbuild --bb openssl-libs-ami.spec.txt
 &lt;p&gt;事情就從上一篇 &lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle&#34;&gt;里氏替換原則&lt;/a&gt; 的鳥類物流公司開始說起。老闆痛定思痛，決定先用&lt;strong&gt;介面&lt;/strong&gt;先規定好物流士們的應徵條件，例如裝貨、卸貨、飛行、必須有帥氣的喙等等。&lt;/p&gt;
 &lt;p&gt;這道命令下來後，倉庫們的企鵝都慌了，來檢查的編譯器瘋狂跳出 Error:「您未實作 IBird 的 Fly() 方法！」這下怎麼辦呢，為了要保住飯碗，企鵝們就必須實作出飛行才行，可是企鵝真的就不會飛呀！&lt;/p&gt;
 &lt;p&gt;這下子企鵝們只剩下兩個選擇：不實作飛行，但是就不能被當成物流士，最後就會被開除；或是……空實作。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Penguin&lt;/span&gt; : IBird
-{
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Fly()
-    {
-      &lt;span style=&#34;color:#75715e&#34;&gt;// Do nothing;
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;企鵝們終於騙過了編譯器檢查員，然而當送貨的命令下來之後，企鵝們再一次卡在倉庫門口發呆，最終物流公司仍然踏上了虧損的老路，再度面臨倒閉危機…&lt;/p&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Penguin&lt;/span&gt; : IBird
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Fly()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#75715e&#34;&gt;// Do nothing;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;企鵝們終於騙過了編譯器檢查員，然而當送貨的命令下來之後，企鵝們再一次卡在倉庫門口發呆，最終物流公司仍然踏上了虧損的老路，再度面臨倒閉危機…&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -252,18 +252,18 @@ rpmbuild --bb openssl-libs-ami.spec.txt
 &lt;blockquote&gt;
 &lt;p&gt;註：此處使用的 &lt;code&gt;Dump&lt;/code&gt; 是 Linqpad 提供的輸出方法，把它當成 Print 就行了。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; student = (&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;王小明&amp;#34;&lt;/span&gt;);
-student.Item1.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 1
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;student.Item2.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 王小明
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
-student.Dump();
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以看到 Tuple 的建立相當簡單，只需要用小括號 &lt;code&gt;()&lt;/code&gt; 括選起來即可。建立後的內容就會像這樣：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; student = (&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;王小明&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;student.Item1.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;student.Item2.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 王小明&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;student.Dump();
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以看到 Tuple 的建立相當簡單，只需要用小括號 &lt;code&gt;()&lt;/code&gt; 括選起來即可。建立後的內容就會像這樣：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://i.imgur.com/H0wJglN.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;但這樣使用就和之前一樣，取出來時只能拿 Item1, Item2，放個幾天根本就不記得 Item1 裡面是啥東西了。這時我們就可以&lt;strong&gt;替成員們取名字&lt;/strong&gt;：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; ID, &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Name) student = (&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;王小明&amp;#34;&lt;/span&gt;);
-student.ID.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 1
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;student.Name.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 王小明
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如此使用的時候就和一般操作物件的習慣沒有差別，也增加了可讀性。&lt;/p&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; ID, &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Name) student = (&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;王小明&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;student.ID.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;student.Name.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 王小明&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如此使用的時候就和一般操作物件的習慣沒有差別，也增加了可讀性。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -335,33 +335,33 @@ student.ID.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 1
 &lt;blockquote&gt;
 &lt;p&gt;關於文化特性，也可以參考本站的 &lt;a href=&#34;https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo&#34;&gt;菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp;amp; CultureInfo 文化特性小筆記&lt;/a&gt; 呦。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 假設現在是要從標準時區 +00:00 轉換到台灣時區，故這邊使用 UtcNow 先取標準世界協調時間
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; nowDateTime = DateTime.UtcNow;
-
-nowDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yyyy/MM/dd H:mm:ss zzz&amp;#34;&lt;/span&gt;).Dump();
-&lt;span style=&#34;color:#75715e&#34;&gt;// 2020/08/30 15:56:05 +00:00
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
-&lt;span style=&#34;color:#75715e&#34;&gt;// ==================================================
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
-&lt;span style=&#34;color:#75715e&#34;&gt;// 傳統的 直接對時間做計算的方式…
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; addedDateTime = nowDateTime.AddHours(&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;);
-
-addedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yyyy/MM/dd H:mm:ss zzz&amp;#34;&lt;/span&gt;).Dump();
-&lt;span style=&#34;color:#75715e&#34;&gt;// 2020/08/30 23:56:05 +00:00
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 可以看到儘管時間變動了，時區仍然還在 +00:00
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
-&lt;span style=&#34;color:#75715e&#34;&gt;// ==================================================
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
-&lt;span style=&#34;color:#75715e&#34;&gt;// 使用 TimeZoneInfo 先取得台北時區
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; timeZone = TimeZoneInfo.FindSystemTimeZoneById(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Taipei Standard Time&amp;#34;&lt;/span&gt;);
-
-&lt;span style=&#34;color:#75715e&#34;&gt;// 再使用 TimeZoneInfo 來變更時間
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; convertedDateTime = TimeZoneInfo.ConvertTime(nowDateTime, timeZone);
-
-convertedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yyyy/MM/dd H:mm:ss zzz&amp;#34;&lt;/span&gt;).Dump();
-&lt;span style=&#34;color:#75715e&#34;&gt;// 2020/08/30 23:56:05 +08:00
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 可以看到除了時間變更以外，時區也切換到 +08:00 了！
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面取得台北時區的步驟，可以參照 &lt;a href=&#34;https://docs.microsoft.com/en-us/previous-versions/windows/embedded/gg154758(v=winembedded.80)&#34;&gt;Time Zone IDs&lt;/a&gt; 來查詢想要的時區。這樣的時區切換方式，不僅副作用少，不會因為時區沒轉雷到後續接手的人，也省卻了擔心日光節約等等問題，這種事就交給微軟去煩惱吧！&lt;/p&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 假設現在是要從標準時區 +00:00 轉換到台灣時區，故這邊使用 UtcNow 先取標準世界協調時間&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; nowDateTime = DateTime.UtcNow;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;nowDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yyyy/MM/dd H:mm:ss zzz&amp;#34;&lt;/span&gt;).Dump();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 2020/08/30 15:56:05 +00:00&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// ==================================================&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 傳統的 直接對時間做計算的方式…&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; addedDateTime = nowDateTime.AddHours(&lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;addedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yyyy/MM/dd H:mm:ss zzz&amp;#34;&lt;/span&gt;).Dump();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 2020/08/30 23:56:05 +00:00&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 可以看到儘管時間變動了，時區仍然還在 +00:00&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// ==================================================&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 使用 TimeZoneInfo 先取得台北時區&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; timeZone = TimeZoneInfo.FindSystemTimeZoneById(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Taipei Standard Time&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 再使用 TimeZoneInfo 來變更時間&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; convertedDateTime = TimeZoneInfo.ConvertTime(nowDateTime, timeZone);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;convertedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yyyy/MM/dd H:mm:ss zzz&amp;#34;&lt;/span&gt;).Dump();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 2020/08/30 23:56:05 +08:00&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 可以看到除了時間變更以外，時區也切換到 +08:00 了！&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;上面取得台北時區的步驟，可以參照 &lt;a href=&#34;https://docs.microsoft.com/en-us/previous-versions/windows/embedded/gg154758(v=winembedded.80)&#34;&gt;Time Zone IDs&lt;/a&gt; 來查詢想要的時區。這樣的時區切換方式，不僅副作用少，不會因為時區沒轉雷到後續接手的人，也省卻了擔心日光節約等等問題，這種事就交給微軟去煩惱吧！&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -387,26 +387,26 @@ convertedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yy
       
       <guid>https://igouist.github.io/post/2020/08/csharp-string-interpolation/</guid>
       <description>&lt;p&gt;自從 C# 有了 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/tokens/interpolated&#34;&gt;字串插值&lt;/a&gt; 這東西之後，我就一直是愛用者。畢竟比起 &lt;code&gt;string.format&lt;/code&gt; 這東西可是看起來優雅多了。例如：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; message = &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;哈囉，{userName} 您的點數將於 {cutoffTime} 到期。&amp;#34;&lt;/span&gt;;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;簡潔又明瞭，一眼就能理解字串內容。實在是挺方便，後來發現這東西還有一些延伸用法，這邊就稍加紀錄一下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; message = &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;哈囉，{userName} 您的點數將於 {cutoffTime} 到期。&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;簡潔又明瞭，一眼就能理解字串內容。實在是挺方便，後來發現這東西還有一些延伸用法，這邊就稍加紀錄一下：&lt;/p&gt;
 &lt;p&gt;字串插值中能夠做&lt;strong&gt;簡易計算&lt;/strong&gt;，例如：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; message = &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;您輸入的數值為：{a}、{b}。他們相加為：{a + b}&amp;#34;&lt;/span&gt;;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;同時，在字串插值時可以針對內容作格式化，只需要用 &lt;code&gt;:&lt;/code&gt; 來區隔，妥善運用可以省下一堆 &lt;code&gt;ToString()&lt;/code&gt; 的空間。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; message = &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;您輸入的數值為：{a}、{b}。他們相加為：{a + b}&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;同時，在字串插值時可以針對內容作格式化，只需要用 &lt;code&gt;:&lt;/code&gt; 來區隔，妥善運用可以省下一堆 &lt;code&gt;ToString()&lt;/code&gt; 的空間。&lt;/p&gt;
 &lt;p&gt;例如當我們要將&lt;strong&gt;時間&lt;/strong&gt;格式化的時候，就可以：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; date = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DateTime(&lt;span style=&#34;color:#ae81ff&#34;&gt;2020&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt;);
-&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; message = &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;您的商品已於 {date:yyyy/MM/dd} 抵達。&amp;#34;&lt;/span&gt;;
-&lt;span style=&#34;color:#75715e&#34;&gt;// 您的商品已於 2020/08/09 抵達。
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;另外，&lt;strong&gt;數值&lt;/strong&gt;當然也可以格式化，不過數值的應用比較複雜，主要是用來定下小數點、百分比等符號的位置。
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; date = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DateTime(&lt;span style=&#34;color:#ae81ff&#34;&gt;2020&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;9&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; message = &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;您的商品已於 {date:yyyy/MM/dd} 抵達。&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 您的商品已於 2020/08/09 抵達。&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;另外，&lt;strong&gt;數值&lt;/strong&gt;當然也可以格式化，不過數值的應用比較複雜，主要是用來定下小數點、百分比等符號的位置。
 可以參見 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/standard/base-types/custom-numeric-format-strings&#34;&gt;自訂數值格式字串 - Microsoft Docs&lt;/a&gt;&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; cost = &lt;span style=&#34;color:#ae81ff&#34;&gt;2100&lt;/span&gt;;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; message1 = &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;您的商品一共是 {cost:#,###} 元&amp;#34;&lt;/span&gt;;
-&lt;span style=&#34;color:#75715e&#34;&gt;// 用 # 可以替數字預留位置
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 您的商品一共是 2,100 元
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; message2 = &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;您的商品一共是 {cost:#,###.00} 元&amp;#34;&lt;/span&gt;;
-&lt;span style=&#34;color:#75715e&#34;&gt;// 也可以用 0 來預留位置，若該數字有值就會顯示該數字，沒有就會自動補 0
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 您的商品一共是 2,100.00 元
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; cost = &lt;span style=&#34;color:#ae81ff&#34;&gt;2100&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; message1 = &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;您的商品一共是 {cost:#,###} 元&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 用 # 可以替數字預留位置&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 您的商品一共是 2,100 元&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; message2 = &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;您的商品一共是 {cost:#,###.00} 元&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 也可以用 0 來預留位置，若該數字有值就會顯示該數字，沒有就會自動補 0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 您的商品一共是 2,100.00 元&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -506,22 +506,22 @@ convertedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yy
 &lt;h2 id=&#34;還是公司誠徵工程師的例子&#34;&gt;還是公司誠徵工程師的例子&lt;/h2&gt;
 &lt;p&gt;由於介面基本上就是封裝繼承多型抽象之大雜燴，所以我們把前面&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-5-polymorphism&#34;&gt;多型&lt;/a&gt;的小明小華例子稍微修改來用吧。也就是以公司徵人的方式去理解介面。&lt;/p&gt;
 &lt;p&gt;介面就像是老闆開出來的要求列表，例如說：要會寫 C#、要會寫 SQL、要會 VB…等等，於是老闆就貼出了徵人啟示，要求新來的員工必須要有 &lt;code&gt;IProgrammer&lt;/code&gt; 寫的能力：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;interface&lt;/span&gt; IProgrammer
-{
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; WriteCSharp();
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; WriteSQL();
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; WriteVB();
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;特別注意和前面多型的例子的不同處，&lt;strong&gt;介面只需要先定義好該做的事，裡面怎麼做不需要管；所以只需要宣告要求的方法，不需要撰寫方法本體&lt;/strong&gt;。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;interface&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;IProgrammer&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; WriteCSharp();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; WriteSQL();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; WriteVB();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;特別注意和前面多型的例子的不同處，&lt;strong&gt;介面只需要先定義好該做的事，裡面怎麼做不需要管；所以只需要宣告要求的方法，不需要撰寫方法本體&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;於是今天小華就又(?)來面試了，但是他其實並不會寫 C#：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Hua&lt;/span&gt; : IProgrammer
-{
-    &lt;span style=&#34;color:#75715e&#34;&gt;// Error: Hua 未實作 IProgrammer.WriteCSharp()
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; WriteSQL() { &lt;span style=&#34;color:#75715e&#34;&gt;/* Work */&lt;/span&gt; }
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; WriteVB() { &lt;span style=&#34;color:#75715e&#34;&gt;/* Work */&lt;/span&gt; }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這時候編譯器就會跳出錯誤了：很抱歉，你不符合我們 &lt;code&gt;IProgrammer&lt;/code&gt; 的規定，因為我們只喜歡訓練精英（略），請你實作完之後再來。否則你就不能掛上我們 &lt;code&gt; : IProgrammer&lt;/code&gt; 的頭銜。&lt;/p&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Hua&lt;/span&gt; : IProgrammer
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// Error: Hua 未實作 IProgrammer.WriteCSharp()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; WriteSQL() { &lt;span style=&#34;color:#75715e&#34;&gt;/* Work */&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; WriteVB() { &lt;span style=&#34;color:#75715e&#34;&gt;/* Work */&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這時候編譯器就會跳出錯誤了：很抱歉，你不符合我們 &lt;code&gt;IProgrammer&lt;/code&gt; 的規定，因為我們只喜歡訓練精英（略），請你實作完之後再來。否則你就不能掛上我們 &lt;code&gt; : IProgrammer&lt;/code&gt; 的頭銜。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -541,24 +541,24 @@ convertedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yy
 &lt;p&gt;有些類別就是這樣，它們負責定義共通的那些特性，&lt;strong&gt;然而它們本身不應該被實體化成一個物件，這種類別我們就應該把它們標記為抽象類別&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;抽象類別在 C# 裡用 &lt;code&gt;abstract&lt;/code&gt; 這個修飾詞來表示&lt;/strong&gt;，可以加在類別或方法上。例如 &lt;code&gt;abstract class Animal&lt;/code&gt; 就代表動物這個類別是個抽象類別，它不能被實例化。&lt;/p&gt;
 &lt;p&gt;而當加在方法上時，例如 &lt;code&gt;public abstract void Eat()&lt;/code&gt; 就是代表這個進食的方法無法被叫用，只能由繼承者去重新定義這個方法。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;abstract&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Animal&lt;/span&gt;
-{
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; color { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;abstract&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Eat();
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;那麼繼承者們，也就是衍生類別如何去重新定義父類別的方法呢？&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;abstract&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Animal&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; color { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;abstract&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Eat();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;那麼繼承者們，也就是衍生類別如何去重新定義父類別的方法呢？&lt;/p&gt;
 &lt;p&gt;&lt;del&gt;所謂「欲戴王冠，必 Override」&lt;/del&gt;，這時候就必須使用&lt;strong&gt;覆寫（&lt;code&gt;override&lt;/code&gt;）&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;覆寫是指對於像是前述的抽象方法時，在同名的方法前加上 &lt;code&gt;override&lt;/code&gt; 關鍵字就可以讓程式知道你要覆寫這個方法（你不覆寫的話，編譯器還會生氣）。&lt;/p&gt;
 &lt;p&gt;例如前述的 Eat，狗就可以用 &lt;code&gt;public override void Eat()&lt;/code&gt; 的方式去覆寫吃東西這個方法：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Dog&lt;/span&gt; : Animal
-{
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; color { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; } = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Black&amp;#34;&lt;/span&gt;;
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;override&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Eat()
-    {
-        &lt;span style=&#34;color:#75715e&#34;&gt;/* 嚼嚼嚼 */&lt;/span&gt;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Dog&lt;/span&gt; : Animal
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; color { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; } = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Black&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;override&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Eat()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;/* 嚼嚼嚼 */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -574,22 +574,22 @@ convertedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yy
 &lt;p&gt;在此可以先推菜鳥工程師肉豬的這篇 &lt;a href=&#34;https://matthung0807.blogspot.com/2018/02/java-overload.html&#34;&gt;Java 什麼是多載(Overload), 覆寫(Override), 多型(Polymorphism)&lt;/a&gt; 中的說明。其中可以從例子看到儘管狗跟鳥都是繼承自動物這個類別，但對於「移動」這個方法，他們實作的方式並不一樣。這就是多型的範例。&lt;/p&gt;
 &lt;p&gt;我個人更喜歡用職位的方式去理解多型。&lt;/p&gt;
 &lt;p&gt;被繼承者就像是該職位的工作，例如說：&lt;code&gt;Programmer&lt;/code&gt; 要會寫 C#、要會寫 SQL、要會 VB…等等，於是老闆就貼出了徵人啟示，要求新來的員工必須要有 &lt;code&gt;Programmer&lt;/code&gt; 寫的能力：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Programmer&lt;/span&gt;
-{
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; WriteCSharp()
-    {
-        &lt;span style=&#34;color:#75715e&#34;&gt;/* 努力地寫 C# */&lt;/span&gt;
-    }
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; WriteSQL()
-    {
-        &lt;span style=&#34;color:#75715e&#34;&gt;/* 努力地寫 SQL */&lt;/span&gt;
-    }
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; WriteVB()
-    {
-        &lt;span style=&#34;color:#75715e&#34;&gt;/* 努力地寫 VB */&lt;/span&gt;
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Programmer&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; WriteCSharp()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;/* 努力地寫 C# */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; WriteSQL()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;/* 努力地寫 SQL */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; WriteVB()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;/* 努力地寫 VB */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -659,31 +659,31 @@ convertedDateTime.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yy
       <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/naCjLay.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;我就直接說了，有用前面的程式碼區塊的人，絕對執行不了。因為我們建立哥布林和戰士這兩張卡片的時候，根本就沒有給他們數值呀！&lt;/p&gt;
 &lt;p&gt;雖然可以先呼叫出來再賦值…&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; goblin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card();
-goblin.Name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;哥布林&amp;#34;&lt;/span&gt;;
-goblin.Attack = &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;;
-goblin.Health = &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;;
-&lt;span style=&#34;color:#75715e&#34;&gt;/* ...其他賦值 */&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這實在相當占空間，也有點奇怪。畢竟如果是阿福（狗），一出生的時候應該就確定了一些特徵才對，例如品種、血型、眼睛顏色這種。並不會出生後過一陣子，才突然決定這些東西，既然如此，我們在產生物件的時候，當然也會希望在&lt;strong&gt;建立的同時就先決定好一部份內容&lt;/strong&gt;。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; goblin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;goblin.Name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;哥布林&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;goblin.Attack = &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;goblin.Health = &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/* ...其他賦值 */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這實在相當占空間，也有點奇怪。畢竟如果是阿福（狗），一出生的時候應該就確定了一些特徵才對，例如品種、血型、眼睛顏色這種。並不會出生後過一陣子，才突然決定這些東西，既然如此，我們在產生物件的時候，當然也會希望在&lt;strong&gt;建立的同時就先決定好一部份內容&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;這時候我們就可以藉由&lt;strong&gt;建構式&lt;/strong&gt;的方式，在建立物件時就進行一些我們想要的操作。&lt;/p&gt;
 &lt;h2 id=&#34;建構式&#34;&gt;建構式&lt;/h2&gt;
 &lt;p&gt;事實上，&lt;strong&gt;當我們呼叫 &lt;code&gt;new Card()&lt;/code&gt; 的時候&lt;/strong&gt;（不覺得這個 () 很有呼叫方法的感覺嗎？）&lt;strong&gt;我們就是正在調用 Card 的建構式&lt;/strong&gt;。而當我們沒有特別去定義建構式的時候，就會直接使用內建的建構式去幫我們產生物件。&lt;/p&gt;
 &lt;p&gt;現在我們替 Card 新增一個建構式：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Card&lt;/span&gt;
-{
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card (&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; attack, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; health)
-    {
-        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Name = name;
-        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Attack = attack;
-        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Health = health;
-    }
-    &lt;span style=&#34;color:#75715e&#34;&gt;/* ... 其他屬性和方法 */&lt;/span&gt;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在 C# 的時候，建構式必須和類別同名，且不需要定義回傳類型。當我們有了建構式，剛剛的例子就可以改寫成：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; goblin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card(name: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;哥布林&amp;#34;&lt;/span&gt;, attack: &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, health: &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;);
-&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; warrior = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card(name: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;戰士&amp;#34;&lt;/span&gt; , attack: &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;, health: &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;);
-warrior.Hit(goblin);
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;建構式也就是建立這個物件時執行的函式&lt;/strong&gt;，通常會用來進行初始化，也就是做一些建立物件必要的準備。例如傳遞必要屬性或是建構需要的其他物件、或是給予私有屬性初始值等等，例如說我們的卡牌一建立，就會需要知道它的名字和戰鬥力，這樣才有卡牌的感覺，而不該像一些 &lt;a href=&#34;https://zh.wikipedia.org/wiki/%E6%AD%A6%E8%97%A4%E9%81%8A%E6%88%B2&#34;&gt;壞決鬥者&lt;/a&gt; 邊打牌邊偷偷印卡。&lt;/p&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Card&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card (&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; attack, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; health)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Name = name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Attack = attack;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Health = health;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/* ... 其他屬性和方法 */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在 C# 的時候，建構式必須和類別同名，且不需要定義回傳類型。當我們有了建構式，剛剛的例子就可以改寫成：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; goblin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card(name: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;哥布林&amp;#34;&lt;/span&gt;, attack: &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, health: &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; warrior = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card(name: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;戰士&amp;#34;&lt;/span&gt; , attack: &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;, health: &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;warrior.Hit(goblin);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;建構式也就是建立這個物件時執行的函式&lt;/strong&gt;，通常會用來進行初始化，也就是做一些建立物件必要的準備。例如傳遞必要屬性或是建構需要的其他物件、或是給予私有屬性初始值等等，例如說我們的卡牌一建立，就會需要知道它的名字和戰鬥力，這樣才有卡牌的感覺，而不該像一些 &lt;a href=&#34;https://zh.wikipedia.org/wiki/%E6%AD%A6%E8%97%A4%E9%81%8A%E6%88%B2&#34;&gt;壞決鬥者&lt;/a&gt; 邊打牌邊偷偷印卡。&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -715,17 +715,17 @@ warrior.Hit(goblin);
 &lt;p&gt;我們需要選擇怎麼去描述「狗」－－也就是阿福這隻狗，被我們抽象化後的樣子，我們需要將它用程式碼的方式定義出來。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;這時候我們就會需要類別，來定義出我們觀察到同一類的物件該有哪些特徵和動作，也就是我們替物件「分門別類」後、篩選出特定資訊的抽象化結果&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;延續前面的例子，假設今天我們從阿福身上觀察到進食跟毛色兩個狗的重要資訊，我們就可以建立類別 Dog：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Dog&lt;/span&gt;
-{
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; color;
-    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Eat(IFood food) { &lt;span style=&#34;color:#75715e&#34;&gt;/* 進食與消化之類的 */&lt;/span&gt; };
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;藉由我們定義的類別，就可以從類別中實例化（＝建立）出物件。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Dog&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; color;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Eat(IFood food) { &lt;span style=&#34;color:#75715e&#34;&gt;/* 進食與消化之類的 */&lt;/span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;藉由我們定義的類別，就可以從類別中實例化（＝建立）出物件。&lt;/p&gt;
 &lt;p&gt;也就是說，現在我們終於可以用「狗」這個類別，來表達出我們需要的「阿福」了：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;Dog afu = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Dog(); &lt;span style=&#34;color:#75715e&#34;&gt;// 阿福是一隻狗
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;Console.Write(afu.Color); &lt;span style=&#34;color:#75715e&#34;&gt;// 阿福是黑色的
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;afu.Eat(food); &lt;span style=&#34;color:#75715e&#34;&gt;// 阿福會吃食物
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Dog afu = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Dog(); &lt;span style=&#34;color:#75715e&#34;&gt;// 阿福是一隻狗&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Console.Write(afu.Color); &lt;span style=&#34;color:#75715e&#34;&gt;// 阿福是黑色的&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;afu.Eat(food); &lt;span style=&#34;color:#75715e&#34;&gt;// 阿福會吃食物&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -843,15 +843,15 @@ warrior.Hit(goblin);
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。&lt;/p&gt;
 &lt;h2 id=&#34;enum--flags&#34;&gt;Enum &amp;amp; Flags&lt;/h2&gt;
 &lt;p&gt;在 C# 中已經有方便的工具可以處理數字列表，我們可以建立一個叫做 SkillEnum 的&lt;strong&gt;列舉（Enum）&lt;/strong&gt;，並且按照上面說明的，將老闆提到的每個技能各自用一個位元來表示。&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[Flags]&lt;/span&gt;
-&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;enum&lt;/span&gt; SkillEnum
-{
-    C = &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,     &lt;span style=&#34;color:#75715e&#34;&gt;// 0001
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    PHP = &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;,   &lt;span style=&#34;color:#75715e&#34;&gt;// 0010
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    SQL = &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;,   &lt;span style=&#34;color:#75715e&#34;&gt;// 0100
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    Java = &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;,  &lt;span style=&#34;color:#75715e&#34;&gt;// 1000
-&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[Flags]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;enum&lt;/span&gt; SkillEnum
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    C = &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,     &lt;span style=&#34;color:#75715e&#34;&gt;// 0001&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    PHP = &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;,   &lt;span style=&#34;color:#75715e&#34;&gt;// 0010&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    SQL = &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;,   &lt;span style=&#34;color:#75715e&#34;&gt;// 0100&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Java = &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;,  &lt;span style=&#34;color:#75715e&#34;&gt;// 1000&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
 &lt;p&gt;註：&lt;code&gt;[Flags]&lt;/code&gt;的標籤是指 C# 專門提供給位元旗標使用的 Enum，請參見 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/api/system.flagsattribute?view=netcore-3.1&#34;&gt;FlagsAttribute&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用 ToString() 也能更方便看見旗標內容&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -954,14 +954,14 @@ J S P C
       <description>&lt;p&gt;這禮拜忙了些，只好先偷懶打張安牌。這邊就記一下前陣子同學弄主題切換時用到的 CSS 變數（Variables）功能用法&lt;/p&gt;
 &lt;p&gt;原本使用 CSS 時就會有許多重複使用的部分，例如說網站的主色彩和副色彩等，然而在管理上，或是要修改的時候就會很麻煩，通常都要另外借助工具來處理。然而 CSS 其實原生就有變數可以使用，大大地增加了改動時的方便性。用法上也相當簡單。&lt;/p&gt;
 &lt;p&gt;在 CSS 宣告變數時，建議放在 &lt;code&gt;:root&lt;/code&gt; 裡，並使用 &lt;code&gt;--變數名&lt;/code&gt; 的方式宣告。例如&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-css&#34; data-lang=&#34;css&#34;&gt;:&lt;span style=&#34;color:#a6e22e&#34;&gt;root&lt;/span&gt;{
-    --color: &lt;span style=&#34;color:#ae81ff&#34;&gt;#000000&lt;/span&gt;;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;而使用的時候只要 &lt;code&gt;var(--變數名)&lt;/code&gt; 就可以囉。例如&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-css&#34; data-lang=&#34;css&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;body&lt;/span&gt; {
-  &lt;span style=&#34;color:#66d9ef&#34;&gt;background&lt;/span&gt;: &lt;span style=&#34;color:#a6e22e&#34;&gt;var&lt;/span&gt;(&lt;span style=&#34;color:#f92672&#34;&gt;--&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;color&lt;/span&gt;);
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-css&#34; data-lang=&#34;css&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;:&lt;span style=&#34;color:#a6e22e&#34;&gt;root&lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    --color: &lt;span style=&#34;color:#ae81ff&#34;&gt;#000000&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;而使用的時候只要 &lt;code&gt;var(--變數名)&lt;/code&gt; 就可以囉。例如&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-css&#34; data-lang=&#34;css&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;body&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;background&lt;/span&gt;: &lt;span style=&#34;color:#a6e22e&#34;&gt;var&lt;/span&gt;(&lt;span style=&#34;color:#f92672&#34;&gt;--&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;color&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>

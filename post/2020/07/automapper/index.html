@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -134,30 +134,30 @@
 <p><img src="https://i.imgur.com/3ADyJXv.png" alt=""></p>
 <p>確認安裝之後，就開始基本的使用吧。</p>
 <p>只需要<strong>先註冊好 Mapper 的設定內容，也就是哪些類別之間可以互相對映；再實體化 Mapper 出來使用就可以了</strong>。直接看程式碼應該就能理解：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
-{
-    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
-    
-    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt; 
-        cfg.CreateMap&lt;Card, CardViewModel&gt;()); <span style="color:#75715e">// 註冊Model間的對映
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> mapper = config.CreateMapper(); <span style="color:#75715e">// 建立 Mapper
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> result = mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data); <span style="color:#75715e">// 轉換型別
-</span><span style="color:#75715e"></span>
-    <span style="color:#66d9ef">return</span> result;
-}
-</code></pre></div><p>沒錯，只需要簡簡單單幾步， <strong>AutoMapper 會自動將指定類別間同樣名稱的屬性內容做轉換</strong> ，因此能夠省下相當多的功夫，也能夠隱藏類別本身的內容，專心在處理功能本身。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt; 
+</span></span><span style="display:flex;"><span>        cfg.CreateMap&lt;Card, CardViewModel&gt;()); <span style="color:#75715e">// 註冊Model間的對映</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> mapper = config.CreateMapper(); <span style="color:#75715e">// 建立 Mapper</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> result = mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data); <span style="color:#75715e">// 轉換型別</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>沒錯，只需要簡簡單單幾步， <strong>AutoMapper 會自動將指定類別間同樣名稱的屬性內容做轉換</strong> ，因此能夠省下相當多的功夫，也能夠隱藏類別本身的內容，專心在處理功能本身。</p>
 <blockquote>
 <p>註：網路上挺多 AutoMapper 的文章會直接使用 <code>Mapper.CreateMap()</code> 這類靜態方法，然而這些方法已經在 AutoMapper 5 的時候被廢除，改成現在由 <code>MapperConfiguration</code> 產生 Mapper 的方法。</p>
 <p>然而整體的使用方式仍然大同小異，這些文章仍能稍微調整並使用，惟使用過程中需自己注意語法的差異和多加測試。</p>
 </blockquote>
 <h3 id="客製化轉換">客製化轉換</h3>
 <p>但當然實際上我們並不一定每個欄位的名稱都是一模一樣的，總是會有遇到同個資料在不同層的 Model 裡名稱不一樣的時候，又或者是某個欄位是由兩三個欄位組成的時候。對於這種需要客製化的轉換，這時候我們就可以在註冊對映時對欄位內容的對映方式做指定：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
-    cfg.CreateMap&lt;Card, CardViewModel&gt;()
-        .ForMember(x =&gt; x.Id, y =&gt; y.MapFrom(o =&gt; o.CardId))
-        .ForMember(x =&gt; x.Name, y =&gt; y.MapFrom(o =&gt; <span style="color:#e6db74">$&#34;{o.Id}: {o.Name}&#34;</span>))
-    ); <span style="color:#75715e">// 註冊Model間的對映 建立設定檔
-</span></code></pre></div><p>可以看到 <strong>我們能用 <code>ForMember</code> 去對類別成員做操作，並傳入目標的類別成員，以及該成員對應的操作，像這邊就使用 <code>MapFrom</code> 來指定目標類別成員的轉換來源</strong>，這樣就可以達到轉換時的客製化了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
+</span></span><span style="display:flex;"><span>    cfg.CreateMap&lt;Card, CardViewModel&gt;()
+</span></span><span style="display:flex;"><span>        .ForMember(x =&gt; x.Id, y =&gt; y.MapFrom(o =&gt; o.CardId))
+</span></span><span style="display:flex;"><span>        .ForMember(x =&gt; x.Name, y =&gt; y.MapFrom(o =&gt; <span style="color:#e6db74">$&#34;{o.Id}: {o.Name}&#34;</span>))
+</span></span><span style="display:flex;"><span>    ); <span style="color:#75715e">// 註冊Model間的對映 建立設定檔</span>
+</span></span></code></pre></div><p>可以看到 <strong>我們能用 <code>ForMember</code> 去對類別成員做操作，並傳入目標的類別成員，以及該成員對應的操作，像這邊就使用 <code>MapFrom</code> 來指定目標類別成員的轉換來源</strong>，這樣就可以達到轉換時的客製化了。</p>
 <blockquote>
 <p>註：對於欄位之間有使用 <code>ForMember</code> 來處理過內容再轉換的型別，建議在轉換型別時，也就是實際 mapper.Map() 的時候，稍做註解提醒一下。</p>
 <p>尤其是會將 Mapper 的 Config 集中整理的架構裡更應該要對額外的操作做揭露，這樣對彼此都好。真的。</p>
@@ -170,12 +170,12 @@
 </blockquote>
 <h3 id="忽略指定的欄位">忽略指定的欄位</h3>
 <p>除了會有欄位名稱和來源的不同以外，最常遇到的應該就是兩個類別之間大多數欄位雖然對映，但某幾個欄位是沒有對映的。例如傳送給前端使用時一併送出其他來源的資料，但資料由資料表取出時並沒有這個欄位，必須轉換以後再呼叫別的方法去補上資料。<strong>如果直接使用 Map 來進行轉換，就會發生找不到對映欄位的錯誤。這時候就可以使用 <code>Ignore</code> 來忽略掉指定的欄位</strong>。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
-    cfg.CreateMap&lt;Card, CardViewModel&gt;()
-       .ForMember(x =&gt; x.ImgUri, y =&gt; y.Ignore())
-    );
-}
-</code></pre></div><p>如上述程式碼，可能卡片的圖像位置必須由別的方式取得，這種情況我們在 <code>ForMember</code> 的時候就可以將其指定為 <code>Ignore</code> 讓 AutoMapper 不要去嘗試轉換它。除了 <code>Ignore</code> 以外，AutoMapper 還有配備像是 <code>IgnoreAllPropertiesWithAnInaccessibleSetter</code> 這種光方法名稱長度就有點強的大殺器，也還有像是 <code>AllowNull</code> 等更多對欄位操作的方法，這部份請各位在使用時按照需求自行摸索。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
+</span></span><span style="display:flex;"><span>    cfg.CreateMap&lt;Card, CardViewModel&gt;()
+</span></span><span style="display:flex;"><span>       .ForMember(x =&gt; x.ImgUri, y =&gt; y.Ignore())
+</span></span><span style="display:flex;"><span>    );
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>如上述程式碼，可能卡片的圖像位置必須由別的方式取得，這種情況我們在 <code>ForMember</code> 的時候就可以將其指定為 <code>Ignore</code> 讓 AutoMapper 不要去嘗試轉換它。除了 <code>Ignore</code> 以外，AutoMapper 還有配備像是 <code>IgnoreAllPropertiesWithAnInaccessibleSetter</code> 這種光方法名稱長度就有點強的大殺器，也還有像是 <code>AllowNull</code> 等更多對欄位操作的方法，這部份請各位在使用時按照需求自行摸索。</p>
 <blockquote>
 <p>註(1)：上述舉的例子中有需要從多個來源轉換為一個類別的場合，可以參照 <a href="https://kevintsengtw.blogspot.com/2014/03/automapper.html">AutoMapper 兩個物件對映到一個類別 - mrkt 的程式學習筆記</a></p>
 </blockquote>
@@ -186,57 +186,57 @@
 <p>註(3)：面對一些比較複雜的轉換時，也可以考慮使用 <a href="/post/2021/12/automapper-convert-using/">ConvertUsing</a></p>
 </blockquote>
 <p>最後還要補充的一個方法是 <code>ReverseMap</code> ，它能夠反轉對映，建立一個反方向的對映表。當你的類別之間可能需要往回轉型，又或是想要忽略來源類別的欄位時，<code>ReverseMap</code> 就會顯得相當有用。通常為了避免轉來轉去轉出意外，建議註冊時還是補上一個 <code>ReverseMap</code> 為佳。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
-    cfg.CreateMap&lt;Card, CardViewModel&gt;()
-       .ForMember(x =&gt; x.Id, y =&gt; y.MapFrom(o =&gt; o.CardId))
-       .ForMember(x =&gt; x.ImgUri, y =&gt; y.Ignore())
-       .ReverseMap() <span style="color:#75715e">// 反轉
-</span><span style="color:#75715e"></span>    );
-</code></pre></div><p>到目前為止，程式碼可能會變成如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
-{
-    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
-    
-    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
-        cfg.CreateMap&lt;Card, CardViewModel&gt;()
-           .ForMember(x =&gt; x.Id, y =&gt; y.MapFrom(o =&gt; o.CardId))
-           .ForMember(x =&gt; x.Name, y =&gt; y.MapFrom(o =&gt; <span style="color:#e6db74">$&#34;{o.Id}: {o.Name}&#34;</span>))
-           .ForMember(x =&gt; x.ImgUri, y =&gt; y.Ignore())
-           .ReverseMap());
-
-    <span style="color:#66d9ef">var</span> mapper = config.CreateMapper(); <span style="color:#75715e">// 建立 Mapper
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> result = mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data); <span style="color:#75715e">// 轉換型別
-</span><span style="color:#75715e"></span>
-    <span style="color:#66d9ef">return</span> result;
-}
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
+</span></span><span style="display:flex;"><span>    cfg.CreateMap&lt;Card, CardViewModel&gt;()
+</span></span><span style="display:flex;"><span>       .ForMember(x =&gt; x.Id, y =&gt; y.MapFrom(o =&gt; o.CardId))
+</span></span><span style="display:flex;"><span>       .ForMember(x =&gt; x.ImgUri, y =&gt; y.Ignore())
+</span></span><span style="display:flex;"><span>       .ReverseMap() <span style="color:#75715e">// 反轉</span>
+</span></span><span style="display:flex;"><span>    );
+</span></span></code></pre></div><p>到目前為止，程式碼可能會變成如下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
+</span></span><span style="display:flex;"><span>        cfg.CreateMap&lt;Card, CardViewModel&gt;()
+</span></span><span style="display:flex;"><span>           .ForMember(x =&gt; x.Id, y =&gt; y.MapFrom(o =&gt; o.CardId))
+</span></span><span style="display:flex;"><span>           .ForMember(x =&gt; x.Name, y =&gt; y.MapFrom(o =&gt; <span style="color:#e6db74">$&#34;{o.Id}: {o.Name}&#34;</span>))
+</span></span><span style="display:flex;"><span>           .ForMember(x =&gt; x.ImgUri, y =&gt; y.Ignore())
+</span></span><span style="display:flex;"><span>           .ReverseMap());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> mapper = config.CreateMapper(); <span style="color:#75715e">// 建立 Mapper</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> result = mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data); <span style="color:#75715e">// 轉換型別</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
 <p>(2021/6/9) 補充：</p>
 <p>在我們前面提到的欄位轉換時，要特別注意兩個欄位的型別是否能夠對應上。由於 AutoMapper 會貼心地幫我們進行轉換，但有些時候可能會產生問題，讓我們看看下面這個例子：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Boo</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-
-<span style="color:#66d9ef">public</span> Foo Sut()
-{
-    <span style="color:#66d9ef">var</span> boo = <span style="color:#66d9ef">new</span> Boo
-    {
-        Val = <span style="color:#ae81ff">2.65</span>
-    };
-
-    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
-        cfg.CreateMap&lt;Boo, Foo&gt;());
-    <span style="color:#66d9ef">var</span> mapper = config.CreateMapper();
-    
-    <span style="color:#66d9ef">var</span> foo = mapper.Map&lt;Foo&gt;(boo);
-    <span style="color:#66d9ef">return</span> foo; <span style="color:#75715e">// 3
-</span><span style="color:#75715e"></span>}
-</code></pre></div><p>可以看到上面這個例子中，我們可以把 <code>double</code> 的欄位直接 Mapping 到 <code>int</code> 的欄位上，因為 AutoMapper 的貼心，所以不會出錯，但過程中還是可能發生喪失精度的問題。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Boo</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Foo Sut()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> boo = <span style="color:#66d9ef">new</span> Boo
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Val = <span style="color:#ae81ff">2.65</span>
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
+</span></span><span style="display:flex;"><span>        cfg.CreateMap&lt;Boo, Foo&gt;());
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> mapper = config.CreateMapper();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> foo = mapper.Map&lt;Foo&gt;(boo);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> foo; <span style="color:#75715e">// 3</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>可以看到上面這個例子中，我們可以把 <code>double</code> 的欄位直接 Mapping 到 <code>int</code> 的欄位上，因為 AutoMapper 的貼心，所以不會出錯，但過程中還是可能發生喪失精度的問題。</p>
 <p>像是例子中的 2.65 就直接變成了 3，如果符合我們的需求（例如本來就打算轉型）倒是沒關係，但如果是因為不小心轉到的話，在找問題上可能就會比較麻煩。</p>
 <p>因此在轉換的時候，還請特別留意一下轉換雙方的型別，測試一下轉換結果是不是自己要的結果會比較好呦。</p>
 </blockquote>
@@ -245,117 +245,117 @@
 <p>的確是這樣沒錯，AutoMapper 要達到更簡潔，還需要再做一些整理。例如使用 Profile 將對映關係集中起來，以及把 Mapper 的建構抽取出來。可能是在建構式建立共用的 Mapper ，或是以依賴注入 (Dependency Injection) 的方式來注入 Mapper 等等。以下就逐步進行介紹。</p>
 <h3 id="profile">Profile</h3>
 <p>首先我們先建立一個用來放對映關係的 Profile。我個人習慣會另開一個 Mappings 資料夾，並按照轉換所在的分層 + Mappings 來命名。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ServiceMappings</span> : Profile
-{
-    <span style="color:#66d9ef">public</span> ServiceMappings()
-    {
-        CreateMap&lt;Card, CardViewModel&gt;()
-            .ForMember(x =&gt; x.Id, y =&gt; y.MapFrom(o =&gt; o.CardId))
-            .ForMember(x =&gt; x.Name, y =&gt; y.MapFrom(o =&gt; <span style="color:#e6db74">$&#34;{o.Id}: {o.Name}&#34;</span>))
-            .ForMember(x =&gt; x.ImgUri, y =&gt; y.AllowNull())
-            .ReverseMap(); 
-
-        <span style="color:#75715e">// ...其他的對映內容 (使用 CreateMap&lt;&gt; 建立下一組)
-</span><span style="color:#75715e"></span>    }
-}
-</code></pre></div><p>從上面可以看到，我們<strong>繼承 AutoMapper 提供的 Profile 類，接著在建構式裡面將需要的轉換關係組都建立起來</strong>。接著當我們建立 Mapper 時，就可以直接用 <code>AddProfile</code> 和建立好的 Profile 來直接讀入對映關係：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
-{
-    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
-    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt; cfg.AddProfile&lt;ServiceMappings&gt;());
-    <span style="color:#66d9ef">var</span> mapper = config.CreateMapper(); <span style="color:#75715e">// 用設定檔建立 Mapper
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> result = mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data); <span style="color:#75715e">// 轉換型別
-</span><span style="color:#75715e"></span>
-    <span style="color:#66d9ef">return</span> result;
-}
-</code></pre></div><p>當然，<strong>在 <code>MapperConfiguration</code> 的時候是可以對 cfg 去做多次 <code>AddProfile</code> 的</strong>，既然可以載入多組對映關係，就代表可以按照實務上的運用去將對映關係做分類和整理。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ServiceMappings</span> : Profile
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ServiceMappings()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        CreateMap&lt;Card, CardViewModel&gt;()
+</span></span><span style="display:flex;"><span>            .ForMember(x =&gt; x.Id, y =&gt; y.MapFrom(o =&gt; o.CardId))
+</span></span><span style="display:flex;"><span>            .ForMember(x =&gt; x.Name, y =&gt; y.MapFrom(o =&gt; <span style="color:#e6db74">$&#34;{o.Id}: {o.Name}&#34;</span>))
+</span></span><span style="display:flex;"><span>            .ForMember(x =&gt; x.ImgUri, y =&gt; y.AllowNull())
+</span></span><span style="display:flex;"><span>            .ReverseMap(); 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// ...其他的對映內容 (使用 CreateMap&lt;&gt; 建立下一組)</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>從上面可以看到，我們<strong>繼承 AutoMapper 提供的 Profile 類，接著在建構式裡面將需要的轉換關係組都建立起來</strong>。接著當我們建立 Mapper 時，就可以直接用 <code>AddProfile</code> 和建立好的 Profile 來直接讀入對映關係：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt; cfg.AddProfile&lt;ServiceMappings&gt;());
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> mapper = config.CreateMapper(); <span style="color:#75715e">// 用設定檔建立 Mapper</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> result = mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data); <span style="color:#75715e">// 轉換型別</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>當然，<strong>在 <code>MapperConfiguration</code> 的時候是可以對 cfg 去做多次 <code>AddProfile</code> 的</strong>，既然可以載入多組對映關係，就代表可以按照實務上的運用去將對映關係做分類和整理。</p>
 <p>這邊還是要再度提醒一下，將 <code>CreateMap</code> 都整理到 Profile 之後，若是有些類別之間的轉換有對欄位做額外的處理，例如 DateTime 去除時間只留下年月日，又或是某幾個欄位銜接成一個欄位等等，<strong>在實際進行類別轉換的時候需要註記一下，請後續的維護人員或團隊夥伴記得先確認過 Profile，避免造成一些隱藏重要資訊挖洞給人跳的問題</strong>。</p>
 <h3 id="整理到建構式">整理到建構式</h3>
 <p>接著由於一個處理資料或商業邏輯的部分通常會有許多方法都用到 Mapper，因此將建立 Mapper 的過程取出來避免重複絕對是必要的。故整理的第一步就是將 Mapper 的建立拆分出來，不再等每次用到的時候才建，而是先建立好一個 Mapper，需要的時候再來使用它。</p>
 <p>這邊就先嘗試將其挪到私有變數和建構式處理：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> IMapper <span style="color:#ae81ff">_</span>mapper;
-
-<span style="color:#66d9ef">public</span> MapSimpleService() <span style="color:#75715e">// 建構式
-</span><span style="color:#75715e"></span>{
-    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt; 
-        cfg.AddProfile&lt;ServiceMappings&gt;());
-
-    <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper = config.CreateMapper();
-}
-</code></pre></div><p>那麼我們實際上的方法就會變成：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
-{
-    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
-    <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data);
-    <span style="color:#66d9ef">return</span> result;
-}
-</code></pre></div><h3 id="走向注入">走向注入</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> IMapper _mapper;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> MapSimpleService() <span style="color:#75715e">// 建構式</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt; 
+</span></span><span style="display:flex;"><span>        cfg.AddProfile&lt;ServiceMappings&gt;());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>._mapper = config.CreateMapper();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>那麼我們實際上的方法就會變成：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="走向注入">走向注入</h3>
 <p>由於本篇篇幅無法說明好依賴注入（DI）的概念，相關的部份就留待在<a href="/post/2021/11/newbie-6-dependency-injection">之後的文章</a>中說明，這邊就以 .net Core 為示範來記錄一下步驟，提供給已經會 DI 的朋友參考。</p>
 <p>在開始之前，我們會需要再前往 NuGet 安裝 AutoMapper DI 用的套件：
 <img src="https://i.imgur.com/hae1zfj.png" alt=""></p>
 <p>接著在 <code>Startup.cs</code> 裡的 <code>ConfigureServices</code> 加上 <code>services.AddAutoMapper(typeof(Startup))</code> 來註冊我們的 Mapper：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
-{
-    services.AddControllers(); 
-
-    <span style="color:#75715e">// Demo 用的 Service
-</span><span style="color:#75715e"></span>    services.AddScoped&lt;IMapSimpleService, MapSimpleService&gt;();
-
-    <span style="color:#75715e">// 註冊 Mapper
-</span><span style="color:#75715e"></span>    services.AddAutoMapper(<span style="color:#66d9ef">typeof</span>(Startup)); 
-}
-</code></pre></div><p>可能有些人會有點疑惑：前面還需要 <code>MapperConfiguration</code> 怎麼這次不用了呢？那是因為 <code>AddAutoMapper</code> 的時候就會用反射去取得同組件中的 <code>Profile</code> 來載入，所以這部分就可以不用擔心，只要專心在使用上就好。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    services.AddControllers(); 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Demo 用的 Service</span>
+</span></span><span style="display:flex;"><span>    services.AddScoped&lt;IMapSimpleService, MapSimpleService&gt;();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 註冊 Mapper</span>
+</span></span><span style="display:flex;"><span>    services.AddAutoMapper(<span style="color:#66d9ef">typeof</span>(Startup)); 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>可能有些人會有點疑惑：前面還需要 <code>MapperConfiguration</code> 怎麼這次不用了呢？那是因為 <code>AddAutoMapper</code> 的時候就會用反射去取得同組件中的 <code>Profile</code> 來載入，所以這部分就可以不用擔心，只要專心在使用上就好。</p>
 <blockquote>
 <p>(2021/4/23) 補充：</p>
 <p>感謝同事們的討論，這邊也補充給大家參考一下</p>
 <p>當我們直接使用 <code>services.AddAutoMapper(typeof(Startup));</code> 註冊的時候，AutoMapper 會去抓我們 <code>typeof</code> 的型別，並對該型別所在的 Assembly 進行反射找出所有的 <code>Profile</code>。</p>
 <p>但如果你有用到多層的架構、或是不同的組件內都有 <code>Profile</code> 需要註冊，又或者只是想要逐個 <code>Profile</code> 進行註冊，方便進行控管的話，可以考慮使用 <strong><code>AddProfile</code></strong> 或 <strong><code>AddProfiles</code></strong> 的方式來進行註冊，例如：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddAutoMapper(config =&gt;
-{
-    config.AddProfile&lt;ControllerProfile&gt;();
-    config.AddProfile&lt;ServiceProfile&gt;();
-});
-</code></pre></div><p>這樣的可讀性更好，也能讓維護的人迅速掌握當前的 Profile，有需要的朋友可以嘗試看看。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddAutoMapper(config =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    config.AddProfile&lt;ControllerProfile&gt;();
+</span></span><span style="display:flex;"><span>    config.AddProfile&lt;ServiceProfile&gt;();
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>這樣的可讀性更好，也能讓維護的人迅速掌握當前的 Profile，有需要的朋友可以嘗試看看。</p>
 </blockquote>
 <blockquote>
 <p>(2021/8/27) 補充：</p>
 <p>感謝 <a href="https://raychiutw.github.io/">Ray</a> 大大提供的方法，這邊也補充給大家參考一下</p>
 <p>我們前面有提到 <code>AddAutoMapper</code> 會對該型別所在的 Assembly 進行反射找出所有的 <code>Profile</code>，那麼我們也可以轉換一下思路：只要把全部的組件都丟到 <code>AddAutoMapper</code> 裡就好了！這種時候我們就可以利用反射來達到我們的目的：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-</code></pre></div><p>相較於 <code>AddProfile</code> 這種逐一新增 <code>Profile</code> 的作法，利用反射會讓註冊顯得更乾淨，並且也更不容易有所遺漏。各位可以按照開發的場景選擇一下註冊的方式，有需要的朋友也可以都嘗試看看。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+</span></span></code></pre></div><p>相較於 <code>AddProfile</code> 這種逐一新增 <code>Profile</code> 的作法，利用反射會讓註冊顯得更乾淨，並且也更不容易有所遺漏。各位可以按照開發的場景選擇一下註冊的方式，有需要的朋友也可以都嘗試看看。</p>
 </blockquote>
 <p>註冊好之後，我們就能將剛剛的示範部分更改為使用注入的方式來取得 Mapper：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> IMapper <span style="color:#ae81ff">_</span>mapper;
-
-<span style="color:#66d9ef">public</span> MapSimpleService(IMapper mapper) <span style="color:#75715e">// 建構式
-</span><span style="color:#75715e"></span>{
-    <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper = mapper;
-}
-</code></pre></div><p>執行之後就能確認確實有轉換到值囉！最後再來對照一下商業邏輯的部份：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> IMapper _mapper;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> MapSimpleService(IMapper mapper) <span style="color:#75715e">// 建構式</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>._mapper = mapper;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>執行之後就能確認確實有轉換到值囉！最後再來對照一下商業邏輯的部份：</p>
 <p>－－瘦身前－－</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
-{
-    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
-    <span style="color:#66d9ef">var</span> result = data.Select(x =&gt;
-        <span style="color:#66d9ef">new</span> CardViewModel
-        {
-            Id = x.Id,
-            Name = x.Name,
-            Cost = x.Cost,
-            Attack = x.Attack,
-            Health = x.Health,
-            Note = x.Note <span style="color:#75715e">// ...etc
-</span><span style="color:#75715e"></span>        });
-    <span style="color:#66d9ef">return</span> result;
-}
-</code></pre></div><p>－－瘦身後－－</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
-{
-    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
-    <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data);
-    <span style="color:#66d9ef">return</span> result;
-}
-</code></pre></div><h2 id="結語">結語</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> result = data.Select(x =&gt;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> CardViewModel
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Id = x.Id,
+</span></span><span style="display:flex;"><span>            Name = x.Name,
+</span></span><span style="display:flex;"><span>            Cost = x.Cost,
+</span></span><span style="display:flex;"><span>            Attack = x.Attack,
+</span></span><span style="display:flex;"><span>            Health = x.Health,
+</span></span><span style="display:flex;"><span>            Note = x.Note <span style="color:#75715e">// ...etc</span>
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>－－瘦身後－－</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetCard()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.GetCardFromRepositoryMock();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._mapper.Map&lt;IEnumerable&lt;CardViewModel&gt;&gt;(data);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="結語">結語</h2>
 <p>當我們把類別轉換的區段利用 AutoMapper 擷取出來，就能<strong>讓原本的程式碼更著重在該方法本身的邏輯和功能</strong>，而不會被冗長的轉換過程洗版，使用 Mapper 的方法只要知道這兩個類別能夠互相轉換即可。除了看起來更舒服、更能將焦點放在方法本身以外，也能夠讓維護時的修改更加直覺，若是轉換的過程需要修改，就去變更 Profile，不需要去變動實現商業邏輯的方法本身，這樣就能朝單一職責的目標更前進一點。</p>
 <p>到這邊算是把 AutoMapper 基本的用法介紹過一遍了，當然還有很多進階的用法和需要注意的部分並沒有說明完全，但相信這樣的紀錄已經能夠幫助我在將來需要的時候回想起怎麼使用，和解決大部分需要做類別轉換的場景了。剩餘的延伸閱讀將會補充在參考資料裡，那麼下週見～</p>
 <h2 id="參考資料及延伸閱讀">參考資料及延伸閱讀</h2>

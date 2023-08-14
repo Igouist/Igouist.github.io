@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -123,81 +123,81 @@
                             <p><img src="https://i.imgur.com/naCjLay.png" alt=""></p>
 <p>我就直接說了，有用前面的程式碼區塊的人，絕對執行不了。因為我們建立哥布林和戰士這兩張卡片的時候，根本就沒有給他們數值呀！</p>
 <p>雖然可以先呼叫出來再賦值…</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card();
-goblin.Name = <span style="color:#e6db74">&#34;哥布林&#34;</span>;
-goblin.Attack = <span style="color:#ae81ff">3</span>;
-goblin.Health = <span style="color:#ae81ff">2</span>;
-<span style="color:#75715e">/* ...其他賦值 */</span>
-</code></pre></div><p>這實在相當占空間，也有點奇怪。畢竟如果是阿福（狗），一出生的時候應該就確定了一些特徵才對，例如品種、血型、眼睛顏色這種。並不會出生後過一陣子，才突然決定這些東西，既然如此，我們在產生物件的時候，當然也會希望在<strong>建立的同時就先決定好一部份內容</strong>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card();
+</span></span><span style="display:flex;"><span>goblin.Name = <span style="color:#e6db74">&#34;哥布林&#34;</span>;
+</span></span><span style="display:flex;"><span>goblin.Attack = <span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span>goblin.Health = <span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/* ...其他賦值 */</span>
+</span></span></code></pre></div><p>這實在相當占空間，也有點奇怪。畢竟如果是阿福（狗），一出生的時候應該就確定了一些特徵才對，例如品種、血型、眼睛顏色這種。並不會出生後過一陣子，才突然決定這些東西，既然如此，我們在產生物件的時候，當然也會希望在<strong>建立的同時就先決定好一部份內容</strong>。</p>
 <p>這時候我們就可以藉由<strong>建構式</strong>的方式，在建立物件時就進行一些我們想要的操作。</p>
 <h2 id="建構式">建構式</h2>
 <p>事實上，<strong>當我們呼叫 <code>new Card()</code> 的時候</strong>（不覺得這個 () 很有呼叫方法的感覺嗎？）<strong>我們就是正在調用 Card 的建構式</strong>。而當我們沒有特別去定義建構式的時候，就會直接使用內建的建構式去幫我們產生物件。</p>
 <p>現在我們替 Card 新增一個建構式：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
-{
-    <span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">int</span> attack, <span style="color:#66d9ef">int</span> health)
-    {
-        <span style="color:#66d9ef">this</span>.Name = name;
-        <span style="color:#66d9ef">this</span>.Attack = attack;
-        <span style="color:#66d9ef">this</span>.Health = health;
-    }
-    <span style="color:#75715e">/* ... 其他屬性和方法 */</span>
-}
-</code></pre></div><p>在 C# 的時候，建構式必須和類別同名，且不需要定義回傳類型。當我們有了建構式，剛剛的例子就可以改寫成：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;哥布林&#34;</span>, attack: <span style="color:#ae81ff">3</span>, health: <span style="color:#ae81ff">2</span>);
-<span style="color:#66d9ef">var</span> warrior = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;戰士&#34;</span> , attack: <span style="color:#ae81ff">4</span>, health: <span style="color:#ae81ff">3</span>);
-warrior.Hit(goblin);
-</code></pre></div><p><strong>建構式也就是建立這個物件時執行的函式</strong>，通常會用來進行初始化，也就是做一些建立物件必要的準備。例如傳遞必要屬性或是建構需要的其他物件、或是給予私有屬性初始值等等，例如說我們的卡牌一建立，就會需要知道它的名字和戰鬥力，這樣才有卡牌的感覺，而不該像一些 <a href="https://zh.wikipedia.org/wiki/%E6%AD%A6%E8%97%A4%E9%81%8A%E6%88%B2">壞決鬥者</a> 邊打牌邊偷偷印卡。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">int</span> attack, <span style="color:#66d9ef">int</span> health)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Name = name;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Attack = attack;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Health = health;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/* ... 其他屬性和方法 */</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>在 C# 的時候，建構式必須和類別同名，且不需要定義回傳類型。當我們有了建構式，剛剛的例子就可以改寫成：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;哥布林&#34;</span>, attack: <span style="color:#ae81ff">3</span>, health: <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> warrior = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;戰士&#34;</span> , attack: <span style="color:#ae81ff">4</span>, health: <span style="color:#ae81ff">3</span>);
+</span></span><span style="display:flex;"><span>warrior.Hit(goblin);
+</span></span></code></pre></div><p><strong>建構式也就是建立這個物件時執行的函式</strong>，通常會用來進行初始化，也就是做一些建立物件必要的準備。例如傳遞必要屬性或是建構需要的其他物件、或是給予私有屬性初始值等等，例如說我們的卡牌一建立，就會需要知道它的名字和戰鬥力，這樣才有卡牌的感覺，而不該像一些 <a href="https://zh.wikipedia.org/wiki/%E6%AD%A6%E8%97%A4%E9%81%8A%E6%88%B2">壞決鬥者</a> 邊打牌邊偷偷印卡。</p>
 <blockquote>
 <p>註：當然有建立時執行的，也就會有消滅時執行的。請參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/destructors">解構式</a>，由於較少用到，此處先按下不表。</p>
 </blockquote>
 <h2 id="多載">多載</h2>
 <p>當然，有了建構式就會有更多問題。現在我們只有一個方法可以建立卡牌了，這無疑是相當不彈性的，例如說我希望預設的攻擊力和血量就是四呢？實際上我們經常會遇到需要用不同素材去建立一個物件的場合，這時候就必須得提到另一個要點：多載了。</p>
 <p><strong>多載指的就是可以有很多個同樣名字的方法，各自去接不同的參數</strong>。例如說我們的 Card 建構式就可以利用多載來改造一下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
-{
-    <span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">int</span> attack, <span style="color:#66d9ef">int</span> health)
-    {
-        <span style="color:#66d9ef">this</span>.Name = name;
-        <span style="color:#66d9ef">this</span>.Attack = attack;
-        <span style="color:#66d9ef">this</span>.Health = health;
-    }
-
-    <span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name)
-    {
-        <span style="color:#66d9ef">this</span>.Name = name;
-        <span style="color:#66d9ef">this</span>.Attack = <span style="color:#66d9ef">this</span>.Level;
-        <span style="color:#66d9ef">this</span>.Health = <span style="color:#66d9ef">this</span>.Level;
-    }
-
-    <span style="color:#66d9ef">public</span> Card ()
-    {
-        <span style="color:#66d9ef">this</span>.Name = <span style="color:#e6db74">&#34;Noname&#34;</span>;
-        <span style="color:#66d9ef">this</span>.Attack = <span style="color:#66d9ef">this</span>.Level;
-        <span style="color:#66d9ef">this</span>.Health = <span style="color:#66d9ef">this</span>.Level;
-    }
-}
-</code></pre></div><p>如此一來，我們在建立卡片的時候就能夠有更多選擇了，現在我們可以根據狀況給予需要的參數，剩下的就交給建構式去處理就好。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">int</span> attack, <span style="color:#66d9ef">int</span> health)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Name = name;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Attack = attack;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Health = health;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Name = name;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Attack = <span style="color:#66d9ef">this</span>.Level;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Health = <span style="color:#66d9ef">this</span>.Level;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Card ()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Name = <span style="color:#e6db74">&#34;Noname&#34;</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Attack = <span style="color:#66d9ef">this</span>.Level;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Health = <span style="color:#66d9ef">this</span>.Level;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>如此一來，我們在建立卡片的時候就能夠有更多選擇了，現在我們可以根據狀況給予需要的參數，剩下的就交給建構式去處理就好。</p>
 <p>實務上，如果規則或是建立的步驟一致的話，為了能夠把規則集中到一個地方方便修改，並且減少多餘的程式碼。我們通常會試著讓其他的建構式去呼叫主要的建構式，在 C# 中，呼叫自己的建構式是使用 <code>: this()</code> 來進行的，例如：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">int</span> attack, <span style="color:#66d9ef">int</span> health)
-{
-    <span style="color:#66d9ef">this</span>.Name = name;
-    <span style="color:#66d9ef">this</span>.Attack = attack;
-    <span style="color:#66d9ef">this</span>.Health = health;
-}
-
-<span style="color:#75715e">// 會呼叫上面那個建構式
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name) : <span style="color:#66d9ef">this</span>(name: name, attack: <span style="color:#ae81ff">5</span>, health: <span style="color:#ae81ff">5</span>)
-{
-    <span style="color:#75715e">// 呼叫完 Card(name, attack, health) 之後做的事
-</span><span style="color:#75715e"></span>}
-
-<span style="color:#75715e">// 會呼叫上面那一個建構式
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> Card () : <span style="color:#66d9ef">this</span>(name: <span style="color:#e6db74">&#34;Noname&#34;</span>) 
-{
-    <span style="color:#75715e">// 呼叫完 Card(name) 之後做的事   
-</span><span style="color:#75715e"></span>}
-</code></pre></div><p>如此一來只要建構的方式有變更，我們只需要集中修改第一個建構式就好了。這部份的流程也可以參照 <a href="https://dotblogs.com.tw/yc421206/2011/07/25/32097">[C#.NET] 為建構子建立正確的初始化 - 余小章 @ 大內殿堂</a> 這篇的說明。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">int</span> attack, <span style="color:#66d9ef">int</span> health)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.Name = name;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.Attack = attack;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.Health = health;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 會呼叫上面那個建構式</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name) : <span style="color:#66d9ef">this</span>(name: name, attack: <span style="color:#ae81ff">5</span>, health: <span style="color:#ae81ff">5</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 呼叫完 Card(name, attack, health) 之後做的事</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 會呼叫上面那一個建構式</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Card () : <span style="color:#66d9ef">this</span>(name: <span style="color:#e6db74">&#34;Noname&#34;</span>) 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 呼叫完 Card(name) 之後做的事   </span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>如此一來只要建構的方式有變更，我們只需要集中修改第一個建構式就好了。這部份的流程也可以參照 <a href="https://dotblogs.com.tw/yc421206/2011/07/25/32097">[C#.NET] 為建構子建立正確的初始化 - 余小章 @ 大內殿堂</a> 這篇的說明。</p>
 <p>當然多載也不只是用在建構子，而是大多數時候都可以用的寫法。例如當你的函式<strong>雖然做同樣的事，但允許接收不同的參數來處理時，就請考慮使用多載</strong>。</p>
 <p>例如說當你要記錄發生錯誤時的 Log ，就能允許只傳遞錯誤內容，或是傳遞錯誤內容和當時操作的參數，甚至是當下的環境資料等等。</p>
 <p>又或者是查詢客戶資料（GetUser 之類的）的函式，提供使用 客戶代號，或是 訂單編號 等不同的方式進行查詢時，就可以考慮多載的應用。</p>
@@ -207,13 +207,13 @@ warrior.Hit(goblin);
 <p>註：看不到圖片的可以直接看 <a href="https://github.com/AutoMapper/AutoMapper/blob/master/src/AutoMapper/Mapper.cs">Github</a></p>
 </blockquote>
 <p>當然隨著多載的應用越來越稀鬆平常，時至今日，我們只要使用<strong>選擇性參數</strong>就可以輕鬆達到一樣的效果囉：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name = <span style="color:#e6db74">&#34;Noname&#34;</span>, <span style="color:#66d9ef">int</span> attack = <span style="color:#ae81ff">5</span>, <span style="color:#66d9ef">int</span> health = <span style="color:#ae81ff">5</span>)
-{
-    <span style="color:#66d9ef">this</span>.Name = name;
-    <span style="color:#66d9ef">this</span>.Attack = attack;
-    <span style="color:#66d9ef">this</span>.Health = health;
-}
-</code></pre></div><p>當有預設值的時候，該參數就會變成可選的，這時候就可以輕鬆決定要傳進來的內容了。當然，如果傳進來的並非只是數量上的差別，而是整個型別都不一樣的話，還是要回歸到多載的做法，建立兩個同名但不同傳入參數類型的方法，可讀性會比較高呦。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name = <span style="color:#e6db74">&#34;Noname&#34;</span>, <span style="color:#66d9ef">int</span> attack = <span style="color:#ae81ff">5</span>, <span style="color:#66d9ef">int</span> health = <span style="color:#ae81ff">5</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.Name = name;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.Attack = attack;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.Health = health;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>當有預設值的時候，該參數就會變成可選的，這時候就可以輕鬆決定要傳進來的內容了。當然，如果傳進來的並非只是數量上的差別，而是整個型別都不一樣的話，還是要回歸到多載的做法，建立兩個同名但不同傳入參數類型的方法，可讀性會比較高呦。</p>
 <p>多載提供的好處在於：<strong>同個目標的函式可以根據傳入的參數不同做不一樣的處理</strong>。例如當我們寫了一個連線取資料的方法，可以分為</p>
 <p>(1) 傳入連線的話，就使用連線取得資料</p>
 <p>(2) 傳入連線字串的話，就先用連線字串開啟連線，再使用連線取得資料</p>

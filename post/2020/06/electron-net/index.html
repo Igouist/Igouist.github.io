@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -163,32 +163,32 @@
 <p>這邊簡單嘗試一次，首先，我們先在 <code>Views/Home/index.cshtml</code> 加上一個簡單的按鈕</p>
 <p>並且加上 JavaScript 發送訊息和接收訊息的方法</p>
 <p><img src="https://i.imgur.com/DaNlQgS.png" alt=""></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">ipcRenderer</span> } <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#34;electron&#34;</span>);
-
-<span style="color:#75715e">// 發送訊息，這邊傳送一個 Hello
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">sendMessageToServer</span>() {
-    <span style="color:#a6e22e">ipcRenderer</span>.<span style="color:#a6e22e">send</span>(<span style="color:#e6db74">&#39;channelToServer&#39;</span>, <span style="color:#e6db74">&#39;Hello&#39;</span>);
-}
-
-<span style="color:#75715e">// 接收訊息
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">ipcRenderer</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;channelToClient&#39;</span>, (<span style="color:#a6e22e">event</span>, <span style="color:#a6e22e">arg</span>) =&gt; {
-    document.<span style="color:#a6e22e">getElementById</span>(<span style="color:#e6db74">&#34;Welcome&#34;</span>).<span style="color:#a6e22e">innerText</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">arg</span>
-});
-</code></pre></div><p>接著到對應的 <code>Controllers/HomeController</code> 的 <code>Index()</code> 也加上接受到訊息之後加工並發出訊息的處理</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">ipcRenderer</span> } <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#34;electron&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 發送訊息，這邊傳送一個 Hello
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">sendMessageToServer</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ipcRenderer</span>.<span style="color:#a6e22e">send</span>(<span style="color:#e6db74">&#39;channelToServer&#39;</span>, <span style="color:#e6db74">&#39;Hello&#39;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 接收訊息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">ipcRenderer</span>.<span style="color:#a6e22e">on</span>(<span style="color:#e6db74">&#39;channelToClient&#39;</span>, (<span style="color:#a6e22e">event</span>, <span style="color:#a6e22e">arg</span>) =&gt; {
+</span></span><span style="display:flex;"><span>    document.<span style="color:#a6e22e">getElementById</span>(<span style="color:#e6db74">&#34;Welcome&#34;</span>).<span style="color:#a6e22e">innerText</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">arg</span>
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>接著到對應的 <code>Controllers/HomeController</code> 的 <code>Index()</code> 也加上接受到訊息之後加工並發出訊息的處理</p>
 <p><img src="https://i.imgur.com/Xw3AX8r.png" alt=""></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> IActionResult Index()
-{
-    <span style="color:#75715e">// 接收訊息
-</span><span style="color:#75715e"></span>    Electron.IpcMain.On(<span style="color:#e6db74">&#34;channelToServer&#34;</span>, (args) =&gt;
-    {
-        <span style="color:#75715e">// 傳送訊息，把接收到的訊息再加上 World
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">var</span> mainWindow = Electron.WindowManager.BrowserWindows.First(); <span style="color:#75715e">// 現在只有一個視窗所以直接拿
-</span><span style="color:#75715e"></span>        Electron.IpcMain.Send(mainWindow, <span style="color:#e6db74">&#34;channelToClient&#34;</span>, <span style="color:#e6db74">$&#34;{args}, world!&#34;</span>);
-    });
-
-    <span style="color:#66d9ef">return</span> View();
-}
-</code></pre></div><p>接著就讓我們執行看看，當我們按下按鈕&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IActionResult Index()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 接收訊息</span>
+</span></span><span style="display:flex;"><span>    Electron.IpcMain.On(<span style="color:#e6db74">&#34;channelToServer&#34;</span>, (args) =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 傳送訊息，把接收到的訊息再加上 World</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> mainWindow = Electron.WindowManager.BrowserWindows.First(); <span style="color:#75715e">// 現在只有一個視窗所以直接拿</span>
+</span></span><span style="display:flex;"><span>        Electron.IpcMain.Send(mainWindow, <span style="color:#e6db74">&#34;channelToClient&#34;</span>, <span style="color:#e6db74">$&#34;{args}, world!&#34;</span>);
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> View();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著就讓我們執行看看，當我們按下按鈕&hellip;</p>
 <p><img src="https://i.imgur.com/qdkrpQ5.png" alt=""></p>
 <p><img src="https://i.imgur.com/HYo0DUp.png" alt=""></p>
 <p>這樣就能成功在前後端之間傳值了！但要注意，它是建立一個 Channel 來傳遞訊息，所以<strong>兩邊的 channel 名稱可不能錯了</strong>。</p>

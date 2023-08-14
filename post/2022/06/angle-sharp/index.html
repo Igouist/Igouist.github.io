@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -133,29 +133,29 @@
 </blockquote>
 <h2 id="建立-browser-抓取網頁內容">建立 Browser 抓取網頁內容</h2>
 <p>首先我們需要先建立一個 Browser 來代替我們做事：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
-{
-    <span style="color:#75715e">// 建立 Browser 的配置
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> config = AngleSharp.Configuration.Default.WithDefaultLoader();
-
-    <span style="color:#75715e">// 根據配置建立出我們的 Browser 
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> browser = BrowsingContext.New(config);
-}
-</code></pre></div><p>建立之後就可以<strong>用這個 browser 的 <code>OpenAsync()</code> 來抓取網頁內容囉</strong>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 這邊為了方便處理也順便把 `Main` 改成非同步的版本
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">async</span> Task Main()
-{
-	<span style="color:#66d9ef">var</span> config = AngleSharp.Configuration.Default.WithDefaultLoader();
-	<span style="color:#66d9ef">var</span> browser = BrowsingContext.New(config);
-	
-    <span style="color:#75715e">// 這邊用的型別是 AngleSharp 提供的 AngleSharp.Dom.Url
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> url = <span style="color:#66d9ef">new</span> Url(<span style="color:#e6db74">&#34;https://www.ptt.cc/bbs/Beauty/index.html&#34;</span>);
-
-    <span style="color:#75715e">// 使用 OpenAsync 來打開網頁抓回內容
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> document = <span style="color:#66d9ef">await</span> browser.OpenAsync(url);
-	document.Dump();
-}
-</code></pre></div><p>可以看到抓了一堆東西回來，包含網頁的 Uri、Body 等等：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 建立 Browser 的配置</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> config = AngleSharp.Configuration.Default.WithDefaultLoader();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 根據配置建立出我們的 Browser </span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> browser = BrowsingContext.New(config);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>建立之後就可以<strong>用這個 browser 的 <code>OpenAsync()</code> 來抓取網頁內容囉</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 這邊為了方便處理也順便把 `Main` 改成非同步的版本</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">async</span> Task Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> config = AngleSharp.Configuration.Default.WithDefaultLoader();
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> browser = BrowsingContext.New(config);
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 這邊用的型別是 AngleSharp 提供的 AngleSharp.Dom.Url</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> url = <span style="color:#66d9ef">new</span> Url(<span style="color:#e6db74">&#34;https://www.ptt.cc/bbs/Beauty/index.html&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 使用 OpenAsync 來打開網頁抓回內容</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> document = <span style="color:#66d9ef">await</span> browser.OpenAsync(url);
+</span></span><span style="display:flex;"><span>	document.Dump();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>可以看到抓了一堆東西回來，包含網頁的 Uri、Body 等等：</p>
 <p><img src="https://i.imgur.com/EfJewBi.png" alt="Image"></p>
 <h2 id="調整配置準備-cookie">調整配置、準備 Cookie</h2>
 <p>在前一個步驟我們雖然把網頁抓回來了，但讓我們看一下 <code>context.Body.InnerHtml</code> 的內容：</p>
@@ -163,46 +163,46 @@
 <p>看起來跟我們要的文章列表有點差距啊！這是因為 PTT 會先跳出一個視窗詢問是否滿十八歲，選擇「是」之後會記錄一筆 <code>over18=1</code> 到 Cookie 中，只有持有這個 Cookie 才能進入到文章列表。</p>
 <p>因此我們現在要先把答案準備到 Cookie 裡，這時候我們就需要調整一下前面的配置內容。</p>
 <p>首先先在配置裡加上預設的 Cookies：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 加上 `WithDefaultCookies()` 來加上預設的 Cookie
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> config = AngleSharp.Configuration.Default
-    .WithDefaultLoader()
-    .WithDefaultCookies();
-
-<span style="color:#66d9ef">var</span> browser = BrowsingContext.New(config);
-</code></pre></div><p>接著在我們開啟網頁之前，<strong>使用 <code>SetCookie</code> 對目標指定要用的 Cookie</strong>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> url = <span style="color:#66d9ef">new</span> Url(<span style="color:#e6db74">&#34;https://www.ptt.cc/bbs/Beauty/index.html&#34;</span>);
-
-<span style="color:#75715e">// 加上已滿十八歲的 Cookie 來通過年齡驗證頁面
-</span><span style="color:#75715e"></span>browser.SetCookie(url, <span style="color:#e6db74">&#34;over18=1&#39;&#34;</span>); 
-
-<span style="color:#66d9ef">var</span> document = <span style="color:#66d9ef">await</span> browser.OpenAsync(url);	
-</code></pre></div><p>現在會長得像這樣：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">async</span> Task Main()
-{
-	<span style="color:#66d9ef">var</span> config = AngleSharp.Configuration.Default
-		.WithDefaultLoader()
-		.WithDefaultCookies();
-		
-	<span style="color:#66d9ef">var</span> browser = BrowsingContext.New(config);
-	
-	<span style="color:#66d9ef">var</span> url = <span style="color:#66d9ef">new</span> Url(<span style="color:#e6db74">&#34;https://www.ptt.cc/bbs/Beauty/index.html&#34;</span>);
-	browser.SetCookie(url, <span style="color:#e6db74">&#34;over18=1&#39;&#34;</span>); 
-	
-	<span style="color:#66d9ef">var</span> document = <span style="color:#66d9ef">await</span> browser.OpenAsync(url);	
-	document.Body.InnerHtml.Dump();
-}
-</code></pre></div><p>接著讓我們來確認爬回來的 HTML：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 加上 `WithDefaultCookies()` 來加上預設的 Cookie</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> config = AngleSharp.Configuration.Default
+</span></span><span style="display:flex;"><span>    .WithDefaultLoader()
+</span></span><span style="display:flex;"><span>    .WithDefaultCookies();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> browser = BrowsingContext.New(config);
+</span></span></code></pre></div><p>接著在我們開啟網頁之前，<strong>使用 <code>SetCookie</code> 對目標指定要用的 Cookie</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> url = <span style="color:#66d9ef">new</span> Url(<span style="color:#e6db74">&#34;https://www.ptt.cc/bbs/Beauty/index.html&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 加上已滿十八歲的 Cookie 來通過年齡驗證頁面</span>
+</span></span><span style="display:flex;"><span>browser.SetCookie(url, <span style="color:#e6db74">&#34;over18=1&#39;&#34;</span>); 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> document = <span style="color:#66d9ef">await</span> browser.OpenAsync(url);	
+</span></span></code></pre></div><p>現在會長得像這樣：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">async</span> Task Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> config = AngleSharp.Configuration.Default
+</span></span><span style="display:flex;"><span>		.WithDefaultLoader()
+</span></span><span style="display:flex;"><span>		.WithDefaultCookies();
+</span></span><span style="display:flex;"><span>		
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> browser = BrowsingContext.New(config);
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> url = <span style="color:#66d9ef">new</span> Url(<span style="color:#e6db74">&#34;https://www.ptt.cc/bbs/Beauty/index.html&#34;</span>);
+</span></span><span style="display:flex;"><span>	browser.SetCookie(url, <span style="color:#e6db74">&#34;over18=1&#39;&#34;</span>); 
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> document = <span style="color:#66d9ef">await</span> browser.OpenAsync(url);	
+</span></span><span style="display:flex;"><span>	document.Body.InnerHtml.Dump();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著讓我們來確認爬回來的 HTML：</p>
 <p><img src="https://i.imgur.com/hRUlaz3.png" alt="Image"></p>
 <p>可以看到我們成功進到看板囉！</p>
 <blockquote>
 <p>註：另一個很常在配置處理的是使用 LoaderOptions 加上 AngleSharp.Css 提供的 <code>WithCss()</code> 來抓取 CSS 處理後的結果，例如：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">Configuration.Default
-    .WithDefaultLoader(<span style="color:#66d9ef">new</span> LoaderOptions 
-    { 
-        IsResourceLoadingEnabled = <span style="color:#66d9ef">true</span> 
-    })
-    .WithCss();
-</code></pre></div><p>不過這些場景（需要掛 Cookie 啦、要先等 CSS 啦）通常都是遇到之後才去 Google 的，這邊就不再贅述。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Configuration.Default
+</span></span><span style="display:flex;"><span>    .WithDefaultLoader(<span style="color:#66d9ef">new</span> LoaderOptions 
+</span></span><span style="display:flex;"><span>    { 
+</span></span><span style="display:flex;"><span>        IsResourceLoadingEnabled = <span style="color:#66d9ef">true</span> 
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    .WithCss();
+</span></span></code></pre></div><p>不過這些場景（需要掛 Cookie 啦、要先等 CSS 啦）通常都是遇到之後才去 Google 的，這邊就不再贅述。</p>
 </blockquote>
 <blockquote>
 <p>註：<code>browser.OpenAsync</code> 除了提供網址讓他直接抓回來以外，有時候我們也會遇到本機已經有 Html 檔案要處理，或是已經用 HttpClient 等方法把網頁內容拿回來了的狀況</p>
@@ -219,11 +219,11 @@
 <p>當然也可以加以組合，例如 <code>div#wow</code>, <code>div &gt; p.hello</code> 等，有興趣的朋友可以再看一眼 <a href="https://www.runoob.com/cssref/css-selectors.html">菜鳥教程的 CSS 選擇器說明</a>，其他狀況就等需要的時候再查表即可。</p>
 <p>首先讓我們好好觀察 HTML 結構，可以發現標題框是放在 <code>class=&quot;r-ent&quot;</code> 的 div 裡，那我們就可以這樣下 Selector：<code>div.r-ent</code></p>
 <p><strong>接著我們就能用 <code>QuerySelectorAll()</code> 這個方法來用 Selector 抓取我們想要的元素</strong>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">document
-    .QuerySelectorAll(<span style="color:#e6db74">&#34;div.r-ent&#34;</span>) <span style="color:#75715e">// 指定 class 為 r-ent 的 div
-</span><span style="color:#75715e"></span>    .Select(node =&gt; node.InnerHtml) <span style="color:#75715e">// 直接抓內容出來看看
-</span><span style="color:#75715e"></span>    .Dump();
-</code></pre></div><p><img src="https://i.imgur.com/GIaNgMI.png" alt="Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>document
+</span></span><span style="display:flex;"><span>    .QuerySelectorAll(<span style="color:#e6db74">&#34;div.r-ent&#34;</span>) <span style="color:#75715e">// 指定 class 為 r-ent 的 div</span>
+</span></span><span style="display:flex;"><span>    .Select(node =&gt; node.InnerHtml) <span style="color:#75715e">// 直接抓內容出來看看</span>
+</span></span><span style="display:flex;"><span>    .Dump();
+</span></span></code></pre></div><p><img src="https://i.imgur.com/GIaNgMI.png" alt="Image"></p>
 <p>可以看到我們成功抓了一排標題資訊回來囉！</p>
 <p>當然 AngleSharp 也提供了 <code>QuerySelector</code> 來抓取單個元素，這兩個方法用起來和 <a href="https://developer.mozilla.org/zh-TW/docs/Web/API/Document/querySelector">JavaScript</a> 的體驗應該是差不多啦。</p>
 <p>確定我們有把要的內容抓回來，也不會再用到網頁內容的話，就可以補一行 <code>document.Close();</code> 把開啟的網頁內容順手清掉囉。</p>
@@ -236,52 +236,52 @@
 </blockquote>
 <h2 id="整理抓取到的內容">整理抓取到的內容</h2>
 <p>現在讓我們建立一個類別用來處理標題資訊吧，這邊我只需要名稱、推噓數和文章連結，其他像是作者什麼的不太需要：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Post</span>
-{
-	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Title { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Push { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Link { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-</code></pre></div><p>接著就來把我們剛剛抓到的每一則文章標題轉換成我們要的物件吧！</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Post</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Title { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Push { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Link { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著就來把我們剛剛抓到的每一則文章標題轉換成我們要的物件吧！</p>
 <p>觀察上面抓到的標題資訊，可以發現標題的文字和文章連結都放在 <code>&lt;div class=&quot;title&quot;&gt;</code> 裡的 <code>&lt;a&gt;</code>，這邊我們就可以利用 QuerySelector 來抓到這個元素</p>
 <p>而為了拿到連結，這邊會需要<strong>使用 <code>GetAttribute</code> 來抓取元素的 <code>href</code> 屬性</strong>。這樣標題和連結就搞定了。</p>
 <p>另外要注意的是：如果文章被刪掉了，可是抓不到這些東西的！所以可以在 <code>QuerySelector</code> 之後用 <code>?.</code> 的方式來做個 Null 時的防呆，最後也可以再用 <code>Where</code> 來過濾掉無效的文章。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> titleElement = post.QuerySelector(<span style="color:#e6db74">&#34;div.title &gt; a&#34;</span>);
-<span style="color:#66d9ef">var</span> title = titleElement?.InnerHtml; <span style="color:#75715e">// 標題文字
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> link = titleElement?.GetAttribute(<span style="color:#e6db74">&#34;href&#34;</span>); <span style="color:#75715e">// 文章連結
-</span></code></pre></div><p>剩下的推噓數可以看到是放在 <code>&lt;div class=&quot;nrec&quot;&gt;</code> 裡面，這邊我希望能轉換成數字，方便我們後續如果要用推噓數做篩選。所以讓我們額外處理一下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> titleElement = post.QuerySelector(<span style="color:#e6db74">&#34;div.title &gt; a&#34;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> title = titleElement?.InnerHtml; <span style="color:#75715e">// 標題文字</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> link = titleElement?.GetAttribute(<span style="color:#e6db74">&#34;href&#34;</span>); <span style="color:#75715e">// 文章連結</span>
+</span></span></code></pre></div><p>剩下的推噓數可以看到是放在 <code>&lt;div class=&quot;nrec&quot;&gt;</code> 裡面，這邊我希望能轉換成數字，方便我們後續如果要用推噓數做篩選。所以讓我們額外處理一下：</p>
 <ul>
 <li>只顯示「爆」，這時候我們就視作 100</li>
 <li>如果有明確的數字，轉換為 Int</li>
 <li>沒有數字的話就當成 0。</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> pushString = post.QuerySelector(<span style="color:#e6db74">&#34;div.nrec &gt; span&#34;</span>)?.InnerHtml;
-
-<span style="color:#66d9ef">var</span> pushCount = 
-    pushString == <span style="color:#e6db74">&#34;爆&#34;</span> ? <span style="color:#ae81ff">100</span> : 
-    Int16.TryParse(pushString, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> push) ? push : <span style="color:#ae81ff">0</span>;
-</code></pre></div><p>最後就把這些資訊拿來組裝我們的物件，那麼現在的程式碼就會像這樣：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> posts = postSource.Select(post =&gt; 
-{
-    <span style="color:#66d9ef">var</span> titleElement = post.QuerySelector(<span style="color:#e6db74">&#34;div.title &gt; a&#34;</span>);
-    <span style="color:#66d9ef">var</span> title = titleElement?.InnerHtml;
-    <span style="color:#66d9ef">var</span> link = titleElement?.GetAttribute(<span style="color:#e6db74">&#34;href&#34;</span>);
-    
-    <span style="color:#66d9ef">var</span> pushString = post.QuerySelector(<span style="color:#e6db74">&#34;div.nrec &gt; span&#34;</span>)?.InnerHtml;
-    <span style="color:#66d9ef">var</span> pushCount = 
-        pushString == <span style="color:#e6db74">&#34;爆&#34;</span> ? <span style="color:#ae81ff">100</span> : 
-        Int16.TryParse(pushString, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> push) ? push : <span style="color:#ae81ff">0</span>;
-        
-    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Post
-    {
-        Title = title,
-        Link = link,
-        Push = pushCount
-    };
-})
-.Where(post =&gt; post.Title != <span style="color:#66d9ef">null</span>)
-.Dump();
-</code></pre></div><p><img src="https://i.imgur.com/ZnjBF3U.png" alt="Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> pushString = post.QuerySelector(<span style="color:#e6db74">&#34;div.nrec &gt; span&#34;</span>)?.InnerHtml;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> pushCount = 
+</span></span><span style="display:flex;"><span>    pushString == <span style="color:#e6db74">&#34;爆&#34;</span> ? <span style="color:#ae81ff">100</span> : 
+</span></span><span style="display:flex;"><span>    Int16.TryParse(pushString, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> push) ? push : <span style="color:#ae81ff">0</span>;
+</span></span></code></pre></div><p>最後就把這些資訊拿來組裝我們的物件，那麼現在的程式碼就會像這樣：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> posts = postSource.Select(post =&gt; 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> titleElement = post.QuerySelector(<span style="color:#e6db74">&#34;div.title &gt; a&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> title = titleElement?.InnerHtml;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> link = titleElement?.GetAttribute(<span style="color:#e6db74">&#34;href&#34;</span>);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> pushString = post.QuerySelector(<span style="color:#e6db74">&#34;div.nrec &gt; span&#34;</span>)?.InnerHtml;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> pushCount = 
+</span></span><span style="display:flex;"><span>        pushString == <span style="color:#e6db74">&#34;爆&#34;</span> ? <span style="color:#ae81ff">100</span> : 
+</span></span><span style="display:flex;"><span>        Int16.TryParse(pushString, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> push) ? push : <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Post
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Title = title,
+</span></span><span style="display:flex;"><span>        Link = link,
+</span></span><span style="display:flex;"><span>        Push = pushCount
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>})
+</span></span><span style="display:flex;"><span>.Where(post =&gt; post.Title != <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>.Dump();
+</span></span></code></pre></div><p><img src="https://i.imgur.com/ZnjBF3U.png" alt="Image"></p>
 <p>到這邊我們就成功把網頁的內容抓下來、篩選出我們要的內容囉！</p>
 <blockquote>
 <p>註：除了我們前面使用的 QuerySelector、GetAttribute 以外，AngleSharp 還提供了 <code>GetElementsByTagName</code>、<code>Children</code> 等屬性和方法讓我們能方便地在 DOM 中到處抓取元素。</p>
@@ -293,21 +293,21 @@
 <p>現在讓我們回到文章列表來，只抓第一頁實在沒什麼搞頭。如果我們想要換頁，那麼首先就要先抓出這個換頁按鈕：</p>
 <p><img src="https://i.imgur.com/ndkeqwG.png" alt="Image"></p>
 <p>利用前面提到的Ｆ１２大法，我們可以拿到這個按鈕的 Selector 語法，讓我們直接丟到 <code>QuerySelector</code> 裡，並且取得它的 <code>href</code> 屬性：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> nextPageLink = document
-	.QuerySelector(<span style="color:#e6db74">&#34;div.btn-group.btn-group-paging &gt; a:nth-child(2)&#34;</span>)
-	.GetAttribute(<span style="color:#e6db74">&#34;href&#34;</span>)
-	.Dump(); <span style="color:#75715e">// = /bbs/Beauty/index3980.html
-</span></code></pre></div><p>現在我們有了往前一頁的連結了，後續只需要把站台的 Url 和下一頁的相對 Url 就可以拼湊出換頁的連結了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> nextPageLink = document
+</span></span><span style="display:flex;"><span>	.QuerySelector(<span style="color:#e6db74">&#34;div.btn-group.btn-group-paging &gt; a:nth-child(2)&#34;</span>)
+</span></span><span style="display:flex;"><span>	.GetAttribute(<span style="color:#e6db74">&#34;href&#34;</span>)
+</span></span><span style="display:flex;"><span>	.Dump(); <span style="color:#75715e">// = /bbs/Beauty/index3980.html</span>
+</span></span></code></pre></div><p>現在我們有了往前一頁的連結了，後續只需要把站台的 Url 和下一頁的相對 Url 就可以拼湊出換頁的連結了。</p>
 <p>如此一來就可以做出「抓文章 → 下一頁 → 抓文章…」的循環。像這種場合直接使用遞迴，寫起來會快一點。</p>
 <p>首先讓我們把抓取文章的處理過程抽出去當作方法，當然會重複用到我們的 Browser，還有站台 Url 以及每一頁的 Url，最後再丟個數字控制要抓幾頁，大概像這樣：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task&lt;IEnumerable&lt;Post&gt;&gt; GetPosts(
-	IBrowsingContext browser,
-	<span style="color:#66d9ef">string</span> baseUrl, 
-	<span style="color:#66d9ef">string</span> pageUrl,
-	<span style="color:#66d9ef">int</span> remainingPages)
-{
-}
-</code></pre></div><p>現在讓我們把上面的處理步驟逐一搬移到方法中，預期會需要：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task&lt;IEnumerable&lt;Post&gt;&gt; GetPosts(
+</span></span><span style="display:flex;"><span>	IBrowsingContext browser,
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">string</span> baseUrl, 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">string</span> pageUrl,
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> remainingPages)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>現在讓我們把上面的處理步驟逐一搬移到方法中，預期會需要：</p>
 <ul>
 <li>先組裝 Url、設定 Cookie 然後 Open 抓回網頁內容</li>
 <li>抓取這一頁的所有文章標題</li>
@@ -315,78 +315,78 @@
 <li>遞迴取得下一頁及往後頁數的文章列表</li>
 <li>把這一頁和下一頁往後的文章列表組裝起來回傳</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task&lt;IEnumerable&lt;Post&gt;&gt; GetPosts(
-	IBrowsingContext browser, 
-	<span style="color:#66d9ef">string</span> baseUrl, 
-	<span style="color:#66d9ef">string</span> pageUrl,
-	<span style="color:#66d9ef">int</span> remainingPages)
-{
-	<span style="color:#75715e">// 組裝 Url 並設定 Cookie
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> url = <span style="color:#66d9ef">new</span> Url(baseUrl + pageUrl);
-	browser.SetCookie(url, <span style="color:#e6db74">&#34;over18=1&#39;&#34;</span>);
-	<span style="color:#66d9ef">var</span> document = <span style="color:#66d9ef">await</span> browser.OpenAsync(url);
-
-	<span style="color:#75715e">// 取出所有文章標題
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> postSource = document.QuerySelectorAll(<span style="color:#e6db74">&#34;div.r-ent&#34;</span>);
-
-	<span style="color:#66d9ef">var</span> posts = postSource.Select(post =&gt;
-	{
-		<span style="color:#66d9ef">var</span> titleElement = post.QuerySelector(<span style="color:#e6db74">&#34;div.title &gt; a&#34;</span>);
-		<span style="color:#66d9ef">var</span> title = titleElement?.InnerHtml;
-		<span style="color:#66d9ef">var</span> link = titleElement?.GetAttribute(<span style="color:#e6db74">&#34;href&#34;</span>);
-
-		<span style="color:#66d9ef">var</span> pushString = post.QuerySelector(<span style="color:#e6db74">&#34;div.nrec &gt; span&#34;</span>)?.InnerHtml;
-		<span style="color:#66d9ef">var</span> pushCount =
-			pushString == <span style="color:#e6db74">&#34;爆&#34;</span> ? <span style="color:#ae81ff">100</span> :
-			Int16.TryParse(pushString, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> push) ? push : <span style="color:#ae81ff">0</span>;
-
-		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Post
-		{
-			Title = title,
-			Link = link,
-			Push = pushCount
-		};
-	})
-	.Where(post =&gt; post.Title != <span style="color:#66d9ef">null</span>);
-
-	<span style="color:#75715e">// 取得下一頁的連結
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> nextPageUrl = document
-		.QuerySelector(<span style="color:#e6db74">&#34;div.btn-group.btn-group-paging &gt; a:nth-child(2)&#34;</span>)
-		.GetAttribute(<span style="color:#e6db74">&#34;href&#34;</span>);
-		
-	document.Close();
-	
-	<span style="color:#75715e">// 檢查剩餘頁數
-</span><span style="color:#75715e"></span>	remainingPages--;
-	<span style="color:#66d9ef">if</span> (remainingPages == <span style="color:#ae81ff">0</span>)
-	{
-		<span style="color:#66d9ef">return</span> posts;
-	}
-
-    <span style="color:#75715e">// 組裝遞迴取得的文章列表
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> nextPagePosts = <span style="color:#66d9ef">await</span> GetPosts(browser, baseUrl, nextPageUrl, remainingPages);
-	<span style="color:#66d9ef">return</span> posts.Concat(nextPagePosts);
-}
-</code></pre></div><p>雖然也可以把詳細的步驟再拆得更細，像是把組裝 <code>Post</code> 的部分拆出去私有方法，或是多加一層迴圈進到文章內抓取照片等等，不過現在我們只需要穩定拿到文章資訊就行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">async</span> Task&lt;IEnumerable&lt;Post&gt;&gt; GetPosts(
+</span></span><span style="display:flex;"><span>	IBrowsingContext browser, 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">string</span> baseUrl, 
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">string</span> pageUrl,
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">int</span> remainingPages)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 組裝 Url 並設定 Cookie</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> url = <span style="color:#66d9ef">new</span> Url(baseUrl + pageUrl);
+</span></span><span style="display:flex;"><span>	browser.SetCookie(url, <span style="color:#e6db74">&#34;over18=1&#39;&#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> document = <span style="color:#66d9ef">await</span> browser.OpenAsync(url);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 取出所有文章標題</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> postSource = document.QuerySelectorAll(<span style="color:#e6db74">&#34;div.r-ent&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> posts = postSource.Select(post =&gt;
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">var</span> titleElement = post.QuerySelector(<span style="color:#e6db74">&#34;div.title &gt; a&#34;</span>);
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">var</span> title = titleElement?.InnerHtml;
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">var</span> link = titleElement?.GetAttribute(<span style="color:#e6db74">&#34;href&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">var</span> pushString = post.QuerySelector(<span style="color:#e6db74">&#34;div.nrec &gt; span&#34;</span>)?.InnerHtml;
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">var</span> pushCount =
+</span></span><span style="display:flex;"><span>			pushString == <span style="color:#e6db74">&#34;爆&#34;</span> ? <span style="color:#ae81ff">100</span> :
+</span></span><span style="display:flex;"><span>			Int16.TryParse(pushString, <span style="color:#66d9ef">out</span> <span style="color:#66d9ef">var</span> push) ? push : <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Post
+</span></span><span style="display:flex;"><span>		{
+</span></span><span style="display:flex;"><span>			Title = title,
+</span></span><span style="display:flex;"><span>			Link = link,
+</span></span><span style="display:flex;"><span>			Push = pushCount
+</span></span><span style="display:flex;"><span>		};
+</span></span><span style="display:flex;"><span>	})
+</span></span><span style="display:flex;"><span>	.Where(post =&gt; post.Title != <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 取得下一頁的連結</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> nextPageUrl = document
+</span></span><span style="display:flex;"><span>		.QuerySelector(<span style="color:#e6db74">&#34;div.btn-group.btn-group-paging &gt; a:nth-child(2)&#34;</span>)
+</span></span><span style="display:flex;"><span>		.GetAttribute(<span style="color:#e6db74">&#34;href&#34;</span>);
+</span></span><span style="display:flex;"><span>		
+</span></span><span style="display:flex;"><span>	document.Close();
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 檢查剩餘頁數</span>
+</span></span><span style="display:flex;"><span>	remainingPages--;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (remainingPages == <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> posts;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 組裝遞迴取得的文章列表</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> nextPagePosts = <span style="color:#66d9ef">await</span> GetPosts(browser, baseUrl, nextPageUrl, remainingPages);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> posts.Concat(nextPagePosts);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>雖然也可以把詳細的步驟再拆得更細，像是把組裝 <code>Post</code> 的部分拆出去私有方法，或是多加一層迴圈進到文章內抓取照片等等，不過現在我們只需要穩定拿到文章資訊就行</p>
 <p>接著再稍微修改一下，外面呼叫方法的部份只需要負責建立 Broswer 和定下第一頁的 Url 就好了</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">async</span> Task Main()
-{
-	<span style="color:#66d9ef">var</span> config = AngleSharp.Configuration.Default
-		.WithDefaultLoader()
-		.WithDefaultCookies();
-		
-	<span style="color:#66d9ef">var</span> browser = BrowsingContext.New(config);
-
-	<span style="color:#66d9ef">var</span> baseUrl = <span style="color:#e6db74">&#34;https://www.ptt.cc&#34;</span>;
-	<span style="color:#66d9ef">var</span> indexUrl = <span style="color:#e6db74">&#34;/bbs/Beauty/index.html&#34;</span>;
-
-	<span style="color:#66d9ef">var</span> pages = <span style="color:#ae81ff">10</span>;
-	<span style="color:#66d9ef">var</span> posts = <span style="color:#66d9ef">await</span> GetPosts(browser, baseUrl, indexUrl, pages);
-}
-</code></pre></div><p>這樣就大功告成，一次抓它個十頁都沒有問題囉！</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">async</span> Task Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> config = AngleSharp.Configuration.Default
+</span></span><span style="display:flex;"><span>		.WithDefaultLoader()
+</span></span><span style="display:flex;"><span>		.WithDefaultCookies();
+</span></span><span style="display:flex;"><span>		
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> browser = BrowsingContext.New(config);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> baseUrl = <span style="color:#e6db74">&#34;https://www.ptt.cc&#34;</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> indexUrl = <span style="color:#e6db74">&#34;/bbs/Beauty/index.html&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> pages = <span style="color:#ae81ff">10</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> posts = <span style="color:#66d9ef">await</span> GetPosts(browser, baseUrl, indexUrl, pages);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這樣就大功告成，一次抓它個十頁都沒有問題囉！</p>
 <p>最後就可以按照我們的要求來處理 <code>posts</code> 的文章啦，例如：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">posts.Where(post =&gt; post.Push &gt; <span style="color:#ae81ff">90</span>).Dump();
-</code></pre></div><p>馬上就可以抓出十頁內 90 推以上的文，所以說 Linq 就是方便哪。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>posts.Where(post =&gt; post.Push &gt; <span style="color:#ae81ff">90</span>).Dump();
+</span></span></code></pre></div><p>馬上就可以抓出十頁內 90 推以上的文，所以說 Linq 就是方便哪。</p>
 <p>到這邊我們已經可以很靈活地去運用這個列表了，像是把撈出來的文章連結搭配 <a href="https://igouist.github.io/post/2020/04/bandon-3-line-notify/">LineNotify</a> 做個推播通知啦，還是乾脆掛到排程服務去定時爬資料啦，都是很彈性很自由的了。</p>
 <h2 id="小結">小結</h2>
 <p>最後再一次整理本篇的操作流程：</p>

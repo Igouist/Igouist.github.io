@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -139,58 +139,58 @@
 <p>……如果當時他們有使用 Fluent Validation 來把驗證的邏輯和規則跟原本很亂的 Controller 切分的話，說不定就能及時發現問題吧，大概。</p>
 <p>為了不要步上他們的後塵，就讓我們直接回到本系列的卡牌管理 API 服務來加上這個好用工具吧！</p>
 <p>假設我們在新增一張新的卡牌時，會針對裡面的欄位做一連串檢查：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 新增卡片
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
-</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpPost]</span>
-<span style="color:#66d9ef">public</span> IActionResult Insert([FromBody] CardParameter parameter)
-{
-    <span style="color:#75715e">// 這邊需要對參數做檢查
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (parameter.Attack &lt; <span style="color:#ae81ff">0</span>)
-    {
-        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的攻擊力不可為負數&#34;</span>);
-    }
-
-    <span style="color:#66d9ef">if</span> (parameter.Health &lt; <span style="color:#ae81ff">0</span>)
-    {
-        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的生命值不可為負數&#34;</span>);
-    }
-
-    <span style="color:#66d9ef">if</span> (parameter.Cost &lt; <span style="color:#ae81ff">0</span>)
-    {
-        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的使用成本不可為負數&#34;</span>);
-    }
-
-    <span style="color:#66d9ef">if</span> (parameter.Description != <span style="color:#66d9ef">null</span> &amp;&amp;
-        parameter.Description.Length &gt; <span style="color:#ae81ff">30</span>)
-    {
-        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的敘述說明必須少於三十字&#34;</span>);
-    }
-
-    <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrWhiteSpace(parameter.Name))
-    {
-        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的名稱不可為空白&#34;</span>);
-    }
-
-    <span style="color:#66d9ef">if</span> (parameter.Name.Length &gt; <span style="color:#ae81ff">15</span>)
-    {
-        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的名稱必須少於十五字&#34;</span>);
-    }
-
-    <span style="color:#75715e">// 用 AutoMapper 把 Parameter Model 轉換成 Info Model
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;CardParameter, CardInfo&gt;(parameter);
-
-    <span style="color:#75715e">// 呼叫依賴的 Service 層寫入資料
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> isInsertSuccess = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.Insert(info);
-    <span style="color:#66d9ef">if</span> (isInsertSuccess)
-    {
-        <span style="color:#66d9ef">return</span> Ok();
-    }
-    <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
-}
-</code></pre></div><p>可以看到這個新增卡片的方法中，真正操作的只有最後呼叫相關服務來寫入資料的部份，前面就是針對參數做一整串的 if 檢查。隨著傳入參數要檢查的東西變多，檢查的過程也會越來越大坨。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 新增卡片</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpPost]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IActionResult Insert([FromBody] CardParameter parameter)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 這邊需要對參數做檢查</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (parameter.Attack &lt; <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的攻擊力不可為負數&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (parameter.Health &lt; <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的生命值不可為負數&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (parameter.Cost &lt; <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的使用成本不可為負數&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (parameter.Description != <span style="color:#66d9ef">null</span> &amp;&amp;
+</span></span><span style="display:flex;"><span>        parameter.Description.Length &gt; <span style="color:#ae81ff">30</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的敘述說明必須少於三十字&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrWhiteSpace(parameter.Name))
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的名稱不可為空白&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (parameter.Name.Length &gt; <span style="color:#ae81ff">15</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的名稱必須少於十五字&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 用 AutoMapper 把 Parameter Model 轉換成 Info Model</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>._mapper.Map&lt;CardParameter, CardInfo&gt;(parameter);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 呼叫依賴的 Service 層寫入資料</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> isInsertSuccess = <span style="color:#66d9ef">this</span>._cardService.Insert(info);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (isInsertSuccess)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Ok();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>可以看到這個新增卡片的方法中，真正操作的只有最後呼叫相關服務來寫入資料的部份，前面就是針對參數做一整串的 if 檢查。隨著傳入參數要檢查的東西變多，檢查的過程也會越來越大坨。</p>
 <p>這時候，<strong>只要有了 Fluent Validation，我們就可以在參數檢查上做得更好！</strong></p>
 <h2 id="安裝-fluent-validation">安裝 Fluent Validation</h2>
 <p>因為我們的示範專案是 .net Core 的 Api，所以讓我們安裝 FluentValidation.AspNetCore</p>
@@ -203,247 +203,247 @@
 <p>其中 <code>&lt;T&gt;</code> 的泛型選擇驗證對象的類別即可，接著就可以在 Validator 的建構式來註冊我們要的驗證邏輯。</p>
 <p>現在就讓我們針對前面例子的 <code>CardParameter</code> 來建立 <code>CardParameterValidator</code> 吧：</p>
 <p><img src="https://i.imgur.com/BWDZX6R.png" alt=""></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// Card Parameter 的驗證器
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardParameterValidator</span> : AbstractValidator&lt;CardParameter&gt;
-{
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 驗證器的建構式: 在這裡註冊我們要驗證的規則
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> CardParameterValidator()
-    {
-
-    }
-}
-</code></pre></div><h3 id="使用內建的驗證規則">使用內建的驗證規則</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// Card Parameter 的驗證器</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardParameterValidator</span> : AbstractValidator&lt;CardParameter&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 驗證器的建構式: 在這裡註冊我們要驗證的規則</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> CardParameterValidator()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="使用內建的驗證規則">使用內建的驗證規則</h3>
 <p>現在我們已經針對 <code>CardParameter</code> 建立了驗證器，接著讓我們處理驗證邏輯的部分吧。</p>
 <p>當我們要驗證某個欄位的時候，就需要使用 <code>RuleFor</code> 來告訴驗證器現在驗證的欄位，後面再利用 Fluent Validation 提供的各種驗證語法來進行驗證。</p>
 <p>例如我們前面的「卡片的攻擊力不應為負數」，也就是 Attack 必須大於等於０，這邊就可以使用 <code>GreaterThanOrEqualTo</code>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> CardParameterValidator()
-{
-    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
-        .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>);
-}
-</code></pre></div><p>如果驗證的對象是個串列之類的，也支援用 <code>RuleForEach</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> CardParameterValidator()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
+</span></span><span style="display:flex;"><span>        .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>如果驗證的對象是個串列之類的，也支援用 <code>RuleForEach</code></p>
 <p>例如我們的卡片可以有多個別名（<code>List&lt;string&gt; Alias</code> 之類的），且裡面每個別名都不可以是空的，就可以：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> CardParameterValidator()
-{
-    <span style="color:#66d9ef">this</span>.RuleForEach(card =&gt; card.Alias)
-        .NotEmpty(); <span style="color:#75715e">// 不可為空
-</span><span style="color:#75715e"></span>}
-</code></pre></div><p>大部份的狀況下，使用內建的驗證語法就很夠用了。可以參照官方文檔的 <a href="https://docs.fluentvalidation.net/en/latest/built-in-validators.html#built-in-validators">Built-in Validators</a>，裡面每一項都有範例和參數說明。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> CardParameterValidator()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.RuleForEach(card =&gt; card.Alias)
+</span></span><span style="display:flex;"><span>        .NotEmpty(); <span style="color:#75715e">// 不可為空</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>大部份的狀況下，使用內建的驗證語法就很夠用了。可以參照官方文檔的 <a href="https://docs.fluentvalidation.net/en/latest/built-in-validators.html#built-in-validators">Built-in Validators</a>，裡面每一項都有範例和參數說明。</p>
 <p>平常比較會遇到的就是 <code>NotNull</code>、<code>NotEmpty</code> 和字串長度檢查或是數值大小的。如果是ㄧ些表單需要驗證的話，就還會用到 <code>EmailAddress</code> 等等。</p>
 <p>那俺身為一個 <del>懶惰</del> 節能減碳工程師，當然有在 Linqpad 中準備一份範例 <del>才能隨時抄嘛</del>，這邊也會附在文末的<a href="#%E9%99%84%E9%8C%84fluentValidation-%E5%85%A7%E5%BB%BA%E9%A9%97%E8%AD%89%E6%96%B9%E6%B3%95-%E5%B0%8F%E6%8A%84">附錄</a>。</p>
 <h3 id="使用-must-來自訂驗證規則">使用 Must 來自訂驗證規則</h3>
 <p>當然，我們也會遇到內建的驗證規則不夠用的情況。這時候就可以使用 <code>Must()</code> 來傳入自訂的規則，例如：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> CardParameterValidator()
-{
-    <span style="color:#75715e">// 使用 Must 來自訂規則
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
-        .Must(attack =&gt; attack &gt; <span style="color:#ae81ff">0</span> &amp;&amp; attack &lt;= <span style="color:#ae81ff">3000</span>);
-}
-</code></pre></div><p>只要在 <code>Must</code> 裡面指定要驗證的規則就可以囉！</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> CardParameterValidator()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 使用 Must 來自訂規則</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
+</span></span><span style="display:flex;"><span>        .Must(attack =&gt; attack &gt; <span style="color:#ae81ff">0</span> &amp;&amp; attack &lt;= <span style="color:#ae81ff">3000</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>只要在 <code>Must</code> 裡面指定要驗證的規則就可以囉！</p>
 <h3 id="使用-when-來指定驗證條件適用的場景">使用 When 來指定驗證條件適用的場景</h3>
 <p>除了規則可以彈性處理以外，有時候我們也會遇到「有某個條件成立才驗證指定欄位」的情況</p>
 <p>假設我們的卡牌又分成「怪獸卡」和「魔法卡」等等，而卡牌本身又有個 int? 的攻擊力欄位</p>
 <p>規則又要求：「怪獸卡必須是具有攻擊力的」</p>
 <p>雖然直覺上就會想要用 <code>if (卡牌是怪獸卡)</code> 之類的方式去另外做，但就會變得有點兒醜</p>
 <p>這時候我們就能用 <code>When</code> 的方式來指定驗證條件的前提：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> CardParameterValidator()
-{
-    <span style="color:#75715e">// 目標：當 卡牌 是 怪獸卡 的時候，攻擊力不可為 Null 
-</span><span style="color:#75715e"></span>
-    <span style="color:#75715e">// 針對指定規則加上適用場景
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
-        .NotNull()
-        .When(card =&gt; card.CardType <span style="color:#66d9ef">is</span> CardType.Monster);
-
-    <span style="color:#75715e">// 針對指定場景加上適用規則，我個人比較喜歡這種
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">this</span>.When(card =&gt; card.CardType <span style="color:#66d9ef">is</span> CardType.Monster, () =&gt;
-    {
-        <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack).NotNull();
-    });
-
-    <span style="color:#75715e">// 以上兩種寫法是相同的，但我個人比較喜歡先 When 才指定規則
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 除了比較符合日常口語以外，也能把同樣場景的規則整理在一起
-</span><span style="color:#75715e"></span>}
-</code></pre></div><p>就像 if 有 else，這邊的 When 也有 Otherwise 來幫忙處理剩下的狀況</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> CardParameterValidator()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 目標：當 卡牌 是 怪獸卡 的時候，攻擊力不可為 Null </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 針對指定規則加上適用場景</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
+</span></span><span style="display:flex;"><span>        .NotNull()
+</span></span><span style="display:flex;"><span>        .When(card =&gt; card.CardType <span style="color:#66d9ef">is</span> CardType.Monster);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 針對指定場景加上適用規則，我個人比較喜歡這種</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.When(card =&gt; card.CardType <span style="color:#66d9ef">is</span> CardType.Monster, () =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack).NotNull();
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 以上兩種寫法是相同的，但我個人比較喜歡先 When 才指定規則</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 除了比較符合日常口語以外，也能把同樣場景的規則整理在一起</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>就像 if 有 else，這邊的 When 也有 Otherwise 來幫忙處理剩下的狀況</p>
 <p>假設我們除了怪獸卡以外的卡片，例如魔法卡之類的，都不應該有攻擊力，就可以這樣寫：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> CardParameterValidator()
-{
-    <span style="color:#75715e">// 目標：當 卡牌 是 怪獸卡 的時候，攻擊力不可為 Null
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 目標：當 卡牌 不是 怪獸卡 的時候，攻擊力必須為 Null
-</span><span style="color:#75715e"></span>
-    <span style="color:#66d9ef">this</span>.When(card =&gt; card.CardType <span style="color:#66d9ef">is</span> CardType.Monster, () =&gt;
-    {
-        <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack).NotNull();
-    })
-    .Otherwise(() =&gt;
-    {
-        <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack).Null();
-    });
-}
-</code></pre></div><h3 id="使用-withname-和-withmessage-來自訂驗證訊息">使用 WithName 和 WithMessage 來自訂驗證訊息</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> CardParameterValidator()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 目標：當 卡牌 是 怪獸卡 的時候，攻擊力不可為 Null</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 目標：當 卡牌 不是 怪獸卡 的時候，攻擊力必須為 Null</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.When(card =&gt; card.CardType <span style="color:#66d9ef">is</span> CardType.Monster, () =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack).NotNull();
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    .Otherwise(() =&gt;
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack).Null();
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="使用-withname-和-withmessage-來自訂驗證訊息">使用 WithName 和 WithMessage 來自訂驗證訊息</h3>
 <p>雖然內建的驗證規則都有提供制式的回傳訊息，例如對 Attack 做 <code>.GreaterThanOrEqualTo(0)</code> 驗證失敗時，會得到「&lsquo;Attack&rsquo; 必須大於或等於 &lsquo;0&rsquo;」的訊息</p>
 <p><img src="https://i.imgur.com/KIEDyhI.png" alt="Image"></p>
 <p>但我們也可以使用 <code>WithMessage</code> 來針對驗證規則指定失敗時的自訂訊息：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> CardParameterValidator()
-{
-    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
-        .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>)
-        .WithMessage(<span style="color:#e6db74">&#34;卡片的攻擊力不可為負數&#34;</span>);
-}
-</code></pre></div><p>這樣在驗證完的 ValidationResult 裡，就會變成我們指定了錯誤訊息了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> CardParameterValidator()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
+</span></span><span style="display:flex;"><span>        .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>        .WithMessage(<span style="color:#e6db74">&#34;卡片的攻擊力不可為負數&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這樣在驗證完的 ValidationResult 裡，就會變成我們指定了錯誤訊息了。</p>
 <p>那如果我們想用內建的訊息，但又希望「Attack」這個欄位名稱不要顯示出來，而是顯示我們要的「攻擊力」這個名稱呢？這時候就可以使用 <code>WithName()</code>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> CardParameterValidator()
-{
-    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
-        .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>)
-        .WithName(<span style="color:#e6db74">&#34;攻擊力&#34;</span>);
-}
-</code></pre></div><p>這樣原本的「&lsquo;Attack&rsquo; 必須大於或等於 &lsquo;0&rsquo;」，就會變成「&lsquo;攻擊力&rsquo; 必須大於或等於 &lsquo;0&rsquo;」囉！</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> CardParameterValidator()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
+</span></span><span style="display:flex;"><span>        .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>        .WithName(<span style="color:#e6db74">&#34;攻擊力&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這樣原本的「&lsquo;Attack&rsquo; 必須大於或等於 &lsquo;0&rsquo;」，就會變成「&lsquo;攻擊力&rsquo; 必須大於或等於 &lsquo;0&rsquo;」囉！</p>
 <p>當然，要把兩個結合起來用也是可以的，只要在字串加上 <code>{PropertyName}</code> 讓他去讀欄位名稱就好囉：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> CardParameterValidator()
-{
-    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
-        .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>)
-        .WithName(<span style="color:#e6db74">&#34;攻擊力&#34;</span>)
-        .WithMessage(<span style="color:#e6db74">&#34;卡片的{PropertyName}不可為負數&#34;</span>);
-}
-</code></pre></div><p>這樣就能拿到「卡片的攻擊力不可為負數」囉！</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> CardParameterValidator()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
+</span></span><span style="display:flex;"><span>        .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>        .WithName(<span style="color:#e6db74">&#34;攻擊力&#34;</span>)
+</span></span><span style="display:flex;"><span>        .WithMessage(<span style="color:#e6db74">&#34;卡片的{PropertyName}不可為負數&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這樣就能拿到「卡片的攻擊力不可為負數」囉！</p>
 <h3 id="使用-setvalidator-來指定成員的驗證器">使用 SetValidator 來指定成員的驗證器</h3>
 <p>我們前面說了許多針對欄位驗證的工具，但平常我們的類別內的成員有可能會是另一個類別。這時候我們就可以用 <code>SetValidator</code> 來指定該成員的驗證器。</p>
 <p>假設說我們的卡片怪獸現在能夠穿戴裝備了，同時我們也有裝備的 Validator：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
-{
-	<span style="color:#66d9ef">public</span> CardType Type { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-	
-	<span style="color:#66d9ef">public</span> Equipment Equipment { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>;} <span style="color:#75715e">// 可以穿裝備了！
-</span><span style="color:#75715e"></span>}
-
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Equipment</span> { }
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EquipmentValidator</span> : AbstractValidator&lt;Card&gt; { }
-</code></pre></div><p>這時候我們在寫規則的時候就可以：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> CardParameterValidator()
-{
-    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Equipment)
-        .SetValidator(<span style="color:#66d9ef">new</span> EquipmentValidator());
-}
-</code></pre></div><h3 id="指定-cascademodestop-來提早返回">指定 CascadeMode.Stop 來提早返回</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> CardType Type { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> Equipment Equipment { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>;} <span style="color:#75715e">// 可以穿裝備了！</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Equipment</span> { }
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EquipmentValidator</span> : AbstractValidator&lt;Card&gt; { }
+</span></span></code></pre></div><p>這時候我們在寫規則的時候就可以：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> CardParameterValidator()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Equipment)
+</span></span><span style="display:flex;"><span>        .SetValidator(<span style="color:#66d9ef">new</span> EquipmentValidator());
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="指定-cascademodestop-來提早返回">指定 CascadeMode.Stop 來提早返回</h3>
 <p>很多時候，我們並不需要全部的規則都驗證完才返回，而是只要檢查清單中的一項不符合，那就直接掰掰。這時我們就可以更改驗證器的 <code>CascadeMode</code>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> CardParameterValidator()
-{
-    <span style="color:#75715e">// 驗證失敗時即停止
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">this</span>.CascadeMode = FluentValidation.CascadeMode.Stop;
-
-    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
-        .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>);
-}
-</code></pre></div><p>CascadeMode 原先預設會是 <code>Continue</code>，也就是即使驗證失敗也會繼續執行</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> CardParameterValidator()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 驗證失敗時即停止</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.CascadeMode = FluentValidation.CascadeMode.Stop;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
+</span></span><span style="display:flex;"><span>        .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>CascadeMode 原先預設會是 <code>Continue</code>，也就是即使驗證失敗也會繼續執行</p>
 <p>例如說它可能一口氣犯了好幾條，就會全部驗證完再一併列出所有驗證失敗的項目：</p>
 <p><img src="https://i.imgur.com/ngLOMaE.png" alt="Image"></p>
 <p>當我們把驗證器的 CascadeMode 指定為 <code>Stop</code> 之後，犯第一條就會直接原地遣返：</p>
 <p><img src="https://i.imgur.com/deSUlPf.png" alt="Image"></p>
 <p>除了指定整個驗證器以外，我們也可以單獨指定某一條規則為天條：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> CardParameterValidator()
-{
-    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
-        .Cascade(CascadeMode.Stop)
-        .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>);
-}
-</code></pre></div><p>如此一來只要觸犯這條就會直接送客，皆大歡喜。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> CardParameterValidator()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
+</span></span><span style="display:flex;"><span>        .Cascade(CascadeMode.Stop)
+</span></span><span style="display:flex;"><span>        .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>如此一來只要觸犯這條就會直接送客，皆大歡喜。</p>
 <h3 id="將前述的規則實作成-validator">將前述的規則實作成 Validator</h3>
 <p>前面我們介紹了如何撰寫一個 Validator，是時候讓我們來處理文章最一開始的範例了！</p>
 <p>這邊附一下文章開頭的範例，也就是目前的卡牌系統 Controller 裡的新增卡片方法：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 新增卡片
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
-</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpPost]</span>
-<span style="color:#66d9ef">public</span> IActionResult Insert([FromBody] CardParameter parameter)
-{
-    <span style="color:#75715e">// 一堆檢查
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (parameter.Attack &lt; <span style="color:#ae81ff">0</span>)
-    {
-        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的攻擊力不可為負數&#34;</span>);
-    }
-
-    <span style="color:#66d9ef">if</span> (parameter.Health &lt; <span style="color:#ae81ff">0</span>)
-    {
-        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的生命值不可為負數&#34;</span>);
-    }
-
-    <span style="color:#66d9ef">if</span> (parameter.Cost &lt; <span style="color:#ae81ff">0</span>)
-    {
-        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的使用成本不可為負數&#34;</span>);
-    }
-
-    <span style="color:#66d9ef">if</span> (parameter.Description != <span style="color:#66d9ef">null</span> &amp;&amp;
-        parameter.Description.Length &gt; <span style="color:#ae81ff">30</span>)
-    {
-        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的敘述說明必須少於三十字&#34;</span>);
-    }
-
-    <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrWhiteSpace(parameter.Name))
-    {
-        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的名稱不可為空白&#34;</span>);
-    }
-
-    <span style="color:#66d9ef">if</span> (parameter.Name.Length &gt; <span style="color:#ae81ff">15</span>)
-    {
-        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的名稱必須少於十五字&#34;</span>);
-    }
-
-    <span style="color:#75715e">// 用 AutoMapper 把 Parameter Model 轉換成 Info Model
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;CardParameter, CardInfo&gt;(parameter);
-
-    <span style="color:#75715e">// 呼叫依賴的 Service 層寫入資料
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> isInsertSuccess = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.Insert(info);
-    <span style="color:#66d9ef">if</span> (isInsertSuccess)
-    {
-        <span style="color:#66d9ef">return</span> Ok();
-    }
-    <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
-}
-</code></pre></div><p>可以看到在範例中，我們針對一張新的卡牌，需要檢查的項目有：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 新增卡片</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpPost]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IActionResult Insert([FromBody] CardParameter parameter)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 一堆檢查</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (parameter.Attack &lt; <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的攻擊力不可為負數&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (parameter.Health &lt; <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的生命值不可為負數&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (parameter.Cost &lt; <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的使用成本不可為負數&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (parameter.Description != <span style="color:#66d9ef">null</span> &amp;&amp;
+</span></span><span style="display:flex;"><span>        parameter.Description.Length &gt; <span style="color:#ae81ff">30</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的敘述說明必須少於三十字&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrWhiteSpace(parameter.Name))
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的名稱不可為空白&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (parameter.Name.Length &gt; <span style="color:#ae81ff">15</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> BadRequest(<span style="color:#e6db74">&#34;卡片的名稱必須少於十五字&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 用 AutoMapper 把 Parameter Model 轉換成 Info Model</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>._mapper.Map&lt;CardParameter, CardInfo&gt;(parameter);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 呼叫依賴的 Service 層寫入資料</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> isInsertSuccess = <span style="color:#66d9ef">this</span>._cardService.Insert(info);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (isInsertSuccess)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Ok();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>可以看到在範例中，我們針對一張新的卡牌，需要檢查的項目有：</p>
 <ul>
 <li>攻擊力不可為負數</li>
 <li>生命值不可為負數</li>
@@ -453,126 +453,126 @@
 <li>名稱必須少於十五字</li>
 </ul>
 <p>現在讓我們建立 CardParameter 的 Validator，並用 RuleFor 加上這些規則吧：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// Card Parameter 的驗證器
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardParameterValidator</span> : AbstractValidator&lt;CardParameter&gt;
-{
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 驗證器的建構式: 在這裡註冊我們要驗證的規則
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> CardParameterValidator()
-    {
-        <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
-            .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>);
-
-        <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Health)
-            .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>);
-
-        <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Cost)
-            .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>);
-
-        <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Description)
-            .NotNull()
-            .MaximumLength(<span style="color:#ae81ff">30</span>);
-
-        <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Name)
-            .NotEmpty()
-            .MaximumLength(<span style="color:#ae81ff">15</span>);
-    }
-}
-</code></pre></div><p>可以感覺到比起整串 if/else，這邊整理得更加簡短、也更加口語了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// Card Parameter 的驗證器</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardParameterValidator</span> : AbstractValidator&lt;CardParameter&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 驗證器的建構式: 在這裡註冊我們要驗證的規則</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> CardParameterValidator()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Attack)
+</span></span><span style="display:flex;"><span>            .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Health)
+</span></span><span style="display:flex;"><span>            .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Cost)
+</span></span><span style="display:flex;"><span>            .GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Description)
+</span></span><span style="display:flex;"><span>            .NotNull()
+</span></span><span style="display:flex;"><span>            .MaximumLength(<span style="color:#ae81ff">30</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Name)
+</span></span><span style="display:flex;"><span>            .NotEmpty()
+</span></span><span style="display:flex;"><span>            .MaximumLength(<span style="color:#ae81ff">15</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>可以感覺到比起整串 if/else，這邊整理得更加簡短、也更加口語了。</p>
 <h2 id="使用-validator-進行驗證">使用 Validator 進行驗證</h2>
 <p>現在我們已經準備好了 Validator 了，讓我們回到原本的 Controller 來使用它吧！</p>
 <p>首先讓我們把原本的 if/else 部分移除：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 新增卡片
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
-</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpPost]</span>
-<span style="color:#66d9ef">public</span> IActionResult Insert(
-<span style="color:#a6e22e">    [FromBody]</span> CardParameter parameter)
-{
-    <span style="color:#75715e">// 這邊需要對參數做檢查
-</span><span style="color:#75715e"></span>
-    <span style="color:#75715e">// 用 AutoMapper 轉換 Model
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;CardParameter,CardInfo&gt;(parameter);
-
-    <span style="color:#75715e">// 呼叫 Service 層寫入資料
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> isInsertSuccess = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.Insert(info);
-    <span style="color:#66d9ef">if</span> (isInsertSuccess)
-    {
-        <span style="color:#66d9ef">return</span> Ok();
-    }
-    <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
-}
-</code></pre></div><p>接著讓我們直接建立一個驗證器出來使用，並且用 <code>Validate</code> 來驗證參數：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> validator = <span style="color:#66d9ef">new</span> CardParameterValidator();
-<span style="color:#66d9ef">var</span> validationResult = validator.Validate(parameter);
-</code></pre></div><p>加上驗證器的樣子是像這樣的：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 新增卡片
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
-</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpPost]</span>
-<span style="color:#66d9ef">public</span> IActionResult Insert(
-<span style="color:#a6e22e">    [FromBody]</span> CardParameter parameter)
-{
-    <span style="color:#75715e">// 這邊需要對參數做檢查
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> validator = <span style="color:#66d9ef">new</span> CardParameterValidator();
-    <span style="color:#66d9ef">var</span> validationResult = validator.Validate(parameter);
-
-    <span style="color:#75715e">// 用 AutoMapper 把 Parameter Model 轉換成 Info Model
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;CardParameter, CardInfo&gt;(parameter);
-
-    <span style="color:#75715e">// 呼叫依賴的 Service 層寫入資料
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> isInsertSuccess = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.Insert(info);
-    <span style="color:#66d9ef">if</span> (isInsertSuccess)
-    {
-        <span style="color:#66d9ef">return</span> Ok();
-    }
-    <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
-}
-</code></pre></div><p>接著我們就可以使用 <code>Validate</code> 回傳的 <code>ValidationResult</code> 來看驗證結果。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 新增卡片</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpPost]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IActionResult Insert(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromBody]</span> CardParameter parameter)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 這邊需要對參數做檢查</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 用 AutoMapper 轉換 Model</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>._mapper.Map&lt;CardParameter,CardInfo&gt;(parameter);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 呼叫 Service 層寫入資料</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> isInsertSuccess = <span style="color:#66d9ef">this</span>._cardService.Insert(info);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (isInsertSuccess)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Ok();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著讓我們直接建立一個驗證器出來使用，並且用 <code>Validate</code> 來驗證參數：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> validator = <span style="color:#66d9ef">new</span> CardParameterValidator();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> validationResult = validator.Validate(parameter);
+</span></span></code></pre></div><p>加上驗證器的樣子是像這樣的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 新增卡片</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpPost]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IActionResult Insert(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromBody]</span> CardParameter parameter)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 這邊需要對參數做檢查</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> validator = <span style="color:#66d9ef">new</span> CardParameterValidator();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> validationResult = validator.Validate(parameter);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 用 AutoMapper 把 Parameter Model 轉換成 Info Model</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>._mapper.Map&lt;CardParameter, CardInfo&gt;(parameter);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 呼叫依賴的 Service 層寫入資料</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> isInsertSuccess = <span style="color:#66d9ef">this</span>._cardService.Insert(info);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (isInsertSuccess)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Ok();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著我們就可以使用 <code>Validate</code> 回傳的 <code>ValidationResult</code> 來看驗證結果。</p>
 <p>先讓我們用 Linqpad 的小範例把 <code>ValidationResult</code> 的內容印出來看看：</p>
 <p><img src="https://i.imgur.com/UcBHhci.png" alt="Image"></p>
 <p>可以看到，<code>IsValid</code> 會告訴我們是不是有通過驗證。如果沒有通過驗證的話，<code>Errors</code> 就會有驗證失敗的內容。</p>
 <p>現在讓我們加上驗證結果的檢查吧：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 新增卡片
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
-</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpPost]</span>
-<span style="color:#66d9ef">public</span> IActionResult Insert(
-<span style="color:#a6e22e">    [FromBody]</span> CardParameter parameter)
-{
-    <span style="color:#75715e">// 這邊需要對參數做檢查
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> validator = <span style="color:#66d9ef">new</span> CardParameterValidator();
-    <span style="color:#66d9ef">var</span> validationResult = validator.Validate(parameter);
-
-    <span style="color:#75715e">// 如果沒有通過檢查，就把訊息串一串丟回去
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (validationResult.IsValid <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">false</span>)
-    {
-        <span style="color:#66d9ef">var</span> errorMessages = validationResult.Errors.Select(e =&gt; e.ErrorMessage);
-        <span style="color:#66d9ef">var</span> resultMessage = <span style="color:#66d9ef">string</span>.Join(<span style="color:#e6db74">&#34;,&#34;</span>, errorMessages);
-        <span style="color:#66d9ef">return</span> BadRequest(resultMessage); <span style="color:#75715e">// 直接回傳 400 + 錯誤訊息
-</span><span style="color:#75715e"></span>    }
-
-    <span style="color:#75715e">// 用 AutoMapper 把 Parameter Model 轉換成 Info Model
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;CardParameter, CardInfo&gt;(parameter);
-
-    <span style="color:#75715e">// 呼叫依賴的 Service 層寫入資料
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> isInsertSuccess = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.Insert(info);
-    <span style="color:#66d9ef">if</span> (isInsertSuccess)
-    {
-        <span style="color:#66d9ef">return</span> Ok();
-    }
-    <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
-}
-</code></pre></div><p>現在讓我們來呼叫 API 試試吧！</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 新增卡片</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpPost]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IActionResult Insert(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromBody]</span> CardParameter parameter)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 這邊需要對參數做檢查</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> validator = <span style="color:#66d9ef">new</span> CardParameterValidator();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> validationResult = validator.Validate(parameter);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果沒有通過檢查，就把訊息串一串丟回去</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (validationResult.IsValid <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">false</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> errorMessages = validationResult.Errors.Select(e =&gt; e.ErrorMessage);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> resultMessage = <span style="color:#66d9ef">string</span>.Join(<span style="color:#e6db74">&#34;,&#34;</span>, errorMessages);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> BadRequest(resultMessage); <span style="color:#75715e">// 直接回傳 400 + 錯誤訊息</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 用 AutoMapper 把 Parameter Model 轉換成 Info Model</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>._mapper.Map&lt;CardParameter, CardInfo&gt;(parameter);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 呼叫依賴的 Service 層寫入資料</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> isInsertSuccess = <span style="color:#66d9ef">this</span>._cardService.Insert(info);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (isInsertSuccess)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Ok();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>現在讓我們來呼叫 API 試試吧！</p>
 <p>這邊直接使用先前建置好的 <a href="/post/2021/05/newbie-4-swagger/">Swagger</a> 頁面來測試，並且故意把攻擊力打成負數：</p>
 <p><img src="https://i.imgur.com/dL34bdN.png" alt="Image"></p>
 <p><img src="https://i.imgur.com/omN0dax.png" alt="Image"></p>
@@ -580,34 +580,34 @@
 <h2 id="註冊-validator-來自動進行驗證">註冊 Validator 來自動進行驗證</h2>
 <p>不過都已經到了 .net Core 時代，<a href="/post/2021/11/newbie-6-dependency-injection/">依賴注入</a> 已經是內建的功能下，還要用 <code>new</code> 一個驗證器這種直接依賴的方式還是有點不太舒服……所以 Fluent Validation 也有提供自動驗證的作法！</p>
 <p>首先讓我們到熟悉的 <code>Startup.cs</code> → <code>ConfigureServices</code> 進行註冊：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddFluentValidation();
-services.AddTransient&lt;IValidator&lt;CardParameter&gt;, CardParameterValidator&gt;();
-</code></pre></div><p>補充：如果不想明確註冊每個類別的 Validator，也可以直接在 <code>AddFluentValidation</code> 的時候，使用反射組件自動註冊的方式來抓該組件底下所有的 Validator，比較不怕出錯、也更方便：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddFluentValidation(fv =&gt; fv.RegisterValidatorsFromAssemblyContaining&lt;Startup&gt;());
-</code></pre></div><p>註冊好了之後就讓我們回到 Controller，並大膽地把驗證器相關的部分刪掉吧：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 新增卡片
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
-</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpPost]</span>
-<span style="color:#66d9ef">public</span> IActionResult Insert(
-<span style="color:#a6e22e">    [FromBody]</span> CardParameter parameter)
-{
-    <span style="color:#75715e">// 將原本的參數檢查刪掉了！
-</span><span style="color:#75715e"></span>
-    <span style="color:#75715e">// 用 AutoMapper 把 Parameter Model 轉換成 Info Model
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;CardParameter, CardInfo&gt;(parameter);
-
-    <span style="color:#75715e">// 呼叫依賴的 Service 層寫入資料
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> isInsertSuccess = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.Insert(info);
-    <span style="color:#66d9ef">if</span> (isInsertSuccess)
-    {
-        <span style="color:#66d9ef">return</span> Ok();
-    }
-    <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
-}
-</code></pre></div><p>然後讓我們用 Swagger 再試一次看看：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddFluentValidation();
+</span></span><span style="display:flex;"><span>services.AddTransient&lt;IValidator&lt;CardParameter&gt;, CardParameterValidator&gt;();
+</span></span></code></pre></div><p>補充：如果不想明確註冊每個類別的 Validator，也可以直接在 <code>AddFluentValidation</code> 的時候，使用反射組件自動註冊的方式來抓該組件底下所有的 Validator，比較不怕出錯、也更方便：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddFluentValidation(fv =&gt; fv.RegisterValidatorsFromAssemblyContaining&lt;Startup&gt;());
+</span></span></code></pre></div><p>註冊好了之後就讓我們回到 Controller，並大膽地把驗證器相關的部分刪掉吧：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 新增卡片</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpPost]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IActionResult Insert(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromBody]</span> CardParameter parameter)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 將原本的參數檢查刪掉了！</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 用 AutoMapper 把 Parameter Model 轉換成 Info Model</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>._mapper.Map&lt;CardParameter, CardInfo&gt;(parameter);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 呼叫依賴的 Service 層寫入資料</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> isInsertSuccess = <span style="color:#66d9ef">this</span>._cardService.Insert(info);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (isInsertSuccess)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Ok();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>然後讓我們用 Swagger 再試一次看看：</p>
 <p><img src="https://i.imgur.com/YLRkBg0.png" alt="Image"></p>
 <p>可以看到 Fluent Validation 自動幫我們擋了下來！</p>
 <h2 id="小結">小結</h2>
@@ -679,132 +679,132 @@ services.AddTransient&lt;IValidator&lt;CardParameter&gt;, CardParameterValidator
 <li><a href="/post/2022/03/newbie-7-fluent-validation">菜雞新訓記 (7): 使用 FluentValidation 來驗證傳入參數吧</a></li>
 </ul>
 <h2 id="附錄fluentvalidation-內建驗證方法-小抄">附錄：FluentValidation 內建驗證方法 小抄</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">void</span> Main()
-{
-    <span style="color:#66d9ef">var</span> sut = <span style="color:#66d9ef">new</span> Card
-    {
-        Cost = <span style="color:#ae81ff">10</span>,
-        Name = <span style="color:#e6db74">&#34;Blue-Eyes White Dragon&#34;</span>,
-        Type = CardType.Monster
-    };
-    
-    <span style="color:#66d9ef">var</span> validator = <span style="color:#66d9ef">new</span> CardValidator();
-    <span style="color:#66d9ef">var</span> result = validator.Validate(sut);
-    
-    result.Dump();
-}
-
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
-{
-    <span style="color:#66d9ef">public</span> CardType Type { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> CardType
-{
-    Monster = <span style="color:#ae81ff">0</span>
-}
-
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardValidator</span> : AbstractValidator&lt;Card&gt;
-{
-    <span style="color:#66d9ef">public</span> CardValidator()
-    {
-        <span style="color:#75715e">// Fluent Validation 的 驗證器請參照
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">// https://docs.fluentvalidation.net/en/latest/built-in-validators.html
-</span><span style="color:#75715e"></span>
-		<span style="color:#75715e">// 驗證失敗時即停止
-</span><span style="color:#75715e"></span>		<span style="color:#75715e">//this.CascadeMode = FluentValidation.CascadeMode.Stop;
-</span><span style="color:#75715e"></span>
-        <span style="color:#75715e">// 為了示範所以做成變數，平時可以直接 RuleFor().XXX() 串接驗證器即可
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">var</span> name = <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Name);
-        <span style="color:#66d9ef">var</span> cost = <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Cost);
-        <span style="color:#66d9ef">var</span> type = <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Type);
-
-        <span style="color:#75715e">// 不可為 Null    
-</span><span style="color:#75715e"></span>        name.NotNull();
-        
-        <span style="color:#75715e">// 必須為 Null
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">//name.Null();
-</span><span style="color:#75715e"></span>        
-        <span style="color:#75715e">// 不可為空
-</span><span style="color:#75715e"></span>        name.NotEmpty();
-        
-        <span style="color:#75715e">// 必須為空
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">//name.Empty();
-</span><span style="color:#75715e"></span>        
-        <span style="color:#75715e">// 不可相同
-</span><span style="color:#75715e"></span>        name.NotEqual(<span style="color:#e6db74">&#34;Test Card&#34;</span>);
-
-        <span style="color:#75715e">// 不可相同：也支持 StringComparer
-</span><span style="color:#75715e"></span>        name.NotEqual(<span style="color:#e6db74">&#34;Test Card&#34;</span>, StringComparer.OrdinalIgnoreCase);
-        
-        <span style="color:#75715e">// 不可相同：也可以比較其他欄位（大多驗證器都支援）
-</span><span style="color:#75715e"></span>        name.NotEqual(card =&gt; card.Type.ToString());
-        
-        <span style="color:#75715e">// 必須相同，其餘用法可參考 NotEqual
-</span><span style="color:#75715e"></span>        name.Equal(<span style="color:#e6db74">&#34;Blue-Eyes White Dragon&#34;</span>);
-        
-        <span style="color:#75715e">// 長度限制，限定１～２００
-</span><span style="color:#75715e"></span>        name.Length(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">200</span>);
-        
-        <span style="color:#75715e">// 最大長度限制
-</span><span style="color:#75715e"></span>        name.MaximumLength(<span style="color:#ae81ff">200</span>);
-        
-        <span style="color:#75715e">// 最小長度限制
-</span><span style="color:#75715e"></span>        name.MinimumLength(<span style="color:#ae81ff">0</span>);
-        
-        <span style="color:#75715e">// 數值需低於目標值
-</span><span style="color:#75715e"></span>        cost.LessThan(<span style="color:#ae81ff">11</span>);
-        
-        <span style="color:#75715e">// 數值需低於或等於目標值
-</span><span style="color:#75715e"></span>        cost.LessThanOrEqualTo(<span style="color:#ae81ff">10</span>);
-        
-        <span style="color:#75715e">// 數值需高於目標值
-</span><span style="color:#75715e"></span>        cost.GreaterThan(<span style="color:#ae81ff">0</span>);
-        
-        <span style="color:#75715e">// 數值需高於或等於目標值
-</span><span style="color:#75715e"></span>        cost.GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>);
-        
-        <span style="color:#75715e">// 數值需介於兩個目標值之間
-</span><span style="color:#75715e"></span>        cost.ExclusiveBetween(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">11</span>);
-        
-        <span style="color:#75715e">// 數值需介於兩個目標值之間（包含目標值）
-</span><span style="color:#75715e"></span>        cost.InclusiveBetween(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">10</span>);
-        
-        <span style="color:#75715e">// 檢查是否具有指定的位數，例如 (1, 4) = 小數點限１位、總位數限４位
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span>.RuleFor(x =&gt; (<span style="color:#66d9ef">decimal</span>)x.Cost).ScalePrecision(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2</span>);
-        
-        <span style="color:#75715e">// 正則表達式
-</span><span style="color:#75715e"></span>        name.Matches(<span style="color:#e6db74">@&#34;^[a-zA-Z-&#39; ]*$&#34;</span>);
-        
-        <span style="color:#75715e">// 必須為信箱格式
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">//name.EmailAddress();
-</span><span style="color:#75715e"></span>        
-        <span style="color:#75715e">// 必須為信用卡格式
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">//name.CreditCard();
-</span><span style="color:#75715e"></span>        
-        <span style="color:#75715e">// 必須包含在列舉中
-</span><span style="color:#75715e"></span>        type.IsInEnum();
-
-        <span style="color:#75715e">// 必須包含在列舉名稱中
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">//name.IsEnumName(typeof(CardType));
-</span><span style="color:#75715e"></span>        
-        <span style="color:#75715e">// 指定驗證場景
-</span><span style="color:#75715e"></span>        cost.GreaterThan(<span style="color:#ae81ff">0</span>).When(card =&gt; card.Type <span style="color:#66d9ef">is</span> CardType.Monster);
-
-        <span style="color:#75715e">// 指定驗證場景
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span>.When(card =&gt; card.Type <span style="color:#66d9ef">is</span> CardType.Monster, () =&gt;
-        {
-            cost.GreaterThan(<span style="color:#ae81ff">0</span>);
-        });
-        <span style="color:#75715e">// .Otherwise(() =&gt; { cost.GreaterThan(0); });
-</span><span style="color:#75715e"></span>
-        <span style="color:#75715e">// 最終大絕招：自訂驗證器
-</span><span style="color:#75715e"></span>        cost.Must(power =&gt; power &gt; <span style="color:#ae81ff">0</span> &amp;&amp; power &lt;= <span style="color:#ae81ff">3000</span>);
-    }
-}
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> sut = <span style="color:#66d9ef">new</span> Card
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Cost = <span style="color:#ae81ff">10</span>,
+</span></span><span style="display:flex;"><span>        Name = <span style="color:#e6db74">&#34;Blue-Eyes White Dragon&#34;</span>,
+</span></span><span style="display:flex;"><span>        Type = CardType.Monster
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> validator = <span style="color:#66d9ef">new</span> CardValidator();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> result = validator.Validate(sut);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    result.Dump();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> CardType Type { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> CardType
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Monster = <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardValidator</span> : AbstractValidator&lt;Card&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> CardValidator()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Fluent Validation 的 驗證器請參照</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// https://docs.fluentvalidation.net/en/latest/built-in-validators.html</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 驗證失敗時即停止</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">//this.CascadeMode = FluentValidation.CascadeMode.Stop;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 為了示範所以做成變數，平時可以直接 RuleFor().XXX() 串接驗證器即可</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> name = <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Name);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> cost = <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Cost);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> type = <span style="color:#66d9ef">this</span>.RuleFor(card =&gt; card.Type);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 不可為 Null    </span>
+</span></span><span style="display:flex;"><span>        name.NotNull();
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 必須為 Null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//name.Null();</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 不可為空</span>
+</span></span><span style="display:flex;"><span>        name.NotEmpty();
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 必須為空</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//name.Empty();</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 不可相同</span>
+</span></span><span style="display:flex;"><span>        name.NotEqual(<span style="color:#e6db74">&#34;Test Card&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 不可相同：也支持 StringComparer</span>
+</span></span><span style="display:flex;"><span>        name.NotEqual(<span style="color:#e6db74">&#34;Test Card&#34;</span>, StringComparer.OrdinalIgnoreCase);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 不可相同：也可以比較其他欄位（大多驗證器都支援）</span>
+</span></span><span style="display:flex;"><span>        name.NotEqual(card =&gt; card.Type.ToString());
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 必須相同，其餘用法可參考 NotEqual</span>
+</span></span><span style="display:flex;"><span>        name.Equal(<span style="color:#e6db74">&#34;Blue-Eyes White Dragon&#34;</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 長度限制，限定１～２００</span>
+</span></span><span style="display:flex;"><span>        name.Length(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">200</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 最大長度限制</span>
+</span></span><span style="display:flex;"><span>        name.MaximumLength(<span style="color:#ae81ff">200</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 最小長度限制</span>
+</span></span><span style="display:flex;"><span>        name.MinimumLength(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 數值需低於目標值</span>
+</span></span><span style="display:flex;"><span>        cost.LessThan(<span style="color:#ae81ff">11</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 數值需低於或等於目標值</span>
+</span></span><span style="display:flex;"><span>        cost.LessThanOrEqualTo(<span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 數值需高於目標值</span>
+</span></span><span style="display:flex;"><span>        cost.GreaterThan(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 數值需高於或等於目標值</span>
+</span></span><span style="display:flex;"><span>        cost.GreaterThanOrEqualTo(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 數值需介於兩個目標值之間</span>
+</span></span><span style="display:flex;"><span>        cost.ExclusiveBetween(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">11</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 數值需介於兩個目標值之間（包含目標值）</span>
+</span></span><span style="display:flex;"><span>        cost.InclusiveBetween(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 檢查是否具有指定的位數，例如 (1, 4) = 小數點限１位、總位數限４位</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.RuleFor(x =&gt; (<span style="color:#66d9ef">decimal</span>)x.Cost).ScalePrecision(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 正則表達式</span>
+</span></span><span style="display:flex;"><span>        name.Matches(<span style="color:#e6db74">@&#34;^[a-zA-Z-&#39; ]*$&#34;</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 必須為信箱格式</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//name.EmailAddress();</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 必須為信用卡格式</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//name.CreditCard();</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 必須包含在列舉中</span>
+</span></span><span style="display:flex;"><span>        type.IsInEnum();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 必須包含在列舉名稱中</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//name.IsEnumName(typeof(CardType));</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 指定驗證場景</span>
+</span></span><span style="display:flex;"><span>        cost.GreaterThan(<span style="color:#ae81ff">0</span>).When(card =&gt; card.Type <span style="color:#66d9ef">is</span> CardType.Monster);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 指定驗證場景</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.When(card =&gt; card.Type <span style="color:#66d9ef">is</span> CardType.Monster, () =&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            cost.GreaterThan(<span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// .Otherwise(() =&gt; { cost.GreaterThan(0); });</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 最終大絕招：自訂驗證器</span>
+</span></span><span style="display:flex;"><span>        cost.Must(power =&gt; power &gt; <span style="color:#ae81ff">0</span> &amp;&amp; power &lt;= <span style="color:#ae81ff">3000</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>
                         </div>
 
                         

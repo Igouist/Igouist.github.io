@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -354,198 +354,197 @@
 <h3 id="範例專案背景">範例專案背景</h3>
 <p>接著回到專案的介紹，如果並不是很在乎專案狀況，而是想看實作過程的朋友，請跳到 <a href="#%E5%BB%BA%E7%AB%8B%E5%88%86%E5%B1%A4">建立分層</a> 繼續閱讀。</p>
 <p>我們會使用這個系列的 ProjectN 專案繼續操作。該專案在先前的 <a href="/post/2021/05/newbie-2-webapi/">Api</a> 和 <a href="/post/2021/05/newbie-3-dapper/">Dapper</a> 章節中，已經建立了一個對卡牌資料表進行 CRUD 的 <code>CardController</code>。詳細部份就不附了（畢竟這篇都會打掉嘛）大致上長這樣：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#a6e22e">[ApiController]</span>
-<span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
-</span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
-{
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片列表
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpGet]</span>
-<span style="color:#a6e22e">    [Produces(&#34;application/json&#34;)]</span>
-    <span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetList()
-    {
-        <span style="color:#75715e">// 查詢卡片的一些操作
-</span><span style="color:#75715e"></span>    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;     
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpGet]</span>
-<span style="color:#a6e22e">    [Produces(&#34;application/json&#34;)]</span>
-<span style="color:#a6e22e">    [ProducesResponseType(typeof(CardViewModel), 200)]</span>
-<span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
-    <span style="color:#66d9ef">public</span> CardViewModel Get(
-<span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id)
-    {
-        <span style="color:#75715e">// 查詢指定 ID 的卡片的一些操作
-</span><span style="color:#75715e"></span>    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 新增卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpPost]</span>
-    <span style="color:#66d9ef">public</span> IActionResult Insert(
-<span style="color:#a6e22e">        [FromBody]</span> CardParameter parameter)
-    {
-        <span style="color:#75715e">// 新增卡片的一些操作
-</span><span style="color:#75715e"></span>    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 更新卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpPut]</span>
-<span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
-    <span style="color:#66d9ef">public</span> IActionResult Update(
-<span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id,
-<span style="color:#a6e22e">        [FromBody]</span> CardParameter parameter)
-    {
-        <span style="color:#75715e">// 更新卡片的一些操作
-</span><span style="color:#75715e"></span>    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 刪除卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpDelete]</span>
-<span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
-    <span style="color:#66d9ef">public</span> IActionResult Delete(
-<span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id)
-    {
-        <span style="color:#75715e">// 刪除卡片的一些操作
-</span><span style="color:#75715e"></span>    }
-}
-
-</code></pre></div><p>其中用來回傳顯示卡片內容的 Card 類別為了和分層的 DTO 命名一致，已經改為 <code>CardViewModel</code>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 卡片
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardViewModel</span>
-{
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 卡片編號
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 卡片名稱
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 卡片描述
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 攻擊力
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 血量
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 花費
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-</code></pre></div><p>以及當新增及修改卡片時使用的 <code>CardParameter</code></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 卡片參數
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardParameter</span>
-{
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 卡片名稱
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 卡片描述
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 攻擊力
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 血量
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 花費
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-</code></pre></div><p>如果像本節開頭提到的，並沒有切分查詢和傳入的 DTO 時，這兩個就有可能使用同一個 Model，遇到這種狀況還請不要太驚慌了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 查詢卡片列表</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Produces(&#34;application/json&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetList()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 查詢卡片的一些操作</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 查詢卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;     </span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Produces(&#34;application/json&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [ProducesResponseType(typeof(CardViewModel), 200)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> CardViewModel Get(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 查詢指定 ID 的卡片的一些操作</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 新增卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpPost]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IActionResult Insert(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [FromBody]</span> CardParameter parameter)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 新增卡片的一些操作</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 更新卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpPut]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IActionResult Update(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [FromBody]</span> CardParameter parameter)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 更新卡片的一些操作</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 刪除卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpDelete]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IActionResult Delete(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 刪除卡片的一些操作</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>其中用來回傳顯示卡片內容的 Card 類別為了和分層的 DTO 命名一致，已經改為 <code>CardViewModel</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 卡片</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardViewModel</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 卡片編號</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 卡片名稱</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 卡片描述</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 攻擊力</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 血量</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 花費</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>以及當新增及修改卡片時使用的 <code>CardParameter</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 卡片參數</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardParameter</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 卡片名稱</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 卡片描述</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 攻擊力</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 血量</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 花費</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>如果像本節開頭提到的，並沒有切分查詢和傳入的 DTO 時，這兩個就有可能使用同一個 Model，遇到這種狀況還請不要太驚慌了。</p>
 <p>不過既然已經提到說不採用共用 Model 而是全部獨立的原因是「常會有多條件的查詢參數」之類的，這邊就補一下查詢列表用的參數吧。</p>
 <p>如此如此，在 <code>Parameter</code> 資料夾下新增了一個 <code>CardSearchParameter</code>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 卡片搜尋參數
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardSearchParameter</span>
-{
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 卡片名稱
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 攻擊力下限
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinAttack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 攻擊力上限
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxAttack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 血量下限
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinHealth { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 血量上限
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxHealth { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 花費值下限
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinCost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 花費值上限
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxCost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-</code></pre></div><p>請注意因為參數是選填的，所以部分欄位使用的是 Nullable。畢竟在卡牌遊戲中，想查詢「攻擊力３以下的卡片」是很平常的需求嘛。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 卡片搜尋參數</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardSearchParameter</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 卡片名稱</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 攻擊力下限</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinAttack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 攻擊力上限</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxAttack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 血量下限</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinHealth { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 血量上限</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxHealth { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 花費值下限</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinCost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 花費值上限</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxCost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>請注意因為參數是選填的，所以部分欄位使用的是 Nullable。畢竟在卡牌遊戲中，想查詢「攻擊力３以下的卡片」是很平常的需求嘛。</p>
 <p>接著這個參數就放回到 <code>CardController</code> 的 <code>GetList()</code> 裡面作為參數吧：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 查詢卡片列表
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpGet]</span>
-<span style="color:#a6e22e">[Produces(&#34;application/json&#34;)]</span>
-<span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetList(
-<span style="color:#a6e22e">    [FromQuery]</span> CardSearchParameter parameter)
-{
-        <span style="color:#75715e">// 查詢卡片的一些操作
-</span><span style="color:#75715e"></span>}
-</code></pre></div><p>畢竟是 GET 方法，標示一下 FromQuery 才是好習慣呦。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 查詢卡片列表</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpGet]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Produces(&#34;application/json&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetList(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromQuery]</span> CardSearchParameter parameter)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 查詢卡片的一些操作</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>畢竟是 GET 方法，標示一下 FromQuery 才是好習慣呦。</p>
 <p>到這邊就說明完目前的專案狀況了，讓我們捲起袖子，開始切分層吧！</p>
 <h3 id="建立分層">建立分層</h3>
 <p>接著讓我們先來建立分層吧，這邊採用建立「類別庫」的方式來分層，對於一些比較小的專案，使用資料夾來分層也是沒有問題的。</p>
@@ -594,176 +593,176 @@
 <p><img src="https://i.imgur.com/vr5RTrG.png" alt="image-20210921194022072"></p>
 <p><img src="https://i.imgur.com/CAMytoF.png" alt="image-20210921194110374"></p>
 <p>如此一來就會建立一個空的介面。啊，記得加上 <code>Public</code> 呦。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 卡片管理服務
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> ICardService
-{
-
-}
-</code></pre></div><p>接著讓我們補上 CRUD 的五個方法，如果是去 Controller 複製的朋友要注意這邊的 DTO 已經不同囉：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 卡片管理服務
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> ICardService
-{
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片列表
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    IEnumerable&lt;CardResultModel&gt; GetList(CardSearchInfo info);
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;   
-</span><span style="color:#75715e"></span>    CardResultModel Get(<span style="color:#66d9ef">int</span> id);
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 新增卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">bool</span> Insert(CardInfo info);
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 更新卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">bool</span> Update(<span style="color:#66d9ef">int</span> id, CardInfo info);
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 刪除卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">bool</span> Delete(<span style="color:#66d9ef">int</span> id);
-}
-</code></pre></div><p>因為我們還沒建立對應的 DTO，所以會有紅字也是正常的。我個人平常都是邊捏介面邊開 DTO 就是了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 卡片管理服務</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ICardService</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著讓我們補上 CRUD 的五個方法，如果是去 Controller 複製的朋友要注意這邊的 DTO 已經不同囉：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 卡片管理服務</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ICardService</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 查詢卡片列表</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    IEnumerable&lt;CardResultModel&gt; GetList(CardSearchInfo info);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 查詢卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;   </span>
+</span></span><span style="display:flex;"><span>    CardResultModel Get(<span style="color:#66d9ef">int</span> id);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 新增卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> Insert(CardInfo info);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 更新卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> Update(<span style="color:#66d9ef">int</span> id, CardInfo info);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 刪除卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> Delete(<span style="color:#66d9ef">int</span> id);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>因為我們還沒建立對應的 DTO，所以會有紅字也是正常的。我個人平常都是邊捏介面邊開 DTO 就是了。</p>
 <p>畢竟<strong>介面就是各層之間溝通的契約，傳遞的 DTO 當然也就是契約內容了</strong>。所以在決定這功能要幹嘛的時候就會順便捏起來。</p>
 <p>綜上所述，接著就讓我們來把 DTO 補上吧，因為我們只有 Card 一條線，所以這裡的 DTO 就會是對應展示層的那三個 DTO，反過來說也就是說，如果你的架構裡會有多個 Service 互相協作，或是 Service 需要從多個 Repository 取得資料的話，<strong>諸如此類需要多個部份互相配合的時侯，DTO 就不一定會是和上一層對照起來的了</strong>。這一點還請注意。</p>
 <p>畢竟這個範例只有單線，已經是最最最簡單的狀況了，還是有蠻多亂七八糟的地方是難以表達的…屆時再請各位切身體會了。</p>
 <p>所以請容我再貼一次九成像的 DTO 吧 XD。此外，因為都九成像了，呈現的時候就先不加上欄位註解囉。</p>
 <p>關於存放的位置，我個人習慣會再開一個 <code>Models</code> 或是 <code>Dtos</code> 的資料夾來放這些 DTO，如果功能比較多的就再多一層做個分類。本範例的 DTO 路徑如註解。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// ProjectN.Service.Dtos.ResultModel
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardResultModel</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-
-
-<span style="color:#75715e">// ProjectN.Service.Dtos.Info
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardInfo</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-
-
-<span style="color:#75715e">// ProjectN.Service.Dtos.Info
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardSearchInfo</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinAttack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxAttack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinHealth { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxHealth { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinCost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxCost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-</code></pre></div><p>不要忘了要回到 Interface 的地方好好 using 進來呦：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// ProjectN.Service.Dtos.ResultModel</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardResultModel</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ProjectN.Service.Dtos.Info</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardInfo</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ProjectN.Service.Dtos.Info</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardSearchInfo</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinAttack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxAttack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinHealth { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxHealth { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinCost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxCost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>不要忘了要回到 Interface 的地方好好 using 進來呦：</p>
 <p><img src="https://i.imgur.com/vJSR9Qo.png" alt="image-20210921200741002"></p>
 <p>現在我們的 Service 層應該會是這個樣子的：</p>
 <p><img src="https://i.imgur.com/ScSGHFK.png" alt="image-20210921200831418"></p>
 <p>接著就讓我們用同樣的節奏來處理 Repository 吧。</p>
 <p>首先仍然是先建立一個 <code>Interface</code> 資料夾、建立一個 <code>ICardRepository</code>，並加上我們的 CRUD 五天王：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 卡片管理服務
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> ICardRepository
-{
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片列表
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    IEnumerable&lt;CardDataModel&gt; GetList(CardSearchCondition info);
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;   
-</span><span style="color:#75715e"></span>    CardDataModel Get(<span style="color:#66d9ef">int</span> id);
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 新增卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">bool</span> Insert(CardCondition info);
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 更新卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">bool</span> Update(<span style="color:#66d9ef">int</span> id, CardCondition info);
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 刪除卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">bool</span> Delete(<span style="color:#66d9ef">int</span> id);
-}
-</code></pre></div><p>接著是我們的 DTO 們：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// ProjectN.Repository.Dtos.DataModel
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardDataModel</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-
-
-<span style="color:#75715e">// ProjectN.Repository.Dtos.Condition
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardCondition</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-
-
-<span style="color:#75715e">// ProjectN.Repository.Dtos.Condition
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardSearchCondition</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinAttack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxAttack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinHealth { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxHealth { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinCost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxCost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-}
-</code></pre></div><p>這邊特別提一下 <code>CardSearchCondition</code> 好了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 卡片管理服務</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ICardRepository</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 查詢卡片列表</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    IEnumerable&lt;CardDataModel&gt; GetList(CardSearchCondition info);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 查詢卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;   </span>
+</span></span><span style="display:flex;"><span>    CardDataModel Get(<span style="color:#66d9ef">int</span> id);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 新增卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> Insert(CardCondition info);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 更新卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> Update(<span style="color:#66d9ef">int</span> id, CardCondition info);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 刪除卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> Delete(<span style="color:#66d9ef">int</span> id);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著是我們的 DTO 們：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// ProjectN.Repository.Dtos.DataModel</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardDataModel</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ProjectN.Repository.Dtos.Condition</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardCondition</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Attack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Health { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Cost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ProjectN.Repository.Dtos.Condition</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardSearchCondition</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinAttack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxAttack { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinHealth { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxHealth { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MinCost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int?</span> MaxCost { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這邊特別提一下 <code>CardSearchCondition</code> 好了。</p>
 <p>我個人是喜歡先在 Repository 中把一些簡單、跟資料有關的欄位先用 Condition 允許第一次篩選，如果有複雜的、需要別的條件的就再 Service 進行篩選。如此一來如果有別的 Service 需要用差不多的條件查詢該資料的時候，就可以用組合這些參數的方式來重複使用這個 Repository。</p>
 <p>也就是說和 Service 時提到的時候一樣：如果有需要多個資料來源合併處理時，每層的 DTO 就會有所不同。</p>
 <p>這個時候的 Repository 參數應該注重在「<strong>針對這個資料，有哪些基本的過濾條件？</strong>」下去設計，維持這個篩選的條件是和這個資料來源有關的，這樣才真的能夠<strong>重複利用</strong>。</p>
@@ -785,235 +784,235 @@
 <p>第一步就是建立實作的資料夾，方便和 <code>Interface</code> 做個區隔，所以這邊在 Repository 建立一個 <code>Implement</code> 資料夾，並在裡面建立 <code>CardRepository</code> ：</p>
 <p><img src="https://i.imgur.com/mxPAvRb.png" alt="image-20210926181827673"></p>
 <p>建立之後，別忘記把類別改為 <code>Public</code> 並告訴他我們要實作介面 <code>ICardRepository</code>（記得 using）：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardRepository</span> : ICardRepository
-{
-
-}
-</code></pre></div><p>接著 IDE 通常都會提醒一下說你有哪些要求沒有做到，這邊就讓我偷懶一下直接讓 IDE 產生空方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardRepository</span> : ICardRepository
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著 IDE 通常都會提醒一下說你有哪些要求沒有做到，這邊就讓我偷懶一下直接讓 IDE 產生空方法：</p>
 <p><img src="https://i.imgur.com/nJIaMAR.png" alt="image-20210926182828485"></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardRepository</span> : ICardRepository
-{
-    <span style="color:#66d9ef">public</span> IEnumerable&lt;CardDataModel&gt; GetList(CardSearchCondition info)
-    {
-        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
-    }
-
-    <span style="color:#66d9ef">public</span> CardDataModel Get(<span style="color:#66d9ef">int</span> id)
-    {
-        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
-    }
-    
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Insert(CardCondition info)
-    {
-        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
-    }
-
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Update(<span style="color:#66d9ef">int</span> id, CardCondition info)
-    {
-        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
-    }
-    
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Delete(<span style="color:#66d9ef">int</span> id)
-    {
-        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
-    }
-}
-</code></pre></div><p>各位朋友在切出資料存取層的實作時，如果是從舊專案移植過來的，也可以從「把操作資料表的部份都先剪過來」來起手。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardRepository</span> : ICardRepository
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;CardDataModel&gt; GetList(CardSearchCondition info)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> CardDataModel Get(<span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Insert(CardCondition info)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Update(<span style="color:#66d9ef">int</span> id, CardCondition info)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Delete(<span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>各位朋友在切出資料存取層的實作時，如果是從舊專案移植過來的，也可以從「把操作資料表的部份都先剪過來」來起手。</p>
 <p>從資料庫裏面操作資料的 CRUD 相關部份我們在上一篇的 <a href="/post/2021/05/newbie-3-dapper/">Dapper</a> 章節已經做得差不多了，這邊就不再贅述，稍微補上這次新增的查詢列表就行。</p>
 <blockquote>
 <p>補充：為了避免我之後回來抄的時候想不起來，這邊也放一下資料表目前狀況好了：
 <img src="https://i.imgur.com/8qhFQBb.png" alt="image-20211002135411755"></p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 卡片管理
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;seealso cref=&#34;ProjectN.Repository.Interface.ICardRepository&#34; /&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardRepository</span> : ICardRepository
-{
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 連線字串
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span> <span style="color:#ae81ff">_</span>connectString = <span style="color:#e6db74">@&#34;Server=(LocalDB)\MSSQLLocalDB;Database=Newbie;Trusted_Connection=True;&#34;</span>;
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片列表
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;info&#34;&gt;&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;CardDataModel&gt; GetList(CardSearchCondition condition)
-    {
-        <span style="color:#66d9ef">var</span> sql = <span style="color:#e6db74">&#34;SELECT * FROM Card&#34;</span>;
-
-        <span style="color:#66d9ef">var</span> sqlQuery = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt;();
-        <span style="color:#66d9ef">var</span> parameter = <span style="color:#66d9ef">new</span> DynamicParameters();
-
-        <span style="color:#66d9ef">if</span> (condition.MinCost.HasValue)
-        {
-            sqlQuery.Add(<span style="color:#e6db74">$&#34; Cost &gt;= @MinCost &#34;</span>);
-            parameter.Add(<span style="color:#e6db74">&#34;MinCost&#34;</span>, condition.MinCost);
-        }
-
-        <span style="color:#66d9ef">if</span> (condition.MaxCost.HasValue)
-        {
-            sqlQuery.Add(<span style="color:#e6db74">$&#34; Cost &lt;= @MaxCost &#34;</span>);
-            parameter.Add(<span style="color:#e6db74">&#34;MaxCost&#34;</span>, condition.MaxCost);
-        }
-
-        <span style="color:#66d9ef">if</span> (condition.MinAttack.HasValue)
-        {
-            sqlQuery.Add(<span style="color:#e6db74">$&#34; Attack &gt;= @MinAttack &#34;</span>);
-            parameter.Add(<span style="color:#e6db74">&#34;MinAttack&#34;</span>, condition.MinAttack);
-        }
-
-        <span style="color:#66d9ef">if</span> (condition.MaxAttack.HasValue)
-        {
-            sqlQuery.Add(<span style="color:#e6db74">$&#34; Attack &lt;= @MaxAttack &#34;</span>);
-            parameter.Add(<span style="color:#e6db74">&#34;MaxAttack&#34;</span>, condition.MaxAttack);
-        }
-
-        <span style="color:#66d9ef">if</span> (condition.MinHealth.HasValue)
-        {
-            sqlQuery.Add(<span style="color:#e6db74">$&#34; Health &gt;= @MinHealth &#34;</span>);
-            parameter.Add(<span style="color:#e6db74">&#34;MinHealth&#34;</span>, condition.MinHealth);
-        }
-
-        <span style="color:#66d9ef">if</span> (condition.MaxHealth.HasValue)
-        {
-            sqlQuery.Add(<span style="color:#e6db74">$&#34; Health &lt;= @MaxHealth &#34;</span>);
-            parameter.Add(<span style="color:#e6db74">&#34;MaxHealth&#34;</span>, condition.MaxHealth);
-        }
-
-        <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrWhiteSpace(condition.Name) <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">false</span>)
-        {
-            sqlQuery.Add(<span style="color:#e6db74">$&#34; Name LIKE @Name &#34;</span>);
-            parameter.Add(<span style="color:#e6db74">&#34;Name&#34;</span>, <span style="color:#e6db74">$&#34;%{condition.MaxHealth}%&#34;</span>);
-        }
-        
-        <span style="color:#66d9ef">if</span> (sqlQuery.Any())
-        {
-            sql += <span style="color:#e6db74">$&#34; WHERE {string.Join(&#34;</span> AND <span style="color:#e6db74">&#34;, sqlQuery)} &#34;</span>;
-        }
-
-        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(<span style="color:#ae81ff">_</span>connectString))
-        {
-            <span style="color:#66d9ef">var</span> result = conn.Query&lt;CardDataModel&gt;(sql, parameter);
-            <span style="color:#66d9ef">return</span> result;
-        }
-    }
-	
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> CardDataModel Get(<span style="color:#66d9ef">int</span> id)
-    {
-        <span style="color:#66d9ef">var</span> sql =
-            <span style="color:#e6db74">@&#34;		
-</span><span style="color:#e6db74">                SELECT * 
-</span><span style="color:#e6db74">                FROM Card 
-</span><span style="color:#e6db74">                Where Id = @id
-</span><span style="color:#e6db74">            &#34;</span>;
-
-        <span style="color:#66d9ef">var</span> parameters = <span style="color:#66d9ef">new</span> DynamicParameters();
-        parameters.Add(<span style="color:#e6db74">&#34;Id&#34;</span>, id, System.Data.DbType.Int32);
-
-        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(<span style="color:#ae81ff">_</span>connectString))
-        {
-            <span style="color:#66d9ef">var</span> result = conn.QueryFirstOrDefault&lt;CardDataModel&gt;(sql, parameters);
-            <span style="color:#66d9ef">return</span> result;
-        }
-    }
-
-
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Insert(CardCondition condition)
-    {
-        <span style="color:#66d9ef">var</span> sql =
-            <span style="color:#e6db74">@&#34;
-</span><span style="color:#e6db74">                INSERT INTO Card 
-</span><span style="color:#e6db74">                (
-</span><span style="color:#e6db74">                   [Name]
-</span><span style="color:#e6db74">                  ,[Description]
-</span><span style="color:#e6db74">                  ,[Attack]
-</span><span style="color:#e6db74">                  ,[Health]
-</span><span style="color:#e6db74">                  ,[Cost]
-</span><span style="color:#e6db74">                ) 
-</span><span style="color:#e6db74">                VALUES 
-</span><span style="color:#e6db74">                (
-</span><span style="color:#e6db74">                    @Name
-</span><span style="color:#e6db74">                   ,@Description
-</span><span style="color:#e6db74">                   ,@Attack
-</span><span style="color:#e6db74">                   ,@Health
-</span><span style="color:#e6db74">                   ,@Cost
-</span><span style="color:#e6db74">                );
-</span><span style="color:#e6db74">
-</span><span style="color:#e6db74">                SELECT @@IDENTITY;
-</span><span style="color:#e6db74">            &#34;</span>;
-
-        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(<span style="color:#ae81ff">_</span>connectString))
-        {
-            <span style="color:#66d9ef">var</span> result = conn.Execute(sql, condition);
-            <span style="color:#66d9ef">return</span> result &gt; <span style="color:#ae81ff">0</span>;
-        }
-    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 更新卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;condition&#34;&gt;&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Update(<span style="color:#66d9ef">int</span> id, CardCondition condition)
-    {
-        <span style="color:#66d9ef">var</span> sql =
-            <span style="color:#e6db74">@&#34;
-</span><span style="color:#e6db74">                UPDATE Card
-</span><span style="color:#e6db74">                SET 
-</span><span style="color:#e6db74">                    [Name] = @Name
-</span><span style="color:#e6db74">                   ,[Description] = @Description
-</span><span style="color:#e6db74">                   ,[Attack] = @Attack
-</span><span style="color:#e6db74">                   ,[Health] = @Health
-</span><span style="color:#e6db74">                   ,[Cost] = @Cost
-</span><span style="color:#e6db74">                WHERE
-</span><span style="color:#e6db74">                    Id = @id
-</span><span style="color:#e6db74">            &#34;</span>;
-
-        <span style="color:#66d9ef">var</span> parameters = <span style="color:#66d9ef">new</span> DynamicParameters();
-
-        parameters.AddDynamicParams(condition);
-        parameters.Add(<span style="color:#e6db74">&#34;Id&#34;</span>, id, System.Data.DbType.Int32);
-
-        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(<span style="color:#ae81ff">_</span>connectString))
-        {
-            <span style="color:#66d9ef">var</span> result = conn.Execute(sql, parameters);
-            <span style="color:#66d9ef">return</span> result &gt; <span style="color:#ae81ff">0</span>;
-        }
-    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 刪除卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Delete(<span style="color:#66d9ef">int</span> id)
-    {
-        <span style="color:#66d9ef">var</span> sql =
-            <span style="color:#e6db74">@&#34;
-</span><span style="color:#e6db74">                DELETE FROM Card
-</span><span style="color:#e6db74">                WHERE Id = @Id
-</span><span style="color:#e6db74">            &#34;</span>;
-
-        <span style="color:#66d9ef">var</span> parameters = <span style="color:#66d9ef">new</span> DynamicParameters();
-        parameters.Add(<span style="color:#e6db74">&#34;Id&#34;</span>, id, System.Data.DbType.Int32);
-
-        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(<span style="color:#ae81ff">_</span>connectString))
-        {
-            <span style="color:#66d9ef">var</span> result = conn.Execute(sql, parameters);
-            <span style="color:#66d9ef">return</span> result &gt; <span style="color:#ae81ff">0</span>;
-        }
-    }
-}
-</code></pre></div><h3 id="實作-service">實作 Service</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 卡片管理</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;seealso cref=&#34;ProjectN.Repository.Interface.ICardRepository&#34; /&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardRepository</span> : ICardRepository
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 連線字串</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span> _connectString = <span style="color:#e6db74">@&#34;Server=(LocalDB)\MSSQLLocalDB;Database=Newbie;Trusted_Connection=True;&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 查詢卡片列表</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;info&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;CardDataModel&gt; GetList(CardSearchCondition condition)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> sql = <span style="color:#e6db74">&#34;SELECT * FROM Card&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> sqlQuery = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt;();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> parameter = <span style="color:#66d9ef">new</span> DynamicParameters();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (condition.MinCost.HasValue)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            sqlQuery.Add(<span style="color:#e6db74">$&#34; Cost &gt;= @MinCost &#34;</span>);
+</span></span><span style="display:flex;"><span>            parameter.Add(<span style="color:#e6db74">&#34;MinCost&#34;</span>, condition.MinCost);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (condition.MaxCost.HasValue)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            sqlQuery.Add(<span style="color:#e6db74">$&#34; Cost &lt;= @MaxCost &#34;</span>);
+</span></span><span style="display:flex;"><span>            parameter.Add(<span style="color:#e6db74">&#34;MaxCost&#34;</span>, condition.MaxCost);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (condition.MinAttack.HasValue)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            sqlQuery.Add(<span style="color:#e6db74">$&#34; Attack &gt;= @MinAttack &#34;</span>);
+</span></span><span style="display:flex;"><span>            parameter.Add(<span style="color:#e6db74">&#34;MinAttack&#34;</span>, condition.MinAttack);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (condition.MaxAttack.HasValue)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            sqlQuery.Add(<span style="color:#e6db74">$&#34; Attack &lt;= @MaxAttack &#34;</span>);
+</span></span><span style="display:flex;"><span>            parameter.Add(<span style="color:#e6db74">&#34;MaxAttack&#34;</span>, condition.MaxAttack);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (condition.MinHealth.HasValue)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            sqlQuery.Add(<span style="color:#e6db74">$&#34; Health &gt;= @MinHealth &#34;</span>);
+</span></span><span style="display:flex;"><span>            parameter.Add(<span style="color:#e6db74">&#34;MinHealth&#34;</span>, condition.MinHealth);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (condition.MaxHealth.HasValue)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            sqlQuery.Add(<span style="color:#e6db74">$&#34; Health &lt;= @MaxHealth &#34;</span>);
+</span></span><span style="display:flex;"><span>            parameter.Add(<span style="color:#e6db74">&#34;MaxHealth&#34;</span>, condition.MaxHealth);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrWhiteSpace(condition.Name) <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">false</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            sqlQuery.Add(<span style="color:#e6db74">$&#34; Name LIKE @Name &#34;</span>);
+</span></span><span style="display:flex;"><span>            parameter.Add(<span style="color:#e6db74">&#34;Name&#34;</span>, <span style="color:#e6db74">$&#34;%{condition.MaxHealth}%&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (sqlQuery.Any())
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            sql += <span style="color:#e6db74">$&#34; WHERE {string.Join(&#34;</span> AND <span style="color:#e6db74">&#34;, sqlQuery)} &#34;</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> result = conn.Query&lt;CardDataModel&gt;(sql, parameter);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 查詢卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> CardDataModel Get(<span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> sql =
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">@&#34;		
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                SELECT * 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                FROM Card 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                Where Id = @id
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            &#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> parameters = <span style="color:#66d9ef">new</span> DynamicParameters();
+</span></span><span style="display:flex;"><span>        parameters.Add(<span style="color:#e6db74">&#34;Id&#34;</span>, id, System.Data.DbType.Int32);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> result = conn.QueryFirstOrDefault&lt;CardDataModel&gt;(sql, parameters);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Insert(CardCondition condition)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> sql =
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">@&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                INSERT INTO Card 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                (
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                   [Name]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                  ,[Description]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                  ,[Attack]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                  ,[Health]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                  ,[Cost]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                ) 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                VALUES 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                (
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                    @Name
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                   ,@Description
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                   ,@Attack
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                   ,@Health
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                   ,@Cost
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                );
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                SELECT @@IDENTITY;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            &#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> result = conn.Execute(sql, condition);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> result &gt; <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 更新卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;condition&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Update(<span style="color:#66d9ef">int</span> id, CardCondition condition)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> sql =
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">@&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                UPDATE Card
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                SET 
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                    [Name] = @Name
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                   ,[Description] = @Description
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                   ,[Attack] = @Attack
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                   ,[Health] = @Health
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                   ,[Cost] = @Cost
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                WHERE
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                    Id = @id
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            &#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> parameters = <span style="color:#66d9ef">new</span> DynamicParameters();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        parameters.AddDynamicParams(condition);
+</span></span><span style="display:flex;"><span>        parameters.Add(<span style="color:#e6db74">&#34;Id&#34;</span>, id, System.Data.DbType.Int32);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> result = conn.Execute(sql, parameters);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> result &gt; <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 刪除卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Delete(<span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> sql =
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">@&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                DELETE FROM Card
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">                WHERE Id = @Id
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">            &#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> parameters = <span style="color:#66d9ef">new</span> DynamicParameters();
+</span></span><span style="display:flex;"><span>        parameters.Add(<span style="color:#e6db74">&#34;Id&#34;</span>, id, System.Data.DbType.Int32);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">using</span> (<span style="color:#66d9ef">var</span> conn = <span style="color:#66d9ef">new</span> SqlConnection(_connectString))
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">var</span> result = conn.Execute(sql, parameters);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> result &gt; <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="實作-service">實作 Service</h3>
 <p>接著是我們 Service 層的實作。要注意的是，<strong>在 DTO 的轉換上，推薦使用 <a href="/post/2020/07/automapper/">AutoMapper</a> 來處理</strong>，讓方法關注在商業邏輯本身，而不用被 DTO 的賦值過程洗版。</p>
 <blockquote>
 <p>補充：對 AutoMapper 不太熟悉的朋友，可以先閱讀 <a href="https://igouist.github.io/post/2020/07/automapper/">AutoMapper —— 類別轉換超省力</a></p>
@@ -1022,349 +1021,349 @@
 <p>首先一樣先建立實作用的資料夾，並建立 <code>CardService</code>：</p>
 <p><img src="https://i.imgur.com/rJ4rMgs.png" alt="image-20211003091808904"></p>
 <p>並且讓 IDE 幫忙把要實作的介面都先列出來：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
-{
-    <span style="color:#66d9ef">public</span> IEnumerable&lt;CardResultModel&gt; GetList(CardSearchInfo info)
-    {
-        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
-    }
-
-    <span style="color:#66d9ef">public</span> CardResultModel Get(<span style="color:#66d9ef">int</span> id)
-    {
-        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
-    }
-
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Insert(CardInfo info)
-    {
-        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
-    }
-
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Update(<span style="color:#66d9ef">int</span> id, CardInfo info)
-    {
-        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
-    }
-    
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Delete(<span style="color:#66d9ef">int</span> id)
-    {
-        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
-    }
-}
-</code></pre></div><p>那因為這個範例還沒有什麼需要注意的商業邏輯，因此我們就先在 Service 做一個承上（Controller）啟下（Repository）的動作。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;CardResultModel&gt; GetList(CardSearchInfo info)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> CardResultModel Get(<span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Insert(CardInfo info)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Update(<span style="color:#66d9ef">int</span> id, CardInfo info)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Delete(<span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NotImplementedException();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>那因為這個範例還沒有什麼需要注意的商業邏輯，因此我們就先在 Service 做一個承上（Controller）啟下（Repository）的動作。</p>
 <p>也就是說每個方法負責去接收 Controller 的請求，並呼叫 Repository 來完成工作，並用 AutoMapper 來進行過程的轉換。</p>
 <p>因此我們的 Service 要能夠呼叫到 Repository 和 Mapper，現在先讓我們把 Repository 當作私有成員建立進來：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardRepository <span style="color:#ae81ff">_</span>cardRepository;
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 建構式
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> CardService()
-    {
-        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository = <span style="color:#66d9ef">new</span> CardRepository();
-    }
-
-    <span style="color:#75715e">// 其他實作部分
-</span><span style="color:#75715e"></span>}
-</code></pre></div><p>接著是 DTO 的對映部分，先建立 Service 的對映表。我個人習慣跟隨公司慣例開一個 <code>Mappings</code> 資料夾來放：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardRepository _cardRepository;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 建構式</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> CardService()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>._cardRepository = <span style="color:#66d9ef">new</span> CardRepository();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 其他實作部分</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著是 DTO 的對映部分，先建立 Service 的對映表。我個人習慣跟隨公司慣例開一個 <code>Mappings</code> 資料夾來放：</p>
 <p><img src="https://i.imgur.com/wwEi2pW.png" alt="image-20211003094809104"></p>
 <blockquote>
 <p>補充：當專案還有 Mappings, Enum（列舉）和其他設定檔等等，資料夾就會變得挺多的。</p>
 <p>這種時候，也可以把這類基礎建設相關的都放到 <code>Infrastructure</code> 資料夾做個整理，閱讀和操作上會比較舒服。</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ServiceMappings</span> : Profile
-{
-    <span style="color:#66d9ef">public</span> ServiceMappings()
-    {
-        <span style="color:#75715e">// Info -&gt; Condition
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span>.CreateMap&lt;CardInfo, CardCondition&gt;();
-        <span style="color:#66d9ef">this</span>.CreateMap&lt;CardSearchInfo, CardSearchCondition&gt;();
-
-        <span style="color:#75715e">// DataModel -&gt; ResultModel
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span>.CreateMap&lt;CardDataModel, CardResultModel&gt;();
-    }
-}
-</code></pre></div><p>接著讓我們也把 AutoMapper 的部份放到建構式裡面吧：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IMapper <span style="color:#ae81ff">_</span>mapper;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardRepository <span style="color:#ae81ff">_</span>cardRepository;
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 建構式
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> CardService()
-    {
-        <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
-			cfg.AddProfile&lt;ServiceMappings&gt;());
-
-        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper = config.CreateMapper();
-        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository = <span style="color:#66d9ef">new</span> CardRepository();
-    }
-    
-    <span style="color:#75715e">// 其他實作部分
-</span><span style="color:#75715e"></span>}
-</code></pre></div><p>接著就化身為無情的串接機器，把各個實作接起來。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ServiceMappings</span> : Profile
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ServiceMappings()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Info -&gt; Condition</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.CreateMap&lt;CardInfo, CardCondition&gt;();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.CreateMap&lt;CardSearchInfo, CardSearchCondition&gt;();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// DataModel -&gt; ResultModel</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.CreateMap&lt;CardDataModel, CardResultModel&gt;();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著讓我們也把 AutoMapper 的部份放到建構式裡面吧：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IMapper _mapper;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardRepository _cardRepository;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 建構式</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> CardService()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
+</span></span><span style="display:flex;"><span>			cfg.AddProfile&lt;ServiceMappings&gt;());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>._mapper = config.CreateMapper();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>._cardRepository = <span style="color:#66d9ef">new</span> CardRepository();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 其他實作部分</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著就化身為無情的串接機器，把各個實作接起來。</p>
 <p>例如說 查詢列表 <code>GetList</code>，標準流程就是 轉換參數 DTO、呼叫目標方法、轉換回傳 DTO：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 查詢卡片列表
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;param name=&#34;info&#34;&gt;&lt;/param&gt;
-</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> IEnumerable&lt;CardResultModel&gt; GetList(CardSearchInfo info)
-{
-    <span style="color:#66d9ef">var</span> condition = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;CardSearchInfo, CardSearchCondition&gt;(info);
-    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository.GetList(condition);
-
-    <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;
-        IEnumerable&lt;CardDataModel&gt;, 
-    	IEnumerable&lt;CardResultModel&gt;&gt;(data);
-
-    <span style="color:#66d9ef">return</span> result;
-}
-</code></pre></div><p>當然實際上還會根據需求，在這邊做一些商業邏輯的處理，例如說呼叫多個 Repository 方法、參數內容換成內部商業邏輯定義好的代號等等。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 查詢卡片列表</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;info&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IEnumerable&lt;CardResultModel&gt; GetList(CardSearchInfo info)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> condition = <span style="color:#66d9ef">this</span>._mapper.Map&lt;CardSearchInfo, CardSearchCondition&gt;(info);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> data = <span style="color:#66d9ef">this</span>._cardRepository.GetList(condition);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._mapper.Map&lt;
+</span></span><span style="display:flex;"><span>        IEnumerable&lt;CardDataModel&gt;, 
+</span></span><span style="display:flex;"><span>    	IEnumerable&lt;CardResultModel&gt;&gt;(data);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>當然實際上還會根據需求，在這邊做一些商業邏輯的處理，例如說呼叫多個 Repository 方法、參數內容換成內部商業邏輯定義好的代號等等。</p>
 <blockquote>
 <p>叮嚀一下：如果感覺公開方法裡面做的事情太多的話，還請考慮是不是職責太複雜、並嘗試適當地拆出私有方法或其他類別呦。</p>
 </blockquote>
 <p>那麼這邊就直接補上剩下的方法，貼上整個 <code>CardService</code> 吧：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 卡片管理
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;seealso cref=&#34;ProjectN.Service.Interface.ICardService&#34; /&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IMapper <span style="color:#ae81ff">_</span>mapper;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardRepository <span style="color:#ae81ff">_</span>cardRepository;
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 建構式
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> CardService()
-    {
-        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository = <span style="color:#66d9ef">new</span> CardRepository();
-
-        <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt; 
-			cfg.AddProfile&lt;ServiceMappings&gt;());
-
-        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper = config.CreateMapper();
-    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片列表
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;info&#34;&gt;&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;CardResultModel&gt; GetList(CardSearchInfo info)
-    {
-        <span style="color:#66d9ef">var</span> condition = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;CardSearchInfo, CardSearchCondition&gt;(info);
-        <span style="color:#66d9ef">var</span> cards = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository.GetList(condition);
-
-        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;
-            IEnumerable&lt;CardDataModel&gt;, 
-        	IEnumerable&lt;CardResultModel&gt;&gt;(cards);
-
-        <span style="color:#66d9ef">return</span> result;
-    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> CardResultModel Get(<span style="color:#66d9ef">int</span> id)
-    {
-        <span style="color:#66d9ef">var</span> card = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository.Get(id);
-        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;CardDataModel, CardResultModel&gt;(card);
-        <span style="color:#66d9ef">return</span> result;
-    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 新增卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;info&#34;&gt;&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Insert(CardInfo info)
-    {
-        <span style="color:#66d9ef">var</span> condition = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;CardInfo, CardCondition&gt;(info);
-        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository.Insert(condition);
-        <span style="color:#66d9ef">return</span> result;
-    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 更新卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;info&#34;&gt;&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Update(<span style="color:#66d9ef">int</span> id, CardInfo info)
-    {
-        <span style="color:#66d9ef">var</span> condition = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;CardInfo, CardCondition&gt;(info);
-        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository.Update(id, condition);
-        <span style="color:#66d9ef">return</span> result;
-    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 刪除卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Delete(<span style="color:#66d9ef">int</span> id)
-    {
-        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository.Delete(id);
-        <span style="color:#66d9ef">return</span> result;
-    }
-}
-</code></pre></div><h3 id="實作-controller">實作 Controller</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 卡片管理</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;seealso cref=&#34;ProjectN.Service.Interface.ICardService&#34; /&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IMapper _mapper;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardRepository _cardRepository;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 建構式</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> CardService()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>._cardRepository = <span style="color:#66d9ef">new</span> CardRepository();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt; 
+</span></span><span style="display:flex;"><span>			cfg.AddProfile&lt;ServiceMappings&gt;());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>._mapper = config.CreateMapper();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 查詢卡片列表</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;info&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;CardResultModel&gt; GetList(CardSearchInfo info)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> condition = <span style="color:#66d9ef">this</span>._mapper.Map&lt;CardSearchInfo, CardSearchCondition&gt;(info);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> cards = <span style="color:#66d9ef">this</span>._cardRepository.GetList(condition);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._mapper.Map&lt;
+</span></span><span style="display:flex;"><span>            IEnumerable&lt;CardDataModel&gt;, 
+</span></span><span style="display:flex;"><span>        	IEnumerable&lt;CardResultModel&gt;&gt;(cards);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 查詢卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> CardResultModel Get(<span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> card = <span style="color:#66d9ef">this</span>._cardRepository.Get(id);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._mapper.Map&lt;CardDataModel, CardResultModel&gt;(card);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 新增卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;info&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Insert(CardInfo info)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> condition = <span style="color:#66d9ef">this</span>._mapper.Map&lt;CardInfo, CardCondition&gt;(info);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._cardRepository.Insert(condition);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 更新卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;info&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Update(<span style="color:#66d9ef">int</span> id, CardInfo info)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> condition = <span style="color:#66d9ef">this</span>._mapper.Map&lt;CardInfo, CardCondition&gt;(info);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._cardRepository.Update(id, condition);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 刪除卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">bool</span> Delete(<span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._cardRepository.Delete(id);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="實作-controller">實作 Controller</h3>
 <p>最後就是讓我們的 Controller 來接上 Service 的介面，把方法公開出去啦！</p>
 <p>同樣的也先放一下 Mappings：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ControllerMappings</span> : Profile
-{
-    <span style="color:#66d9ef">public</span> ControllerMappings()
-    {
-        <span style="color:#75715e">// Parameter -&gt; Info
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span>.CreateMap&lt;CardParameter, CardInfo&gt;();
-        <span style="color:#66d9ef">this</span>.CreateMap&lt;CardSearchParameter, CardSearchInfo&gt;();
-
-        <span style="color:#75715e">// ResultModel -&gt; ViewModel
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span>.CreateMap&lt;CardResultModel, CardViewModel&gt;();
-    }
-}
-</code></pre></div><p>最後一樣把 Controller 的各方法補上：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 卡片管理
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;seealso cref=&#34;Microsoft.AspNetCore.Mvc.ControllerBase&#34; /&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[ApiController]</span>
-<span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
-</span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IMapper <span style="color:#ae81ff">_</span>mapper;
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardService <span style="color:#ae81ff">_</span>cardService;
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 建構式
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> CardController()
-    {
-        <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
-        	cfg.AddProfile&lt;ControllerMappings&gt;());
-
-        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper = config.CreateMapper();
-        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService = <span style="color:#66d9ef">new</span> CardService();
-    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片列表
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpGet]</span>
-<span style="color:#a6e22e">    [Produces(&#34;application/json&#34;)]</span>
-    <span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetList(
-<span style="color:#a6e22e">        [FromQuery]</span> CardSearchParameter parameter)
-    {
-        <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;
-            CardSearchParameter, 
-        	CardSearchInfo&gt;(parameter);
-
-        <span style="color:#66d9ef">var</span> cards = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.GetList(info);
-
-        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;
-            IEnumerable&lt;CardResultModel&gt;,
-        	IEnumerable&lt;CardViewModel&gt;&gt;(cards);
-
-        <span style="color:#66d9ef">return</span> result;
-    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 查詢卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;remarks&gt;我是附加說明&lt;/remarks&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;response code=&#34;200&#34;&gt;回傳對應的卡片&lt;/response&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;response code=&#34;404&#34;&gt;找不到該編號的卡片&lt;/response&gt;          
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpGet]</span>
-<span style="color:#a6e22e">    [Produces(&#34;application/json&#34;)]</span>
-<span style="color:#a6e22e">    [ProducesResponseType(typeof(CardViewModel), 200)]</span>
-<span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
-    <span style="color:#66d9ef">public</span> CardViewModel Get(
-<span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id)
-    {
-        <span style="color:#66d9ef">var</span> card = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.Get(id);
-
-        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;
-            CardResultModel,
-        	CardViewModel&gt;(card);
-
-        <span style="color:#66d9ef">return</span> result;
-    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 新增卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpPost]</span>
-    <span style="color:#66d9ef">public</span> IActionResult Insert(
-<span style="color:#a6e22e">        [FromBody]</span> CardParameter parameter)
-    {
-        <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;
-            CardParameter,
-        	CardInfo&gt;(parameter);
-
-        <span style="color:#66d9ef">var</span> isInsertSuccess = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.Insert(info);
-        <span style="color:#66d9ef">if</span> (isInsertSuccess)
-        {
-            <span style="color:#66d9ef">return</span> Ok();
-        }
-        <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
-    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 更新卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpPut]</span>
-<span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
-    <span style="color:#66d9ef">public</span> IActionResult Update(
-<span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id,
-<span style="color:#a6e22e">        [FromBody]</span> CardParameter parameter)
-    {
-        <span style="color:#66d9ef">var</span> targetCard = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.Get(id);
-        <span style="color:#66d9ef">if</span> (targetCard <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
-        {
-            <span style="color:#66d9ef">return</span> NotFound();
-        }
-
-        <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>mapper.Map&lt;
-            CardParameter,
-        	CardInfo&gt;(parameter);
-
-        <span style="color:#66d9ef">var</span> isUpdateSuccess = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.Update(id, info);
-        <span style="color:#66d9ef">if</span> (isUpdateSuccess)
-        {
-            <span style="color:#66d9ef">return</span> Ok();
-        }
-        <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
-    }
-
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 刪除卡片
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpDelete]</span>
-<span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
-    <span style="color:#66d9ef">public</span> IActionResult Delete(
-<span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id)
-    {
-        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardService.Delete(id);
-        <span style="color:#66d9ef">return</span> Ok();
-    }
-}
-</code></pre></div><p>測試一下有沒有接上去</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ControllerMappings</span> : Profile
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ControllerMappings()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Parameter -&gt; Info</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.CreateMap&lt;CardParameter, CardInfo&gt;();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.CreateMap&lt;CardSearchParameter, CardSearchInfo&gt;();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// ResultModel -&gt; ViewModel</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.CreateMap&lt;CardResultModel, CardViewModel&gt;();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>最後一樣把 Controller 的各方法補上：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 卡片管理</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;seealso cref=&#34;Microsoft.AspNetCore.Mvc.ControllerBase&#34; /&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IMapper _mapper;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ICardService _cardService;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 建構式</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> CardController()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
+</span></span><span style="display:flex;"><span>        	cfg.AddProfile&lt;ControllerMappings&gt;());
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>._mapper = config.CreateMapper();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>._cardService = <span style="color:#66d9ef">new</span> CardService();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 查詢卡片列表</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Produces(&#34;application/json&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;CardViewModel&gt; GetList(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [FromQuery]</span> CardSearchParameter parameter)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>._mapper.Map&lt;
+</span></span><span style="display:flex;"><span>            CardSearchParameter, 
+</span></span><span style="display:flex;"><span>        	CardSearchInfo&gt;(parameter);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> cards = <span style="color:#66d9ef">this</span>._cardService.GetList(info);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._mapper.Map&lt;
+</span></span><span style="display:flex;"><span>            IEnumerable&lt;CardResultModel&gt;,
+</span></span><span style="display:flex;"><span>        	IEnumerable&lt;CardViewModel&gt;&gt;(cards);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 查詢卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;remarks&gt;我是附加說明&lt;/remarks&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;response code=&#34;200&#34;&gt;回傳對應的卡片&lt;/response&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;response code=&#34;404&#34;&gt;找不到該編號的卡片&lt;/response&gt;          </span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Produces(&#34;application/json&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [ProducesResponseType(typeof(CardViewModel), 200)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> CardViewModel Get(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> card = <span style="color:#66d9ef">this</span>._cardService.Get(id);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._mapper.Map&lt;
+</span></span><span style="display:flex;"><span>            CardResultModel,
+</span></span><span style="display:flex;"><span>        	CardViewModel&gt;(card);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 新增卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpPost]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IActionResult Insert(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [FromBody]</span> CardParameter parameter)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>._mapper.Map&lt;
+</span></span><span style="display:flex;"><span>            CardParameter,
+</span></span><span style="display:flex;"><span>        	CardInfo&gt;(parameter);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> isInsertSuccess = <span style="color:#66d9ef">this</span>._cardService.Insert(info);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (isInsertSuccess)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 更新卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpPut]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IActionResult Update(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [FromBody]</span> CardParameter parameter)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> targetCard = <span style="color:#66d9ef">this</span>._cardService.Get(id);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (targetCard <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> NotFound();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">this</span>._mapper.Map&lt;
+</span></span><span style="display:flex;"><span>            CardParameter,
+</span></span><span style="display:flex;"><span>        	CardInfo&gt;(parameter);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> isUpdateSuccess = <span style="color:#66d9ef">this</span>._cardService.Update(id, info);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (isUpdateSuccess)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 刪除卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpDelete]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IActionResult Delete(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>._cardService.Delete(id);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Ok();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>測試一下有沒有接上去</p>
 <p><img src="https://i.imgur.com/IHsfTjU.png" alt="image-20211003114955056"></p>
 <p>打完收工！</p>
 <h2 id="自問自答心得篇">自問自答心得篇</h2>

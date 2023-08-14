@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -125,49 +125,49 @@
 <blockquote>
 <p>註：此處使用的 <code>Dump</code> 是 Linqpad 提供的輸出方法，把它當成 Print 就行了。</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
-student.Item1.Dump(); <span style="color:#75715e">// 1
-</span><span style="color:#75715e"></span>student.Item2.Dump(); <span style="color:#75715e">// 王小明
-</span><span style="color:#75715e"></span>
-student.Dump();
-</code></pre></div><p>可以看到 Tuple 的建立相當簡單，只需要用小括號 <code>()</code> 括選起來即可。建立後的內容就會像這樣：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
+</span></span><span style="display:flex;"><span>student.Item1.Dump(); <span style="color:#75715e">// 1</span>
+</span></span><span style="display:flex;"><span>student.Item2.Dump(); <span style="color:#75715e">// 王小明</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>student.Dump();
+</span></span></code></pre></div><p>可以看到 Tuple 的建立相當簡單，只需要用小括號 <code>()</code> 括選起來即可。建立後的內容就會像這樣：</p>
 <p><img src="https://i.imgur.com/H0wJglN.png" alt=""></p>
 <p>但這樣使用就和之前一樣，取出來時只能拿 Item1, Item2，放個幾天根本就不記得 Item1 裡面是啥東西了。這時我們就可以<strong>替成員們取名字</strong>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">(<span style="color:#66d9ef">int</span> ID, <span style="color:#66d9ef">string</span> Name) student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
-student.ID.Dump(); <span style="color:#75715e">// 1
-</span><span style="color:#75715e"></span>student.Name.Dump(); <span style="color:#75715e">// 王小明
-</span></code></pre></div><p>如此使用的時候就和一般操作物件的習慣沒有差別，也增加了可讀性。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>(<span style="color:#66d9ef">int</span> ID, <span style="color:#66d9ef">string</span> Name) student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
+</span></span><span style="display:flex;"><span>student.ID.Dump(); <span style="color:#75715e">// 1</span>
+</span></span><span style="display:flex;"><span>student.Name.Dump(); <span style="color:#75715e">// 王小明</span>
+</span></span></code></pre></div><p>如此使用的時候就和一般操作物件的習慣沒有差別，也增加了可讀性。</p>
 <p>到這裡可能感覺只是個方便的變數打包小工具，但其真正順手的地方就在於作為<strong>回傳值</strong>的時候。</p>
 <p>過去要一次回傳多個值，除了使用 Ref 等方式以外，就只能乖乖做一個類別來裝，但有時候傳的東西又相當簡單，實在不太願意就此建立一個類別，又或是事情已經無法挽回，專案虛胖了一堆<strong>米蟲類別</strong>。有了 Tuple 之後，面對這種情況就可以<strong>直接使用 Tuple 解決</strong>，並且替成員們命名之後，既簡便又好讀！</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 回傳型別使用 Tuple
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> (<span style="color:#66d9ef">bool</span> IsSuccess, <span style="color:#66d9ef">string</span> Message) DoSomeThing()
-{
-    <span style="color:#75715e">// 做了一堆事情
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> (<span style="color:#66d9ef">true</span>, <span style="color:#e6db74">&#34;操作成功&#34;</span>);
-}
-
-<span style="color:#66d9ef">void</span> Main()
-{
-	<span style="color:#66d9ef">var</span> result = DoSomeThing();
-	result.IsSuccess.Dump(); <span style="color:#75715e">// true
-</span><span style="color:#75715e"></span>	result.Message.Dump(); <span style="color:#75715e">// 操作成功
-</span><span style="color:#75715e"></span>}
-</code></pre></div><p>而當我們作為回傳值使用時，也可以直接原地解封：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 回傳型別使用 Tuple
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> (<span style="color:#66d9ef">bool</span> IsSuccess, <span style="color:#66d9ef">string</span> Message) DoSomeThing()
-{
-    <span style="color:#75715e">// 做了一堆事情
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">return</span> (<span style="color:#66d9ef">true</span>, <span style="color:#e6db74">&#34;操作成功&#34;</span>);
-}
-
-<span style="color:#66d9ef">void</span> Main()
-{
-    <span style="color:#75715e">// 直接拆開賦值給多個變數
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">var</span> (isSuccess, message) = DoSomeThing();
-	isSuccess.Dump(); <span style="color:#75715e">// true
-</span><span style="color:#75715e"></span>	message.Dump(); <span style="color:#75715e">// 操作成功
-</span><span style="color:#75715e"></span>}
-</code></pre></div><p>作為一個簡易臨時型別挺方便的，但要注意不要用過頭了。兩三個成員還算方便，如果有七八個甚至十來個成員，請還是乖乖做成類別吧！</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 回傳型別使用 Tuple</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> (<span style="color:#66d9ef">bool</span> IsSuccess, <span style="color:#66d9ef">string</span> Message) DoSomeThing()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 做了一堆事情</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> (<span style="color:#66d9ef">true</span>, <span style="color:#e6db74">&#34;操作成功&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> result = DoSomeThing();
+</span></span><span style="display:flex;"><span>	result.IsSuccess.Dump(); <span style="color:#75715e">// true</span>
+</span></span><span style="display:flex;"><span>	result.Message.Dump(); <span style="color:#75715e">// 操作成功</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>而當我們作為回傳值使用時，也可以直接原地解封：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 回傳型別使用 Tuple</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> (<span style="color:#66d9ef">bool</span> IsSuccess, <span style="color:#66d9ef">string</span> Message) DoSomeThing()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 做了一堆事情</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> (<span style="color:#66d9ef">true</span>, <span style="color:#e6db74">&#34;操作成功&#34;</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 直接拆開賦值給多個變數</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> (isSuccess, message) = DoSomeThing();
+</span></span><span style="display:flex;"><span>	isSuccess.Dump(); <span style="color:#75715e">// true</span>
+</span></span><span style="display:flex;"><span>	message.Dump(); <span style="color:#75715e">// 操作成功</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>作為一個簡易臨時型別挺方便的，但要注意不要用過頭了。兩三個成員還算方便，如果有七八個甚至十來個成員，請還是乖乖做成類別吧！</p>
 <h2 id="參考資料">參考資料</h2>
 <ul>
 <li><a href="https://www.huanlintalk.com/2017/04/c-7-tuple-syntax.html">C# 7 新增的 Tuple 語法 - Huanlin 學習筆記</a></li>

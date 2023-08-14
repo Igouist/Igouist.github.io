@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -129,34 +129,34 @@
 <p>工作時將一段需要呼叫其他 API、執行相當久的程式片段搬上 <a href="/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/">Azure Functions</a>，並使用 <a href="/post/2022/08/azure-service-bus">Service Bus</a> 來傳遞訊息觸發 Functions 執行，這時卻發現 <strong>Function 被執行了兩次</strong>！</p>
 <p>現在就讓我們來重建當時的情況吧。首先我們有個 Service Bus Trigger 的 Azure Function，這邊就直接從 Visual Studio 提供的<a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/dotnet-isolated-process-guide">已隔離（Isolated）</a>範本進行建立。</p>
 <p>為了重現執行很久的特點，我們讓它 Delay 個八分鐘，並在開始和結束的時候告訴我們一下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// ServiceBus Trigger 測試用 Function
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;param name=&#34;myQueueItem&#34;&gt;My queue item.&lt;/param&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[Function(&#34;ServiceBusTriggerSample&#34;)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Run(
-<span style="color:#a6e22e">    [ServiceBusTrigger(
-</span><span style="color:#a6e22e">        queueName: &#34;%QueueName%&#34;,
-</span><span style="color:#a6e22e">        Connection = &#34;ServiceBus&#34;)]</span>
-    <span style="color:#66d9ef">string</span> myQueueItem)
-{
-    <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;開始處理訊息: {myQueueItem}&#34;</span>, myQueueItem);
-
-    <span style="color:#66d9ef">await</span> Task.Delay(<span style="color:#66d9ef">new</span> TimeSpan(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">0</span>));
-    
-    <span style="color:#ae81ff">_l</span>ogger.LogInformation(<span style="color:#e6db74">&#34;結束處理訊息: {myQueueItem}&#34;</span>, myQueueItem);
-}
-</code></pre></div><p>並且簡單地用之前 <a href="/post/2022/08/azure-service-bus">Service Bus 文章</a> 的範例送個 &ldquo;Hello&rdquo; 進去 Queue 裡，準備觸發 Function：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">async</span> Task Main()
-{
-	<span style="color:#66d9ef">var</span> context = <span style="color:#e6db74">&#34;Hello!&#34;</span>;
-	
-	<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(<span style="color:#ae81ff">_</span>connectionString);
-	<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var sender = client.CreateSender(<span style="color:#ae81ff">_</span>queueName);
-	<span style="color:#66d9ef">var</span> message = <span style="color:#66d9ef">new</span> ServiceBusMessage(context);
-	<span style="color:#66d9ef">await</span> sender.SendMessageAsync(message);
-}
-</code></pre></div><p>在 Function 接收到訊息後，讓我們觀察 Console：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// ServiceBus Trigger 測試用 Function</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;myQueueItem&#34;&gt;My queue item.&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Function(&#34;ServiceBusTriggerSample&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Run(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [ServiceBusTrigger(
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        queueName: &#34;%QueueName%&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">        Connection = &#34;ServiceBus&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">string</span> myQueueItem)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    _logger.LogInformation(<span style="color:#e6db74">&#34;開始處理訊息: {myQueueItem}&#34;</span>, myQueueItem);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> Task.Delay(<span style="color:#66d9ef">new</span> TimeSpan(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">0</span>));
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    _logger.LogInformation(<span style="color:#e6db74">&#34;結束處理訊息: {myQueueItem}&#34;</span>, myQueueItem);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>並且簡單地用之前 <a href="/post/2022/08/azure-service-bus">Service Bus 文章</a> 的範例送個 &ldquo;Hello&rdquo; 進去 Queue 裡，準備觸發 Function：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">async</span> Task Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> context = <span style="color:#e6db74">&#34;Hello!&#34;</span>;
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(_connectionString);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var sender = client.CreateSender(_queueName);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> message = <span style="color:#66d9ef">new</span> ServiceBusMessage(context);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">await</span> sender.SendMessageAsync(message);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>在 Function 接收到訊息後，讓我們觀察 Console：</p>
 <p><img src="https://i.imgur.com/dBFWz2p.png" alt="Image"></p>
 <p><strong>可以發現第一次執行尚未結束的時候，大概經過五分鐘就又執行了第二次！</strong></p>
 <h2 id="調整訊息鎖定最大持續時間">調整訊息鎖定最大持續時間</h2>

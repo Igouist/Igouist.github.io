@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -127,30 +127,30 @@
 <p>也就來說，就是要寫 <strong>API 規格文件</strong> 啦！</p>
 <p>為了能讓服務對接順利，以及省下大部份口沫橫飛解釋的時間，甚至是讓自己和使用者好幾個月之後能夠順利回想起來，我們在開發 API 的時候一定會列出 API 接口的規格和用法。</p>
 <p>通常一份文件的內容包括但不限於：<strong>用途、路由、參數、回傳值</strong>等等，更細部的會有例如參數放在 Route, QueryString 還是 Body、參數是否必填、回傳的 JSON 範例等等。例如：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown"><span style="color:#75715e">## GET /card/{id}
-</span><span style="color:#75715e"></span>**查詢指定編號的卡片**
-
-<span style="color:#75715e">### Parameter
-</span><span style="color:#75715e"></span>
-<span style="color:#66d9ef">-</span> Route
-    <span style="color:#66d9ef">-</span> <span style="color:#e6db74">`id (int, required)`</span> 卡片編號
-
-example: https://exampleProjN.com/api/card/1
-
-<span style="color:#75715e">### Response
-</span><span style="color:#75715e"></span>
-200: 回傳對應的卡片
-{
-  &#34;id&#34;: 0,
-  &#34;name&#34;: &#34;string&#34;,
-  &#34;description&#34;: &#34;string&#34;,
-  &#34;attack&#34;: 0,
-  &#34;health&#34;: 0,
-  &#34;cost&#34;: 0
-}
-
-404: 找不到
-</code></pre></div><p>當然這邊已經把例子簡化很多了，實際上的 API 文件格式會隨著各地的團隊習慣而改變，用表格和 PDF 等等的狀況也很常見。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-markdown" data-lang="markdown"><span style="display:flex;"><span><span style="color:#75715e">## GET /card/{id}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>**查詢指定編號的卡片**
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### Parameter
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">-</span> Route
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">-</span> <span style="color:#e6db74">`id (int, required)`</span> 卡片編號
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>example: https://exampleProjN.com/api/card/1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">### Response
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>200: 回傳對應的卡片
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  &#34;id&#34;: 0,
+</span></span><span style="display:flex;"><span>  &#34;name&#34;: &#34;string&#34;,
+</span></span><span style="display:flex;"><span>  &#34;description&#34;: &#34;string&#34;,
+</span></span><span style="display:flex;"><span>  &#34;attack&#34;: 0,
+</span></span><span style="display:flex;"><span>  &#34;health&#34;: 0,
+</span></span><span style="display:flex;"><span>  &#34;cost&#34;: 0
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>404: 找不到
+</span></span></code></pre></div><p>當然這邊已經把例子簡化很多了，實際上的 API 文件格式會隨著各地的團隊習慣而改變，用表格和 PDF 等等的狀況也很常見。</p>
 <p>對 API 規格都長怎樣有興趣的朋友，也可以直接在網路上找找一些公開的文件：</p>
 <ul>
 <li><a href="https://developer.pixnet.pro/#!/doc/pixnetApi/glossaryArea">痞客幫 API 文件</a></li>
@@ -193,21 +193,21 @@ example: https://exampleProjN.com/api/card/1
 <p><img src="https://i.imgur.com/En0Aarn.png" alt=""></p>
 <p>安裝完成之後，就讓我們來註冊 Swagger 服務吧！</p>
 <p>首先讓我們到 <code>Startup.cs</code> 的 <code>ConfigureServices</code>，加上 <code>services.AddSwaggerGen();</code> 把 Swagger 的服務掛上去：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// This method gets called by the runtime.
-</span><span style="color:#75715e">// Use this method to add services to the container.
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
-{
-    services.AddControllers();
-
-    services.AddSwaggerGen(); <span style="color:#75715e">// 註冊 Swagger
-</span><span style="color:#75715e"></span>}
-</code></pre></div><p>接著往下看，到 <code>Configure</code> 把 Swagger 服務打開，我們需要加上 <code>UseSwagger</code> 讓它能夠用 middleware 產生 API 文件的 JSON，並用 <code>UseSwaggerUI</code> 指定 JSON 檔案來產生 API 文件的 UI 頁面。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">app.UseSwagger();
-app.UseSwaggerUI(c =&gt;
-{
-    c.SwaggerEndpoint(<span style="color:#e6db74">&#34;/swagger/v1/swagger.json&#34;</span>, <span style="color:#e6db74">&#34;My API V1&#34;</span>);
-});
-</code></pre></div><p>這樣就啟用了 Swagger 的服務了。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// This method gets called by the runtime.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Use this method to add services to the container.</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    services.AddControllers();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    services.AddSwaggerGen(); <span style="color:#75715e">// 註冊 Swagger</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著往下看，到 <code>Configure</code> 把 Swagger 服務打開，我們需要加上 <code>UseSwagger</code> 讓它能夠用 middleware 產生 API 文件的 JSON，並用 <code>UseSwaggerUI</code> 指定 JSON 檔案來產生 API 文件的 UI 頁面。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>app.UseSwagger();
+</span></span><span style="display:flex;"><span>app.UseSwaggerUI(c =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    c.SwaggerEndpoint(<span style="color:#e6db74">&#34;/swagger/v1/swagger.json&#34;</span>, <span style="color:#e6db74">&#34;My API V1&#34;</span>);
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>這樣就啟用了 Swagger 的服務了。</p>
 <p>現在讓我們執行偵錯，<strong>並且到專案目錄底下的 <code>/swagger</code> 路徑</strong>（以我為例就是 <code>localhost:44304/swagger</code>），應該就能看到 Swagger 工具的介面啦！</p>
 <p><img src="https://i.imgur.com/odrQ5IO.png" alt=""></p>
 <p>並且在上面可以注意到我們<strong>自動生成的 API JSON 文件，也就是前面註冊時看過的 <code>/swagger/v1/swagger.json</code></strong>（以我為例就是 <code>localhost:44304/swagger/v1/swagger.json</code>）</p>
@@ -216,12 +216,12 @@ app.UseSwaggerUI(c =&gt;
 <blockquote>
 <p>補充：這邊也可以對 Swagger 的 UI 路徑進行設定，不一定要在 <code>/swagger</code> 底下。只需要在 <code>UseSwaggerUI</code> 中使用 <code>RoutePrefix</code> 就可以指定 Swagger UI 的 Route。</p>
 <p>例如說我想要一進來我們服務的網址，就直接顯示 Swagger 畫面，像是 <code>myapi.com</code> 就顯示 Swagger UI 而非 <code>myapi.com/swagger</code> 的時候，就可以這樣設定：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">app.UseSwaggerUI(c =&gt;
-{
-   c.SwaggerEndpoint(<span style="color:#e6db74">&#34;/swagger/v1/swagger.json&#34;</span>, <span style="color:#e6db74">&#34;My API V1&#34;</span>);
-   c.RoutePrefix = <span style="color:#66d9ef">string</span>.Empty; <span style="color:#75715e">// 指定路徑為 &#34;&#34;
-</span><span style="color:#75715e"></span>});
-</code></pre></div><p>這樣就會直接在指定的路徑顯示 Swagger UI 囉！</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>app.UseSwaggerUI(c =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>   c.SwaggerEndpoint(<span style="color:#e6db74">&#34;/swagger/v1/swagger.json&#34;</span>, <span style="color:#e6db74">&#34;My API V1&#34;</span>);
+</span></span><span style="display:flex;"><span>   c.RoutePrefix = <span style="color:#66d9ef">string</span>.Empty; <span style="color:#75715e">// 指定路徑為 &#34;&#34;</span>
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>這樣就會直接在指定的路徑顯示 Swagger UI 囉！</p>
 </blockquote>
 <blockquote>
 <p>補充：如果有在 <code>Properties/launchSettings.json</code> 設定偵錯時的起始頁面的朋友，也可以試試<strong>把起始頁面 <code>launchUrl</code> 設定成 Swagger UI 的路徑</strong>，例如 <code>&quot;launchUrl&quot;: &quot;swagger&quot;</code>，平常測試的時候會順手很多，推薦給大家</p>
@@ -236,29 +236,29 @@ app.UseSwaggerUI(c =&gt;
 <h2 id="使用-swaggerdoc-增加專案描述">使用 SwaggerDoc 增加專案描述</h2>
 <p>不過現在只是一個可以互動的操作介面而已，離可以取代文件還有一段距離，接著就讓我們一步一步來增加資訊到這個 UI 介面吧。</p>
 <p>首先讓我們回到 <code>ConfigureServices</code>，修改一下 <code>AddSwaggerGen</code>，讓我們可以丟東西進去，這邊就直接用微軟文件的範例來稍作修改：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddSwaggerGen(c =&gt;
-{
-    <span style="color:#75715e">// API 服務簡介
-</span><span style="color:#75715e"></span>    c.SwaggerDoc(<span style="color:#e6db74">&#34;v1&#34;</span>, <span style="color:#66d9ef">new</span> OpenApiInfo
-    {
-        Version = <span style="color:#e6db74">&#34;v1&#34;</span>,
-        Title = <span style="color:#e6db74">&#34;菜雞 API&#34;</span>,
-        Description = <span style="color:#e6db74">&#34;菜雞新訓記的範例 API&#34;</span>,
-        TermsOfService = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/&#34;</span>),
-        Contact = <span style="color:#66d9ef">new</span> OpenApiContact
-        {
-            Name = <span style="color:#e6db74">&#34;Igouist&#34;</span>,
-            Email = <span style="color:#66d9ef">string</span>.Empty,
-            Url = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/about/&#34;</span>),
-        },
-        License = <span style="color:#66d9ef">new</span> OpenApiLicense
-        {
-            Name = <span style="color:#e6db74">&#34;TEST&#34;</span>,
-            Url = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/about/&#34;</span>),
-        }
-    });
-});
-</code></pre></div><p>這邊可以填入版本、API 名稱和說明、聯絡方式等資訊，這些資訊會顯示在 Swagger UI 的開頭：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddSwaggerGen(c =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// API 服務簡介</span>
+</span></span><span style="display:flex;"><span>    c.SwaggerDoc(<span style="color:#e6db74">&#34;v1&#34;</span>, <span style="color:#66d9ef">new</span> OpenApiInfo
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Version = <span style="color:#e6db74">&#34;v1&#34;</span>,
+</span></span><span style="display:flex;"><span>        Title = <span style="color:#e6db74">&#34;菜雞 API&#34;</span>,
+</span></span><span style="display:flex;"><span>        Description = <span style="color:#e6db74">&#34;菜雞新訓記的範例 API&#34;</span>,
+</span></span><span style="display:flex;"><span>        TermsOfService = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/&#34;</span>),
+</span></span><span style="display:flex;"><span>        Contact = <span style="color:#66d9ef">new</span> OpenApiContact
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Name = <span style="color:#e6db74">&#34;Igouist&#34;</span>,
+</span></span><span style="display:flex;"><span>            Email = <span style="color:#66d9ef">string</span>.Empty,
+</span></span><span style="display:flex;"><span>            Url = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/about/&#34;</span>),
+</span></span><span style="display:flex;"><span>        },
+</span></span><span style="display:flex;"><span>        License = <span style="color:#66d9ef">new</span> OpenApiLicense
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Name = <span style="color:#e6db74">&#34;TEST&#34;</span>,
+</span></span><span style="display:flex;"><span>            Url = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/about/&#34;</span>),
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>這邊可以填入版本、API 名稱和說明、聯絡方式等資訊，這些資訊會顯示在 Swagger UI 的開頭：</p>
 <p><img src="https://i.imgur.com/9v4DssU.png" alt=""></p>
 <p>替自己的服務加上說明是絕對必要的，不過平時會比較常用的也是 <code>Title</code>、<code>Description</code> 這些基本欄位，各位再按照自己的服務調整吧。</p>
 <h2 id="使用-xml-文件和-includexmlcomments-從註解產生-api-說明">使用 XML 文件和 IncludeXmlComments 從註解產生 API 說明</h2>
@@ -270,41 +270,41 @@ app.UseSwaggerUI(c =&gt;
 <p><img src="https://i.imgur.com/qWU9iJP.png" alt=""></p>
 <blockquote>
 <p>補充：並非使用 Visual Studio 開發的朋友，也可以參考微軟文件的開啟方式：打開 <code>.csproj</code> 檔案，並找到 <code>PropertyGroup</code> 加上 <code>GenerateDocumentationFile</code> ，並設為 true，例如：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;PropertyGroup&gt;</span>
- <span style="color:#f92672">&lt;GenerateDocumentationFile&gt;</span>true<span style="color:#f92672">&lt;/GenerateDocumentationFile&gt;</span>
-<span style="color:#f92672">&lt;/PropertyGroup&gt;</span>
-</code></pre></div></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;PropertyGroup&gt;</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">&lt;GenerateDocumentationFile&gt;</span>true<span style="color:#f92672">&lt;/GenerateDocumentationFile&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/PropertyGroup&gt;</span>
+</span></span></code></pre></div></blockquote>
 <blockquote>
 <p>補充：如果開啟 XML 文件檔案的選項後，建置或偵錯時跳出找不到 XML 檔案的錯誤，可能是生成失敗，可以嘗試改用系統管理員開啟 Visual Studio 再重新建置。</p>
 </blockquote>
 <p>完成並儲存之後，讓我們<strong>回到 <code>ConfigureServices</code> 的 <code>AddSwaggerGen</code> 部分，把讀取 XML 的命令也加進去</strong>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> xmlFile = <span style="color:#e6db74">$&#34;{Assembly.GetExecutingAssembly().GetName().Name}.xml&#34;</span>;
-<span style="color:#66d9ef">var</span> xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-c.IncludeXmlComments(xmlPath);
-</code></pre></div><p>如果在上一個步驟有加入專案描述，現在的 <code>AddSwaggerGen</code> 可能會長這樣：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.AddSwaggerGen(c =&gt;
-{
-    <span style="color:#75715e">// API 服務簡介
-</span><span style="color:#75715e"></span>    c.SwaggerDoc(<span style="color:#e6db74">&#34;v1&#34;</span>, <span style="color:#66d9ef">new</span> OpenApiInfo
-    {
-        Version = <span style="color:#e6db74">&#34;v1&#34;</span>,
-        Title = <span style="color:#e6db74">&#34;菜雞 API&#34;</span>,
-        Description = <span style="color:#e6db74">&#34;菜雞新訓記的範例 API&#34;</span>,
-        TermsOfService = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/&#34;</span>),
-        Contact = <span style="color:#66d9ef">new</span> OpenApiContact
-        {
-            Name = <span style="color:#e6db74">&#34;Igouist&#34;</span>,
-            Email = <span style="color:#66d9ef">string</span>.Empty,
-            Url = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/about/&#34;</span>),
-        }
-    });
-
-    <span style="color:#75715e">// 讀取 XML 檔案產生 API 說明
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> xmlFile = <span style="color:#e6db74">$&#34;{Assembly.GetExecutingAssembly().GetName().Name}.xml&#34;</span>;
-    <span style="color:#66d9ef">var</span> xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    c.IncludeXmlComments(xmlPath);
-});
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> xmlFile = <span style="color:#e6db74">$&#34;{Assembly.GetExecutingAssembly().GetName().Name}.xml&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+</span></span><span style="display:flex;"><span>c.IncludeXmlComments(xmlPath);
+</span></span></code></pre></div><p>如果在上一個步驟有加入專案描述，現在的 <code>AddSwaggerGen</code> 可能會長這樣：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddSwaggerGen(c =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// API 服務簡介</span>
+</span></span><span style="display:flex;"><span>    c.SwaggerDoc(<span style="color:#e6db74">&#34;v1&#34;</span>, <span style="color:#66d9ef">new</span> OpenApiInfo
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Version = <span style="color:#e6db74">&#34;v1&#34;</span>,
+</span></span><span style="display:flex;"><span>        Title = <span style="color:#e6db74">&#34;菜雞 API&#34;</span>,
+</span></span><span style="display:flex;"><span>        Description = <span style="color:#e6db74">&#34;菜雞新訓記的範例 API&#34;</span>,
+</span></span><span style="display:flex;"><span>        TermsOfService = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/&#34;</span>),
+</span></span><span style="display:flex;"><span>        Contact = <span style="color:#66d9ef">new</span> OpenApiContact
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Name = <span style="color:#e6db74">&#34;Igouist&#34;</span>,
+</span></span><span style="display:flex;"><span>            Email = <span style="color:#66d9ef">string</span>.Empty,
+</span></span><span style="display:flex;"><span>            Url = <span style="color:#66d9ef">new</span> Uri(<span style="color:#e6db74">&#34;https://igouist.github.io/about/&#34;</span>),
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 讀取 XML 檔案產生 API 說明</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> xmlFile = <span style="color:#e6db74">$&#34;{Assembly.GetExecutingAssembly().GetName().Name}.xml&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+</span></span><span style="display:flex;"><span>    c.IncludeXmlComments(xmlPath);
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><blockquote>
 <p>小提示：這邊的 <code>xmlFile</code> 路徑是對照前面步驟 專案屬性中的 XML 產生路徑，並用反射的方式去符合自動產生路徑的規則拿到 XML 檔案。</p>
 <p>如果在前面的步驟有自己指定 XML 檔案產生路徑的朋友，這邊的 <code>xmlFile</code> 也要記得和 XML 檔案路徑對應上呦。</p>
 </blockquote>
@@ -339,29 +339,29 @@ c.IncludeXmlComments(xmlPath);
 <p>這樣在 Swagger UI 上該 API 的 Responses 就會標記為指定的格式：</p>
 <p><img src="https://i.imgur.com/OjRt09o.png" alt=""></p>
 <p>接著，讓我們用 <code>ProducesResponseType</code> 來指定回傳時的型別，以及在註解中使用 <code>&lt;response&gt;</code> 標籤來替回傳時的 HTTP Status 加上說明吧：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 查詢卡片
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;remarks&gt;我是附加說明&lt;/remarks&gt;
-</span><span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;
-</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e">/// &lt;response code=&#34;200&#34;&gt;回傳對應的卡片&lt;/response&gt;
-</span><span style="color:#75715e">/// &lt;response code=&#34;404&#34;&gt;找不到該編號的卡片&lt;/response&gt;          
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpGet]</span>
-<span style="color:#a6e22e">[Produces(&#34;application/json&#34;)]</span>
-<span style="color:#a6e22e">[ProducesResponseType(typeof(Card), 200)]</span>
-<span style="color:#a6e22e">[Route(&#34;{id}&#34;)]</span>
-<span style="color:#66d9ef">public</span> Card Get([FromRoute] <span style="color:#66d9ef">int</span> id)
-{
-    <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>cardRepository.Get(id);
-    <span style="color:#66d9ef">if</span> (result <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
-    {
-        Response.StatusCode = <span style="color:#ae81ff">404</span>;
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span>;
-    }
-    <span style="color:#66d9ef">return</span> result;
-}
-</code></pre></div><p><img src="https://i.imgur.com/I90gVGu.png" alt=""></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 查詢卡片</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;remarks&gt;我是附加說明&lt;/remarks&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;response code=&#34;200&#34;&gt;回傳對應的卡片&lt;/response&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;response code=&#34;404&#34;&gt;找不到該編號的卡片&lt;/response&gt;          </span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpGet]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Produces(&#34;application/json&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[ProducesResponseType(typeof(Card), 200)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;{id}&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Card Get([FromRoute] <span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> result = <span style="color:#66d9ef">this</span>._cardRepository.Get(id);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (result <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Response.StatusCode = <span style="color:#ae81ff">404</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> result;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="https://i.imgur.com/I90gVGu.png" alt=""></p>
 <p>這樣做的 Swagger UI 就會多出這些 HTTP Status 對應的資訊囉：</p>
 <p><img src="https://i.imgur.com/owvkBq4.png" alt=""></p>
 <p>到這邊我們就提供了各種情況對應的回傳啦，隔壁同事如果問你說「為啥我打是回 400 啊？」就可以對他說「<a href="https://www.urbandictionary.com/define.php?term=RTFW">RTFW</a>！」</p>

@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -165,20 +165,20 @@
 <p>我們在之前的 <a href="/post/2020/09/oo-8-cohesion-and-coupling">耦合篇</a> 提過，如果模組和另一個模組之間有關連，那這兩者之間就耦合。以此來看，依賴就是一種耦合的關係，那麼，依賴是健康還是不健康的耦合呢？</p>
 <p>現在讓我們用 <a href="/post/2020/07/oo-5-polymorphism">多型篇</a> 用過的「老闆徵工程師」的例子來舉例一下：現在有間小小公司，老闆請來了小明當工程師，並請他開工撰寫產品程式碼。</p>
 <p>當「撰寫產品程式」對「工程師」直接依賴的時候，狀況可能是這樣的：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
-{
-    Ming programmer = <span style="color:#66d9ef">new</span> Ming();
-    <span style="color:#66d9ef">var</span> product = programmer.Programming();
-    <span style="color:#66d9ef">return</span> product;
-}
-</code></pre></div><p>過一陣子，老闆發現小明寫出來的東西似乎不太行，於是把小明趕走，另外請了小華。這時候因為「工程師」這個實作類別不一樣了，我們就必須要改一次程式碼：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
-{
-    Hua programmer = <span style="color:#66d9ef">new</span> Hua();
-    <span style="color:#66d9ef">var</span> product = programmer.Programming();
-    <span style="color:#66d9ef">return</span> product;
-}
-</code></pre></div>……
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Product Work()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Ming programmer = <span style="color:#66d9ef">new</span> Ming();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> product = programmer.Programming();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> product;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>過一陣子，老闆發現小明寫出來的東西似乎不太行，於是把小明趕走，另外請了小華。這時候因為「工程師」這個實作類別不一樣了，我們就必須要改一次程式碼：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Product Work()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Hua programmer = <span style="color:#66d9ef">new</span> Hua();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> product = programmer.Programming();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> product;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>……
                                     <p class="readmore"><a href="https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle/">閱讀全文</a></p>
                                 </div>
                             </article>
@@ -208,14 +208,14 @@
 <p>事情就從上一篇 <a href="/post/2020/11/oo-12-liskov-substitution-principle">里氏替換原則</a> 的鳥類物流公司開始說起。老闆痛定思痛，決定先用<strong>介面</strong>先規定好物流士們的應徵條件，例如裝貨、卸貨、飛行、必須有帥氣的喙等等。</p>
 <p>這道命令下來後，倉庫們的企鵝都慌了，來檢查的編譯器瘋狂跳出 Error:「您未實作 IBird 的 Fly() 方法！」這下怎麼辦呢，為了要保住飯碗，企鵝們就必須實作出飛行才行，可是企鵝真的就不會飛呀！</p>
 <p>這下子企鵝們只剩下兩個選擇：不實作飛行，但是就不能被當成物流士，最後就會被開除；或是……空實作。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Penguin</span> : IBird
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Fly()
-    {
-      <span style="color:#75715e">// Do nothing;
-</span><span style="color:#75715e"></span>    }
-}
-</code></pre></div><p>企鵝們終於騙過了編譯器檢查員，然而當送貨的命令下來之後，企鵝們再一次卡在倉庫門口發呆，最終物流公司仍然踏上了虧損的老路，再度面臨倒閉危機…</p>……
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Penguin</span> : IBird
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Fly()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// Do nothing;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>企鵝們終於騙過了編譯器檢查員，然而當送貨的命令下來之後，企鵝們再一次卡在倉庫門口發呆，最終物流公司仍然踏上了虧損的老路，再度面臨倒閉危機…</p>……
                                     <p class="readmore"><a href="https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle/">閱讀全文</a></p>
                                 </div>
                             </article>
@@ -433,22 +433,22 @@
 <h2 id="還是公司誠徵工程師的例子">還是公司誠徵工程師的例子</h2>
 <p>由於介面基本上就是封裝繼承多型抽象之大雜燴，所以我們把前面<a href="/post/2020/07/oo-5-polymorphism">多型</a>的小明小華例子稍微修改來用吧。也就是以公司徵人的方式去理解介面。</p>
 <p>介面就像是老闆開出來的要求列表，例如說：要會寫 C#、要會寫 SQL、要會 VB…等等，於是老闆就貼出了徵人啟示，要求新來的員工必須要有 <code>IProgrammer</code> 寫的能力：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> IProgrammer
-{
-    <span style="color:#66d9ef">void</span> WriteCSharp();
-    <span style="color:#66d9ef">void</span> WriteSQL();
-    <span style="color:#66d9ef">void</span> WriteVB();
-}
-</code></pre></div><p>特別注意和前面多型的例子的不同處，<strong>介面只需要先定義好該做的事，裡面怎麼做不需要管；所以只需要宣告要求的方法，不需要撰寫方法本體</strong>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IProgrammer</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> WriteCSharp();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> WriteSQL();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> WriteVB();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>特別注意和前面多型的例子的不同處，<strong>介面只需要先定義好該做的事，裡面怎麼做不需要管；所以只需要宣告要求的方法，不需要撰寫方法本體</strong>。</p>
 <p>於是今天小華就又(?)來面試了，但是他其實並不會寫 C#：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Hua</span> : IProgrammer
-{
-    <span style="color:#75715e">// Error: Hua 未實作 IProgrammer.WriteCSharp()
-</span><span style="color:#75715e"></span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteSQL() { <span style="color:#75715e">/* Work */</span> }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteVB() { <span style="color:#75715e">/* Work */</span> }
-}
-</code></pre></div><p>這時候編譯器就會跳出錯誤了：很抱歉，你不符合我們 <code>IProgrammer</code> 的規定，因為我們只喜歡訓練精英（略），請你實作完之後再來。否則你就不能掛上我們 <code> : IProgrammer</code> 的頭銜。</p>……
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Hua</span> : IProgrammer
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Error: Hua 未實作 IProgrammer.WriteCSharp()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteSQL() { <span style="color:#75715e">/* Work */</span> }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteVB() { <span style="color:#75715e">/* Work */</span> }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這時候編譯器就會跳出錯誤了：很抱歉，你不符合我們 <code>IProgrammer</code> 的規定，因為我們只喜歡訓練精英（略），請你實作完之後再來。否則你就不能掛上我們 <code> : IProgrammer</code> 的頭銜。</p>……
                                     <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-7-interface/">閱讀全文</a></p>
                                 </div>
                             </article>
@@ -484,24 +484,24 @@
 <p>有些類別就是這樣，它們負責定義共通的那些特性，<strong>然而它們本身不應該被實體化成一個物件，這種類別我們就應該把它們標記為抽象類別</strong>。</p>
 <p><strong>抽象類別在 C# 裡用 <code>abstract</code> 這個修飾詞來表示</strong>，可以加在類別或方法上。例如 <code>abstract class Animal</code> 就代表動物這個類別是個抽象類別，它不能被實例化。</p>
 <p>而當加在方法上時，例如 <code>public abstract void Eat()</code> 就是代表這個進食的方法無法被叫用，只能由繼承者去重新定義這個方法。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Animal</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">void</span> Eat();
-}
-</code></pre></div><p>那麼繼承者們，也就是衍生類別如何去重新定義父類別的方法呢？</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Animal</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">void</span> Eat();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>那麼繼承者們，也就是衍生類別如何去重新定義父類別的方法呢？</p>
 <p><del>所謂「欲戴王冠，必 Override」</del>，這時候就必須使用<strong>覆寫（<code>override</code>）</strong>。</p>
 <p>覆寫是指對於像是前述的抽象方法時，在同名的方法前加上 <code>override</code> 關鍵字就可以讓程式知道你要覆寫這個方法（你不覆寫的話，編譯器還會生氣）。</p>
 <p>例如前述的 Eat，狗就可以用 <code>public override void Eat()</code> 的方式去覆寫吃東西這個方法：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span> : Animal
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;Black&#34;</span>;
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Eat()
-    {
-        <span style="color:#75715e">/* 嚼嚼嚼 */</span>
-    }
-}
-</code></pre></div>……
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span> : Animal
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;Black&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Eat()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/* 嚼嚼嚼 */</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>……
                                     <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-6-abstract-override/">閱讀全文</a></p>
                                 </div>
                             </article>

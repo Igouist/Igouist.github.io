@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -143,12 +143,12 @@
                             
                             <div class="post-content">
                                 <p>最近遇到在 Amazon Linux AMI 要安裝 .net Core 3.1 環境的時候，會一直跳出<br/> <code>Requires: openssl-libs</code> 而無法安裝的問題，儘管明明已經有 openssl 了，但還是解析失敗找不到依賴，過程一直碰壁，因此在這邊紀錄一下。</p>
-<p>過程中嘗試了安裝 openssl-libs（會找不到該套件）、下載 Dotnet 的 tar.gz ，再直接對執行檔下 Dotnet 指令起站台（雖然網站起得來，但執行者會是當下的登入身分，也就是 &lsquo;'@連線進來的IP-伺服器位置，而非由本機執行。後續如果有連線資料庫等檢查權限的地方就很容易出錯）</p>
+<p>過程中嘗試了安裝 openssl-libs（會找不到該套件）、下載 Dotnet 的 tar.gz ，再直接對執行檔下 Dotnet 指令起站台（雖然網站起得來，但執行者會是當下的登入身分，也就是 &lsquo;&rsquo;@連線進來的IP-伺服器位置，而非由本機執行。後續如果有連線資料庫等檢查權限的地方就很容易出錯）</p>
 <p>最後在 Dotnet Core 的 issue 翻到這篇 <a href="https://github.com/dotnet/core/issues/930">Cannot install .NET Core 2.0 on Amazon Linux AMI</a> 才成功解決。</p>
 <p>首先先將 openssl-libs 的 SPEC 抓下來，然後給 RPM 建置一下。這兩句可以參考一下這篇 <a href="https://medium.com/linux-%E9%96%8B%E7%99%BC%E5%85%A5%E9%96%80/rpm-%E6%89%93%E5%8C%85-%E7%94%B1%E4%B8%80%E7%AB%85%E4%B8%8D%E9%80%9A%E5%88%B0%E5%8B%95%E6%89%8B%E6%BF%AB%E7%94%A8-%E4%BA%8C-df9eea70bd7b">RPM 打包︰由一竅不通到動手濫用 (二)</a> 的說明。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget https://github.com/dotnet/core/files/2186067/openssl-libs-ami.spec.txt
-rpmbuild --bb openssl-libs-ami.spec.txt
-</code></pre></div>……
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wget https://github.com/dotnet/core/files/2186067/openssl-libs-ami.spec.txt
+</span></span><span style="display:flex;"><span>rpmbuild --bb openssl-libs-ami.spec.txt
+</span></span></code></pre></div>……
                             </div>
                             <p class="readmore"><a href="https://igouist.github.io/post/2020/11/bugs-install-dotnet-core-on-amazon-ami-requires-openssl/">閱讀全文</a></p>
                         </article>
@@ -179,14 +179,14 @@ rpmbuild --bb openssl-libs-ami.spec.txt
 <p>事情就從上一篇 <a href="/post/2020/11/oo-12-liskov-substitution-principle">里氏替換原則</a> 的鳥類物流公司開始說起。老闆痛定思痛，決定先用<strong>介面</strong>先規定好物流士們的應徵條件，例如裝貨、卸貨、飛行、必須有帥氣的喙等等。</p>
 <p>這道命令下來後，倉庫們的企鵝都慌了，來檢查的編譯器瘋狂跳出 Error:「您未實作 IBird 的 Fly() 方法！」這下怎麼辦呢，為了要保住飯碗，企鵝們就必須實作出飛行才行，可是企鵝真的就不會飛呀！</p>
 <p>這下子企鵝們只剩下兩個選擇：不實作飛行，但是就不能被當成物流士，最後就會被開除；或是……空實作。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Penguin</span> : IBird
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Fly()
-    {
-      <span style="color:#75715e">// Do nothing;
-</span><span style="color:#75715e"></span>    }
-}
-</code></pre></div><p>企鵝們終於騙過了編譯器檢查員，然而當送貨的命令下來之後，企鵝們再一次卡在倉庫門口發呆，最終物流公司仍然踏上了虧損的老路，再度面臨倒閉危機…</p>……
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Penguin</span> : IBird
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Fly()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// Do nothing;</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>企鵝們終於騙過了編譯器檢查員，然而當送貨的命令下來之後，企鵝們再一次卡在倉庫門口發呆，最終物流公司仍然踏上了虧損的老路，再度面臨倒閉危機…</p>……
                             </div>
                             <p class="readmore"><a href="https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle/">閱讀全文</a></p>
                         </article>
@@ -433,18 +433,18 @@ rpmbuild --bb openssl-libs-ami.spec.txt
 <blockquote>
 <p>註：此處使用的 <code>Dump</code> 是 Linqpad 提供的輸出方法，把它當成 Print 就行了。</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
-student.Item1.Dump(); <span style="color:#75715e">// 1
-</span><span style="color:#75715e"></span>student.Item2.Dump(); <span style="color:#75715e">// 王小明
-</span><span style="color:#75715e"></span>
-student.Dump();
-</code></pre></div><p>可以看到 Tuple 的建立相當簡單，只需要用小括號 <code>()</code> 括選起來即可。建立後的內容就會像這樣：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
+</span></span><span style="display:flex;"><span>student.Item1.Dump(); <span style="color:#75715e">// 1</span>
+</span></span><span style="display:flex;"><span>student.Item2.Dump(); <span style="color:#75715e">// 王小明</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>student.Dump();
+</span></span></code></pre></div><p>可以看到 Tuple 的建立相當簡單，只需要用小括號 <code>()</code> 括選起來即可。建立後的內容就會像這樣：</p>
 <p><img src="https://i.imgur.com/H0wJglN.png" alt=""></p>
 <p>但這樣使用就和之前一樣，取出來時只能拿 Item1, Item2，放個幾天根本就不記得 Item1 裡面是啥東西了。這時我們就可以<strong>替成員們取名字</strong>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">(<span style="color:#66d9ef">int</span> ID, <span style="color:#66d9ef">string</span> Name) student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
-student.ID.Dump(); <span style="color:#75715e">// 1
-</span><span style="color:#75715e"></span>student.Name.Dump(); <span style="color:#75715e">// 王小明
-</span></code></pre></div><p>如此使用的時候就和一般操作物件的習慣沒有差別，也增加了可讀性。</p>……
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>(<span style="color:#66d9ef">int</span> ID, <span style="color:#66d9ef">string</span> Name) student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
+</span></span><span style="display:flex;"><span>student.ID.Dump(); <span style="color:#75715e">// 1</span>
+</span></span><span style="display:flex;"><span>student.Name.Dump(); <span style="color:#75715e">// 王小明</span>
+</span></span></code></pre></div><p>如此使用的時候就和一般操作物件的習慣沒有差別，也增加了可讀性。</p>……
                             </div>
                             <p class="readmore"><a href="https://igouist.github.io/post/2020/09/csharp-trulp/">閱讀全文</a></p>
                         </article>

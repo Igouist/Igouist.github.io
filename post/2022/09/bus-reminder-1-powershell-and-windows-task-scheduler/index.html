@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -159,17 +159,17 @@
 <p>現在已經保障了資料來源，接下來就是要有個腳本來去打 API 拿資料回來囉！</p>
 <p>基於 <del>懶惰</del> 方便的原則，決定用 Powershell 寫個小東西直接打資料回來就好。</p>
 <p>這邊就直接用路線名稱和站牌 ID 來串 Uri，並且直接用 <strong>Invoke-RestMethod</strong> 來呼叫 API 吧：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$busName <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;307&#39;</span> <span style="color:#75715e"># 公車路線名稱</span>
-$stopId <span style="color:#f92672">=</span> <span style="color:#ae81ff">15250</span>  <span style="color:#75715e"># 站台 ID</span>
-
-<span style="color:#75715e"># 呼叫 MOTC API 取得公車資訊</span>
-$uri <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/Taipei/</span><span style="color:#66d9ef">$(</span>$busName<span style="color:#66d9ef">)</span><span style="color:#e6db74">?%24filter=StopId%20eq%20&#39;</span>$stopId<span style="color:#e6db74">&#39;&amp;%24top=1&amp;%24format=JSON&#34;</span>
-
-$response <span style="color:#f92672">=</span> Invoke-RestMethod -Uri $uri
-
-<span style="color:#75715e"># 把結果轉成 Json 確認一下</span>
-$response | ConvertTo-Json
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$busName <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;307&#39;</span> <span style="color:#75715e"># 公車路線名稱</span>
+</span></span><span style="display:flex;"><span>$stopId <span style="color:#f92672">=</span> <span style="color:#ae81ff">15250</span>  <span style="color:#75715e"># 站台 ID</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 呼叫 MOTC API 取得公車資訊</span>
+</span></span><span style="display:flex;"><span>$uri <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/Taipei/</span><span style="color:#66d9ef">$(</span>$busName<span style="color:#66d9ef">)</span><span style="color:#e6db74">?%24filter=StopId%20eq%20&#39;</span>$stopId<span style="color:#e6db74">&#39;&amp;%24top=1&amp;%24format=JSON&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>$response <span style="color:#f92672">=</span> Invoke-RestMethod -Uri $uri
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 把結果轉成 Json 確認一下</span>
+</span></span><span style="display:flex;"><span>$response | ConvertTo-Json
+</span></span></code></pre></div><blockquote>
 <p>小提醒：原本我們下的 <code>$filter = StopId eq '15250'</code> 的參數，其中 <code>$</code> 和空白符在 Uri 會轉換成 HTML 編碼的 <code>%24($)</code> 和 <code>%20(空白)</code>，並不是亂碼，請不要緊張</p>
 </blockquote>
 <p>另存成 <code>.ps1</code> 檔案來測試一下：</p>
@@ -179,17 +179,17 @@ $response | ConvertTo-Json
 <p>第一次嘗試採用了彈跳視窗，想了一想還是順手記錄下來好了</p>
 <p>首先將我們目標的 <code>EstimateTime</code> 取出來，然後顯示還有幾分鐘到站、預計幾點幾分到站</p>
 <p>最後用 <code>Wscript.Shell</code> 來顯示彈跳視窗：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$estimateSec <span style="color:#f92672">=</span> $response.EstimateTime
-
-<span style="color:#75715e"># 組裝要顯示的訊息</span>
-$estimateMin <span style="color:#f92672">=</span> $estimateSec / <span style="color:#ae81ff">60</span>
-$estimateTime <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Get-date<span style="color:#f92672">)</span>.AddSeconds<span style="color:#f92672">(</span>$estimateSec<span style="color:#f92672">)</span>.ToString<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;HH:mm&#34;</span><span style="color:#f92672">)</span>
-$message <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Bus </span><span style="color:#66d9ef">$(</span>$busName<span style="color:#66d9ef">)</span><span style="color:#e6db74"> - EstimateTime: in </span><span style="color:#66d9ef">$(</span><span style="color:#f92672">[</span>Math<span style="color:#f92672">]</span>::Floor<span style="color:#f92672">(</span>$estimateMin<span style="color:#66d9ef">)</span><span style="color:#e6db74">) minute(s), </span>$estimateTime<span style="color:#e6db74">&#34;</span>
-
-<span style="color:#75715e"># 使用彈跳視窗將預計抵達的時間列印出來</span>
-$wshell <span style="color:#f92672">=</span> New-Object -ComObject Wscript.Shell
-$wshell.Popup<span style="color:#f92672">(</span>$message<span style="color:#f92672">)</span>
-</code></pre></div><p>雖然運作順利，但是……</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$estimateSec <span style="color:#f92672">=</span> $response.EstimateTime
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 組裝要顯示的訊息</span>
+</span></span><span style="display:flex;"><span>$estimateMin <span style="color:#f92672">=</span> $estimateSec / <span style="color:#ae81ff">60</span>
+</span></span><span style="display:flex;"><span>$estimateTime <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Get-date<span style="color:#f92672">)</span>.AddSeconds<span style="color:#f92672">(</span>$estimateSec<span style="color:#f92672">)</span>.ToString<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;HH:mm&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>$message <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Bus </span><span style="color:#66d9ef">$(</span>$busName<span style="color:#66d9ef">)</span><span style="color:#e6db74"> - EstimateTime: in </span><span style="color:#66d9ef">$(</span><span style="color:#f92672">[</span>Math<span style="color:#f92672">]</span>::Floor<span style="color:#f92672">(</span>$estimateMin<span style="color:#66d9ef">)</span><span style="color:#e6db74">) minute(s), </span>$estimateTime<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 使用彈跳視窗將預計抵達的時間列印出來</span>
+</span></span><span style="display:flex;"><span>$wshell <span style="color:#f92672">=</span> New-Object -ComObject Wscript.Shell
+</span></span><span style="display:flex;"><span>$wshell.Popup<span style="color:#f92672">(</span>$message<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>雖然運作順利，但是……</p>
 <p><img src="https://i.imgur.com/psyAP4Y.png" alt="Image"></p>
 <p>總覺得有點不是很好看啊，而且工作到一半在畫面正中間跳出這個會煩死吧囧</p>
 <h2 id="使用-powershell-傳送-line-notify">使用 Powershell 傳送 Line Notify</h2>
@@ -199,13 +199,13 @@ $wshell.Popup<span style="color:#f92672">(</span>$message<span style="color:#f92
 <p><img src="https://i.imgur.com/W43nwLq.png" alt="Image"></p>
 <p><img src="https://i.imgur.com/Ahl9FoN.png" alt="Image"></p>
 <p>複製權杖之後，衝回 Powershell，<a href="http://chienleebug.blogspot.com/2017/10/powersehllline-notify.html">前人教學抄起來</a>，Invoke-RestMethod 就直接打下去：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 使用 Line Notify 傳送通知</span>
-$lineUri <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://notify-api.line.me/api/notify&#39;</span>
-$lineToken <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Bearer YOUR_LINE_TOKEN&#39;</span>
-$header <span style="color:#f92672">=</span> @<span style="color:#f92672">{</span> Authorization <span style="color:#f92672">=</span> $lineToken <span style="color:#f92672">}</span>
-$body <span style="color:#f92672">=</span> @<span style="color:#f92672">{</span> message <span style="color:#f92672">=</span> $message <span style="color:#f92672">}</span>
-Invoke-RestMethod -Uri $lineUri -Method Post -Headers $header -Body $body
-</code></pre></div><p>Line 也不負期望地彈出來：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 使用 Line Notify 傳送通知</span>
+</span></span><span style="display:flex;"><span>$lineUri <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://notify-api.line.me/api/notify&#39;</span>
+</span></span><span style="display:flex;"><span>$lineToken <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Bearer YOUR_LINE_TOKEN&#39;</span>
+</span></span><span style="display:flex;"><span>$header <span style="color:#f92672">=</span> @<span style="color:#f92672">{</span> Authorization <span style="color:#f92672">=</span> $lineToken <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>$body <span style="color:#f92672">=</span> @<span style="color:#f92672">{</span> message <span style="color:#f92672">=</span> $message <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>Invoke-RestMethod -Uri $lineUri -Method Post -Headers $header -Body $body
+</span></span></code></pre></div><p>Line 也不負期望地彈出來：</p>
 <p><img src="https://i.imgur.com/BVGpNzg.png" alt="Image"></p>
 <p>大功告成！搞定拿資料和通知的部分啦～</p>
 <blockquote>
@@ -218,26 +218,26 @@ Invoke-RestMethod -Uri $lineUri -Method Post -Headers $header -Body $body
 <p>原本卡在這步搞不定，正好黑暗執行緒大大發了篇 <a href="https://blog.darkthread.net/blog/ps1-encoding-issue/">PowerShell .ps1 檔 UTF-8 編碼問題之變形錯誤</a>，才知道 PowerShell 5.x 有編碼解析的問題，改成 Utf-8 with BOM 順利完工。這邊補充給各位朋朋，望周知</p>
 </blockquote>
 <p>到這邊 Powershell 的部份就處理好了，目前會長這樣：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$busName <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;307&#39;</span> <span style="color:#75715e"># 公車路線名稱</span>
-$stopId <span style="color:#f92672">=</span> <span style="color:#ae81ff">15250</span>  <span style="color:#75715e"># 站台 ID</span>
-
-<span style="color:#75715e"># 呼叫 MOTC API 取得公車資訊</span>
-$uri <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/Taipei/</span><span style="color:#66d9ef">$(</span>$busName<span style="color:#66d9ef">)</span><span style="color:#e6db74">?%24filter=StopId%20eq%20&#39;</span>$stopId<span style="color:#e6db74">&#39;&amp;%24top=1&amp;%24format=JSON&#34;</span>
-$response <span style="color:#f92672">=</span> Invoke-RestMethod -Uri $uri
-$estimateSec <span style="color:#f92672">=</span> $response.EstimateTime
-
-<span style="color:#75715e"># 組裝要顯示的訊息</span>
-$estimateMin <span style="color:#f92672">=</span> $estimateSec / <span style="color:#ae81ff">60</span>
-$estimateTime <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Get-date<span style="color:#f92672">)</span>.AddSeconds<span style="color:#f92672">(</span>$estimateSec<span style="color:#f92672">)</span>.ToString<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;HH:mm&#34;</span><span style="color:#f92672">)</span>
-$message <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Bus </span><span style="color:#66d9ef">$(</span>$busName<span style="color:#66d9ef">)</span><span style="color:#e6db74"> - EstimateTime: in </span><span style="color:#66d9ef">$(</span><span style="color:#f92672">[</span>Math<span style="color:#f92672">]</span>::Floor<span style="color:#f92672">(</span>$estimateMin<span style="color:#66d9ef">)</span><span style="color:#e6db74">) minute(s), </span>$estimateTime<span style="color:#e6db74">&#34;</span>
-
-<span style="color:#75715e"># 使用 Line Notify 傳送通知</span>
-$lineUri <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://notify-api.line.me/api/notify&#39;</span>
-$lineToken <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Bearer YOUR_LINE_TOKEN&#39;</span>
-$header <span style="color:#f92672">=</span> @<span style="color:#f92672">{</span> Authorization <span style="color:#f92672">=</span> $lineToken <span style="color:#f92672">}</span>
-$body <span style="color:#f92672">=</span> @<span style="color:#f92672">{</span> message <span style="color:#f92672">=</span> $message <span style="color:#f92672">}</span>
-Invoke-RestMethod -Uri $lineUri -Method Post -Headers $header -Body $body
-</code></pre></div><h2 id="使用-工作排程器-定時執行-powershell-腳本">使用 工作排程器 定時執行 Powershell 腳本</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$busName <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;307&#39;</span> <span style="color:#75715e"># 公車路線名稱</span>
+</span></span><span style="display:flex;"><span>$stopId <span style="color:#f92672">=</span> <span style="color:#ae81ff">15250</span>  <span style="color:#75715e"># 站台 ID</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 呼叫 MOTC API 取得公車資訊</span>
+</span></span><span style="display:flex;"><span>$uri <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;https://ptx.transportdata.tw/MOTC/v2/Bus/EstimatedTimeOfArrival/City/Taipei/</span><span style="color:#66d9ef">$(</span>$busName<span style="color:#66d9ef">)</span><span style="color:#e6db74">?%24filter=StopId%20eq%20&#39;</span>$stopId<span style="color:#e6db74">&#39;&amp;%24top=1&amp;%24format=JSON&#34;</span>
+</span></span><span style="display:flex;"><span>$response <span style="color:#f92672">=</span> Invoke-RestMethod -Uri $uri
+</span></span><span style="display:flex;"><span>$estimateSec <span style="color:#f92672">=</span> $response.EstimateTime
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 組裝要顯示的訊息</span>
+</span></span><span style="display:flex;"><span>$estimateMin <span style="color:#f92672">=</span> $estimateSec / <span style="color:#ae81ff">60</span>
+</span></span><span style="display:flex;"><span>$estimateTime <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Get-date<span style="color:#f92672">)</span>.AddSeconds<span style="color:#f92672">(</span>$estimateSec<span style="color:#f92672">)</span>.ToString<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;HH:mm&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>$message <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Bus </span><span style="color:#66d9ef">$(</span>$busName<span style="color:#66d9ef">)</span><span style="color:#e6db74"> - EstimateTime: in </span><span style="color:#66d9ef">$(</span><span style="color:#f92672">[</span>Math<span style="color:#f92672">]</span>::Floor<span style="color:#f92672">(</span>$estimateMin<span style="color:#66d9ef">)</span><span style="color:#e6db74">) minute(s), </span>$estimateTime<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 使用 Line Notify 傳送通知</span>
+</span></span><span style="display:flex;"><span>$lineUri <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://notify-api.line.me/api/notify&#39;</span>
+</span></span><span style="display:flex;"><span>$lineToken <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Bearer YOUR_LINE_TOKEN&#39;</span>
+</span></span><span style="display:flex;"><span>$header <span style="color:#f92672">=</span> @<span style="color:#f92672">{</span> Authorization <span style="color:#f92672">=</span> $lineToken <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>$body <span style="color:#f92672">=</span> @<span style="color:#f92672">{</span> message <span style="color:#f92672">=</span> $message <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>Invoke-RestMethod -Uri $lineUri -Method Post -Headers $header -Body $body
+</span></span></code></pre></div><h2 id="使用-工作排程器-定時執行-powershell-腳本">使用 工作排程器 定時執行 Powershell 腳本</h2>
 <p>秉持著前面選擇 Powershell 的 <del>偷懶</del> 簡單精神，這邊的定時執行就直接使用 Windows 內建的工作排程器來處理：</p>
 <p><img src="https://i.imgur.com/R7o2WFS.png" alt="Image"></p>
 <p>因為我們的場景相對簡單，只有要在特定時間幫我們呼叫 Powershell 腳本，因此直接選擇「建立基本動作」</p>

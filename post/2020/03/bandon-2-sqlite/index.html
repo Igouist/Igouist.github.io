@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -130,35 +130,35 @@
 <p>基本上和一般資料庫的操作邏輯並無太多差異，主要也是以 <code>sqlite3.connect</code> 先連線到資料庫中，再使用如 <code>connection.execute</code> 等的執行語法來進行操作。同時連線之後也可以使用其他資料框架提供的儲存和讀取等方法來處理，上方的菜鳥教程已有完整的教學流程，因此這邊就不多做說明，以下將會直接寫出操作資料庫動作的函式。</p>
 <h2 id="儲存與讀取訂單">儲存與讀取訂單</h2>
 <p>由於我們的情境相對簡單，只需要儲存和讀取。因此我們直接建立這兩個方法來操作。且因為我們在上一集讀回來的資料已經轉成 DataFrame，因此可以直接調用相關的方法進行操作。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">saveToDb</span>(data, dbname, tablename):
-    <span style="color:#e6db74">&#39;&#39;&#39; 將資料表存放到 sqlLite 資料庫 &#39;&#39;&#39;</span>
-    <span style="color:#66d9ef">with</span> lite<span style="color:#f92672">.</span>connect(dbname) <span style="color:#66d9ef">as</span> db:
-        data<span style="color:#f92672">.</span>to_sql(tablename, con <span style="color:#f92672">=</span> db, if_exists <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;replace&#39;</span>)
-
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">readFromDb</span>(dbname, tablename):
-    <span style="color:#e6db74">&#39;&#39;&#39; 從資料庫取出上次資料表 &#39;&#39;&#39;</span>
-    <span style="color:#66d9ef">with</span> lite<span style="color:#f92672">.</span>connect(dbname) <span style="color:#66d9ef">as</span> db:
-        <span style="color:#66d9ef">return</span> pandas<span style="color:#f92672">.</span>read_sql_query(<span style="color:#e6db74">&#39;SELECT * FROM </span><span style="color:#e6db74">{tablename}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(tablename <span style="color:#f92672">=</span> tablename), db)
-
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">delDataInDb</span>(dbname, tablename):
-    <span style="color:#e6db74">&#39;&#39;&#39; 將指定資料表的資料刪除 &#39;&#39;&#39;</span>
-    <span style="color:#66d9ef">with</span> lite<span style="color:#f92672">.</span>connect(dbname) <span style="color:#66d9ef">as</span> db:
-        cursor <span style="color:#f92672">=</span> db<span style="color:#f92672">.</span>cursor()
-        cursor<span style="color:#f92672">.</span>execute(<span style="color:#e6db74">&#39;SELECT * FROM </span><span style="color:#e6db74">{tablename}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(tablename<span style="color:#f92672">=</span>tablename))
-        db<span style="color:#f92672">.</span>commit()
-        cursor<span style="color:#f92672">.</span>close()
-</code></pre></div><p>另外也要考慮到可能是第一次連接到資料庫，若是指定的資料表不存在可能會報錯，因此加上一個檢查有沒有資料表的方法。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">IsDbTableExist</span>(dbname, tablename):
-    <span style="color:#e6db74">&#39;&#39;&#39; 確認是否有資料表 &#39;&#39;&#39;</span>
-    <span style="color:#66d9ef">with</span> lite<span style="color:#f92672">.</span>connect(dbname) <span style="color:#66d9ef">as</span> db:
-        c <span style="color:#f92672">=</span> db<span style="color:#f92672">.</span>cursor()
-        c<span style="color:#f92672">.</span>execute(<span style="color:#e6db74">&#34;SELECT count(*) FROM sqlite_master WHERE type=&#39;table&#39; AND name=&#39;</span><span style="color:#e6db74">{tablename}</span><span style="color:#e6db74">&#39;&#34;</span><span style="color:#f92672">.</span>format(tablename <span style="color:#f92672">=</span> tablename))
-        <span style="color:#66d9ef">if</span> c<span style="color:#f92672">.</span>fetchone()[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span> : 
-            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
-</code></pre></div><p>這些小零件完成之後，就可以把它們加到主要的流程裡。最簡單的順序應該是這樣的</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Python" data-lang="Python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">saveToDb</span>(data, dbname, tablename):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39; 將資料表存放到 sqlLite 資料庫 &#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> lite<span style="color:#f92672">.</span>connect(dbname) <span style="color:#66d9ef">as</span> db:
+</span></span><span style="display:flex;"><span>        data<span style="color:#f92672">.</span>to_sql(tablename, con <span style="color:#f92672">=</span> db, if_exists <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;replace&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">readFromDb</span>(dbname, tablename):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39; 從資料庫取出上次資料表 &#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> lite<span style="color:#f92672">.</span>connect(dbname) <span style="color:#66d9ef">as</span> db:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> pandas<span style="color:#f92672">.</span>read_sql_query(<span style="color:#e6db74">&#39;SELECT * FROM </span><span style="color:#e6db74">{tablename}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(tablename <span style="color:#f92672">=</span> tablename), db)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">delDataInDb</span>(dbname, tablename):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39; 將指定資料表的資料刪除 &#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> lite<span style="color:#f92672">.</span>connect(dbname) <span style="color:#66d9ef">as</span> db:
+</span></span><span style="display:flex;"><span>        cursor <span style="color:#f92672">=</span> db<span style="color:#f92672">.</span>cursor()
+</span></span><span style="display:flex;"><span>        cursor<span style="color:#f92672">.</span>execute(<span style="color:#e6db74">&#39;SELECT * FROM </span><span style="color:#e6db74">{tablename}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(tablename<span style="color:#f92672">=</span>tablename))
+</span></span><span style="display:flex;"><span>        db<span style="color:#f92672">.</span>commit()
+</span></span><span style="display:flex;"><span>        cursor<span style="color:#f92672">.</span>close()
+</span></span></code></pre></div><p>另外也要考慮到可能是第一次連接到資料庫，若是指定的資料表不存在可能會報錯，因此加上一個檢查有沒有資料表的方法。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Python" data-lang="Python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">IsDbTableExist</span>(dbname, tablename):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39; 確認是否有資料表 &#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> lite<span style="color:#f92672">.</span>connect(dbname) <span style="color:#66d9ef">as</span> db:
+</span></span><span style="display:flex;"><span>        c <span style="color:#f92672">=</span> db<span style="color:#f92672">.</span>cursor()
+</span></span><span style="display:flex;"><span>        c<span style="color:#f92672">.</span>execute(<span style="color:#e6db74">&#34;SELECT count(*) FROM sqlite_master WHERE type=&#39;table&#39; AND name=&#39;</span><span style="color:#e6db74">{tablename}</span><span style="color:#e6db74">&#39;&#34;</span><span style="color:#f92672">.</span>format(tablename <span style="color:#f92672">=</span> tablename))
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> c<span style="color:#f92672">.</span>fetchone()[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span> : 
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+</span></span></code></pre></div><p>這些小零件完成之後，就可以把它們加到主要的流程裡。最簡單的順序應該是這樣的</p>
 <pre><code>- 取得網路訂單資訊
 - 和資料庫的訂單資訊比對
     - 如果有差異，且訂單變多代表有新訂單！ → 後續的通知等動作
@@ -167,47 +167,47 @@
 - 結束
 </code></pre>
 <p>按照這個流程加入之前的主程式後，就會變得如下（全程式將附於文末）</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
-    url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://dinbendon.net/do/login&#39;</span>
-    dbname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;order.sqlite&#39;</span>
-    tablename <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;bandon&#39;</span>
-
-    order <span style="color:#f92672">=</span> fetch_bandon(url)  <span style="color:#75715e"># 連線到便當網取得訂單資訊</span>
-
-    <span style="color:#66d9ef">if</span> order <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">or</span> len(order) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-        print(<span style="color:#e6db74">&#34;目前沒有進行中的訂單&#34;</span>)
-        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
-
-    <span style="color:#75715e"># 如果資料庫沒資料表（＝第一次執行）先存一次建個環境</span>
-    <span style="color:#66d9ef">if</span> IsDbTableExist(dbname, tablename) <span style="color:#f92672">is</span> <span style="color:#66d9ef">False</span>:
-        print(<span style="color:#e6db74">&#39;資料庫無過往訂單，即將儲存目前訂單並退出&#39;</span>)
-        saveToDb(order, dbname, tablename)
-        print_order(order)
-        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
-
-    oldOrder <span style="color:#f92672">=</span> readFromDb(dbname, tablename)
-
-    orderList <span style="color:#f92672">=</span> list(order[<span style="color:#e6db74">&#39;目標&#39;</span>])
-    oldOrderList <span style="color:#f92672">=</span> list(oldOrder[<span style="color:#e6db74">&#39;目標&#39;</span>])
-
-    <span style="color:#75715e">#print_order(order)</span>
-    delDataInDb(dbname, tablename)
-    saveToDb(order, dbname, tablename)
-
-    <span style="color:#75715e"># 如果上次訂單是空的</span>
-    <span style="color:#66d9ef">if</span> oldOrder <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">or</span> len(oldOrder) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-        print(<span style="color:#e6db74">&#39;資料庫無過往訂單，即將儲存目前訂單並退出&#39;</span>)
-        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
-
-    <span style="color:#66d9ef">if</span> orderList <span style="color:#f92672">==</span> oldOrderList <span style="color:#f92672">or</span> len(orderList) <span style="color:#f92672">&lt;</span> len(oldOrderList):
-        print(<span style="color:#e6db74">&#34;訂單無變動，程式即將退出&#34;</span>)
-        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
-
-    print(<span style="color:#e6db74">&#34;偵測到訂單變動！&#34;</span>)
-    <span style="color:#75715e"># 做點通知的事</span>
-    print(<span style="color:#e6db74">&#34;尚未實作任何通知，程式即將終止…&#34;</span>)
-    print_order(order)
-</code></pre></div><p>完成之後，接著進行測試，首先用顧客帳號登入便當網，確認一下目前的訂單內容</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Python" data-lang="Python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+</span></span><span style="display:flex;"><span>    url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://dinbendon.net/do/login&#39;</span>
+</span></span><span style="display:flex;"><span>    dbname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;order.sqlite&#39;</span>
+</span></span><span style="display:flex;"><span>    tablename <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;bandon&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    order <span style="color:#f92672">=</span> fetch_bandon(url)  <span style="color:#75715e"># 連線到便當網取得訂單資訊</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> order <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">or</span> len(order) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;目前沒有進行中的訂單&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 如果資料庫沒資料表（＝第一次執行）先存一次建個環境</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> IsDbTableExist(dbname, tablename) <span style="color:#f92672">is</span> <span style="color:#66d9ef">False</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#39;資料庫無過往訂單，即將儲存目前訂單並退出&#39;</span>)
+</span></span><span style="display:flex;"><span>        saveToDb(order, dbname, tablename)
+</span></span><span style="display:flex;"><span>        print_order(order)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    oldOrder <span style="color:#f92672">=</span> readFromDb(dbname, tablename)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    orderList <span style="color:#f92672">=</span> list(order[<span style="color:#e6db74">&#39;目標&#39;</span>])
+</span></span><span style="display:flex;"><span>    oldOrderList <span style="color:#f92672">=</span> list(oldOrder[<span style="color:#e6db74">&#39;目標&#39;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#print_order(order)</span>
+</span></span><span style="display:flex;"><span>    delDataInDb(dbname, tablename)
+</span></span><span style="display:flex;"><span>    saveToDb(order, dbname, tablename)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 如果上次訂單是空的</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> oldOrder <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">or</span> len(oldOrder) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#39;資料庫無過往訂單，即將儲存目前訂單並退出&#39;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> orderList <span style="color:#f92672">==</span> oldOrderList <span style="color:#f92672">or</span> len(orderList) <span style="color:#f92672">&lt;</span> len(oldOrderList):
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;訂單無變動，程式即將退出&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;偵測到訂單變動！&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 做點通知的事</span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;尚未實作任何通知，程式即將終止…&#34;</span>)
+</span></span><span style="display:flex;"><span>    print_order(order)
+</span></span></code></pre></div><p>完成之後，接著進行測試，首先用顧客帳號登入便當網，確認一下目前的訂單內容</p>
 <p><img src="https://i.imgur.com/R1KEk0P.png" alt=""></p>
 <p>接著先執行過一次</p>
 <p><img src="https://i.imgur.com/NvyBzsF.png" alt="">
@@ -249,145 +249,145 @@
 <li><a href="http://yhhuang1966.blogspot.com/2018/04/python-sqlite_28.html">Python 學習筆記 : 資料庫存取測試 (一) SQLite - 小狐狸事務所</a></li>
 </ul>
 <h2 id="附錄目前程式碼">附錄：目前程式碼</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Python" data-lang="Python"><span style="color:#f92672">from</span> selenium <span style="color:#f92672">import</span> webdriver
-<span style="color:#f92672">import</span> re
-<span style="color:#f92672">import</span> time
-<span style="color:#f92672">import</span> pandas
-<span style="color:#f92672">import</span> sqlite3 <span style="color:#66d9ef">as</span> lite
-
-<span style="color:#75715e"># 自動檢查團購便當網</span>
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
-    url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://dinbendon.net/do/login&#39;</span>
-    dbname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;order.sqlite&#39;</span>
-    tablename <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;bandon&#39;</span>
-
-    order <span style="color:#f92672">=</span> fetch_bandon(url)  <span style="color:#75715e"># 連線到便當網取得訂單資訊</span>
-
-    <span style="color:#66d9ef">if</span> order <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">or</span> len(order) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-        print(<span style="color:#e6db74">&#34;目前沒有進行中的訂單&#34;</span>)
-        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
-
-    <span style="color:#75715e"># 如果資料庫沒資料表（＝第一次執行）先存一次建個環境</span>
-    <span style="color:#66d9ef">if</span> IsDbTableExist(dbname, tablename) <span style="color:#f92672">is</span> <span style="color:#66d9ef">False</span>:
-        print(<span style="color:#e6db74">&#39;資料庫無過往訂單，即將儲存目前訂單並退出&#39;</span>)
-        saveToDb(order, dbname, tablename)
-        print_order(order)
-        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
-
-    oldOrder <span style="color:#f92672">=</span> readFromDb(dbname, tablename)
-
-    orderList <span style="color:#f92672">=</span> list(order[<span style="color:#e6db74">&#39;目標&#39;</span>])
-    oldOrderList <span style="color:#f92672">=</span> list(oldOrder[<span style="color:#e6db74">&#39;目標&#39;</span>])
-
-    <span style="color:#75715e">#print_order(order)</span>
-    delDataInDb(dbname, tablename)
-    saveToDb(order, dbname, tablename)
-
-    <span style="color:#75715e"># 如果上次訂單是空的</span>
-    <span style="color:#66d9ef">if</span> oldOrder <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">or</span> len(oldOrder) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-        print(<span style="color:#e6db74">&#39;資料庫無過往訂單，即將儲存目前訂單並退出&#39;</span>)
-        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
-
-    <span style="color:#66d9ef">if</span> orderList <span style="color:#f92672">==</span> oldOrderList <span style="color:#f92672">or</span> len(orderList) <span style="color:#f92672">&lt;</span> len(oldOrderList):
-        print(<span style="color:#e6db74">&#34;訂單無變動，程式即將退出&#34;</span>)
-        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
-
-    print(<span style="color:#e6db74">&#34;偵測到訂單變動！&#34;</span>)
-    <span style="color:#75715e"># 做點通知的事</span>
-    print(<span style="color:#e6db74">&#34;尚未實作任何通知，程式即將終止…&#34;</span>)
-    print_order(order)
-
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fetch_bandon</span>(url, username<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;guest&#34;</span>, password<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;guest&#34;</span>):
-    <span style="color:#e6db74">&#39;&#39;&#39; 開啟瀏覽器並連線到便當網取得資料 &#39;&#39;&#39;</span>
-
-    options <span style="color:#f92672">=</span> webdriver<span style="color:#f92672">.</span>ChromeOptions()
-    <span style="color:#75715e">#options.add_argument(&#39;headless&#39;)</span>
-    driver <span style="color:#f92672">=</span> webdriver<span style="color:#f92672">.</span>Chrome(options<span style="color:#f92672">=</span>options)
-    
-    driver<span style="color:#f92672">.</span>get(url)  <span style="color:#75715e"># 連線到訂便當頁面</span>
-    time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1</span>) <span style="color:#75715e"># 演一下</span>
-
-    <span style="color:#75715e"># 輸入帳密</span>
-    driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74">&#34;username&#34;</span>)<span style="color:#f92672">.</span>send_keys(username)
-    driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74">&#34;password&#34;</span>)<span style="color:#f92672">.</span>send_keys(password)
-
-    <span style="color:#75715e"># 輸入驗證碼</span>
-    ques <span style="color:#f92672">=</span> driver<span style="color:#f92672">.</span>find_elements_by_class_name(<span style="color:#e6db74">&#34;alignRight&#34;</span>)[<span style="color:#ae81ff">2</span>]<span style="color:#f92672">.</span>text
-    temp <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>findall(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\d+\.?\d*&#34;</span>, ques)
-    answer <span style="color:#f92672">=</span> int(temp[<span style="color:#ae81ff">0</span>]) <span style="color:#f92672">+</span> int(temp[<span style="color:#ae81ff">1</span>])
-    driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74">&#34;result&#34;</span>)<span style="color:#f92672">.</span>send_keys(answer)
-
-    <span style="color:#75715e"># 提交表單</span>
-    driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74">&#34;submit&#34;</span>)<span style="color:#f92672">.</span>click()
-    <span style="color:#75715e">#time.sleep(1)</span>
-
-    <span style="color:#75715e"># 取出訂單表格列</span>
-    rows <span style="color:#f92672">=</span> driver<span style="color:#f92672">.</span>find_elements_by_css_selector(
-        <span style="color:#e6db74">&#34;div#inProgressBox&gt;table&gt;tbody&gt;tr&#34;</span>)
-
-    <span style="color:#66d9ef">if</span> len(rows) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-        driver<span style="color:#f92672">.</span>close()
-        <span style="color:#66d9ef">return</span> list()
-
-    bandons <span style="color:#f92672">=</span> [list(map(getText, row<span style="color:#f92672">.</span>find_elements_by_css_selector(
-        <span style="color:#e6db74">&#34;td&gt;div&gt;a&gt;span&#34;</span>))) <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> rows]  <span style="color:#75715e"># 取出每一列資料的文字</span>
-    driver<span style="color:#f92672">.</span>close()
-
-    tableHeader <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;人數&#39;</span>, <span style="color:#e6db74">&#39;發起人&#39;</span>, <span style="color:#e6db74">&#39;目標&#39;</span>]
-    bandons_df <span style="color:#f92672">=</span> pandas<span style="color:#f92672">.</span>DataFrame(bandons, columns<span style="color:#f92672">=</span>tableHeader)
-
-    <span style="color:#66d9ef">return</span> bandons_df
-
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">print_order</span>(data):
-    <span style="color:#e6db74">&#39;&#39;&#39;列印訂單資料，看起來整齊一點&#39;&#39;&#39;</span>
-    <span style="color:#66d9ef">for</span> index, row <span style="color:#f92672">in</span> data<span style="color:#f92672">.</span>iterrows():
-        <span style="color:#66d9ef">if</span> row <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
-            print(<span style="color:#e6db74">&#39;(</span><span style="color:#e6db74">{hcount:&gt;4s}</span><span style="color:#e6db74">) </span><span style="color:#e6db74">{orderer}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{order:&lt;40s}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(
-                orderer <span style="color:#f92672">=</span> str(row[<span style="color:#e6db74">&#39;發起人&#39;</span>]),
-                order <span style="color:#f92672">=</span> str(row[<span style="color:#e6db74">&#39;目標&#39;</span>]),
-                hcount <span style="color:#f92672">=</span> str(row[<span style="color:#e6db74">&#39;人數&#39;</span>])))
-
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">getText</span>(x):
-    <span style="color:#66d9ef">return</span> x<span style="color:#f92672">.</span>text
-
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">saveToDb</span>(data, dbname, tablename):
-    <span style="color:#e6db74">&#39;&#39;&#39; 將資料表存放到 sqlLite 資料庫 &#39;&#39;&#39;</span>
-    <span style="color:#66d9ef">with</span> lite<span style="color:#f92672">.</span>connect(dbname) <span style="color:#66d9ef">as</span> db:
-        data<span style="color:#f92672">.</span>to_sql(tablename, con<span style="color:#f92672">=</span>db, if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>)
-
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">readFromDb</span>(dbname, tablename):
-    <span style="color:#e6db74">&#39;&#39;&#39; 從資料庫取出上次資料表 &#39;&#39;&#39;</span>
-    <span style="color:#66d9ef">with</span> lite<span style="color:#f92672">.</span>connect(dbname) <span style="color:#66d9ef">as</span> db:
-        <span style="color:#66d9ef">return</span> pandas<span style="color:#f92672">.</span>read_sql_query(<span style="color:#e6db74">&#39;SELECT * FROM </span><span style="color:#e6db74">{tablename}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(tablename<span style="color:#f92672">=</span>tablename), db)
-
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">delDataInDb</span>(dbname, tablename):
-    <span style="color:#e6db74">&#39;&#39;&#39; 將指定資料表的資料刪除 &#39;&#39;&#39;</span>
-    <span style="color:#66d9ef">with</span> lite<span style="color:#f92672">.</span>connect(dbname) <span style="color:#66d9ef">as</span> db:
-        cursor <span style="color:#f92672">=</span> db<span style="color:#f92672">.</span>cursor()
-        cursor<span style="color:#f92672">.</span>execute(<span style="color:#e6db74">&#39;SELECT * FROM </span><span style="color:#e6db74">{tablename}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(tablename<span style="color:#f92672">=</span>tablename))
-        db<span style="color:#f92672">.</span>commit()
-        cursor<span style="color:#f92672">.</span>close()
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">IsDbTableExist</span>(dbname, tablename):
-    <span style="color:#e6db74">&#39;&#39;&#39; 確認是否有資料表 &#39;&#39;&#39;</span>
-    <span style="color:#66d9ef">with</span> lite<span style="color:#f92672">.</span>connect(dbname) <span style="color:#66d9ef">as</span> db:
-        c <span style="color:#f92672">=</span> db<span style="color:#f92672">.</span>cursor()
-        c<span style="color:#f92672">.</span>execute(<span style="color:#e6db74">&#34;SELECT count(*) FROM sqlite_master WHERE type=&#39;table&#39; AND name=&#39;</span><span style="color:#e6db74">{tablename}</span><span style="color:#e6db74">&#39;&#34;</span><span style="color:#f92672">.</span>format(tablename<span style="color:#f92672">=</span>tablename))
-        <span style="color:#66d9ef">if</span> c<span style="color:#f92672">.</span>fetchone()[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
-            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
-
-
-<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
-    main()
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Python" data-lang="Python"><span style="display:flex;"><span><span style="color:#f92672">from</span> selenium <span style="color:#f92672">import</span> webdriver
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> time
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> sqlite3 <span style="color:#66d9ef">as</span> lite
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 自動檢查團購便當網</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+</span></span><span style="display:flex;"><span>    url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://dinbendon.net/do/login&#39;</span>
+</span></span><span style="display:flex;"><span>    dbname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;order.sqlite&#39;</span>
+</span></span><span style="display:flex;"><span>    tablename <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;bandon&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    order <span style="color:#f92672">=</span> fetch_bandon(url)  <span style="color:#75715e"># 連線到便當網取得訂單資訊</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> order <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">or</span> len(order) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;目前沒有進行中的訂單&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 如果資料庫沒資料表（＝第一次執行）先存一次建個環境</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> IsDbTableExist(dbname, tablename) <span style="color:#f92672">is</span> <span style="color:#66d9ef">False</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#39;資料庫無過往訂單，即將儲存目前訂單並退出&#39;</span>)
+</span></span><span style="display:flex;"><span>        saveToDb(order, dbname, tablename)
+</span></span><span style="display:flex;"><span>        print_order(order)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    oldOrder <span style="color:#f92672">=</span> readFromDb(dbname, tablename)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    orderList <span style="color:#f92672">=</span> list(order[<span style="color:#e6db74">&#39;目標&#39;</span>])
+</span></span><span style="display:flex;"><span>    oldOrderList <span style="color:#f92672">=</span> list(oldOrder[<span style="color:#e6db74">&#39;目標&#39;</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#print_order(order)</span>
+</span></span><span style="display:flex;"><span>    delDataInDb(dbname, tablename)
+</span></span><span style="display:flex;"><span>    saveToDb(order, dbname, tablename)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 如果上次訂單是空的</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> oldOrder <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">or</span> len(oldOrder) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#39;資料庫無過往訂單，即將儲存目前訂單並退出&#39;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> orderList <span style="color:#f92672">==</span> oldOrderList <span style="color:#f92672">or</span> len(orderList) <span style="color:#f92672">&lt;</span> len(oldOrderList):
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;訂單無變動，程式即將退出&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;偵測到訂單變動！&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 做點通知的事</span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;尚未實作任何通知，程式即將終止…&#34;</span>)
+</span></span><span style="display:flex;"><span>    print_order(order)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fetch_bandon</span>(url, username<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;guest&#34;</span>, password<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;guest&#34;</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39; 開啟瀏覽器並連線到便當網取得資料 &#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    options <span style="color:#f92672">=</span> webdriver<span style="color:#f92672">.</span>ChromeOptions()
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#options.add_argument(&#39;headless&#39;)</span>
+</span></span><span style="display:flex;"><span>    driver <span style="color:#f92672">=</span> webdriver<span style="color:#f92672">.</span>Chrome(options<span style="color:#f92672">=</span>options)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    driver<span style="color:#f92672">.</span>get(url)  <span style="color:#75715e"># 連線到訂便當頁面</span>
+</span></span><span style="display:flex;"><span>    time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1</span>) <span style="color:#75715e"># 演一下</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 輸入帳密</span>
+</span></span><span style="display:flex;"><span>    driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74">&#34;username&#34;</span>)<span style="color:#f92672">.</span>send_keys(username)
+</span></span><span style="display:flex;"><span>    driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74">&#34;password&#34;</span>)<span style="color:#f92672">.</span>send_keys(password)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 輸入驗證碼</span>
+</span></span><span style="display:flex;"><span>    ques <span style="color:#f92672">=</span> driver<span style="color:#f92672">.</span>find_elements_by_class_name(<span style="color:#e6db74">&#34;alignRight&#34;</span>)[<span style="color:#ae81ff">2</span>]<span style="color:#f92672">.</span>text
+</span></span><span style="display:flex;"><span>    temp <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>findall(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\d+\.?\d*&#34;</span>, ques)
+</span></span><span style="display:flex;"><span>    answer <span style="color:#f92672">=</span> int(temp[<span style="color:#ae81ff">0</span>]) <span style="color:#f92672">+</span> int(temp[<span style="color:#ae81ff">1</span>])
+</span></span><span style="display:flex;"><span>    driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74">&#34;result&#34;</span>)<span style="color:#f92672">.</span>send_keys(answer)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 提交表單</span>
+</span></span><span style="display:flex;"><span>    driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74">&#34;submit&#34;</span>)<span style="color:#f92672">.</span>click()
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#time.sleep(1)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 取出訂單表格列</span>
+</span></span><span style="display:flex;"><span>    rows <span style="color:#f92672">=</span> driver<span style="color:#f92672">.</span>find_elements_by_css_selector(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;div#inProgressBox&gt;table&gt;tbody&gt;tr&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> len(rows) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        driver<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> list()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    bandons <span style="color:#f92672">=</span> [list(map(getText, row<span style="color:#f92672">.</span>find_elements_by_css_selector(
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;td&gt;div&gt;a&gt;span&#34;</span>))) <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> rows]  <span style="color:#75715e"># 取出每一列資料的文字</span>
+</span></span><span style="display:flex;"><span>    driver<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    tableHeader <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;人數&#39;</span>, <span style="color:#e6db74">&#39;發起人&#39;</span>, <span style="color:#e6db74">&#39;目標&#39;</span>]
+</span></span><span style="display:flex;"><span>    bandons_df <span style="color:#f92672">=</span> pandas<span style="color:#f92672">.</span>DataFrame(bandons, columns<span style="color:#f92672">=</span>tableHeader)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> bandons_df
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">print_order</span>(data):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39;列印訂單資料，看起來整齊一點&#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> index, row <span style="color:#f92672">in</span> data<span style="color:#f92672">.</span>iterrows():
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> row <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#39;(</span><span style="color:#e6db74">{hcount:&gt;4s}</span><span style="color:#e6db74">) </span><span style="color:#e6db74">{orderer}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{order:&lt;40s}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(
+</span></span><span style="display:flex;"><span>                orderer <span style="color:#f92672">=</span> str(row[<span style="color:#e6db74">&#39;發起人&#39;</span>]),
+</span></span><span style="display:flex;"><span>                order <span style="color:#f92672">=</span> str(row[<span style="color:#e6db74">&#39;目標&#39;</span>]),
+</span></span><span style="display:flex;"><span>                hcount <span style="color:#f92672">=</span> str(row[<span style="color:#e6db74">&#39;人數&#39;</span>])))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">getText</span>(x):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> x<span style="color:#f92672">.</span>text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">saveToDb</span>(data, dbname, tablename):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39; 將資料表存放到 sqlLite 資料庫 &#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> lite<span style="color:#f92672">.</span>connect(dbname) <span style="color:#66d9ef">as</span> db:
+</span></span><span style="display:flex;"><span>        data<span style="color:#f92672">.</span>to_sql(tablename, con<span style="color:#f92672">=</span>db, if_exists<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;replace&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">readFromDb</span>(dbname, tablename):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39; 從資料庫取出上次資料表 &#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> lite<span style="color:#f92672">.</span>connect(dbname) <span style="color:#66d9ef">as</span> db:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> pandas<span style="color:#f92672">.</span>read_sql_query(<span style="color:#e6db74">&#39;SELECT * FROM </span><span style="color:#e6db74">{tablename}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(tablename<span style="color:#f92672">=</span>tablename), db)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">delDataInDb</span>(dbname, tablename):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39; 將指定資料表的資料刪除 &#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> lite<span style="color:#f92672">.</span>connect(dbname) <span style="color:#66d9ef">as</span> db:
+</span></span><span style="display:flex;"><span>        cursor <span style="color:#f92672">=</span> db<span style="color:#f92672">.</span>cursor()
+</span></span><span style="display:flex;"><span>        cursor<span style="color:#f92672">.</span>execute(<span style="color:#e6db74">&#39;SELECT * FROM </span><span style="color:#e6db74">{tablename}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(tablename<span style="color:#f92672">=</span>tablename))
+</span></span><span style="display:flex;"><span>        db<span style="color:#f92672">.</span>commit()
+</span></span><span style="display:flex;"><span>        cursor<span style="color:#f92672">.</span>close()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">IsDbTableExist</span>(dbname, tablename):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39; 確認是否有資料表 &#39;&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> lite<span style="color:#f92672">.</span>connect(dbname) <span style="color:#66d9ef">as</span> db:
+</span></span><span style="display:flex;"><span>        c <span style="color:#f92672">=</span> db<span style="color:#f92672">.</span>cursor()
+</span></span><span style="display:flex;"><span>        c<span style="color:#f92672">.</span>execute(<span style="color:#e6db74">&#34;SELECT count(*) FROM sqlite_master WHERE type=&#39;table&#39; AND name=&#39;</span><span style="color:#e6db74">{tablename}</span><span style="color:#e6db74">&#39;&#34;</span><span style="color:#f92672">.</span>format(tablename<span style="color:#f92672">=</span>tablename))
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> c<span style="color:#f92672">.</span>fetchone()[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
+</span></span><span style="display:flex;"><span>    main()
+</span></span></code></pre></div>
                         </div>
 
                         

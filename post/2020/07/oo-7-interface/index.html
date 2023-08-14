@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -130,49 +130,49 @@
 <h2 id="還是公司誠徵工程師的例子">還是公司誠徵工程師的例子</h2>
 <p>由於介面基本上就是封裝繼承多型抽象之大雜燴，所以我們把前面<a href="/post/2020/07/oo-5-polymorphism">多型</a>的小明小華例子稍微修改來用吧。也就是以公司徵人的方式去理解介面。</p>
 <p>介面就像是老闆開出來的要求列表，例如說：要會寫 C#、要會寫 SQL、要會 VB…等等，於是老闆就貼出了徵人啟示，要求新來的員工必須要有 <code>IProgrammer</code> 寫的能力：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> IProgrammer
-{
-    <span style="color:#66d9ef">void</span> WriteCSharp();
-    <span style="color:#66d9ef">void</span> WriteSQL();
-    <span style="color:#66d9ef">void</span> WriteVB();
-}
-</code></pre></div><p>特別注意和前面多型的例子的不同處，<strong>介面只需要先定義好該做的事，裡面怎麼做不需要管；所以只需要宣告要求的方法，不需要撰寫方法本體</strong>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IProgrammer</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> WriteCSharp();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> WriteSQL();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> WriteVB();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>特別注意和前面多型的例子的不同處，<strong>介面只需要先定義好該做的事，裡面怎麼做不需要管；所以只需要宣告要求的方法，不需要撰寫方法本體</strong>。</p>
 <p>於是今天小華就又(?)來面試了，但是他其實並不會寫 C#：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Hua</span> : IProgrammer
-{
-    <span style="color:#75715e">// Error: Hua 未實作 IProgrammer.WriteCSharp()
-</span><span style="color:#75715e"></span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteSQL() { <span style="color:#75715e">/* Work */</span> }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteVB() { <span style="color:#75715e">/* Work */</span> }
-}
-</code></pre></div><p>這時候編譯器就會跳出錯誤了：很抱歉，你不符合我們 <code>IProgrammer</code> 的規定，因為我們只喜歡訓練精英（略），請你實作完之後再來。否則你就不能掛上我們 <code> : IProgrammer</code> 的頭銜。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Hua</span> : IProgrammer
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Error: Hua 未實作 IProgrammer.WriteCSharp()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteSQL() { <span style="color:#75715e">/* Work */</span> }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteVB() { <span style="color:#75715e">/* Work */</span> }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這時候編譯器就會跳出錯誤了：很抱歉，你不符合我們 <code>IProgrammer</code> 的規定，因為我們只喜歡訓練精英（略），請你實作完之後再來。否則你就不能掛上我們 <code> : IProgrammer</code> 的頭銜。</p>
 <p>雖然小華面試失敗了，不過至少小華幫我們示範了一件事：類別要標上介面的方法就和繼承一樣，在類別名稱後面加上 <code>:</code></p>
 <p>而小華走了之後，馬上就輪到小明開開心心地來應徵了，他不只會寫 C#、SQL 和 VB，甚至還會泡英式奶茶：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Ming</span> : IProgrammer
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteCSharp() { <span style="color:#75715e">/* Work */</span> }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteSQL() { <span style="color:#75715e">/* Work */</span> }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteVB() { <span style="color:#75715e">/* Work */</span> }
-    <span style="color:#66d9ef">public</span> Tea MakeTea() { <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Tea(teaName: <span style="color:#e6db74">&#34;MilkTea&#34;</span>); }
-}
-</code></pre></div><p>火速通過面試之後，老闆就讓小明上工了：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Work()
-{
-    IProgrammer programmer = <span style="color:#66d9ef">new</span> Ming();
-    programmer.WriteCSharp();
-    programmer.WriteCSharp();
-    programmer.WriteCSharp();
-}
-</code></pre></div><p>在這個時候，小明已經不再只是小明，對老闆而言他就是一個<strong>符合應徵要求的工程師</strong>，這裡只需要「<strong>我（老闆）要求能做這些事的人</strong>」而不是「小明」，是 <code>IProgrammer</code> 而不是 <code>Ming</code>。在呼叫 <code>IProgrammer programmer = new Ming()</code> 的同時，這裡就只剩下一個無情的寫程式機器，再也沒有小明。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Ming</span> : IProgrammer
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteCSharp() { <span style="color:#75715e">/* Work */</span> }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteSQL() { <span style="color:#75715e">/* Work */</span> }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> WriteVB() { <span style="color:#75715e">/* Work */</span> }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Tea MakeTea() { <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Tea(teaName: <span style="color:#e6db74">&#34;MilkTea&#34;</span>); }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>火速通過面試之後，老闆就讓小明上工了：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Work()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    IProgrammer programmer = <span style="color:#66d9ef">new</span> Ming();
+</span></span><span style="display:flex;"><span>    programmer.WriteCSharp();
+</span></span><span style="display:flex;"><span>    programmer.WriteCSharp();
+</span></span><span style="display:flex;"><span>    programmer.WriteCSharp();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>在這個時候，小明已經不再只是小明，對老闆而言他就是一個<strong>符合應徵要求的工程師</strong>，這裡只需要「<strong>我（老闆）要求能做這些事的人</strong>」而不是「小明」，是 <code>IProgrammer</code> 而不是 <code>Ming</code>。在呼叫 <code>IProgrammer programmer = new Ming()</code> 的同時，這裡就只剩下一個無情的寫程式機器，再也沒有小明。</p>
 <p>上面這句雖然和多型範例的說明九成一樣，但絕對不是我偷懶（真的），差異的地方就是介面的本質。可以稍加對照看看。</p>
 <p>當然，小明仍然不准在上班時間泡英式奶茶。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Work()
-{
-    IProgrammer programmer = <span style="color:#66d9ef">new</span> Ming();
-    programmer.WriteCSharp();
-    programmer.MakeTea(); <span style="color:#75715e">// Error: IProgrammer 未包含 MakeTea 的定義
-</span><span style="color:#75715e"></span>}
-</code></pre></div><p>多型的時候，這個原因是由於今天的小明是工程師，工程師不需要會泡奶茶。也就是說子類別替代父類別時不需要那些父類別不會的動作。此處也是一樣的精神，我們要的是一個會寫程式的工程師，<strong>不是介面規範上的東西我們不需要</strong>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Work()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    IProgrammer programmer = <span style="color:#66d9ef">new</span> Ming();
+</span></span><span style="display:flex;"><span>    programmer.WriteCSharp();
+</span></span><span style="display:flex;"><span>    programmer.MakeTea(); <span style="color:#75715e">// Error: IProgrammer 未包含 MakeTea 的定義</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>多型的時候，這個原因是由於今天的小明是工程師，工程師不需要會泡奶茶。也就是說子類別替代父類別時不需要那些父類別不會的動作。此處也是一樣的精神，我們要的是一個會寫程式的工程師，<strong>不是介面規範上的東西我們不需要</strong>。</p>
 <p>這是達成關注點分離和職責分離必經的道路，習慣之後對於公開方法和私有方法也會有更進一步的心得，以公開方法實現介面的要求，配合私有方法拆解內部的複雜度，甚至<a href="/post/2020/11/oo-13-interface-segregation-principle">組合多個介面</a>讓類別具有多項能力，這個過程只能用舒爽來形容（前提是介面不要開得太爛的話啦）。</p>
 <h2 id="變更的彈性">變更的彈性</h2>
 <p>介面作為特性的體現，更多的是概念上的東西。最後這一小段就讓我們聊聊這些部分。</p>

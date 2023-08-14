@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -172,8 +172,8 @@
 <p>如果要確認目前的執行原則，可以使用 <code>Get-ExecutionPolicy</code></p>
 <p>這個分類也是為了保護使用者，不要亂執行一些來路不行了奇怪腳本，整個電腦打包起來送人。不過我們身為 <del>白目</del> 工程師，難免會有要裝套件和自己寫腳本的時候，這邊就直接調整為 Unrestricted 全面開啟吧！</p>
 <p>調整執行原則的語法如下（必須在系統管理員身分時才有效果呦）</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Set-ExecutionPolicy Unrestricted
-</code></pre></div><p>調整完就可以繼續下載囉！</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Set-ExecutionPolicy Unrestricted
+</span></span></code></pre></div><p>調整完就可以繼續下載囉！</p>
 <p>像我重灌的狀況，提示會如下圖，如果已經安裝過 Nuget 提供者，提示應該會更少。</p>
 <p><img src="https://i.imgur.com/UoGkW7o.png" alt=""></p>
 <h2 id="安裝-oh-my-posh">安裝 oh-my-posh</h2>
@@ -191,8 +191,8 @@
 <p>因為 Oh-my-posh 還蠻頻繁更新的，建議後續的操作可以開著 <a href="https://ohmyposh.dev/docs/installation/customize">Oh My Posh</a> 的官方文檔來排查一下</p>
 </blockquote>
 <p><strong>要更改主題的話，我們會需要使用 <code>oh-my-posh init pwsh</code> 這個指令，並且將該主題的 Json 檔案傳遞給 <code>--config</code></strong>，例如：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">oh-my-posh init pwsh --config <span style="color:#e6db74">&#34;</span>$env<span style="color:#e6db74">:POSH_THEMES_PATH/powerlevel10k_rainbow.omp.json&#34;</span> | Invoke-Expression
-</code></pre></div><p>我們丟了一個 powerlevel10k_rainbow 這個主題的 Json 檔案路徑給 oh-my-posh，然後呼叫 <code>Invoke-Expression</code> 執行它，這時候主題就會變啦～</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>oh-my-posh init pwsh --config <span style="color:#e6db74">&#34;</span>$env<span style="color:#e6db74">:POSH_THEMES_PATH/powerlevel10k_rainbow.omp.json&#34;</span> | Invoke-Expression
+</span></span></code></pre></div><p>我們丟了一個 powerlevel10k_rainbow 這個主題的 Json 檔案路徑給 oh-my-posh，然後呼叫 <code>Invoke-Expression</code> 執行它，這時候主題就會變啦～</p>
 <blockquote>
 <p>補充：這邊用到一組環境變數 <code>$env:POSH_THEMES_PATH</code> 實際上是一個資料夾路徑，Oh-my-posh 安裝的主題都會放在這個資料夾裡：</p>
 <p><img src="https://i.imgur.com/lWBHJc3.jpg" alt="Image"></p>
@@ -227,17 +227,17 @@
 <p>接著我們就前往此處去修改 Powershell 的腳本，如果發現並沒有這個檔案，那還請自己建立一個，檔名和路徑請和 <code>$PROFILE</code> 一致，像我就取 <code>Microsoft.PowerShell_profile.ps1</code></p>
 <p><img src="https://i.imgur.com/eJ8A5iY.png" alt=""></p>
 <p>之後開啟檔案，貼上我們引入套件和設定主題的指令：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ps1" data-lang="ps1">oh-my-posh init pwsh --config <span style="color:#e6db74">&#34;$env:POSH_THEMES_PATH/powerlevel10k_rainbow.omp.json&#34;</span> | Invoke-Expression
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ps1" data-lang="ps1"><span style="display:flex;"><span>oh-my-posh init pwsh --config <span style="color:#e6db74">&#34;</span>$env:POSH_THEMES_PATH<span style="color:#e6db74">/powerlevel10k_rainbow.omp.json&#34;</span> | Invoke-Expression
+</span></span></code></pre></div><blockquote>
 <p>再次補充：oh-my-posh 改版之後一些語法有改變，如果有在 <code>Set-Theme</code> 這步的時候遇到「無法辨識…」問題的朋友，可以嘗試改成用 <code>Set-PoshPrompt -Theme Paradox</code> 試試看。</p>
 </blockquote>
 <p>接著讓我們重開 Powershell</p>
 <p><img src="https://i.imgur.com/1kYjQSO.jpg" alt="Image"></p>
 <p>可以看見它已經順利載入主題囉！</p>
 <p>因為我覺得切主題前跑那些 Powershell 提示之類的有點醜，所以我會回去 Profile 補一行 Clear：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ps1" data-lang="ps1">oh-my-posh init pwsh --config <span style="color:#e6db74">&#34;$env:POSH_THEMES_PATH/powerlevel10k_rainbow.omp.json&#34;</span> | Invoke-Expression
-clear
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ps1" data-lang="ps1"><span style="display:flex;"><span>oh-my-posh init pwsh --config <span style="color:#e6db74">&#34;</span>$env:POSH_THEMES_PATH<span style="color:#e6db74">/powerlevel10k_rainbow.omp.json&#34;</span> | Invoke-Expression
+</span></span><span style="display:flex;"><span>clear
+</span></span></code></pre></div><blockquote>
 <p>也可以在這裡寫一些 function 來使用，像我個人之前做 <a href="/post/2020/03/bandon-1-selenium">我要訂便當</a> 因為懶得每次都 cd 到腳本所在的位置還要 Pyhton 執行，所以就直接包成 <code>Get-Bandon</code> 的方法直接叫，真的舒服，推薦嘗試</p>
 </blockquote>
 <p>如果有想要自己試試新增主題，或是想像我一樣做小修改的，可以到 <code>$env:POSH_THEMES_PATH</code> 這個路徑的資料夾，找到 <code>.omp.json</code> 檔案來動手</p>

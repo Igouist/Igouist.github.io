@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -213,25 +213,25 @@
 <p>備註：本篇以 PHP 為範例，其他可在伺服器運行的語言如 Asp.net C#、Python 等等也都可以做出回傳資料的網頁接口，應考量選用的資料庫加以選擇。</p>
 </blockquote>
 <p>XAMPP 的網站資料夾預設在 <code>C:\xampp\htdocs</code>，我們在此新增一個 PHP 檔案命名為 GetData.php 並開啟。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#f92672">&lt;?</span><span style="color:#a6e22e">php</span>
-    <span style="color:#75715e">// 設定 MySQL 的連線資訊並開啟連線
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 資料庫位置、使用者名稱、使用者密碼、資料庫名稱
-</span><span style="color:#75715e"></span>    $link <span style="color:#f92672">=</span> <span style="color:#a6e22e">mysqli_connect</span>(<span style="color:#e6db74">&#34;localhost&#34;</span>, <span style="color:#e6db74">&#34;admin&#34;</span>, <span style="color:#e6db74">&#34;******&#34;</span>, <span style="color:#e6db74">&#34;newdatabase&#34;</span>);
-    $link <span style="color:#f92672">-&gt;</span> <span style="color:#a6e22e">set_charset</span>(<span style="color:#e6db74">&#34;UTF8&#34;</span>); <span style="color:#75715e">// 設定語系避免亂碼
-</span><span style="color:#75715e"></span>
-    <span style="color:#75715e">// SQL 指令
-</span><span style="color:#75715e"></span>    $result <span style="color:#f92672">=</span> $link <span style="color:#f92672">-&gt;</span> <span style="color:#a6e22e">query</span>(<span style="color:#e6db74">&#34;SELECT * FROM `newtable`&#34;</span>);
-    <span style="color:#66d9ef">while</span> ($row <span style="color:#f92672">=</span> $result<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">fetch_assoc</span>()) <span style="color:#75715e">// 當該指令執行有回傳
-</span><span style="color:#75715e"></span>    {
-        $output[] <span style="color:#f92672">=</span> $row; <span style="color:#75715e">// 就逐項將回傳的東西放到陣列中
-</span><span style="color:#75715e"></span>    }
-
-    <span style="color:#75715e">// 將資料陣列轉成 Json 並顯示在網頁上，並要求不把中文編成 UNICODE
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">print</span>(<span style="color:#a6e22e">json_encode</span>($output, <span style="color:#a6e22e">JSON_UNESCAPED_UNICODE</span>));
-    $link <span style="color:#f92672">-&gt;</span> <span style="color:#a6e22e">close</span>(); <span style="color:#75715e">// 關閉資料庫連線
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">?&gt;</span><span style="color:#960050;background-color:#1e0010">
-</span></code></pre></div><p><img src="https://i.imgur.com/TDwalqp.png" alt=""></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-php" data-lang="php"><span style="display:flex;"><span><span style="color:#f92672">&lt;?</span><span style="color:#a6e22e">php</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 設定 MySQL 的連線資訊並開啟連線
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 資料庫位置、使用者名稱、使用者密碼、資料庫名稱
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    $link <span style="color:#f92672">=</span> <span style="color:#a6e22e">mysqli_connect</span>(<span style="color:#e6db74">&#34;localhost&#34;</span>, <span style="color:#e6db74">&#34;admin&#34;</span>, <span style="color:#e6db74">&#34;******&#34;</span>, <span style="color:#e6db74">&#34;newdatabase&#34;</span>);
+</span></span><span style="display:flex;"><span>    $link <span style="color:#f92672">-&gt;</span> <span style="color:#a6e22e">set_charset</span>(<span style="color:#e6db74">&#34;UTF8&#34;</span>); <span style="color:#75715e">// 設定語系避免亂碼
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// SQL 指令
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    $result <span style="color:#f92672">=</span> $link <span style="color:#f92672">-&gt;</span> <span style="color:#a6e22e">query</span>(<span style="color:#e6db74">&#34;SELECT * FROM `newtable`&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> ($row <span style="color:#f92672">=</span> $result<span style="color:#f92672">-&gt;</span><span style="color:#a6e22e">fetch_assoc</span>()) <span style="color:#75715e">// 當該指令執行有回傳
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    {
+</span></span><span style="display:flex;"><span>        $output[] <span style="color:#f92672">=</span> $row; <span style="color:#75715e">// 就逐項將回傳的東西放到陣列中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 將資料陣列轉成 Json 並顯示在網頁上，並要求不把中文編成 UNICODE
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">print</span>(<span style="color:#a6e22e">json_encode</span>($output, <span style="color:#a6e22e">JSON_UNESCAPED_UNICODE</span>));
+</span></span><span style="display:flex;"><span>    $link <span style="color:#f92672">-&gt;</span> <span style="color:#a6e22e">close</span>(); <span style="color:#75715e">// 關閉資料庫連線
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">?&gt;</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><p><img src="https://i.imgur.com/TDwalqp.png" alt=""></p>
 <p>完成連線至資料庫的程式後，請實際開啟瀏覽器輸入 localhost/GetData.php 測試看看能不能抓到資料。（如果是一片空白，請先確認資料表是否已經有新增資料，接著確認是否有成功連線）</p>
 <blockquote>
 <p>備註：搜尋 MySQL 相關的 PHP 語法時，可能會有 mysql 和 mysqli 兩種不同的方法。然而 mysql 已經在 PHP 7.0 被廢除，因此 GOOGLE 時請不要找太久遠的資料。</p>
@@ -246,24 +246,24 @@
 <p>打開 Android studio，建立新專案，然後簡單開個版面如下就好，目標是按下按鈕之後把資料顯示在 Textview 裡面。</p>
 <p><img src="https://i.imgur.com/M5GJLzV.png" alt=""></p>
 <p>接著我們開啟 MainActivity.java，先宣告按鈕並寫上監聽事件，這次教直接在程式碼內做事件宣告的寫法，請在 onCreate 的部分撰寫以下程式碼，讓 Android 在一開始執行的時候就連接好按鈕事件。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onCreate</span><span style="color:#f92672">(</span>Bundle savedInstanceState<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">onCreate</span><span style="color:#f92672">(</span>savedInstanceState<span style="color:#f92672">);</span>
-    setContentView<span style="color:#f92672">(</span>R<span style="color:#f92672">.</span><span style="color:#a6e22e">layout</span><span style="color:#f92672">.</span><span style="color:#a6e22e">activity_main</span><span style="color:#f92672">);</span>
-
-    Button button <span style="color:#f92672">=</span> findViewById<span style="color:#f92672">(</span>R<span style="color:#f92672">.</span><span style="color:#a6e22e">id</span><span style="color:#f92672">.</span><span style="color:#a6e22e">button</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 宣告按鈕
-</span><span style="color:#75715e"></span>    
-    <span style="color:#75715e">// 宣告按鈕的監聽器監聽按鈕是否被按下
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 跟上次在 View 設定的方式並不一樣，是在程式碼做設定
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 我只是覺得好像應該也教一下這種寫法
-</span><span style="color:#75715e"></span>    button<span style="color:#f92672">.</span><span style="color:#a6e22e">setOnClickListener</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> View<span style="color:#f92672">.</span><span style="color:#a6e22e">OnClickListener</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#a6e22e">@Override</span>
-        <span style="color:#75715e">// 按鈕事件
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onClick</span><span style="color:#f92672">(</span>View view<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            <span style="color:#75715e">// 按下之後會執行的程式碼，可以直接寫也可以呼叫方法
-</span><span style="color:#75715e"></span>        <span style="color:#f92672">}</span>
-    <span style="color:#f92672">});</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><p>接著我們要建立一個函式處理連線的部分，由於我們會用到 Apache 的 HTTP 套件，我們得先引用套件包。請先打開 Build.gradle 在 android 的部分加入 <code>useLibrary 'org.apache.http.legacy'</code> 進行引用。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onCreate</span><span style="color:#f92672">(</span>Bundle savedInstanceState<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">onCreate</span><span style="color:#f92672">(</span>savedInstanceState<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    setContentView<span style="color:#f92672">(</span>R<span style="color:#f92672">.</span><span style="color:#a6e22e">layout</span><span style="color:#f92672">.</span><span style="color:#a6e22e">activity_main</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    Button button <span style="color:#f92672">=</span> findViewById<span style="color:#f92672">(</span>R<span style="color:#f92672">.</span><span style="color:#a6e22e">id</span><span style="color:#f92672">.</span><span style="color:#a6e22e">button</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 宣告按鈕
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 宣告按鈕的監聽器監聽按鈕是否被按下
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 跟上次在 View 設定的方式並不一樣，是在程式碼做設定
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 我只是覺得好像應該也教一下這種寫法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    button<span style="color:#f92672">.</span><span style="color:#a6e22e">setOnClickListener</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> View<span style="color:#f92672">.</span><span style="color:#a6e22e">OnClickListener</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 按鈕事件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onClick</span><span style="color:#f92672">(</span>View view<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 按下之後會執行的程式碼，可以直接寫也可以呼叫方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">});</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>接著我們要建立一個函式處理連線的部分，由於我們會用到 Apache 的 HTTP 套件，我們得先引用套件包。請先打開 Build.gradle 在 android 的部分加入 <code>useLibrary 'org.apache.http.legacy'</code> 進行引用。</p>
 <p><img src="https://i.imgur.com/t895n3N.png" alt=""></p>
 <p>引用完畢之後上面會顯示通知要求你重新同步這個專案，按下 sync now 之後等待它專案同步完畢。接著我們還得要上網的權限才能取得資料，因此要到 AndroidManifest.xml 這地方加上網路權限的許可 <code>&lt;uses-permission android:name=&quot;android.permission.INTERNET&quot; /&gt;</code></p>
 <p><img src="https://i.imgur.com/pIRps1G.png" alt=""></p>
@@ -275,21 +275,21 @@
 <p>(2021/6/2) 補充：在之後的 .NET 的系列文補上了 HTTP 和 API 的一些基本知識。有興趣的朋友可以參閱本部落格的這篇 <a href="/post/2021/05/newbie-2-webapi">認識 Api 與建置 Web Api 服務</a></p>
 </blockquote>
 <p>首先是建立一個執行緒的部分：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">    <span style="color:#75715e">// 建立一個執行緒執行的事件取得網路資料
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// Android 有規定，連線網際網路的動作都不能再主線程做執行
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 畢竟如果使用者連上網路結果等太久整個系統流程就卡死了
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> Runnable mutiThread <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Runnable<span style="color:#f92672">(){</span>
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span>
-        <span style="color:#f92672">{</span>
-            <span style="color:#75715e">// 當這個執行緒完全跑完後執行
-</span><span style="color:#75715e"></span>            runOnUiThread<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Runnable<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-                <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-                    
-                <span style="color:#f92672">}</span>
-            <span style="color:#f92672">});</span>
-        <span style="color:#f92672">}</span>
-    <span style="color:#f92672">};</span>
-</code></pre></div><p>接著在裡面撰寫處理 HTTP 相關的部分：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>    <span style="color:#75715e">// 建立一個執行緒執行的事件取得網路資料
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// Android 有規定，連線網際網路的動作都不能再主線程做執行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 畢竟如果使用者連上網路結果等太久整個系統流程就卡死了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> Runnable mutiThread <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Runnable<span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 當這個執行緒完全跑完後執行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            runOnUiThread<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Runnable<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">});</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">};</span>
+</span></span></code></pre></div><p>接著在裡面撰寫處理 HTTP 相關的部分：</p>
 <p>（註：先用圖片說明，程式碼將放於最後）</p>
 <p><img src="https://i.imgur.com/gN7AxTX.png" alt=""></p>
 <p>用上面宣告的物件開始進行連線並處理取得的資料：</p>
@@ -299,94 +299,93 @@
 <p>最後在程式建立時把執行緒放到按鈕的事件裡面，讓按鈕可以觸發這一套流程</p>
 <p><img src="https://i.imgur.com/qG2NQPN.png" alt=""></p>
 <p>完成的整個程式碼如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MainActivity</span> <span style="color:#66d9ef">extends</span> AppCompatActivity <span style="color:#f92672">{</span>
-    TextView textView<span style="color:#f92672">;</span> <span style="color:#75715e">// 把視圖的元件宣告成全域變數
-</span><span style="color:#75715e"></span>    Button button<span style="color:#f92672">;</span>
-    String result<span style="color:#f92672">;</span> <span style="color:#75715e">// 儲存資料用的字串
-</span><span style="color:#75715e"></span>
-    <span style="color:#a6e22e">@Override</span>
-    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onCreate</span><span style="color:#f92672">(</span>Bundle savedInstanceState<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">onCreate</span><span style="color:#f92672">(</span>savedInstanceState<span style="color:#f92672">);</span>
-        setContentView<span style="color:#f92672">(</span>R<span style="color:#f92672">.</span><span style="color:#a6e22e">layout</span><span style="color:#f92672">.</span><span style="color:#a6e22e">activity_main</span><span style="color:#f92672">);</span>
-
-		<span style="color:#75715e">// 找到視圖的元件並連接
-</span><span style="color:#75715e"></span>        button <span style="color:#f92672">=</span> findViewById<span style="color:#f92672">(</span>R<span style="color:#f92672">.</span><span style="color:#a6e22e">id</span><span style="color:#f92672">.</span><span style="color:#a6e22e">button</span><span style="color:#f92672">);</span>
-        textView <span style="color:#f92672">=</span> findViewById<span style="color:#f92672">(</span>R<span style="color:#f92672">.</span><span style="color:#a6e22e">id</span><span style="color:#f92672">.</span><span style="color:#a6e22e">textView</span><span style="color:#f92672">);</span>
-
-        <span style="color:#75715e">// 宣告按鈕的監聽器監聽按鈕是否被按下
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 跟上次在 View 設定的方式並不一樣
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 我只是覺得好像應該也教一下這種寫法
-</span><span style="color:#75715e"></span>        button<span style="color:#f92672">.</span><span style="color:#a6e22e">setOnClickListener</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> View<span style="color:#f92672">.</span><span style="color:#a6e22e">OnClickListener</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-            <span style="color:#a6e22e">@Override</span>
-            <span style="color:#75715e">// 按鈕事件
-</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onClick</span><span style="color:#f92672">(</span>View view<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                <span style="color:#75715e">// 按下之後會執行的程式碼
-</span><span style="color:#75715e"></span>                <span style="color:#75715e">// 宣告執行緒
-</span><span style="color:#75715e"></span>                Thread thread <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(</span>mutiThread<span style="color:#f92672">);</span> 
-                thread<span style="color:#f92672">.</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 開始執行
-</span><span style="color:#75715e"></span>            <span style="color:#f92672">}</span>
-        <span style="color:#f92672">});</span>
-    <span style="color:#f92672">}</span>
-    
-	<span style="color:#75715e">/* ======================================== */</span>
-	
-    <span style="color:#75715e">// 建立一個執行緒執行的事件取得網路資料
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// Android 有規定，連線網際網路的動作都不能再主線程做執行
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 畢竟如果使用者連上網路結果等太久整個系統流程就卡死了
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> Runnable mutiThread <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Runnable<span style="color:#f92672">(){</span>
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span>
-        <span style="color:#f92672">{</span>
-            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-                URL url <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> URL<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http://140.127.35.130/GetData.php&#34;</span><span style="color:#f92672">);</span>
-                <span style="color:#75715e">// 開始宣告 HTTP 連線需要的物件，這邊通常都是一綑的
-</span><span style="color:#75715e"></span>                HttpURLConnection connection <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>HttpURLConnection<span style="color:#f92672">)</span> url<span style="color:#f92672">.</span><span style="color:#a6e22e">openConnection</span><span style="color:#f92672">();</span>
-                <span style="color:#75715e">// 建立 Google 比較挺的 HttpURLConnection 物件
-</span><span style="color:#75715e"></span>                connection<span style="color:#f92672">.</span><span style="color:#a6e22e">setRequestMethod</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;POST&#34;</span><span style="color:#f92672">);</span> 
-                <span style="color:#75715e">// 設定連線方式為 POST
-</span><span style="color:#75715e"></span>                connection<span style="color:#f92672">.</span><span style="color:#a6e22e">setDoOutput</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 允許輸出
-</span><span style="color:#75715e"></span>                connection<span style="color:#f92672">.</span><span style="color:#a6e22e">setDoInput</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 允許讀入
-</span><span style="color:#75715e"></span>                connection<span style="color:#f92672">.</span><span style="color:#a6e22e">setUseCaches</span><span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 不使用快取
-</span><span style="color:#75715e"></span>                connection<span style="color:#f92672">.</span><span style="color:#a6e22e">connect</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 開始連線
-</span><span style="color:#75715e"></span>
-                <span style="color:#66d9ef">int</span> responseCode <span style="color:#f92672">=</span> 
-                    connection<span style="color:#f92672">.</span><span style="color:#a6e22e">getResponseCode</span><span style="color:#f92672">();</span> 
-                <span style="color:#75715e">// 建立取得回應的物件
-</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>responseCode <span style="color:#f92672">==</span> 
-                   HttpURLConnection<span style="color:#f92672">.</span><span style="color:#a6e22e">HTTP_OK</span><span style="color:#f92672">){</span> 
-                    <span style="color:#75715e">// 如果 HTTP 回傳狀態是 OK ，而不是 Error
-</span><span style="color:#75715e"></span>                    InputStream inputStream <span style="color:#f92672">=</span> 
-                        connection<span style="color:#f92672">.</span><span style="color:#a6e22e">getInputStream</span><span style="color:#f92672">();</span> 
-                    <span style="color:#75715e">// 取得輸入串流
-</span><span style="color:#75715e"></span>                    BufferedReader bufReader <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedReader<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> InputStreamReader<span style="color:#f92672">(</span>inputStream<span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;utf-8&#34;</span><span style="color:#f92672">),</span> 8<span style="color:#f92672">);</span> 
-                    <span style="color:#75715e">// 讀取輸入串流的資料
-</span><span style="color:#75715e"></span>                    String box <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">;</span> <span style="color:#75715e">// 宣告存放用字串
-</span><span style="color:#75715e"></span>                    String line <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span> <span style="color:#75715e">// 宣告讀取用的字串
-</span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">while</span><span style="color:#f92672">((</span>line <span style="color:#f92672">=</span> bufReader<span style="color:#f92672">.</span><span style="color:#a6e22e">readLine</span><span style="color:#f92672">())</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                        box <span style="color:#f92672">+=</span> line <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;\n&#34;</span><span style="color:#f92672">;</span> 
-                        <span style="color:#75715e">// 每當讀取出一列，就加到存放字串後面
-</span><span style="color:#75715e"></span>                    <span style="color:#f92672">}</span>
-                    inputStream<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 關閉輸入串流
-</span><span style="color:#75715e"></span>                    result <span style="color:#f92672">=</span> box<span style="color:#f92672">;</span> <span style="color:#75715e">// 把存放用字串放到全域變數
-</span><span style="color:#75715e"></span>                <span style="color:#f92672">}</span>
-                <span style="color:#75715e">// 讀取輸入串流並存到字串的部分
-</span><span style="color:#75715e"></span>                <span style="color:#75715e">// 取得資料後想用不同的格式
-</span><span style="color:#75715e"></span>                <span style="color:#75715e">// 例如 Json 等等，都是在這一段做處理
-</span><span style="color:#75715e"></span>
-            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span><span style="color:#f92672">(</span>Exception e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                result <span style="color:#f92672">=</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 如果出事，回傳錯誤訊息
-</span><span style="color:#75715e"></span>            <span style="color:#f92672">}</span>
-
-            <span style="color:#75715e">// 當這個執行緒完全跑完後執行
-</span><span style="color:#75715e"></span>            runOnUiThread<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Runnable<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-                <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-                    textView<span style="color:#f92672">.</span><span style="color:#a6e22e">setText</span><span style="color:#f92672">(</span>result<span style="color:#f92672">);</span> <span style="color:#75715e">// 更改顯示文字
-</span><span style="color:#75715e"></span>                <span style="color:#f92672">}</span>
-            <span style="color:#f92672">});</span>
-        <span style="color:#f92672">}</span>
-    <span style="color:#f92672">};</span>
-<span style="color:#f92672">}</span>
-
-</code></pre></div><p>而執行結果會像這樣：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MainActivity</span> <span style="color:#66d9ef">extends</span> AppCompatActivity <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    TextView textView<span style="color:#f92672">;</span> <span style="color:#75715e">// 把視圖的元件宣告成全域變數
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    Button button<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    String result<span style="color:#f92672">;</span> <span style="color:#75715e">// 儲存資料用的字串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onCreate</span><span style="color:#f92672">(</span>Bundle savedInstanceState<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">onCreate</span><span style="color:#f92672">(</span>savedInstanceState<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        setContentView<span style="color:#f92672">(</span>R<span style="color:#f92672">.</span><span style="color:#a6e22e">layout</span><span style="color:#f92672">.</span><span style="color:#a6e22e">activity_main</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 找到視圖的元件並連接
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        button <span style="color:#f92672">=</span> findViewById<span style="color:#f92672">(</span>R<span style="color:#f92672">.</span><span style="color:#a6e22e">id</span><span style="color:#f92672">.</span><span style="color:#a6e22e">button</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        textView <span style="color:#f92672">=</span> findViewById<span style="color:#f92672">(</span>R<span style="color:#f92672">.</span><span style="color:#a6e22e">id</span><span style="color:#f92672">.</span><span style="color:#a6e22e">textView</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 宣告按鈕的監聽器監聽按鈕是否被按下
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 跟上次在 View 設定的方式並不一樣
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 我只是覺得好像應該也教一下這種寫法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        button<span style="color:#f92672">.</span><span style="color:#a6e22e">setOnClickListener</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> View<span style="color:#f92672">.</span><span style="color:#a6e22e">OnClickListener</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 按鈕事件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onClick</span><span style="color:#f92672">(</span>View view<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 按下之後會執行的程式碼
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#75715e">// 宣告執行緒
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                Thread thread <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(</span>mutiThread<span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>                thread<span style="color:#f92672">.</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 開始執行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">});</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">/* ======================================== */</span>
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 建立一個執行緒執行的事件取得網路資料
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// Android 有規定，連線網際網路的動作都不能再主線程做執行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 畢竟如果使用者連上網路結果等太久整個系統流程就卡死了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> Runnable mutiThread <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Runnable<span style="color:#f92672">(){</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                URL url <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> URL<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;http://140.127.35.130/GetData.php&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 開始宣告 HTTP 連線需要的物件，這邊通常都是一綑的
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                HttpURLConnection connection <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>HttpURLConnection<span style="color:#f92672">)</span> url<span style="color:#f92672">.</span><span style="color:#a6e22e">openConnection</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 建立 Google 比較挺的 HttpURLConnection 物件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                connection<span style="color:#f92672">.</span><span style="color:#a6e22e">setRequestMethod</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;POST&#34;</span><span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 設定連線方式為 POST
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                connection<span style="color:#f92672">.</span><span style="color:#a6e22e">setDoOutput</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 允許輸出
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                connection<span style="color:#f92672">.</span><span style="color:#a6e22e">setDoInput</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 允許讀入
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                connection<span style="color:#f92672">.</span><span style="color:#a6e22e">setUseCaches</span><span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 不使用快取
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                connection<span style="color:#f92672">.</span><span style="color:#a6e22e">connect</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 開始連線
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">int</span> responseCode <span style="color:#f92672">=</span> 
+</span></span><span style="display:flex;"><span>                    connection<span style="color:#f92672">.</span><span style="color:#a6e22e">getResponseCode</span><span style="color:#f92672">();</span> 
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 建立取得回應的物件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span><span style="color:#f92672">(</span>responseCode <span style="color:#f92672">==</span> 
+</span></span><span style="display:flex;"><span>                   HttpURLConnection<span style="color:#f92672">.</span><span style="color:#a6e22e">HTTP_OK</span><span style="color:#f92672">){</span> 
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 如果 HTTP 回傳狀態是 OK ，而不是 Error
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    InputStream inputStream <span style="color:#f92672">=</span> 
+</span></span><span style="display:flex;"><span>                        connection<span style="color:#f92672">.</span><span style="color:#a6e22e">getInputStream</span><span style="color:#f92672">();</span> 
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 取得輸入串流
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    BufferedReader bufReader <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BufferedReader<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> InputStreamReader<span style="color:#f92672">(</span>inputStream<span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;utf-8&#34;</span><span style="color:#f92672">),</span> 8<span style="color:#f92672">);</span> 
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 讀取輸入串流的資料
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    String box <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">;</span> <span style="color:#75715e">// 宣告存放用字串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    String line <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span> <span style="color:#75715e">// 宣告讀取用的字串
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">while</span><span style="color:#f92672">((</span>line <span style="color:#f92672">=</span> bufReader<span style="color:#f92672">.</span><span style="color:#a6e22e">readLine</span><span style="color:#f92672">())</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                        box <span style="color:#f92672">+=</span> line <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;\n&#34;</span><span style="color:#f92672">;</span> 
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 每當讀取出一列，就加到存放字串後面
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>                    inputStream<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 關閉輸入串流
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    result <span style="color:#f92672">=</span> box<span style="color:#f92672">;</span> <span style="color:#75715e">// 把存放用字串放到全域變數
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 讀取輸入串流並存到字串的部分
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#75715e">// 取得資料後想用不同的格式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#75715e">// 例如 Json 等等，都是在這一段做處理
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span><span style="color:#f92672">(</span>Exception e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                result <span style="color:#f92672">=</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 如果出事，回傳錯誤訊息
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 當這個執行緒完全跑完後執行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            runOnUiThread<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Runnable<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    textView<span style="color:#f92672">.</span><span style="color:#a6e22e">setText</span><span style="color:#f92672">(</span>result<span style="color:#f92672">);</span> <span style="color:#75715e">// 更改顯示文字
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">});</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p>而執行結果會像這樣：</p>
 <p><img src="https://i.imgur.com/YpuFWMd.png" alt=""></p>
 <p>現在你可以使用 Android 取得資料庫的資料了，快嘗試應用這個技術做一個 APP 來玩吧！</p>
 <blockquote>

@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -170,17 +170,17 @@
 </blockquote>
 <p>解決連線字串的問題，接著我們來做一個 model 放我們的資料。可以從上面伺服器總管的圖看見我的資料表 card 有 id、 char_name、 card_name、card_level 四個欄位。</p>
 <p>因此我們新建一個 card 類別如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#66d9ef">namespace</span> DBconnTest.Models
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
-    {
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> ID { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Char_name  { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Card_name  { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Card_level { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    }
-}
-</code></pre></div><p>新建完成之後就回到我們的 資料庫連線類別 開始工作。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-CSharp" data-lang="CSharp"><span style="display:flex;"><span><span style="color:#66d9ef">namespace</span> DBconnTest.Models
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> ID { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Char_name  { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Card_name  { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Card_level { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>新建完成之後就回到我們的 資料庫連線類別 開始工作。</p>
 <h2 id="取得所有資料">取得所有資料</h2>
 <p>第一個目標是能夠取得 Card 資料表的所有資料，因此我們先將方法的部分建立出來，也就是一個會回傳 Card 的 List 的方法。</p>
 <p><img src="https://i.imgur.com/utEyL3C.png" alt=""></p>
@@ -194,32 +194,32 @@
 <li>回傳 List 給前端使用。</li>
 </ol>
 <p>程式碼如下，其後逐步說明。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-CSharp" data-lang="CSharp"><span style="color:#66d9ef">public</span> List&lt;Card&gt; GetCards() {
-    List&lt;Card&gt; cards = <span style="color:#66d9ef">new</span> List&lt;Card&gt;();
-    SqlConnection sqlConnection = <span style="color:#66d9ef">new</span> SqlConnection(ConnStr);
-    SqlCommand sqlCommand = <span style="color:#66d9ef">new</span> SqlCommand(<span style="color:#e6db74">&#34;SELECT * FROM card&#34;</span>);
-    sqlCommand.Connection = sqlConnection;
-    sqlConnection.Open();
-
-    SqlDataReader reader = sqlCommand.ExecuteReader();
-    <span style="color:#66d9ef">if</span> (reader.HasRows) {
-        <span style="color:#66d9ef">while</span> (reader.Read()) {
-            Card card = <span style="color:#66d9ef">new</span> Card {
-                ID = reader.GetInt32(reader.GetOrdinal(<span style="color:#e6db74">&#34;id&#34;</span>)),
-                Char_name  = reader.GetString(reader.GetOrdinal(<span style="color:#e6db74">&#34;char_name&#34;</span>)),
-                Card_name  = reader.GetString(reader.GetOrdinal(<span style="color:#e6db74">&#34;card_name&#34;</span>)),
-                Card_level = reader.GetString(reader.GetOrdinal(<span style="color:#e6db74">&#34;card_level&#34;</span>)),
-            };
-            cards.Add(card);
-        }
-    }
-    <span style="color:#66d9ef">else</span> {
-        Console.WriteLine(<span style="color:#e6db74">&#34;資料庫為空！&#34;</span>);
-    }
-    sqlConnection.Close();
-    <span style="color:#66d9ef">return</span> cards;
-}
-</code></pre></div><p><img src="https://i.imgur.com/KoB6QZU.png" alt=""></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-CSharp" data-lang="CSharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> List&lt;Card&gt; GetCards() {
+</span></span><span style="display:flex;"><span>    List&lt;Card&gt; cards = <span style="color:#66d9ef">new</span> List&lt;Card&gt;();
+</span></span><span style="display:flex;"><span>    SqlConnection sqlConnection = <span style="color:#66d9ef">new</span> SqlConnection(ConnStr);
+</span></span><span style="display:flex;"><span>    SqlCommand sqlCommand = <span style="color:#66d9ef">new</span> SqlCommand(<span style="color:#e6db74">&#34;SELECT * FROM card&#34;</span>);
+</span></span><span style="display:flex;"><span>    sqlCommand.Connection = sqlConnection;
+</span></span><span style="display:flex;"><span>    sqlConnection.Open();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    SqlDataReader reader = sqlCommand.ExecuteReader();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (reader.HasRows) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> (reader.Read()) {
+</span></span><span style="display:flex;"><span>            Card card = <span style="color:#66d9ef">new</span> Card {
+</span></span><span style="display:flex;"><span>                ID = reader.GetInt32(reader.GetOrdinal(<span style="color:#e6db74">&#34;id&#34;</span>)),
+</span></span><span style="display:flex;"><span>                Char_name  = reader.GetString(reader.GetOrdinal(<span style="color:#e6db74">&#34;char_name&#34;</span>)),
+</span></span><span style="display:flex;"><span>                Card_name  = reader.GetString(reader.GetOrdinal(<span style="color:#e6db74">&#34;card_name&#34;</span>)),
+</span></span><span style="display:flex;"><span>                Card_level = reader.GetString(reader.GetOrdinal(<span style="color:#e6db74">&#34;card_level&#34;</span>)),
+</span></span><span style="display:flex;"><span>            };
+</span></span><span style="display:flex;"><span>            cards.Add(card);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>        Console.WriteLine(<span style="color:#e6db74">&#34;資料庫為空！&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    sqlConnection.Close();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> cards;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="https://i.imgur.com/KoB6QZU.png" alt=""></p>
 <p>首先，我們宣告了一個 Card 的 List 叫做 Cards 用來保存我們等等取得的資料。</p>
 <p>接著我們利用連線字串 ConnStr 來建立了一個 <strong>SQL 連線物件 SqlConnection</strong>。並宣告了一個 <strong>SQL 命令物件 SqlCommand</strong> 來放置我們要執行的 SQL 指令。</p>
 <p>這邊使用的是「由 card 資料表選取全部資料(*)」的指令。不論使用的是何種語言，後端連線到資料庫最重要的就是傳送指令至資料庫執行。關於 SQL 指令的使用方式，可以參照 <a href="https://www.1keydata.com/tw/sql/sql.html">1keyData 的 SQL 語法</a> 或是 <a href="http://www.w3school.com.cn/sql/index.asp">w3school</a>。</p>
@@ -242,31 +242,31 @@
 <h2 id="新增資料">新增資料</h2>
 <p>既然能夠取得資料了，接下來就來做一些基本的操作吧。首先從新增資料開始。</p>
 <p>為了後續操作方便和美觀，先從我們顯示資料的 Index 開始做處理。先將它改成bootstarp 的表格樣式，並且留一格之後放操作項。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">table</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;table&#34;</span>&gt;
-    &lt;<span style="color:#f92672">thead</span>&gt;
-        &lt;<span style="color:#f92672">tr</span>&gt;
-            &lt;<span style="color:#f92672">th</span>&gt;資料庫編號&lt;/<span style="color:#f92672">th</span>&gt;
-            &lt;<span style="color:#f92672">th</span>&gt;角色名稱&lt;/<span style="color:#f92672">th</span>&gt;
-            &lt;<span style="color:#f92672">th</span>&gt;卡片名稱&lt;/<span style="color:#f92672">th</span>&gt;
-            &lt;<span style="color:#f92672">th</span>&gt;卡片等級&lt;/<span style="color:#f92672">th</span>&gt;
-            &lt;<span style="color:#f92672">th</span>&gt;&lt;/<span style="color:#f92672">th</span>&gt;
-        &lt;/<span style="color:#f92672">tr</span>&gt;
-    &lt;/<span style="color:#f92672">thead</span>&gt;
-    &lt;<span style="color:#f92672">tbody</span>&gt;
-
-        @foreach (Card card in cards) {
-            &lt;<span style="color:#f92672">tr</span>&gt;
-                &lt;<span style="color:#f92672">th</span>&gt;@card.ID&lt;/<span style="color:#f92672">th</span>&gt;
-                &lt;<span style="color:#f92672">th</span>&gt;@card.Char_name&lt;/<span style="color:#f92672">th</span>&gt;
-                &lt;<span style="color:#f92672">th</span>&gt;@card.Card_name&lt;/<span style="color:#f92672">th</span>&gt;
-                &lt;<span style="color:#f92672">th</span>&gt;@card.Card_level&lt;/<span style="color:#f92672">th</span>&gt;
-                &lt;<span style="color:#f92672">th</span>&gt;&lt;<span style="color:#f92672">th</span>&gt;
-            &lt;/<span style="color:#f92672">tr</span>&gt;
-         }
-
-    &lt;/<span style="color:#f92672">tbody</span>&gt;
-&lt;/<span style="color:#f92672">table</span>&gt;
-</code></pre></div><p><img src="https://i.imgur.com/6z2UNud.png" alt=""></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">table</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;table&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">thead</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">tr</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">th</span>&gt;資料庫編號&lt;/<span style="color:#f92672">th</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">th</span>&gt;角色名稱&lt;/<span style="color:#f92672">th</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">th</span>&gt;卡片名稱&lt;/<span style="color:#f92672">th</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">th</span>&gt;卡片等級&lt;/<span style="color:#f92672">th</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">th</span>&gt;&lt;/<span style="color:#f92672">th</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#f92672">tr</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">thead</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">tbody</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        @foreach (Card card in cards) {
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">tr</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">th</span>&gt;@card.ID&lt;/<span style="color:#f92672">th</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">th</span>&gt;@card.Char_name&lt;/<span style="color:#f92672">th</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">th</span>&gt;@card.Card_name&lt;/<span style="color:#f92672">th</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">th</span>&gt;@card.Card_level&lt;/<span style="color:#f92672">th</span>&gt;
+</span></span><span style="display:flex;"><span>                &lt;<span style="color:#f92672">th</span>&gt;&lt;<span style="color:#f92672">th</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;/<span style="color:#f92672">tr</span>&gt;
+</span></span><span style="display:flex;"><span>         }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">tbody</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">table</span>&gt;
+</span></span></code></pre></div><p><img src="https://i.imgur.com/6z2UNud.png" alt=""></p>
 <p>比剛剛好多了：</p>
 <p><img src="https://i.imgur.com/EO3xE9b.png" alt=""></p>
 <p>既然要新增資料，那一定要有個頁面能夠輸入新增的資料內容。因此我們回到 HomeController 來準備新增一個頁面。首先先把預設的 About 和 Contact 刪掉，也將 Views 裡的這兩頁給刪掉，我們不會用到它們了。</p>
@@ -278,31 +278,31 @@
 <p>在這一步直接按下 Add 就會新增一個空白的 View 可以使用了。如果想讓系統自己幫你產生，Template 指得就是樣板，裡面已經包含新增刪除等操作會使用到的介面，選擇後再於 Model class 選取要操作的 Model 物件的話，就會自動產生好一個功能頁面讓你修改。不過開頭已經說過這次要純手工，因此我們就直接按下 Add 吧。</p>
 <p>要把資料從 View 丟到 Controller 的方法很多，例如 form 表單或是 ajax 傳值都是可行的。我們這邊用 form 表單做回傳，另外使用 bootstarp 簡單排個版，程式碼如下</p>
 <p><img src="https://i.imgur.com/IGumNlE.png" alt=""></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#f92672">h2</span>&gt;新增 Card&lt;/<span style="color:#f92672">h2</span>&gt;
-&lt;<span style="color:#f92672">br</span> /&gt;
-
-&lt;<span style="color:#f92672">form</span> <span style="color:#a6e22e">method</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;post&#34;</span> <span style="color:#a6e22e">action</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/Home/CreateCard&#34;</span>&gt;
-    &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;form-group row&#34;</span>&gt;
-        &lt;<span style="color:#f92672">label</span> <span style="color:#a6e22e">for</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;inputCharName&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;col-sm-2&#34;</span>&gt;角色名稱&lt;/<span style="color:#f92672">label</span>&gt;
-        &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;col-sm-10&#34;</span>&gt;
-            &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text&#34;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;inputCharName&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Char_name&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;form-control&#34;</span> /&gt;
-        &lt;/<span style="color:#f92672">div</span>&gt;
-    &lt;/<span style="color:#f92672">div</span>&gt;
-    &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;form-group row&#34;</span>&gt;
-        &lt;<span style="color:#f92672">label</span> <span style="color:#a6e22e">for</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;inputCardName&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;col-sm-2&#34;</span>&gt;卡片名稱&lt;/<span style="color:#f92672">label</span>&gt;
-        &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;col-sm-10&#34;</span>&gt;
-            &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text&#34;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;inputCardName&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Card_name&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;form-control&#34;</span> /&gt;
-        &lt;/<span style="color:#f92672">div</span>&gt;
-    &lt;/<span style="color:#f92672">div</span>&gt;
-    &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;form-group row&#34;</span>&gt;
-        &lt;<span style="color:#f92672">label</span> <span style="color:#a6e22e">for</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;inputCardLevel&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;col-sm-2&#34;</span>&gt;卡片等級&lt;/<span style="color:#f92672">label</span>&gt;
-        &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;col-sm-10&#34;</span>&gt;
-            &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;number&#34;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;inputCardLevel&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Card_level&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;form-control&#34;</span> /&gt;
-        &lt;/<span style="color:#f92672">div</span>&gt;
-    &lt;/<span style="color:#f92672">div</span>&gt;
-    &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;btn btn-default&#34;</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;submit&#34;</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;新增&#34;</span>/&gt;
-&lt;/<span style="color:#f92672">form</span>&gt;
-</code></pre></div><p>可以看見我們首先做了一個 form 表單，並<strong>指定這張表單將用 post 的方式將資料傳送到 /Home/CreateCard 這個路徑</strong>。屆時我們送出的時候，就會送到 HomeController 中有規定收取 post 的 CreateCard() 方法做處理。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">h2</span>&gt;新增 Card&lt;/<span style="color:#f92672">h2</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">br</span> /&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">form</span> <span style="color:#a6e22e">method</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;post&#34;</span> <span style="color:#a6e22e">action</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;/Home/CreateCard&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;form-group row&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">label</span> <span style="color:#a6e22e">for</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;inputCharName&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;col-sm-2&#34;</span>&gt;角色名稱&lt;/<span style="color:#f92672">label</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;col-sm-10&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text&#34;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;inputCharName&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Char_name&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;form-control&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;form-group row&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">label</span> <span style="color:#a6e22e">for</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;inputCardName&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;col-sm-2&#34;</span>&gt;卡片名稱&lt;/<span style="color:#f92672">label</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;col-sm-10&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;text&#34;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;inputCardName&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Card_name&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;form-control&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;form-group row&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">label</span> <span style="color:#a6e22e">for</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;inputCardLevel&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;col-sm-2&#34;</span>&gt;卡片等級&lt;/<span style="color:#f92672">label</span>&gt;
+</span></span><span style="display:flex;"><span>        &lt;<span style="color:#f92672">div</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;col-sm-10&#34;</span>&gt;
+</span></span><span style="display:flex;"><span>            &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;number&#34;</span> <span style="color:#a6e22e">id</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;inputCardLevel&#34;</span> <span style="color:#a6e22e">name</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Card_level&#34;</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;form-control&#34;</span> /&gt;
+</span></span><span style="display:flex;"><span>        &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">div</span>&gt;
+</span></span><span style="display:flex;"><span>    &lt;<span style="color:#f92672">input</span> <span style="color:#a6e22e">class</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;btn btn-default&#34;</span> <span style="color:#a6e22e">type</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;submit&#34;</span> <span style="color:#a6e22e">value</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;新增&#34;</span>/&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">form</span>&gt;
+</span></span></code></pre></div><p>可以看見我們首先做了一個 form 表單，並<strong>指定這張表單將用 post 的方式將資料傳送到 /Home/CreateCard 這個路徑</strong>。屆時我們送出的時候，就會送到 HomeController 中有規定收取 post 的 CreateCard() 方法做處理。</p>
 <p>在<strong>表單中最重要的就是各個 input 的 name 屬性</strong>，當資料傳送的時候，會使用 name 做為資料的欄位名稱。因此這邊的 name 一定要能和我們的 card 物件的資料對應上，才能讓它自動轉換。</p>
 <p>接著用 <a href="https://v3.bootcss.com/css/#forms">bootstrap 的格式</a>做了三組輸入框，以及一個提交按鈕。運行後頁面正常就可以進行下一步了。</p>
 <p>首先我們再度回到 HomeController，做一個 POST 才能進來的 CreateCard 方法來接取表單，並且讓它將傳入的表單資料做成我們建立的 Card 物件。</p>

@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -127,27 +127,27 @@
 <p>我們在之前的 <a href="/post/2020/09/oo-8-cohesion-and-coupling">耦合篇</a> 提過，如果模組和另一個模組之間有關連，那這兩者之間就耦合。以此來看，依賴就是一種耦合的關係，那麼，依賴是健康還是不健康的耦合呢？</p>
 <p>現在讓我們用 <a href="/post/2020/07/oo-5-polymorphism">多型篇</a> 用過的「老闆徵工程師」的例子來舉例一下：現在有間小小公司，老闆請來了小明當工程師，並請他開工撰寫產品程式碼。</p>
 <p>當「撰寫產品程式」對「工程師」直接依賴的時候，狀況可能是這樣的：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
-{
-    Ming programmer = <span style="color:#66d9ef">new</span> Ming();
-    <span style="color:#66d9ef">var</span> product = programmer.Programming();
-    <span style="color:#66d9ef">return</span> product;
-}
-</code></pre></div><p>過一陣子，老闆發現小明寫出來的東西似乎不太行，於是把小明趕走，另外請了小華。這時候因為「工程師」這個實作類別不一樣了，我們就必須要改一次程式碼：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
-{
-    Hua programmer = <span style="color:#66d9ef">new</span> Hua();
-    <span style="color:#66d9ef">var</span> product = programmer.Programming();
-    <span style="color:#66d9ef">return</span> product;
-}
-</code></pre></div><p>又過了好一陣子，老闆又另外請了小美來工作。於是又要再改一次，而且小美的工作方式甚至不叫做 <code>Programming</code>，而是 <code>Coding</code>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
-{
-    Mei programmer = <span style="color:#66d9ef">new</span> Mei();
-    <span style="color:#66d9ef">var</span> product = programmer.Coding();
-    <span style="color:#66d9ef">return</span> product;
-}
-</code></pre></div><p>現在有感覺到一點問題了嗎？如果一直換人，<code>Work</code> 的程式碼豈不是每次都要修改？甚至根據依賴對象的不同，連使用方式都可能受到影響，很明顯這樣就是所謂不健康的耦合。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Product Work()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Ming programmer = <span style="color:#66d9ef">new</span> Ming();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> product = programmer.Programming();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> product;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>過一陣子，老闆發現小明寫出來的東西似乎不太行，於是把小明趕走，另外請了小華。這時候因為「工程師」這個實作類別不一樣了，我們就必須要改一次程式碼：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Product Work()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Hua programmer = <span style="color:#66d9ef">new</span> Hua();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> product = programmer.Programming();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> product;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>又過了好一陣子，老闆又另外請了小美來工作。於是又要再改一次，而且小美的工作方式甚至不叫做 <code>Programming</code>，而是 <code>Coding</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Product Work()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Mei programmer = <span style="color:#66d9ef">new</span> Mei();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> product = programmer.Coding();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> product;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>現在有感覺到一點問題了嗎？如果一直換人，<code>Work</code> 的程式碼豈不是每次都要修改？甚至根據依賴對象的不同，連使用方式都可能受到影響，很明顯這樣就是所謂不健康的耦合。</p>
 <blockquote>
 <p>這邊還有個例子我很喜歡，在這篇 <a href="https://notfalse.net/1/dip">依賴倒置原則</a> 的文章中，用吃東西來舉例：如果寫死了依賴漢堡，難道一輩子就只能吃漢堡了嗎？如果想改成吃義大利麵，就要修改程式碼；有一百種食物，難道就要改一百次嗎？</p>
 </blockquote>
@@ -171,13 +171,13 @@
 <p><strong>抽象不應該依賴細節；細節應該依賴抽象。</strong></p>
 </blockquote>
 <p>到這邊我們就推完 <a href="/post/2020/07/oo-7-interface">介面篇</a> 的前提了，請大家再回顧一下介面篇的內容。也就是說，上面的例子改用抽象層隔離之後，就會和介面篇的例子相同，變成：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> Product Work()
-{
-    IProgrammer programmer = <span style="color:#66d9ef">new</span> Ming();
-    <span style="color:#66d9ef">var</span> product = programmer.Programming();
-    <span style="color:#66d9ef">return</span> product;
-}
-</code></pre></div><p>這邊就會遇到我們介面篇結束時所問的問題：我們使用功能之前，必須先建立該類別的實例，也就是 <code>new Ming()</code>，那麼，我們不就還是直接依賴了實作嗎？</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Product Work()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    IProgrammer programmer = <span style="color:#66d9ef">new</span> Ming();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> product = programmer.Programming();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> product;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這邊就會遇到我們介面篇結束時所問的問題：我們使用功能之前，必須先建立該類別的實例，也就是 <code>new Ming()</code>，那麼，我們不就還是直接依賴了實作嗎？</p>
 <h2 id="控制反轉-inversion-of-control-ioc-br-依賴注入-dependency-injection">控制反轉 (Inversion of Control, IoC) &amp;<br/> 依賴注入 (Dependency Injection)</h2>
 <p>即使我們反轉了依賴關係，但總是要建立實例才能使用的呀。所以，只是將對具體的依賴更改為對抽象的依賴，仍然是不夠的，在要使用的瞬間就會遭遇到問題。面對這個問題，大大們提出了許多個解決的方法，今天就介紹一個比較常見的方向：<strong>控制反轉 (Inversion of Control, IoC)</strong>。</p>
 <p>思路非常的簡單：既然如此，我們把實例的建立和實例的使用切分開來就好了，<strong>不再是由高階模組去建立並控制低階模組，而是我們讓一個控制反轉中心去建立低階模組，然後高階模組要使用的時候再把這個低階模組交給高階模組使用</strong>。</p>
@@ -187,22 +187,22 @@
 <p>但是，要怎麼把控制中心建立的低階模組，交給高階模組做使用呢？這時候的實作方式就是我們所謂的 <strong>依賴注入 (Dependency Injection)</strong> 了。</p>
 <p>依賴注入說穿了很簡單，就是<strong>用各種姿勢把東西丟進去給類別使用</strong>。</p>
 <p>例如說我們先前提過的 <a href="/post/2020/07/oo-2-constructor-overload">建構式</a>，就是其中一種解決方法。用上面的例子，就會變成：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ProductService</span>
-{
-    <span style="color:#66d9ef">private</span> IProgrammer <span style="color:#ae81ff">_</span>programmer;
-
-    <span style="color:#66d9ef">public</span> ProductService(IProgrammer programmer)
-    {
-        <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>programmer = programmer;
-    }
-
-    <span style="color:#66d9ef">public</span> Product Work()
-    {
-        <span style="color:#66d9ef">var</span> product = <span style="color:#66d9ef">this</span>.<span style="color:#ae81ff">_</span>programmer.Programming();
-        <span style="color:#66d9ef">return</span> product;
-    }
-}
-</code></pre></div><p>在這個例子中，我們利用建構式的方式，從外部傳入該介面的實體來使用。現在撰寫產品程式碼的工作再也不用為了換工程師而改變，也不用因為實作細節或是方法名稱而煩惱，只要照個介面合約使用就可以了。至於要傳遞哪個實體進來，這份工作要交給小明還是小美，就讓控制中心去決定，大家各司其職，落實單一職責。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ProductService</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> IProgrammer _programmer;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ProductService(IProgrammer programmer)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>._programmer = programmer;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Product Work()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> product = <span style="color:#66d9ef">this</span>._programmer.Programming();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> product;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>在這個例子中，我們利用建構式的方式，從外部傳入該介面的實體來使用。現在撰寫產品程式碼的工作再也不用為了換工程師而改變，也不用因為實作細節或是方法名稱而煩惱，只要照個介面合約使用就可以了。至於要傳遞哪個實體進來，這份工作要交給小明還是小美，就讓控制中心去決定，大家各司其職，落實單一職責。</p>
 <p>當然，注入的方式不只建構式注入，還有設值注入（也就是從外部改變目標的某個屬性值來達到注入）等等；提供 IOC 的方式也不只一種，例如 .net 的 Unity，甚至到了 .net Core 時代 IOC 還直接是內建的功能呢，由於口味眾多，此處暫且按下不表。</p>
 <blockquote>
 <p>補充：下個系列文補了 <a href="/post/2021/11/newbie-6-dependency-injection">使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a>，有興趣的朋友可以接續看看</p>

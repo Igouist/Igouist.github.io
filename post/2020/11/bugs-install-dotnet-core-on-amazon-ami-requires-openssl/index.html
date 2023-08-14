@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -123,18 +123,18 @@
 
                         <div class="post-content">
                             <p>最近遇到在 Amazon Linux AMI 要安裝 .net Core 3.1 環境的時候，會一直跳出<br/> <code>Requires: openssl-libs</code> 而無法安裝的問題，儘管明明已經有 openssl 了，但還是解析失敗找不到依賴，過程一直碰壁，因此在這邊紀錄一下。</p>
-<p>過程中嘗試了安裝 openssl-libs（會找不到該套件）、下載 Dotnet 的 tar.gz ，再直接對執行檔下 Dotnet 指令起站台（雖然網站起得來，但執行者會是當下的登入身分，也就是 &lsquo;'@連線進來的IP-伺服器位置，而非由本機執行。後續如果有連線資料庫等檢查權限的地方就很容易出錯）</p>
+<p>過程中嘗試了安裝 openssl-libs（會找不到該套件）、下載 Dotnet 的 tar.gz ，再直接對執行檔下 Dotnet 指令起站台（雖然網站起得來，但執行者會是當下的登入身分，也就是 &lsquo;&rsquo;@連線進來的IP-伺服器位置，而非由本機執行。後續如果有連線資料庫等檢查權限的地方就很容易出錯）</p>
 <p>最後在 Dotnet Core 的 issue 翻到這篇 <a href="https://github.com/dotnet/core/issues/930">Cannot install .NET Core 2.0 on Amazon Linux AMI</a> 才成功解決。</p>
 <p>首先先將 openssl-libs 的 SPEC 抓下來，然後給 RPM 建置一下。這兩句可以參考一下這篇 <a href="https://medium.com/linux-%E9%96%8B%E7%99%BC%E5%85%A5%E9%96%80/rpm-%E6%89%93%E5%8C%85-%E7%94%B1%E4%B8%80%E7%AB%85%E4%B8%8D%E9%80%9A%E5%88%B0%E5%8B%95%E6%89%8B%E6%BF%AB%E7%94%A8-%E4%BA%8C-df9eea70bd7b">RPM 打包︰由一竅不通到動手濫用 (二)</a> 的說明。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget https://github.com/dotnet/core/files/2186067/openssl-libs-ami.spec.txt
-rpmbuild --bb openssl-libs-ami.spec.txt
-</code></pre></div><p>接著我們去把打包好的 openssl-libs 安裝起來，路徑可能會有不同，所以記得先用 find 找一下</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo find / -iname RPMS
-sudo rpm -i /usr/src/rpm/RPMS/x86_64/openssl-libs-1.0.0-0.x86_64.rpm
-</code></pre></div><p>到這邊應該就解決標題遇到的問題囉！讓我們回到安裝的正軌</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo yum install -y powershell
-sudo yum install dotnet-sdk-3.1.0
-</code></pre></div><p>最後就可以 <code>dotnet</code> 試試囉！</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>wget https://github.com/dotnet/core/files/2186067/openssl-libs-ami.spec.txt
+</span></span><span style="display:flex;"><span>rpmbuild --bb openssl-libs-ami.spec.txt
+</span></span></code></pre></div><p>接著我們去把打包好的 openssl-libs 安裝起來，路徑可能會有不同，所以記得先用 find 找一下</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo find / -iname RPMS
+</span></span><span style="display:flex;"><span>sudo rpm -i /usr/src/rpm/RPMS/x86_64/openssl-libs-1.0.0-0.x86_64.rpm
+</span></span></code></pre></div><p>到這邊應該就解決標題遇到的問題囉！讓我們回到安裝的正軌</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo yum install -y powershell
+</span></span><span style="display:flex;"><span>sudo yum install dotnet-sdk-3.1.0
+</span></span></code></pre></div><p>最後就可以 <code>dotnet</code> 試試囉！</p>
                         </div>
 
                         

@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -215,54 +215,54 @@
 <p>那麼就讓我們開始吧，首先我們會需要安裝 <strong>Azure.Messaging.ServiceBus</strong> 這個套件包：</p>
 <p><img src="https://i.imgur.com/zXuFLdw.png" alt="Image"></p>
 <p>接著是我們本次的範例用 Controller，以及尚未實作傳送訊息的 Function：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// Service Bus Queue 示範用 Controller
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[ApiController]</span>
-<span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
-</span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">QueueController</span> : ControllerBase
-{
-    <span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// 將訊息放入佇列
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">    [HttpPost]</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Enqueue([FromBody] <span style="color:#66d9ef">string</span> context)
-    {
-        <span style="color:#75715e">// 我們要在這裡實作傳送訊息到 Queue 的方法
-</span><span style="color:#75715e"></span>    }
-}
-</code></pre></div><h3 id="傳送一則訊息到佇列">傳送一則訊息到佇列</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// Service Bus Queue 示範用 Controller</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">QueueController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 將訊息放入佇列</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpPost]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Enqueue([FromBody] <span style="color:#66d9ef">string</span> context)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 我們要在這裡實作傳送訊息到 Queue 的方法</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="傳送一則訊息到佇列">傳送一則訊息到佇列</h3>
 <p>接著讓我們來傳送訊息吧，這邊會需要：</p>
 <ul>
 <li>用 ServiceBus 的連線字串建立 <code>ServiceBusClient</code></li>
 <li>用 Queue 的名稱，從 <code>ServiceBusClient</code> 建立 <code>ServiceBusSender</code></li>
 <li>用 <code>ServiceBusSender</code> 來傳送訊息到 Queue</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 將訊息放入佇列
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpPost]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Enqueue([FromBody] <span style="color:#66d9ef">string</span> context)
-{
-    <span style="color:#75715e">// 用 ServiceBus 的連線字串建立 Client
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 連線字串可以在 Azure ServiceBus 頁面的共用存取原則找到
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// ServiceBusClient 用完記得要呼叫 DisposeAsync() 來關掉
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 或是直接使用 await using 包起來
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
-    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
-
-    <span style="color:#75715e">// 傳遞 Queue 的名字給 CreateSender 方法來建立 Sender
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 和 ServiceBusClient 一樣，有提供 DisposeAsync 方法來關閉
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 或是直接使用 await using 包起來
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
-    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var sender = client.CreateSender(queueName);
-
-    <span style="color:#75715e">// 將要傳送的訊息包裝成 ServiceBusMessage
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 並使用 ServiceBusSender.SendMessageAsync 傳送出去
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> message = <span style="color:#66d9ef">new</span> ServiceBusMessage(context);
-    <span style="color:#66d9ef">await</span> sender.SendMessageAsync(message);
-}
-</code></pre></div><p>提醒一下將來會跑回來複製貼上的我和各位朋朋：記得把連線字串跟佇列名稱改成你的！</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 將訊息放入佇列</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpPost]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Enqueue([FromBody] <span style="color:#66d9ef">string</span> context)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 用 ServiceBus 的連線字串建立 Client</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 連線字串可以在 Azure ServiceBus 頁面的共用存取原則找到</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ServiceBusClient 用完記得要呼叫 DisposeAsync() 來關掉</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 或是直接使用 await using 包起來</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 傳遞 Queue 的名字給 CreateSender 方法來建立 Sender</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 和 ServiceBusClient 一樣，有提供 DisposeAsync 方法來關閉</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 或是直接使用 await using 包起來</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var sender = client.CreateSender(queueName);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 將要傳送的訊息包裝成 ServiceBusMessage</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 並使用 ServiceBusSender.SendMessageAsync 傳送出去</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> message = <span style="color:#66d9ef">new</span> ServiceBusMessage(context);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> sender.SendMessageAsync(message);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>提醒一下將來會跑回來複製貼上的我和各位朋朋：記得把連線字串跟佇列名稱改成你的！</p>
 <p>現在讓我們來呼叫ＡＰＩ，丟個 <code>&quot;Hello&quot;</code> 進去試試：</p>
 <p><img src="https://i.imgur.com/ioXGear.png" alt="Image"></p>
 <p>接著到 Azure Service Bus 的 Queue 介面瞧瞧：</p>
@@ -273,41 +273,41 @@
 <p>雖然我們可以直接粗暴地把 Sender 的 <code>SendMessageAsync</code> 加個 <code>s</code> 變成 <code>SendMessagesAsync</code>，這樣它就能接收串列的 <code>IEnumerable&lt;ServiceBusMessage&gt;</code> 了（真貼心啊 Azure）</p>
 <p>不過，我們還可以選擇使用 <a href="https://docs.microsoft.com/en-us/dotnet/api/azure.messaging.servicebus.servicebusmessagebatch">ServiceBusMessageBatch</a> 這個工具來幫我們一次發他個一批訊息。</p>
 <p>這邊也示範一下。<del>讓我之後可以回來抄</del></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 將一堆訊息放入佇列
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;param name=&#34;context&#34;&gt;&lt;/param&gt;
-</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpPost(&#34;Batch&#34;)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task EnqueueBatch([FromBody] <span style="color:#66d9ef">string</span> context)
-{
-    <span style="color:#75715e">// 把訊息重複個十次，假裝我們有很多訊息
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> contexts = Enumerable.Repeat(context, <span style="color:#ae81ff">10</span>);
-    
-    <span style="color:#75715e">// 和單則訊息的場合一樣：先建立 Client 及 Sender
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
-    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
-    
-    <span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
-    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var sender = client.CreateSender(queueName);
-
-    <span style="color:#75715e">// 從 Sender 來建立一批訊息（類似郵差包的感覺）
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">using</span> var messageBatch = <span style="color:#66d9ef">await</span> sender.CreateMessageBatchAsync();
-
-    <span style="color:#75715e">// 將訊息逐一嘗試放到這批訊息中（把信塞到郵差包的感覺）
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> text <span style="color:#66d9ef">in</span> contexts)
-    {
-        <span style="color:#66d9ef">var</span> message = <span style="color:#66d9ef">new</span> ServiceBusMessage(text);
-        <span style="color:#66d9ef">if</span> (messageBatch.TryAddMessage(message) <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">false</span>)
-        {
-            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(<span style="color:#e6db74">&#34;放入訊息失敗&#34;</span>);
-        }
-    }
-
-    <span style="color:#75715e">// 把整個郵差包丟出去
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> sender.SendMessagesAsync(messageBatch);
-}
-</code></pre></div><p>直接多十條訊息，看起來沒問題：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 將一堆訊息放入佇列</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;context&#34;&gt;&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpPost(&#34;Batch&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task EnqueueBatch([FromBody] <span style="color:#66d9ef">string</span> context)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 把訊息重複個十次，假裝我們有很多訊息</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> contexts = Enumerable.Repeat(context, <span style="color:#ae81ff">10</span>);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 和單則訊息的場合一樣：先建立 Client 及 Sender</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var sender = client.CreateSender(queueName);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 從 Sender 來建立一批訊息（類似郵差包的感覺）</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">using</span> var messageBatch = <span style="color:#66d9ef">await</span> sender.CreateMessageBatchAsync();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 將訊息逐一嘗試放到這批訊息中（把信塞到郵差包的感覺）</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">foreach</span> (<span style="color:#66d9ef">var</span> text <span style="color:#66d9ef">in</span> contexts)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> message = <span style="color:#66d9ef">new</span> ServiceBusMessage(text);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (messageBatch.TryAddMessage(message) <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">false</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Exception(<span style="color:#e6db74">&#34;放入訊息失敗&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 把整個郵差包丟出去</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> sender.SendMessagesAsync(messageBatch);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>直接多十條訊息，看起來沒問題：</p>
 <p><img src="https://i.imgur.com/iZxuUqu.png" alt="Image"></p>
 <h3 id="傳送物件到佇列">傳送物件到佇列</h3>
 <p>Ｑ：我要傳的東西不是 string 而是物件怎麼辦？</p>
@@ -318,31 +318,31 @@
 <p>拿出來的時候也有幾個不同的姿勢，接著就讓我們一一介紹下：</p>
 <h3 id="從佇列中讀取一則訊息">從佇列中讀取一則訊息</h3>
 <p>就像我們要寫入訊息的時候，要從 <code>ServiceBusClient</code> 建立一個 <code>ServiceBusSender</code> 一樣，當我們要寄送訊息的時候，也要從 <code>ServiceBusClient</code> 建立一個 <code>ServiceBusReceiver</code> 來幫我們處理訊息：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 取出佇列中的單則訊息
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpGet(&#34;Receive&#34;)]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">string</span>&gt; Receive()
-{
-    <span style="color:#75715e">// 和發送訊息的場合差不多：先建立 Client 及 Receiver
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
-    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
-
-    <span style="color:#75715e">// 和前面的 ServiceBusSender 一樣，有提供 DisposeAsync 方法讓我們用完時關閉
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 或是直接使用 await using 包起來
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
-    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var receiver = client.CreateReceiver(queueName);
-
-    <span style="color:#75715e">// 使用 ReceiveMessageAsync 來把訊息讀取出來
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> message = <span style="color:#66d9ef">await</span> receiver.ReceiveMessageAsync();
-    <span style="color:#66d9ef">var</span> body = message.Body.ToString();
-
-    <span style="color:#75715e">// 告訴 Service Bus 這個訊息有成功處理了
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> receiver.CompleteMessageAsync(message);
-    <span style="color:#66d9ef">return</span> body;
-}
-</code></pre></div><p>過程相當的簡單，只需要叫 <code>ServiceBusReceiver</code> 幫忙拿出來就好。現在讓我們呼叫試試：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 取出佇列中的單則訊息</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpGet(&#34;Receive&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">string</span>&gt; Receive()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 和發送訊息的場合差不多：先建立 Client 及 Receiver</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 和前面的 ServiceBusSender 一樣，有提供 DisposeAsync 方法讓我們用完時關閉</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 或是直接使用 await using 包起來</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var receiver = client.CreateReceiver(queueName);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 使用 ReceiveMessageAsync 來把訊息讀取出來</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> message = <span style="color:#66d9ef">await</span> receiver.ReceiveMessageAsync();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> body = message.Body.ToString();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 告訴 Service Bus 這個訊息有成功處理了</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> receiver.CompleteMessageAsync(message);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> body;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>過程相當的簡單，只需要叫 <code>ServiceBusReceiver</code> 幫忙拿出來就好。現在讓我們呼叫試試：</p>
 <p><img src="https://i.imgur.com/H9v2PdJ.png" alt="Image"></p>
 <p>成功取得我們前面放進去的訊息囉！</p>
 <h3 id="從佇列中持續讀取訊息">從佇列中持續讀取訊息</h3>
@@ -358,67 +358,67 @@
 <li>設定出錯時的處理方式 <code>ProcessErrorAsync</code></li>
 <li>讓 <code>ServiceBusProcessor</code> 持續接收訊息</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 取出佇列中的訊息
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Dequeue()
-{
-    <span style="color:#75715e">// 和發送訊息的場合差不多：先建立 Client 及 Processor
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
-    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
-
-    <span style="color:#75715e">// 和前面的 ServiceBusSender 一樣，有提供 DisposeAsync 方法讓我們用完時關閉
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 或是直接使用 await using 包起來
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
-    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var processor = client.CreateProcessor(queueName);
-
-    <span style="color:#75715e">// 告訴 Processor 我們想怎麼處理訊息
-</span><span style="color:#75715e"></span>    processor.ProcessMessageAsync += MessageHandler;
-    processor.ProcessErrorAsync += ErrorHandler;
-
-    <span style="color:#75715e">// 讓 Processor 上工，開始接收訊息
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> processor.StartProcessingAsync();
-
-    <span style="color:#75715e">// 實際上會掛著讓 processor 一直處理送來的訊息
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 這邊示範而已就意思意思跑個一下下
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> Task.Delay(<span style="color:#ae81ff">1000</span>);
-
-    <span style="color:#75715e">// 讓 Processor 下班休息
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> processor.StopProcessingAsync();
-}
-
-<span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 處理佇列訊息
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task MessageHandler(ProcessMessageEventArgs args)
-{
-    <span style="color:#75715e">// 從訊息的 Body 取出我們發送時塞進去的內容
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> message = args.Message.Body.ToString();
-
-    <span style="color:#75715e">// 對訊息內容做你想做的事
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 這邊就印出來看個一眼意思意思
-</span><span style="color:#75715e"></span>    Console.WriteLine(message);
-
-    <span style="color:#75715e">// 告訴 Service Bus 這個訊息有成功處理了
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> args.CompleteMessageAsync(args.Message);
-}
-
-<span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 處理佇列錯誤訊息
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task ErrorHandler(ProcessErrorEventArgs args)
-{
-    <span style="color:#75715e">// 從訊息中取出錯誤訊息$$
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> exception = args.Exception.ToString();
-
-    <span style="color:#75715e">// 對訊息做一些錯誤處理，例如存到日誌系統之類的
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 這邊也印出來看個一眼意思意思
-</span><span style="color:#75715e"></span>    Console.WriteLine(exception);
-}
-</code></pre></div><p>接著就讓我們呼叫看看：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 取出佇列中的訊息</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Dequeue()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 和發送訊息的場合差不多：先建立 Client 及 Processor</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 和前面的 ServiceBusSender 一樣，有提供 DisposeAsync 方法讓我們用完時關閉</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 或是直接使用 await using 包起來</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var processor = client.CreateProcessor(queueName);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 告訴 Processor 我們想怎麼處理訊息</span>
+</span></span><span style="display:flex;"><span>    processor.ProcessMessageAsync += MessageHandler;
+</span></span><span style="display:flex;"><span>    processor.ProcessErrorAsync += ErrorHandler;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 讓 Processor 上工，開始接收訊息</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> processor.StartProcessingAsync();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 實際上會掛著讓 processor 一直處理送來的訊息</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 這邊示範而已就意思意思跑個一下下</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> Task.Delay(<span style="color:#ae81ff">1000</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 讓 Processor 下班休息</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> processor.StopProcessingAsync();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 處理佇列訊息</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task MessageHandler(ProcessMessageEventArgs args)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 從訊息的 Body 取出我們發送時塞進去的內容</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> message = args.Message.Body.ToString();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 對訊息內容做你想做的事</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 這邊就印出來看個一眼意思意思</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(message);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 告訴 Service Bus 這個訊息有成功處理了</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> args.CompleteMessageAsync(args.Message);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 處理佇列錯誤訊息</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task ErrorHandler(ProcessErrorEventArgs args)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 從訊息中取出錯誤訊息$$</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> exception = args.Exception.ToString();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 對訊息做一些錯誤處理，例如存到日誌系統之類的</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 這邊也印出來看個一眼意思意思</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(exception);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著就讓我們呼叫看看：</p>
 <p><img src="https://i.imgur.com/hKoP1bD.png" alt="Image"></p>
 <p>可以看見我們確實收到了前面發送的「Hello」，接收大成功！</p>
 <h3 id="補充在-servicebus-explorer-確認訊息">補充：在 ServiceBus Explorer 確認訊息</h3>
@@ -462,31 +462,31 @@
 <p>這樣就完成了主題的建立啦！接著讓我們回到程式中來撰寫訊息吧～</p>
 <h3 id="將訊息放入主題">將訊息放入主題</h3>
 <p>基本上來說，訊息放入主題的方式就和放入佇列的方式一樣：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 將訊息放入主題
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpPost]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Enqueue([FromBody] <span style="color:#66d9ef">string</span> context)
-{
-    <span style="color:#75715e">// 用 ServiceBus 的連線字串建立 Client
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 連線字串可以在 Azure ServiceBus 頁面的共用存取原則找到
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// ServiceBusClient 用完記得要呼叫 DisposeAsync() 來關掉
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 或是直接使用 await using 包起來
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
-    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
-
-    <span style="color:#75715e">// 傳遞 Topic 的名字給 CreateSender 方法來建立 Sender
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 和 ServiceBusClient 一樣，有提供 DisposeAsync 方法來關閉
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 或是直接使用 await using 包起來
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> topicName = <span style="color:#e6db74">&#34;YOUR TOPIC NAME&#34;</span>;
-    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var sender = client.CreateSender(topicName);
-
-    <span style="color:#75715e">// 將要傳送的訊息包裝成 ServiceBusMessage
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 並使用 ServiceBusSender.SendMessageAsync 傳送出去
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> message = <span style="color:#66d9ef">new</span> ServiceBusMessage(context);
-    <span style="color:#66d9ef">await</span> sender.SendMessageAsync(message);
-}
-</code></pre></div><p>不用當成大家來找碴，因為真的就是一樣的放法。畢竟 <code>CreateSender</code> 的參數名稱是這樣的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 將訊息放入主題</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpPost]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Enqueue([FromBody] <span style="color:#66d9ef">string</span> context)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 用 ServiceBus 的連線字串建立 Client</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 連線字串可以在 Azure ServiceBus 頁面的共用存取原則找到</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ServiceBusClient 用完記得要呼叫 DisposeAsync() 來關掉</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 或是直接使用 await using 包起來</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 傳遞 Topic 的名字給 CreateSender 方法來建立 Sender</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 和 ServiceBusClient 一樣，有提供 DisposeAsync 方法來關閉</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 或是直接使用 await using 包起來</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> topicName = <span style="color:#e6db74">&#34;YOUR TOPIC NAME&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var sender = client.CreateSender(topicName);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 將要傳送的訊息包裝成 ServiceBusMessage</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 並使用 ServiceBusSender.SendMessageAsync 傳送出去</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> message = <span style="color:#66d9ef">new</span> ServiceBusMessage(context);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> sender.SendMessageAsync(message);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>不用當成大家來找碴，因為真的就是一樣的放法。畢竟 <code>CreateSender</code> 的參數名稱是這樣的：</p>
 <p><img src="https://i.imgur.com/nvj36PO.png" alt="Image"></p>
 <p>事不宜遲，我們馬上就來傳一封訊息試試：</p>
 <p><img src="https://i.imgur.com/oiL6TD9.png" alt="Image"></p>
@@ -497,79 +497,79 @@
 <p>看來我們很順利地把訊息傳送出去啦！那因為整批放入的方式也和佇列一樣，這邊就不再贅述。接下來就讓我們把訊息取出來試試吧～</p>
 <h3 id="從主題中讀取訊息">從主題中讀取訊息</h3>
 <p>就像前面寫入訊息到主題和寫入佇列長得九成像一樣，讀取也是差不多的。最大的差別是在<strong>建立 Processor 時，需要多給訂用帳戶名稱</strong>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 需要同時告訴 Processor 主題名稱和訂用帳戶名稱
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
-<span style="color:#66d9ef">var</span> subscriptionName = <span style="color:#e6db74">&#34;Sub1&#34;</span>;
-<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var processor = client.CreateProcessor(topicName, subscriptionName);
-</code></pre></div><p>讓我們修改成 Topic 名稱以及剛剛的訂用帳戶 Sub1 之後執行看看：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 需要同時告訴 Processor 主題名稱和訂用帳戶名稱</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> subscriptionName = <span style="color:#e6db74">&#34;Sub1&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var processor = client.CreateProcessor(topicName, subscriptionName);
+</span></span></code></pre></div><p>讓我們修改成 Topic 名稱以及剛剛的訂用帳戶 Sub1 之後執行看看：</p>
 <p><img src="https://i.imgur.com/udHkpxn.png" alt="Image"></p>
 <p>可以看見訂用帳戶 Sub1 的訊息也消耗掉了：</p>
 <p><img src="https://i.imgur.com/lpLy4Rd.png" alt="Image"></p>
 <p>而訂用帳戶 Sub2 的訊息還在，當我們使用 Sub2 來建立 Processor 並接收訊息之後才會消失：</p>
 <p><img src="https://i.imgur.com/MvOgIL5.png" alt="Image"></p>
 <p>其餘的部份都和處理佇列的時候一樣。但為了版面一致 <del>我之後回來複製的時候方便</del> 這邊還是附上程式碼：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 取出主題中的訊息
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[HttpGet]</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Dequeue()
-{
-    <span style="color:#75715e">// 和發送訊息的場合差不多：先建立 Client 及 Processor
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
-    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
-
-    <span style="color:#75715e">// 和前面的 ServiceBusSender 一樣，有提供 DisposeAsync 方法讓我們用完時關閉
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 或是直接使用 await using 包起來
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 和佇列不一樣的是：需要同時告訴 Processor 主題名稱和訂用帳戶名稱
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> topicName = <span style="color:#e6db74">&#34;YOUR TOPIC NAME&#34;</span>;
-    <span style="color:#66d9ef">var</span> subscriptionName = <span style="color:#e6db74">&#34;YOUR SUBSCRIPTION NAME&#34;</span>;
-    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var processor = client.CreateProcessor(topicName, subscriptionName);
-
-    <span style="color:#75715e">// 告訴 Processor 我們想怎麼處理訊息
-</span><span style="color:#75715e"></span>    processor.ProcessMessageAsync += MessageHandler;
-    processor.ProcessErrorAsync += ErrorHandler;
-
-    <span style="color:#75715e">// 讓 Processor 上工，開始接收訊息
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> processor.StartProcessingAsync();
-
-    <span style="color:#75715e">// 實際上會掛著讓 processor 一直處理送來的訊息
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 這邊就意思意思跑個一下下
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> Task.Delay(<span style="color:#ae81ff">1000</span>);
-
-    <span style="color:#75715e">// 讓 Processor 下班休息
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> processor.StopProcessingAsync();
-}
-
-<span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 處理主題訊息
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task MessageHandler(ProcessMessageEventArgs args)
-{
-    <span style="color:#75715e">// 從訊息的 Body 取出我們發送時塞進去的內容
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> message = args.Message.Body.ToString();
-    
-    <span style="color:#75715e">// 對訊息內容做你想做的事。這邊就印出來看個一眼意思意思
-</span><span style="color:#75715e"></span>    Console.WriteLine(message);
-
-    <span style="color:#75715e">// 告訴 Service Bus 這個訊息有成功處理了
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">await</span> args.CompleteMessageAsync(args.Message);
-}
-
-<span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// 處理主題錯誤訊息
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task ErrorHandler(ProcessErrorEventArgs args)
-{
-    <span style="color:#75715e">// 從訊息中取出錯誤訊息
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> exception = args.Exception.ToString();
-
-    <span style="color:#75715e">// 對訊息做錯誤處理，例如存到日誌系統之類的。這邊也印出來看個一眼意思意思
-</span><span style="color:#75715e"></span>    Console.WriteLine(exception);
-}
-</code></pre></div><h2 id="稍作整理">稍作整理</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 取出主題中的訊息</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpGet]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task Dequeue()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 和發送訊息的場合差不多：先建立 Client 及 Processor</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var client = <span style="color:#66d9ef">new</span> ServiceBusClient(connectionString);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 和前面的 ServiceBusSender 一樣，有提供 DisposeAsync 方法讓我們用完時關閉</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 或是直接使用 await using 包起來</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 和佇列不一樣的是：需要同時告訴 Processor 主題名稱和訂用帳戶名稱</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> topicName = <span style="color:#e6db74">&#34;YOUR TOPIC NAME&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> subscriptionName = <span style="color:#e6db74">&#34;YOUR SUBSCRIPTION NAME&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var processor = client.CreateProcessor(topicName, subscriptionName);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 告訴 Processor 我們想怎麼處理訊息</span>
+</span></span><span style="display:flex;"><span>    processor.ProcessMessageAsync += MessageHandler;
+</span></span><span style="display:flex;"><span>    processor.ProcessErrorAsync += ErrorHandler;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 讓 Processor 上工，開始接收訊息</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> processor.StartProcessingAsync();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 實際上會掛著讓 processor 一直處理送來的訊息</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 這邊就意思意思跑個一下下</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> Task.Delay(<span style="color:#ae81ff">1000</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 讓 Processor 下班休息</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> processor.StopProcessingAsync();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 處理主題訊息</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task MessageHandler(ProcessMessageEventArgs args)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 從訊息的 Body 取出我們發送時塞進去的內容</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> message = args.Message.Body.ToString();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 對訊息內容做你想做的事。這邊就印出來看個一眼意思意思</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(message);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 告訴 Service Bus 這個訊息有成功處理了</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">await</span> args.CompleteMessageAsync(args.Message);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 處理主題錯誤訊息</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">async</span> Task ErrorHandler(ProcessErrorEventArgs args)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 從訊息中取出錯誤訊息</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> exception = args.Exception.ToString();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 對訊息做錯誤處理，例如存到日誌系統之類的。這邊也印出來看個一眼意思意思</span>
+</span></span><span style="display:flex;"><span>    Console.WriteLine(exception);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h2 id="稍作整理">稍作整理</h2>
 <p>我們已經介紹完了 ServiceBus 的兩種主要工具：佇列和主題的基本操作。</p>
 <p>接下來我將稍微對現在的範例程式碼做點簡單的整理，給有興趣的朋友參考。</p>
 <p>其餘的朋友可以直接跳到最後的<a href="#%E5%B0%8F%E7%B5%90">小結</a>。</p>
@@ -582,15 +582,15 @@
 <p>要使用 <code>IAzureClientFactory</code>，我們需要先安裝 <code>Microsoft.Extensions.Azure</code> 套件：</p>
 <p><img src="https://i.imgur.com/vvFZGCE.png" alt="Image"></p>
 <p>現在讓我們移動到 <code>Program.cs</code> 並加上 ServiceBusClient 的註冊：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">builder.Services.AddAzureClients(clientsBuilder =&gt;
-{
-    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
-    
-    clientsBuilder
-        .AddServiceBusClient(connectionString)
-        .WithName(<span style="color:#e6db74">&#34;ServiceBusClient&#34;</span>);
-});
-</code></pre></div><p>看起來應該會像這樣：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddAzureClients(clientsBuilder =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    clientsBuilder
+</span></span><span style="display:flex;"><span>        .AddServiceBusClient(connectionString)
+</span></span><span style="display:flex;"><span>        .WithName(<span style="color:#e6db74">&#34;ServiceBusClient&#34;</span>);
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>看起來應該會像這樣：</p>
 <p><img src="https://i.imgur.com/Uo0IR1g.png" alt="Image"></p>
 <blockquote>
 <p>註：示範專案是使用 .Net 6。如果是使用其他版本或其他 DI 工具的朋友，請再按照自己的狀況調整吧！</p>
@@ -602,57 +602,57 @@
 <p>而關於 AddAzureClients 的註冊則可以參閱 <a href="https://stackoverflow.com/questions/68688838/how-to-register-servicebusclient-for-dependency-injection">How to register ServiceBusClient for dependency injection? - stackoverflow</a></p>
 </blockquote>
 <p>現在我們註冊完了。接著只需要回到使用的類別讓 <code>IAzureClientFactory</code> 注入進來就可以囉：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">/// &lt;summary&gt;
-</span><span style="color:#75715e">/// Service Bus Queue + IAzureClientFactory 示範用 Controller
-</span><span style="color:#75715e">/// &lt;/summary&gt;
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">[ApiController]</span>
-<span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
-</span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">QueueWithDiController</span> : ControllerBase
-{
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ServiceBusClient <span style="color:#ae81ff">_</span>serviceBusClient;
-
-    <span style="color:#66d9ef">public</span> QueueWithDiController(
-        IAzureClientFactory&lt;ServiceBusClient&gt; azureClientFactory)
-    {
-        <span style="color:#75715e">// 使用注入進來的 IAzureClientFactory 來建立 ServiceBusClient
-</span><span style="color:#75715e"></span>        <span style="color:#ae81ff">_</span>serviceBusClient = azureClientFactory.CreateClient(name: <span style="color:#e6db74">&#34;ServiceBusClient&#34;</span>);
-    }
-}
-</code></pre></div><p>接著我們就可以把原本範例中的呼叫也改成使用這個 Client 來操作囉：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
-<span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var sender = <span style="color:#ae81ff">_</span>serviceBusClient.CreateSender(queueName);
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// Service Bus Queue + IAzureClientFactory 示範用 Controller</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">QueueWithDiController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ServiceBusClient _serviceBusClient;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> QueueWithDiController(
+</span></span><span style="display:flex;"><span>        IAzureClientFactory&lt;ServiceBusClient&gt; azureClientFactory)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 使用注入進來的 IAzureClientFactory 來建立 ServiceBusClient</span>
+</span></span><span style="display:flex;"><span>        _serviceBusClient = azureClientFactory.CreateClient(name: <span style="color:#e6db74">&#34;ServiceBusClient&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著我們就可以把原本範例中的呼叫也改成使用這個 Client 來操作囉：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> queueName = <span style="color:#e6db74">&#34;YOUR QUEUE NAME&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">await</span> <span style="color:#66d9ef">using</span> var sender = _serviceBusClient.CreateSender(queueName);
+</span></span></code></pre></div><blockquote>
 <p>註：在前面的<a href="https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-performance-improvements?tabs=net-standard-sdk-2#reusing-factories-and-clients">官方建議</a>中，除了 <code>ServiceBusClient</code> 以外，其實也建議 <code>ServiceBusSender</code>、<code>ServiceBusReceiver</code>、<code>ServiceBusProcessor</code> 這幾個也應該要維持單例，保持和伺服器的連線以減少建立連線的效能和時間損失。</p>
 <p><code>ServiceBusClient</code> 已經藉由前面提到的 <code>IAzureClientFactory</code> 來解決；而像是 <code>ServiceBusSender</code> 的後面三項，我們就需要根據專案的狀況來規劃如何重複使用。</p>
 <p>例如只需要一個 Sender 的場合，我們可以直接在注入的時候註冊成單例；而要和多個 Queue 連線所以需要多個 Sender 的時候，就可以考慮建立一個工廠來管理，並且在工廠裡面優先返回已經建好的實例等等。這部份就請再各位朋友保持柔軟的彈性來處理。</p>
 </blockquote>
 <h3 id="將連線字串抽取到-config">將連線字串抽取到 Config</h3>
 <p>把鏡頭回到我們註冊的地方：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">builder.Services.AddAzureClients(clientsBuilder =&gt;
-{
-    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
-    
-    clientsBuilder
-        .AddServiceBusClient(connectionString)
-        .WithName(<span style="color:#e6db74">&#34;ServiceBusClient&#34;</span>);
-});
-</code></pre></div><p>可以看到現在的連線字串是寫死在 <code>Program.cs</code> 中的（即使是前面的範例也是直接寫死在 Controller）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddAzureClients(clientsBuilder =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> connectionString = <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>;
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    clientsBuilder
+</span></span><span style="display:flex;"><span>        .AddServiceBusClient(connectionString)
+</span></span><span style="display:flex;"><span>        .WithName(<span style="color:#e6db74">&#34;ServiceBusClient&#34;</span>);
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><p>可以看到現在的連線字串是寫死在 <code>Program.cs</code> 中的（即使是前面的範例也是直接寫死在 Controller）</p>
 <p>但實務上我們大多會將連線字串放在設定檔，例如 Config 或 Appsettings，方便在正式環境或是 Azure 服務上運行時，能夠由外部去設定 or 變更組態來置換連線字串。因此這邊也應該要改成從組態中進行讀取。</p>
 <p>首先讓我們把連線字串丟到 <code>appsettings.json</code> 的 <code>ConnectionStrings</code> 區塊：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#e6db74">&#34;ConnectionStrings&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
-    <span style="color:#f92672">&#34;ServiceBus&#34;</span>: <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>
-}
-</code></pre></div><p>那麼我們就可以更彈性靈活地使用連線字串來註冊 Client 囉：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">builder.Services.AddAzureClients(clientsBuilder =&gt;
-{
-    <span style="color:#66d9ef">var</span> connectionString = builder.Configuration
-        .GetConnectionString(<span style="color:#e6db74">&#34;ServiceBus&#34;</span>);
-    
-    clientsBuilder
-        .AddServiceBusClient(connectionString)
-        .WithName(<span style="color:#e6db74">&#34;ServiceBusClient&#34;</span>);
-});
-</code></pre></div><h2 id="小結">小結</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#e6db74">&#34;ConnectionStrings&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;ServiceBus&#34;</span>: <span style="color:#e6db74">&#34;YOUR SERVICE BUS CONNECTION STRING&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>那麼我們就可以更彈性靈活地使用連線字串來註冊 Client 囉：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>builder.Services.AddAzureClients(clientsBuilder =&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> connectionString = builder.Configuration
+</span></span><span style="display:flex;"><span>        .GetConnectionString(<span style="color:#e6db74">&#34;ServiceBus&#34;</span>);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    clientsBuilder
+</span></span><span style="display:flex;"><span>        .AddServiceBusClient(connectionString)
+</span></span><span style="display:flex;"><span>        .WithName(<span style="color:#e6db74">&#34;ServiceBusClient&#34;</span>);
+</span></span><span style="display:flex;"><span>});
+</span></span></code></pre></div><h2 id="小結">小結</h2>
 <p>這篇我們稍微紀錄了訊息佇列（Message Queue）的用途：拆分生產者和消費者的直接依賴，在中間架設佇列來傳遞訊息。以及這樣做的幾個好處：解除耦合、提高擴展、非同步和提供了緩衝區。</p>
 <p>接著介紹了 Azure 的訊息佇列服務：Azure Service Bus，並對其中的兩種模式：佇列和主題，各做了簡單的操作範例。</p>
 <p>最後補充了一些範例能優化的方向；使用 IAzureClientFactory 來注入 Client、保持 Sender 等連線重複使用，以及將連線字串拆出到組態處理。</p>

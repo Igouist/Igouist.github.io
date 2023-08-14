@@ -13,7 +13,7 @@
         gtag('config', 'UA-92586970-4');
     </script>
 
-    <meta name="generator" content="Hugo 0.92.2">
+    <meta name="generator" content="Hugo 0.117.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -119,24 +119,24 @@
 <p>有些類別就是這樣，它們負責定義共通的那些特性，<strong>然而它們本身不應該被實體化成一個物件，這種類別我們就應該把它們標記為抽象類別</strong>。</p>
 <p><strong>抽象類別在 C# 裡用 <code>abstract</code> 這個修飾詞來表示</strong>，可以加在類別或方法上。例如 <code>abstract class Animal</code> 就代表動物這個類別是個抽象類別，它不能被實例化。</p>
 <p>而當加在方法上時，例如 <code>public abstract void Eat()</code> 就是代表這個進食的方法無法被叫用，只能由繼承者去重新定義這個方法。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Animal</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">void</span> Eat();
-}
-</code></pre></div><p>那麼繼承者們，也就是衍生類別如何去重新定義父類別的方法呢？</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Animal</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">void</span> Eat();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>那麼繼承者們，也就是衍生類別如何去重新定義父類別的方法呢？</p>
 <p><del>所謂「欲戴王冠，必 Override」</del>，這時候就必須使用<strong>覆寫（<code>override</code>）</strong>。</p>
 <p>覆寫是指對於像是前述的抽象方法時，在同名的方法前加上 <code>override</code> 關鍵字就可以讓程式知道你要覆寫這個方法（你不覆寫的話，編譯器還會生氣）。</p>
 <p>例如前述的 Eat，狗就可以用 <code>public override void Eat()</code> 的方式去覆寫吃東西這個方法：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span> : Animal
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;Black&#34;</span>;
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Eat()
-    {
-        <span style="color:#75715e">/* 嚼嚼嚼 */</span>
-    }
-}
-</code></pre></div>……
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span> : Animal
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } = <span style="color:#e6db74">&#34;Black&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">void</span> Eat()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/* 嚼嚼嚼 */</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>……
                             </div>
                             <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-6-abstract-override/">閱讀全文</a></p>
                         </article>
@@ -169,22 +169,22 @@
 <p>在此可以先推菜鳥工程師肉豬的這篇 <a href="https://matthung0807.blogspot.com/2018/02/java-overload.html">Java 什麼是多載(Overload), 覆寫(Override), 多型(Polymorphism)</a> 中的說明。其中可以從例子看到儘管狗跟鳥都是繼承自動物這個類別，但對於「移動」這個方法，他們實作的方式並不一樣。這就是多型的範例。</p>
 <p>我個人更喜歡用職位的方式去理解多型。</p>
 <p>被繼承者就像是該職位的工作，例如說：<code>Programmer</code> 要會寫 C#、要會寫 SQL、要會 VB…等等，於是老闆就貼出了徵人啟示，要求新來的員工必須要有 <code>Programmer</code> 寫的能力：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Programmer</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> WriteCSharp()
-    {
-        <span style="color:#75715e">/* 努力地寫 C# */</span>
-    }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> WriteSQL()
-    {
-        <span style="color:#75715e">/* 努力地寫 SQL */</span>
-    }
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> WriteVB()
-    {
-        <span style="color:#75715e">/* 努力地寫 VB */</span>
-    }
-}
-</code></pre></div>……
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Programmer</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> WriteCSharp()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/* 努力地寫 C# */</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> WriteSQL()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/* 努力地寫 SQL */</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> WriteVB()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/* 努力地寫 VB */</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div>……
                             </div>
                             <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-5-polymorphism/">閱讀全文</a></p>
                         </article>
@@ -305,31 +305,31 @@
                                 <p><img src="https://i.imgur.com/naCjLay.png" alt=""></p>
 <p>我就直接說了，有用前面的程式碼區塊的人，絕對執行不了。因為我們建立哥布林和戰士這兩張卡片的時候，根本就沒有給他們數值呀！</p>
 <p>雖然可以先呼叫出來再賦值…</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card();
-goblin.Name = <span style="color:#e6db74">&#34;哥布林&#34;</span>;
-goblin.Attack = <span style="color:#ae81ff">3</span>;
-goblin.Health = <span style="color:#ae81ff">2</span>;
-<span style="color:#75715e">/* ...其他賦值 */</span>
-</code></pre></div><p>這實在相當占空間，也有點奇怪。畢竟如果是阿福（狗），一出生的時候應該就確定了一些特徵才對，例如品種、血型、眼睛顏色這種。並不會出生後過一陣子，才突然決定這些東西，既然如此，我們在產生物件的時候，當然也會希望在<strong>建立的同時就先決定好一部份內容</strong>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card();
+</span></span><span style="display:flex;"><span>goblin.Name = <span style="color:#e6db74">&#34;哥布林&#34;</span>;
+</span></span><span style="display:flex;"><span>goblin.Attack = <span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span>goblin.Health = <span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/* ...其他賦值 */</span>
+</span></span></code></pre></div><p>這實在相當占空間，也有點奇怪。畢竟如果是阿福（狗），一出生的時候應該就確定了一些特徵才對，例如品種、血型、眼睛顏色這種。並不會出生後過一陣子，才突然決定這些東西，既然如此，我們在產生物件的時候，當然也會希望在<strong>建立的同時就先決定好一部份內容</strong>。</p>
 <p>這時候我們就可以藉由<strong>建構式</strong>的方式，在建立物件時就進行一些我們想要的操作。</p>
 <h2 id="建構式">建構式</h2>
 <p>事實上，<strong>當我們呼叫 <code>new Card()</code> 的時候</strong>（不覺得這個 () 很有呼叫方法的感覺嗎？）<strong>我們就是正在調用 Card 的建構式</strong>。而當我們沒有特別去定義建構式的時候，就會直接使用內建的建構式去幫我們產生物件。</p>
 <p>現在我們替 Card 新增一個建構式：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
-{
-    <span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">int</span> attack, <span style="color:#66d9ef">int</span> health)
-    {
-        <span style="color:#66d9ef">this</span>.Name = name;
-        <span style="color:#66d9ef">this</span>.Attack = attack;
-        <span style="color:#66d9ef">this</span>.Health = health;
-    }
-    <span style="color:#75715e">/* ... 其他屬性和方法 */</span>
-}
-</code></pre></div><p>在 C# 的時候，建構式必須和類別同名，且不需要定義回傳類型。當我們有了建構式，剛剛的例子就可以改寫成：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;哥布林&#34;</span>, attack: <span style="color:#ae81ff">3</span>, health: <span style="color:#ae81ff">2</span>);
-<span style="color:#66d9ef">var</span> warrior = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;戰士&#34;</span> , attack: <span style="color:#ae81ff">4</span>, health: <span style="color:#ae81ff">3</span>);
-warrior.Hit(goblin);
-</code></pre></div><p><strong>建構式也就是建立這個物件時執行的函式</strong>，通常會用來進行初始化，也就是做一些建立物件必要的準備。例如傳遞必要屬性或是建構需要的其他物件、或是給予私有屬性初始值等等，例如說我們的卡牌一建立，就會需要知道它的名字和戰鬥力，這樣才有卡牌的感覺，而不該像一些 <a href="https://zh.wikipedia.org/wiki/%E6%AD%A6%E8%97%A4%E9%81%8A%E6%88%B2">壞決鬥者</a> 邊打牌邊偷偷印卡。</p>……
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">int</span> attack, <span style="color:#66d9ef">int</span> health)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Name = name;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Attack = attack;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Health = health;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/* ... 其他屬性和方法 */</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>在 C# 的時候，建構式必須和類別同名，且不需要定義回傳類型。當我們有了建構式，剛剛的例子就可以改寫成：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;哥布林&#34;</span>, attack: <span style="color:#ae81ff">3</span>, health: <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> warrior = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;戰士&#34;</span> , attack: <span style="color:#ae81ff">4</span>, health: <span style="color:#ae81ff">3</span>);
+</span></span><span style="display:flex;"><span>warrior.Hit(goblin);
+</span></span></code></pre></div><p><strong>建構式也就是建立這個物件時執行的函式</strong>，通常會用來進行初始化，也就是做一些建立物件必要的準備。例如傳遞必要屬性或是建構需要的其他物件、或是給予私有屬性初始值等等，例如說我們的卡牌一建立，就會需要知道它的名字和戰鬥力，這樣才有卡牌的感覺，而不該像一些 <a href="https://zh.wikipedia.org/wiki/%E6%AD%A6%E8%97%A4%E9%81%8A%E6%88%B2">壞決鬥者</a> 邊打牌邊偷偷印卡。</p>……
                             </div>
                             <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-2-constructor-overload/">閱讀全文</a></p>
                         </article>
@@ -378,17 +378,17 @@ warrior.Hit(goblin);
 <p>我們需要選擇怎麼去描述「狗」－－也就是阿福這隻狗，被我們抽象化後的樣子，我們需要將它用程式碼的方式定義出來。</p>
 <p><strong>這時候我們就會需要類別，來定義出我們觀察到同一類的物件該有哪些特徵和動作，也就是我們替物件「分門別類」後、篩選出特定資訊的抽象化結果</strong></p>
 <p>延續前面的例子，假設今天我們從阿福身上觀察到進食跟毛色兩個狗的重要資訊，我們就可以建立類別 Dog：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span>
-{
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color;
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Eat(IFood food) { <span style="color:#75715e">/* 進食與消化之類的 */</span> };
-}
-</code></pre></div><p>藉由我們定義的類別，就可以從類別中實例化（＝建立）出物件。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Eat(IFood food) { <span style="color:#75715e">/* 進食與消化之類的 */</span> };
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>藉由我們定義的類別，就可以從類別中實例化（＝建立）出物件。</p>
 <p>也就是說，現在我們終於可以用「狗」這個類別，來表達出我們需要的「阿福」了：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">Dog afu = <span style="color:#66d9ef">new</span> Dog(); <span style="color:#75715e">// 阿福是一隻狗
-</span><span style="color:#75715e"></span>Console.Write(afu.Color); <span style="color:#75715e">// 阿福是黑色的
-</span><span style="color:#75715e"></span>afu.Eat(food); <span style="color:#75715e">// 阿福會吃食物
-</span></code></pre></div>……
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Dog afu = <span style="color:#66d9ef">new</span> Dog(); <span style="color:#75715e">// 阿福是一隻狗</span>
+</span></span><span style="display:flex;"><span>Console.Write(afu.Color); <span style="color:#75715e">// 阿福是黑色的</span>
+</span></span><span style="display:flex;"><span>afu.Eat(food); <span style="color:#75715e">// 阿福會吃食物</span>
+</span></span></code></pre></div>……
                             </div>
                             <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-1-class-object/">閱讀全文</a></p>
                         </article>
