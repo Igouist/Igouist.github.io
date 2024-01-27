@@ -1,0 +1,871 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-92586970-4"></script>
+    <script async>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-92586970-4');
+    </script>
+
+    <meta name="generator" content="Hugo 0.117.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>Reposts | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="Reposts - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+        
+        
+    <meta name="description" content="Reposts">
+        
+    <meta name="author" content="Igouist">
+    <meta property="og:url" content="https://igouist.github.io/repost/">
+    <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link defer rel="stylesheet" href="/css/normalize.css">
+    
+    <link defer rel="stylesheet" href="/css/style.css">
+    <link defer rel="alternate" type="application/rss+xml+xml" href="https://igouist.github.io/repost/index.xml" title="伊果的沒人看筆記本" />
+    <script async type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    
+    <script data-ad-client="ca-pub-2119949858103459" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script async>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "[map[]]",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+</head>
+
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp-and-dotnet/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a class="current" href="https://igouist.github.io/repost/" title="Repost">Repost</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    
+                    
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/01/0126-is-git-flow-right/" title="1/26 - Git 分支策略有「正確」選擇嗎？" >1/26 - Git 分支策略有「正確」選擇嗎？</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-1-26,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/V4gyKez.png" alt="Image"></p>
+<p>今天持續消化訂閱箱的文章，看到一則標題蠻有興趣的，也轉貼上來給大家：<br/>
+<a href="https://studyhost.blogspot.com/2024/01/git.html">Git 版控到底有沒有正確的用法? - .Net Walker</a></p>
+<p>這篇文章中，作者大大先從 Git Flow 大爆發(?) 的歷史背景提起：</p>
+<blockquote>
+<p>Git 的使用，一般來說，有爭議或選擇的是兩個部分：Repo 大小的分割 (專案顆粒度)，以及 git working flow…</p>
+<p>拿 git working flow來說，如果是早年的 Git 使用者，多半選擇 git flow，那是有當年時空背景因素的。</p>
+<p>Git 發展初期，需求是開源專案，開發人員可能並不在同一個辦公室協作，常有跨國合作的需求，當時網路狀況也不像現在品質那麼好，那時分支的建立就相當多且頻繁。</p>
+</blockquote>
+<p>但馬上就帶到現在常用的開發狀況，以及持續整合的部份：</p>
+<blockquote>
+<p>最近幾年，<strong>我們是不建議切出具有 長生命週期 且 數量多的分支的，因為分支本身就是一種程式碼隱藏</strong>。</p>
+<p>Continuous Delivery 的作者 Dave Farley 就說過， 從頻繁交付的角度來看，具有長生命週期且多分支的 git flow 是個不好的選擇: <a href="https://www.youtube.com/watch?v=_w6TwnLCFwA">https://www.youtube.com/watch?v=_w6TwnLCFwA</a></p>
+<p>所以，如果要實踐敏捷的頻繁交付 (一周數次，一天數次) 那我會建議 git 分支數量愈少愈好，分支生命周期愈短愈好，以便能有利於持續整合，實現頻繁交付</p>
+</blockquote>
+<blockquote>
+<p><strong>如果你想實踐真正的持續整合(CI)，就要盡可能地減少不力於頻繁整合的程式碼隱藏</strong>，而分支，毫無疑問是一種程式碼隱藏</p>
+</blockquote>
+<p>這邊讓我學習到一件事：<strong>分支也是一種程式碼隱藏</strong></p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/01/0126-is-git-flow-right/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/01/0125-programmer-with-ai/" title="1/25 - 開發人員該如何看待 AI 帶來的改變" >1/25 - 開發人員該如何看待 AI 帶來的改變</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-1-25,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/YHZ80vX.png" alt="Image"></p>
+<p>上班第二天終於有心情來消化一下訂閱箱裡面的文章，結果看到一篇德魯大大的文驚為天人，馬上轉貼上來：<a href="https://columns.chicken-house.net/2024/01/15/archview-llm/#4-2-api-%E7%9A%84%E8%A8%AD%E8%A8%88%E5%BF%85%E9%A0%88%E7%B2%BE%E6%BA%96%E5%90%88%E7%90%86">[架構師觀點] 開發人員該如何看待 AI 帶來的改變?</a></p>
+<p>在這篇文章裡，德魯直接拿 API 給 GPTs 作一個訂單 BOT。除了一般的查詢商品和下訂單以外，還嘗試在對話中刁難它、叫它推理出某項商品有折扣，或是整理歷史訂單之類的。而 GPTs 雖然偶有瑕疵，但還是達成了任務。</p>
+<p>前半段的實作和 Demo 頂多讓我覺得：「GPTs 有點香ㄟ」，但後半篇的火力更是讓我驚訝。</p>
+<p>從 GPTs 的測試，德魯大大延伸了 API 的設計和德魯覺得後續開發人員該做什麼等議題。例如說 API 的設計將比以前都更講究合理可讀，因為：</p>
+<blockquote>
+<p>未來的 API 會越來越重要，服務不再是 UI first, 而是 API First…</p>
+<p>因為，掛上 LLM 後的 API ( Plugins ), 呼叫你 API 的不再是其他開發者了, 會變成 AI 來呼叫你的 API。你已經無法 “預測” 或是 “約束” 對方該怎麼呼叫。這時你只剩兩條路可以選擇，一個是把你的 API 設計的合情合理，完全符合現實世界的運作邏輯 (就是我常講的 OOP 精神: 模擬世界 加以處理)，你只要用 Prompt 就足以交代 AI 該怎麼使用 API。</p>
+<p>另一個就是把你的 API 做到邏輯無懈可擊，滴水不漏。不論 AI 用什麼順序呼叫，傳遞什麼參數給你，都不會發生意料之外的結果。這個非常吃嚴謹的設計，我曾在 API First 不斷強調 “有限” 狀態機的重要性，就是預防這種錯誤。</p>
+</blockquote>
+<p><strong>我先前從沒想過 API 在未來很可能是由 AI 來呼叫</strong>，我很可能不能再走去串接對象的座位旁邊，拍拍他的肩膀跟他說「你就給我這樣打，懂？」</p>
+<p>這強迫了我的 API 畢竟設計得更乾淨，以避免 AI 「誤會」我的意思。</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/01/0125-programmer-with-ai/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/01/0124-joke-kappa/" title="1/24 - JokeKappa" >1/24 - JokeKappa</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-1-24,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/PzpD7t8.png" alt="Image"></p>
+<p>放了四天假回來上班，不到十點就已經想下班了。決定今天分享一些有趣的：<br/>
+<a href="https://github.com/CodeTengu/jokekappa">CodeTengu / JokeKappa - Github</a></p>
+<p>這是碼天狗週刊朋朋整理的笑話集，笑話文本在 <code>jokekappa/jokes</code>
+<a href="https://github.com/CodeTengu/JokeKappa/tree/master/jokekappa/jokes">jokes</a></p>
+<p>建議可以從 <code>others.json</code> 和 <code>pyjokes.json</code> 開始觀賞，內容大概像這樣：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;content&#34;</span>: <span style="color:#e6db74">&#34;我想大部分人都知道通常一名工程師會具有的美德；當然了，有三種：懶惰、暴躁、傲慢&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;reference&#34;</span>: <span style="color:#e6db74">&#34;Larry Wall&#34;</span>
+</span></span><span style="display:flex;"><span>}<span style="color:#960050;background-color:#1e0010">,</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;content&#34;</span>: <span style="color:#e6db74">&#34;寫程式時要保持這種心態：就好像將來要維護你這些程式的人是一位殘暴的精神病患者，而且他知道你住在哪&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;reference&#34;</span>: <span style="color:#e6db74">&#34;Martin Golding&#34;</span>
+</span></span><span style="display:flex;"><span>}<span style="color:#960050;background-color:#1e0010">,</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;content&#34;</span>: <span style="color:#e6db74">&#34;一個人寫的爛軟體將會給另一個人帶來一份全職工作&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;reference&#34;</span>: <span style="color:#e6db74">&#34;Jessica Gaston&#34;</span>
+</span></span><span style="display:flex;"><span>}<span style="color:#960050;background-color:#1e0010">,</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;content&#34;</span>: <span style="color:#e6db74">&#34;如果建築工人像工程師寫軟體那樣蓋房子，那第一隻飛來的啄木鳥就能毀掉人類文明&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;reference&#34;</span>: <span style="color:#e6db74">&#34;Gerald Weinberg&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>決定今天整天就看著笑話度過了，薪水偷起來，嘻嘻。</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/01/0124-joke-kappa/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/01/0123-gestalttheorie/" title="1/23 - UI 設計與完形心理學" >1/23 - UI 設計與完形心理學</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-1-23,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/xwD9Ue5.png" alt="Image"></p>
+<p>今天認識到了一個新東東：<strong>完形心理學</strong>（又稱格式塔心理學），馬上把相關文章丟上來分享給大家：<br/>
+<a href="https://medium.com/as-a-product-designer/%E7%94%A8-%E5%AE%8C%E5%BD%A2%E5%BF%83%E7%90%86%E5%AD%B8-%E5%A2%9E%E5%8A%A0%E4%BB%8B%E9%9D%A2%E8%A8%AD%E8%A8%88%E6%9C%89%E6%84%9F%E5%BA%A6-2fa0018b906e">用「完形心理學」，增加介面設計有感度 - Seal</a></p>
+<p>格式塔心理學（=完形心理學）認為我們看到某些東西的時候是「整體大於個體的總合」的。</p>
+<p>像是當我們在做色盲測驗時，<strong>紙上面明明印著許多不同顏色的圓圈，但我們卻能將同一個顏色的圓圈視作一個「整體」，進而看出一個數字</strong>。</p>
+<p>剛剛滑推特的時候，收到這篇 <a href="https://zonble.medium.com/%E6%9C%89%E6%99%82%E8%A6%BA%E5%BE%97%E5%AF%AB-layout-%E5%B0%B1%E6%98%AF%E4%B8%80%E5%80%8B%E8%B7%9F%E6%A0%BC%E5%BC%8F%E5%A1%94%E5%BF%83%E7%90%86%E5%B0%8D%E6%8A%97%E7%9A%84%E9%81%8E%E7%A8%8B-c8db935aad59">有時覺得寫 layout 就是一個跟格式塔心理對抗的過程</a> ，裡面聊了一些切版時的盲區，並且提到了「格式塔心理學」這個詞。</p>
+<p>順著這個名詞，找到了上面推薦給大家的那篇文章。作者是一位 UI/UX 設計師，為了向老闆和工程師們說明「這邊為什麼要留白，那邊為什麼不能滿版」</p>
+<p>他整理出完形心理學中跟 UI 設計比較有關的七個原則：</p>
+<ol>
+<li><strong>相似性 (Similarity)</strong> — 我們的大腦會把相似的事物看成一體</li>
+<li><strong>接近性 (Proximity)</strong> — 我們的大腦會把靠近的事物看成一體</li>
+<li><strong>連續性 (Continuity)</strong> — 我們的大腦會把事物看成連續的形體</li>
+<li><strong>封閉性 (Closure)</strong> — 我們的大腦在觀察事物的時候，會將許多個獨立的元素視認為一個完整封閉的圖形</li>
+<li><strong>圖地原理 (Figure-Ground)</strong> — 我們的大腦會把圖案視為圖（前景）與地（後景）的結合</li>
+<li><strong>共同命運 (Common Fate)</strong> — 我們的大腦會把動態相近的事物看成一體</li>
+<li><strong>對稱性 (Symmetry)</strong> — 我們的大腦會把對稱的物體，視為一個整體</li>
+</ol>
+<p>文章內<strong>每一項重點都有附上圖片比較和案例說明</strong>，非常好懂。推薦大家閱讀</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/01/0123-gestalttheorie/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/01/0122-learn-in-public-with-blog/" title="1/22 - 公開學習與部落格" >1/22 - 公開學習與部落格</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-1-22,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/0vKJq5Q.png" alt="Image"></p>
+<p>昨天的分享文有提到公開學習這件事。我個人覺得對工程師來說最有效的公開學習還是寫部落格，因此今天想要分享這篇：</p>
+<p><a href="https://dotblogs.com.tw/hatelove/2017/03/26/why-engineers-should-keep-blogging">我為什麼鼓勵工程師寫 blog</a></p>
+<p>這篇文章中，91 大大逐一列出了六項好處：</p>
+<ul>
+<li>產生學習動機，有方向性地篩選資訊</li>
+<li>檢視自己既有知識，將input的新資訊與既有的知識建立連結</li>
+<li>透過寫文，刻意強化刺激知識轉化，進行內化知識過程</li>
+<li>取得回饋，突破盲點</li>
+<li>受益的總是自己</li>
+<li>證明自己的能力、特質、發展潛力</li>
+</ul>
+<p>文章內針對每一點好處都有仔細地說明，而且相當有道理。不過整個引用的話篇幅有點太長了，我粗略地描述一下：</p>
+<p>如果我們的學習沒有方向和目標，就會漫無目的地漂流；而如果我們給自己一個承諾，每個月發一篇文章，那麼我們就會針對這個主題下去研究，也就會開始蒐集相關的資料、有目標地整理這些資訊</p>
+<p>而我們為了整理這些資訊，自然就會把他們分類或互相關聯，這時候我們就可以<strong>把自己既有的知識和新的資訊關聯起來</strong>，也就可以活化舊知識。</p>
+<p>同時，也因為我們主動地去整理和吸收，再用我們自己的方式表達出來，過程中融入了我們的經驗和想法，這份資訊才會被內化成我們擁有的知識</p>
+<p>前面三項基本就是輸出式學習所帶來的好處。從這邊開始就感覺到公開學習的好處了
+（延伸閱讀：<a href="https://readingoutpost.com/power-of-output/">《最高學以致用法》讀後心得：活用知識的五種方法</a> ）</p>
+<p>當我們把學習成果公開出去，就有可能取得別人的回饋。<strong>這些回饋可以幫我們破除盲點、修正錯誤</strong>。</p>
+<p>除了受到別人的幫助以外，這些文章也可能幫助下一個踩坑的人，甚至很可能會是之後的自己（其實自己回頭查筆記的次數會是最多的，效果也最好，畢竟跟讀檔差不多）。</p>
+<p>累積了一定的成果之後，也能夠證明自己的特質。例如持續學習、充滿毅力、樂於分享等等。怎麼看都不虧。</p>
+<hr>
+<p>這篇文裡面有很多段落都讓我一直點頭認同，例如這句：</p>
+<blockquote>
+<p>相信很多有在寫 blog 文章的朋友一定都有過這樣的感受：素材整理了八九成，但開始寫作時，往往會再多個 20 % ~ 60 % 的內容是原本素材沒有的，一邊在寫的過程，其實是迅速的在過程中校準自己的知識點。</p>
+</blockquote>
+<p>在寫文章的時候真的是一直查一直補充，<strong>原本很多覺得自己很懂的東西，要組織成語言的時候才會發現東缺西漏，結果為了把洞補完又延伸了許多知識點</strong>，最後累得半死，但也有所收穫。</p>
+<p>除了這點以外，還有一段心魔的部份：</p>
+<blockquote>
+<p>為什麼許多人會自己整理學習筆記、讀書心得，卻少了這一段外顯知識的過程？大部分的人都是說自己沒那時間、沒那衝動，其實很多是卡在自己心裡那一關：不敢展露出自己學習的結果，怕被別人笑，怕被人酸。</p>
+</blockquote>
+<p>老實說我真的超怕的，畢竟是真的菜。但後來看到 <a href="https://ithelp.ithome.com.tw/articles/10209415">〈鐵人賽——30天可以給自己多大轉變？〉</a> 後有點轉念，尤其是那句：「我本來就是初學者，我為什麼要害怕讓別人知道我不夠強呢XD？」讓我理解<strong>更是因為我菜，才更需要這樣做</strong>。</p>
+<p>最後，之前有幫朋友整理過相關的文章，這邊也貼一份上來。如果有正在猶豫要不要寫部落格的朋友，也許可以閱讀看看</p>
+<ul>
+<li><a href="https://www.jyt0532.com/2017/11/23/why-blog/">寫一年技術文章的心得</a></li>
+<li><a href="https://www.playpcesor.com/2020/10/5.html">寫作不是從空白頁開始，而是從寫思考筆記的 5 個習慣開始</a></li>
+<li><a href="https://hulitw.medium.com/how-do-i-write-965328ae91fe">我是如何完成一篇文章的</a></li>
+<li><a href="https://tw.alphacamp.co/blog/2018-06-14-18352">技術寫作六步驟 讓工程師撰寫流暢的技術部落格</a></li>
+</ul>
+<blockquote>
+<p>當別人請我給他們一些寫 blog 的建議，我總是回他：挑個你自認為可以的時間行程安排，什麼時候開始寫 blog，預計多久寫一篇文，開始動工，並堅持下去。在你這麼做之前，任何建議對你來說都是不重要的。</p>
+<p>你文章是否寫得很糟糕不重要，是否沒有任何人會看你的 blog 不重要，是不是沒啥有趣的東西可以紀錄也不重要。重要的是，只要你能透過寫文來表現出寫作的意願，而且渴望持續地寫作，檢視、思考與改善自己的寫作，你終究會成功的。</p>
+</blockquote>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/01/0122-learn-in-public-with-blog/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/01/0121-procrastination/" title="1/21 - 動力是需要刻意創造的" >1/21 - 動力是需要刻意創造的</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-1-21,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/otynRRN.png" alt="Image"></p>
+<p>最近公事私事的拖延狀況越來越嚴重，昨天直接滑到翻車。今天空閒的時候重溫了之前看過的拖延症相關文章，想一想乾脆分享上來給大家：</p>
+<p><a href="https://life.huli.tw/2018/09/26/procrastination-ba12754ada49/">致跟我一樣的拖延症患者：動力是需要刻意創造的 - Huli&rsquo;s blog</a></p>
+<p>文章開頭的例子根本就是我本人。我現在的行動方針就像裡面說的：</p>
+<blockquote>
+<p>動力來自於每隔一段時間就漸漸累積的愧疚感，「怎麼了、我累了、說好的、學習呢？」，累積到一定程度就會對自己說：「我覺得這樣不行」，把這些愧疚感以及不安轉換成學習的動力。但轉換完之後的量，大概燒個一兩週就差不多了。</p>
+<p>燒完以後就陷入無窮迴圈：認真做事 =&gt; 倦怠耍廢 =&gt; 愧疚不安 =&gt; 認真做事，一日打魚五日曬網，一直拖一直拖，把所有其他事情都做盡了才會想到要來做正事。</p>
+</blockquote>
+<p>上面的悲劇迴圈好像沒有任何出口。但作者換個方向一想：如果說，我就是拖延症，我本來就做不到呢？</p>
+<p>這時候我們的思考邏輯，就會從「為什麼我做不到」的自責迴圈，變成思考「<strong>我要怎麼樣才做得到？</strong>」</p>
+<p>接著，文章裡面舉了幾個例子：</p>
+<blockquote>
+<p>我有個朋友去了某個地方學程式，花了好幾萬塊想讓自己轉職成工程師，但在中間卻跟我說那邊的教學沒有很好，很多地方都聽不懂，要問問題也很困難，我就問了他：那怎麼辦？</p>
+<p>他說：「還能怎麼辦，都花幾萬塊了，結業之後一定要找到工作啊，就只能拼命自己學」</p>
+</blockquote>
+<blockquote>
+<p>假設今天突然有個拿刀的小精靈出現在你目前，跟你說：「安安，如果你三個月後多益考不到 950 分以上，我就砍斷你的手喔！」，接著立刻把你手砍斷三秒後又接回來，證明了這個小精靈是真的有這個能力，而你也用了三秒體驗手被砍斷的感覺。</p>
+<p>接著你會怎麼做？</p>
+<p>靠杯，當然是一直唸英文啊！雖然還是偶爾會耍廢，但頻率絕對不會像以前那麼高。為什麼？因為唸英文這件事情對你來說變得超級重要，沒唸好就會被砍斷手，誰敢不念？</p>
+</blockquote>
+<p>除了這兩個例子以外，還有金錢（我沒早睡就一人發一百元）、形象（被說：蛤你就是那個開天窗的人哦？）等等</p>
+<p>藉由這些例子，我們就可以發現一件事：<strong>動力是可以由外力創造的</strong></p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/01/0121-procrastination/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/01/0120-di-and-ioc/" title="1/20 - 複習一下依賴注入" >1/20 - 複習一下依賴注入</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-1-21,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/MFVHeew.png" alt="Image"></p>
+<p>昨天和朋友聊到面試被考了 DI 和 IOC，心想「該不會現在是貼我的筆記賺廣告費的好機會？！」</p>
+<p>結果沒找到機會爽貼一波。為了彌平這股不甘(?)，決定插播先把之前的依賴注入筆記分享上來：<br/>
+<a href="https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a></p>
+<p>延伸閱讀：<a href="https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle/">菜雞與物件導向 (14): 依賴反轉原則</a></p>
+<hr>
+<p>既然都分享上來了，也就順便複習複習、整理一下當時的思路。我們可以先找到一個藏在標題裡的問題：為什麼我們需要解耦合？</p>
+<blockquote>
+<p>假設現在有間小小公司，老闆請來了小明當工程師，並請他開工撰寫產品程式碼。</p>
+<p>當「撰寫產品程式」對「工程師」直接依賴的時候，狀況可能是這樣的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Product Work() <span style="color:#75715e">// 撰寫產品程式</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Ming programmer = <span style="color:#66d9ef">new</span> Ming();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> product = programmer.Programming();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> product;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>過一陣子，老闆發現小明寫出來的東西似乎不太行，於是把小明趕走，另外請了小華。這時候因為用到的類別不一樣了，我們就必須要改一次程式碼：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Product Work()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Hua programmer = <span style="color:#66d9ef">new</span> Hua(); <span style="color:#75715e">// 把小明改成小華</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> product = programmer.Programming();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> product;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>又過了好一陣子，老闆又另外請了小美來工作。於是又要再改一次，而且小美的工作方式甚至不叫做 Programming，而是 Coding：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Product Work()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Mei programmer = <span style="color:#66d9ef">new</span> Mei(); <span style="color:#75715e">// 把小華改成小美</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> product = programmer.Coding(); <span style="color:#75715e">// 呼叫方法也要改</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> product;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>現在有感覺到一點問題了嗎？如果一直換人，程式碼不就每次都要修改？</p>
+</blockquote>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/01/0120-di-and-ioc/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/01/0119-value-and-price-of-time/" title="1/19 - 把時間當成一種資源" >1/19 - 把時間當成一種資源</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-1-19,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/Fqj3Ap7.png" alt="Image"></p>
+<p>昨天分享了用來留時間給自己的「進攻型行事曆」。今天想延續這個話題，分享一下關於時間稀缺度的文章：<a href="https://medium.com/how-gipi-learn/value-and-price-of-time-60dfaeea812c">時間的價值與價格 - gipi的商業思維筆記</a></p>
+<p>在進攻型行事曆的文章中，我們藉由預先把任務排進行事曆裡來幫助我們衡量某個時段，我們是否能夠吃下額外的工作。
+同時文章裡面也提到：『像是「拚拚看用半天完成一天的任務」、「做不完就回家或假日再做」的想法，都是在預排進攻型行事曆時一定要避免的想法』</p>
+<p>而在這篇《時間的價值與價格中》，我們也可以看到相關聯的觀點（也是我收藏這篇文章的原因）：「<strong>時間的價值是浮動的</strong>」</p>
+<blockquote>
+<p><strong>忙碌時的一小時跟不忙時的一小時，價值完全不可同日而語</strong>，當你已經很忙碌時，還要被插單，那你很可能承接了過量的工作，導致生活品質變差，家庭失和，孩子不認老爸，也可能因為精神不繼，產出品質下降，反而獲得了較差的工作評價，更甚者，因為過量的工作而導致身體健康變差，發生了不可逆的後果。</p>
+</blockquote>
+<p>時間的價值之所以是浮動的，是因為我們剩下的時間有稀缺性：</p>
+<p>當我們的行程非常密集、工作繁重，剩下的時間就已經很稀少了，並且我們可能會需要犧牲生活品質或身體健康來交換，這時候如果還要塞進更多的任務，對我們的成本就會是比較高的</p>
+<p>而當我們的行程很少，剩下的時間非常充裕，足夠我們兼顧生活品質和身體健康，那麼要塞進新的任務就會是比較簡單的，成本也就相對比較低了</p>
+<p>藉由衡量「時間價值」，我們就能夠從市場機制的角度更客觀地評估自己的時間，也能幫助我們的決策（我到底要不要把這個任務吃下來？我吃得了嗎）或談判（你想要月底就上線？真的吃不下了，不然我們踢掉別的任務）</p>
+<hr>
+<p>另外，我也想補充一點延伸思考。在文章中提到：</p>
+<blockquote>
+<p>你得學會跟市場溝通，把時間價值換成價格，而這個市場往往是你的老闆、客戶、同事、部屬以及家人、朋友。</p>
+<p>當他們希望占用你稀缺的時間時，你是否敢於拒絕呢？或者你會先接收對方的需求，然後試著調整自己的計畫？又或者你承接下來後，不論如何就是加班把兩件事同時搞定呢？</p>
+</blockquote>
+<p>但我認為，不只是我們的客戶和老闆，<strong>連我們自己也是我們時間的消費者</strong></p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/01/0119-value-and-price-of-time/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/01/0118-attack-calendar/" title="1/18 - 進攻型行事曆⚔️" >1/18 - 進攻型行事曆⚔️</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-1-18,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/y4r0zbJ.png" alt="Image"></p>
+<p>今天看到 <a href="https://www.playpcesor.com/2024/01/notion-calendar-google-calendar.html">Notion 新行事曆</a> 提供了 Google 的串接功能</p>
+<p>剛好想起之前看過一篇行事曆運用的文章，這邊就順手分享上來給大家：<br/>
+<a href="https://www.playpcesor.com/2015/07/calendar-project.html">實作進攻型行事曆：學會留時間給自己的進度排程心法</a></p>
+<hr>
+<blockquote>
+<p>進攻型行事曆是一種「<strong>在行事曆上留時間給自己的技巧</strong>」</p>
+</blockquote>
+<p>當我們要排一些計畫，或是被詢問行程的時候，很多時候只能盯著空空蕩蕩的行事曆，模模糊糊知道「下個月好像有什麼專案？」而無法確定。這是因為我們很容易會忽略中長遠的目標，這時候也可以嘗試使用進攻型行事曆把時間先預留起來。</p>
+<p>進攻型行事曆要做的事情很簡單：</p>
+<ul>
+<li><strong>先把長期計畫和重要截止日都標記到行事曆上</strong></li>
+<li>把手上的計劃列出來，拆解每個計劃要執行的任務。<strong>在行事曆上分配時間給這些任務</strong></li>
+<li>任務如果太長容易失焦，所以<strong>太長的任務要拆成一週左右的時間區段</strong></li>
+<li>有些小任務可能只需要占用半天一天，這時<strong>可以用全天行程先把這些小任務指派到某一天</strong></li>
+</ul>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/01/0118-attack-calendar/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/01/0117-ipoac/" title="1/17 - 鴿子封包🕊️" >1/17 - 鴿子封包🕊️</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-1-17,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/asUKm3A.png" alt="Image"></p>
+<p>剛剛看到推特上有人分享他們公司傳資料發現要傳三天，果斷開車送硬碟，一天就送達的故事。</p>
+<p>決定今天和各位分享「目前資料傳輸速度最快」的網路通訊協議：<br/>
+<a href="https://zh.wikipedia.org/zh-tw/%E4%BB%A5%E9%B8%9F%E7%B1%BB%E4%B8%BA%E8%BD%BD%E4%BD%93%E7%9A%84%E7%BD%91%E9%99%85%E5%8D%8F%E8%AE%AE">RFC 1149 - 以鳥類為載體的網際網路協定（IP over Avian Carriers, IPoAC）</a></p>
+<p>簡單來說，就是讓鴿子送封包。咕。</p>
+<p>這組通訊協定歷史已久，最遠可以追溯到古代中國，而在 1990 年由 D. Waitzman 正式提出為 <a href="https://datatracker.ietf.org/doc/html/rfc1149">RFC 1149</a> ，簡稱 IPoAC</p>
+<p>後續更追加了 Qos 功能（ <a href="https://datatracker.ietf.org/doc/html/rfc2549">RFC 2549</a> ），並在 2011 年正式支援 IPv6（ <a href="https://datatracker.ietf.org/doc/html/rfc6214">RFC6214</a> ）</p>
+<p>雖然「基於鳥類」的協定有著不少的缺點，例如：</p>
+<ul>
+<li><strong>丟包率嚴重</strong>。實驗中 9 個封包中只有 4 個封包成功傳送，丟包率高達 55%</li>
+<li><strong>回應時間長</strong>。從 54 分鐘到 1.77 小時不等</li>
+<li><strong>會被病毒攻擊</strong>，例如禽流感</li>
+</ul>
+<p><img src="https://i.imgur.com/staf0Qp.png" alt="Image"></p>
+<p>但同時也可以藉由一些技術處理解決部分問題：</p>
+<ul>
+<li>丟包率嚴重：可以藉由<strong>提高發送的封包數量解決</strong>，只要鴿子夠多就不是問題</li>
+<li>回應時間長：可以<strong>讓鴿子攜帶更大量的記憶卡，提升單趟的傳輸量</strong></li>
+</ul>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/01/0117-ipoac/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+
+                    
+
+
+<ol class="page-navigator">
+    
+
+    
+    <li  class="current">
+        <a href="https://igouist.github.io/repost/">1</a>
+    </li>
+    
+    <li >
+        <a href="https://igouist.github.io/repost/page/2/">2</a>
+    </li>
+    
+    <li >
+        <a href="https://igouist.github.io/repost/page/3/">3</a>
+    </li>
+    
+
+    
+    <li class="next">
+        <a href="https://igouist.github.io/repost/page/2/">下一頁</a>
+    </li>
+    
+</ol>
+
+
+
+                </div>
+            </div>
+
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    
+    
+    <section class="widget">
+        <h3 class="widget-title">系列文</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E6%88%91%E8%A6%81%E8%A8%82%E4%BE%BF%E7%95%B6/">我要訂便當 (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/04/wolong/" title="臥龍：蒼天殞落　白金！">臥龍：蒼天殞落　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/banner-2-midjourney-and-canva/" title="使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗">使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/banner-1-system-drawing/" title="使用 .Net 的 System.Drawing 產生簡單的文字 Banner 初體驗">使用 .Net 的 System.Drawing 產生簡單的文字 Banner 初體驗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/polyglot-notebooks/" title="Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧">Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/nioh/" title="仁王＆仁王２　白金！">仁王＆仁王２　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/11/soft-skills/" title="《軟實力：軟體開發人員的生存手冊》心得">《軟實力：軟體開發人員的生存手冊》心得</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/10/jmeter/" title="使用 JMeter 來對 API 壓力測試吧">使用 JMeter 來對 API 壓力測試吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/10/sony-wh-1000xm5/" title="Sony WH-1000XM5 使用一週心得">Sony WH-1000XM5 使用一週心得</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/09/imtranslator/" title="在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧">在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/" title="使用 Azure Functions &#43; Line Notify 來定時提醒公車到站時間">使用 Azure Functions &#43; Line Notify 來定時提醒公車到站時間</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/azure/">azure (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/bug/">bug (4)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (28)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/life/">life (6)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (17)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/powershell/">powershell (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (4)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (22)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (47)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/ai-tools/">ai-tools</a>
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/anglesharp/">anglesharp</a>
+    
+    <a href="https://igouist.github.io/tags/api/">api</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/azure/">azure</a>
+    
+    <a href="https://igouist.github.io/tags/azure-functions/">azure-functions</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/benchmarkdotnet/">benchmarkdotnet</a>
+    
+    <a href="https://igouist.github.io/tags/bug/">bug</a>
+    
+    <a href="https://igouist.github.io/tags/chrome/">chrome</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/dapper/">dapper</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/game/">game</a>
+    
+    <a href="https://igouist.github.io/tags/git/">git</a>
+    
+    <a href="https://igouist.github.io/tags/headphone/">headphone</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/life/">life</a>
+    
+    <a href="https://igouist.github.io/tags/line-notify/">line-notify</a>
+    
+    <a href="https://igouist.github.io/tags/linux/">linux</a>
+    
+    <a href="https://igouist.github.io/tags/midjourney/">midjourney</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/queue/">queue</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/service-bus/">service-bus</a>
+    
+    <a href="https://igouist.github.io/tags/soft-skills/">soft-skills</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/swagger/">swagger</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/windows/">windows</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">蹭一下</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://wellss12.github.io/" title="Wells">Wells</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://kevintsengtw.blogspot.com/" title="mrkt">mrkt 的程式學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://raychiutw.github.io/" title="ray">Ray&#39;s Notes</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">小東西</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+
+    <section class="widget">
+    <h3 class="widget-title">放個廣告加減賺</h3>
+    <ul class="widget-list">
+        <script src="https://skilltree.my/Promotion/d3f87796-6f35-491a-9fec-700c86b3097b?w=245"></script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-2119949858103459"
+            data-ad-slot="9031038367"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </ul>
+</section>
+
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019-2023 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        <br/>
+        <span>
+          &nbsp;&nbsp;Post Count： 89
+        </span>
+        
+          <span id="busuanzi_container_site_pv">, PV： <span id="busuanzi_value_site_pv"></span></span>
+          <div>
+        </div>
+        
+    </div>
+</footer>
+
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
