@@ -101,6 +101,41 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/" title="菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧" >菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2021-5-9,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/aIHQL5Z.png" alt="Image"></p>
+<p>這是俺整理公司新訓內容的第三篇文章，目標是<strong>在 .NET Core 簡單地使用 Dapper 連線到資料庫並完成 CRUD 的功能</strong>。</p>
+<p>接續 <a href="/post/2021/05/newbie-2-webapi">上一篇</a> 的進度，我們接著要來連線到資料庫中完成我們的 Web Api 的 CRUD 範例。因為從新訓時期到現在工作團隊作業上主要都是使用 Dapper 來做連線資料庫的工作，這邊就直接用 Dapper 來推進吧！</p>
+<p><strong>Dapper 有多好用呢？它輕量、它簡單、它快速</strong>。總之先把大神們的介紹文直接拿來鎮樓：</p>
+<ul>
+<li><a href="https://blog.darkthread.net/blog/dapper/">短小精悍的.NET ORM神器 &ndash; Dapper - 黑暗執行緒</a></li>
+<li><a href="https://dotblogs.com.tw/mrkt/2016/06/10/153606">另一種資料存取對映處理方式的選擇 - Dapper - mrkt 的程式學習筆記</a></li>
+<li><a href="https://www.huanlintalk.com/2014/03/a-micro-orm-dapper.html">好用的微型 ORM：Dapper - Huanlin 學習筆記</a></li>
+</ul>
+<p>那麼按照慣例，我們先來 <del>吹捧今天的主角</del> 說明一點簡單的前因後果吧。想直接實作的朋友，可以跳到<a href="#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a>的小節呦。</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                        
+                    
+                        
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2021/05/newbie-2-webapi/" title="菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧" >菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧</a>
                                 </h1>
                             </header>
@@ -434,54 +469,6 @@
                         <hr color="#D9D9D9"/>
                         
                     
-                        
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle/" title="菜雞與物件導向 (14): 依賴反轉原則" >菜雞與物件導向 (14): 依賴反轉原則</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-12-13,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a></span>
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p><img src="https://i.imgur.com/ywiHuis.png" alt=""></p>
-<p>在聊依賴反轉之前，先讓我們聊聊什麼是依賴，所謂的依賴就是一種「受到某個東西影響、牽制」的狀態。例如說如果有個像我一樣的肥宅每天一定要來一片雞排才能療癒身心，那我就是依賴雞排；同樣的，如果有個大叔不抽菸就會全身不舒服，就是對香菸有所依賴。當有「必須要藉由某個人事物來達到目的」的狀況時，就是依賴。</p>
-<p>而在程式設計裡面的概念也差不多，如果<strong>Ａ模組直接受到Ｂ模組的影響，我們就稱Ａ依賴了Ｂ</strong>，最明顯的狀況就是Ａ模組需要藉由Ｂ模組的實例來完成某個功能的時候，例如「匯出報表」功能建立了一個「Excel 控制類別」的實例以建立檔案；或是「會員查詢」功能建立了一個「DB 連線」的實例來進入資料庫取得會員資料，諸如此類由Ａ模組直接藉由Ｂ模組的實例來完成想要的動作，就是依賴。</p>
-<h2 id="依賴與耦合">依賴與耦合</h2>
-<p>我們在之前的 <a href="/post/2020/09/oo-8-cohesion-and-coupling">耦合篇</a> 提過，如果模組和另一個模組之間有關連，那這兩者之間就耦合。以此來看，依賴就是一種耦合的關係，那麼，依賴是健康還是不健康的耦合呢？</p>
-<p>現在讓我們用 <a href="/post/2020/07/oo-5-polymorphism">多型篇</a> 用過的「老闆徵工程師」的例子來舉例一下：現在有間小小公司，老闆請來了小明當工程師，並請他開工撰寫產品程式碼。</p>
-<p>當「撰寫產品程式」對「工程師」直接依賴的時候，狀況可能是這樣的：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Product Work()
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    Ming programmer = <span style="color:#66d9ef">new</span> Ming();
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> product = programmer.Programming();
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> product;
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>過一陣子，老闆發現小明寫出來的東西似乎不太行，於是把小明趕走，另外請了小華。這時候因為「工程師」這個實作類別不一樣了，我們就必須要改一次程式碼：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Product Work()
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    Hua programmer = <span style="color:#66d9ef">new</span> Hua();
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> product = programmer.Programming();
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> product;
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                        
-                    
 
                     
 
@@ -579,6 +566,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2024/01/lottery-is-goodness/" title="我買彩券是為了做一個善良的人">我買彩券是為了做一個善良的人</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2023/04/wolong/" title="臥龍：蒼天殞落　白金！">臥龍：蒼天殞落　白金！</a>
     </li>
     
@@ -612,10 +603,6 @@
     
     <li>
         <a href="https://igouist.github.io/post/2022/09/imtranslator/" title="在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧">在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/" title="使用 Azure Functions &#43; Line Notify 來定時提醒公車到站時間">使用 Azure Functions &#43; Line Notify 來定時提醒公車到站時間</a>
     </li>
     
 </ul>
@@ -656,7 +643,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/life/">life (6)</a>
+        <a href="https://igouist.github.io/categories/life/">life (7)</a>
     </li>
     
     <li>
@@ -856,7 +843,7 @@
         
         <br/>
         <span>
-          &nbsp;&nbsp;Post Count： 89
+          &nbsp;&nbsp;Post Count： 90
         </span>
         
           <span id="busuanzi_container_site_pv">, PV： <span id="busuanzi_value_site_pv"></span></span>
