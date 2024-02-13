@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-92586970-4"></script>
+    <script async>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-92586970-4');
+    </script>
+
+    <meta name="generator" content="Hugo 0.117.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>2/4 - Airbnb 如何在分散支付系統中避免重複支付 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="2/4 - Airbnb 如何在分散支付系統中避免重複支付 - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2024-02-04T13:09:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2024-02-04T13:09:00&#43;08:00">
+        
+        
+    <meta name="description" content="2/4 - Airbnb 如何在分散支付系統中避免重複支付">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/repost/2024/02/0204-airbnb-engineering-avoiding-double-payments-in-a-distributed-payments-system/">
+    <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link defer rel="stylesheet" href="/css/normalize.css">
+    
+        <link defer rel="stylesheet" href="/css/prism.css">
+    
+    <link defer rel="stylesheet" href="/css/style.css">
+    <script async type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    
+    <script data-ad-client="ca-pub-2119949858103459" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script async>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "[map[]]",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp-and-dotnet/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/repost/" title="Repost">Repost</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">2/4 - Airbnb 如何在分散支付系統中避免重複支付</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2024-2-4,
+                        </date>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+
+                        <div class="post-content">
+                            <p><img src="https://i.imgur.com/cEvQr5G.png" alt="Image"></p>
+<p>今天放假有整個早上的時間，決定來整理 Discord 上面大大貼的香香文章：</p>
+<p><a href="https://medium.com/airbnb-engineering/avoiding-double-payments-in-a-distributed-payments-system-2981f6b070bb">Avoiding Double Payments in a Distributed Payments System</a></p>
+<p>裡面提到實現最終一致性的三種方式：</p>
+<ul>
+<li>read repair</li>
+<li>write repair</li>
+<li>asynchronous repair</li>
+</ul>
+<p>Airbnb 他們在不同的地方都有應用到這三種方式，這篇主要是介紹使用了 write repair 的解決方案。也就是每次客戶端向服務器發出寫入請求時，都會嘗試修復不一致、破損的狀態。</p>
+<p>為了讓客戶端能夠自動重試，就需要讓 API 是具有冪等性的：重複發出相同的 Requset，結果也會保持一致。而因為他們需要極低的延遲，不能拆服務出來跑，所以他們弄了一個叫做「奧菲斯（Orpheus）」的 library 來處理這件事</p>
+<p>這邊整理了一些我（覺得）可能會遇到的相關內容，有興趣的朋友也可以閱讀原文，文章內有許多圖片來進行說明，值得一讀。</p>
+<hr>
+<h3 id="把資料庫操作和網路請求拆到不同階段">把資料庫操作和網路請求拆到不同階段</h3>
+<p>整個 API 請求會被重構成三個部分：</p>
+<ul>
+<li>Pre-RPC：把 Request 的詳細資訊存到 DB</li>
+<li>RPC：進行網路請求</li>
+<li>Post-RPC：把 Repsonse 內容、是否成功、能不能重試塞到 DB 裡</li>
+</ul>
+<p>因為資料庫已經提供了 ACID，並且只會產生兩種結果（成功或失敗）。因此 Pre-RPC 和 Post-PRC 對資料庫的操作都會包成 Transaction，確保一起成功或失敗。文章內示範了使用 Java 的 Lambda 來把多個操作包在一起（C# 應該用 EFCore 就可以了？）</p>
+<p>延伸閱讀：<a href="https://medium.com/appxtech/%E8%B3%87%E6%96%99%E5%BA%AB-%E6%B7%BA%E8%AB%87%E9%97%9C%E8%81%AF%E5%BC%8F%E8%B3%87%E6%96%99%E5%BA%AB%E8%88%87acid%E7%89%B9%E6%80%A7-83a1b4178981">淺談關聯式資料庫與ACID特性</a></p>
+<p>除此之外，他們還嚴格地將資料庫操作和網路互動拆開，藉此降低風險</p>
+<blockquote>
+<p>To maintain data integrity, we adhere to two simple ground rules:
+為了保持數據的完整性，我們遵循兩個簡單的基本原則：</p>
+<ol>
+<li>
+<p>No service interaction over networks in Pre and Post-RPC phases
+預先和後續的RPC階段中，網絡上沒有服務互動</p>
+</li>
+<li>
+<p>No database interactions in the RPC phases
+在 RPC 階段中沒有數據庫交互</p>
+</li>
+</ol>
+</blockquote>
+<hr>
+<h3 id="把錯誤分類為可重試和不可重試">把錯誤分類為可重試和不可重試</h3>
+<p>為了確認能不能夠重試，所有的錯誤都要被分類（當然也會遇到一些比較模糊的）：</p>
+<ul>
+<li>伺服器或網路異常這類的，這些錯誤應該是暫時性的，基本上應該要可以重試</li>
+<li>但如果是退款失敗這種，就需要歸類到不可重試，並且標記起來</li>
+</ul>
+<blockquote>
+<p>In general, we believe unexpected runtime exceptions due to network and infrastructure issues (5XX HTTP statuses) are retryable. We expect these errors to be transient, and we expect that a later retry of the same request may eventually be successful.</p>
+<p>一般而言，我們認為由於網路和基礎設施問題而引起的意外運行時異常（5XX HTTP狀態）是可重試的。我們預期這些錯誤是暫時性的，並且我們期望稍後重新嘗試相同的請求可能最終會成功。</p>
+</blockquote>
+<blockquote>
+<p>We categorize validation errors, such as invalid input and states (for example, you can’t refund a refund), as non-retryable (4XX HTTP statuses) — we expect all subsequent retries of the same request to fail in the same manner. We created a custom, generic exception class that handled these cases, defaulting to “non-retryable”, and for certain other cases, categorized as “retryable”.</p>
+<p>我們將驗證錯誤分類為不可重試的錯誤，例如無效的輸入和狀態（例如，無法對退款進行退款），這些錯誤屬於非可重試的類型（4XX HTTP狀態碼）- 我們預期同一請求的所有後續重試都會以相同的方式失敗。我們創建了一個自定義的通用異常類，用於處理這些情況，默認為“不可重試”，對於某些其他情況，則歸類為“可重試”。</p>
+</blockquote>
+<hr>
+<h3 id="冪等鍵的選擇">冪等鍵的選擇</h3>
+<p>為了保持冪等性，Client 端操作的時候需要建立一組 Key 並存到 DB，後續重試的時候也必須同樣使用這組 Key。這組 Key 會拿來當鎖，避免使用者或多個客戶端正在重試導致重複執行（這個鎖的持續時間通常會比 RPC 的 Timeout 時間還長）</p>
+<p>選擇冪等鍵的時候，可以考慮 request-level 或是 entity-level：</p>
+<ul>
+<li>例如想要對同一組訂單允許多次付款，那麼每一次付款的 Key 的 Request 是不同的，這時候 可以使用 UUID 這類的格式</li>
+<li>但如果需要操作某個實體，例如某一組訂單，這時候就要根據這個實體來組成 Key，例如 “payment-1234-refund”（總覺得這段有點像是 DDD 訂 Entity 的 ID 的感覺？）</li>
+</ul>
+<p>除此之外，他們還使用冪等鍵來對資料庫進行分片解決擴展性的問題：</p>
+<blockquote>
+<p>The idempotency keys we use have high cardinality and even distribution, making them effective shard keys.</p>
+</blockquote>
+<hr>
+<h3 id="紀錄回應">紀錄回應</h3>
+<p>前面提到的 Post-RPC 會把 Response 內容都存下來，後續重試的時候就可以更快回應(?)，但資料表會長太快，所以可以考慮定期刪除太久的資料。</p>
+<hr>
+<h3 id="避免使用複製資料庫">避免使用複製資料庫</h3>
+<p>如果客戶付了錢然後沒收到 Reponse，這時候主要資料庫已經存好資料了，但還沒同步給複本，然後客戶無情重試，剛好檢查了複本資料，結果就重複付款
+（感覺就是選擇最終一致性而非即時性一定會遇到的問題，但這是不是代表不能學 CQRS 把 DB 拆成讀寫分離？）</p>
+<hr>
+<p>文章內還提了蠻多部分，例如他們面對的問題（不能對最終一致性妥協，並且因為需要低延遲而不能獨立建個服務等等），並且附上了許多循序圖來說明流程，我個人已經收藏起來了。不過為了達成這些目標，系統的複雜性也會上升，看完他們的處理方式感覺也長知識了</p>
+<p>那麼，今天的轉貼就先到這邊。明天見 &gt;&lt;
+感謝大大分享的文章，也感謝 Heptabase + Readwise 拯救了我 QQ</p>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/repost/2024/02/0203-hype-driven-development/">2/3 - 一窩蜂驅動開發</a></li>
+        
+        <li><a href="/repost/2024/02/0202-can-software-architecture-apply-to-game-development/">2/2 - 軟體架構適用於遊戲開發嗎？</a></li>
+        
+        <li><a href="/repost/2024/02/0201-development-slowness-in-big-and-legacy-applications/">2/1 - 大規模專案變慢的原因</a></li>
+        
+        <li><a href="/repost/2024/01/0131-recaptcha-enterprise/">1/31 - reCAPTCHA 強制升級</a></li>
+        
+        <li><a href="/repost/2024/01/0130-chinese-copywriting-guidelines/">1/30 - 中英文之間要加空格</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            沒有標籤
+                            
+                        </div>
+                        <hr />
+<p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2frepost%2f2024%2f02%2f0204-airbnb-engineering-avoiding-double-payments-in-a-distributed-payments-system%2f" width="100%" frameborder=0></iframe>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    
+    
+    <section class="widget">
+        <h3 class="widget-title">系列文</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E6%88%91%E8%A6%81%E8%A8%82%E4%BE%BF%E7%95%B6/">我要訂便當 (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2024/01/lottery-is-goodness/" title="我買彩券是為了做一個善良的人">我買彩券是為了做一個善良的人</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/04/wolong/" title="臥龍：蒼天殞落　白金！">臥龍：蒼天殞落　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/banner-2-midjourney-and-canva/" title="使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗">使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/banner-1-system-drawing/" title="使用 .Net 的 System.Drawing 產生簡單的文字 Banner 初體驗">使用 .Net 的 System.Drawing 產生簡單的文字 Banner 初體驗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/polyglot-notebooks/" title="Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧">Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/nioh/" title="仁王＆仁王２　白金！">仁王＆仁王２　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/11/soft-skills/" title="《軟實力：軟體開發人員的生存手冊》心得">《軟實力：軟體開發人員的生存手冊》心得</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/10/jmeter/" title="使用 JMeter 來對 API 壓力測試吧">使用 JMeter 來對 API 壓力測試吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/10/sony-wh-1000xm5/" title="Sony WH-1000XM5 使用一週心得">Sony WH-1000XM5 使用一週心得</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/09/imtranslator/" title="在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧">在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">優文轉貼</h3>
+<ul class="widget-list">    
+    
+    <li>
+        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (41)</a>
+    </li>
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/azure/">azure (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/bug/">bug (4)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (28)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/life/">life (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (17)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/powershell/">powershell (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (4)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (22)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (47)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/ai-tools/">ai-tools</a>
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/anglesharp/">anglesharp</a>
+    
+    <a href="https://igouist.github.io/tags/api/">api</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/azure/">azure</a>
+    
+    <a href="https://igouist.github.io/tags/azure-functions/">azure-functions</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/benchmarkdotnet/">benchmarkdotnet</a>
+    
+    <a href="https://igouist.github.io/tags/bug/">bug</a>
+    
+    <a href="https://igouist.github.io/tags/chrome/">chrome</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/dapper/">dapper</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/game/">game</a>
+    
+    <a href="https://igouist.github.io/tags/git/">git</a>
+    
+    <a href="https://igouist.github.io/tags/headphone/">headphone</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/life/">life</a>
+    
+    <a href="https://igouist.github.io/tags/line-notify/">line-notify</a>
+    
+    <a href="https://igouist.github.io/tags/linux/">linux</a>
+    
+    <a href="https://igouist.github.io/tags/midjourney/">midjourney</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/queue/">queue</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/service-bus/">service-bus</a>
+    
+    <a href="https://igouist.github.io/tags/soft-skills/">soft-skills</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/swagger/">swagger</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/windows/">windows</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">蹭一下</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://wellss12.github.io/" title="Wells">Wells</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://kevintsengtw.blogspot.com/" title="mrkt">mrkt 的程式學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://raychiutw.github.io/" title="ray">Ray&#39;s Notes</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">小東西</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+
+    <section class="widget">
+    <h3 class="widget-title">放個廣告加減賺</h3>
+    <ul class="widget-list">
+        <script src="https://skilltree.my/Promotion/d3f87796-6f35-491a-9fec-700c86b3097b?w=245"></script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-2119949858103459"
+            data-ad-slot="9031038367"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </ul>
+</section>
+
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019-2023 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        <br/>
+        <span>
+          &nbsp;&nbsp;Post Count： 90
+        </span>
+        
+          <span id="busuanzi_container_site_pv">, PV： <span id="busuanzi_value_site_pv"></span></span>
+          <div>
+        </div>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
+</body>
+</html>
