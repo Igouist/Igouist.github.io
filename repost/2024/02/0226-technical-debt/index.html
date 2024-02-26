@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-92586970-4"></script>
+    <script async>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-92586970-4');
+    </script>
+
+    <meta name="generator" content="Hugo 0.117.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>2/26 - 技術債（Technical Debt） | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="2/26 - 技術債（Technical Debt） - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2024-02-26T20:17:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2024-02-26T20:17:00&#43;08:00">
+        
+        
+    <meta name="description" content="2/26 - 技術債（Technical Debt）">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/repost/2024/02/0226-technical-debt/">
+    <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link defer rel="stylesheet" href="/css/normalize.css">
+    
+        <link defer rel="stylesheet" href="/css/prism.css">
+    
+    <link defer rel="stylesheet" href="/css/style.css">
+    <script async type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    
+    <script data-ad-client="ca-pub-2119949858103459" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script async>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "[map[]]",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp-and-dotnet/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/repost/" title="Repost">Repost</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">2/26 - 技術債（Technical Debt）</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2024-2-26,
+                        </date>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+
+                        <div class="post-content">
+                            <p>今天繼續把之前提過的鐵人賽看完。今天抽出來轉貼的是聊技術債的這兩篇：</p>
+<ul>
+<li><a href="https://ithelp.ithome.com.tw/articles/10207383">技術債是糙 code ?? (上) - 可不可以不要寫糙 code</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10207633">技術債是糙 code ?? (下) - 可不可以不要寫糙 code</a></li>
+</ul>
+<p>技術債的產生可能有很多原因，例如為了趕快上線所以先妥協實作方式，又或者是複製貼上而產生更多債務。</p>
+<p>在這篇文裡也引用了許多前輩的文章來介紹技術債。例如：</p>
+<p><a href="https://www.ithome.com.tw/node/71807">抄捷徑的技術債，遲早要還的 - 王建興</a></p>
+<blockquote>
+<p>技術債和財務領域中的債務觀念，有一些可以類比的地方。人們會產生財務上的債務，通常是因為對於立即性資金的需求，也就是說，可以在短期內得到好處。但是，無論是向銀行或是其他個人借貸，總是需要付出代價，也就是利息。</p>
+</blockquote>
+<blockquote>
+<p><strong>無論是不夠完備的架構設計，或是具有壞味道的程式碼，都會隨著時間，持續地讓開發團隊付出代價</strong>。但是，只要付出的代價是可以接受的（小於得到的好處），那麼，欠下技術債的決策就很有可能是個合理的決策。不過隨著債務積欠愈來愈多，或是固定的債務始終沒有償還，那麼就得付出愈來愈多的利息，或是持續長久的付出利息，最終就可能發生得不償失的情況。</p>
+</blockquote>
+<p><a href="https://ithelp.ithome.com.tw/articles/10191382">技術債（Technical Debt） - 看到 code 寫成這樣我也是醉了，不如試試重構？</a></p>
+<blockquote>
+<p>Martin Fowler 把技術債產生原因分成了兩種維度，分別是魯莽（reckless）、謹慎（prudent）與有意（deliberate）、無意（inadvertent）</p>
+</blockquote>
+<blockquote>
+<p>依欠債方法來看，技術債有以下種類：</p>
+<ul>
+<li>設計缺陷，這也是一般最常見的技術債。</li>
+<li>文件不足，包括沒寫註解或是專案文件等。</li>
+<li>缺少測試，原本應該要正確的功能，會因為沒有測試好而產生 bug 。</li>
+<li>明知該實作，卻沒實作。比方說：明知沒實作快取，會讓服務反應時間過久，但沒實作也能動，就先交貨了。</li>
+</ul>
+<p>廣義來說，只要技術上會難以修改的理由，都可以算是技術債。</p>
+</blockquote>
+<p>但我更喜歡內文對技術債直接粗暴的介紹：</p>
+<blockquote>
+<p><strong>只要是留給別人修改的 code 都是糙 code</strong></p>
+</blockquote>
+<p>這篇文也列出了前面幾種技術債該面對的心情，例如文件不足、設計缺陷等等。搭配作者引用的相關參考，應該能對技術債的概念有些認識</p>
+<p>看了這些文章的時候，呃，對後續維護我的 Code 的朋朋們還真是不好意思 xD</p>
+<hr>
+<p>最後，提到技術債一定要引用最經典的這篇：
+<a href="https://p5d12000.medium.com/%E5%B7%A5%E7%A8%8B%E5%B8%AB%E6%87%89%E8%A9%B2%E6%94%BE%E5%BF%83%E5%A4%A7%E8%86%BD%E5%9C%B0%E5%89%B5%E9%80%A0%E6%8A%80%E8%A1%93%E8%B2%A0%E5%82%B5-a8022d85810">工程師應該放心大膽地創造技術負債</a></p>
+<blockquote>
+<p>如果你在一家公司寫了一大堆完全不考慮耦合關係、程式邏輯糾纏不清、命名混亂、使用大量 anti-pattern、到處都是怪氣味、效能極差而且宛若天書的程式碼，而你開始為了繼續維護這樣的技術負債感到痛苦的時候，其實只代表一件事情：你已經在這家公司獃得太久，而且還沒有升上去當主管。</p>
+</blockquote>
+<p>太痛苦了。</p>
+<p>今天的轉貼就到這，有興趣的朋友可以一篇一篇看過去，然後一起捨棄專業成就事業。明天見～</p>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/repost/2024/02/0225-what3words/">2/25 - 用三個詞來定位地點吧</a></li>
+        
+        <li><a href="/repost/2024/02/0224-function/">2/24 - 需要變成 Function 的都只是因為重複使用而已嗎？</a></li>
+        
+        <li><a href="/repost/2024/02/0223-git-worktree/">2/23 - git worktree</a></li>
+        
+        <li><a href="/repost/2024/02/0222-risk-storming/">2/22 - Risk-storming</a></li>
+        
+        <li><a href="/repost/2024/02/0221-why-sleep/">2/21 - 為什麼要睡覺</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            沒有標籤
+                            
+                        </div>
+                        <hr />
+<p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2frepost%2f2024%2f02%2f0226-technical-debt%2f" width="100%" frameborder=0></iframe>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    
+    
+    <section class="widget">
+        <h3 class="widget-title">系列文</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E6%88%91%E8%A6%81%E8%A8%82%E4%BE%BF%E7%95%B6/">我要訂便當 (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2024/01/lottery-is-goodness/" title="我買彩券是為了做一個善良的人">我買彩券是為了做一個善良的人</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/04/wolong/" title="臥龍：蒼天殞落　白金！">臥龍：蒼天殞落　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/banner-2-midjourney-and-canva/" title="使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗">使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/banner-1-system-drawing/" title="使用 .Net 的 System.Drawing 產生簡單的文字 Banner 初體驗">使用 .Net 的 System.Drawing 產生簡單的文字 Banner 初體驗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/polyglot-notebooks/" title="Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧">Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/nioh/" title="仁王＆仁王２　白金！">仁王＆仁王２　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/11/soft-skills/" title="《軟實力：軟體開發人員的生存手冊》心得">《軟實力：軟體開發人員的生存手冊》心得</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/10/jmeter/" title="使用 JMeter 來對 API 壓力測試吧">使用 JMeter 來對 API 壓力測試吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/10/sony-wh-1000xm5/" title="Sony WH-1000XM5 使用一週心得">Sony WH-1000XM5 使用一週心得</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/09/imtranslator/" title="在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧">在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">優文轉貼</h3>
+<ul class="widget-list">    
+    
+    <li>
+        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (54)</a>
+    </li>
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/azure/">azure (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/bug/">bug (4)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (28)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/life/">life (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (17)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/powershell/">powershell (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (4)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (22)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (47)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/ai-tools/">ai-tools</a>
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/anglesharp/">anglesharp</a>
+    
+    <a href="https://igouist.github.io/tags/api/">api</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/azure/">azure</a>
+    
+    <a href="https://igouist.github.io/tags/azure-functions/">azure-functions</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/benchmarkdotnet/">benchmarkdotnet</a>
+    
+    <a href="https://igouist.github.io/tags/bug/">bug</a>
+    
+    <a href="https://igouist.github.io/tags/chrome/">chrome</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/dapper/">dapper</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/game/">game</a>
+    
+    <a href="https://igouist.github.io/tags/git/">git</a>
+    
+    <a href="https://igouist.github.io/tags/headphone/">headphone</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/life/">life</a>
+    
+    <a href="https://igouist.github.io/tags/line-notify/">line-notify</a>
+    
+    <a href="https://igouist.github.io/tags/linux/">linux</a>
+    
+    <a href="https://igouist.github.io/tags/midjourney/">midjourney</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/queue/">queue</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/service-bus/">service-bus</a>
+    
+    <a href="https://igouist.github.io/tags/soft-skills/">soft-skills</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/swagger/">swagger</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/windows/">windows</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">蹭一下</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://wellss12.github.io/" title="Wells">Wells</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://kevintsengtw.blogspot.com/" title="mrkt">mrkt 的程式學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://raychiutw.github.io/" title="ray">Ray&#39;s Notes</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">小東西</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+
+    <section class="widget">
+    <h3 class="widget-title">放個廣告加減賺</h3>
+    <ul class="widget-list">
+        <script src="https://skilltree.my/Promotion/d3f87796-6f35-491a-9fec-700c86b3097b?w=245"></script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-2119949858103459"
+            data-ad-slot="9031038367"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </ul>
+</section>
+
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019-2023 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        <br/>
+        <span>
+          &nbsp;&nbsp;Post Count： 90
+        </span>
+        
+          <span id="busuanzi_container_site_pv">, PV： <span id="busuanzi_value_site_pv"></span></span>
+          <div>
+        </div>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
+</body>
+</html>

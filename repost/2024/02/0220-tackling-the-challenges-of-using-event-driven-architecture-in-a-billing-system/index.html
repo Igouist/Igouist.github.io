@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-92586970-4"></script>
+    <script async>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-92586970-4');
+    </script>
+
+    <meta name="generator" content="Hugo 0.117.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>2/20 - 在計費系統中使用 Event-Driven Architecture 的挑戰 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="2/20 - 在計費系統中使用 Event-Driven Architecture 的挑戰 - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2024-02-20T23:41:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2024-02-20T23:41:00&#43;08:00">
+        
+        
+    <meta name="description" content="2/20 - 在計費系統中使用 Event-Driven Architecture 的挑戰">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/repost/2024/02/0220-tackling-the-challenges-of-using-event-driven-architecture-in-a-billing-system/">
+    <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link defer rel="stylesheet" href="/css/normalize.css">
+    
+        <link defer rel="stylesheet" href="/css/prism.css">
+    
+    <link defer rel="stylesheet" href="/css/style.css">
+    <script async type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    
+    <script data-ad-client="ca-pub-2119949858103459" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script async>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "[map[]]",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp-and-dotnet/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/repost/" title="Repost">Repost</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">2/20 - 在計費系統中使用 Event-Driven Architecture 的挑戰</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2024-2-20,
+                        </date>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+
+                        <div class="post-content">
+                            <p>今天終於又鼓起了勇氣來面對堆積如山的收件閘，今天閱讀的是這一篇：<br/>
+<a href="https://www.thoughtworks.com/insights/blog/architecture/tackling-the-challenges-of-using-event-driven-architecture-in-a-billing-system">Tackling the challenges of using event-driven architecture in a billing system</a></p>
+<p>在這篇文章裡，作者面對一個牽涉到錢（！）並且非常老舊的系統，使用 Event-driven 來串了一個新服務，並且分享了他們的心得</p>
+<p><img src="https://www.thoughtworks.com/content/dam/thoughtworks/images/photography/inline-image/insights/blog/architecture/blg_inline_EDA_2.jpg" alt=""></p>
+<p>我覺得有趣的是在於他們遇到的幾個挑戰和做法：</p>
+<h3 id="訊息的冪等性">訊息的冪等性</h3>
+<p>通常我們會希望訊息至少傳遞一次，並且最好只傳遞一次。但有時候還是會因為一些網路因素讓接收方重複收到訊息，這時候作一些處理讓訊息即使重複收到，仍然保持同樣結果就很重要。</p>
+<p>這篇文章提出了兩個常見的做法：</p>
+<blockquote>
+<p>Ensuring data consistency through repeated processing: this requires business components to process the same event input and produce the same result.</p>
+<p><strong>通過重複處理確保數據一致性</strong>：這要求業務組件處理相同的事件輸入並產生相同的結果。</p>
+</blockquote>
+<blockquote>
+<p>Discarding processed events: after each event is recorded by the system and assigned a unique ID, duplicate events are discarded.</p>
+<p><strong>丟棄處理過的事件</strong>：系統在每個事件被記錄並分配一個唯一的ID後，會丟棄重複的事件。</p>
+</blockquote>
+<p>印象中<a href="/post/2022/08/azure-service-bus">之前</a>使用 Azure Service Bus 的時候，就是使用一組 MessageId 來辨別事件</p>
+<h3 id="事件處理順序">事件處理順序</h3>
+<p>假設有些事件之間是有順序性的，雖然通常我們會按照時間發送然後接收，但同樣也可能因為網路問題導致順序亂掉。這篇文章則採取以下措施來應對：</p>
+<blockquote>
+<p>In event schema design, we determine the order by designing a version number or ID for the previous order event for the same user&rsquo;s event.</p>
+<p>在事件模式設計中，<strong>我們通過為同一使用者的事件設計一個先前訂單事件的版本號或 ID 來確定順序</strong></p>
+</blockquote>
+<blockquote>
+<p>Ensure events always follow the order of consumption, discard disordered events and wait for the arrival of events that match the order.</p>
+<p>確保事件始終按照消費的順序進行，丟棄無序的事件並等待符合順序的事件的到來</p>
+</blockquote>
+<h3 id="處理延遲事件">處理延遲事件</h3>
+<p>這項感覺和業務需求比較有關係。主要是 Queue 的延遲性，我們可能在 23:55 發送某個事件，然後 00:05 才被訂閱者收出來處理掉，像這篇需要計算金額的服務就會出問題</p>
+<p>這篇的做法就是<strong>直接往後抓緩衝</strong>，例如在凌晨三點的時候去把前一天的做掉，這三個小時其實就足夠讓前一天的事件內容送達了</p>
+<p>不過看這一段的時候有在想，如果真的有事件排隊排到超過這段可容忍的時間，應該需要發送一些警告通知來讓維運人員能夠及時察覺異常會更好？</p>
+<h3 id="重新發送事件">重新發送事件</h3>
+<p>簡單來說就是如果接收者掛掉了沒有正確處理事件，發送者要可以重新把事件噴過去。他們除了在重新發送的時候使用 Lambda service 並且控制並發數量來確保性能不要炸裂以外，這邊還額外替事件做了個標記：</p>
+<blockquote>
+<p>Because not all consumers need to consume republished events we can leverage the attribute feature of AWS SNS to add a replay attribute to republished events. Consumers can choose whether or not to subscribe to consume these events based on their needs.</p>
+<p>因為並非所有消費者都需要消費重新發布的事件，我們可以利用 AWS SNS 的屬性功能，<strong>將重新發布的事件添加一個重播屬性</strong>。消費者可以根據自己的需求選擇是否訂閱並消費這些事件。</p>
+</blockquote>
+<hr>
+<p>文章最後還列了一些他們應用 Event-Driven Architecture 的優缺點，例如可以根據時間段和事件抓出相關的資訊，但也提升了複雜度等等</p>
+<p>有興趣的朋友可以再點進去閱讀～</p>
+<p>那麼，今天的轉貼就先到這邊。明天見 &gt;&lt;</p>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/repost/2024/02/0219-free-writing/">2/19 - 自由書寫</a></li>
+        
+        <li><a href="/repost/2024/02/0218-lateral-thinking/">2/18 - 水平思考與六頂帽子</a></li>
+        
+        <li><a href="/repost/2024/02/0217-endowment-effect/">2/17 - 稟賦效應</a></li>
+        
+        <li><a href="/repost/2024/02/0216-sora/">2/16 - Sora, 使用 AI 從文字產生影片</a></li>
+        
+        <li><a href="/repost/2024/02/0215-pair-programming/">2/15 - Pair Programming!</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            沒有標籤
+                            
+                        </div>
+                        <hr />
+<p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2frepost%2f2024%2f02%2f0220-tackling-the-challenges-of-using-event-driven-architecture-in-a-billing-system%2f" width="100%" frameborder=0></iframe>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    
+    
+    <section class="widget">
+        <h3 class="widget-title">系列文</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E6%88%91%E8%A6%81%E8%A8%82%E4%BE%BF%E7%95%B6/">我要訂便當 (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2024/01/lottery-is-goodness/" title="我買彩券是為了做一個善良的人">我買彩券是為了做一個善良的人</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/04/wolong/" title="臥龍：蒼天殞落　白金！">臥龍：蒼天殞落　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/banner-2-midjourney-and-canva/" title="使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗">使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/banner-1-system-drawing/" title="使用 .Net 的 System.Drawing 產生簡單的文字 Banner 初體驗">使用 .Net 的 System.Drawing 產生簡單的文字 Banner 初體驗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/polyglot-notebooks/" title="Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧">Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/nioh/" title="仁王＆仁王２　白金！">仁王＆仁王２　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/11/soft-skills/" title="《軟實力：軟體開發人員的生存手冊》心得">《軟實力：軟體開發人員的生存手冊》心得</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/10/jmeter/" title="使用 JMeter 來對 API 壓力測試吧">使用 JMeter 來對 API 壓力測試吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/10/sony-wh-1000xm5/" title="Sony WH-1000XM5 使用一週心得">Sony WH-1000XM5 使用一週心得</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/09/imtranslator/" title="在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧">在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">優文轉貼</h3>
+<ul class="widget-list">    
+    
+    <li>
+        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (54)</a>
+    </li>
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/azure/">azure (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/bug/">bug (4)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (28)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/life/">life (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (17)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/powershell/">powershell (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (4)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (22)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (47)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/ai-tools/">ai-tools</a>
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/anglesharp/">anglesharp</a>
+    
+    <a href="https://igouist.github.io/tags/api/">api</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/azure/">azure</a>
+    
+    <a href="https://igouist.github.io/tags/azure-functions/">azure-functions</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/benchmarkdotnet/">benchmarkdotnet</a>
+    
+    <a href="https://igouist.github.io/tags/bug/">bug</a>
+    
+    <a href="https://igouist.github.io/tags/chrome/">chrome</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/dapper/">dapper</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/game/">game</a>
+    
+    <a href="https://igouist.github.io/tags/git/">git</a>
+    
+    <a href="https://igouist.github.io/tags/headphone/">headphone</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/life/">life</a>
+    
+    <a href="https://igouist.github.io/tags/line-notify/">line-notify</a>
+    
+    <a href="https://igouist.github.io/tags/linux/">linux</a>
+    
+    <a href="https://igouist.github.io/tags/midjourney/">midjourney</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/queue/">queue</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/service-bus/">service-bus</a>
+    
+    <a href="https://igouist.github.io/tags/soft-skills/">soft-skills</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/swagger/">swagger</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/windows/">windows</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">蹭一下</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://wellss12.github.io/" title="Wells">Wells</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://kevintsengtw.blogspot.com/" title="mrkt">mrkt 的程式學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://raychiutw.github.io/" title="ray">Ray&#39;s Notes</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">小東西</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+
+    <section class="widget">
+    <h3 class="widget-title">放個廣告加減賺</h3>
+    <ul class="widget-list">
+        <script src="https://skilltree.my/Promotion/d3f87796-6f35-491a-9fec-700c86b3097b?w=245"></script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-2119949858103459"
+            data-ad-slot="9031038367"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </ul>
+</section>
+
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019-2023 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        <br/>
+        <span>
+          &nbsp;&nbsp;Post Count： 90
+        </span>
+        
+          <span id="busuanzi_container_site_pv">, PV： <span id="busuanzi_value_site_pv"></span></span>
+          <div>
+        </div>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
+</body>
+</html>
