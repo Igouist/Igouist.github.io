@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-92586970-4"></script>
+    <script async>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-92586970-4');
+    </script>
+
+    <meta name="generator" content="Hugo 0.117.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>3/2 - Deterministic Aperture | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="3/2 - Deterministic Aperture - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2024-03-02T10:39:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2024-03-02T10:39:00&#43;08:00">
+        
+        
+    <meta name="description" content="3/2 - Deterministic Aperture">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/repost/2024/03/0302-deterministic-aperture/">
+    <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link defer rel="stylesheet" href="/css/normalize.css">
+    
+        <link defer rel="stylesheet" href="/css/prism.css">
+    
+    <link defer rel="stylesheet" href="/css/style.css">
+    <script async type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    
+    <script data-ad-client="ca-pub-2119949858103459" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script async>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "[map[]]",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp-and-dotnet/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/python/" title="Python">Python</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/repost/" title="Repost">Repost</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">3/2 - Deterministic Aperture</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2024-3-2,
+                        </date>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+
+                        <div class="post-content">
+                            <p>今天<a href="https://github.com/checkcheckzz/system-design-interview?tab=readme-ov-file#-company-engineering-blogs">挖到礦了</a> ，決定先挑一篇出來看。</p>
+<p>今天要轉貼的是 X (Twitter) Enginering 在 2019 的這篇：<br/>
+<a href="https://blog.x.com/engineering/en_us/topics/infrastructure/2019/daperture-load-balancer">Deterministic Aperture: A distributed, load balancing algorithm</a></p>
+<p><strong>文章裡介紹了 Twitter 朋朋搞負載平衡的歷程</strong>，這邊也簡單筆記一下。有興趣的朋友可以直接進入文章閱讀，畢竟有圖還是比較好理解。</p>
+<hr>
+<p>在介紹的過程中，先讓我們假設是「 Client &ndash; 呼叫 &ndash;&gt; Backend 」這樣的關係</p>
+<p>一開始他們是簡單粗暴地讓 Client 各自插負載平衡的東西，然後噴到 Backend 的服務上。但在服務擴展到幾千個實例之後，就開始出現了一些問題，例如分配 socket 啦 buffer 等等。</p>
+<p>接著他們嘗試搞點隨機，雖然看起來好像不錯，但實際上變得更不平衡，一部署上去就讓服務們咚咚嚨咚鏘：</p>
+<blockquote>
+<p>Before the deployment we see a nice collection of traces neatly stacked atop one another.
+<strong>After the deployment: pandemonium!</strong></p>
+</blockquote>
+<p>接著他們重新想了一下他們需要的東西：輕量、而且盡量不要被 Client 和 Backend 的數量變動干擾。</p>
+<p>於是他們嘗試了<strong>環狀座標系統（Ring coordinates）</strong></p>
+<p><img src="https://cdn.cms-twdigitalassets.com/content/dam/blog-twitter/engineering/en_us/infrastructure/2019/dapeture-load-balancer/coord-transform.png.img.fullhd.medium.png" alt="">
+圖片來源：今天轉貼的這篇</p>
+<p>從圖片上來看，每個 Client 和 Backend 都是圓圈上的一個點，假設有 3 個 Client，他們就會被各自畫在圓圈上 1/3 的位置；同時如果有 6 個 Backend，這些 Backend 的實例也會被各自畫在圓圈上 1/6 的位置，然後 Client 在圓圈上找到最近的 Backend 就打下去。</p>
+<p>這次嘗試雖然已經比前面的隨機好很多，但仍然發現分配不均的狀況</p>
+<p>最後他們延伸出了<strong>連續環狀座標</strong></p>
+<p><img src="https://cdn.cms-twdigitalassets.com/content/dam/blog-twitter/engineering/en_us/infrastructure/2019/dapeture-load-balancer/p2c-fractional-continued.png.img.fullhd.medium.png" alt="Image">
+圖片來源：同樣是今天轉貼的這篇</p>
+<p>連續環狀座標不是畫在圓圈的點上，而是圓圈的一段。假設有 3 個 Client，他們就會各占 1/3 圈</p>
+<p>如此一來 Client 和 Backend 就會形成兩個圈。而外圈的 Client 就會按照比例對應到內圈的 Backend，達到非常舒服的平衡(?)</p>
+<p>最後這篇文章列了一些實測的數據和使用上的限制（例如有突發性的高流量可能還是會讓壓力集中在某些 Backend 上）</p>
+<blockquote>
+<p>The flexibility and performance of deterministic aperture has been successful and general enough to cement its place as the default load balancer algorithm at Twitter. Most services have been migrated to the new load balancer with only a handful of exceptions. With that comes a few small operational changes and limitations to consider.</p>
+</blockquote>
+<blockquote>
+<p>Deterministic aperture 的靈活性和性能已經取得成功，並且足夠普遍，以至於在 Twitter 上鞏固了它作為默認的負載平衡器算法的地位。大多數服務已經遷移到新的負載平衡器，只有少數例外。隨之而來的是一些小的操作變化和限制需要考慮。</p>
+</blockquote>
+<p>那麼，今天的轉貼就到這邊，明天見～</p>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/repost/2024/03/0301-guid-and-logical-fragmentation/">3/1 - GUID 與索引破碎</a></li>
+        
+        <li><a href="/repost/2024/02/0229-event-storming/">2/29 - 認識 Event Storming</a></li>
+        
+        <li><a href="/repost/2024/02/0228-stiff-software/">2/28 - 硬硬的軟體</a></li>
+        
+        <li><a href="/repost/2024/02/0227-change-your-company/">2/27 - 上游思維</a></li>
+        
+        <li><a href="/repost/2024/02/0226-technical-debt/">2/26 - 技術債（Technical Debt）</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            沒有標籤
+                            
+                        </div>
+                        <hr />
+<p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2frepost%2f2024%2f03%2f0302-deterministic-aperture%2f" width="100%" frameborder=0></iframe>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    
+    
+    <section class="widget">
+        <h3 class="widget-title">系列文</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E6%88%91%E8%A6%81%E8%A8%82%E4%BE%BF%E7%95%B6/">我要訂便當 (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2024/01/lottery-is-goodness/" title="我買彩券是為了做一個善良的人">我買彩券是為了做一個善良的人</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/04/wolong/" title="臥龍：蒼天殞落　白金！">臥龍：蒼天殞落　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/banner-2-midjourney-and-canva/" title="使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗">使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/banner-1-system-drawing/" title="使用 .Net 的 System.Drawing 產生簡單的文字 Banner 初體驗">使用 .Net 的 System.Drawing 產生簡單的文字 Banner 初體驗</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/polyglot-notebooks/" title="Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧">Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/nioh/" title="仁王＆仁王２　白金！">仁王＆仁王２　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/11/soft-skills/" title="《軟實力：軟體開發人員的生存手冊》心得">《軟實力：軟體開發人員的生存手冊》心得</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/10/jmeter/" title="使用 JMeter 來對 API 壓力測試吧">使用 JMeter 來對 API 壓力測試吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/10/sony-wh-1000xm5/" title="Sony WH-1000XM5 使用一週心得">Sony WH-1000XM5 使用一週心得</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2022/09/imtranslator/" title="在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧">在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">優文轉貼</h3>
+<ul class="widget-list">    
+    
+    <li>
+        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (62)</a>
+    </li>
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/azure/">azure (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/bug/">bug (4)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (28)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/life/">life (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (17)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/powershell/">powershell (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (4)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (22)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/w3hexschool/">w3hexschool (47)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/ai-tools/">ai-tools</a>
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/anglesharp/">anglesharp</a>
+    
+    <a href="https://igouist.github.io/tags/api/">api</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/azure/">azure</a>
+    
+    <a href="https://igouist.github.io/tags/azure-functions/">azure-functions</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/benchmarkdotnet/">benchmarkdotnet</a>
+    
+    <a href="https://igouist.github.io/tags/bug/">bug</a>
+    
+    <a href="https://igouist.github.io/tags/chrome/">chrome</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/dapper/">dapper</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/game/">game</a>
+    
+    <a href="https://igouist.github.io/tags/git/">git</a>
+    
+    <a href="https://igouist.github.io/tags/headphone/">headphone</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/life/">life</a>
+    
+    <a href="https://igouist.github.io/tags/line-notify/">line-notify</a>
+    
+    <a href="https://igouist.github.io/tags/linux/">linux</a>
+    
+    <a href="https://igouist.github.io/tags/midjourney/">midjourney</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/queue/">queue</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/service-bus/">service-bus</a>
+    
+    <a href="https://igouist.github.io/tags/soft-skills/">soft-skills</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/swagger/">swagger</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/windows/">windows</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">蹭一下</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://wellss12.github.io/" title="Wells">Wells</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://kevintsengtw.blogspot.com/" title="mrkt">mrkt 的程式學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://raychiutw.github.io/" title="ray">Ray&#39;s Notes</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">小東西</h3>
+        <ul class="widget-list">
+            <li><a href="https://igouist.github.io/index.xml">RSS</a></li>
+        </ul>
+    </section>
+
+    <section class="widget">
+    <h3 class="widget-title">放個廣告加減賺</h3>
+    <ul class="widget-list">
+        <script src="https://skilltree.my/Promotion/d3f87796-6f35-491a-9fec-700c86b3097b?w=245"></script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-2119949858103459"
+            data-ad-slot="9031038367"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </ul>
+</section>
+
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019-2023 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+        
+        <br/>
+        <span>
+          &nbsp;&nbsp;Post Count： 90
+        </span>
+        
+          <span id="busuanzi_container_site_pv">, PV： <span id="busuanzi_value_site_pv"></span></span>
+          <div>
+        </div>
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
+</body>
+</html>

@@ -98,6 +98,322 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/03/0305-consistent-hashing/" title="3/5 - Consistent Hashing" >3/5 - Consistent Hashing</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-3-5,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p>昨天有朋朋提到 Consistent Hashing，發現我筆記庫沒有相關資料，果斷重新了解一下並轉貼上來：<a href="https://medium.com/@chyeh/consistent-hashing-algorithm-%E6%87%89%E7%94%A8%E6%83%85%E5%A2%83-%E5%8E%9F%E7%90%86%E8%88%87%E5%AF%A6%E4%BD%9C%E7%AF%84%E4%BE%8B-41fd16ad334a">Consistent Hashing Algorithm: 應用情境、原理與實作範例 - chyeh</a></p>
+<p><strong>Consistent Hashing 主要是應用於分散式系統的場景，用來判斷要把資料送給哪個服務節點時用的</strong></p>
+<p>如果同一份資料會隨機亂噴，兩次噴都噴到不一樣的服務，要追查問題或是搞什麼監控警報就會變得比較麻煩(?)。因此我們會希望同一份資料進來，就固定會到某一個服務。除了容易重現問題以外，在這個服務上搞快取也比較方便好命中</p>
+<p>但如果只是使用簡單的 Hash 來對應（例如說平均分配，第一筆資料丟給第一台服務、第二筆資料丟給第二台服務……），<strong>就有可能遇到當節點新增或減少時，資料對應到的服務大量變動的問題</strong></p>
+<p>這一段我有點不太會說明（有更熟的朋朋歡迎幫忙），這邊就跟 GPT 一起 Pair 來舉個例子：</p>
+<blockquote>
+<p>想像一下，你有一堆信件需要放到幾個郵箱裡。你決定用一個簡單的方法：每個郵箱輪流放信。</p>
+<p>例如說你有 10 封信、3 個郵箱。那麼第 1 封信（編號為 1）就放到編號 1 的郵箱，第 2 封信放到編號 2 的郵箱，以此類推。編號 10 的信會放到編號 1 的郵箱，因為 10 除以 3 餘 1。</p>
+<p>但是，如果你突然多了一個郵箱，變成 4 個郵箱，這個簡單的分配方法就需要改變了，因為你現在是按照 4 來計算每封信應該放哪了。</p>
+<p>第 4 封信原本在第 1 個郵箱，現在得放到第 4 個郵箱了，這樣我們就得把很多信都拿出來，重新分一遍，非常麻煩，特別是信件很多的時候。</p>
+</blockquote>
+<p>這時候我們就可以使用 Consistent Hashing，就如上面轉貼的文章所說：</p>
+<blockquote>
+<p><strong>Consistent Hashing 的做法是找「沿著順時鐘方向走，遇到的第一個 Index」</strong></p>
+</blockquote>
+<p><img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/0*aHCNfSbtkVltA_Yw.png" alt="">
+圖片來源：今天轉貼的這篇文章</p>
+<p>同樣地，我們請 GPT 同樣用郵箱的例子支援一下：</p>
+<blockquote>
+<p>想像一下，你有一堆信件需要放到幾個郵箱裡。而你站在一個圓形的大廳，大廳有些方向的牆壁上掛著郵箱</p>
+<p>你決定像時鐘一樣把大廳分為 1 ~ 12，然後你會根據郵件的編號找到對應的數字，再沿著房間的圓形牆壁走，走到下一個郵箱就把信件投遞進去。</p>
+<p>比如說，編號是 10 的信，就先找到圓圈上對應 10 的位置，開始順著圓走，直到碰到的第一個郵箱（可能這個郵箱位在 12），然後就把信放進去。</p>
+<p>這樣即使多了一個郵箱，大多數郵箱的信也不用再重新分配了</p>
+</blockquote>
+<p>因為計算 Hash 之後是去找到下一個圓圈上的節點，當節點新增的時候，只有新增節點的前一段受到影響；移除的時候也只有到下一個節點之間會影響</p>
+<p>這樣就比較不會有資料和服務的對應關係大幅變動的問題了，我們又成功地拯救了我們各個服務的快取(?)，可喜可賀</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/03/0305-consistent-hashing/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/03/0304-event-storming-is-good/" title="3/4 - Event storming 是個好東西" >3/4 - Event storming 是個好東西</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-3-4,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p>上一週參加的 Meetup 講師有把內容寫成部落格文章了，有興趣的可以看看他們故事 @@</p>
+<p><a href="https://chengweichen.com/2024/02/ddd-taiwan-community-event-storming.html">Event storming 是個好東西：幫助團隊看見全貌，引發團隊變革新契機 - 艦長，你有事嗎？</a></p>
+<blockquote>
+<p>當你想要導入 CI/CD、DevOps 或 OOXXOps 時，<strong>你會如何幫助所有的夥伴建立相同的共識？讓大家可以看見相同的全貌及痛點？</strong></p>
+<p>當團隊開始重視 DevOps 核心精神中的「交付價值、持續改善」時，我們確實需要一些不同於傳統會議與組織溝通的方法，來輔助不同的部門及團隊打破 silos 共同看見整體流程的完整面貌，畢竟我們都知道 DevOps 從來都不是一條龍工程師自己的事情。</p>
+<p>在本次的 Meetup，我將會聊一聊幾個來自真實場景的小故事，分享這段由 Event Storming 所觸發的團隊變革旅程。</p>
+</blockquote>
+<p>題外話，講者提到他帶著同事用便條紙，把到職到離職之間遇到的事、做的專案、學到的東西等等都整理出來</p>
+<p>想到可以在牆上弄個時間軸、把便條紙貼一貼，就能直接看見自己負責的專案和學到的技能，感覺也挺不錯的</p>
+<p>唯一的問題只有：好像沒多少東西能貼🥲</p>
+<p>延伸閱讀：<a href="/repost/2024/02/0209-event-storming">2/29 - 認識 Event Storming</a></p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/03/0304-event-storming-is-good/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/03/0303-numbers-everyone-should-know/" title="3/3 - 設計系統時應該知道的一些數字" >3/3 - 設計系統時應該知道的一些數字</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-3-3,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p><a href="https://everythingisdata.wordpress.com/2009/10/17/numbers-everyone-should-know/">Numbers Everyone Should Know - Everything is Data</a></p>
+<p>這篇文章引用了 Jeff Dean 在 LADIS 2009 演講時提到的一些「每個人都應該知道的數字」，例如命中快取、傳輸資料等等，作為設計系統時的一種參考資料：</p>
+<p><img src="https://i.imgur.com/ODKg50m.png" alt="Image"></p>
+<p>我更在意的是作者提到設計系統時會有用的兩個技能：</p>
+<ul>
+<li><strong>能夠針對不同設計方案的效能培養出直覺，才能拒絕不合理的設計</strong></li>
+<li><strong>能夠動手測試，比較不同方案的效能，才能累積經驗、磨練直覺</strong></li>
+</ul>
+<p>有種藉由練習來磨練判斷力的感覺 🤔</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/03/0303-numbers-everyone-should-know/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/03/0302-deterministic-aperture/" title="3/2 - Deterministic Aperture" >3/2 - Deterministic Aperture</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-3-2,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p>今天<a href="https://github.com/checkcheckzz/system-design-interview?tab=readme-ov-file#-company-engineering-blogs">挖到礦了</a> ，決定先挑一篇出來看。</p>
+<p>今天要轉貼的是 X (Twitter) Enginering 在 2019 的這篇：<br/>
+<a href="https://blog.x.com/engineering/en_us/topics/infrastructure/2019/daperture-load-balancer">Deterministic Aperture: A distributed, load balancing algorithm</a></p>
+<p><strong>文章裡介紹了 Twitter 朋朋搞負載平衡的歷程</strong>，這邊也簡單筆記一下。有興趣的朋友可以直接進入文章閱讀，畢竟有圖還是比較好理解。</p>
+<hr>
+<p>在介紹的過程中，先讓我們假設是「 Client &ndash; 呼叫 &ndash;&gt; Backend 」這樣的關係</p>
+<p>一開始他們是簡單粗暴地讓 Client 各自插負載平衡的東西，然後噴到 Backend 的服務上。但在服務擴展到幾千個實例之後，就開始出現了一些問題，例如分配 socket 啦 buffer 等等。</p>
+<p>接著他們嘗試搞點隨機，雖然看起來好像不錯，但實際上變得更不平衡，一部署上去就讓服務們咚咚嚨咚鏘：</p>
+<blockquote>
+<p>Before the deployment we see a nice collection of traces neatly stacked atop one another.
+<strong>After the deployment: pandemonium!</strong></p>
+</blockquote>
+<p>接著他們重新想了一下他們需要的東西：輕量、而且盡量不要被 Client 和 Backend 的數量變動干擾。</p>
+<p>於是他們嘗試了<strong>環狀座標系統（Ring coordinates）</strong></p>
+<p><img src="https://cdn.cms-twdigitalassets.com/content/dam/blog-twitter/engineering/en_us/infrastructure/2019/dapeture-load-balancer/coord-transform.png.img.fullhd.medium.png" alt="">
+圖片來源：今天轉貼的這篇</p>
+<p>從圖片上來看，每個 Client 和 Backend 都是圓圈上的一個點，假設有 3 個 Client，他們就會被各自畫在圓圈上 1/3 的位置；同時如果有 6 個 Backend，這些 Backend 的實例也會被各自畫在圓圈上 1/6 的位置，然後 Client 在圓圈上找到最近的 Backend 就打下去。</p>
+<p>這次嘗試雖然已經比前面的隨機好很多，但仍然發現分配不均的狀況</p>
+<p>最後他們延伸出了<strong>連續環狀座標</strong></p>
+<p><img src="https://cdn.cms-twdigitalassets.com/content/dam/blog-twitter/engineering/en_us/infrastructure/2019/dapeture-load-balancer/p2c-fractional-continued.png.img.fullhd.medium.png" alt="Image">
+圖片來源：同樣是今天轉貼的這篇</p>
+<p>連續環狀座標不是畫在圓圈的點上，而是圓圈的一段。假設有 3 個 Client，他們就會各占 1/3 圈</p>
+<p>如此一來 Client 和 Backend 就會形成兩個圈。而外圈的 Client 就會按照比例對應到內圈的 Backend，達到非常舒服的平衡(?)</p>
+<p>最後這篇文章列了一些實測的數據和使用上的限制（例如有突發性的高流量可能還是會讓壓力集中在某些 Backend 上）</p>
+<blockquote>
+<p>The flexibility and performance of deterministic aperture has been successful and general enough to cement its place as the default load balancer algorithm at Twitter. Most services have been migrated to the new load balancer with only a handful of exceptions. With that comes a few small operational changes and limitations to consider.</p>
+</blockquote>
+<blockquote>
+<p>Deterministic aperture 的靈活性和性能已經取得成功，並且足夠普遍，以至於在 Twitter 上鞏固了它作為默認的負載平衡器算法的地位。大多數服務已經遷移到新的負載平衡器，只有少數例外。隨之而來的是一些小的操作變化和限制需要考慮。</p>
+</blockquote>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/03/0302-deterministic-aperture/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/03/0301-guid-and-logical-fragmentation/" title="3/1 - GUID 與索引破碎" >3/1 - GUID 與索引破碎</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-3-1,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p>今天看到黑大前幾天發了索引破碎的文，順手轉貼上來；</p>
+<p><a href="https://blog.darkthread.net/blog/guid-clust-idx-frag-n-space/">GUID 叢集索引測試 2：索引碎片化分析與資料表虛胖問題</a>
+延伸閱讀：<a href="https://blog.darkthread.net/blog/guid-as-pk-on-db/">GUID Primary Key資料庫避雷守則</a></p>
+<blockquote>
+<p>PK使用頻率很高，設成叢集索引對效能最有利，故慣例上會設成叢集索引以提升效能。</p>
+</blockquote>
+<blockquote>
+<p>然而，<strong>因為GUID具有不連續的隨機性</strong>，即使循序寫入資料，常常後寫的資料GUID排序較前，依叢集索引特性，實體儲存位置應擺在前段，造成<strong>每次寫入資料都需挪動調整既有資料造成索引破碎，拖累寫入與查詢效能</strong>。</p>
+</blockquote>
+<p>備註：我現在都無腦用 <code>NEWSEQUENTIALID</code> 了，好香好香</p>
+<hr>
+<blockquote>
+<p><strong><code>avg_fragmentation_in_percent</code> 可視為碎片化的程度</strong>。Logical fragmentation 官方翻譯為邏輯片段，我覺得譯成「邏輯碎片」更體切，指的是索引資料分頁邏輯順序與實體順序不一致，邏輯上依索引順序應該連續的資料分頁，被放在不連續的實體位置，如此存取將需要更多 IO 動作，拖慢效能。此<strong>值介於 10 到 15 之間時建議做索引重組，大於 15 時應考慮進行索引重建</strong>。</p>
+</blockquote>
+<blockquote>
+<p><strong><code>avg_page_space_used_in_percent</code> 則是資料分頁存放資料的比率</strong>，比例過低將造成空間浪費(本案例的狀況)，代表要走訪更多分頁才能蒐集完所需要資料，勢必影響效能。<strong>這個值介於 60 到 75 之間時建議做索引重組，低於 60 時應考慮索引重建</strong>。</p>
+</blockquote>
+<p>敝司也有一張每天會有排程拋一卡車資料進去的表，也是使用 GUID 當 PK。DBA 才剛重建完沒兩天，<code>avg_fragmentation_in_percent</code> 就衝破 70</p>
+<p>但因為年久失修綁定古蹟，也不怎麼查詢，現在就當成負面教材來宣導(?)，也算是加深印象了</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/03/0301-guid-and-logical-fragmentation/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/02/0229-event-storming/" title="2/29 - 認識 Event Storming" >2/29 - 認識 Event Storming</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-3-1,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p>今天跟朋友去聽了場 Event Storming 的分享，回家趕快查點資料補一下。如此如此這般這般，今天要轉貼的是這篇：</p>
+<p><a href="https://ithelp.ithome.com.tw/articles/10219177">Event Storming Part 1 - 簡介與事前準備 - Think in Domain-Driven Design</a></p>
+<p>既然這篇文章有 Part 1 的字眼，當然就還有後面幾篇。這邊也一併附上來（我之後要回來查資料也比較好查）：</p>
+<ul>
+<li><a href="https://ithelp.ithome.com.tw/articles/10220073">Event Storming Part 2 - 風暴展開</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10220315">Event Storming Part 3 - 軟體設計</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10221295">Event Storming Part 4 - 可以做的更好</a></li>
+</ul>
+<p>看起來 <strong>Event Storming 是個揪團一起貼便利貼的歡樂活動，還能幫助團隊從彼此的視角找出盲點、建立共識</strong>等等</p>
+<p>大家先自由地把事件（Event）貼出來，讓我感到比較新奇的是在於事件要用過去式來寫，身為一個平常用詞很模糊(?)的人，覺得這看法蠻有道理：</p>
+<blockquote>
+<p>根據 Alberto Brandolini 本人的敘述，使用過去式代表著系統的狀態。如果你今天使用的是「註冊」這類詞時，你代表的是一個流程。相對的，用「註冊已開始」、「註冊已完成」會有更好的清晰度且顆粒度，避免過度設計。</p>
+</blockquote>
+<p>然後大家嘗試從一條路徑（通常從 Happy path 開始）把事件串成一組故事，過程中也會請領域專家重新整理順序，在這過程中對焦彼此的理解：</p>
+<blockquote>
+<p>這個過程中，<strong>大家可以發現不管是團隊間還是個人間對於同一份商業流程的理解有多麼的不同</strong>。</p>
+<p>而在領域專家整理時，也可以讓大家知道哪些 Event 重要哪些不是我們需要關注的，加深大家對於系統責任邊界的了解。</p>
+</blockquote>
+<p>第三輪的時候讓大家按讚跟標出問題，針對問題進行討論；第四輪再加上 Command（使用者或軟體所做出的決定，例如 買早餐 Command -&gt; 已經買早餐 Event）、發出 Command 的角色、外部系統…等等。這整段讓我有種把故事越補越完整的感覺，也許還會讓團隊產生一種協作的成就感？</p>
+<p>最後兩篇則提了從 Event Storming 到軟體建模，以及列了一些可能會翻車的問題（例如變成個人秀、突然噴一堆技術細節等等）。</p>
+<p>但因為我沒跑過，只能先看過記錄下來:( ，比較不像前兩篇有 wow! 的感覺。</p>
+<p>如果有跑過的朋朋能分享，或是丟更多資訊上來，我會跟你說聲甘溫</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/02/0229-event-storming/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/02/0228-stiff-software/" title="2/28 - 硬硬的軟體" >2/28 - 硬硬的軟體</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-2-28,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p>趁休假把系列文嗑完。今天要轉貼是和昨天同樣在「敏捷聖徒」系列的這篇：<br/>
+<a href="https://ithelp.ithome.com.tw/articles/10335432?sc=rss.iron">「我們不交付大便」&ndash; 談開發步調與質疑成長 - Kuma</a></p>
+<p>這篇文章先從一位估算很準朋友的故事開始說起，並帶到了估算的要點：<strong>持續而穩定的步調</strong></p>
+<blockquote>
+<p>各位有聽過 PDCA Cycle 嗎？這是指我們要完成一件事的四個流程：</p>
+<ul>
+<li>Plan：計劃</li>
+<li>Do：做</li>
+<li>Check：檢查</li>
+<li>Act：行動（指改善行動）</li>
+</ul>
+<p>說穿了，<strong>敏捷開發從頭到尾其實是一個快速而持續的 PDCA 的過程</strong>。我們把一個很大的長期產品切割成一塊一塊的小部分，每個小部分做完的時候都回頭去看產品新的樣貌，並且決定下一個小部分要做什麼，什麼東西要加進來、什麼東西要丟掉，什麼事是我們這次沒做好，下次可以改善的。</p>
+</blockquote>
+<p>而這組 PDCA 的過程，背後重視的是開發者的軟實力，例如說溝通能力，或是紀律：</p>
+<blockquote>
+<p>Kent Beck 曾經說：「我不是一個很優秀的開發者，而我是一個還不錯的開發者，但有非常好的紀律。」</p>
+<p><strong>這些敏捷開發的框架，例如含 Scrum、看板、Extreme Programming 等等，他們強調的都是個人的紀律、團隊成員間的紀律、團隊對外的紀律，都沒有在強調硬實力</strong>。</p>
+<p>你從來不會在任何一個敏捷開發的書或文章裡面看到資料結構、演算法、計算機系統，或網路底層原理。
+為什麼？因為要完成你的工作，你本來就需要這些東西。就算別人不講，你不會的話本來就做不到。</p>
+<p>敏捷開發想要做的事情其實是：<strong>在你開發時，把其它一些能夠阻礙你的外部因素全部排除掉，讓你能夠專心的發揮你原本就擁有的硬實力，進而助你取得持續而穩定的步調。</strong></p>
+</blockquote>
+<blockquote>
+<p>每當你違反開發人員的軟體紀律的時候，你交付出來的東西都是大便。</p>
+</blockquote>
+<p>那如果我們沒有持續而穩定的步調，或是沒有把這些紀律落實呢？那麼我們也許就會把軟體弄得硬硬的(?)：</p>
+<blockquote>
+<p><strong>敏捷開發、軟體重構、單元測試、整合測試等，這些方法都不會幫助你提升硬實力，你寫程式的速度也不會變快，但是這些事情如果做得好，你的軟體每次的改動範圍都會跟你的需求的大小成正比。</strong></p>
+<p>什麼意思？你有沒有遇過一個情況：當客戶請你改一點點小東西，但是你實際上程式內部的改動卻會很大？
+如果有，這很有可能代表你前面的這些軟體紀律的事情沒有做的很好，你才會因為一個改動需求而不得不修改很大的範圍。</p>
+</blockquote>
+<blockquote>
+<p>身為軟體工程師，當我們想要對 Stakeholder 提出一個反駁叫做「這個改動很大，我們很難做」的時候，我們其實應該要檢討自己，<strong>是否我已經把軟體給做硬了</strong>。</p>
+</blockquote>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/02/0228-stiff-software/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/02/0227-change-your-company/" title="2/27 - 上游思維" >2/27 - 上游思維</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-2-27,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/YpxJvQ2.png" alt="Image"></p>
+<p>繼續把收藏著的鐵人賽文章消化掉。今天想轉貼的是 2023 敏捷聖徒系列的這篇：</p>
+<p><a href="https://ithelp.ithome.com.tw/articles/10329311">「你要釐清責任，還是想解決問題？」&ndash; 談上游思維 - Kuma</a></p>
+<p>這篇文章裡 Anna 和 Roy 的故事非常眼熟，可能有跨團隊協作的朋友都遇過。</p>
+<p>但在『上游思維』這本書提到：當問題發生的時候，你可以選擇找出負責的人（下游），或是找出根源的解決方法（上游）</p>
+<p>上下游的概念可能很模糊，作者也和前輩有一些討論，我覺得蠻好理解的：</p>
+<blockquote>
+<p>上游的人用水卻同時也弄髒河裡的水，住在下游的人當然遭殃，而且責任不在下游的人而是上游的人。</p>
+<p>下游的人當然可以抱怨，但上游的人其實不痛不癢，甚至根本不知道有什麼問題。</p>
+<p>如果你是下游的人，會選擇怎麼做？換條河流嗎？如果換條河流仍然在下游，通常事情不會改變的。</p>
+</blockquote>
+<p>而整篇最讓我感到衝擊的是這兩段：</p>
+<blockquote>
+<p>你的工作內容的確是行銷企劃與執行沒錯，但其最終目的，也還是「為公司帶來營收」。</p>
+<p>如果你放著你與 Anna 部門的矛盾不管，只想趕快把責任推出去，趕快回去寫下一份企劃案，這樣也只會造成本地最佳化，也就是一個等著馬上要造成下一次與開發部門爭吵的未爆彈。</p>
+<p>對 KPI 也許有益，但對你的工作產生的價值沒什麼幫助。</p>
+<p>因此，你這不叫回去做你的工作，你這叫「工作挑簡單的做」。</p>
+</blockquote>
+<blockquote>
+<p>理想狀況下，平常大家各司其識，各自做各自的事是很美好的。</p>
+<p>但環境總是會變，人也會變，<strong>當遇到問題（不一定是你造成的）不想從根本解決，而只是想趕快把責任推出去，回到你的小天地，繼續做你本來就擅長的事，這不是「工作挑簡單的做」，什麼才是？</strong></p>
+</blockquote>
+<p>老實說，我之前從來沒有從這個方向想過。對我這個後端 API 仔來說，最理想的狀況就是讓我在座位上搓八小時的程式碼。但事情總是沒有憨人想的這麼簡單</p>
+<p>但當我們必須先解決一些不在我們專業的事情，才能專心地回去做我們的專業，而我們選擇不去處理的時候，是不是就像這篇文章說的「工作挑簡單的做」呢？</p>
+<p>這篇文章成功地引起我去思考這些問題，雖然我還沒有一個明確的答案，但還是決定轉貼上來給大家，有相似狀況的朋友們也可以想想</p>
+<p>同時也提供文章內的解決方式，供各位參考(?)</p>
+<ol>
+<li><strong>Change your company, or</strong></li>
+<li><strong>Change your company.</strong></li>
+</ol>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/02/0227-change-your-company/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/repost/2024/02/0226-technical-debt/" title="2/26 - 技術債（Technical Debt）" >2/26 - 技術債（Technical Debt）</a>
                                 </h1>
                             </header>
@@ -141,8 +457,7 @@
 <p>這篇文也列出了前面幾種技術債該面對的心情，例如文件不足、設計缺陷等等。搭配作者引用的相關參考，應該能對技術債的概念有些認識</p>
 <p>看了這些文章的時候，呃，對後續維護我的 Code 的朋朋們還真是不好意思 xD</p>
 <hr>
-<p>最後，提到技術債一定要引用最經典的這篇：
-<a href="https://p5d12000.medium.com/%E5%B7%A5%E7%A8%8B%E5%B8%AB%E6%87%89%E8%A9%B2%E6%94%BE%E5%BF%83%E5%A4%A7%E8%86%BD%E5%9C%B0%E5%89%B5%E9%80%A0%E6%8A%80%E8%A1%93%E8%B2%A0%E5%82%B5-a8022d85810">工程師應該放心大膽地創造技術負債</a></p>
+<p>最後，提到技術債一定要引用最經典的這篇：<a href="https://p5d12000.medium.com/%E5%B7%A5%E7%A8%8B%E5%B8%AB%E6%87%89%E8%A9%B2%E6%94%BE%E5%BF%83%E5%A4%A7%E8%86%BD%E5%9C%B0%E5%89%B5%E9%80%A0%E6%8A%80%E8%A1%93%E8%B2%A0%E5%82%B5-a8022d85810">工程師應該放心大膽地創造技術負債</a></p>
 <blockquote>
 <p>如果你在一家公司寫了一大堆完全不考慮耦合關係、程式邏輯糾纏不清、命名混亂、使用大量 anti-pattern、到處都是怪氣味、效能極差而且宛若天書的程式碼，而你開始為了繼續維護這樣的技術負債感到痛苦的時候，其實只代表一件事情：你已經在這家公司獃得太久，而且還沒有升上去當主管。</p>
 </blockquote>
@@ -185,296 +500,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/02/0224-function/" title="2/24 - 需要變成 Function 的都只是因為重複使用而已嗎？" >2/24 - 需要變成 Function 的都只是因為重複使用而已嗎？</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-2-24,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p>今天想轉貼的是 2019 鐵人賽的這篇：<br/>
-<a href="https://ithelp.ithome.com.tw/articles/10203659">實務上的高內聚與低耦合 - 可不可以不要寫糙 code</a></p>
-<p>其中有一小段我很喜歡，當時解決了我某種「消除重複！」的迷思：</p>
-<blockquote>
-<p>「程式碼沒有要重複使用，為什麼要弄成一個 function？」</p>
-<p>但是，反問一下這個問題</p>
-<p>「<strong>難道需要變成 function 的都只是因為重複使用而已？</strong>」</p>
-</blockquote>
-<p>除此之外，這系列的開頭也很棒：</p>
-<blockquote>
-<p>良好程式碼的優點大同小異。<br/>
-不好的程式碼的糙點卻各有巧妙之處。</p>
-</blockquote>
-<p>搭配這篇閱讀風味更佳：<a href="https://ithelp.ithome.com.tw/articles/10206839">如何寫高品質 function (內聚性篇) - 可不可以不要寫糙 code</a></p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/02/0224-function/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/02/0223-git-worktree/" title="2/23 - git worktree" >2/23 - git worktree</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-2-23,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p><a href="https://louis383.medium.com/git-worktree-%E7%B0%A1%E5%96%AE%E4%BB%8B%E7%B4%B9%E8%88%87%E4%BD%BF%E7%94%A8-876897c797bf">git worktree 簡單介紹與使用 - Ray Yuan Liou</a></p>
-<p>之前如果開發到一半要切別的分支看 Code 或改東西，我要嘛乖乖 stash，要嘛就直接開瀏覽器看線上的</p>
-<p>這幾天才知道<strong>原來還有 worktree 這個指令，可以直接新建一個工作區，這樣就可以同一個專案同時開著兩條分支看了</strong></p>
-<p><img src="https://i.imgur.com/bGzIlYF.png" alt="Image"></p>
-<p>有遇到同樣狀況的朋友之後也可以試試看～</p>
-<p><a href="https://git-scm.com/docs/git-worktree">git-worktree</a></p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/02/0223-git-worktree/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/02/0222-risk-storming/" title="2/22 - Risk-storming" >2/22 - Risk-storming</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-2-22,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p>今天看到前輩分享一篇新奇的東西：風險暴風雨(?)，轉貼上來給大家</p>
-<p><a href="https://riskstorming.com/">Risk-storming - A visual and collaborative risk identification technique</a></p>
-<p>這篇介紹了一種量化風險的方法：使用九宮格。<strong>縱軸跟橫軸分別會是機率（Probability）和影響程度（Impact）</strong></p>
-<blockquote>
-<p>Probability: How likely is it that the risk will happen? <br/>
-機率：風險發生的可能性有多高？</p>
-</blockquote>
-<blockquote>
-<p>Impact: What is the negative impact if the risk does occur? <br/>
-影響：如果風險發生，會有什麼負面影響？</p>
-</blockquote>
-<p>兩者都分成三個程度：Low, Medium 和 High。這樣就可以看見風險位於哪個位置</p>
-<p><img src="https://riskstorming.com/img/quantifying-risk-1.png" alt=""></p>
-<p>例如說我們可能有一個風險是某個共用服務死掉的話會連帶產品一起死掉，那我們就可以從機率和影響下去評估：他發生的機率很 Low、但影響是 High，那我們就可以把他貼在圖上（可以參考附圖，比較直覺一點 QQ）</p>
-<p><strong>把這些風險標示在矩陣上，團隊就能迅速對這些風險的處理優先順序有一些共識</strong></p>
-<hr>
-<p>除了量化風險的方式以外，這篇文章還建議<strong>團隊成員可以一起來識別風險</strong>。它提出了四個步驟</p>
-<ol>
-<li>畫一些軟體架構圖</li>
-<li>要求每個人各自識別風險，並寫便利貼</li>
-<li>大家一起把風險貼到架構圖上</li>
-<li>一起總結這些風險（注意那些只要一個人注意到的風險或是優先順序沒有共識的風險！）</li>
-</ol>
-<p>這樣最後應該會得到一份團隊共識的風險列表，接著也就可以著手開始處理它們了！</p>
-<p>看完這篇文章之後有點想自己先玩玩看，有興趣的朋友也可以閱讀之後帶回去玩(?)</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/02/0222-risk-storming/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/02/0221-why-sleep/" title="2/21 - 為什麼要睡覺" >2/21 - 為什麼要睡覺</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-2-21,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p>今天真的是太睏了，睏到突然想起來可以分享這部影片：<br/>
-<a href="https://www.youtube.com/watch?v=s73WwmWVqBg">最容易被忽視的習慣，比爾蓋茲都臣服的一本書｜《為什麼要睡覺？》｜文森說書</a></p>
-
-<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="https://www.youtube.com/embed/s73WwmWVqBg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
-</div>
-
-<hr>
-<p>人類的睡眠階段分為前四小時的「非快速動眼時期」和後四小時的「快速動眼時期」，清醒的時候，我們的大腦會像海綿一樣吸收資訊，然後在深層睡眠整理資訊和長期記憶，並在快速動眼時期試圖串聯這些資訊。</p>
-<p><strong>因此我們可以在睡前和睡醒時留一點時間整理思緒和手上的問題，充分利用大腦睡眠時間的自動化背景處理特性，在睡覺的時候消化這些資訊</strong>（聽起來有點神奇）</p>
-<p>除了睡眠的兩個時期以外，我比較驚訝的是其實有 30% 的人從基因中就是夜貓子、以及酒精其實只是讓我們察覺不到有醒過來，實際上根本就沒有好好睡覺</p>
-<p>另外，睡前盡量減少藍光，會影響睡眠品質，讓大腦產生新想法的時段受到影響。（雖然我現在睡前還是會滑手機拖延一下）</p>
-<p>今天的分享就先這樣，祝各位睡眠順利。準備來睏，明天見 &gt;&lt;</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/02/0221-why-sleep/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/02/0220-tackling-the-challenges-of-using-event-driven-architecture-in-a-billing-system/" title="2/20 - 在計費系統中使用 Event-Driven Architecture 的挑戰" >2/20 - 在計費系統中使用 Event-Driven Architecture 的挑戰</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-2-20,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p>今天終於又鼓起了勇氣來面對堆積如山的收件閘，今天閱讀的是這一篇：<br/>
-<a href="https://www.thoughtworks.com/insights/blog/architecture/tackling-the-challenges-of-using-event-driven-architecture-in-a-billing-system">Tackling the challenges of using event-driven architecture in a billing system</a></p>
-<p>在這篇文章裡，作者面對一個牽涉到錢（！）並且非常老舊的系統，使用 Event-driven 來串了一個新服務，並且分享了他們的心得</p>
-<p><img src="https://www.thoughtworks.com/content/dam/thoughtworks/images/photography/inline-image/insights/blog/architecture/blg_inline_EDA_2.jpg" alt=""></p>
-<p>我覺得有趣的是在於他們遇到的幾個挑戰和做法：</p>
-<h3 id="訊息的冪等性">訊息的冪等性</h3>
-<p>通常我們會希望訊息至少傳遞一次，並且最好只傳遞一次。但有時候還是會因為一些網路因素讓接收方重複收到訊息，這時候作一些處理讓訊息即使重複收到，仍然保持同樣結果就很重要。</p>
-<p>這篇文章提出了兩個常見的做法：</p>
-<blockquote>
-<p>Ensuring data consistency through repeated processing: this requires business components to process the same event input and produce the same result.</p>
-<p><strong>通過重複處理確保數據一致性</strong>：這要求業務組件處理相同的事件輸入並產生相同的結果。</p>
-</blockquote>
-<blockquote>
-<p>Discarding processed events: after each event is recorded by the system and assigned a unique ID, duplicate events are discarded.</p>
-<p><strong>丟棄處理過的事件</strong>：系統在每個事件被記錄並分配一個唯一的ID後，會丟棄重複的事件。</p>
-</blockquote>
-<p>印象中<a href="/post/2022/08/azure-service-bus">之前</a>使用 Azure Service Bus 的時候，就是使用一組 MessageId 來辨別事件</p>
-<h3 id="事件處理順序">事件處理順序</h3>
-<p>假設有些事件之間是有順序性的，雖然通常我們會按照時間發送然後接收，但同樣也可能因為網路問題導致順序亂掉。這篇文章則採取以下措施來應對：</p>
-<blockquote>
-<p>In event schema design, we determine the order by designing a version number or ID for the previous order event for the same user&rsquo;s event.</p>
-<p>在事件模式設計中，<strong>我們通過為同一使用者的事件設計一個先前訂單事件的版本號或 ID 來確定順序</strong></p>
-</blockquote>
-<blockquote>
-<p>Ensure events always follow the order of consumption, discard disordered events and wait for the arrival of events that match the order.</p>
-<p>確保事件始終按照消費的順序進行，丟棄無序的事件並等待符合順序的事件的到來</p>
-</blockquote>
-<h3 id="處理延遲事件">處理延遲事件</h3>
-<p>這項感覺和業務需求比較有關係。主要是 Queue 的延遲性，我們可能在 23:55 發送某個事件，然後 00:05 才被訂閱者收出來處理掉，像這篇需要計算金額的服務就會出問題</p>
-<p>這篇的做法就是<strong>直接往後抓緩衝</strong>，例如在凌晨三點的時候去把前一天的做掉，這三個小時其實就足夠讓前一天的事件內容送達了</p>
-<p>不過看這一段的時候有在想，如果真的有事件排隊排到超過這段可容忍的時間，應該需要發送一些警告通知來讓維運人員能夠及時察覺異常會更好？</p>
-<h3 id="重新發送事件">重新發送事件</h3>
-<p>簡單來說就是如果接收者掛掉了沒有正確處理事件，發送者要可以重新把事件噴過去。他們除了在重新發送的時候使用 Lambda service 並且控制並發數量來確保性能不要炸裂以外，這邊還額外替事件做了個標記：</p>
-<blockquote>
-<p>Because not all consumers need to consume republished events we can leverage the attribute feature of AWS SNS to add a replay attribute to republished events. Consumers can choose whether or not to subscribe to consume these events based on their needs.</p>
-<p>因為並非所有消費者都需要消費重新發布的事件，我們可以利用 AWS SNS 的屬性功能，<strong>將重新發布的事件添加一個重播屬性</strong>。消費者可以根據自己的需求選擇是否訂閱並消費這些事件。</p>
-</blockquote>
-<hr>
-<p>文章最後還列了一些他們應用 Event-Driven Architecture 的優缺點，例如可以根據時間段和事件抓出相關的資訊，但也提升了複雜度等等</p>
-<p>有興趣的朋友可以再點進去閱讀～</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/02/0220-tackling-the-challenges-of-using-event-driven-architecture-in-a-billing-system/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/02/0219-free-writing/" title="2/19 - 自由書寫" >2/19 - 自由書寫</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-2-19,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p>昨天提到了發散思考，今天想接著轉貼一篇我覺得不錯的抒壓遊戲(?) <br/>
-<a href="https://readingoutpost.com/free-writing/">《自由書寫術》透過寫作大幅提升創造力的4個訣竅</a></p>
-<p>自由書寫指的是使用紙筆或鍵盤，在某段時間之內不斷地書寫，<strong>直接把腦袋的東西一股腦地傾倒出來</strong>，任由自己隨意發散書寫的意思</p>
-<blockquote>
-<p>基本的要點是，輕鬆寫，不要停地一直寫（或用電腦鍵盤打字），以思考的方式想到什麼寫什麼，設定一個20到30分鐘的時限，即使遇到阻礙或難題，馬上轉移焦點展開新的對話</p>
-</blockquote>
-<p>在這個過程中要注意盡可能地專注在寫作上，而不要修改，否則容易讓腦子卡住當機</p>
-<p>像這樣放手去寫的好處在於：集中思緒並且捕捉想法</p>
-<blockquote>
-<p>作者提到自由書寫的兩大好處：寫字或敲鍵盤的動作可以有效集中思緒，它也可以給你回溯思考路徑的線索。</p>
-<p><strong>書寫的本身就會觸發思考還可以捕捉當下的想法</strong>，當你沒有明確頭緒時，更該持續書寫，讓文字和思考觸發你挖掘更深層的思緒。</p>
-</blockquote>
-<p>我個人則是覺得在白紙上隨意地發散，有一種專注的抒壓感（像是心流那樣），並且也可以抓出許多自己的想法和思路</p>
-<p>如果不知道怎麼開始，這篇文章也提供了一些作法。例如說，我們可以假裝自己在跟某個人對話，又或者是從「我覺得…」開場</p>
-<p>有興趣的朋友也可以玩玩看這項腦力體操～</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/02/0219-free-writing/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/02/0218-lateral-thinking/" title="2/18 - 水平思考與六頂帽子" >2/18 - 水平思考與六頂帽子</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-2-18,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p>今天要轉貼的是魯迪老師的這篇：<a href="https://ruddyblog.wordpress.com/2022/12/30/%e6%b0%b4%e5%b9%b3%e6%80%9d%e8%80%83lateral-thinking">水平思考 Lateral thinking</a></p>
-<p>這篇文章主要在說明水平思考與垂直思考。其中垂直思考指的是我們平常基於邏輯的演繹、歸納等等，<strong>而水平思考則是從主題開始，往四面八方發散出去的思考方式</strong></p>
-<p>文章裡面用看電影的方式來舉例。在垂直的思考方向下，我們想看電影的時候，可能就開始挑電影，然後挑電影院等等。而水平的話，我們可能就會想到爆米花</p>
-<p>也因為水平思考是發散的，因此可以幫助我們從不同角度去理解和聯想，我們也就可能得到一些靈感，又或是理解某個問題的各種看法等等</p>
-<p>例如原本某個需求已經有某種現行做法，但我們其實也可以質疑是否有更好的解決方法，這時候我們也許就有機會找到了一條新的觀點</p>
-<p>但也要注意，<strong>發散之後必須要收斂</strong>。我們可以先利用水平思考的方式想到新的解決方案，再回到垂直思考來評估可行性和成本，這樣才能相輔相成，避免沒有結論</p>
-<hr>
-<p>除了提出偶爾發散多想想(?)以外，我想轉貼這篇文章更多是因為下面補充的「<strong>六頂思考帽</strong>」</p>
-<p>它可以幫助我們按照不同角度去發散出去，分別對應六頂不同顏色的帽子：</p>
-<ul>
-<li>白色：從資料出發，只列出客觀的事實、數據和資料</li>
-<li>紅色：從情緒和直覺出發，想想看對這個議題的感受和情緒</li>
-<li>黑色：從悲觀的方向出發，想想會有什麼風險、怎麼樣行不通、要怎麼處理</li>
-<li>黃色：從樂觀的方向出發，想想有什麼好處、會有什麼機會</li>
-<li>綠色：從冒險精神出發，提出新的行動或想法、還有什麼可能性</li>
-<li>藍色：思考解決問題需要採用的方式，整合上面各頂帽子的內容</li>
-</ul>
-<p><strong>六頂帽子可以幫助我們從客觀資料、情緒、風險、樂觀、其他角度等等面向去思考同一個問題，藉此得到更多角度的觀點</strong></p>
-<p>而且能夠讓我們一次只從一個角度思考（有其他人也一樣，這些角度的想法都混在一起的時候會覺得腦子亂哄哄的嗎？）</p>
-<p>覺得針對某個問題或方案無從下手的時候，也許就可以試試看先戴上帽子想想</p>
-<p>那麼，今天的轉貼就先到這邊。明天見 &gt;&lt;</p>
-<p>補充閱讀；</p>
-<ul>
-<li><a href="https://medium.com/agile-coffee/6%E9%A0%82%E6%80%9D%E8%80%83%E5%B8%BD-4b739c5429be">《6頂思考帽》增進思考成效的6種魔法｜心得筆記 - 德瑞克的敏捷咖啡</a></li>
-<li><a href="https://flipedu.parenting.com.tw/article/008782">六頂思考帽應用教學攻略：培養解決問題能力 - 翻轉教育</a></li>
-</ul>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/02/0218-lateral-thinking/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/02/0217-endowment-effect/" title="2/17 - 稟賦效應" >2/17 - 稟賦效應</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-2-17,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p>今天想轉貼最近認識的詞兒： <br/>
-<a href="https://www.thenewslens.com/article/118608/fullpage">認識「稟賦效應」，就知道IKEA為什麼要設置這麼多體驗區</a></p>
-<p>要認識稟賦效應是什麼，最快的方式就是認識文章內的這組實驗。參與者被分為兩組：</p>
-<blockquote>
-<ul>
-<li>一組參與者會先拿到一個杯子，問他要多少錢才願意出售這一個杯子</li>
-<li>另外一組參與者不會拿到杯子，而是問願意花多少錢買這一個杯子</li>
-</ul>
-</blockquote>
-<p>而光是「有沒有拿到杯子」、有沒有覺得曾經擁有的這個差別，就可以在價格上產生 2 倍的差距</p>
-<p>稟賦效應指的就是「厭惡剝奪」的現象，<strong>當我們擁有某項東西的時候，我們會覺得這個東西的價值更高</strong></p>
-<p>也因為這個現象，IKEA 等廠商開始利用體驗區、試用期等等方式，讓客人產生一種「已經擁有」的錯覺，藉此提高銷售率</p>
-<hr>
-<p>看完這一篇，我在想：或許我們也會不自覺的認為自己掌握的技能、寫出來的程式碼的價值會比外面更高吧</p>
-<p>又或者，原本應該擁有的周六假期就這樣被拿去補班了，原本放假的價值也就變得更更更更高了吧</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/02/0217-endowment-effect/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -505,6 +530,10 @@
     
     <li >
         <a href="https://igouist.github.io/repost/page/6/">6</a>
+    </li>
+    
+    <li >
+        <a href="https://igouist.github.io/repost/page/7/">7</a>
     </li>
     
 
@@ -605,7 +634,7 @@
 <ul class="widget-list">    
     
     <li>
-        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (54)</a>
+        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (62)</a>
     </li>
 </ul>
     </section>
