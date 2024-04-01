@@ -109,6 +109,62 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/03/0319-reorder-message/" title="【每天推薦一篇文章】訊息順序問題 &amp; 早期驗證" >【每天推薦一篇文章】訊息順序問題 &amp; 早期驗證</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-3-19,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p>一開臉書就被推送了德魯大大的文章，當然是馬上看：<br/>
+<a href="https://columns.chicken-house.net/2023/10/01/reorder/">架構面試題 #5: Re-Order Messages - 安德魯的部落格</a></p>
+<blockquote>
+<p>如果我透過 API 短時間收到大量的 Request, 我如何保證訊息必須按照順序處理?</p>
+</blockquote>
+<p>這篇文章裡德魯大大示範處理訊息順序問題，從基本觀念開始、抓出要處理的問題，動手搭建環境模擬，然後實作出 IReOrderBuffer 以及最後的監控及總結</p>
+<p>內容非常的長，推薦可以慢慢閱讀並消化思路。這邊按照慣例截一些我要收進筆記本的點。</p>
+<p>首先在「訊息排序的基本觀念」這段，其實就已經說明了這篇文章的核心：</p>
+<blockquote>
+<p>如果收到的訊息是對的，就馬上處理；如果不對，那就放在手上 (時間越短越好)，看是要等缺的訊息補上，或是放棄某個訊息繼續往下。</p>
+<p>其中你要抉擇的是，<strong>到底是要等待的時間越短越好? 還是放棄的訊息數量越少越好? 兩者通常必須取捨</strong> ..</p>
+</blockquote>
+<p>接著德魯大大列了幾個需要注意的問題：</p>
+<ol>
+<li>你的訊息必須要能標示順序</li>
+<li>你必須界定處理範圍 (緩衝時間) = 如果先收到後面的訊息，我們能等待前面的訊息多久？</li>
+<li>你必須界定處理範圍 (緩衝空間) = 如果先收到後面的訊息，我們還有多少空間能允許我們等待前面的訊息過來？</li>
+</ol>
+<p>在一連串的環境模擬之後，開始實作時又會提到這個決策點：</p>
+<blockquote>
+<p>掉訊息困難的地方在於: 在當下你不會知道這訊息是已經掉了，還是只是晚一點才會拿到。已經掉了的話你越早放棄他 (SKIP) 越好，反正你等再久也等不到，早點放棄可以用更低的 Buffer，也能讓後面的訊息更早發出去；</p>
+<p>晚一點到的話你等他越久越好，你的訊息完整性會更好 (都不用放棄任何一個訊息)，但是你需要更大的 Buffer, 暫存更多 Command 在 Buffer 內，也會讓更多 Command 的延遲提高，有可能違背你對整個系統的 SLO 期待。</p>
+</blockquote>
+<p><strong>「對整個系統的 SLO 期待」</strong> 對我來說算是比較新的概念。</p>
+<p>之前的目光都只放在「讓系統不要爆炸= =」，倒是沒有正面地想「對系統的 SLO 有所要求」這個方向。但其實就像文末提的：</p>
+<blockquote>
+<p>這類服務應該以 SLO 為主要目標，實做或是演算法都應該是支撐目標才對，而非目標來遷就設計</p>
+</blockquote>
+<hr>
+<p>另一個我覺得「哇啊」的部分是整個文章架構：先說明核心概念、把解題的框架建立起來，設計好介面、做出第一個測試案例，接著搭建用來模擬的環境，然後抓好處理範圍、動手實作，再進行測試來觀察不同狀況的表現。感覺<strong>就像是一步一步地跟著走開發過程，意外地舒服(?)</strong></p>
+<p>尤其是模擬並且測試的部份，我覺得總結的這一小段就能表達其意義：</p>
+<blockquote>
+<p>這個例子，最終是要上戰場的服務啊。你無法控制網路品質，你也無法用 “計算” 的方式預估你要多大的 Buffer Size, 因此如果你沒有用模型來模擬，你也無從 “猜測” 你的做法是否能真的上線解決問題。</p>
+<p>架構師難為的地方就在於，只有困難 (大家搞不定，也想不通怎麼解決) 的問題才會來找你。在這前提之下你從有了想法，到真的能上線驗證，通常需要花很長的時間才走得到這一步。因此，<strong>想盡一切辦法，讓問題還在很早期的階段就能被驗證，對架構師這角色而言是非常重要的</strong>。如果你提出一個錯誤的方式，其他人要等半年後才能告訴你行不通，那架構師的存在意義就不見了不是嗎?</p>
+</blockquote>
+<p>最後引用文章開頭的這句給自己，共勉之：</p>
+<blockquote>
+<p><strong>別再糾結 “是否有必要重新發明輪子” 的問題了，你不需要重新發明每個輪子，但是要不要讓自己有能力重新建立 “必要” 的輪子，就是你的選擇了。</strong></p>
+</blockquote>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/03/0319-reorder-message/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/repost/2024/03/0318-encoding/" title="【每天推薦一篇文章】編碼是什麼？從傳紙條學習編碼" >【每天推薦一篇文章】編碼是什麼？從傳紙條學習編碼</a>
                                 </h1>
                             </header>
@@ -478,41 +534,6 @@ Totla Composite SLA = 99.9899% = 99.99% * 99.99%</p>
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/03/0307-sociable-unit-test/" title="【每天推薦一篇文章】社交型單元測試" >【每天推薦一篇文章】社交型單元測試</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-3-7,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p>今天還要聚餐，決定簡單轉貼一下之前讓我很衝擊的東東：社交型單元測試<br/>
-<a href="https://wadehuanglearning.blogspot.com/2020/01/blog-post.html">探討單元測試和整合測試的涵蓋範圍 - WadeHuang的學習迷航記</a></p>
-<ul>
-<li>孤立型的單元測試：受測物件不會使用真實的依賴類別</li>
-<li>社交型的單元測試：受測物件會使用真實的依賴類別</li>
-</ul>
-<p>我一直以為出手就是要瘋狂 MOOOOOOOCCCKKKKK，著實有點嚇到= =</p>
-<p>但當我看到這段：</p>
-<blockquote>
-<p>在《修改軟件的藝術》第 10 章測試先行，作者提及 TDD 的單元測試與狹義的單元測試不同，<strong>TDD 是以一個行為作為一個單元</strong>：<br/></p>
-<blockquote>
-<p>一個獨立、可驗證的行為。這個行為會對系統產生可觀察的影響，且不和系統的其他行為耦合。</p>
-</blockquote>
-<p>這個單元測試的定義意味著：每個可觀察到的行為都應該要有一個相對應的測試。<br/>
-另外在《Growing Object-Oriented Software, Guided by Tests》第五章節也指出，應該針對行為進行單元測試，而非針對方法。</p>
-<p>這下真相大白了！如果你是 BDD 或 TDD 的實踐者，那麼你的單元測試就可能是跨多個類別的社交型單元測試，<strong>因為測試的對象是 一個行為，而非一個類別</strong>。</p>
-</blockquote>
-<p>覺得也挺有道理 🤔</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/03/0307-sociable-unit-test/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -659,7 +680,7 @@ Totla Composite SLA = 99.9899% = 99.99% * 99.99%</p>
 <ul class="widget-list">    
     
     <li>
-        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (83)</a>
+        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (84)</a>
     </li>
 </ul>
     </section>

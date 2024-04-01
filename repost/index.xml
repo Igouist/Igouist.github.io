@@ -6,7 +6,130 @@
     <description>Recent content in Reposts on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Fri, 29 Mar 2024 23:59:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/repost/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 01 Apr 2024 23:46:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/repost/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>【每天推薦一篇文章】可觀測性 30 天</title>
+      <link>https://igouist.github.io/repost/2024/04/observability-in-devops-30-days/</link>
+      <pubDate>Mon, 01 Apr 2024 23:46:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/repost/2024/04/observability-in-devops-30-days/</guid>
+      <description>&lt;p&gt;看見前輩貼了「可觀測性」的鐵人賽筆記，翻了一輪發現挺香的，馬上轉貼上來：&lt;br/&gt;
+&lt;a href=&#34;https://github.com/marcustung/Observability-in-DevOps/blob/main/README.md&#34;&gt;marcustung/Observability-in-DevOps: Observability 101 (github.com)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;這些文章（我感覺）能切成幾個部份：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;一些系統穩定性的東東。例如災害復原、高可用性和高可靠性之類的&lt;/li&gt;
+&lt;li&gt;可觀測性 Observability&lt;/li&gt;
+&lt;li&gt;好像很猛的新標準 OpenTelemetry&lt;/li&gt;
+&lt;li&gt;香香的 Grafana Cloud&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;每篇文章的開場都會先說明重點、結束的時候也有知識點小結，非常貼心 :20kirbythumbsup:&lt;/p&gt;
+&lt;p&gt;因為系列文本身蠻長的，能延伸的知識點也蠻多的。這邊就按照慣例，列一些我印象比較深刻的點&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;我在看到主題的時候，第一個疑問其實是：&lt;strong&gt;所以我的團隊有了可觀測性可以幹啥吃？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;而在 Day 10 的可觀測性介紹裡，這一段回答了我的問題：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;白話點背後是希望可以回答以下問題：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;請求經過哪些服務 ? 系統中哪個部分 loading 最大&lt;/li&gt;
+&lt;li&gt;當服務發生緩慢時，哪裡慢(Bottlenecks)以及可能原因是什麼&lt;/li&gt;
+&lt;li&gt;當服務無法使用時，錯誤及可能異常的原因是什麼&lt;/li&gt;
+&lt;li&gt;當使用者反映操作 timeout，但在 Dashboard 上顯示平均請求都很快，要如何找到其可能緩慢原因&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;目的是希望工程團隊可以理解並解釋系統的現況（增加系統透明度，而不是靠通靈），當系統出現問題時，可以第一時間了解爆炸範圍，進行緊急問題的處理已加速恢復的時間。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;身為通靈師的一員，看到這段開始覺得「哦，好像不錯哦，竟然不是靠直覺嗎🤔」&lt;/p&gt;
+&lt;p&gt;而在 Day 28 的時候又看到了更強烈的對比：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如果你是開發或是運維團隊人員，當線上系統或負責應用程式遇到問題時，會做哪些事情來協助定位問題&lt;/p&gt;
+&lt;p&gt;警報 (Alert) : &lt;br/&gt;
+當系統監控偵測到異常或是特定指標 (Metrics) 超過預定的閥值或水位時，系統會產生告警警報，對於 RD 及團隊來說，這是首先被告知問題的方式。&lt;/p&gt;
+&lt;p&gt;儀錶板 (Dashboard) :&lt;br/&gt;
+收到警報後，RD 可能會先查看 Dashboard 了解異常背後的數據。Dashboard 提供即時的數據視覺化，幫助 RD 快速定位問題範圍和影響程度。&lt;/p&gt;
+&lt;p&gt;查詢 (Adhoc Query) : &lt;br/&gt;
+若 Dashboard 所提供的資訊不足，或是為了要更精準確定問題原因，RD 會使用 adhoc Query 進一步的來查找特定時間的數據資料來確認問題。&lt;/p&gt;
+&lt;p&gt;日誌 (Log Aggregation) : &lt;br/&gt;
+確認問題範圍後，RD 會查找相關的系統或是應用程式 Log，Log 中可能包含更明確的應用程式執行資訊，或是問題的詳細描述與錯誤訊息，幫助 RD 更有機會找到問題的具體原因&lt;/p&gt;
+&lt;p&gt;分散式追蹤 (Distributed Tracing) : &lt;br/&gt;
+如果應用程式架構是分散式系統，RD 會使用分散式工具來找特定請求式如何在多個服務間流動過程，有助於找到性能瓶頸或可能失敗的原因。&lt;/p&gt;
+&lt;p&gt;修復 (Fix) : &lt;br/&gt;
+一旦問題被定位，就有機會定位問題並進行緊急修復的動作。可能解決方式式調整配置設定檔、修正錯誤的程式或是重新啟動服務(重開治百病)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;感覺是專業工程師的抓蟲流程。但像我們專業靈媒團隊，平時出事的反應更接近 Day 29 的：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;口而相傳，緣分到了就會修好&lt;br/&gt;
+各自通靈&lt;br/&gt;
+(文件)定義流程 + 系統&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;通著通著就哭了。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;另一組記憶點是來自於我原先的誤會：&lt;strong&gt;「可觀測性不就是插一狗票 Log 嗎？」&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在 Day 11 的「從哨塔到全景地圖」有稍微讓我認識了一點：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;舉個玩世紀帝國的例子，&lt;strong&gt;監控就像是在已經打開的地圖前提下，在覺得危險的位子設立哨塔及哨兵&lt;/strong&gt;，當有人來攻擊時就會有叮叮叮聲響來提醒玩家派兵防守&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;可觀測性就是一打開地圖就已經全開&lt;/strong&gt;，當別的玩家派兵攻打自己的範就可以看到派人的兵種是甚麼及人數，可以做更有效的化解對方玩家的攻擊&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;好像有點懂了：插監控就像是深入敵方野區插眼，可觀測性是想直接開圖&lt;/p&gt;
+&lt;p&gt;&lt;del&gt;而我們團隊都是銅牌瞎子，所以小地圖根本是黑的&lt;/del&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;同樣讓我長知識的還有「三本柱 Metrics、Logging 與 Tracing」&lt;/p&gt;
+&lt;p&gt;這邊直接節錄文章中的介紹：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Metrics : 指標&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用來衡量和監控系統性能的關鍵數據指標，通常是數字化的方式呈現(可聚合數字)。&lt;br/&gt;&lt;/li&gt;
+&lt;li&gt;這些數據通常用於即時監控系統，以確保它們在正常運行範圍內。&lt;br/&gt;&lt;/li&gt;
+&lt;li&gt;例如 : CPU使用率、記憶體使用率、請求速率、錯誤率等都可以通過指標來衡量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Structured Log : 結構化日誌&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;日誌包含有關離散事件的結構化或可讀的詳細資訊。用於提供請求的細節與上下文。&lt;br/&gt;&lt;/li&gt;
+&lt;li&gt;日誌通常被用來瞭解系統中特定事件的發生情況，以及在事件發生時提供上下文。&lt;br/&gt;&lt;/li&gt;
+&lt;li&gt;例如，錯誤日誌、訪問日誌、應用程式日誌等都是常見的日誌類型。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Distributed Tracing : 分散式追蹤&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用於追蹤複雜分佈式系統中請求的過程，以便了解請求從一個元件到另一個元件的傳遞情況。&lt;br/&gt;&lt;/li&gt;
+&lt;li&gt;它有助於識別性能問題和瓶頸，並提供有關請求流程的詳細信息。&lt;br/&gt;&lt;/li&gt;
+&lt;li&gt;通常，追蹤由一個唯一的標識符（例如 traceID）來關聯相關事件。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;我的理解是這樣，供參考：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果服務 CPU 狂噴猛噴，直接噴到 100% 120% 500%，這個是 Metrics&lt;/li&gt;
+&lt;li&gt;如果在程式碼裡面偷寫紙條印出來，例如 &amp;ldquo;Oops, ERROR!&amp;quot;，這個是 Logging&lt;/li&gt;
+&lt;li&gt;如果跨了三四個服務只好摸一串粽子找過去，這個是 Tracing&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在這之前我基本上都一律叫成 Log，同事問問題也是兩手一攤：你去查 Log 啊= =&lt;/p&gt;
+&lt;p&gt;想起一臉疑惑的朋友們，原來混在一起搞撒尿牛丸的是我🥲&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;後面還有蠻多記憶點的，但寫到這邊發現篇幅有點爆，Discord 竟然發不出去了= = 加速一下&lt;/p&gt;
+&lt;p&gt;中間段（Day 17~）的主角都是&lt;strong&gt;不明覺厲(?)的可觀測性全新標準 OpenTelemetry&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;例如介紹 OpenTelemetry 的規範和實作，例如協定和 API 規格，接著逛了一圈 Demo&lt;/p&gt;
+&lt;p&gt;能夠理解有個大一統規範能對可觀測性有多大的幫助，但因為我個人沒玩過，看這段的時候基本上就是「哦哦這新標準好像猛猛的」&lt;/p&gt;
+&lt;p&gt;可能之後找時間碰才會有更深的心得，已經摸過的朋友也歡迎幫忙補充資訊上來&lt;/p&gt;
+&lt;p&gt;&lt;del&gt;最後的 Day 20+ 開始介紹 Grafana Cloud，離我就更遠了，這邊就略過 xD&lt;/del&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;除了上面的兩大塊深水區以外，我還有兩個小小點特別有印象：&lt;/p&gt;
+&lt;p&gt;Day04 的 SLA -&amp;gt; SLO -&amp;gt; SLI 這條：&lt;/p&gt;
+&lt;p&gt;我們在 3/19 轉貼&lt;a href=&#34;https://igouist.github.io/repost/2024/03/0319-reorder-message&#34;&gt;德魯大大的 Re-Order Message&lt;/a&gt; 文章時，裡面有提到「對整個系統的 SLO 期待」這一段。在這裡串了起來：&lt;/p&gt;
+&lt;p&gt;我們跟客戶簽了 SLA 說我們 99.99% 穩。然後我們為了達標（=不要賠錢），就訂了更具體的 SLO，而為了衡量這些指標，就搞了 SLI&lt;/p&gt;
+&lt;p&gt;啊如果 SLI 量下去，抱歉沒達到 SLO，就準備按照 SLA 簽的東西跪地開賠。大概是這樣(?)&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;另一個小小點是 Day 30 的 ODD，我在這邊第一次是聽到這個詞：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;就像 TDD 測試驅動開發強調在寫程式碼前要先寫測試案例，以提高程式碼的保護與品質。ODD 在建立可觀測性系統方面也是如此，&lt;strong&gt;可觀察性驅動開發意味著開發人員在編寫程式碼之前考慮可觀察性信號或是監控方法&lt;/strong&gt;，適用於元件級別或是整個系統。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;也許，我是說也許，我們開發之前的確就該想好後續該怎麼監測跟維護，而不是把鍋端給後面的苦主來通靈。對吧？對吧前輩們？&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;三十天太長了，很難在這篇推薦文裡介紹完。我已經列了許多我有筆記的部份，但像是 OpenTelemetry 這些硬東西，我個人力有未逮(?)&lt;/p&gt;
+&lt;p&gt;還是推薦有興趣的朋友直接閱讀，畢竟文章結構簡單直接，有大綱有小結，拆成每一天的話也不算長，有名詞或觀念也能再自己延伸，感覺不虧&lt;/p&gt;
+&lt;p&gt;不說了我要去拆文章內容到我的筆記庫了= =&amp;rdquo;&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>【每天推薦一篇文章】寫給工程師看的減肥指南</title>
       <link>https://igouist.github.io/repost/2024/03/0329-a-weight-loss-guide-for-engineers/</link>
