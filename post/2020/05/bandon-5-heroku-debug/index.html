@@ -157,7 +157,7 @@
 <h2 id="二在-heroku-上執行-selenium">二、在 Heroku 上執行 Selenium</h2>
 <p>前面的 <a href="/post/2020/03/bandon-1-selenium/">我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單</a> 中，能取得訂單內容主要都是依賴於 Selenium 控 chrome 上。然而我們丟上 Heroku 後… 哪來的瀏覽器啊！因此遭遇到了這整個專案最大的存在危機（？）</p>
 <p>幸好後來有找到這篇 <a href="https://medium.com/@mikelcbrowne/running-chromedriver-with-python-selenium-on-heroku-acc1566d161c">Running ChromeDriver with Python Selenium on Heroku</a>，裡面有說明如何順利在 Heroku 上跑 Selenium，實在是相當感謝，這邊也記錄一下。</p>
-<p>我們在前面 <a href="/post/2020/05/bandon-4-heroku/">我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku</a> 有提到，Heroku 有建置包這東西來協助建置專案，也提到 Python 是 heroku-buildpack-python。這邊就是建置包去建出 webdriver，因此使用 <code>heroku buildpacks:add</code> 的指令去加入 <code>heroku-buildpack-chromedriver heroku buildpa</code> 這個建置包。</p>
+<p>我們在前面 <a href="/post/2020/05/bandon-4-heroku/">我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku</a> 有提到，Heroku 有建置包這東西來協助建置專案，也提到 Python 是 heroku-buildpack-python。這邊就是建置包去建出 webdriver，因此使用 <code>heroku buildpacks:add</code> 的指令去加入 <code>heroku-buildpack-chromedriver heroku buildpa</code> 這個建置包。</p>
 <p>加入完畢之後，要設定 heroku 的 config 去指定 chrome 和 chrome driver 的路徑</p>
 <pre tabindex="0"><code>heroku config:set GOOGLE_CHROME_BIN=/app/.apt/usr/bin/google_chrome
 heroku config:set CHROMEDRIVER_PATH=/app/.chromedriver/bin/chromedriver
