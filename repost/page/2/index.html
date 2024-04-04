@@ -110,6 +110,42 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/03/0321-anemic-domain-model/" title="【每天推薦一篇文章】貧血模型與充血模型" >【每天推薦一篇文章】貧血模型與充血模型</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-3-21,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p>今天剛好跟同事聊到充血模型的概念，決定轉貼小朱大的這篇，順手收進我的筆記庫：<br/>
+<a href="https://dotblogs.com.tw/regionbbs/2021/05/29/anemicdomainmodel">這裡貧血、那裡充血，到底資料模型要怎麼設計？ - 小朱® 的技術隨手寫</a></p>
+<p>首先我們先看一下貧血模型的部份，比較常見的應該就是單純放一下資料用的 DTO（Data Transfer Object）：</p>
+<blockquote>
+<p>貧血模型之所以為貧血，其最大原因是，<strong>不論是 DTO 或是 POCO，它的業務邏輯都操控在別人手上，自己沒辦法去維護自己的業務規則</strong>，以上面 DTO 或 POCO 作為例子，它們都沒有內建的處理存款與提款的程式碼，都要倚賴外部程式</p>
+<p><strong>當業務邏輯只能由別人處理時，相對的就破壞了這個領域知識的內聚力，也提高了向外的耦合性，而且它並沒有辦法自我處理自己的領域知識，在後續系統的擴充與延長時，若與別人共用這個模型時，別人也一樣要實作這類領域知識，從而發生領域知識不一致的可能，導致系統設計的風險。</strong></p>
+<p>因此，若系統內的業務邏輯、流程或知識會有共用的可能性時，就應該要考慮以領域模型的方式設計，而不是使用 DTO 或 POCO 的設計作法。</p>
+</blockquote>
+<hr>
+<p>而相對的，充血模型則是：</p>
+<blockquote>
+<p>所謂的充血模型，只是大家在學校學過物件導向程式設計中，具有足夠內聚力的類別而己，但用一個新名詞來講，一個平凡無奇的概念突然瞬間高大上了起來。</p>
+<p><strong>一個充血模型，封裝 (Encapsulation) 的特性會十分明顯，它該有的資料就是它自己維護，外部想要對這個模型的資料做異動，就只能使用它所開放的方法 API 執行</strong>…這不就教科書上說的嗎？</p>
+</blockquote>
+<p>在最後一段，小朱大有列出這兩種模型適用的時機。</p>
+<p>例如說，應用程式很小、資料單純的時候，就可以考慮貧血模型；而如果某些領域知識會需要重複使用的時候，就可以考慮充血模型等等，有興趣的朋友可以再點進去參考一下。</p>
+<hr>
+<p>之前在維護三層式的專案時，各層之間都是用 DTO 來傳遞資料。就像工廠流水線一樣，到了某一段就把資料倒出來處理處理，然後塞到另一個 DTO 傳到下一站。</p>
+<p>後來到了現在的公司，才接觸到貧血充血這些名詞。但想想物件會動(?)好像也是理所當然的…吧？</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/03/0321-anemic-domain-model/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/repost/2024/03/0320-dopamine/" title="【每天推薦一篇文章】爽與痛的平衡：多巴胺" >【每天推薦一篇文章】爽與痛的平衡：多巴胺</a>
                                 </h1>
                             </header>
@@ -513,55 +549,6 @@ Totla Composite SLA = 99.9899% = 99.99% * 99.99%</p>
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/03/0309-a-brief-history-of-airbnb-architecture/" title="【每天推薦一篇文章】Airbnb 的架構演進" >【每天推薦一篇文章】Airbnb 的架構演進</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-3-9,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p>剛剛看到這篇香的，立馬拿來當作今日轉貼：<br/>
-<a href="https://medium.com/@mananshah3654/a-brief-history-of-airbnbs-architecture-bce6d0405f9c">A Brief History of Airbnb’s Architecture</a></p>
-<p>文章裡介紹了 Airbnb 的架構從一個單體長成 SOA 的過程，包括他們在大單體時遇到的問題、逐步遷移的比對機制、SOA 的優缺點，以及他們搞的 API 框架等等。</p>
-<p>這邊就節選一些我覺得有趣的地方，對其他部份有興趣的朋友可以直接閱讀文章。</p>
-<hr>
-<p>因為搬家不是一兩天就搬得完的，所以 Airbnb 在過程中有對新舊系統的操作進行比對</p>
-<p>例如<strong>讀取相關的操作，就同時呼叫新舊系統並且比對查詢結果，確定都沒問題之後才遷移過去</strong></p>
-<p>而<strong>寫入相關的操作，則是建立第二顆 DB，然後再查詢出來比對兩邊的內容</strong></p>
-<p>之所以對這段有興趣，是因為之前也遇過把舊系統的功能遷移到新系統的場景，喊了一聲「絞殺者模式！」就開始搬磚頭</p>
-<p>當時也是藉由同時查詢兩邊來比對，現在看到人家也這麼幹，稍微安心了一點(?)</p>
-<hr>
-<p>這篇文章裏面也整理了服務導向架構（Service-Oriented Architecture, SOA）的優缺點，也節錄上來讓大家參考（同時方便我之後查詢）</p>
-<blockquote>
-<p>Some pros were as follows:<br/>
-一些優點如下：</p>
-<p>The system became more reliable and highly available. Even if one service went down, other parts of the service-oriented architecture could still function.
-<strong>系統變得更加可靠且高度可用</strong>。即使其中一個服務出現故障，服務導向架構的其他部分仍然可以運作。</p>
-<p>Services were now individually scalable, allowing fine-tuning of the resource allocation depending on the real needs of the system.
-現在<strong>服務可以進行個別的可擴展性調整</strong>，根據系統的實際需求進行資源分配的微調。</p>
-<p>Increased business agility due to separating different parts of the product into different services. Each team could iterate in parallel.
-將產品的不同部分分開成不同的服務，能夠增加業務的靈活性。<strong>每個團隊都可以並行進行迭代</strong>。</p>
-</blockquote>
-<blockquote>
-<p>However, there were some cons as well:<br/>
-然而，也有一些缺點：</p>
-<p>Engineers can take more time to ship a feature in service-oriented architecture because they need to first acquaint themselves with the various services. Also, any change potentially involves multiple services
-工程師在服務導向架構中可能需要更多時間來發布一個功能，因為他們<strong>需要先熟悉各種服務</strong>。此外，<strong>任何變更都可能涉及多個服務</strong>。</p>
-<p>Even though services were loosely coupled, certain patterns of logic had to be repeated across different services.
-即使服務之間鬆散耦合，<strong>某些邏輯模式仍需要在不同服務之間重複</strong>。</p>
-<p>Complicated dependency graph especially when there is a lack of API governance. This could also result in circular dependencies and also make it difficult for engineers to debug errors.
-當 API 管理不足時，<strong>複雜的依賴關係圖可能會出現。這可能導致循環依賴</strong>，並使工程師難以調試錯誤。</p>
-</blockquote>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/03/0309-a-brief-history-of-airbnb-architecture/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -708,7 +695,7 @@ Totla Composite SLA = 99.9899% = 99.99% * 99.99%</p>
 <ul class="widget-list">    
     
     <li>
-        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (85)</a>
+        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (86)</a>
     </li>
 </ul>
     </section>

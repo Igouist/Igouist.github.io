@@ -6,7 +6,40 @@
     <description>Recent content in Reposts on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Tue, 02 Apr 2024 23:58:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/repost/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 04 Apr 2024 23:38:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/repost/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>【每天轉貼一篇文章】從動圖認識負載平衡（Load Balancing）</title>
+      <link>https://igouist.github.io/repost/2024/04/0404-load-balancing/</link>
+      <pubDate>Thu, 04 Apr 2024 23:38:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/repost/2024/04/0404-load-balancing/</guid>
+      <description>&lt;p&gt;今天想轉貼有香香動畫(?)的科普文：
+&lt;a href=&#34;https://samwho.dev/load-balancing/&#34;&gt;Load Balancing - Sam Rose&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;這篇文章用了簡單的動畫，讓讀者能直觀地了解當下 Request 的傳送狀況（看著球被丟給伺服器，意外地蠻療癒的）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/xhY79Hx.gif&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;從最簡單的 1 個來源發送給 1 台伺服器（=只要一直把球丟過去給伺服器就好）開始&lt;/p&gt;
+&lt;p&gt;接著，伺服器開始吃不下了。我們想要增加伺服器數量，但就需要把 Request 分配給他們兩台伺服器，這時候最簡單粗暴的做法就是&lt;strong&gt;輪詢（=輪流發球給他們）&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;然後再加入一些會在實務上遇到的狀況：每顆球（Request）要處理的工可能不一樣大，伺服器也不一定都一樣強。&lt;/p&gt;
+&lt;p&gt;這樣一來，單純平均發球的輪詢作戰很快就會遇到胃口比較小的伺服器開始吃不下的尷尬狀況&lt;/p&gt;
+&lt;p&gt;為了減輕這個狀況，我們可以在每個伺服器前面加個小小的&lt;strong&gt;排隊區（Request Queues）&lt;/strong&gt;，雖然要排隊勢必會拉長時間，但至少掉球的狀況就減少了&lt;/p&gt;
+&lt;p&gt;再進一步的話，我們可以&lt;strong&gt;針對伺服器的消化能力來替他們加個權重&lt;/strong&gt;，不過手動標權重很容易翻車，所以要想辦法讓他自動調整權重，也就是要能「動態加權輪詢」&lt;/p&gt;
+&lt;p&gt;例如根據最近三次的執行時間來計算伺服器的胃口(?)，再決定要發幾顆球給伺服器，比較餓吃比較快的就多發一點(??)&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;除了吃不下把球吐掉以外，如果吃太久吃到 Timeout 也是不行的。而針對延遲問題，這篇最後介紹了「峰值指數加權移動平均（PEWMA）」&lt;/p&gt;
+&lt;p&gt;做法其實也很直覺：抓一下最近這些伺服器的延遲如何、都處理了多久，然後再經過一些數學魔法(?) 來算出下一個 Request 給哪台伺服器比較好、看能不能讓延遲更少&lt;/p&gt;
+&lt;p&gt;ps. 附上數學魔法的段落給那些看得懂的朋友：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;For each server, the algorithm keeps track of the latency from the last N requests. Instead of using this to calculate an average, it sums the values but with an exponentially decreasing scale factor. This results in a value where the older a latency is, the less it contributes to the sum. Recent requests influence the calculation more than old ones.
+對於每個伺服器，該演算法會追蹤從最後 N 個請求開始的延遲時間。不同於使用此來計算平均值，它將這些值相加，但使用指數遞減的比例因子。這導致一個值，其中較舊的延遲對總和的貢獻較小。最近的請求比舊的請求更影響計算。&lt;/p&gt;
+&lt;p&gt;That value is then taken and multiplied by the number of open connections to the server and the result is the value we use to choose which server to send the next request to. Lower is better.
+然後，將該值乘以與伺服器的開放連接數，結果就是我們用來選擇下一個請求要發送到哪個伺服器的值。數值越低越好。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;p&gt;但是相較前面著重在不要把球吐掉的「動態加權輪詢」，這套注重延遲問題的「峰值指數加權移動平均」就比較有可能發生更嚴重的吃不下問題&lt;/p&gt;
+&lt;p&gt;作者有進行一些測試並繪製圖表，有興趣的朋友可以參考看看。感覺還是要根據狀況、評估對延遲或掉包的容忍程度，再決定採用怎樣的負載平衡策略會比較好&lt;/p&gt;
+&lt;p&gt;那麼，今天的轉貼就到這邊，我們明天（大概）見～&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>【每天轉貼一篇文章】用 Microsoft Clarity 觀察使用者行為</title>
       <link>https://igouist.github.io/repost/2024/04/0402-microsoft-clarity/</link>
@@ -308,6 +341,47 @@
 &lt;/blockquote&gt;
 &lt;p&gt;如果只是做一個簡單的 POC，的確不該把重點放在儲存工具上。而在這篇文章裡，作者使用了簡單輕便的雲端工具 Airtable 來處理掉儲存體的部份&lt;/p&gt;
 &lt;p&gt;Airtable 可以簡單地呼叫 REST API 來處理掉 CRUD 的操作，可以說是無腦開箱即用。&lt;br/&gt;（是不是也該來嘗試看看xD）&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>【每天推薦一篇文章】讓數據幫你決策</title>
+      <link>https://igouist.github.io/repost/2024/03/0323-let-data-guide-your-decision-making/</link>
+      <pubDate>Sun, 24 Mar 2024 00:09:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/repost/2024/03/0323-let-data-guide-your-decision-making/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://medium.com/3pm-lab/data-analytics-on-product-manager-decision-making-a8cce5f30122&#34;&gt;【PM 總動員】讓數據幫你決策：產品經理也懂的數據分析&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;這邊文章把數據決策分析拆出四個步驟：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Step 1. 問題與指標拆解、訂定假設&lt;/li&gt;
+&lt;li&gt;Step 2. 維度觀察與指標計算&lt;/li&gt;
+&lt;li&gt;Step 3. 發現梳理與解讀&lt;/li&gt;
+&lt;li&gt;Step 4. 資料呈現與視覺化&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;每個階段都有進一步的說明。例如在第一個步驟，我們開始前要問三個問題：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;問題與目標 (Question &amp;amp; Goal)：我想知道的問題是什麼? 目標是什麼?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;假設 (Hypothesis)：我到底想看什麼樣的數據?是基於什麼觀察與假設？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;行動 (Next Steps)：如果數據撈出來了，會怎麼影響我的下一步?分析完的決策可能是什麼?&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;p&gt;在第二步驟的指標計算裡，需要在第一步驟的「想看什麼樣的數據」時就進一步設想實際需要的數字。以文章內的電商背景為例，就像：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;我想知道最近三個月中，每月成交次數都 ≥ 5 次的用戶 (=消費次數高的高頻用戶)，分別是買了哪些商品類型，不同性別的用戶人數有多少，而平均購買商品數又是多少?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;當拿到資料並且確認沒問題之後，進入第三步驟，開始解讀。解讀的發現我看得是有點玄(?)。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;這很仰賴產品經理對用戶的理解、以及對產品與市場的敏銳度，其中也包含一部分的行動方針，但不管如何儘管大膽假設，之後再小心求證即可。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;但除了這部份以外，整體的解讀方式「嘗試做圖進行分析、找出特徵，然後列出發現，和之前的假設互相比對…」這個流程解釋得很好理解。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;如果前面的步驟發現了好東西，就可以來搞第四步驟的資料呈現與視覺化。我覺得重點就在於示範前的這句：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;可視化與圖像化就是把「數據」變成「資訊」、成為輕鬆說服他人的有利工具，但不是把圖拉出來就好，而是&lt;strong&gt;思考怎麼樣的呈現能讓看的人不帶腦、一眼就看出重點，甚至是默默認同你想強調的論點&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;以上把這篇文章的流程簡化很多，文章內從一個範例背景開始走完四個步驟，過程中列出很多舉例和說明，讓讀者能夠迅速理解這四個步驟&lt;/p&gt;
+&lt;p&gt;例如我在這邊文章就認識了決定使用者行為動機的模型「Fogg’s Behavior Model」：&lt;br/&gt;
+&lt;strong&gt;&lt;code&gt;Behavior(行為) ＝ Motivation(動機) * Ability(能力) * Prompt(提示)&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;感覺相當不錯，已收藏。也推薦有興趣的朋朋閱讀。&lt;/p&gt;</description>
     </item>
     
     <item>
