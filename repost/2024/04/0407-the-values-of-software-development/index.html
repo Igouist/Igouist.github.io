@@ -26,20 +26,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>C#: 時區轉換、民國西元、國曆農曆、中文月份週期 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="C#: 時區轉換、民國西元、國曆農曆、中文月份週期 - 伊果的沒人看筆記本">
+    <title>【每天推薦一篇文章】軟體開發的價值觀 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="【每天推薦一篇文章】軟體開發的價值觀 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2020-08-30T11:58:00&#43;08:00">
+    <meta property="article:published_time" content="2024-04-07T23:02:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2020-08-30T11:58:00&#43;08:00">
+    <meta property="article:modified_time" content="2024-04-07T23:02:00&#43;08:00">
         
-        <meta name="keywords" content="CSharp, DateTime, TimeZoneInfo, TaiwanCalendar, TaiwanLunisolarCalendar, DateTimeFormatInfo, w3HexSchool">
-    <meta name="description" content="紀錄一下 C# 關於時間處理的操作，包括 TimeZoneInfo 的時區資訊，以及使用 TaiwanCalendar 來將西元年轉換成民國年、用 TaiwanLunisolarCalendar 將國曆轉換成農曆，和用 DateTimeFormatInfo 取得周次的中文等等">
+        
+    <meta name="description" content="【每天推薦一篇文章】軟體開發的價值觀">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/post/2020/08/csharp-timezone/">
+    <meta property="og:url" content="https://igouist.github.io/repost/2024/04/0407-the-values-of-software-development/">
     <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link defer rel="stylesheet" href="/css/normalize.css">
@@ -78,7 +78,7 @@
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    <a class="" href="https://igouist.github.io/">Home</a>
                     
                     <a  href="https://igouist.github.io/categories/csharp-and-dotnet/" title="CSharp">CSharp</a>
                     
@@ -107,19 +107,11 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">C#: 時區轉換、民國西元、國曆農曆、中文月份週期</h1>
+                            <h1 class="post-title">【每天推薦一篇文章】軟體開發的價值觀</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2020-8-30,
+                            2024-4-7,
                         </date>
-                        
-                        <div class="post-meta">
-                            
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
-                            
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
-                            
-                        </div>
                         
                         
                         <div class="post-meta">(
@@ -131,82 +123,70 @@
                         
 
                         <div class="post-content">
-                            <p>聊到將時間從 UTC 轉到台灣時間，居然還是聽到朋友表示使用 +8 小時的做法，驚為天人。這種做法可能會造成後續的問題，例如時區並不會跟著變動，或是遇到日光節約等特殊狀況就容易出事。和西元民國轉換直接 -1911 一樣不穩定。</p>
-<p>這篇就用來記錄一下之前看過比較優雅的時區轉換方式，順便將先前存著的時間處理相關資料整理一下，方便之後需要時可以馬上回來查詢。</p>
-<h2 id="timezoneinfo-時區資訊">TimeZoneInfo: 時區資訊</h2>
-<p>轉換方式主要參考自 <a href="https://dotblogs.com.tw/supershowwei/2016/10/17/141620">[食譜好菜] DateTime 具有文化特性的格式化及時區的轉換</a> 及 <a href="https://docs.microsoft.com/zh-tw/dotnet/standard/datetime/converting-between-time-zones">在各時區間轉換時間</a>，感謝前人的指引。</p>
-<blockquote>
-<p>關於文化特性，也可以參考本站的 <a href="/post/2021/10/csharp-datatime-tostring-cultureinfo">菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記</a> 呦。</p>
-</blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 假設現在是要從標準時區 +00:00 轉換到台灣時區，故這邊使用 UtcNow 先取標準世界協調時間</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> nowDateTime = DateTime.UtcNow;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>nowDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 2020/08/30 15:56:05 +00:00</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// ==================================================</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 傳統的 直接對時間做計算的方式…</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> addedDateTime = nowDateTime.AddHours(<span style="color:#ae81ff">8</span>);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>addedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 2020/08/30 23:56:05 +00:00</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 可以看到儘管時間變動了，時區仍然還在 +00:00</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// ==================================================</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用 TimeZoneInfo 先取得台北時區</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> timeZone = TimeZoneInfo.FindSystemTimeZoneById(<span style="color:#e6db74">&#34;Taipei Standard Time&#34;</span>);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 再使用 TimeZoneInfo 來變更時間</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> convertedDateTime = TimeZoneInfo.ConvertTime(nowDateTime, timeZone);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 2020/08/30 23:56:05 +08:00</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 可以看到除了時間變更以外，時區也切換到 +08:00 了！</span>
-</span></span></code></pre></div><p>上面取得台北時區的步驟，可以參照 <a href="https://docs.microsoft.com/en-us/previous-versions/windows/embedded/gg154758(v=winembedded.80)">Time Zone IDs</a> 來查詢想要的時區。這樣的時區切換方式，不僅副作用少，不會因為時區沒轉雷到後續接手的人，也省卻了擔心日光節約等等問題，這種事就交給微軟去煩惱吧！</p>
-<p>另外這邊也逐步放一些時區處理相關的參考資料：</p>
-<h2 id="taiwancalendar-西元年轉民國年-br-taiwanlunisolarcalendar-國曆轉農曆">TaiwanCalendar: 西元年轉民國年 <br/> TaiwanLunisolarCalendar: 國曆轉農曆</h2>
-<p>可以參考這篇 <a href="https://kevintsengtw.blogspot.com/2014/06/c.html">基本題 - C# 西元年轉換取得民國年格式字串 - mrkt 的程式學習筆記</a>。</p>
-<p>內文示範了使用 <code>System.Globalization.TaiwanCalendar</code> 和 <code>System.Globalization.TaiwanLunisolarCalendar</code> 來進行安全轉換的作法。</p>
-<p>基本上來說就是指定文化特性中的時間格式（曆法）為農曆，至少依靠微軟爸爸，比自己加減 1911 來得安全多了囧。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> time = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2021</span>, <span style="color:#ae81ff">12</span>, <span style="color:#ae81ff">01</span>);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 直接從 TaiwanCalendar 取民國年，自組字串時常用</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> taiwanCalendar = <span style="color:#66d9ef">new</span> TaiwanCalendar();
-</span></span><span style="display:flex;"><span>taiwanCalendar.GetYear(time).Dump(); <span style="color:#75715e">// 110</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 將文化特性的曆法改成民國年</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> info = <span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;zh-TW&#34;</span>);
-</span></span><span style="display:flex;"><span>info.DateTimeFormat.Calendar = <span style="color:#66d9ef">new</span> TaiwanCalendar();
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 西元年轉民國年(字串)</span>
-</span></span><span style="display:flex;"><span>time.ToString(info).Dump(); <span style="color:#75715e">// 110/12/1 00:00:00</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 民國年(字串)轉西元年</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> timeString = <span style="color:#e6db74">&#34;110/12/1&#34;</span>;
-</span></span><span style="display:flex;"><span>DateTime.Parse(timeString, info).Dump(); <span style="color:#75715e">// 2021/12/01 00:00:00</span>
-</span></span></code></pre></div><h2 id="datetimeformatinfo-月週時間的格式">DateTimeFormatInfo: 月、週、時間的格式</h2>
-<p>不用再傻傻地手刻陣列「星期一」、「星期二」、「星期三」…之類的了，只要用 <code>DateTimeFormatInfo.CurrentInfo</code> 的就好啦：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> MonthCh = DateTimeFormatInfo.CurrentInfo.MonthNames;   <span style="color:#75715e">// 中文月份名稱列表</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> MonthEn = DateTimeFormatInfo.InvariantInfo.MonthNames; <span style="color:#75715e">// 英文月份名稱列表</span>
-</span></span></code></pre></div><p><img src="https://i.imgur.com/se7XLZy.png" alt=""></p>
-<p>除了月份以外，<code>DateTimeFormatInfo.CurrentInfo</code> 也包含了當地的其他欄位與格式。</p>
-<p>例如 <code>AbbreviatedDayNames</code> 能拿到 週一、週二、週三…；<code>DayNames</code> 則會拿到 星期一、星期二、星期三…</p>
-<p>時間格式的話，<code>FullDateTimePattern</code> 就會拿到 <code>yyyy'年'M'月'd'日' tt hh:mm:ss</code> 等等</p>
-<p>內容還有許多欄位，有興趣的可以用 LinqPad 來 Dump 看看，或是直接翻閱 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.globalization.datetimeformatinfo?view=netcore-3.1">DateTimeFormatInfo</a> 囉！</p>
-<h2 id="參考資料">參考資料</h2>
+                            <p>【每天推薦一篇文章】軟體開發的價值觀</p>
+<p>收假前來看點故事吧，今天要推薦的是這篇：<br/>
+<a href="https://etrexkuo.medium.com/%E8%BB%9F%E9%AB%94%E9%96%8B%E7%99%BC%E8%80%85%E7%9A%84%E5%9F%B9%E9%A4%8A-8fee43c76195">軟體開發者的培養 - 卡米哥</a></p>
+<p>這篇的主軸圍繞在作者 20 年來的學習歷程，以及過程中培養的各項價值觀</p>
+<p>從剛入門大家都有過的「寫了能跑、越短越好」開始，隨著問題越來越難、越複雜，也開始有了效能、可讀性、可維護性等等的考量</p>
+<p>作者很貼心的把培養出來的這些價值觀分項列點地說明。推薦大家直接過去看原文，段落明確，說明清晰，值得收藏</p>
+<p>但因為我畫的重點太多了（老毛病），多到沒辦法直接整車拉過來，因此今天也按照慣例，簡單粗暴地列一下內容收進我的筆記庫就好</p>
+<hr>
+<h3 id="程式碼執行成本效能">程式碼執行成本（效能）</h3>
+<p>要處理的資料量變大了，程式寫爛了要跑半天了，得開始重視效能<br/>
+➡️ 學習資料結構和演算法，辨別程式執行時間和實作方案的優劣</p>
+<hr>
+<h3 id="程式碼修改成本可維護性">程式碼修改成本（可維護性）</h3>
+<p>專案開始被改來改去了，每次修改都要花成本<br/>
+➡️ 如果能讓修改更方便快速，那當然就可以增加產能<br/>
+➡️ 需要版本控制，以及改用能夠抽換實作的寫法</p>
+<hr>
+<h3 id="程式碼理解成本可讀性">程式碼理解成本（可讀性）</h3>
+<p>改東西的時候會因為程式碼太亂，光是讀懂就花了大量時間<br/>
+➡️ 專案規模越來越大，要讀的東西也越來越多，花的時間也越來越長<br/>
+➡️ 只能動手整理程式碼，開始乖乖拆模組、好好取名等等</p>
+<p>（作者推薦看怦然心動的人生整理魔法，我也有點怦然心動）</p>
+<hr>
+<h3 id="程式碼彈性">程式碼彈性</h3>
+<p>開始觀察需求的生長方向來留擴充點，使用物件導向原則和設計模式來保留彈性</p>
+<p>（我個人感覺有點像是可維護性的延伸議題，而且我還菜，有時會分不出來彈性和過度設計 QQ）</p>
+<hr>
+<h3 id="程式碼測試成本">程式碼測試成本</h3>
+<p>重構（作者很誠實，他寫「重寫」）的時候很容易改壞之前寫好的部分<br/>
+➡️ 專案規模越大也就代表測試成本越高<br/>
+➡️ 需要開始碰自動化測試了</p>
+<hr>
+<h3 id="保留修改權保留反悔權">保留修改權、保留反悔權</h3>
+<p>如果面臨兩個解決方案，想一想：</p>
 <ul>
-<li><a href="https://kevintsengtw.blogspot.com/2014/06/c.html">基本題 - C# 西元年轉換取得民國年格式字串 - mrkt 的程式學習筆記</a></li>
-<li><a href="https://dotblogs.com.tw/supershowwei/2016/10/17/141620">[食譜好菜] DateTime 具有文化特性的格式化及時區的轉換</a></li>
-<li><a href="https://dotblogs.com.tw/supershowwei/2019/04/15/095324">[桌邊服務] DateTime 本身有沒有包含時區的資訊？</a></li>
-<li><a href="https://dotblogs.com.tw/ricochen/2016/02/12/114642">[C#]UTC時區轉換 - RiCo技術農場</a></li>
-<li><a href="https://blog.miniasp.com/post/2010/04/30/Concept-DateTime-TimeZone">釐清觀念：.NET 日期結構(DateTime) 與 時區轉換</a></li>
-<li><a href="https://blog.darkthread.net/blog/compare-datetime-with-diff-timezone">笨問題 - UTC 與本地時區 DateTime 比較</a></li>
-<li><a href="https://docs.microsoft.com/zh-tw/dotnet/standard/base-types/custom-date-and-time-format-strings?redirectedfrom=MSDN">自訂日期與時間格式字串 - Microsoft Docs</a></li>
-<li><a href="https://docs.microsoft.com/zh-tw/dotnet/standard/datetime/converting-between-time-zones">在各時區間轉換時間 - Microsoft Docs</a></li>
-<li><a href="http://siyuantw.blogspot.com/2015/07/c.html">Siyuan的程式開發筆記: C#民國年西元年轉換 (siyuantw.blogspot.com)</a></li>
+<li>選擇某個方案之後，要再進一步修改的成本有多高？</li>
+<li>選擇某個方案之後，想反悔了改成另一個方案的成本有多高？</li>
 </ul>
+<p>例如修改變數名稱的成本遠低於修改 DB 的欄位；或是存圖片的時候先保存完整圖片，把真的效能炸裂的時候換成保存壓縮後圖片的選項保留起來等等</p>
+<p>總之就是：<strong>避免做出悔不當初的選擇</strong></p>
+<hr>
+<h3 id="學習前人經驗">學習前人經驗</h3>
+<p>有一句我覺得作者講得挺好，切中我心，直接轉上來</p>
+<blockquote>
+<p>一開始會以為只會用套件做東西的人很弱，能自己實作才強，但現在完全不會這樣想。
+<strong>只會靠自己累積經驗的學習方式最慢，能吸收他人經驗來加速學習，才能站在巨人的肩膀上。</strong></p>
+</blockquote>
+<hr>
+<p>前面列了蠻多價值觀的，那如果這些價值觀衝突了呢？</p>
+<p>這時候就要根據情況對價值觀進行優先度的排序：</p>
+<blockquote>
+<p>在不同的情況下，價值觀的優先序也會跟著不同，例如開發完成就不會再增加需求的小專案就不需要考慮修改成本。</p>
+</blockquote>
+<hr>
+<p>價值觀的篇幅結束了之後，作者還談了一些通靈能力、協作能力的部分。例如多人開發的時候，就像同居時每個室友對乾淨的看法不同，勢必要先喬好，最好能留下規約，把髒亂的環境打掃成乾淨的環境</p>
+<p>但因為我信奉的是<strong>游泳池原則（軟體專案就像游泳池，每個人都會在裡面尿尿）</strong>，所以就不特別截了。</p>
+<p>只是最後有一段讓我有被打到的港覺：</p>
+<blockquote>
+<p>身為資深軟體開發者，應該要有能力培養技術等級低的開發者，而不是排擠或邊緣化他們。一<strong>個有能力培養新進開發者的資深開發者是更有價值的。在遊戲裡，30% 團隊戰鬥力加成的靈氣，通常是很強的技能。</strong></p>
+</blockquote>
+<p>要是我們整隊都有 30% 靈氣還能疊加該有多強啊！這也許正是現在的我所缺少的。特別筆記下來。</p>
+<hr>
+<p>真的很喜歡看這些前輩們的觀念文或經驗談，感覺像是窺見前輩們思考裡的其中一角，正在挖的大泥球都變香了呢</p>
+<p>那麼，今天的轉貼就到這邊，我們明天見～</p>
                         </div>
 
                         
@@ -215,15 +195,15 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/2020/08/csharp-string-interpolation/">C#: 字串插值 (String interpolation) 的格式化</a></li>
+        <li><a href="/repost/2024/04/0405-user-story-and-coffee/">【每天轉貼一篇文章】我是想睡覺的工程師，我想要提神，所以我需要打翻咖啡</a></li>
         
-        <li><a href="/post/2020/08/system-environment/">C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑</a></li>
+        <li><a href="/repost/2024/04/0404-load-balancing/">【每天轉貼一篇文章】從動圖認識負載平衡（Load Balancing）</a></li>
         
-        <li><a href="/post/2020/07/code-style/">C#: 程式碼風格備忘</a></li>
+        <li><a href="/repost/2024/04/0402-microsoft-clarity/">【每天轉貼一篇文章】用 Microsoft Clarity 觀察使用者行為</a></li>
         
-        <li><a href="/post/2020/07/automapper/">AutoMapper —— 類別轉換超省力</a></li>
+        <li><a href="/repost/2024/04/observability-in-devops-30-days/">【每天推薦一篇文章】可觀測性 30 天</a></li>
         
-        <li><a href="/post/2020/06/electron-net/">Electron.net —— 把網頁包成桌面應用吧</a></li>
+        <li><a href="/repost/2024/03/0329-a-weight-loss-guide-for-engineers/">【每天推薦一篇文章】寫給工程師看的減肥指南</a></li>
         
     </ul>
 </div>
@@ -231,20 +211,12 @@
 
                         <div class="post-meta meta-tags">
                             
-                            <ul class="clearfix">
-                                
-                                <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
-                                
-                                <li><a href="https://igouist.github.io/tags/dotnet">Dotnet</a></li>
-                                
-                                <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
-                                
-                            </ul>
+                            沒有標籤
                             
                         </div>
                         <hr />
 <p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
-<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f08%2fcsharp-timezone%2f" width="100%" frameborder=0></iframe>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2frepost%2f2024%2f04%2f0407-the-values-of-software-development%2f" width="100%" frameborder=0></iframe>
                     </article>
                     
     
@@ -273,20 +245,6 @@
 </form>
     </section>
     
-    
-        <section class="widget">
-            <h3 class="widget-title">文章目錄</h3>
-            <ul class="widget-list">
-                <nav id="TableOfContents">
-  <ul>
-    <li><a href="#timezoneinfo-時區資訊">TimeZoneInfo: 時區資訊</a></li>
-    <li><a href="#taiwancalendar-西元年轉民國年-br-taiwanlunisolarcalendar-國曆轉農曆">TaiwanCalendar: 西元年轉民國年 <br/> TaiwanLunisolarCalendar: 國曆轉農曆</a></li>
-    <li><a href="#datetimeformatinfo-月週時間的格式">DateTimeFormatInfo: 月、週、時間的格式</a></li>
-    <li><a href="#參考資料">參考資料</a></li>
-  </ul>
-</nav>
-            </ul>
-        </section>
     
     
     <section class="widget">

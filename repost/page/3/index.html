@@ -110,6 +110,49 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/03/0311-sla/" title="【每天推薦一篇文章】多服務的 SLA 計算方式" >【每天推薦一篇文章】多服務的 SLA 計算方式</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-3-11,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p>手邊的東西還沒弄完，決定今天簡單轉貼一下前輩丟的 SLA 計算文章，有需要的朋友可以看看：<br/>
+<a href="https://blog.pichuang.com.tw/20230417-composite-sla.html">計算出正確的服務水平協議：探索 Composite SLAs 計算和架構設計 - 魂系架構 Phil&rsquo;s Workspace</a></p>
+<p>這篇文章裡列了蠻多場景。例如</p>
+<ul>
+<li>相依的兩個服務（SLA = 兩者相乘）</li>
+<li>沒有相依的兩個服務（SLA = 1 - 兩者同時失敗機率）</li>
+</ul>
+<br/>
+以及多個區域的狀況：
+<blockquote>
+<p>首先先計算應用程式在所有區域爆炸的機率<br/>
+應用程式在多個區域合併 SLA 公式為 (1 - (1 - SLA) ^ R)</p>
+<p>R: 是區域數量<br/>
+SLA: 是單一區域的 SLA 協議數字</p>
+<p>故可得知程式佈署在兩個區域時，可獲得下列 SLA 等級：<br/>
+Composite SLA for Azure Red Hat OpenShift in 2 regions = 99.9999% = (1 - (1 - 0.99929011)^2)</p>
+<p>但因前面需要放置 Azure Traffic Manager 服務確保前置流量能夠兩邊導流，故還需計算，故可得：<br/>
+Totla Composite SLA = 99.9899% = 99.99% * 99.99%</p>
+</blockquote>
+<hr>
+<p>這篇我收起來哪天需要算的時候參考，不過我特喜歡這段：</p>
+<blockquote>
+<p>Q1: 某某個服務超爛，一天會當機七小時以上，約 SLA 68.3772234%，是不是永遠達不到 2 nines?</p>
+<p>A1:以上面計算單一區域所需最低 SLA 計算來說，不考慮資料一致性及網路可達性，你只要在 4 個不同區域建立相同 SLA 68.3772234% 服務，最差還是可以拿到 SLA 99% 的等級</p>
+<p>但&hellip; <strong>你應該要做的事情是研究一下為啥一個服務一天會噴掉七小時以上，而不是在這邊算數學</strong></p>
+</blockquote>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/03/0311-sla/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/repost/2024/03/0310-the-great-mental-models/" title="【每天推薦一篇文章】思考的框架" >【每天推薦一篇文章】思考的框架</a>
                                 </h1>
                             </header>
@@ -433,42 +476,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/03/0301-guid-and-logical-fragmentation/" title="【每天推薦一篇文章】GUID 與索引破碎" >【每天推薦一篇文章】GUID 與索引破碎</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-3-1,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p>今天看到黑大前幾天發了索引破碎的文，順手轉貼上來；</p>
-<p><a href="https://blog.darkthread.net/blog/guid-clust-idx-frag-n-space/">GUID 叢集索引測試 2：索引碎片化分析與資料表虛胖問題</a><br/>
-延伸閱讀：<a href="https://blog.darkthread.net/blog/guid-as-pk-on-db/">GUID Primary Key資料庫避雷守則</a></p>
-<blockquote>
-<p>PK使用頻率很高，設成叢集索引對效能最有利，故慣例上會設成叢集索引以提升效能。</p>
-</blockquote>
-<blockquote>
-<p>然而，<strong>因為GUID具有不連續的隨機性</strong>，即使循序寫入資料，常常後寫的資料GUID排序較前，依叢集索引特性，實體儲存位置應擺在前段，造成<strong>每次寫入資料都需挪動調整既有資料造成索引破碎，拖累寫入與查詢效能</strong>。</p>
-</blockquote>
-<p>備註：我現在都無腦用 <code>NEWSEQUENTIALID</code> 了，好香好香</p>
-<hr>
-<blockquote>
-<p><strong><code>avg_fragmentation_in_percent</code> 可視為碎片化的程度</strong>。Logical fragmentation 官方翻譯為邏輯片段，我覺得譯成「邏輯碎片」更體切，指的是索引資料分頁邏輯順序與實體順序不一致，邏輯上依索引順序應該連續的資料分頁，被放在不連續的實體位置，如此存取將需要更多 IO 動作，拖慢效能。此<strong>值介於 10 到 15 之間時建議做索引重組，大於 15 時應考慮進行索引重建</strong>。</p>
-</blockquote>
-<blockquote>
-<p><strong><code>avg_page_space_used_in_percent</code> 則是資料分頁存放資料的比率</strong>，比例過低將造成空間浪費(本案例的狀況)，代表要走訪更多分頁才能蒐集完所需要資料，勢必影響效能。<strong>這個值介於 60 到 75 之間時建議做索引重組，低於 60 時應考慮索引重建</strong>。</p>
-</blockquote>
-<p>敝司也有一張每天會有排程拋一卡車資料進去的表，也是使用 GUID 當 PK。DBA 才剛重建完沒兩天，<code>avg_fragmentation_in_percent</code> 就衝破 70</p>
-<p>但因為年久失修綁定古蹟，也不怎麼查詢，現在就當成負面教材來宣導(?)，也算是加深印象了</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/03/0301-guid-and-logical-fragmentation/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -615,7 +622,7 @@
 <ul class="widget-list">    
     
     <li>
-        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (87)</a>
+        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (88)</a>
     </li>
 </ul>
     </section>
