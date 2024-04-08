@@ -110,6 +110,53 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/03/0302-deterministic-aperture/" title="【每天推薦一篇文章】Deterministic Aperture" >【每天推薦一篇文章】Deterministic Aperture</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-3-2,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p>今天<a href="https://github.com/checkcheckzz/system-design-interview?tab=readme-ov-file#-company-engineering-blogs">挖到礦了</a> ，決定先挑一篇出來看。</p>
+<p>今天要轉貼的是 X (Twitter) Enginering 在 2019 的這篇：<br/>
+<a href="https://blog.x.com/engineering/en_us/topics/infrastructure/2019/daperture-load-balancer">Deterministic Aperture: A distributed, load balancing algorithm</a></p>
+<p><strong>文章裡介紹了 Twitter 朋朋搞負載平衡的歷程</strong>，這邊也簡單筆記一下。有興趣的朋友可以直接進入文章閱讀，畢竟有圖還是比較好理解。</p>
+<hr>
+<p>在介紹的過程中，先讓我們假設是「 Client &ndash; 呼叫 &ndash;&gt; Backend 」這樣的關係</p>
+<p>一開始他們是簡單粗暴地讓 Client 各自插負載平衡的東西，然後噴到 Backend 的服務上。但在服務擴展到幾千個實例之後，就開始出現了一些問題，例如分配 socket 啦 buffer 等等。</p>
+<p>接著他們嘗試搞點隨機，雖然看起來好像不錯，但實際上變得更不平衡，一部署上去就讓服務們咚咚嚨咚鏘：</p>
+<blockquote>
+<p>Before the deployment we see a nice collection of traces neatly stacked atop one another.
+<strong>After the deployment: pandemonium!</strong></p>
+</blockquote>
+<p>接著他們重新想了一下他們需要的東西：輕量、而且盡量不要被 Client 和 Backend 的數量變動干擾。</p>
+<p>於是他們嘗試了<strong>環狀座標系統（Ring coordinates）</strong></p>
+<p><img src="https://cdn.cms-twdigitalassets.com/content/dam/blog-twitter/engineering/en_us/infrastructure/2019/dapeture-load-balancer/coord-transform.png.img.fullhd.medium.png" alt="">
+圖片來源：今天轉貼的這篇</p>
+<p>從圖片上來看，每個 Client 和 Backend 都是圓圈上的一個點，假設有 3 個 Client，他們就會被各自畫在圓圈上 1/3 的位置；同時如果有 6 個 Backend，這些 Backend 的實例也會被各自畫在圓圈上 1/6 的位置，然後 Client 在圓圈上找到最近的 Backend 就打下去。</p>
+<p>這次嘗試雖然已經比前面的隨機好很多，但仍然發現分配不均的狀況</p>
+<p>最後他們延伸出了<strong>連續環狀座標</strong></p>
+<p><img src="https://cdn.cms-twdigitalassets.com/content/dam/blog-twitter/engineering/en_us/infrastructure/2019/dapeture-load-balancer/p2c-fractional-continued.png.img.fullhd.medium.png" alt="Image">
+圖片來源：同樣是今天轉貼的這篇</p>
+<p>連續環狀座標不是畫在圓圈的點上，而是圓圈的一段。假設有 3 個 Client，他們就會各占 1/3 圈</p>
+<p>如此一來 Client 和 Backend 就會形成兩個圈。而外圈的 Client 就會按照比例對應到內圈的 Backend，達到非常舒服的平衡(?)</p>
+<p>最後這篇文章列了一些實測的數據和使用上的限制（例如有突發性的高流量可能還是會讓壓力集中在某些 Backend 上）</p>
+<blockquote>
+<p>The flexibility and performance of deterministic aperture has been successful and general enough to cement its place as the default load balancer algorithm at Twitter. Most services have been migrated to the new load balancer with only a handful of exceptions. With that comes a few small operational changes and limitations to consider.</p>
+</blockquote>
+<blockquote>
+<p>Deterministic aperture 的靈活性和性能已經取得成功，並且足夠普遍，以至於在 Twitter 上鞏固了它作為默認的負載平衡器算法的地位。大多數服務已經遷移到新的負載平衡器，只有少數例外。隨之而來的是一些小的操作變化和限制需要考慮。</p>
+</blockquote>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/03/0302-deterministic-aperture/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/repost/2024/03/0301-guid-and-logical-fragmentation/" title="【每天推薦一篇文章】GUID 與索引破碎" >【每天推薦一篇文章】GUID 與索引破碎</a>
                                 </h1>
                             </header>
@@ -464,36 +511,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/02/0221-why-sleep/" title="【每天推薦一篇文章】為什麼要睡覺" >【每天推薦一篇文章】為什麼要睡覺</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-2-21,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p>今天真的是太睏了，睏到突然想起來可以分享這部影片：<br/>
-<a href="https://www.youtube.com/watch?v=s73WwmWVqBg">最容易被忽視的習慣，比爾蓋茲都臣服的一本書｜《為什麼要睡覺？》｜文森說書</a></p>
-
-<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="https://www.youtube.com/embed/s73WwmWVqBg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
-</div>
-
-<hr>
-<p>人類的睡眠階段分為前四小時的「非快速動眼時期」和後四小時的「快速動眼時期」，清醒的時候，我們的大腦會像海綿一樣吸收資訊，然後在深層睡眠整理資訊和長期記憶，並在快速動眼時期試圖串聯這些資訊。</p>
-<p><strong>因此我們可以在睡前和睡醒時留一點時間整理思緒和手上的問題，充分利用大腦睡眠時間的自動化背景處理特性，在睡覺的時候消化這些資訊</strong>（聽起來有點神奇）</p>
-<p>除了睡眠的兩個時期以外，我比較驚訝的是其實有 30% 的人從基因中就是夜貓子、以及酒精其實只是讓我們察覺不到有醒過來，實際上根本就沒有好好睡覺</p>
-<p>另外，睡前盡量減少藍光，會影響睡眠品質，讓大腦產生新想法的時段受到影響。（雖然我現在睡前還是會滑手機拖延一下）</p>
-<p>今天的分享就先這樣，祝各位睡眠順利。準備來睏，明天見 &gt;&lt;</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/02/0221-why-sleep/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -640,7 +657,7 @@
 <ul class="widget-list">    
     
     <li>
-        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (88)</a>
+        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (89)</a>
     </li>
 </ul>
     </section>
