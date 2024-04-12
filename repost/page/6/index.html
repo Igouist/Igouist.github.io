@@ -110,6 +110,30 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/02/0214-spotify-shuffle-songs/" title="【每天推薦一篇文章】不隨機的隨機撥放" >【每天推薦一篇文章】不隨機的隨機撥放</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-2-14,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p>開工前一天適合複習一些舊聞，今天要轉貼的是這一篇：<br/>
+<a href="https://engineering.atspotify.com/2014/02/how-to-shuffle-songs/">How to shuffle songs? - Spotify R&amp;D</a></p>
+<p>簡單來說就是：</p>
+<p>我們隨機撥放歌曲，但是<strong>使用者說他連續聽到同一個人的歌，感覺不夠「隨機」</strong></p>
+<p>雖然使用者說的話很像某種<a href="https://zh.wikipedia.org/zh-tw/%E8%B3%AD%E5%BE%92%E8%AC%AC%E8%AA%A4">賭徒謬誤</a>，但使用者永遠是對的</p>
+<p>現在<strong>我們先洗個牌並且把同個作者的歌均勻打散，這樣就超隨機了～</strong></p>
+<p>之前只知道隨機撥放是洗牌不是隨機，但不知道原來連歌手都會幫你分布均勻。算是長知識了</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/02/0214-spotify-shuffle-songs/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/repost/2024/02/0213-your-body-language-may-shape-who-you-are/" title="【每天推薦一篇文章】姿勢決定你是誰" >【每天推薦一篇文章】姿勢決定你是誰</a>
                                 </h1>
                             </header>
@@ -406,75 +430,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/02/0204-airbnb-engineering-avoiding-double-payments-in-a-distributed-payments-system/" title="【每天推薦一篇文章】Airbnb 如何在分散支付系統中避免重複支付" >【每天推薦一篇文章】Airbnb 如何在分散支付系統中避免重複支付</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-2-4,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p><img src="https://i.imgur.com/cEvQr5G.png" alt="Image"></p>
-<p>今天放假有整個早上的時間，決定來整理 Discord 上面大大貼的香香文章：<br/>
-<a href="https://medium.com/airbnb-engineering/avoiding-double-payments-in-a-distributed-payments-system-2981f6b070bb">Avoiding Double Payments in a Distributed Payments System</a></p>
-<p>裡面提到實現最終一致性的三種方式：</p>
-<ul>
-<li>read repair</li>
-<li>write repair</li>
-<li>asynchronous repair</li>
-</ul>
-<p>Airbnb 他們在不同的地方都有應用到這三種方式，這篇主要是介紹使用了 write repair 的解決方案。也就是每次客戶端向服務器發出寫入請求時，都會嘗試修復不一致、破損的狀態。</p>
-<p>為了讓客戶端能夠自動重試，就需要讓 API 是具有冪等性的：重複發出相同的 Requset，結果也會保持一致。而因為他們需要極低的延遲，不能拆服務出來跑，所以他們弄了一個叫做「奧菲斯（Orpheus）」的 library 來處理這件事</p>
-<p>這邊整理了一些我（覺得）可能會遇到的相關內容，有興趣的朋友也可以閱讀原文，文章內有許多圖片來進行說明，值得一讀。</p>
-<hr>
-<h3 id="把資料庫操作和網路請求拆到不同階段">把資料庫操作和網路請求拆到不同階段</h3>
-<p>整個 API 請求會被重構成三個部分：</p>
-<ul>
-<li>Pre-RPC：把 Request 的詳細資訊存到 DB</li>
-<li>RPC：進行網路請求</li>
-<li>Post-RPC：把 Repsonse 內容、是否成功、能不能重試塞到 DB 裡</li>
-</ul>
-<p>因為資料庫已經提供了 ACID，並且只會產生兩種結果（成功或失敗）。因此 Pre-RPC 和 Post-PRC 對資料庫的操作都會包成 Transaction，確保一起成功或失敗。文章內示範了使用 Java 的 Lambda 來把多個操作包在一起（C# 應該用 EFCore 就可以了？）</p>
-<p>延伸閱讀：<a href="https://medium.com/appxtech/%E8%B3%87%E6%96%99%E5%BA%AB-%E6%B7%BA%E8%AB%87%E9%97%9C%E8%81%AF%E5%BC%8F%E8%B3%87%E6%96%99%E5%BA%AB%E8%88%87acid%E7%89%B9%E6%80%A7-83a1b4178981">淺談關聯式資料庫與ACID特性</a></p>
-<p>除此之外，他們還嚴格地將資料庫操作和網路互動拆開，藉此降低風險</p>
-<blockquote>
-<p>To maintain data integrity, we adhere to two simple ground rules:
-為了保持數據的完整性，我們遵循兩個簡單的基本原則：</p>
-<ol>
-<li>
-<p>No service interaction over networks in Pre and Post-RPC phases
-預先和後續的RPC階段中，網絡上沒有服務互動</p>
-</li>
-<li>
-<p>No database interactions in the RPC phases
-在 RPC 階段中沒有數據庫交互</p>
-</li>
-</ol>
-</blockquote>
-<hr>
-<h3 id="把錯誤分類為可重試和不可重試">把錯誤分類為可重試和不可重試</h3>
-<p>為了確認能不能夠重試，所有的錯誤都要被分類（當然也會遇到一些比較模糊的）：</p>
-<ul>
-<li>伺服器或網路異常這類的，這些錯誤應該是暫時性的，基本上應該要可以重試</li>
-<li>但如果是退款失敗這種，就需要歸類到不可重試，並且標記起來</li>
-</ul>
-<blockquote>
-<p>In general, we believe unexpected runtime exceptions due to network and infrastructure issues (5XX HTTP statuses) are retryable. We expect these errors to be transient, and we expect that a later retry of the same request may eventually be successful.</p>
-<p>一般而言，我們認為由於網路和基礎設施問題而引起的意外運行時異常（5XX HTTP狀態）是可重試的。我們預期這些錯誤是暫時性的，並且我們期望稍後重新嘗試相同的請求可能最終會成功。</p>
-</blockquote>
-<blockquote>
-<p>We categorize validation errors, such as invalid input and states (for example, you can’t refund a refund), as non-retryable (4XX HTTP statuses) — we expect all subsequent retries of the same request to fail in the same manner. We created a custom, generic exception class that handled these cases, defaulting to “non-retryable”, and for certain other cases, categorized as “retryable”.</p>
-<p>我們將驗證錯誤分類為不可重試的錯誤，例如無效的輸入和狀態（例如，無法對退款進行退款），這些錯誤屬於非可重試的類型（4XX HTTP狀態碼）- 我們預期同一請求的所有後續重試都會以相同的方式失敗。我們創建了一個自定義的通用異常類，用於處理這些情況，默認為“不可重試”，對於某些其他情況，則歸類為“可重試”。</p>
-</blockquote>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/02/0204-airbnb-engineering-avoiding-double-payments-in-a-distributed-payments-system/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -625,7 +580,7 @@
 <ul class="widget-list">    
     
     <li>
-        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (91)</a>
+        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (92)</a>
     </li>
 </ul>
     </section>

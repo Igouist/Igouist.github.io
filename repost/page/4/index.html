@@ -110,6 +110,49 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/03/0305-consistent-hashing/" title="【每天推薦一篇文章】Consistent Hashing" >【每天推薦一篇文章】Consistent Hashing</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-3-5,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p>昨天有朋朋提到 Consistent Hashing，發現我筆記庫沒有相關資料，果斷重新了解一下並轉貼上來：<a href="https://medium.com/@chyeh/consistent-hashing-algorithm-%E6%87%89%E7%94%A8%E6%83%85%E5%A2%83-%E5%8E%9F%E7%90%86%E8%88%87%E5%AF%A6%E4%BD%9C%E7%AF%84%E4%BE%8B-41fd16ad334a">Consistent Hashing Algorithm: 應用情境、原理與實作範例 - chyeh</a></p>
+<p><strong>Consistent Hashing 主要是應用於分散式系統的場景，用來判斷要把資料送給哪個服務節點時用的</strong></p>
+<p>如果同一份資料會隨機亂噴，兩次噴都噴到不一樣的服務，要追查問題或是搞什麼監控警報就會變得比較麻煩(?)。因此我們會希望同一份資料進來，就固定會到某一個服務。除了容易重現問題以外，在這個服務上搞快取也比較方便好命中</p>
+<p>但如果只是使用簡單的 Hash 來對應（例如說平均分配，第一筆資料丟給第一台服務、第二筆資料丟給第二台服務……），<strong>就有可能遇到當節點新增或減少時，資料對應到的服務大量變動的問題</strong></p>
+<p>這一段我有點不太會說明（有更熟的朋朋歡迎幫忙），這邊就跟 GPT 一起 Pair 來舉個例子：</p>
+<blockquote>
+<p>想像一下，你有一堆信件需要放到幾個郵箱裡。你決定用一個簡單的方法：每個郵箱輪流放信。</p>
+<p>例如說你有 10 封信、3 個郵箱。那麼第 1 封信（編號為 1）就放到編號 1 的郵箱，第 2 封信放到編號 2 的郵箱，以此類推。編號 10 的信會放到編號 1 的郵箱，因為 10 除以 3 餘 1。</p>
+<p>但是，如果你突然多了一個郵箱，變成 4 個郵箱，這個簡單的分配方法就需要改變了，因為你現在是按照 4 來計算每封信應該放哪了。</p>
+<p>第 4 封信原本在第 1 個郵箱，現在得放到第 4 個郵箱了，這樣我們就得把很多信都拿出來，重新分一遍，非常麻煩，特別是信件很多的時候。</p>
+</blockquote>
+<p>這時候我們就可以使用 Consistent Hashing，就如上面轉貼的文章所說：</p>
+<blockquote>
+<p><strong>Consistent Hashing 的做法是找「沿著順時鐘方向走，遇到的第一個 Index」</strong></p>
+</blockquote>
+<p><img src="https://miro.medium.com/v2/resize:fit:1400/format:webp/0*aHCNfSbtkVltA_Yw.png" alt="">
+圖片來源：今天轉貼的這篇文章</p>
+<p>同樣地，我們請 GPT 同樣用郵箱的例子支援一下：</p>
+<blockquote>
+<p>想像一下，你有一堆信件需要放到幾個郵箱裡。而你站在一個圓形的大廳，大廳有些方向的牆壁上掛著郵箱</p>
+<p>你決定像時鐘一樣把大廳分為 1 ~ 12，然後你會根據郵件的編號找到對應的數字，再沿著房間的圓形牆壁走，走到下一個郵箱就把信件投遞進去。</p>
+<p>比如說，編號是 10 的信，就先找到圓圈上對應 10 的位置，開始順著圓走，直到碰到的第一個郵箱（可能這個郵箱位在 12），然後就把信放進去。</p>
+<p>這樣即使多了一個郵箱，大多數郵箱的信也不用再重新分配了</p>
+</blockquote>
+<p>因為計算 Hash 之後是去找到下一個圓圈上的節點，當節點新增的時候，只有新增節點的前一段受到影響；移除的時候也只有到下一個節點之間會影響</p>
+<p>這樣就比較不會有資料和服務的對應關係大幅變動的問題了，我們又成功地拯救了我們各個服務的快取(?)，可喜可賀</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/03/0305-consistent-hashing/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/repost/2024/03/0304-event-storming-is-good/" title="【每天推薦一篇文章】Event storming 是個好東西" >【每天推薦一篇文章】Event storming 是個好東西</a>
                                 </h1>
                             </header>
@@ -469,37 +512,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/02/0224-function/" title="【每天推薦一篇文章】需要變成 Function 的都只是因為重複使用而已嗎？" >【每天推薦一篇文章】需要變成 Function 的都只是因為重複使用而已嗎？</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-2-24,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p>今天想轉貼的是 2019 鐵人賽的這篇：<br/>
-<a href="https://ithelp.ithome.com.tw/articles/10203659">實務上的高內聚與低耦合 - 可不可以不要寫糙 code</a></p>
-<p>其中有一小段我很喜歡，當時解決了我某種「消除重複！」的迷思：</p>
-<blockquote>
-<p>「程式碼沒有要重複使用，為什麼要弄成一個 function？」</p>
-<p>但是，反問一下這個問題</p>
-<p>「<strong>難道需要變成 function 的都只是因為重複使用而已？</strong>」</p>
-</blockquote>
-<p>除此之外，這系列的開頭也很棒：</p>
-<blockquote>
-<p>良好程式碼的優點大同小異。<br/>
-不好的程式碼的糙點卻各有巧妙之處。</p>
-</blockquote>
-<p>搭配這篇閱讀風味更佳：<a href="https://ithelp.ithome.com.tw/articles/10206839">如何寫高品質 function (內聚性篇) - 可不可以不要寫糙 code</a></p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/02/0224-function/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -650,7 +662,7 @@
 <ul class="widget-list">    
     
     <li>
-        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (91)</a>
+        <a href="https://igouist.github.io/repost/">推薦文章轉貼區 (92)</a>
     </li>
 </ul>
     </section>
