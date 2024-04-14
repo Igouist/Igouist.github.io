@@ -110,6 +110,42 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/01/0126-is-git-flow-right/" title="【每天推薦一篇文章】Git 分支策略有「正確」選擇嗎？" >【每天推薦一篇文章】Git 分支策略有「正確」選擇嗎？</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-1-26,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/V4gyKez.png" alt="Image"></p>
+<p>今天持續消化訂閱箱的文章，看到一則標題蠻有興趣的，也轉貼上來給大家：<br/>
+<a href="https://studyhost.blogspot.com/2024/01/git.html">Git 版控到底有沒有正確的用法? - .Net Walker</a></p>
+<p>這篇文章中，作者大大先從 Git Flow 大爆發(?) 的歷史背景提起：</p>
+<blockquote>
+<p>Git 的使用，一般來說，有爭議或選擇的是兩個部分：Repo 大小的分割 (專案顆粒度)，以及 git working flow…</p>
+<p>拿 git working flow來說，如果是早年的 Git 使用者，多半選擇 git flow，那是有當年時空背景因素的。</p>
+<p>Git 發展初期，需求是開源專案，開發人員可能並不在同一個辦公室協作，常有跨國合作的需求，當時網路狀況也不像現在品質那麼好，那時分支的建立就相當多且頻繁。</p>
+</blockquote>
+<p>但馬上就帶到現在常用的開發狀況，以及持續整合的部份：</p>
+<blockquote>
+<p>最近幾年，<strong>我們是不建議切出具有 長生命週期 且 數量多的分支的，因為分支本身就是一種程式碼隱藏</strong>。</p>
+<p>Continuous Delivery 的作者 Dave Farley 就說過， 從頻繁交付的角度來看，具有長生命週期且多分支的 git flow 是個不好的選擇: <a href="https://www.youtube.com/watch?v=_w6TwnLCFwA">https://www.youtube.com/watch?v=_w6TwnLCFwA</a></p>
+<p>所以，如果要實踐敏捷的頻繁交付 (一周數次，一天數次) 那我會建議 git 分支數量愈少愈好，分支生命周期愈短愈好，以便能有利於持續整合，實現頻繁交付</p>
+</blockquote>
+<blockquote>
+<p><strong>如果你想實踐真正的持續整合(CI)，就要盡可能地減少不力於頻繁整合的程式碼隱藏</strong>，而分支，毫無疑問是一種程式碼隱藏</p>
+</blockquote>
+<p>這邊讓我學習到一件事：<strong>分支也是一種程式碼隱藏</strong></p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/01/0126-is-git-flow-right/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/repost/2024/01/0125-programmer-with-ai/" title="【每天推薦一篇文章】開發人員該如何看待 AI 帶來的改變" >【每天推薦一篇文章】開發人員該如何看待 AI 帶來的改變</a>
                                 </h1>
                             </header>
@@ -464,43 +500,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/01/0116-snowflake/" title="【每天推薦一篇文章】認識雪花 ID" >【每天推薦一篇文章】認識雪花 ID</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-1-16,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p><img src="https://i.imgur.com/PhHegYc.png" alt="Image"></p>
-<p>和朋友聊的時候提到雪花 ID，但我之前都無腦用套件（<a href="https://github.com/RobThree/IdGen">.Net 的 IdGen，香</a> ）直接產完甩資料庫完事，因此趁著回家有空的時候趕快認識一下，順手也分享上來：
-<a href="https://pdai.tech/md/algorithm/alg-domain-id-snowflake.html">Snowflake 算法</a></p>
-<p>雪花演算法是用來產生唯一 ID 的算法，產出來的 ID 會有以下幾個部份：</p>
-<ul>
-<li>最前面的 1 bit 不使用，只會放 0 （畢竟放 1 被判定成負數就麻煩了）</li>
-<li>接續的 41 bit 用來放時間戳，精確到毫秒
-<ul>
-<li>這段也是雪花 ID 能夠按照時間排序的原因</li>
-</ul>
-</li>
-<li>中間 10 bit 用來放機器序號</li>
-<li>最後 12 bit 用來放序列號，會持續遞增</li>
-</ul>
-<p>這樣就可以得到一組香香的雪花 ID 💯</p>
-<hr>
-<p>雪花演算法的優點在於<strong>可以排序</strong>：因為使用時間戳，所以產生出來的 ID 是有順序性的。</p>
-<p>可以排序的優點同時也避免了用 GUID 當 Key 的時候索引破碎之類的問題（延伸閱讀：<a href="https://blog.darkthread.net/blog/guid-as-pk-on-db/">GUID Primary Key資料庫避雷守則 - 黑暗執行緒</a> ）</p>
-<p>而缺點則是因為依賴時間戳來產生 ID，所以非常依賴機器上的時間。<strong>如果機器上的時間回溯了之類就會撞車出事</strong></p>
-<p>此外，如果系統是分散式的話，為了避免每台機器在同一時間各自產生的 ID 都一樣，所以要嘛就得集中在一個地方產生，或是<strong>分配每個機器唯一的機器序號</strong>（放在第三段的 10 bit）</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/01/0116-snowflake/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -602,7 +601,7 @@
 <ul class="widget-list">    
     
     <li>
-        <a href="https://igouist.github.io/repost/">每天推薦一篇文章 (92)</a>
+        <a href="https://igouist.github.io/repost/">每天推薦一篇文章 (93)</a>
     </li>
 </ul>
     </section>
