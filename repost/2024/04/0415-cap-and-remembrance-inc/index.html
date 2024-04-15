@@ -26,20 +26,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>【每天推薦一篇文章】Airbnb 的架構演進 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="【每天推薦一篇文章】Airbnb 的架構演進 - 伊果的沒人看筆記本">
+    <title>【每天推薦一篇文章】CAP 定理與 Remembrance Inc. | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="【每天推薦一篇文章】CAP 定理與 Remembrance Inc. - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2024-03-09T23:43:00&#43;08:00">
+    <meta property="article:published_time" content="2024-04-15T23:43:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2024-03-09T23:43:00&#43;08:00">
+    <meta property="article:modified_time" content="2024-04-15T23:43:00&#43;08:00">
         
         
-    <meta name="description" content="【每天推薦一篇文章】Airbnb 的架構演進">
+    <meta name="description" content="【每天推薦一篇文章】CAP 定理與 Remembrance Inc.">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/repost/2024/03/0309-a-brief-history-of-airbnb-architecture/">
+    <meta property="og:url" content="https://igouist.github.io/repost/2024/04/0415-cap-and-remembrance-inc/">
     <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link defer rel="stylesheet" href="/css/normalize.css">
@@ -107,10 +107,10 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">【每天推薦一篇文章】Airbnb 的架構演進</h1>
+                            <h1 class="post-title">【每天推薦一篇文章】CAP 定理與 Remembrance Inc.</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2024-3-9,
+                            2024-4-15,
                         </date>
                         
                         
@@ -123,39 +123,33 @@
                         
 
                         <div class="post-content">
-                            <p>剛剛看到這篇香的，立馬拿來當作今日轉貼：<br/>
-<a href="https://medium.com/@mananshah3654/a-brief-history-of-airbnbs-architecture-bce6d0405f9c">A Brief History of Airbnb’s Architecture</a></p>
-<p>文章裡介紹了 Airbnb 的架構從一個單體長成 SOA 的過程，包括他們在大單體時遇到的問題、逐步遷移的比對機制、SOA 的優缺點，以及他們搞的 API 框架等等。</p>
-<p>這邊就節選一些我覺得有趣的地方，對其他部份有興趣的朋友可以直接閱讀文章。</p>
+                            <p>今天要推薦的是這篇 CAP 的小故事：<br/>
+<a href="http://ksat.me/a-plain-english-introduction-to-cap-theorem">A plain english introduction to CAP Theorem - Kaushik Sathupadi</a></p>
 <hr>
-<p>因為搬家不是一兩天就搬得完的，所以 Airbnb 在過程中有對新舊系統的操作進行比對</p>
-<p>例如<strong>讀取相關的操作，就同時呼叫新舊系統並且比對查詢結果，確定都沒問題之後才遷移過去</strong></p>
-<p>而<strong>寫入相關的操作，則是建立第二顆 DB，然後再查詢出來比對兩邊的內容</strong></p>
-<p>之所以對這段有興趣，是因為之前也遇過把舊系統的功能遷移到新系統的場景，喊了一聲「絞殺者模式！」就開始搬磚頭</p>
-<p>當時也是藉由同時查詢兩邊來比對，現在看到人家也這麼幹，稍微安心了一點(?)</p>
+<p>為了怕有朋友跟我一樣對 CAP 不太熟，這邊先筆記一下。</p>
+<p>首先讓我們認識 CAP 各自代表的意思：</p>
+<ul>
+<li><strong>一致性（Consistency）</strong>：使用者總是可以查到最新的資料</li>
+<li><strong>可用性（Availability）</strong>：使用者總是可以正常讀寫，不會突然送你個 Error</li>
+<li><strong>分區容錯性（Partition tolerance）</strong>：即使系統之間斷訊了，大家各自還是得做事，做完還要能同步</li>
+</ul>
+<p>CAP 定理是指<strong>在一致性、可用性、分區容錯性這三項之中，我們只能滿足其中兩項</strong> :(</p>
+<p>通常來說，我們會先拿著 P 確保服務活著，然後在 C 一致性跟 A 可用性之間痛苦地抉擇</p>
+<p>例如保證可以操作，但是還沒同步完所以會查到舊資料（AP）；或是被卡著乖乖等到資料同步完才能查（CP）等等</p>
+<p>這部分想進一步了解的朋友可以參考最後的延伸閱讀。現在讓我們回到今天推薦的這篇文章</p>
 <hr>
-<p>這篇文章裏面也整理了服務導向架構（Service-Oriented Architecture, SOA）的優缺點，也節錄上來讓大家參考（同時方便我之後查詢）</p>
-<blockquote>
-<p>Some pros were as follows:<br/>
-一些優點如下：</p>
-<p>The system became more reliable and highly available. Even if one service went down, other parts of the service-oriented architecture could still function.
-<strong>系統變得更加可靠且高度可用</strong>。即使其中一個服務出現故障，服務導向架構的其他部分仍然可以運作。</p>
-<p>Services were now individually scalable, allowing fine-tuning of the resource allocation depending on the real needs of the system.
-現在<strong>服務可以進行個別的可擴展性調整</strong>，根據系統的實際需求進行資源分配的微調。</p>
-<p>Increased business agility due to separating different parts of the product into different services. Each team could iterate in parallel.
-將產品的不同部分分開成不同的服務，能夠增加業務的靈活性。<strong>每個團隊都可以並行進行迭代</strong>。</p>
-</blockquote>
-<blockquote>
-<p>However, there were some cons as well:<br/>
-然而，也有一些缺點：</p>
-<p>Engineers can take more time to ship a feature in service-oriented architecture because they need to first acquaint themselves with the various services. Also, any change potentially involves multiple services
-工程師在服務導向架構中可能需要更多時間來發布一個功能，因為他們<strong>需要先熟悉各種服務</strong>。此外，<strong>任何變更都可能涉及多個服務</strong>。</p>
-<p>Even though services were loosely coupled, certain patterns of logic had to be repeated across different services.
-即使服務之間鬆散耦合，<strong>某些邏輯模式仍需要在不同服務之間重複</strong>。</p>
-<p>Complicated dependency graph especially when there is a lack of API governance. This could also result in circular dependencies and also make it difficult for engineers to debug errors.
-當 API 管理不足時，<strong>複雜的依賴關係圖可能會出現。這可能導致循環依賴</strong>，並使工程師難以調試錯誤。</p>
-</blockquote>
-<p>那麼，今天的轉貼就到這邊。明天見～</p>
+<p>這篇小故事從「幫客人記得事情」的一人公司(?)開始，<br/>隨著客戶數量變多，老闆決定請老婆進來一起幫忙記東西（殊不知這就是分散式惡夢的開端）</p>
+<p>他們經歷了第一次查詢失敗危機、想出一些同步機制，然後面對可怕的休假等等</p>
+<p>最後…… 結局就留給各位自己看了。</p>
+<p>總之，以後有人問起 CAP 的問題，我決定就甩這篇給他們了 xD</p>
+<hr>
+<p>延伸閱讀，想多認識 CAP 一點的可以繼續看看下面這些文章：</p>
+<ul>
+<li><a href="https://github.com/henryr/cap-faq">The CAP FAQ - henryr</a></li>
+<li><a href="https://medium.com/%E5%BE%8C%E7%AB%AF%E6%96%B0%E6%89%8B%E6%9D%91/cap%E5%AE%9A%E7%90%86101-3fdd10e0b9a">CAP 定理 101 — 分散式系統，有一好沒兩好 - 後端新手村</a></li>
+<li><a href="https://www.puritys.me/docs-blog/article-461-%E4%BB%80%E9%BA%BC%E6%98%AF-CAP-%E5%AE%9A%E7%90%86.html">什麼是 CAP 定理 - puritys.me</a></li>
+</ul>
+<p>那麼，今天的轉貼就到這邊。我們明天見～</p>
                         </div>
 
                         
@@ -164,15 +158,15 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/repost/2024/03/0308-reverse-interview/">【每天推薦一篇文章】反問面試官的時候到了</a></li>
+        <li><a href="/repost/2024/04/0414-bad-smells-on-code-review/">【每天推薦一篇文章】Code Review 的壞味道</a></li>
         
-        <li><a href="/repost/2024/03/0307-sociable-unit-test/">【每天推薦一篇文章】社交型單元測試</a></li>
+        <li><a href="/repost/2024/04/0412-programming-is-a-pyramid-of-abstraction/">【每天推薦一篇文章】程式設計是一座抽象化的金字塔</a></li>
         
-        <li><a href="/repost/2024/03/0306-develop-review/">【每天推薦一篇文章】軟體開發的復盤</a></li>
+        <li><a href="/repost/2024/04/0411-git-add-push-remote/">【每天推薦一篇文章】Git 同時推送到兩個遠端 Repo</a></li>
         
-        <li><a href="/repost/2024/03/0305-consistent-hashing/">【每天推薦一篇文章】Consistent Hashing</a></li>
+        <li><a href="/repost/2024/04/0410-postmortem-culture/">【每天推薦一篇文章】事後檢討：從失敗中學習</a></li>
         
-        <li><a href="/repost/2024/03/0304-event-storming-is-good/">【每天推薦一篇文章】Event storming 是個好東西</a></li>
+        <li><a href="/repost/2024/04/0408-the-values-of-software-developer/">【每天推薦一篇文章】軟體開發者的價值</a></li>
         
     </ul>
 </div>
@@ -2569,7 +2563,7 @@
 </script>
                         <hr/>
                         <p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
-<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2frepost%2f2024%2f03%2f0309-a-brief-history-of-airbnb-architecture%2f" width="100%" frameborder=0></iframe>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2frepost%2f2024%2f04%2f0415-cap-and-remembrance-inc%2f" width="100%" frameborder=0></iframe>
                     </article>
                     
     
