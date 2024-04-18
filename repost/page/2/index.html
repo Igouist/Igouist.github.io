@@ -110,6 +110,48 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/04/0404-load-balancing/" title="【每天轉貼一篇文章】從動圖認識負載平衡（Load Balancing）" >【每天轉貼一篇文章】從動圖認識負載平衡（Load Balancing）</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-4-4,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p>今天想轉貼有香香動畫(?)的科普文：
+<a href="https://samwho.dev/load-balancing/">Load Balancing - Sam Rose</a></p>
+<p>這篇文章用了簡單的動畫，讓讀者能直觀地了解當下 Request 的傳送狀況（看著球被丟給伺服器，意外地蠻療癒的）</p>
+<p><img src="https://i.imgur.com/xhY79Hx.gif" alt="Image"></p>
+<p>從最簡單的 1 個來源發送給 1 台伺服器（=只要一直把球丟過去給伺服器就好）開始</p>
+<p>接著，伺服器開始吃不下了。我們想要增加伺服器數量，但就需要把 Request 分配給他們兩台伺服器，這時候最簡單粗暴的做法就是<strong>輪詢（=輪流發球給他們）</strong></p>
+<p>然後再加入一些會在實務上遇到的狀況：每顆球（Request）要處理的工可能不一樣大，伺服器也不一定都一樣強。</p>
+<p>這樣一來，單純平均發球的輪詢作戰很快就會遇到胃口比較小的伺服器開始吃不下的尷尬狀況</p>
+<p>為了減輕這個狀況，我們可以在每個伺服器前面加個小小的<strong>排隊區（Request Queues）</strong>，雖然要排隊勢必會拉長時間，但至少掉球的狀況就減少了</p>
+<p>再進一步的話，我們可以<strong>針對伺服器的消化能力來替他們加個權重</strong>，不過手動標權重很容易翻車，所以要想辦法讓他自動調整權重，也就是要能「動態加權輪詢」</p>
+<p>例如根據最近三次的執行時間來計算伺服器的胃口(?)，再決定要發幾顆球給伺服器，比較餓吃比較快的就多發一點(??)</p>
+<hr>
+<p>除了吃不下把球吐掉以外，如果吃太久吃到 Timeout 也是不行的。而針對延遲問題，這篇最後介紹了「峰值指數加權移動平均（PEWMA）」</p>
+<p>做法其實也很直覺：抓一下最近這些伺服器的延遲如何、都處理了多久，然後再經過一些數學魔法(?) 來算出下一個 Request 給哪台伺服器比較好、看能不能讓延遲更少</p>
+<p>ps. 附上數學魔法的段落給那些看得懂的朋友：</p>
+<blockquote>
+<p>For each server, the algorithm keeps track of the latency from the last N requests. Instead of using this to calculate an average, it sums the values but with an exponentially decreasing scale factor. This results in a value where the older a latency is, the less it contributes to the sum. Recent requests influence the calculation more than old ones.<br/>
+對於每個伺服器，該演算法會追蹤從最後 N 個請求開始的延遲時間。不同於使用此來計算平均值，它將這些值相加，但使用指數遞減的比例因子。這導致一個值，其中較舊的延遲對總和的貢獻較小。最近的請求比舊的請求更影響計算。</p>
+<p>That value is then taken and multiplied by the number of open connections to the server and the result is the value we use to choose which server to send the next request to. Lower is better.<br/>
+然後，將該值乘以與伺服器的開放連接數，結果就是我們用來選擇下一個請求要發送到哪個伺服器的值。數值越低越好。</p>
+</blockquote>
+<hr>
+<p>但是相較前面著重在不要把球吐掉的「動態加權輪詢」，這套注重延遲問題的「峰值指數加權移動平均」就比較有可能發生更嚴重的吃不下問題</p>
+<p>作者有進行一些測試並繪製圖表，有興趣的朋友可以參考看看。感覺還是要根據狀況、評估對延遲或掉包的容忍程度，再決定採用怎樣的負載平衡策略會比較好</p>
+<p>那麼，今天的轉貼就到這邊，我們明天（大概）見～</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/04/0404-load-balancing/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/repost/2024/04/0402-microsoft-clarity/" title="【每天轉貼一篇文章】用 Microsoft Clarity 觀察使用者行為" >【每天轉貼一篇文章】用 Microsoft Clarity 觀察使用者行為</a>
                                 </h1>
                             </header>
@@ -569,42 +611,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/03/0321-anemic-domain-model/" title="【每天推薦一篇文章】貧血模型與充血模型" >【每天推薦一篇文章】貧血模型與充血模型</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-3-21,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p>今天剛好跟同事聊到充血模型的概念，決定轉貼小朱大的這篇，順手收進我的筆記庫：<br/>
-<a href="https://dotblogs.com.tw/regionbbs/2021/05/29/anemicdomainmodel">這裡貧血、那裡充血，到底資料模型要怎麼設計？ - 小朱® 的技術隨手寫</a></p>
-<p>首先我們先看一下貧血模型的部份，比較常見的應該就是單純放一下資料用的 DTO（Data Transfer Object）：</p>
-<blockquote>
-<p>貧血模型之所以為貧血，其最大原因是，<strong>不論是 DTO 或是 POCO，它的業務邏輯都操控在別人手上，自己沒辦法去維護自己的業務規則</strong>，以上面 DTO 或 POCO 作為例子，它們都沒有內建的處理存款與提款的程式碼，都要倚賴外部程式</p>
-<p><strong>當業務邏輯只能由別人處理時，相對的就破壞了這個領域知識的內聚力，也提高了向外的耦合性，而且它並沒有辦法自我處理自己的領域知識，在後續系統的擴充與延長時，若與別人共用這個模型時，別人也一樣要實作這類領域知識，從而發生領域知識不一致的可能，導致系統設計的風險。</strong></p>
-<p>因此，若系統內的業務邏輯、流程或知識會有共用的可能性時，就應該要考慮以領域模型的方式設計，而不是使用 DTO 或 POCO 的設計作法。</p>
-</blockquote>
-<hr>
-<p>而相對的，充血模型則是：</p>
-<blockquote>
-<p>所謂的充血模型，只是大家在學校學過物件導向程式設計中，具有足夠內聚力的類別而己，但用一個新名詞來講，一個平凡無奇的概念突然瞬間高大上了起來。</p>
-<p><strong>一個充血模型，封裝 (Encapsulation) 的特性會十分明顯，它該有的資料就是它自己維護，外部想要對這個模型的資料做異動，就只能使用它所開放的方法 API 執行</strong>…這不就教科書上說的嗎？</p>
-</blockquote>
-<p>在最後一段，小朱大有列出這兩種模型適用的時機。</p>
-<p>例如說，應用程式很小、資料單純的時候，就可以考慮貧血模型；而如果某些領域知識會需要重複使用的時候，就可以考慮充血模型等等，有興趣的朋友可以再點進去參考一下。</p>
-<hr>
-<p>之前在維護三層式的專案時，各層之間都是用 DTO 來傳遞資料。就像工廠流水線一樣，到了某一段就把資料倒出來處理處理，然後塞到另一個 DTO 傳到下一站。</p>
-<p>後來到了現在的公司，才接觸到貧血充血這些名詞。但想想物件會動(?)好像也是理所當然的…吧？</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/03/0321-anemic-domain-model/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -706,7 +712,7 @@
 <ul class="widget-list">    
     
     <li>
-        <a href="https://igouist.github.io/repost/">每天推薦一篇文章 (95)</a>
+        <a href="https://igouist.github.io/repost/">每天推薦一篇文章 (96)</a>
     </li>
 </ul>
     </section>

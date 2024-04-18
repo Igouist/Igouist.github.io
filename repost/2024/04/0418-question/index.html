@@ -26,20 +26,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>C#: 位元旗標 (Bit flag) 與列舉 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="C#: 位元旗標 (Bit flag) 與列舉 - 伊果的沒人看筆記本">
+    <title>【每天推薦一篇文章】精準提問術 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="【每天推薦一篇文章】精準提問術 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2020-06-14T21:27:00&#43;08:00">
+    <meta property="article:published_time" content="2024-04-18T17:07:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2020-06-14T21:27:00&#43;08:00">
+    <meta property="article:modified_time" content="2024-04-18T17:07:00&#43;08:00">
         
-        <meta name="keywords" content="w3HexSchool, Bitwise, Enum, 位元運算, 旗標, 列舉">
-    <meta name="description" content="位元運算的旗標 (Flag) 搭配列舉 (Enum) 常用於權限設定或紀錄資訊等處理，本篇對 C# 的實現做個紀錄">
+        
+    <meta name="description" content="【每天推薦一篇文章】精準提問術">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/post/2020/06/bit-flags-and-enum/">
+    <meta property="og:url" content="https://igouist.github.io/repost/2024/04/0418-question/">
     <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link defer rel="stylesheet" href="/css/normalize.css">
@@ -78,7 +78,7 @@
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
-                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    <a class="" href="https://igouist.github.io/">Home</a>
                     
                     <a  href="https://igouist.github.io/categories/csharp-and-dotnet/" title="CSharp">CSharp</a>
                     
@@ -107,19 +107,11 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">C#: 位元旗標 (Bit flag) 與列舉</h1>
+                            <h1 class="post-title">【每天推薦一篇文章】精準提問術</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2020-6-14,
+                            2024-4-18,
                         </date>
-                        
-                        <div class="post-meta">
-                            
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
-                            
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
-                            
-                        </div>
                         
                         
                         <div class="post-meta">(
@@ -131,165 +123,36 @@
                         
 
                         <div class="post-content">
-                            <p>前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。</p>
-<p>平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告個 Boolean 來處理。但這次遇到的是同時有多個「有／沒有」的狀況，但我遇到的程式碼並沒有分成多個 Bool 去做處理，而是直接儲存成一個數值。</p>
-<p><strong>由於「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列的話，就只需要一個數字就可以紀錄或傳遞給其他系統了</strong>。例如最常見的用處是在權限系統，若有「讀」、「寫」、「執行」等權限，那麼我們按照這個順序去排列，當 <code>讀＝可、寫＝不可、執行＝可</code> 的時候，就記做 <code>101</code> = <code>5</code>。這種直接用一組位元表示狀態的方式就叫做<strong>位元旗標（Bit flag）</strong></p>
-<pre tabindex="0"><code>1 讀   = 可
-0 寫   = 不可
-1 執行 = 可
-
-/* 橫放 */
-=&gt; 101 (2進位) 
-=&gt; 5 
-</code></pre><p>假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。</p>
-<h2 id="enum--flags">Enum &amp; Flags</h2>
-<p>在 C# 中已經有方便的工具可以處理數字列表，我們可以建立一個叫做 SkillEnum 的<strong>列舉（Enum）</strong>，並且按照上面說明的，將老闆提到的每個技能各自用一個位元來表示。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[Flags]</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> SkillEnum
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    C = <span style="color:#ae81ff">1</span>,     <span style="color:#75715e">// 0001</span>
-</span></span><span style="display:flex;"><span>    PHP = <span style="color:#ae81ff">2</span>,   <span style="color:#75715e">// 0010</span>
-</span></span><span style="display:flex;"><span>    SQL = <span style="color:#ae81ff">4</span>,   <span style="color:#75715e">// 0100</span>
-</span></span><span style="display:flex;"><span>    Java = <span style="color:#ae81ff">8</span>,  <span style="color:#75715e">// 1000</span>
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><blockquote>
-<p>註：<code>[Flags]</code>的標籤是指 C# 專門提供給位元旗標使用的 Enum，請參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.flagsattribute?view=netcore-3.1">FlagsAttribute</a>。</p>
-<p>只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用 ToString() 也能更方便看見旗標內容</p>
+                            <p>最近專案進行得熱烈，團隊間的溝通也比較頻繁。決定來轉貼這一篇：<br/>
+<a href="https://ithelp.ithome.com.tw/articles/10213376">第一天上班就該學會的精準提問術</a></p>
+<p>這篇提供了我們菜鳥朋朋們一些工作上溝通要注意的事情，例如「讓對方感受到你有尊重他的時間」、「溝通頻率一天不要超過三次」等等。</p>
+<p>除此之外，還列了一些小技巧。例如<strong>想要從對方身上獲得資訊的時候，可以描述一下預期結果和實際結果的差異</strong>：</p>
+<blockquote>
+<p>「你原本認知的事情是要跑 A 流程，但試著執行後卻發現出現預期外的 B 結果，想詢問自己認知是否有錯」</p>
 </blockquote>
-<p>有了這個列舉之後，我們就可以<strong>表達不同排列組合的狀況</strong>了。例如：</p>
-<pre tabindex="0"><code>* C: C
-* P: PHP
-* S: SQL
-* J: Java
-===========
-J S P C
-0 0 0 0 =&gt; 什麼都不會
-0 0 0 1 =&gt; 只會 C
-0 0 1 1 =&gt; 同時會 C 和 PHP
-1 0 1 0 =&gt; 同時 PHP 和 Java
-1 1 1 1 =&gt; 全部都會
-</code></pre><h2 id="查詢--and">查詢 =&gt; AND</h2>
-<p>那麼假使今天來的新人 Bob，他會 C, PHP 兩種語言，那現在他的資料欄位，就會是這兩種語言對應的位置為 1，其餘為 0，也就是 <code>0011</code> =  <code>3</code></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> BobSkills = <span style="color:#ae81ff">3</span>;
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// var BobSkills = 0b_0011; // C + PHP</span>
-</span></span></code></pre></div><p>當 <strong>查詢</strong> 的時候，就將 Bob 的數值和目標數值做 <strong><code>AND</code></strong> 運算。例如說我們想知道 Bob 會不會 C，就可以將 <code>3</code>（二進位 <code>0011</code>） 和代表 C 的 <code>1</code> （二進位 <code>0001</code>） 做 <code>&amp;</code>，即可知道 Bob 會不會 C。</p>
-<pre tabindex="0"><code>    J S P C
-    0 0 1 1 Bob
-AND 0 0 0 1 SkillEnum.C
------------
-    0 0 0 1 =&gt; 1 &gt; 0 =&gt; True
-</code></pre><pre tabindex="0"><code>    J S P C
-    0 0 1 1 Bob
-AND 1 0 0 0 SkillEnum.Java
------------
-    0 0 0 0 =&gt; 0 =&gt; False
-</code></pre><p>也就是必須要 <strong>同個位置的值都是 1</strong>，在這邊就是指 Bob 的技能中 Java 的欄位，和 SkillEnum 中對應的欄位都要是 1 的時候，才會有數值。否則就會是 0：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> BobSkills = <span style="color:#ae81ff">3</span>;
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// var BobSkills = 0b_0011; // C + PHP</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 確認是否有某個 Flag，使用 And(&amp;)</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> isBobKnowC = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.C;
-</span></span><span style="display:flex;"><span><span style="color:#e6db74">$&#34;Bob 會使用 C 嗎？{Convert.ToBoolean(isBobKnowC)}&#34;</span>.Dump(); <span style="color:#75715e">// True</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> isBobKnowJava = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.Java;
-</span></span><span style="display:flex;"><span><span style="color:#e6db74">$&#34;Bob 會使用 Java 嗎？{Convert.ToBoolean(isBobKnowJava)}&#34;</span>.Dump(); <span style="color:#75715e">// False</span>
-</span></span></code></pre></div><h2 id="賦予--or">賦予 =&gt; OR</h2>
-<p>那假設 Bob 經過一番苦練，又掌握了 SQL 這門語言呢？當我們要 <strong>賦予</strong> 的時候，就需要用 <strong><code>OR</code></strong>。</p>
-<p>也就是當 <strong>兩者之間任一為 1</strong> 的時候，在這邊也就是當 Bob 的技能和我們要求給他的 SkillEnum 同位置只要有一個是 1，那就會有數值：</p>
-<pre tabindex="0"><code>    J S P C
-    0 0 1 1 Bob
- OR 0 1 0 0 SkillEnum.SQL
------------
-    0 1 1 1 =&gt; New Bob
-</code></pre><p>例如說原本 Bob 不會 SQL，所以 SQL 那一欄就會是 0 。而我們把它和 SkillEnum.SQL（也就是只有 SQL 那一欄是 1 ）做 OR 運算後，接著我們只要將運算好的結果再賦值給 Bob，這樣 Bob 的 SQL 欄位就會變成 1 了，同時也不會影響到其他欄位。</p>
-<p>現在我們就可以用 <code>OR</code> 把 SQL 的技能傳授給 Bob：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
-</span></span><span style="display:flex;"><span><span style="color:#e6db74">$&#34;Bob 會使用 SQL 嗎？{Convert.ToBoolean(isBobKnowSQL)}&#34;</span>.Dump(); <span style="color:#75715e">// False</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 賦予某個 Flag，使用 OR (|)</span>
-</span></span><span style="display:flex;"><span>BobSkills = BobSkills | (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
-</span></span><span style="display:flex;"><span><span style="color:#e6db74">$&#34;（Bob 學習 SQL 中）&#34;</span>.Dump();
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
-</span></span><span style="display:flex;"><span><span style="color:#e6db74">$&#34;Bob 會使用 SQL 嗎？{Convert.ToBoolean(isBobKnowSQL)}&#34;</span>.Dump(); <span style="color:#75715e">// True</span>
-</span></span></code></pre></div><h2 id="移除--xor">移除 =&gt; XOR</h2>
-<p>經過了很久很久以後，Bob 已經忘記當年學的 SQL 怎麼寫了。我們又要怎麼把他的 SQL 這項技能給拿掉呢？</p>
-<p>當我們要 <strong>移除</strong> 某一項旗標的時候，只需要使用 <strong><code>XOR</code></strong> 就行了。<strong><code>XOR</code> 是指互斥，就像磁碟兩極一樣。當兩者不同為 1，若相同時則為 0</strong>。</p>
-<p>因此當 Bob 代表 SQL 的欄位為 1 的時候，我們再將 SQL 為 1 的 的數值丟進去做 XOR，就可以把<strong>兩者同時為 <code>1</code> 的欄位給變回 0</strong>，並且讓原本為 1 的欄位持續為 1，原本為 0 的欄位持續為 0，達到移除指定目標的效果。</p>
-<p>但在使用上要注意，必須<strong>先確認目標欄位的確有數值</strong>，也就是 Bob 是真的已經會 SQL，<strong>否則</strong>若原本不會 (0) 的將不小心學會 (0 XOR 1 =&gt; 1)。</p>
-<pre tabindex="0"><code>    J S P C
-    0 1 1 1 Bob
-XOR 0 1 0 0 SkillEnum.SQL
------------
-    0 0 1 1 =&gt; New Bob
-
-// 警告：使用 XOR 之前一定要先檢查，若原本是關閉 (0) 的將會被打開 (0 XOR 1 =&gt; 1)
-</code></pre><p>現在我們就讓 Bob 忘記他曾經學過的 SQL：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
-</span></span><span style="display:flex;"><span><span style="color:#e6db74">$&#34;Bob 會使用 SQL 嗎？{Convert.ToBoolean(isBobKnowSQL)}&#34;</span>.Dump(); <span style="color:#75715e">// True</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 挪除某個 Flag，使用 XOR (^)</span>
-</span></span><span style="display:flex;"><span>BobSkills = BobSkills ^ (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
-</span></span><span style="display:flex;"><span><span style="color:#e6db74">$&#34;（Bob ... 忘記了SQL！）&#34;</span>.Dump();
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>isBobKnowSQL = BobSkills &amp; (<span style="color:#66d9ef">int</span>)SkillEnum.SQL;
-</span></span><span style="display:flex;"><span><span style="color:#e6db74">$&#34;Bob 會使用 SQL 嗎？{Convert.ToBoolean(isBobKnowSQL)}&#34;</span>.Dump(); <span style="color:#75715e">// False</span>
-</span></span></code></pre></div><h2 id="多項賦予--or-or-or">多項賦予 =&gt; OR, OR, OR</h2>
-<p>隨著 Bob 逐漸老去，公司也招來了新員工。如今換成 Bob 來幫他維護技能表了，那我們要怎麼用 SkillEnum 給這個菜雞<strong>預設值</strong>呢？</p>
-<p>聰明的你應該能猜出其實這也就是賦值！只要把<strong>有的項目全部 OR 起來</strong>就可以了，這位新菜雞他會 C, SQL, Java：</p>
-<pre tabindex="0"><code>    J S P C
-    0 0 0 0 Newbie
- OR 0 0 0 1 SkillEnum.C
- OR 0 1 0 0 SkillEnum.SQL
- OR 1 0 0 0 SkillEnum.Java
------------
-    1 1 0 1 =&gt; 13 =&gt; Newbie&#39;s Skills
-</code></pre><p>那麼現在就讓我們用 C# 實作：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 賦與多個值 ＝ 一路 OR 下去</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> NewbieSkills =    
-</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">int</span>)SkillEnum.C |   
-</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">int</span>)SkillEnum.SQL |     
-</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">int</span>)SkillEnum.Java; 
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#e6db74">$&#34;Bob 技能欄的十進位為：{NewbieSkills}&#34;</span>.Dump(); <span style="color:#75715e">// 13</span>
-</span></span><span style="display:flex;"><span><span style="color:#e6db74">$&#34;Bob 技能欄的二進位為：{Convert.ToString(NewbieSkills, 2)}&#34;</span>.Dump(); <span style="color:#75715e">// 1101</span>
-</span></span></code></pre></div><h2 id="列出內容--foreach-flags">列出內容 =&gt; Foreach, Flags</h2>
-<p>那如果我想要確認現在有哪些欄位是開啟的呢？例如說，當我們要確認 Bob 會哪些程式語言的時候怎麼做呢？</p>
-<p>既然用 AND 可以查詢其中一個位置，那麼只要將列舉和位元用迴圈逐一 AND 出來，就可以還原 Bob 的列表囉</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> enumCount = Enum.GetNames(<span style="color:#66d9ef">typeof</span>(SkillEnum)).Count();
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> NewbieSkillsList = <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt;();
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">var</span> i = <span style="color:#ae81ff">0</span>; i &lt; enumCount; i++)
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span>(Convert.ToBoolean(Bob2Skills &amp; (<span style="color:#66d9ef">int</span>)Math.Pow(<span style="color:#ae81ff">2</span>, i))) <span style="color:#75715e">// AND 運算</span>
-</span></span><span style="display:flex;"><span>        NewbieSkillsList.Add(((SkillEnum)Math.Pow(<span style="color:#ae81ff">2</span>, i)).ToString());
-</span></span><span style="display:flex;"><span><span style="color:#e6db74">$&#34;Newbie 會的語言有：{String.Join(&#34;</span>, <span style="color:#e6db74">&#34;, NewbieSkillsList)}&#34;</span>.Dump();
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// C, SQL, Java</span>
-</span></span></code></pre></div><p>不過上面這個依序列印的方式還是太麻煩了。如果有像前半段提到的，<strong>替 Enum 加上 <code>[Flags]</code> 標籤</strong>的話，用起來就更簡單了：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#e6db74">$&#34;Newbie 掌握的技能為：{(SkillEnum)NewbieSkills}&#34;</span>.Dump(); 
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// C, SQL, Java</span>
-</span></span></code></pre></div><p>最後再總結一下：</p>
+<blockquote>
+<p>「我看了你的 UI 畫面，本來是認為從 A 頁面要連到 B 頁面應該是用 slide 轉場，但是我看到了 C 頁面好像跟我預期想像的動畫轉場好像不一樣，你可以描述你心目中的正確轉場方式嗎？」</p>
+</blockquote>
+<p>或是<strong>要請別人替你處理事情時，可以試試提供選擇題</strong>：</p>
+<blockquote>
+<p>「這個問題困擾了我很久，我想到 A、B、C 作法，但不知道哪個比較好，你可以幫我看看哪個比較適合呢？」</p>
+</blockquote>
+<blockquote>
+<p>「主管你臨時插件的 B 案子我覺得沒問題，那你要先做這個 B 案子嗎？如果是這樣 本來 A 案今天下班前就可以給你，就會變成 後天下班前才能給你，這樣 ok 嗎？」</p>
+</blockquote>
+<p>搭配同個系列的這兩篇服用，效果更佳：</p>
 <ul>
-<li><strong>檢查的時候用 <code>AND</code> 找出目標的位置是否為 1</strong></li>
-<li><strong>賦予內容時則用 <code>OR</code> 讓指定的位置變成 1</strong></li>
-<li><strong>移除的時候則用 <code>XOR</code> 讓目標位置的 1 抵銷為 0</strong></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10213477">專業就是連麻瓜都聽得懂的溝通術</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10214057">工程師如何與 PM 溝通 - 菜鳥工程師必修的 30 堂溝通課</a></li>
 </ul>
-<p>整理來說概念並不困難，只是一個位元對應一個對象，再視情況進行運算而已。但能應用的範圍相當廣泛，除了最常用的權限管理，其他諸如活動月份、門鎖狀況等等只要符合條件的情形都可以借這個方法來處理。這邊稍作紀錄，希望以後能派上用場。</p>
-<h2 id="延伸閱讀及參考資料">延伸閱讀及參考資料</h2>
+<hr>
+<p>如果想繼續了解「我該怎麼發問」，或是希望自己至少上班的時候不要問出白癡問題的話，<strong>絕對絕對要閱讀這一篇經典</strong>：</p>
 <ul>
-<li><a href="https://medium.com/@kazafchen/%E4%B8%80%E4%BB%B6intent%E6%95%99%E6%88%91%E7%9A%84%E4%BA%8B-bitwise-operation-dd3a388ae34e">一件Intent教我的事： Bitwise Operation</a></li>
-<li><a href="https://codertw.com/%E7%A8%8B%E5%BC%8F%E8%AA%9E%E8%A8%80/700165/">JavaScript中的位運算和權限設計</a>
-<ul>
-<li>補一下原出處： <a href="https://juejin.im/post/5dc36f39e51d4529ed292910">JavaScript 中的位运算和权限设计 - 掘金</a></li>
+<li><a href="https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way">提問的智慧 (How To Ask Questions The Smart Way)</a></li>
 </ul>
-</li>
-<li><a href="https://shunnien.github.io/2017/06/27/byte-operator-auth/">位元運算與權限控制 - ShunNien&rsquo;s Blog</a></li>
-<li><a href="https://matthung0807.blogspot.com/2019/02/java-bit-flag.html">Java bit flag - 菜鳥工程師肉豬</a></li>
-<li><a href="https://www.zhihu.com/question/34021773">在写代码的过程中使用位运算的好处？ - 知乎</a></li>
-<li><a href="https://www.jianshu.com/p/262652908eb8">位运算和权限管理系统 - 簡書</a></li>
-<li><a href="http://blogs.uuu.com.tw/Articles/post/2017/06/14/%E4%BD%BF%E7%94%A8%E5%88%97%E8%88%89%E8%88%87%E6%97%97%E6%A8%99%E8%A8%AD%E8%A8%88%E5%A4%9A%E9%81%B8.aspx">使用列舉與旗標設計多選 - ProgrammerXDB Blog</a></li>
-<li><a href="https://zh.wikipedia.org/wiki/Chmod">Chmod - 維基百科</a></li>
-<li><a href="https://blog.podkalicki.com/bit-level-operations-bit-flags-and-bit-masks/">Bit-level operations – bit flags and bit masks</a></li>
-</ul>
+<p>如果真的沒時間，至少可以看看〈好問題跟蠢問題〉以及〈不該問的問題〉兩小節。拜託。</p>
+<p><del>反正我現在看到怪怪的問題都直接把這篇文甩過去</del></p>
+<p>那麼，今天的轉貼就到這邊。我們明天（大概）見～</p>
                         </div>
 
                         
@@ -298,33 +161,21 @@ XOR 0 1 0 0 SkillEnum.SQL
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/2020/04/epplus/">EPPlus —— 輕鬆處理 Excel</a></li>
+        <li><a href="/repost/2024/04/0416-frontlight-and-backlight/">【每天推薦一篇文章】電子書的背光與前光</a></li>
         
-        <li><a href="/post/2020/06/wakatime/">WakaTime —— 我 Coding 了多久？</a></li>
+        <li><a href="/repost/2024/04/0415-cap-and-remembrance-inc/">【每天推薦一篇文章】CAP 定理與 Remembrance Inc.</a></li>
         
-        <li><a href="/post/2020/05/bandon-5-heroku-debug/">我要訂便當 (5): Heroku 填坑小記</a></li>
+        <li><a href="/repost/2024/04/0414-bad-smells-on-code-review/">【每天推薦一篇文章】Code Review 的壞味道</a></li>
         
-        <li><a href="/post/2020/05/jsonview/">Json View —— 用 Chrome 打開 Json 的正確方式</a></li>
+        <li><a href="/repost/2024/04/0412-programming-is-a-pyramid-of-abstraction/">【每天推薦一篇文章】程式設計是一座抽象化的金字塔</a></li>
         
-        <li><a href="/post/2020/05/carbon/">Carbon —— 把程式碼片段截成有質感的圖片吧</a></li>
+        <li><a href="/repost/2024/04/0411-git-add-push-remote/">【每天推薦一篇文章】Git 同時推送到兩個遠端 Repo</a></li>
         
     </ul>
 </div>
 
 
                         <div class="post-meta meta-tags">
-                            
-                            <ul class="clearfix">
-                                
-                                <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
-                                
-                                <li><a href="https://igouist.github.io/tags/dotnet">Dotnet</a></li>
-                                
-                                <li><a href="https://igouist.github.io/tags/enum">Enum</a></li>
-                                
-                                <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
-                                
-                            </ul>
                             
                         </div>
                         <hr/>
@@ -2739,7 +2590,7 @@ XOR 0 1 0 0 SkillEnum.SQL
 </script>
                         <hr/>
                         <p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
-<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f06%2fbit-flags-and-enum%2f" width="100%" frameborder=0></iframe>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2frepost%2f2024%2f04%2f0418-question%2f" width="100%" frameborder=0></iframe>
                     </article>
                     
     
@@ -2768,23 +2619,6 @@ XOR 0 1 0 0 SkillEnum.SQL
 </form>
     </section>
     
-    
-        <section class="widget">
-            <h3 class="widget-title">文章目錄</h3>
-            <ul class="widget-list">
-                <nav id="TableOfContents">
-  <ul>
-    <li><a href="#enum--flags">Enum &amp; Flags</a></li>
-    <li><a href="#查詢--and">查詢 =&gt; AND</a></li>
-    <li><a href="#賦予--or">賦予 =&gt; OR</a></li>
-    <li><a href="#移除--xor">移除 =&gt; XOR</a></li>
-    <li><a href="#多項賦予--or-or-or">多項賦予 =&gt; OR, OR, OR</a></li>
-    <li><a href="#列出內容--foreach-flags">列出內容 =&gt; Foreach, Flags</a></li>
-    <li><a href="#延伸閱讀及參考資料">延伸閱讀及參考資料</a></li>
-  </ul>
-</nav>
-            </ul>
-        </section>
     
     
     <section class="widget">
