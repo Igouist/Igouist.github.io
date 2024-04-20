@@ -201,15 +201,74 @@
 <p><img src="https://i.imgur.com/DeP1PMH.jpg" alt="Image"></p>
 <p>搞定！現在我有信心使用這段 Code 了。還可以順便存成一個「分組取第一筆.ipynb」來讓以後的我可以抄，又是美好的一天。</p>
 <h3 id="安裝-nuget-套件--簡單的呼叫-api-範例">安裝 Nuget 套件 &amp; 簡單的呼叫 API 範例</h3>
-<p>前面我們示範了驗證簡單的 Linq 語法時會遇到的場景。但我們很多情況並不會只用內建的語法就完成，通常還會安裝一些 Nuget 套件來直接幫我們解決問題。</p>
-<p><strong>在 Polyglot Notebooks 裡面，我們要安裝 Nuget 套件，要使用 <code>#r &quot;nuget:{套件名稱}&quot;</code> 的指令</strong></p>
-<p>例如我想要安裝 <code>Microsoft.AspNetCore.WebUtilities</code> 這個套件包，我就可以這樣寫：</p>
-<pre tabindex="0"><code>#r &#34;nuget:Microsoft.AspNetCore.WebUtilities&#34;
-</code></pre><p>這邊就來用上次的 <a href="/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify">公車提醒</a> 裡面查詢公車資訊的 API 來示範一下吧！</p>
-<p>順便存個範本，畢竟以後很常會拿來打打 API 測語法嘛，當然是要回來抄的嘛。未來的我！我就幫到<a href="https://gist.github.com/Igouist/9c399acc8bbf7e1a2f3da134e3d4d40e">這</a>了！</p>
-<p><img src="https://i.imgur.com/mj1hNY2.jpg" alt="Image"></p>
-<p>可以看到我在最上面使用 <code>#r</code> 來安裝 Nuget 套件，並且將需要的內容 using 進來。接著就是快樂的打 API 時間，最後將 API 的 Body 給打印出來確認，一氣呵成。</p>
-<h2 id="小結">小結</h2>
+<blockquote>
+<p>2024.4.20 更新：後來時常連公司自家的 Nuget 抓內部套件，決定回來補一下指定 Nuget 的範例</p>
+</blockquote>
+<p>平常開發的時候，我們還會運用各種套件來完成目標。</p>
+<p><strong>在 Polyglot Notebooks 裡可以使用 <code>#r &quot;nuget:{套件名稱}&quot;</code> 來安裝 Nuget 套件</strong></p>
+<p>此外，如果有需要指定 Nuget 套件來源，也可以使用 <code>#i</code> 來處理</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>!c<span style="color:#960050;background-color:#1e0010">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>i <span style="color:#e6db74">&#34;nuget:https://api.nuget.org/v3/index.json&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>r <span style="color:#e6db74">&#34;nuget:Newtonsoft.Json&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 需要指定版本的話，可以在後面加上版本號。</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 例如：#r &#34;nuget:Newtonsoft.Json, 12.0.3&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> Newtonsoft.Json;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> obj = <span style="color:#66d9ef">new</span> { Name = <span style="color:#e6db74">&#34;James&#34;</span>, Age = <span style="color:#ae81ff">30</span> };
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> json = JsonConvert.SerializeObject(obj);
+</span></span><span style="display:flex;"><span>json <span style="color:#75715e">// {&#34;Name&#34;:&#34;James&#34;,&#34;Age&#34;:30}</span>
+</span></span></code></pre></div><h3 id="什麼是-magic-commands">什麼是 Magic Commands</h3>
+<p>在前面安裝套件的時候，我們使用了 <code>#</code> 開頭的語法，這些語法被稱作「Magic Commands」</p>
+<p>可以參考：<a href="https://github.com/dotnet/interactive/blob/main/docs/magic-commands.md">Magic Commands 魔法命令 - dotnet/interactive</a></p>
+<p>以下使用程式碼區塊（Cell）紀錄一些比較常用的 Magic Commands：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>!lsmagic
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用 #!lsmagic 來列出所有支援的 Magic Commands</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 或是參考 https://github.com/dotnet/interactive/blob/main/docs/magic-commands.md</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>!csharp
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用 #!csharp 來指定語言為 C#</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 支援的語言有：#!csharp (#!c#, #!C#), #!fsharp (#!f#, #!F#)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// #!powershell (#!pwsh), #!javascript (#!js), #!html, #!markdown</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>!time
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用 #!time 來計算 Cell 的執行時間</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Console.WriteLine(<span style="color:#e6db74">&#34;Hello World!&#34;</span>); <span style="color:#75715e">// Wall time: 32.5128ms</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 也能使用 #!mermaid 來讓 Mermaid.js 繪製流程圖</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>graph TD;
+</span></span><span style="display:flex;"><span>    A--&gt;B;
+</span></span><span style="display:flex;"><span>    A--&gt;C;
+</span></span><span style="display:flex;"><span>    B--&gt;D;
+</span></span><span style="display:flex;"><span>    C--&gt;D;
+</span></span></code></pre></div><h3 id="使用-set-來跨語言傳遞變數">使用 <code>#!set</code> 來跨語言傳遞變數</h3>
+<blockquote>
+<p>2024.4.20 更新：用了一段時間之後，發現這東西的其中一個香點就在跨語言。趕緊回來補一下這段</p>
+</blockquote>
+<p>當我們需要在兩個不同的程式語言之間傳遞變數，就可以使用 <code>#!set</code></p>
+<p>可參考：<a href="https://github.com/dotnet/interactive/blob/main/docs/variable-sharing.md">Variable sharing 變量共享</a></p>
+<p>ps. <code>#!share</code> 誕生的比較早，但後來推出了更香的 <code>#!set</code>，所以這邊就只記 set 嚕 XD</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>!c<span style="color:#960050;background-color:#1e0010">#</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> fruitPrices = <span style="color:#66d9ef">new</span> Dictionary&lt;<span style="color:#66d9ef">string</span>, <span style="color:#66d9ef">int</span>&gt;
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    {<span style="color:#e6db74">&#34;apple&#34;</span>, <span style="color:#ae81ff">10</span>},
+</span></span><span style="display:flex;"><span>    {<span style="color:#e6db74">&#34;banana&#34;</span>, <span style="color:#ae81ff">20</span>},
+</span></span><span style="display:flex;"><span>    {<span style="color:#e6db74">&#34;cherry&#34;</span>, <span style="color:#ae81ff">30</span>}
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 同一個語言不需要特別傳遞也抓得到，所以這邊 Csharp 傳給 Csharp 不用做什麼處理</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span>!c<span style="color:#960050;background-color:#1e0010">#</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> fruitPricesInCs = JsonConvert.SerializeObject(fruitPrices);
+</span></span><span style="display:flex;"><span>Console.WriteLine(fruitPricesInCs); 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// {&#34;apple&#34;:10,&#34;banana&#34;:20,&#34;cherry&#34;:30}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">// 現在讓我們到 JavaScript，這時候如果想從 Csharp 把變數拿過來，就需要用到 #!set
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">#</span><span style="color:#f92672">!</span><span style="color:#a6e22e">javascript</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">#</span><span style="color:#f92672">!</span><span style="color:#a6e22e">set</span> <span style="color:#f92672">--</span><span style="color:#a6e22e">name</span> <span style="color:#a6e22e">fruitPricesInJs</span> <span style="color:#f92672">--</span><span style="color:#a6e22e">value</span> <span style="color:#960050;background-color:#1e0010">@</span><span style="color:#a6e22e">csharp</span><span style="color:#f92672">:</span><span style="color:#a6e22e">fruitPrices</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">fruitPricesInJs</span>); 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// {&#34;apple&#34;:10,&#34;banana&#34;:20,&#34;cherry&#34;:30}
+</span></span></span></code></pre></div><h2 id="小結">小結</h2>
 <p>這篇記錄了 Polyglot Notebooks 的基本用法，並且介紹了一些我覺得很香的地方：輕便快速的驗證風格、能像 Python 的 Jupyter NoteBook 逐步對資料進行處理，又有 C# 的 Linq 能用，用這東西寫個爬蟲之類的小腳本，邊跑隨改實在是舒適的體驗。</p>
 <p>但同時因為這個工具還是 Preview 階段，被其他 IDE 養慣的我，已經習慣貼上語法之後讓 IDE 提示我 using 相關的命名空間進來了，因此像是 HttpClient 這種需要 using 的在這邊就很容易忘記，導致沒有跳自動完成提示的時候寫起來有點綁手綁腳（…說完感覺比較像是我的問題= = 我就菜）</p>
 <p>總之身為一個當年用過 Jupyter Notebooks 的使用者，還是很看好這個工具後續的發展。輕便又能按步驟執行、又跨語言、又能插 Markdown 來做文檔，怎麼想都香！</p>
@@ -1513,7 +1572,7 @@
     }
     var key = "2023-01-28";
     var value = dataMap.get(key);
-    var wordCount =  2408 ;
+    var wordCount =  2748 ;
     var link = "/post/2023/01/polyglot-notebooks/";
     var title = "Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧";
     
@@ -2727,6 +2786,8 @@
         <li><a href="#插入-markdown-儲存格">插入 Markdown 儲存格</a></li>
         <li><a href="#印出參數內容--簡單的-linq-操作範例">印出參數內容 &amp; 簡單的 Linq 操作範例</a></li>
         <li><a href="#安裝-nuget-套件--簡單的呼叫-api-範例">安裝 Nuget 套件 &amp; 簡單的呼叫 API 範例</a></li>
+        <li><a href="#什麼是-magic-commands">什麼是 Magic Commands</a></li>
+        <li><a href="#使用-set-來跨語言傳遞變數">使用 <code>#!set</code> 來跨語言傳遞變數</a></li>
       </ul>
     </li>
     <li><a href="#小結">小結</a></li>
