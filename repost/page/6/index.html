@@ -110,6 +110,63 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/02/0220-tackling-the-challenges-of-using-event-driven-architecture-in-a-billing-system/" title="【每天推薦一篇文章】在計費系統中使用 Event-Driven Architecture 的挑戰" >【每天推薦一篇文章】在計費系統中使用 Event-Driven Architecture 的挑戰</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-2-20,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p>今天終於又鼓起了勇氣來面對堆積如山的收件閘，今天閱讀的是這一篇：<br/>
+<a href="https://www.thoughtworks.com/insights/blog/architecture/tackling-the-challenges-of-using-event-driven-architecture-in-a-billing-system">Tackling the challenges of using event-driven architecture in a billing system</a></p>
+<p>在這篇文章裡，作者面對一個牽涉到錢（！）並且非常老舊的系統，使用 Event-driven 來串了一個新服務，並且分享了他們的心得</p>
+<p><img src="https://www.thoughtworks.com/content/dam/thoughtworks/images/photography/inline-image/insights/blog/architecture/blg_inline_EDA_2.jpg" alt=""></p>
+<p>我覺得有趣的是在於他們遇到的幾個挑戰和做法：</p>
+<h3 id="訊息的冪等性">訊息的冪等性</h3>
+<p>通常我們會希望訊息至少傳遞一次，並且最好只傳遞一次。但有時候還是會因為一些網路因素讓接收方重複收到訊息，這時候作一些處理讓訊息即使重複收到，仍然保持同樣結果就很重要。</p>
+<p>這篇文章提出了兩個常見的做法：</p>
+<blockquote>
+<p>Ensuring data consistency through repeated processing: this requires business components to process the same event input and produce the same result.</p>
+<p><strong>通過重複處理確保數據一致性</strong>：這要求業務組件處理相同的事件輸入並產生相同的結果。</p>
+</blockquote>
+<blockquote>
+<p>Discarding processed events: after each event is recorded by the system and assigned a unique ID, duplicate events are discarded.</p>
+<p><strong>丟棄處理過的事件</strong>：系統在每個事件被記錄並分配一個唯一的ID後，會丟棄重複的事件。</p>
+</blockquote>
+<p>印象中<a href="/post/2022/08/azure-service-bus">之前</a>使用 Azure Service Bus 的時候，就是使用一組 MessageId 來辨別事件</p>
+<h3 id="事件處理順序">事件處理順序</h3>
+<p>假設有些事件之間是有順序性的，雖然通常我們會按照時間發送然後接收，但同樣也可能因為網路問題導致順序亂掉。這篇文章則採取以下措施來應對：</p>
+<blockquote>
+<p>In event schema design, we determine the order by designing a version number or ID for the previous order event for the same user&rsquo;s event.</p>
+<p>在事件模式設計中，<strong>我們通過為同一使用者的事件設計一個先前訂單事件的版本號或 ID 來確定順序</strong></p>
+</blockquote>
+<blockquote>
+<p>Ensure events always follow the order of consumption, discard disordered events and wait for the arrival of events that match the order.</p>
+<p>確保事件始終按照消費的順序進行，丟棄無序的事件並等待符合順序的事件的到來</p>
+</blockquote>
+<h3 id="處理延遲事件">處理延遲事件</h3>
+<p>這項感覺和業務需求比較有關係。主要是 Queue 的延遲性，我們可能在 23:55 發送某個事件，然後 00:05 才被訂閱者收出來處理掉，像這篇需要計算金額的服務就會出問題</p>
+<p>這篇的做法就是<strong>直接往後抓緩衝</strong>，例如在凌晨三點的時候去把前一天的做掉，這三個小時其實就足夠讓前一天的事件內容送達了</p>
+<p>不過看這一段的時候有在想，如果真的有事件排隊排到超過這段可容忍的時間，應該需要發送一些警告通知來讓維運人員能夠及時察覺異常會更好？</p>
+<h3 id="重新發送事件">重新發送事件</h3>
+<p>簡單來說就是如果接收者掛掉了沒有正確處理事件，發送者要可以重新把事件噴過去。他們除了在重新發送的時候使用 Lambda service 並且控制並發數量來確保性能不要炸裂以外，這邊還額外替事件做了個標記：</p>
+<blockquote>
+<p>Because not all consumers need to consume republished events we can leverage the attribute feature of AWS SNS to add a replay attribute to republished events. Consumers can choose whether or not to subscribe to consume these events based on their needs.</p>
+<p>因為並非所有消費者都需要消費重新發布的事件，我們可以利用 AWS SNS 的屬性功能，<strong>將重新發布的事件添加一個重播屬性</strong>。消費者可以根據自己的需求選擇是否訂閱並消費這些事件。</p>
+</blockquote>
+<hr>
+<p>文章最後還列了一些他們應用 Event-Driven Architecture 的優缺點，例如可以根據時間段和事件抓出相關的資訊，但也提升了複雜度等等</p>
+<p>有興趣的朋友可以再點進去閱讀～</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/02/0220-tackling-the-challenges-of-using-event-driven-architecture-in-a-billing-system/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/repost/2024/02/0219-free-writing/" title="【每天推薦一篇文章】自由書寫術" >【每天推薦一篇文章】自由書寫術</a>
                                 </h1>
                             </header>
@@ -415,33 +472,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/02/0210-git-commit-message/" title="【每天推薦一篇文章】Git Commit Message 這樣寫會更好" >【每天推薦一篇文章】Git Commit Message 這樣寫會更好</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-2-10,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p><img src="https://i.imgur.com/A2PORtp.png" alt="Image"></p>
-<p>大年初一的，大家一定忍不住想趕快 Coding 了吧(?)</p>
-<p>這邊轉貼一篇我查閱頻率超高的工具文章，讓大家在龍年 Commit 的時候可以龍謀問題：<br/>
-<a href="https://wadehuanglearning.blogspot.com/2019/05/commit-commit-commit-why-what-commit.html">Git Commit Message 這樣寫會更好，替專案引入規範與範例</a></p>
-<p>這篇裡最推薦大家看的部份是「好與不好的真實案例」，完全體現出好的 Commit Message 對 <del>抓戰犯</del> 釐清問題是多麼的有幫助</p>
-<p>就像文章裡面提到的：</p>
-<blockquote>
-<p>Commit Message 最好兼俱 Why 及 What，讓日後進行維護人員更快進入狀況</p>
-<p>不能只把 Git 當作程式碼的 FTP，要把 Git 當作歷史查閱的工具才拿發揮 Git 的功能</p>
-</blockquote>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/02/0210-git-commit-message/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -543,7 +573,7 @@
 <ul class="widget-list">    
     
     <li>
-        <a href="https://igouist.github.io/repost/">每天推薦一篇文章 (97)</a>
+        <a href="https://igouist.github.io/repost/">每天推薦一篇文章 (98)</a>
     </li>
 </ul>
     </section>

@@ -26,20 +26,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>【每天推薦一篇文章】人體系統優化指南 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="【每天推薦一篇文章】人體系統優化指南 - 伊果的沒人看筆記本">
+    <title>【每天推薦一篇文章】存密碼的正確姿勢 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="【每天推薦一篇文章】存密碼的正確姿勢 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2024-03-27T23:29:00&#43;08:00">
+    <meta property="article:published_time" content="2024-04-23T23:43:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2024-03-27T23:29:00&#43;08:00">
+    <meta property="article:modified_time" content="2024-04-23T23:43:00&#43;08:00">
         
         
-    <meta name="description" content="【每天推薦一篇文章】人體系統優化指南">
+    <meta name="description" content="【每天推薦一篇文章】存密碼的正確姿勢">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/repost/2024/03/0327-human-system-optimization/">
+    <meta property="og:url" content="https://igouist.github.io/repost/2024/04/0423-how-to-save-password/">
     <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link defer rel="stylesheet" href="/css/normalize.css">
@@ -107,10 +107,10 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">【每天推薦一篇文章】人體系統優化指南</h1>
+                            <h1 class="post-title">【每天推薦一篇文章】存密碼的正確姿勢</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2024-3-27,
+                            2024-4-23,
                         </date>
                         
                         
@@ -123,15 +123,82 @@
                         
 
                         <div class="post-content">
-                            <p>今天頭超暈的，想說來貼個相關的文章(?)<br/>
-<a href="https://github.com/zijie0/HumanSystemOptimization">人体系统调优不完全指南 (zijie0/HumanSystemOptimization) - Github</a></p>
-<p>這篇整理了要健健康康活下去(?)的一些相關知識，例如睡眠、飲食、動力、學習。</p>
-<p>並且每個小節都有原理說明和實踐方式。例如睡眠這一小節，就會先提到生物鐘、光照和體溫。接著列出該做的內容，像是起床需要先接觸陽光、晚上要減少光源接觸等等</p>
-<p>而心態和動力這節，就會提到我們 <a href="/repost/2024/03/0320-dopamine">3/20 轉貼過的多巴胺</a>、會影響的飲食，然後接到利用多巴胺的機制來提升自我等等</p>
-<p>文章整體有點長，但分小節看的話其實也蠻快的。對各個術語有興趣的話也可以再進一步搜尋，感覺還是挺不錯的，就轉貼上來給各位朋朋</p>
-<p>另外再補一篇相關閱讀（<del>方便我筆記關聯</del>）：<br/>
-<a href="https://github.com/geekan/HowToLiveLonger">geekan/HowToLiveLonger (程序员延寿指南) - Github</a></p>
-<p>那麼，今天的轉貼就到這邊。躺平，明天見～</p>
+                            <p>前兩天貼了編碼、加密、雜湊的文章，今天接著貼它的續集：</p>
+<p><a href="https://medium.com/starbugs/how-to-store-password-in-database-sefely-6b20f48def92">聽說不能用明文存密碼，那到底該怎麼存？ - Starbugs Weekly 星巴哥技術專欄</a></p>
+<p>這篇列了幾個方案，從編碼到雜湊，搭配圖文解釋，非常適合貼給同事然後叫他們密碼不要亂存。</p>
+<p>真的，只要你同事一說「那我們就用 bas&hellip;」就直接把這篇甩在他臉上。</p>
+<p>按慣例，這邊也迅速節錄一下、收進筆記庫。</p>
+<hr>
+<h3 id="方案一base64-編碼">方案一：Base64 編碼</h3>
+<p><img src="https://i.imgur.com/svSoCYf.png" alt="Image"></p>
+<p>先回顧上一篇的這句：</p>
+<blockquote>
+<p><strong>所謂的編碼並不會修改資料、也沒有任何加密的效果</strong>，單純就是換個方式來表達資料而已</p>
+</blockquote>
+<p>沒有加密效果！沒有加密效果！沒有加密效果！而且 base64 的 <code>==</code> 真的太好認了= =</p>
+<blockquote>
+<p>經過 Base64 後的結果很常都是 = 或 == 結尾，所以如果有一天資料庫真的洩漏出去了，駭客也會在第一時間就發現可以用 Base64 解開，然後在很短的時間內得到原本的密碼</p>
+</blockquote>
+<p>那如果不要用 base64，用一些比較冷門的編碼呢？</p>
+<blockquote>
+<p>也不行，雖然這些編碼演算法比較少人在用，但頂多騙騙不懂電腦的路人甲乙。真正的駭客很可能會使用各種方法嘗試要 decode 密碼，所以不管用哪一種編碼都是不安全的，結論就是不要使用編碼來儲存密碼！</p>
+</blockquote>
+<hr>
+<h3 id="方案二aes256-加密">方案二：AES256 加密</h3>
+<p>那用加密呢？加密就會牽涉到保管 key 的問題：</p>
+<blockquote>
+<p>因爲使用者要登入時，後端必須確認使用者輸入的密碼加密後跟資料庫內的 password 是否符合，所以還是<strong>必須把 key 放在 server 上</strong>。既然是放在 server 上，那駭客就還是有機會拿到</p>
+</blockquote>
+<blockquote>
+<p>因為公司內的員工可能會知道 key，所以就可以從資料庫得到使用者的密碼。如果你知道 Facebook 的工程師只要想要就能得到所有人的密碼，應該也不太放心吧，尤其很多人都在多個網站使用同樣的密碼</p>
+</blockquote>
+<blockquote>
+<p>結論就是<strong>因為無法保證 key 的安全，所以不建議用加密的方式保存密碼</strong></p>
+</blockquote>
+<hr>
+<h3 id="方案三sha1-雜湊">方案三：SHA1 雜湊</h3>
+<p>雜湊代表是不可逆的，通常是拿到密碼之後再雜湊一次比對結果：</p>
+<blockquote>
+<p>當使用者 Luka 要登入時，就把他輸入的密碼拿去經過 SHA1 雜湊，<strong>如果算出來的雜湊值跟資料庫內那一大串一樣，那就代表 Luka 有極高機率輸入了正確的密碼</strong>，所以就放行讓他登入</p>
+</blockquote>
+<p>但因為現在的電腦已經很猛了，所以針對一些長度很短的、常出現的密碼，其實就可以直接拿來比對 SAH1，結果就還是會被猜出來</p>
+<blockquote>
+<p>剛剛的 love1234 之所以可以被破解其實是因為他太簡單了，只要把長度為 8 的字串雜湊值都算過一遍就好。而且小寫字母加上數字也才 36 個字元，算一算 36⁸ 大約才 2.8 兆種組合，很快就可以建一個表出來</p>
+</blockquote>
+<blockquote>
+<p>如果你的密碼又臭又長又亂、包含了大小寫甚至還有一些怪怪的字元，像是 -y]@7k[BSB@3m]r$.&gt;&ldquo;R，那以現在電腦的計算速度就還無法破解，因為長度 20 以內由數字、大小寫還有特殊字元組成的字串太多了，算到天荒地老都不見得能算出來</p>
+</blockquote>
+<p>（只到這步的話，感覺平常只要密碼夠長就沒啥問題？）</p>
+<hr>
+<h3 id="方案四加鹽--sha1">方案四：加鹽 &amp; SHA1</h3>
+<blockquote>
+<p>哦？<strong>聽起來只要密碼夠長、夠亂就沒問題了，那我能不能自己產生隨機字串，把使用者的密碼加長呢？</strong></p>
+</blockquote>
+<blockquote>
+<p>答案是可以，這就是所謂的 <strong>加鹽（Salt）</strong>。如果今天有一個新的使用者要註冊，這時我們的後端系統就隨機生成一個長度十的字串稱作 Salt，計算 Hash 時就把使用者輸入的密碼跟 Salt 合在一起算</p>
+</blockquote>
+<p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTfPcWb4-GYn_62s_B440BgoGonmSEw1asWD2NUgPV5g&amp;s" alt=""></p>
+<p>我現在碰到的密碼處理幾乎都是這種，安心實在。</p>
+<p>只要多一兩個步驟，就可以讓駭客算到天荒地老，何樂而不為呢？</p>
+<hr>
+<h3 id="方案五bcrypt">方案五：Bcrypt</h3>
+<p>完全沒看過的東西！馬上節錄文章內的介紹：</p>
+<blockquote>
+<p>雖然 Bcrypt 的名字裡面有個 crypt，但他並不是加密法，而是跟 SHA1 一樣是雜湊演算法，唯一的差別是<strong>他計算很慢</strong></p>
+</blockquote>
+<blockquote>
+<p>計算慢有什麼好處呢？前面有提到 SHA1 的雜湊值之所以可以被查表查出來，就是因為現今的電腦計算太快了，就連建個表反查也不需要太多時間</p>
+</blockquote>
+<blockquote>
+<p>而 Bcrypt 則是可以透過設定疊代次數讓他變慢，以疊代五次的 Bcrypt 來說，他的計算速度大概比 SHA1 慢 1000 倍。也就是說，假如你原本用 SHA1 計算三天就能反查出所有使用者的密碼，現在卻要花大概八年的時間才可以</p>
+</blockquote>
+<p>竟然就只是，算很慢？但想想還是很有道理，畢竟現在的玩法就是炸裂駭客的時間成本讓他去找別人，這樣看起來其實挺有用的？</p>
+<hr>
+<p>最後標一下總結的這一小句。我發現有很多朋友曾經跟我有一樣的迷思：<br/>「安全是不是就等於完全無法被攻破？」但其實不是這樣的。</p>
+<blockquote>
+<p>在資安領域沒有所謂絕對的安全，<strong>你只能不斷提高攻擊者的成本</strong>，當那個成本高到攻擊者無法負荷時（像是破解一個密碼要租超級電腦連續計算十年），那就可以說是足夠安全了XD</p>
+</blockquote>
+<p>那麼，今天的轉貼就到這邊。我們下次（不敢說明天了）見～</p>
                         </div>
 
                         
@@ -140,15 +207,15 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/repost/2024/03/0326-how-to-ideate-and-come-up-with-product-solutions/">【每天推薦一篇文章】如何發想解決方案？</a></li>
+        <li><a href="/repost/2024/04/0419-encoding-encrypt-and-hashing/">【每天推薦一篇文章】編碼、加密、雜湊</a></li>
         
-        <li><a href="/repost/2024/03/0325-airtable/">【每天推薦一篇文章】Airtable: 簡單的需求用簡單的儲存工具</a></li>
+        <li><a href="/repost/2024/04/0418-question/">【每天推薦一篇文章】精準提問術</a></li>
         
-        <li><a href="/repost/2024/03/0323-let-data-guide-your-decision-making/">【每天推薦一篇文章】讓數據幫你決策</a></li>
+        <li><a href="/repost/2024/04/0416-frontlight-and-backlight/">【每天推薦一篇文章】電子書的背光與前光</a></li>
         
-        <li><a href="/repost/2024/03/0322-a-developer-s-guide-to-interviewing/">【每天推薦一篇文章】如何面試一間公司</a></li>
+        <li><a href="/repost/2024/04/0415-cap-and-remembrance-inc/">【每天推薦一篇文章】CAP 定理與 Remembrance Inc.</a></li>
         
-        <li><a href="/repost/2024/03/0321-anemic-domain-model/">【每天推薦一篇文章】貧血模型與充血模型</a></li>
+        <li><a href="/repost/2024/04/0414-bad-smells-on-code-review/">【每天推薦一篇文章】Code Review 的壞味道</a></li>
         
     </ul>
 </div>
@@ -2593,7 +2660,7 @@
 </script>
                         <hr/>
                         <p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
-<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2frepost%2f2024%2f03%2f0327-human-system-optimization%2f" width="100%" frameborder=0></iframe>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2frepost%2f2024%2f04%2f0423-how-to-save-password%2f" width="100%" frameborder=0></iframe>
                     </article>
                     
     
