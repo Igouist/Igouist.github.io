@@ -110,6 +110,46 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/repost/2024/03/0316-geohash/" title="【每天推薦一篇文章】Geohash" >【每天推薦一篇文章】Geohash</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2024-3-16,
+                            </date>
+                            
+                            <div class="post-content">
+                                <p>前幾天我們有介紹過把地圖切成很多小方格的<a href="https://igouist.github.io/repost/2024/02/0225-what3words/">三詞地址</a>，昨天跟朋友吃飯的時候想起另一個同樣切小方格的做法，決定今天就來轉貼這篇；</p>
+<ul>
+<li><a href="https://mingyihsu.medium.com/geohash-%E4%BB%8B%E7%B4%B9-50c4877f2b50">Geohash 介紹 - MING</a></li>
+<li><a href="https://halfrost.com/go_spatial_search/">高效的多维空间点索引算法 — Geohash 和 Google S2 - 冰霜之地</a></li>
+</ul>
+<p>要認識 Geohash，可以先從第二篇文章中的這一段開始：</p>
+<blockquote>
+<p>app 介面上會顯示出自己附近一個範圍內可用的計程車或者共享單車。假設地圖上會顯示以自己為圓心，5公里為半徑，這個範圍內的車。如何實現呢？</p>
+<p>最直觀的想法就是去資料庫裡面查表，計算並查詢車距離使用者小於等於5公里的，篩選出來，把數據返回給用戶端。</p>
+<p>這種做法比較笨，一般也不會這麼做。為什麼呢？因為這種做法需要對整個表裡面的每一項都計算一次相對距離。太耗時了。</p>
+</blockquote>
+<blockquote>
+<p>現在用的比較多的資料庫 MySQL、PostgreSQL 都原生支援 B+ 樹。 這種數據結構能高效的查詢。<strong>地圖分塊的過程其實就是一種添加索引的過程，如果能想到一個辦法，把地圖上的點添加一個合適的索引，並且能夠排序，那麼就可以利用類似二分查找的方法進行快速查詢。</strong></p>
+<p>問題就來了，地圖上的點是二維的，有經度和緯度，這如何索引呢？</p>
+</blockquote>
+<p>Geohash 同樣是把地圖切成多個小方格，但同時也有精度的概念。該區塊的索引長度越長，指定的區域也就越小</p>
+<p>例如說 AAA 這個區塊在 AAB 旁邊，而 AAA 的這個方格又可以往下切分成 AAAA 和 AAAB。然後 AAAA 再繼續拆成 AAAAA&hellip;</p>
+<p>同時因為編碼是用 Z 字形排列下去的，像是</p>
+<p>AA AB<br/>
+AC AD&hellip;</p>
+<p>所以編碼相近的位置也會相近，也就可以用來判斷兩點距離</p>
+<p>我們可以拿這兩個點的 Hash 檢查前幾碼是不是一致，來判斷兩點是不是同一個區塊內、又是大概多少精度的時候不在同一區</p>
+<p>如果需要範圍大一點、模糊一點，也可以直接限制字串長度。如此一來就可以藉由這些切好的地圖區塊快速查詢附近的點和區域了</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/03/0316-geohash/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/repost/2024/03/0313-minimum-viable-product/" title="【每天推薦一篇文章】最小可行性產品 (MVP)" >【每天推薦一篇文章】最小可行性產品 (MVP)</a>
                                 </h1>
                             </header>
@@ -481,34 +521,6 @@ Totla Composite SLA = 99.9899% = 99.99% * 99.99%</p>
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/repost/2024/03/0304-event-storming-is-good/" title="【每天推薦一篇文章】Event storming 是個好東西" >【每天推薦一篇文章】Event storming 是個好東西</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-3-4,
-                            </date>
-                            
-                            <div class="post-content">
-                                <p>上一週參加的 Meetup 講師有把內容寫成部落格文章了，有興趣的可以看看他們故事 @@</p>
-<p><a href="https://chengweichen.com/2024/02/ddd-taiwan-community-event-storming.html">Event storming 是個好東西：幫助團隊看見全貌，引發團隊變革新契機 - 艦長，你有事嗎？</a></p>
-<blockquote>
-<p>當你想要導入 CI/CD、DevOps 或 OOXXOps 時，<strong>你會如何幫助所有的夥伴建立相同的共識？讓大家可以看見相同的全貌及痛點？</strong></p>
-<p>當團隊開始重視 DevOps 核心精神中的「交付價值、持續改善」時，我們確實需要一些不同於傳統會議與組織溝通的方法，來輔助不同的部門及團隊打破 silos 共同看見整體流程的完整面貌，畢竟我們都知道 DevOps 從來都不是一條龍工程師自己的事情。</p>
-<p>在本次的 Meetup，我將會聊一聊幾個來自真實場景的小故事，分享這段由 Event Storming 所觸發的團隊變革旅程。</p>
-</blockquote>
-<p>題外話，講者提到他帶著同事用便條紙，把到職到離職之間遇到的事、做的專案、學到的東西等等都整理出來</p>
-<p>想到可以在牆上弄個時間軸、把便條紙貼一貼，就能直接看見自己負責的專案和學到的技能，感覺也挺不錯的</p>
-<p>唯一的問題只有：好像沒多少東西能貼🥲</p>
-<p>延伸閱讀：<a href="/repost/2024/02/0209-event-storming">2/29 - 認識 Event Storming</a></p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/repost/2024/03/0304-event-storming-is-good/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -561,6 +573,10 @@ Totla Composite SLA = 99.9899% = 99.99% * 99.99%</p>
         <a href="https://igouist.github.io/repost/page/10/">10</a>
     </li>
     
+    <li >
+        <a href="https://igouist.github.io/repost/page/11/">11</a>
+    </li>
+    
 
     
     <li class="next">
@@ -610,7 +626,7 @@ Totla Composite SLA = 99.9899% = 99.99% * 99.99%</p>
 <ul class="widget-list">    
     
     <li>
-        <a href="https://igouist.github.io/repost/">每天推薦一篇文章 (100)</a>
+        <a href="https://igouist.github.io/repost/">每天推薦一篇文章 (101)</a>
     </li>
 </ul>
     </section>
