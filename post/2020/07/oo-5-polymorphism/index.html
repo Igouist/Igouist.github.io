@@ -209,11 +209,15 @@
 </span></span><span style="display:flex;"><span>    programmer001.WriteCSharp(); <span style="color:#75715e">// &#34;CleanCode&#34;</span>
 </span></span><span style="display:flex;"><span>    programmer002.WriteCSharp(); <span style="color:#75715e">// &#34;ShitCode&#34;</span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>這裡也就是多型的核心概念，<strong>用子類別實作出各式各樣不同的方法，藉此讓父類別的方法藉此達到延伸和多樣化的效果</strong>。例如說一樣是 <code>Programmer</code> 的 <code>WriteCSharp()</code> 這個方法，小明的實現就是 <code>return &quot;CleanCode&quot;;</code> 而小華的實作方式則是 <code>return &quot;ShitCode&quot;;</code>。</p>
-<p>同樣地，最常被舉的例子就是動物。當有動物這個類別時，儘管狗跟貓都繼承了這個類別，但他們都可以對「叫聲」做出不同的實作。再藉由多型的方式，動物這個父類別，就能夠藉由子類別來完成擴展。更進一步來說，藉由子類別的擴展，我們能夠<strong>讓父類別做出各式各樣的事，而不需要更動父類別本身</strong>。</p>
-<p>最有可能碰到的例子就是資料庫連線。例如說，我們可以讓 <code>MySqlDBConnect</code> 和 <code>MongoDBConnect</code> 都繼承 <code>DBConnect</code>，但各自保有對應不同資料庫的實作。如果一來，<code>DBConnect</code> 就獲得了用不同方法連線到不同資料庫的擴展，得到了對應狀況靈活使用的彈性。同時，使用 <code>DBConnect</code> 物件的其他物件也可以不用管現在的 <code>DBConnect</code> 連線是哪個子類別來工作的，只要知道能夠連線並取得資料就好，也達到了以封裝降低耦合的要求。</p>
-<p>以上就是多型的核心，但當我們把子類別塞到父類別的殼裡面使用的時候，還需要注意以下這個部分：</p>
-<p>當我們<strong>將小明宣告成工程師</strong>這一瞬間，小明已經不再只是小明，對老闆而言他就只是一個工程師，<strong>這裡只剩下「工程師」而不是「小明」</strong>，是 <code>Programmer</code> 而不是 <code>Ming</code>。在呼叫 <code>Programmer programmer = new Ming()</code> 的同時，這裡就只剩下一個無情的寫程式機器，再也沒有小明。</p>
+</span></span></code></pre></div><p>這裡也就是多型的核心概念，<strong>用子類別實作出各式各樣不同的方法，藉此讓父類別的方法藉此達到延伸和多樣化的效果</strong>。</p>
+<p>例如說一樣是 <code>Programmer</code> 的 <code>WriteCSharp()</code> 這個方法，小明的實現就是 <code>return &quot;CleanCode&quot;;</code> 而小華的實作方式則是 <code>return &quot;ShitCode&quot;;</code>。</p>
+<p>同樣地，最常被舉的例子就是動物。當有動物這個類別時，儘管狗跟貓都繼承了這個類別，但他們都可以對「叫聲」做出不同的實作。</p>
+<p>因為有了多型，動物這個父類別，就能夠藉由子類別來完成擴展。更進一步來說，藉由子類別的擴展，我們能夠<strong>讓父類別做出各式各樣的事，而不需要更動父類別本身</strong>。</p>
+<p>最常碰到的例子就是資料庫連線。例如說，我們可以讓 <code>MySqlDBConnect</code> 和 <code>MongoDBConnect</code> 都繼承 <code>DBConnect</code>，但各自保有對應不同資料庫的實作。</p>
+<p>如此一來，<code>DBConnect</code> 就獲得了用不同方法連線到不同資料庫的擴展，得到了對應狀況靈活使用的彈性。同時，使用 <code>DBConnect</code> 物件的其他物件也可以不用管現在的 <code>DBConnect</code> 連線是哪個子類別來工作的，只要知道能夠連線並取得資料就好，也達到了以封裝降低耦合的要求。</p>
+<p>以上就是多型的核心。但當我們把子類別塞到父類別的殼裡面使用的時候，還需要注意：這時候的子類別已經是父類別的形狀了</p>
+<p>當我們<strong>將小明宣告成工程師</strong>這一瞬間，小明已經不再只是小明，對老闆而言他就只是一個工程師，<strong>這裡只剩下「工程師」而不是「小明」</strong>，是 <code>Programmer</code> 而不是 <code>Ming</code>。</p>
+<p>在 <code>Programmer programmer = new Ming()</code> 執行完畢的同時，這裡就只剩下一個無情的寫程式機器，再也沒有小明。</p>
 <p>當然，小明也不准在上班時間泡英式奶茶，我們不是請你來做這個的！</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Work()
 </span></span><span style="display:flex;"><span>{
@@ -1691,7 +1695,7 @@
     }
     var key = "2022-09-03";
     var value = dataMap.get(key);
-    var wordCount =  2213 ;
+    var wordCount =  2215 ;
     var link = "/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/";
     var title = "使用 Powershell + 工作排程器 + Line Notify 來定時提醒公車到站時間";
     
@@ -2027,7 +2031,7 @@
     }
     var key = "2020-12-13";
     var value = dataMap.get(key);
-    var wordCount =  3868 ;
+    var wordCount =  3871 ;
     var link = "/post/2020/12/oo-14-dependency-inversion-principle/";
     var title = "菜雞與物件導向 (14): 依賴反轉原則";
     
@@ -2099,7 +2103,7 @@
     }
     var key = "2020-11-01";
     var value = dataMap.get(key);
-    var wordCount =  2695 ;
+    var wordCount =  2700 ;
     var link = "/post/2020/11/oo-12-liskov-substitution-principle/";
     var title = "菜雞與物件導向 (12): 里氏替換原則";
     
@@ -2303,7 +2307,7 @@
     }
     var key = "2020-07-12";
     var value = dataMap.get(key);
-    var wordCount =  2482 ;
+    var wordCount =  2491 ;
     var link = "/post/2020/07/oo-5-polymorphism/";
     var title = "菜雞與物件導向 (5): 多型";
     
