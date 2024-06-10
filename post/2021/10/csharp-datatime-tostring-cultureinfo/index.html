@@ -183,6 +183,12 @@
 <blockquote>
 <p>關於這部分的欄位內容，可以參照 Vito 大大的 <a href="http://vito-note.blogspot.com/2012/03/blog-post_28.html#%E9%A1%AF%E7%A4%BA%E8%88%87%E6%96%87%E5%8C%96%E7%89%B9%E6%80%A7%E7%9B%B8%E9%97%9C%E7%9A%84%E8%B3%87%E8%A8%8A">使用文化特性</a> 這篇文章，裡面的整理已經相當詳細，供各位參考。</p>
 </blockquote>
+<blockquote>
+<p>補充：我們常常會看到 <code>ToString(&quot;yyyy-MM-dd HH:mm:ss&quot;)</code> 這種用法，但要小心這邊的 <strong><code>-</code> 和 <code>:</code> 其實是用來標示日期和時間的分隔符號</strong>，並不是真正的 <code>-</code> 和 <code>:</code>。</p>
+<p>所以 <code>:</code> 在 format 的時候，會被替換為 <code>TimeSeparator</code>；<br/>而 <code>/</code> 同樣也會使用 <code>DateSeparator</code></p>
+<p>也就是說，如果你使用的文化特性 <code>TimeSeparator</code> 是 <code>#</code> 的話，<code>HH:mm:ss</code> 在 <code>21:07:00</code> 出來的結果將會是 <code>21#07#00</code>。如果發現 ToString 出來的結果怪怪的，可以優先檢查文化特性的這兩個分隔符號有沒有問題。</p>
+<p>相關的說明請參見 <a href="https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings#date-and-time-separator-specifiers">Date and time separator specifiers</a> 這一小節。</p>
+</blockquote>
 <p>現在讓我們用 <code>Thread.CurrentThread.CurrentCulture</code> 來更改當前執行緒的時間，並用完整日期時間模式（<code>&quot;F&quot;</code>）來測試看看：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> date = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2006</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>);
 </span></span><span style="display:flex;"><span>
@@ -879,7 +885,7 @@
     }
     var key = "2024-03-01";
     var value = dataMap.get(key);
-    var wordCount =  599 ;
+    var wordCount =  633 ;
     var link = "/repost/2024/03/0301-guid-and-logical-fragmentation/";
     var title = "【每天推薦一篇文章】GUID 與索引破碎";
     
@@ -1863,7 +1869,7 @@
     }
     var key = "2021-10-04";
     var value = dataMap.get(key);
-    var wordCount =  2783 ;
+    var wordCount =  2979 ;
     var link = "/post/2021/10/csharp-datatime-tostring-cultureinfo/";
     var title = "菜雞抓蟲: DateTime.ToString() 之我們不一樣 \u0026 CultureInfo 文化特性小筆記";
     
