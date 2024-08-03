@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>appsettings on 伊果的沒人看筆記本</title>
+    <link>https://igouist.github.io/tags/appsettings/</link>
+    <description>Recent content in appsettings on 伊果的沒人看筆記本</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hant-TW</language>
+    <lastBuildDate>Sat, 03 Aug 2024 08:30:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/tags/appsettings/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>.Net: 使用 IOptions 取得 appsettings.json 的設定值吧</title>
+      <link>https://igouist.github.io/post/2024/08/dotnet-ioptions/</link>
+      <pubDate>Sat, 03 Aug 2024 08:30:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2024/08/dotnet-ioptions/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/dh0Jo4t.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;因為手邊的 .Net Core API 專案越來越多，蠻常會需要讀 appsetting.json 的 Config，每次都要重找文章有點麻煩，這邊就來筆記一篇。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;首先簡單介紹一下 appsettings.json 是在幹嘛的：&lt;/p&gt;
+&lt;p&gt;我們開發的時候，常常會需要弄一些設定值，再用這些設定值用來控制我們程式的某些行為。&lt;/p&gt;
+&lt;p&gt;例如「某功能的上限值是 &lt;code&gt;10&lt;/code&gt;」、「某項開關在測試環境是 &lt;code&gt;false&lt;/code&gt;」、「某服務信件的發送者要用 &lt;code&gt;noreply9527&lt;/code&gt;」，另外常見的還有連線字串、寫 Log 時的 logging level 等等&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;這些設定值會和程式碼拆開，放在設定檔集中管理&lt;/strong&gt;，再讓程式碼從設定檔讀取相關的設定值來用就好。有了設定檔，要調整修改也比較方便：要增加或是修改設定值，都只要先往設定檔衝就行。&lt;/p&gt;
+&lt;p&gt;既然兩邊拆開了，我們也就可以簡單地替換這些設定值來應對不同狀況（例如正式環境和測試環境套用兩組不同的設定檔，或是在自己電腦測試的時候快速改個值之類的），彈性可說是 UPUP&lt;/p&gt;
+&lt;p&gt;更重要的是，這樣我們就不需要把一大堆東西寫死在程式碼的各個地方，也就不會要改個值還要先搜尋整個專案再一個一個挖出來改了。&lt;del&gt;我按 Shift Ctrl F 已經按到哭&lt;/del&gt;&lt;/p&gt;
+&lt;p&gt;把設定值抽出去丟到設定檔之後，我們就得到了：集中管理設定值、方便修改和替換、減少程式碼中又重複又寫死的臭東西等等好處。&lt;/p&gt;
+&lt;p&gt;而在 .Net Core 開始的 .Net API 框架裡，&lt;strong&gt;這個設定檔就是 appsettings.json&lt;/strong&gt;。&lt;br/&gt;前面提到的像是日誌等級、功能旗標之類的這些設定值，就會放在 appsettings.json 裡面。&lt;/p&gt;
+&lt;p&gt;而當我們想要從 appsettings.json 把這些設定值給讀出來的時候，&lt;br/&gt;就可以使用我們的 IOptions 啦！&lt;/p&gt;
+&lt;h2 id=&#34;使用-ioptions-來註冊--注入&#34;&gt;使用 IOptions 來註冊 &amp;amp; 注入&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;提醒：這篇的示範會用到一些些 .Net 依賴注入（DI）相關的操作。沒接觸過的朋友可以考慮先閱讀&lt;a href=&#34;https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/&#34;&gt;菜雞新訓記：依賴注入&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;假設我們有個專案，叫做大漢防禦管理系統。專案內的 appsettings.json 有以下內容：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-json&#34; data-lang=&#34;json&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;StrongholdInfo&amp;#34;&lt;/span&gt;: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;Index&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;49&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;Name&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;劍閣&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;Enabled&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;General&amp;#34;&lt;/span&gt;: [
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;姜維&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;廖化&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;張翼&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;董厥&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;我們正好在開發一個新功能，需要抓到這段設定值。現在就來示範一下：&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
