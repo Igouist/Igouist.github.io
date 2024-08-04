@@ -26,20 +26,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>我要訂便當 (1): 用 Python &#43; Selenium 控制瀏覽器取得訂單 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="我要訂便當 (1): 用 Python &#43; Selenium 控制瀏覽器取得訂單 - 伊果的沒人看筆記本">
+    <title>九日　白金！ | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="九日　白金！ - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2020-03-08T18:47:23&#43;08:00">
+    <meta property="article:published_time" content="2024-08-01T07:00:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2020-03-08T18:47:23&#43;08:00">
+    <meta property="article:modified_time" content="2024-08-01T07:00:00&#43;08:00">
         
-        <meta name="keywords" content="Python, Crawler, Selenium, Automation">
-    <meta name="description" content="使用 Python 及 Selenium 連線到訂便當網站，自動輸入帳號密碼登入後，取回網站上的訂單資訊。Selenium 是一個對網頁做自動化測試的工具，並且也支援相當多語言可以使用，能夠經由腳本或錄製的方式對瀏覽器進行操作。">
+        <meta name="keywords" content="九日, Nine suns">
+    <meta name="description" content="九日　白金！">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/post/2020/03/bandon-1-selenium/">
+    <meta property="og:url" content="https://igouist.github.io/post/2024/08/nine-sols/">
     <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link defer rel="stylesheet" href="/css/normalize.css">
@@ -107,19 +107,15 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">我要訂便當 (1): 用 Python &#43; Selenium 控制瀏覽器取得訂單</h1>
+                            <h1 class="post-title">九日　白金！</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2020-3-8,
+                            2024-8-1,
                         </date>
                         
                         <div class="post-meta">
                             
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/python">Python</a></span>
-                            
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/automation">Automation</a></span>
-                            
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/life">Life</a></span>
                             
                         </div>
                         
@@ -133,198 +129,56 @@
                         
 
                         <div class="post-content">
-                            <blockquote>
-<p>前言：</p>
-<p>這是參加<a href="https://www.hexschool.com/2019/11/14/2019-11-14-w3Hexschool-2020-challenge/">六角鼠年全馬</a>的第一篇，主要是希望能夠養成寫部落格的習慣。由於我本身並沒有主要技能，因此這次參賽文章會以我最近玩的玩具、使用的套件或是遇到的問題做紀錄。</p>
-<p>希望能夠派上用場。</p>
-<p>目標：使用 <strong>Python</strong> 及 <strong>Selenium</strong> 連線到訂便當網站，自動輸入帳號密碼登入後，取回網站上的訂單資訊</p>
-<p>(2020/12/4) 更新: 由於訂便當網站改版，所以程式碼已經不能照抄了。但有興趣的朋友還是能自己摸索做點變動，也能夠照常進行喔，加油～</p>
-</blockquote>
-<p>最近在公司的時候有個莫大的煩惱，就是關於辦公室團購這回事兒。現在待著的公司主要是從 <a href="https://dinbendon.net/">Dinbendon</a> 這套系統來揪團購，舉凡品客、火鍋等都在上面訂過，據我觀察最受歡迎出現最多次的當屬雞排了。煩惱就在於，每次都會錯過雞排的團購，光在辦公室聞著四面八方傳來的雞排香味，就令人無法忍受！因此趁著這個機會，來嘗試能不能像之前的 <a href="/post/2019/12/ptt-crawler-and-listener/">PTT</a> 一樣來弄出一個通知，順便玩玩最近看到的工具。這系列的文章會分成多個部分，主要是以使用的工具來分集。</p>
-<p>由於在從團購網取得訂單的過程中需要跟網頁進行互動，因此這次要使用的工具是 <strong><a href="https://www.selenium.dev/">Selenium</a></strong>。</p>
-<p><strong>Selenium 是一個對網頁做自動化測試的工具</strong>，但我個人比較常在爬蟲的時候用到XD。它能夠經由腳本或錄製的方式對瀏覽器進行操作，並且也支援相當多語言可以使用，例如我同事便使用 C# 和 Hangfire 來完成訂便當的目標（對，這麼無聊的人不只我一個），而我則用相對比較熟悉的 Python 來實作。</p>
-<p>關於本篇主要的操作和步驟，主要參考 <a href="https://medium.com/@NorthBei/%E5%9C%A8windows%E4%B8%8A%E5%AE%89%E8%A3%9Dpython-selenium-%E7%B0%A1%E6%98%93%E6%95%99%E5%AD%B8-eade1cd2d12d">在 Windows 上安裝 Python &amp; Selenium 簡易教學</a> 這篇文章，在此感謝；而各語言的語法等等，可以翻閱 <a href="https://selenium-python-zh.readthedocs.io/en/latest/index.html">教學文檔</a>。</p>
-<h2 id="準備工作">準備工作</h2>
-<p>開始寫腳本之前，確保 Python 已經安裝完畢，並且先下載好 <a href="https://pypi.org/project/selenium/">Selenium 套件包</a>。</p>
-<p>另外 <strong>Selenium 是使用各個 Web Driver 來對瀏覽器做操作的</strong>，因此這邊也需要先下載 Chrome 的 Driver 來使用。進入 <a href="http://chromedriver.chromium.org/downloads">ChromeDriver 的下載頁面</a> ，通常挑選最新版的下載，如果 Chrome 版本有需求再選擇對應的版本即可。</p>
-<p><img src="https://i.imgur.com/z0BGk4z.png" alt=""></p>
+                            <p><img src="https://i.imgur.com/zhwxf9c.png" alt="Image">
+<img src="https://i.imgur.com/K2vqk3j.png" alt="Image"></p>
+<p>終於過了！九日沒有慣例的「完成所有成就」的盃，但是放結局獎盃又怕結局名字雷到路過的朋友，就截普通模式通關的盃吧。</p>
+<p>按照慣例，留一篇筆記來聊聊心得和體驗，以下有雷。</p>
+<p>首先，必須感謝當初募資的大大們有開出劇情模式，讓我解完其中一條結局（被易公痛扁）之後，可以馬上讀檔開劇情模式看另一條。（逃離研究中心的電影運鏡很棒啦，但我實在不想再走一次了囧）</p>
+<p>看完兩個結局後，能理解為什麼蠻多人會說后羿射日結局才是真結局。原本覺得只是「不同的選擇」，但通關之後我也比較喜歡這個結局，易公第三階段和最後射日的演出令人印象深刻，也充滿故事結束的感覺。</p>
+<hr>
+<p>這次的戰鬥和地圖探索體驗都很不錯，但果然首先要提的還是「道教龐克」的部份。</p>
+<p>一開始有點水土不服，就是有點熟悉感又覺得怪怪的。但越玩越覺得「哇這很不錯」。像是嗑毒草的阿農、墳墓是虛擬實境裝置、煉丹的丹藥其實是基因改造，另外還有很潮的<a href="https://forum.gamer.com.tw/C.php?bsn=74687&amp;snA=152">太陽語</a>（說是古漢語發音和倉頡拼字來的？）等等。</p>
+<p>蠻喜歡這種充滿各種腦洞的詮釋，感覺還有很多發展空間，不知道以後會不會有道教龐克宇宙？</p>
+<p><img src="https://i.imgur.com/auSDWXh.png" alt="Image"></p>
+<p>另外一些破台時比較有印象的部分，首先就是臭菜（想了一下才發現是在嘴香菜）。還有李耳墓，通過三位大佬的測試、聽了李耳的寓言，然後才意會到門口就是被砍翻的那三位大佬，體驗良好。</p>
+<p>哦對，還有茱麗葉。</p>
+<p><img src="https://i.imgur.com/J1U4qxS.png" alt="Image"></p>
+<p>然而最有記憶點的，果然還是第一次經過扶蝶他家門口的時候的 jump scare。</p>
+<p>發現畫面開始無限 Loop 的時候，我就躲得離螢幕超超超遠。事後還上巴哈求助詢問後面還有沒有這種嚇人玩意，真的差點嚇到棄坑 = =&quot;</p>
+<p>但提到扶蝶就要稱讚一下，扶蝶戰的體驗和音樂真的很讚。</p>
+<p>節奏雖然很快，但是從 1 隻、3 隻再到 7 隻分身，這種逐漸加快、越來越密集的感覺打起來非常舒服。應該是我打完九日過程中覺得戰鬥體驗最讚的 Boss，勘比易公</p>
+<p>故事裡成員們陷入超級虛擬實境不想醒、搭配夢蝶的意境也很不錯。對戰中從後腦長出蝴蝶也很有 Feel，音樂更是相當有感（<a href="https://www.youtube.com/watch?v=SQnSdBNwXuI">Smile at My Cursed Dream ~Lady Ethereal&rsquo;s Theme~</a>），就是背景和跑圖太陰間了點</p>
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+  <iframe src="https://www.youtube.com/embed/SQnSdBNwXuI" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
+</div>
+
+<hr>
+<p>除了扶蝶戰以外，也聊聊其他比較有印象的戰鬥</p>
+<p>截全戰的印象九成都在背景音樂上，就是那首「<a href="https://www.youtube.com/watch?v=J0CocEg0s9U">苦難！哈！鑄英雄！</a>」（有一段聽起來超像「人真好！郭富城！」的那首）。戰鬥過程就是中規中矩的你一刀我一刀。但截全的人氣好像蠻高的？常常看到相關的圖。</p>
+<p>另一場印象比較深的是姬的戰鬥，尤其是占卜可以自己踩想要的，所以踩得準就可以自己選補血，一直補一直爽。飛劍可以格檔、黑洞可以打斷，實在非常貼心，所以說這種神秘又古老的角色就是棒。奄老還是乖乖顧倉庫去吧。</p>
+<p><img src="https://i.imgur.com/tP9Htjv.png" alt="Image"></p>
+<p>至於最終戰的易公，只能說齁勝。剛進場的時候覺得揮刀速度明明很慢，卻一直抓不到格檔的感覺。有種被教鞭教訓的感覺（這就是師傅嗎）</p>
+<p>戰鬥過程中基本上就是鏘鏘鏘一直檔，檔完就抓空隙上符做輸出（不如說我八成輸出都是靠符），無量反擊用好才能進一步喝水跟補刀。打著打著有種夢回隻狼的 Feel</p>
+<p>當然第三階段被完全看不懂的飛天劍打成智障又是另一個故事了。易公第三杯水強得跟鬼一樣，難怪他會覺得變怪物是種進化，我被打到都快信了</p>
+<p><img src="https://i.imgur.com/RTBD3vG.png" alt="Image"></p>
+<p>整輪打下來的戰鬥心得是：<strong>一定要格檔，一定要貼符</strong>。</p>
+<p>很多輸出空間（像是扶蝶和易公）都只能靠貼符，越打到後期越覺得符才是主要輸出，刀反而是裝了玉石加減砍來治內傷的</p>
+<p>戰鬥充滿格檔和互動，體驗非常良好。</p>
+<p>故事部分也相當不錯，像山海 9000 支線到最後找到朋友和照片，還有風氏兄妹奢糜背後的原因（開打之前：人都死光了你們還開趴？　打完之後：太悲哀了QQ）、阿農一路走到帶領村人等等。</p>
+<p>有一小段和軒軒下棋的對話我也蠻喜歡：</p>
 <blockquote>
-<p>(4/2) 補充：關於<strong>其他瀏覽器的 Driver</strong>，可以參考 iT 邦幫忙的 <a href="https://ithelp.ithome.com.tw/articles/10229959/">鼠年全馬鐵人挑戰 WEEK 06：Selenium 自動化測試工具</a> 這篇，裡面有詳細的介紹以及各瀏覽器的 Driver 下載整理。</p>
-<p>此外除了用腳本控制 Driver 的用法以外，<strong>Selenium 也提供了 IDE</strong> 可以直接使用，需要先安裝 Chrome 和 Firefox 的擴充套件，詳情可以參閱同系列的 <a href="https://ithelp.ithome.com.tw/articles/10230427">鼠年全馬鐵人挑戰 WEEK 07：Selenium IDE</a> 內有使用說明。</p>
-<p>發完之後才看到這個系列，對測試的種類和 Selenium 的操作說明得清楚多了，值得推薦，故在此補上。</p>
+<p>「咦！我是不是要贏了！」</p>
+<p>『對，其實下到一半我就知道自己贏不了。 <br/>
+　恭喜你，接下來可以去找下一名對手了。』</p>
+<p>「哈哈，才不要，我又不是為了贏，我只是想跟大哥下棋」</p>
+<p>『不為輸贏嗎？　<br/>
+　哈，看來我該學的東西還真不少。』</p>
 </blockquote>
-<p>下載完解壓縮應該會有一個 chromedriver.exe 檔案，這個檔案的用法有兩種</p>
-<ul>
-<li>放置於 Python.exe 所在的位置，即當初的安裝位置，如此所有的腳本都可以使用</li>
-<li>放置於現在專案的 py 檔同一個資料夾，就只有這個資料夾中的腳本可以使用。</li>
-</ul>
-<p>當然前者放一次就都可以用比較方便，不過這邊只打算迅速地讓這個腳本動起來，因此可以直接放置在等等要寫 Python 檔的資料夾就可以了。</p>
-<p><img src="https://i.imgur.com/7m1RKc8.png" alt=""></p>
-<p>那麼準備工作完成之後，就可以開始來寫 Code 讓它動起來囉！</p>
-<h2 id="取得訂單">取得訂單</h2>
-<p>首先測試是否能夠順利連線上便當網，這邊先撰寫最簡單的連線。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> selenium <span style="color:#f92672">import</span> webdriver
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://dinbendon.net/do/login&#39;</span>
-</span></span><span style="display:flex;"><span>driver <span style="color:#f92672">=</span> webdriver<span style="color:#f92672">.</span>Chrome()
-</span></span><span style="display:flex;"><span>driver<span style="color:#f92672">.</span>get(url)  <span style="color:#75715e"># 連線到訂便當頁面</span>
-</span></span></code></pre></div><p>執行之後應該就能看到 Chrome 自動開啟連線到指定的網頁，同時也可以注意到 Chrome 上有標明「正在受到自動測試軟體控制」</p>
-<p><img src="https://i.imgur.com/741auju.png" alt=""></p>
-<p>接著想要看到訂單內容，還必須要輸入帳號密碼和驗證碼才行，這也就是前面提到的需要互動的部分。先使用 F12 的使用者工具觀察欄位的名稱，以利後續 Selenium 的抓取 <del>，爬蟲的基本就在於拆人家的房子</del></p>
-<p><img src="https://i.imgur.com/3SWOJtJ.png" alt=""></p>
-<p>確認名稱之後就可以添加指令，讓 Selenium 幫我們輸入看看。這邊要注意我們加上了 <code>sleep()</code> 來暫停一下，因為在 Selenium 的操作之間，建議要加上些許延遲，避免畫面動作都還沒完成，指令就一股腦丟完了囧。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">2</span>) <span style="color:#75715e"># 演一下</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>username <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Hello&#34;</span>
-</span></span><span style="display:flex;"><span>password <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;password&#34;</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># 輸入帳密</span>
-</span></span><span style="display:flex;"><span>driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74">&#34;username&#34;</span>)<span style="color:#f92672">.</span>send_keys(username)
-</span></span><span style="display:flex;"><span>driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74">&#34;password&#34;</span>)<span style="color:#f92672">.</span>send_keys(password)
-</span></span></code></pre></div><p>可以看到它會自動幫我們輸入內容，看著帳密自己跳出來實在是相當療癒</p>
-<p><img src="https://i.imgur.com/WvY9vco.png" alt=""></p>
-<p>在這一步去抓取網頁上的元素時，可以看見我使用了 <code>driver.find_element_by_name</code> 去按照網頁上 HTML 標籤的 name 去抓到目標的元件。這就是 <strong>Selenium 的定位器</strong>，它提供了許多方法去取得目標元件，例如 Id、Name 等等。</p>
-<p>關於定位器的操作可以參閱 <a href="https://matthung0807.blogspot.com/2017/12/selenium-html-element-locator.html">Selenium HTML element locator 定位器</a> 以及 <a href="https://ithelp.ithome.com.tw/articles/10194253">Selenium webdriver 定位物件方法比較 xpath v.s. css selector</a> 這兩篇。接下來的介紹會以使用為主。</p>
-<p>回到我們的便當網，這網頁的友善就在於它的驗證碼是顯示數字讓你計算，每次的變化只有中間的「+」可能會變成「加」和全形的「＋」。但這並不妨礙我們去把它的值剝取出來。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 輸入驗證碼</span>
-</span></span><span style="display:flex;"><span>ques <span style="color:#f92672">=</span> driver<span style="color:#f92672">.</span>find_elements_by_class_name(<span style="color:#e6db74">&#34;alignRight&#34;</span>)[<span style="color:#ae81ff">2</span>]<span style="color:#f92672">.</span>text <span style="color:#75715e"># 有點強硬地拿到整串問題</span>
-</span></span><span style="display:flex;"><span>temp <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>findall(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\d+\.?\d*&#34;</span>, ques) <span style="color:#75715e"># 用正規表達式把數字取出</span>
-</span></span><span style="display:flex;"><span>a <span style="color:#f92672">=</span> int(temp[<span style="color:#ae81ff">0</span>])
-</span></span><span style="display:flex;"><span>b <span style="color:#f92672">=</span> int(temp[<span style="color:#ae81ff">1</span>])
-</span></span><span style="display:flex;"><span>c <span style="color:#f92672">=</span> a <span style="color:#f92672">+</span> b
-</span></span><span style="display:flex;"><span>driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74">&#34;result&#34;</span>)<span style="color:#f92672">.</span>send_keys(c)
-</span></span></code></pre></div><p>可以看見它自動幫我們輸入了計算結果</p>
-<p><img src="https://i.imgur.com/J4IXXCx.png" alt=""></p>
-<blockquote>
-<p>題外話：如果遇到麻煩點的驗證碼怎麼辦？</p>
-<p>可以先用<a href="https://www.youtube.com/watch?v=hF-dJj559ug">大數軟體 - 如何使用 Selenium 抓取驗證碼?</a></p>
-<p>再試試看<a href="https://www.largitdata.com/course/37/">大數學堂 - 如何透過 OpenCV 破解台灣證券交易所買賣日報表的驗證碼(Captcha)</a></p>
-<p>也許能有效，先記錄下來。</p>
-</blockquote>
-<p>接著就可以測試是否能夠登入了，將帳號密碼設定為測試用的訪客帳號 guest，並在指令最後添加按下按鈕的動作</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 提交表單</span>
-</span></span><span style="display:flex;"><span>driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74">&#34;submit&#34;</span>)<span style="color:#f92672">.</span>click() 
-</span></span></code></pre></div><p>到這一步已經順利登入，並且可以看到訂單列表了。</p>
-<p><img src="https://i.imgur.com/PQyd9FW.png" alt=""></p>
-<h2 id="整理及包裝">整理及包裝</h2>
-<p>接著流程一如前部分，觀察網頁結構並且將目標取出。</p>
-<p>這邊先將左半部分的 Table 拿出來，接著針對表格的每一列取出該元素之後取文字。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># 取出訂單表格列</span>
-</span></span><span style="display:flex;"><span>rows <span style="color:#f92672">=</span> driver<span style="color:#f92672">.</span>find_elements_by_css_selector(
-</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;div#inProgressBox&gt;table&gt;tbody&gt;tr&#34;</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> len(rows) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-</span></span><span style="display:flex;"><span>    driver<span style="color:#f92672">.</span>close()
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> list()
-</span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># 取出每一列資料的文字</span>
-</span></span><span style="display:flex;"><span>bandons <span style="color:#f92672">=</span> [list(map(getText, row<span style="color:#f92672">.</span>find_elements_by_css_selector(
-</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;td&gt;div&gt;a&gt;span&#34;</span>))) <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> rows]  
-</span></span><span style="display:flex;"><span>driver<span style="color:#f92672">.</span>close()
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># 做成一張表</span>
-</span></span><span style="display:flex;"><span>tableHeader <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;人數&#39;</span>, <span style="color:#e6db74">&#39;發起人&#39;</span>, <span style="color:#e6db74">&#39;目標&#39;</span>]
-</span></span><span style="display:flex;"><span>bandons_df <span style="color:#f92672">=</span> pandas<span style="color:#f92672">.</span>DataFrame(bandons, columns<span style="color:#f92672">=</span>tableHeader)
-</span></span></code></pre></div><p>目前為止整體程式碼如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> selenium <span style="color:#f92672">import</span> webdriver
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> re
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> time
-</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># 自動檢查團購便當網</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
-</span></span><span style="display:flex;"><span>    url <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;https://dinbendon.net/do/login&#39;</span>
-</span></span><span style="display:flex;"><span>    order <span style="color:#f92672">=</span> fetch_bandon(url)
-</span></span><span style="display:flex;"><span>    print_order(order)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fetch_bandon</span>(url, username<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;guest&#34;</span>, password<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;guest&#34;</span>):
-</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39; 開啟瀏覽器並連線到便當網取得資料 &#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    driver <span style="color:#f92672">=</span> webdriver<span style="color:#f92672">.</span>Chrome()
-</span></span><span style="display:flex;"><span>    driver<span style="color:#f92672">.</span>get(url)  <span style="color:#75715e"># 連線到訂便當頁面</span>
-</span></span><span style="display:flex;"><span>    time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1</span>) <span style="color:#75715e"># 演一下</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 輸入帳密</span>
-</span></span><span style="display:flex;"><span>    driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74">&#34;username&#34;</span>)<span style="color:#f92672">.</span>send_keys(username)
-</span></span><span style="display:flex;"><span>    driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74">&#34;password&#34;</span>)<span style="color:#f92672">.</span>send_keys(password)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 輸入驗證碼</span>
-</span></span><span style="display:flex;"><span>    ques <span style="color:#f92672">=</span> driver<span style="color:#f92672">.</span>find_elements_by_class_name(<span style="color:#e6db74">&#34;alignRight&#34;</span>)[<span style="color:#ae81ff">2</span>]<span style="color:#f92672">.</span>text
-</span></span><span style="display:flex;"><span>    temp <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>findall(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\d+\.?\d*&#34;</span>, ques)
-</span></span><span style="display:flex;"><span>    answer <span style="color:#f92672">=</span> int(temp[<span style="color:#ae81ff">0</span>]) <span style="color:#f92672">+</span> int(temp[<span style="color:#ae81ff">1</span>])
-</span></span><span style="display:flex;"><span>    driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74">&#34;result&#34;</span>)<span style="color:#f92672">.</span>send_keys(answer)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 提交表單</span>
-</span></span><span style="display:flex;"><span>    driver<span style="color:#f92672">.</span>find_element_by_name(<span style="color:#e6db74">&#34;submit&#34;</span>)<span style="color:#f92672">.</span>click()
-</span></span><span style="display:flex;"><span>    time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 取出訂單表格列</span>
-</span></span><span style="display:flex;"><span>    rows <span style="color:#f92672">=</span> driver<span style="color:#f92672">.</span>find_elements_by_css_selector(
-</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;div#inProgressBox&gt;table&gt;tbody&gt;tr&#34;</span>)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> len(rows) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
-</span></span><span style="display:flex;"><span>        driver<span style="color:#f92672">.</span>close()
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> list()
-</span></span><span style="display:flex;"><span>        
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 取出每一列資料的文字</span>
-</span></span><span style="display:flex;"><span>    bandons <span style="color:#f92672">=</span> [list(map(getText, row<span style="color:#f92672">.</span>find_elements_by_css_selector(
-</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;td&gt;div&gt;a&gt;span&#34;</span>))) <span style="color:#66d9ef">for</span> row <span style="color:#f92672">in</span> rows]  
-</span></span><span style="display:flex;"><span>    driver<span style="color:#f92672">.</span>close()
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 做成一張表</span>
-</span></span><span style="display:flex;"><span>    tableHeader <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;人數&#39;</span>, <span style="color:#e6db74">&#39;發起人&#39;</span>, <span style="color:#e6db74">&#39;目標&#39;</span>]
-</span></span><span style="display:flex;"><span>    bandons_df <span style="color:#f92672">=</span> pandas<span style="color:#f92672">.</span>DataFrame(bandons, columns<span style="color:#f92672">=</span>tableHeader)
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> bandons_df
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">print_order</span>(data):
-</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#39;&#39;&#39;列印訂單資料，看起來整齊一點&#39;&#39;&#39;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> index, row <span style="color:#f92672">in</span> data<span style="color:#f92672">.</span>iterrows():
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> row <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
-</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#39;(</span><span style="color:#e6db74">{hcount:&gt;4s}</span><span style="color:#e6db74">) </span><span style="color:#e6db74">{orderer}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{order:&lt;40s}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(
-</span></span><span style="display:flex;"><span>                orderer <span style="color:#f92672">=</span> str(row[<span style="color:#e6db74">&#39;發起人&#39;</span>]),
-</span></span><span style="display:flex;"><span>                order <span style="color:#f92672">=</span> str(row[<span style="color:#e6db74">&#39;目標&#39;</span>]),
-</span></span><span style="display:flex;"><span>                hcount <span style="color:#f92672">=</span> str(row[<span style="color:#e6db74">&#39;人數&#39;</span>])))
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">getText</span>(x):
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> x<span style="color:#f92672">.</span>text
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;__main__&#39;</span>:
-</span></span><span style="display:flex;"><span>    main()
-</span></span></code></pre></div><p>抓回來的樣子如下
-<img src="https://i.imgur.com/jp1lQlr.png" alt=""></p>
-<p>另外每次執行的時候都還會有瀏覽器跳出來操作，但我們在這邊已經確認可以成功取回資料了，因此瀏覽器的顯示也不是那麼必要。</p>
-<p>這邊就可以考慮加上無頭模式讓瀏覽器不要顯示，而是在背景執行。只需要在一開始宣告瀏覽器的部分加上選項，就可以不要跳視窗囉。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>options <span style="color:#f92672">=</span> webdriver<span style="color:#f92672">.</span>ChromeOptions()
-</span></span><span style="display:flex;"><span>options<span style="color:#f92672">.</span>add_argument(<span style="color:#e6db74">&#39;headless&#39;</span>)
-</span></span><span style="display:flex;"><span>driver <span style="color:#f92672">=</span> webdriver<span style="color:#f92672">.</span>Chrome(options<span style="color:#f92672">=</span>options)
-</span></span></code></pre></div><p>到此為止我們已經成功控制瀏覽器幫我們打開網頁，填帳號密碼登入，也取得了想要的訂單列表內容，完成了訂便當野心的第一步！</p>
-<p>然而，接著還有相當多的部分必須處理。如何判斷有沒有新訂單？又要怎麼通知我有新訂單呢？</p>
-<p>欲知後續如何，且待 <a href="/post/2020/03/bandon-2-sqlite/">下回</a> 分曉！</p>
-<h2 id="我要訂便當系列">我要訂便當系列</h2>
-<ul>
-<li><a href="/post/2020/03/bandon-1-selenium/">我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單</a></li>
-<li><a href="/post/2020/03/bandon-2-sqlite/">我要訂便當(2) —— 用 Python + Sqlite 儲存訂單</a></li>
-<li><a href="/post/2020/04/bandon-3-line-notify/">我要訂便當(3) —— 用 Python + Line Notify 傳送通知</a></li>
-<li><a href="/post/2020/05/bandon-4-heroku/">我要訂便當(4) —— 將 Python 腳本部署上 Heroku</a></li>
-<li><a href="/post/2020/05/bandon-5-heroku-debug/">我要訂便當(5) —— Heroku 填坑小記</a></li>
-</ul>
-<h2 id="參考資料">參考資料</h2>
-<ul>
-<li><a href="https://medium.com/@NorthBei/%E5%9C%A8windows%E4%B8%8A%E5%AE%89%E8%A3%9Dpython-selenium-%E7%B0%A1%E6%98%93%E6%95%99%E5%AD%B8-eade1cd2d12d">在Windows上安裝Python &amp; Selenium + 簡易教學</a></li>
-<li><a href="https://selenium-python-zh.readthedocs.io/en/latest/index.html">Selenium with Python中文翻译文档</a></li>
-<li><a href="https://medium.com/@bob800530/selenium-1-%E9%96%8B%E5%95%9Fchrome%E7%80%8F%E8%A6%BD%E5%99%A8-21448980dff9">運用 Selenium 開啟 Chrome 瀏覽器</a></li>
-<li><a href="https://ithelp.ithome.com.tw/articles/10229959/">鼠年全馬鐵人挑戰 WEEK 06：Selenium 自動化測試工具</a></li>
-<li><a href="https://ithelp.ithome.com.tw/articles/10230427">鼠年全馬鐵人挑戰 WEEK 07：Selenium IDE</a></li>
-<li><a href="https://matthung0807.blogspot.com/2017/12/selenium-html-element-locator.html">Selenium HTML element locator 定位器</a></li>
-<li><a href="https://ithelp.ithome.com.tw/articles/10194253">Selenium webdriver 定位物件方法比較 xpath v.s. css selector</a></li>
-<li><a href="https://www.youtube.com/watch?v=grZi9j4HKvc">大數軟體 - 如何使用 Selenium 自動下載漫畫?</a></li>
-<li><a href="https://www.youtube.com/watch?v=hF-dJj559ug">大數軟體 - 如何使用 Selenium 抓取驗證碼?</a></li>
-<li><a href="https://www.largitdata.com/course/37/">大數學堂 - 如何透過 OpenCV 破解台灣證券交易所買賣日報表的驗證碼(Captcha)</a></li>
-</ul>
+<p>最後，偷偷許願，希望九日有機會像隻狼那樣出個單純和 Boss 對戰的模式。</p>
+<p>像是扶蝶、易公都是那種會讓人想再打的 Boss。如果能手癢就上去擋兩把就好了呢～</p>
+<p>大概醬子，白金封片。感謝九日。</p>
+<p><img src="https://i.imgur.com/ErPzjaG.png" alt="Image"></p>
                         </div>
 
                         
@@ -333,7 +187,15 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/2019/12/ptt-crawler-and-listener/">Python: 用爬蟲在 PTT 上監聽關鍵字並寄通知信</a></li>
+        <li><a href="/post/2024/04/fate-samurai-remnant/">Fate/Samurai Remnant　白金！</a></li>
+        
+        <li><a href="/post/2023/04/wolong/">臥龍：蒼天殞落　白金！</a></li>
+        
+        <li><a href="/post/2023/01/nioh/">仁王＆仁王２　白金！</a></li>
+        
+        <li><a href="/post/2022/06/elder-ring-clear/">艾爾登法環　白金！</a></li>
+        
+        <li><a href="/post/2021/03/sekiro-darksouls3-clear/">隻狼、黑暗靈魂３　白金！</a></li>
         
     </ul>
 </div>
@@ -343,17 +205,9 @@
                             
                             <ul class="clearfix">
                                 
-                                <li><a href="https://igouist.github.io/tags/python">Python</a></li>
+                                <li><a href="https://igouist.github.io/tags/life">life</a></li>
                                 
-                                <li><a href="https://igouist.github.io/tags/crawler">Crawler</a></li>
-                                
-                                <li><a href="https://igouist.github.io/tags/automation">Automation</a></li>
-                                
-                                <li><a href="https://igouist.github.io/tags/selenium">Selenium</a></li>
-                                
-                                <li><a href="https://igouist.github.io/tags/w3hexschool">w3HexSchool</a></li>
-                                
-                                <li><a href="https://igouist.github.io/tags/bandon">Bandon</a></li>
+                                <li><a href="https://igouist.github.io/tags/game">game</a></li>
                                 
                             </ul>
                             
@@ -2854,7 +2708,7 @@
 </script>
                         <hr/>
                         <p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
-<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2020%2f03%2fbandon-1-selenium%2f" width="100%" frameborder=0></iframe>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2024%2f08%2fnine-sols%2f" width="100%" frameborder=0></iframe>
                     </article>
                     
     
@@ -2883,21 +2737,6 @@
 </form>
     </section>
     
-    
-        <section class="widget">
-            <h3 class="widget-title">文章目錄</h3>
-            <ul class="widget-list">
-                <nav id="TableOfContents">
-  <ul>
-    <li><a href="#準備工作">準備工作</a></li>
-    <li><a href="#取得訂單">取得訂單</a></li>
-    <li><a href="#整理及包裝">整理及包裝</a></li>
-    <li><a href="#我要訂便當系列">我要訂便當系列</a></li>
-    <li><a href="#參考資料">參考資料</a></li>
-  </ul>
-</nav>
-            </ul>
-        </section>
     
     
     <section class="widget">
