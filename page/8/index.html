@@ -105,6 +105,65 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2020/07/oo-1-class-object/" title="菜雞與物件導向 (1): 類別、物件" >菜雞與物件導向 (1): 類別、物件</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-7-12,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a></span>
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/TIEIXm5.png" alt=""></p>
+<blockquote>
+<p>直覺上你當然知道什麼是物件；物件就在你的身邊。</p>
+<p>汽車、iPhone、收音機、吐司機、廚房用具等等，你說得出來的都是。</p>
+<p>　　——《深入淺出學會編寫程式》</p>
+</blockquote>
+<p>什麼是物件？一切都是物件。</p>
+<p>物件導向試圖讓抽象的程式碼，更貼近於我們的實際生活，其認為一切是由各式各樣的人事物互動所組成的，因此有了物件這個共通、最基本的概念。</p>
+<p>假設現實世界存在一頭狗，叫做阿福。而我們想要在虛擬世界裡表達「有一隻叫做阿福的狗」這件事</p>
+<p>這時候就要在系統裡有一個能代表「阿福（狗）」的東西存在，也就是「阿福」這個物件。</p>
+<blockquote>
+<p>關於「把現實世界的物件，抽象化成程式世界裡的物件」的邏輯，可以參考 <a href="https://ithelp.ithome.com.tw/articles/10201905">一個語言如果不改變你的思考方式，就不值得學？談程式語言的本質</a> 這篇，尤其是選擇保留哪些資訊的部份我認為描述得很好。</p>
+</blockquote>
+<p>現在我們知道，<strong>物件就是用來在虛擬世界中代表「某個特定的東西」</strong>，例如說叫做阿福的狗就是一個物件，阿福今天晚上要吃的飼料罐也是一個物件。</p>
+<p>理解物件的概念是相當直覺且迅速的，畢竟你我身邊有著數不清的東西，它們都是一件一件的物件，但這樣的理解還不夠明確。</p>
+<p>就像前文所引的 <a href="https://ithelp.ithome.com.tw/articles/10201905">談程式語言的本質</a> 文中所提到的，在抽象化的同時我們必然要選擇保留哪些資訊。</p>
+<p>例如說阿福這隻狗，是一個物件；飼料罐也是一個物件</p>
+<p>而這些物件之間還會彼此互動，例如說阿福是一隻狗，而我們觀察到狗都有吃東西這個<strong>動作</strong>，例如「阿福吃了飼料」</p>
+<p>同時物件也會有一些專屬於它的<strong>特徵</strong>，例如說阿福是黑色的，我們就知道狗有毛色的差別。</p>
+<p>那麼我們要怎麼表達「阿福」作為一隻「狗」擁有的那些動作和特徵呢？狗的毛色？狗可以吃飼料？</p>
+<p>我們需要選擇怎麼去描述「狗」－－也就是阿福這隻狗，被我們抽象化後的樣子，我們需要將它用程式碼的方式定義出來。</p>
+<p><strong>這時候我們就會需要類別，來定義出我們觀察到同一類的物件該有哪些特徵和動作，也就是我們替物件「分門別類」後、篩選出特定資訊的抽象化結果</strong></p>
+<p>延續前面的例子，假設今天我們從阿福身上觀察到進食跟毛色兩個狗的重要資訊，我們就可以建立類別 Dog：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Dog</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> color;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> Eat(IFood food) { <span style="color:#75715e">/* 進食與消化之類的 */</span> };
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>藉由我們定義的類別，就可以從類別中實例化（＝建立）出物件。</p>
+<p>也就是說，現在我們終於可以用「狗」這個類別，來表達出我們需要的「阿福」了：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Dog afu = <span style="color:#66d9ef">new</span> Dog(); <span style="color:#75715e">// 阿福是一隻狗</span>
+</span></span><span style="display:flex;"><span>Console.Write(afu.Color); <span style="color:#75715e">// 阿福是黑色的</span>
+</span></span><span style="display:flex;"><span>afu.Eat(food); <span style="color:#75715e">// 阿福會吃食物</span>
+</span></span></code></pre></div>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-1-class-object/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2020/07/oo-0-object-oriented/" title="菜雞與物件導向 (0): 前言" >菜雞與物件導向 (0): 前言</a>
                                 </h1>
                             </header>
@@ -460,42 +519,6 @@ J S P C
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2020/05/bandon-4-heroku/" title="我要訂便當 (4): 將 Python 腳本部署上 Heroku" >我要訂便當 (4): 將 Python 腳本部署上 Heroku</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-5-3,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/python">Python</a></span>
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <blockquote>
-<p>目標：紀錄一下如何將 Python 寫好的東西丟上 <a href="https://www.heroku.com/home">Heroku</a></p>
-</blockquote>
-<p>在先前的 <a href="/post/2020/03/bandon-1-selenium/">訂便當系列</a> 中已經建立了一個替我們去爬便當網並通知我們的小工具，但還存在一個相當大的問題：要在哪跑？總不能就只放在家裡電腦有開機就跑、沒開機就算了吧？因此我們必須找個主機把它放上去。而在上一篇做 Line Notify 的時候所參考的 <a href="https://www.evanlin.com/go-line-notify/">如何快速建置一個 LINE Notify 的服務</a> 中提到了將服務放上 Heroku 的部分，因此馬上嘗試看看。</p>
-<p>結果過程中碰了不少壁，因此特地紀錄下來。</p>
-<p><strong>Heroku 是一個雲端平台</strong>，讓使用者可以把服務丟上去跑，<del>同時最讚的部分是，免費用戶就提供了每月 450 小時可以使用（但有每半小時會進入休眠的限制）</del>，詳情可以參閱 <a href="https://www.heroku.com/pricing">Heroku 的計費頁面</a>。</p>
-<blockquote>
-<p>更新：Heroku 已經改為收費方案了 QQ</p>
-</blockquote>
-<p>本系列最後一階段的目標就是要將訂便當爬蟲整套丟上去雲端上運行，達到被動接收通知的效果。但由於訂便當爬蟲還牽涉到用 Selenium 開瀏覽器互動，以及使用 Sqlite 儲存的部分，轉移到 Heroku 的環境上還需要進行一些調整。因此<strong>這一階段將會分成兩篇（或以上）文章進行，上篇會先簡單地紀錄如何將服務放上 Heroku，下篇開始則著重於紀錄將訂便當系統放上 Heroku 時遇到的問題和解決過程</strong>。</p>
-<p>本篇主要的參考來源來自於 <a href="https://medium.com/enjoy-life-enjoy-coding/heroku-%E6%90%AD%E9%85%8D-git-%E5%9C%A8-heroku-%E4%B8%8A%E9%83%A8%E7%BD%B2%E7%B6%B2%E7%AB%99%E7%9A%84%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E5%AD%B8-bf4fd6f998b8">搭配 Git 在 Heroku 上部署網站的手把手教學</a>、<a href="https://ithelp.ithome.com.tw/articles/10196129">發布網站到 Heroku</a> 以及 <a href="https://railsbook.tw/chapters/32-deployment-with-heroku.html">網站部署（使用 Heroku）</a> 這幾篇，其餘參考將附於文末，感謝各位前人大大留下的優質文。</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2020/05/bandon-4-heroku/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -607,6 +630,10 @@ J S P C
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2024/08/dotnet-feature-flag-and-feature-management/" title=".Net: 使用 FeatureManagement 套件來實作 Feature Flag 功能切換吧">.Net: 使用 FeatureManagement 套件來實作 Feature Flag 功能切換吧</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2024/08/dotnet-ioptions/" title=".Net: 使用 IOptions 取得 appsettings.json 的設定值吧">.Net: 使用 IOptions 取得 appsettings.json 的設定值吧</a>
     </li>
     
@@ -642,10 +669,6 @@ J S P C
         <a href="https://igouist.github.io/post/2023/01/nioh/" title="仁王＆仁王２　白金！">仁王＆仁王２　白金！</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2022/11/soft-skills/" title="《軟實力：軟體開發人員的生存手冊》心得">《軟實力：軟體開發人員的生存手冊》心得</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -672,7 +695,7 @@ J S P C
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (29)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (30)</a>
     </li>
     
     <li>
@@ -886,7 +909,7 @@ J S P C
         
         <br/>
         <span>
-          &nbsp;&nbsp;Post Count： 93
+          &nbsp;&nbsp;Post Count： 94
         </span>
         
           <span id="busuanzi_container_site_pv">, PV： <span id="busuanzi_value_site_pv"></span></span>

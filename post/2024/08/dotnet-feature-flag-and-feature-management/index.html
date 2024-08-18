@@ -26,20 +26,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>使用 JMeter 來對 API 壓力測試吧 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="使用 JMeter 來對 API 壓力測試吧 - 伊果的沒人看筆記本">
+    <title>.Net: 使用 FeatureManagement 套件來實作 Feature Flag 功能切換吧 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content=".Net: 使用 FeatureManagement 套件來實作 Feature Flag 功能切換吧 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2022-10-10T18:50:00&#43;08:00">
+    <meta property="article:published_time" content="2024-08-18T13:00:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2022-10-10T18:50:00&#43;08:00">
+    <meta property="article:modified_time" content="2024-08-18T13:00:00&#43;08:00">
         
-        <meta name="keywords" content="jmeter, 壓力測試">
-    <meta name="description" content="JMeter 是款充滿暴力的壓力測試工具，只要告訴他：你要揍哪支 API？要揍幾拳？揍他個幾輪？它就會忠實地對你指定的 API 爆打一頓。">
+        <meta name="keywords" content="FeatureManagement, Feature Flag, Feature Toggle, .Net WhiteList">
+    <meta name="description" content=".Net: 使用 FeatureManagement 套件來實作 Feature Flag 功能切換吧">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/post/2022/10/jmeter/">
+    <meta property="og:url" content="https://igouist.github.io/post/2024/08/dotnet-feature-flag-and-feature-management/">
     <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link defer rel="stylesheet" href="/css/normalize.css">
@@ -107,15 +107,15 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">使用 JMeter 來對 API 壓力測試吧</h1>
+                            <h1 class="post-title">.Net: 使用 FeatureManagement 套件來實作 Feature Flag 功能切換吧</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2022-10-10,
+                            2024-8-18,
                         </date>
                         
                         <div class="post-meta">
                             
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/tools">tools</a></span>
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
                             
                         </div>
                         
@@ -129,118 +129,427 @@
                         
 
                         <div class="post-content">
-                            <p><img src="https://i.imgur.com/sMw5vbw.jpg" alt="Image"></p>
-<p>前陣子協助某支 API 的壓力測試，趁機請 QA 朋朋指導指導一下，因此接觸了這款簡單好用的壓測工具 JMeter，趁現在記憶還在的時候記錄起來。</p>
-<p><del>往後其他同事只要說 API 弄好了可以串了，就先幫他打個一萬次壓壓驚，真是貼心</del></p>
-<p><a href="https://jmeter.apache.org/">JMeter</a> 是款充滿暴力的壓力測試工具，只要告訴他：你要揍哪支 API？要揍幾拳？揍他個幾輪？它就會忠實地對你指定的 API 爆打一頓。</p>
-<h2 id="下載與開啟-jmeter">下載與開啟 JMeter</h2>
+                            <p><img src="https://i.imgur.com/926KRip.png" alt="Image"></p>
+<p>在做上一篇 <a href="/post/2024/08/dotnet-ioptions">IOptions</a> 的筆記時，剛好看到 FeatureManagement 這香東西。<br/>馬上來收錄一篇。順便也簡單整理一下 Feature Flag (= Feature Toggle) 的介紹。</p>
+<h2 id="認識一下-feature-flag">認識一下 Feature Flag</h2>
 <blockquote>
-<p>JMeter 會需要 Java，如果還沒有 Java 的朋友可以先安裝一下：<a href="https://www.java.com/zh-TW/download/ie_manual.jsp?locale=zh_TW">下載 Windows 適用的 Java</a></p>
+<p>本部落格秉持著「簡單、友善、我好菜」的精神，按照慣例先簡單介紹一下<br/>
+已經知道的朋友就可以跳過這個小節，直接前往 #環境準備 囉。</p>
 </blockquote>
-<p>首先讓我們到 JMeter 官網的 <a href="https://jmeter.apache.org/download_jmeter.cgi">Download 頁面</a> 來下載，這邊我選擇 zip：</p>
-<p><img src="https://i.imgur.com/mBnMtJj.jpg" alt="Image"></p>
-<p>下載並解壓縮後，可以在 <code>/bin</code> 找到 <code>jmeter.bat</code>：</p>
-<p><img src="https://i.imgur.com/N2WX2Ff.jpg" alt="Image"></p>
-<p>點開之後就會開啟 JMeter 的介面囉！</p>
-<p><img src="https://i.imgur.com/d38R9nN.jpg" alt="Image"></p>
-<h3 id="更改語言">更改語言</h3>
-<p>雖然 JMeter 的中文翻譯有些殘缺，但對英文弱弱的我來說，介面有太多英文會讓心理壓力變得太大，果然還是得先更改語言：</p>
-<p><img src="https://i.imgur.com/gTPOjr5.jpg" alt="Image"></p>
-<p>接著就會看到介面的大部分都變成中文囉：</p>
-<p><img src="https://i.imgur.com/qdtnfqJ.jpg" alt="Image"></p>
-<h2 id="批次呼叫指定的-api">批次呼叫指定的 API</h2>
-<p>雖然 JMeter 支援了一堆測試功能，例如 TCP 之類的，但身為一個 CRUD 工程師，我們當然要用呼叫 API 來當作範例囉！</p>
-<p>在先前的 <a href="/post/2021/05/newbie-2-webapi/">API 筆記</a>，我們已經建立過簡單的「查詢卡片」API：</p>
-<pre tabindex="0"><code>GET https://localhost:44304/card
-</code></pre><p>這次就用 Local 的這支 API 作為範例來操作 JMeter 吧。</p>
-<h3 id="建立-thread-group">建立 Thread Group</h3>
-<p>讓我們回到 JMeter，可以看到預設已經有一組測試計畫了：</p>
-<p><img src="https://i.imgur.com/bvkLSBy.jpg" alt="Image"></p>
-<p>而我們將會在測試計畫中加入幾個元素，利用這些元素的組合來達到我們測試 API 的目標。</p>
-<p><strong>首先我們會需要一個執行緒群組（Thread Group）</strong>，用來告訴 JMeter 我們打算如何規劃這些 Thread 的行動。可以當作我們正在寫一個迴圈，現在才正要訂迴圈的內容而已。</p>
-<p>讓我們在預設的測試計畫上按右鍵，新增一個執行緒群組：</p>
-<p><img src="https://i.imgur.com/iheogno.jpg" alt="Image"></p>
-<p>接著應該就會看到我們的測試計畫下多了一個群組，並且進入了該群組的設定畫面：</p>
-<p><img src="https://i.imgur.com/MOvw1JB.jpg" alt="Image"></p>
-<p>這邊要特別注意的是右側的「執行緒屬性」，我們白話一點來說明：</p>
+<p>假設我們原本有 Old 邏輯：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Old();
+</span></span></code></pre></div><p>天庭傳來諭令，要我們改成 New 邏輯。這簡單，我們就把 Old 砍掉，換成 New。非常自然，改完就佈版</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>New();
+</span></span></code></pre></div><p>隔天，天庭又傳來諭令，New 需要調整一下，先不要了現在我們又需要把 New 邏輯砍掉，讓 Old 邏輯回來。簡單，但看來我們得再上一版</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Old();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// New();</span>
+</span></span></code></pre></div><p>再隔天，大家可能猜到天庭又要幹嘛了，總之又上了一版</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Old();</span>
+</span></span><span style="display:flex;"><span>New();
+</span></span></code></pre></div><p>如此往復三萬八千次，工程師終於受不了了：「俺老孫每天在這切換 Old 跟 New，改完還得佈版，每天搞這些就飽了，我滴媽呀，不幹了」</p>
+<p>就在老孫關燈走人的那一瞬間，突然靈光一現：等等，<strong>俺加個開關還不行嗎？</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (NewFunctionEnabled())
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    New();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Old();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>現在只要把這個開關放到外面，別寫死在程式碼裡。丟去什麼 appsettings.json、Config、資料庫、ini、東海龍王廟，隨便</p>
+<p>總之丟去個不用佈板就能直接修改的地方，不就完事了嗎？</p>
+<p>現在程式碼就像盯著旗手的士兵們，旗手舉了藍色，他們就往左跑；旗手舉了紅色，他們就往右跑。老孫只要把設定給改了，就能一鍵切換邏輯，好不自在。</p>
+<p><strong>沒錯，老孫剛剛發現了 Feature Flag</strong>。</p>
+<p>有了這個開關，除了開開關關(?)，現在也可以做到更多事情了。</p>
+<p>例如新功能想先隨機讓一些使用者踩看看，馬上在這個 <code>NewFunctionEnabled()</code> 開關後面加點料，讓它隨機打開、隨機關起來；</p>
+<p>想讓合作好的客戶搶先使用，馬上在這個 <code>NewFunctionEnabled()</code> 開關後面偷塞一張白名單：<br/>你聽好了舉旗仔，看到這些人就幫我舉紅的旗子，門就會打開</p>
+<p>因為我們把開關抽出去了，代表判斷條件和執行邏輯之間被我們降低耦合了，彈性就變高了，我們也就可以針對開關內部的邏輯動手動腳了</p>
+<p>一時之間，花果山分部的工程師紛紛效仿老孫，<br/>用這個<strong>香香的 Feature Flag 來從外部動態切換程式碼邏輯</strong>，好不爽快。
+<br/>吱聲此起彼落，可謂是：</p>
+<blockquote>
+<p>兩條邏輯改又改，改完還要等佈版<br/>
+有了 Feature Flag，切個開關就下班</p>
+</blockquote>
+<p>至於後來開關越埋越多，系統服務七十二變。工程師老孫被迫跟著唐經理去聽研討會，好好學習怎麼管理這些 Feature Flag。還弄了些儀表板、過期時間等等，那又是另一個故事了…</p>
+<hr>
+<p>故事說到這裡，雖然例子粗暴一點，但朋朋們應該對 Feature Flag 在幹嘛有點了解了（吧？）</p>
+<p>如果想要進一步認識 Feature Flag，這邊也準備了一些推薦閱讀。</p>
+<p>例如 Feature Flag 還可以用在哪、分成哪些種類；<br/>
+兩個 Flag 共用到同一段 Code 怎辦；<br/>
+PM 朋朋們又是怎麼運用 Feature Flag 的……</p>
+<p>都丟在下面這團，提供給有興趣的朋朋們：</p>
 <ul>
-<li>執行緒數量：要打幾次</li>
-<li>啟動延遲：幾秒內要打出去</li>
-<li>迴圈次數：要打幾輪</li>
+<li><a href="https://martinfowler.com/articles/feature-toggles.html">Feature Toggles (aka Feature Flags) - martinFowler</a></li>
+<li><a href="https://mileschou.me/blog/feature-toggle-faq/">Feature Toggle 應用常見問題 | Miles&rsquo; Blog</a></li>
+<li><a href="https://medium.com/3pm-lab/product-beta-release-planning-and-feature-flags-implementation-1f7673007d23">產品上線規劃：Beta Release、Feature Flags 實作經驗與工具分享 | by Anne Hsiao | 3PM LAB 產品三眼怪實驗室 | Medium</a></li>
+<li><a href="https://darrensim.com/2018/introduction-to-feature-toggles-and-implementation-best-practices/">Introduction to Feature Toggles and Implementation Best Practices - Darren Sim</a></li>
 </ul>
-<p>例如說，我們想要模擬一百個使用者，在一秒內湧進網站，然後這狀況持續三輪，那就是：</p>
+<hr>
+<blockquote>
+<p>補充：雖然 Feature Flag 這麼香，但如果開關沒有好好管理，<br/>不小心開到不該開的程式碼邏輯會發生什麼事呢？</p>
+<p>泡杯茶，看看實例吧：<a href="https://dougseven.com/2014/04/17/knightmare-a-devops-cautionary-tale/">Knightmare: A DevOps Cautionary Tale – Doug Seven</a></p>
+</blockquote>
+<hr>
+<blockquote>
+<p>補充：Feature Toggle 常常跟主幹開發（Trunk-based Development）一起出現？</p>
+<p>蠻常聽到這個問題的，這邊也簡單筆記一下，沒有採用主幹開發的朋朋可以跳過這小段</p>
+<p>（想認識 Trunk-based Development 的朋朋們，<br/>　可以右轉去 <a href="https://tw.trunkbaseddevelopment.com/">TrunkBasedDevelopment.com</a>，感謝協助中文化的大大們）</p>
+<p>回到問題，我的理解是這樣：</p>
+<p>即使我們採用了主幹開發，持續把變更交付到主幹分支上，把大家的 GAP 降到最低，<br/>但一定還是會遇到需要做很久才做得完的功能</p>
+<p>我們不想要拉一條 feature 分支，放著漸漸就跟主幹脫節，到時候合併又要大爆炸<br/>
+而是想要把這些程式碼持續地整合到我們的程式庫，這樣就能及早發現問題和解除衝突<br/>
+可是如果粗暴地合併進去，開發中的功能就會暴露出來…怎麼辦呢？</p>
+<p>這種時候，如果有一個開關，來幫助我們關閉尚未完工的功能、打開即將交付的功能。我們就能整合現有的程式碼，也能提早知道合併會不會炸爛其他功能…</p>
+<p>很方便對吧？ Feature Toggle 就跳出來啦。香。</p>
+</blockquote>
+<h2 id="環境準備microsoftfeaturemanagement">環境準備：Microsoft.FeatureManagement</h2>
+<p>好，我們前面簡單介紹了一下 Feature Flag，接著就進入實作階段。</p>
+<p>要實現 Feature Flag 的方法有很多，例如我之前都是用<a href="/post/2024/08/dotnet-ioptions">上一篇</a>提到的 IOption 直接從 appsettings.json 把 true/false 讀出來用</p>
+<p>而這篇我們要來使用香香的 FeatureManagement 來幫我們實現 Feature Flag 的操作。</p>
+<p>首先，我們要先搞到 Microsoft.FeatureManagement.AspNetCore 這個套件：<br/><a href="https://www.nuget.org/packages/Microsoft.FeatureManagement.AspNetCore">NuGet Gallery | Microsoft.FeatureManagement.AspNetCore</a></p>
+<p>接著讓我們把它給註冊到我們的 Program.cs：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Program.cs</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 環境準備：Microsoft.FeatureManagement</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 加入 Feature Flag 功能，預設會抓 appsettings.json 中的 &#34;FeatureManagement&#34; 節點</span>
+</span></span><span style="display:flex;"><span>builder.Services.AddFeatureManagement();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 如果想要自訂 Feature Flag 在 appsettings.json 裡的位置，可以這樣寫</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">//builder.Services.AddFeatureManagement(builder.Configuration.GetSection(&#34;CustomFeatureManagement&#34;));</span>
+</span></span></code></pre></div><p>然後為了後續的示範，先開好一組 Controller：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Controllers/DemoController.cs</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 示範 Feature Flag 的使用</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DemoController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;DemoController&gt; _logger;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IFeatureManager _featureManager;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> DemoController(
+</span></span><span style="display:flex;"><span>        ILogger&lt;DemoController&gt; logger, 
+</span></span><span style="display:flex;"><span>        IFeatureManager featureManager)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _logger = logger;
+</span></span><span style="display:flex;"><span>        _featureManager = featureManager;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這樣環境就搞定了，讓我們開始第一組實作吧！</p>
+<h2 id="實作使用-isenabledasync-拿到-feature-flag-的值">實作：使用 IsEnabledAsync 拿到 Feature Flag 的值</h2>
+<p>假設我們跟上面的老孫一樣：翻寫了一條新版邏輯。<br/>如果開關被打開了，就走新版的路線；關著的話就維持舊版</p>
+<p>要達成上面的條件，我們會<strong>需要直接取得某個 Flag 的開關狀態，<br/>這時候就可以使用 <code>IsEnabledAsync</code></strong></p>
+<p>先到 appsettings.json 加上我們的 Feature Flag，先叫做 <code>NewLogicEnabled</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#75715e">// appsettings.json
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;FeatureManagement&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;NewLogicEnabled&#34;</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="https://i.imgur.com/FzIALd8.png" alt="Image"></p>
+<p>為了後面方便使用，我習慣先建一組簡單的 Const 來管理這些 Feature Flag：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Flags/FeatureFlags.cs</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FeatureFlags</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 這邊的名稱要和 appsettings.json 裡 FeatureManagement 底下的設定一樣</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> NewLogicEnabled = <span style="color:#e6db74">&#34;NewLogicEnabled&#34;</span>; 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>讓我們加上這次測試用的 API，並且使用 IsEnabledAsync 來抓取指定的 Flag 狀態：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Controllers/DemoController.cs</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Feature Flag 可以讓我們從設定檔中讀取特定的開關</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 並且在程式中根據這些開關來決定是否啟用某些功能</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpGet(&#34;IsEnabledAsync&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">string</span>&gt; IsFeatureEnabled()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Demo 1: 使用 IsEnabledAsync 拿到 Feature Flag 的值 </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> isEnabled = <span style="color:#66d9ef">await</span> _featureManager.IsEnabledAsync(FeatureFlags.NewLogicEnabled);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> isEnabled 
+</span></span><span style="display:flex;"><span>        ? <span style="color:#e6db74">&#34;香香的新版邏輯已啟用。&#34;</span>
+</span></span><span style="display:flex;"><span>        : <span style="color:#e6db74">&#34;新版邏輯尚未啟用，繼續使用臭臭的舊版邏輯。&#34;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><img src="https://i.imgur.com/O1uxn9W.png" alt="Image"></p>
+<p>現在讓我們直接把 appsettings.json 裡的 <code>NewLogicEnabled</code> 改成 false（只要存檔就好了，不需要重啟服務），並且再呼叫一次 API：</p>
+<p><img src="https://i.imgur.com/WTgcapM.png" alt="Image"></p>
+<p>來張動圖看看成果：</p>
+<p><img src="https://i.imgur.com/9elZfT7.gif" alt="Image"></p>
+<p>搞定，收工下班。</p>
+<h2 id="實作使用-featuregate-來啟用和停用-api">實作：使用 FeatureGate 來啟用和停用 API</h2>
+<p>除了根據開關決定要執行哪條路線的邏輯以外，我們也常常根據開關決定某些功能是不是要開放</p>
+<p><strong>如果我們需要根據 Feature Flag 來決定是否啟用某支 API，就可以使用 <code>FeatureGate</code></strong></p>
+<p>首先讓我們加上第二組 Flag，這次叫做 <code>NiceApiEnabled</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#75715e">// appsettings.json
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;FeatureManagement&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;NewLogicEnabled&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;NiceApiEnabled&#34;</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Flags/FeatureFlags.cs</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FeatureFlags</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> NewLogicEnabled = <span style="color:#e6db74">&#34;NewLogicEnabled&#34;</span>; 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 新增 NiceApiEnabled</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> NiceApiEnabled = <span style="color:#e6db74">&#34;NiceApiEnabled&#34;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著就來替我們的 API 掛上 FeatureGate 試試：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Controllers/DemoController.cs</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpGet(&#34;FeatureGate&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[FeatureGate(FeatureFlags.NiceApiEnabled)]</span> <span style="color:#75715e">// 讓 FeatureGate 去檢查我們的 NiceApiEnabled</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> FeatureGate()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Demo 2: 使用 FeatureGate 來啟用和停用 API</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果 NiceApiEnabled 是關閉的，這個方法不會被執行，會直接回傳 404</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;這是一個很棒的 API，只有你看得到。&#34;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>NiceApiEnabled</code> 是 true 的時候，可以正常呼叫到 API：
+<img src="https://i.imgur.com/2el7jVT.png" alt="Image"></p>
+<p>而當 <code>NiceApiEnabled</code> 是 false 的時候，這支 API 就 不存在了…
+<img src="https://i.imgur.com/BV3aomM.png" alt="Image"></p>
+<h2 id="實作使用-featurefilter-自訂篩選條件隨機抽取使用者">實作：使用 FeatureFilter 自訂篩選條件、隨機抽取使用者</h2>
+<p>前面我們示範了怎麼看開關狀態，以及根據開關把 API 給 Ban 了。接著來點場景應用吧。</p>
+<p>之前遇過需要隨機抽樣去分流的狀況（把 50% 使用者引導去翻寫好的新站台觀察狀況之類的）</p>
+<p><strong>像這種需要自己寫某些邏輯來決定開關是否開啟的場合，就可以使用 FeatureFilter 來實現</strong></p>
+<hr>
+<p>跟前兩個範例一樣，我們需要先去 <code>appsettings.json</code> 掛上我們的 Feature Flag。既然是要隨機抽取幸運兒體驗我們的新功能，就叫做 <code>RandomTrial</code></p>
+<p>但要注意，當我們要自訂 Flag 啟用的條件（也就是需要跑過某些邏輯才能決定是 true/false）的時候，就不能像前面兩個範例一樣簡單丟個 <code>&quot;RandomTrial&quot;:true</code> 就搞定</p>
+<p>而是要使用 <code>EnabledFor</code>，並在裡面標示出我們要呼叫的 FeatureFilter 名稱、需要傳遞的參數，這樣 FeatureManagement 才知道它得依序跑過這些 FeatureFilter</p>
+<p>假設我們希望有 50% 的使用者會隨機抽中新功能。我們就可以先在 <code>EnabledFor</code> 裡掛一條叫做「Random」的 FeatureFilter，並且丟個 Percentage=50 的參數進去：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#75715e">// appsettings.json
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;FeatureManagement&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;NewLogicEnabled&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;NiceApiEnabled&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;RandomTrial&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;EnabledFor&#34;</span>: [
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Name&#34;</span>: <span style="color:#e6db74">&#34;Random&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Parameters&#34;</span>: {
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;Percentage&#34;</span>: <span style="color:#ae81ff">50</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Flags/FeatureFlags.cs</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FeatureFlags</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> NewLogicEnabled = <span style="color:#e6db74">&#34;NewLogicEnabled&#34;</span>; 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> NiceApiEnabled = <span style="color:#e6db74">&#34;NiceApiEnabled&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 新增 RandomTrial</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> RandomTrial = <span style="color:#e6db74">&#34;RandomTrial&#34;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著讓我們實作對應的 FeatureFilter，這邊作法就可以粗暴一點：</p>
 <ul>
-<li>執行緒數量 = 100</li>
-<li>啟動延遲 = 1</li>
-<li>迴圈次數 = 3</li>
+<li>從 <code>context.Parameters</code> 把前面設好的 Percentage 參數拉出來</li>
+<li>現場骰下去看有沒有過門檻，沒過就掰掰</li>
 </ul>
-<p>這時候也就決定了這次測試的總數（執行緒數量 * 迴圈次數）</p>
-<p>此外，迴圈次數下的「Same user on each iteration」會讓每次迴圈時都用同一批使用者，如果想要每次都模擬全新的使用者，例如把前面的例子改成三百名使用者，分三批湧進網站，這時候就可以取消勾選。</p>
-<p>而定時器則是讓我們設定在執行前先延遲多久、執行多久後自動停止，這邊例子不會用到，就不開啟了。</p>
-<p>現在我們已經把執行緒群組建好了，讓我們指派任務給這個群組吧！</p>
-<h3 id="建立-http-request">建立 Http Request</h3>
-<p>在執行緒群組上右鍵 &gt; 新增，可以看到一排能指派給這群組的任務，其中「取樣」就是指我們這次的目標。這邊讓我們選擇「取樣 &gt; HTTP 要求」：</p>
-<p><img src="https://i.imgur.com/a2Qsovz.jpg" alt="Image"></p>
-<p>接著可以看到 HTTP Request 的設定畫面，如同前面所說的，我們這次的目標是 <code>GET https://localhost:44304/card</code>，因此將 API 的資訊填到對應的欄位中：</p>
-<p><img src="https://i.imgur.com/Vm2tW4M.jpg" alt="Image"></p>
-<p>在 API 的路由等資訊填好後，下方可以設定呼叫時要帶的參數，例如 Body 或上傳檔案等等。</p>
-<h3 id="補充設定-http-request-header">補充：設定 Http Request Header</h3>
-<p>很多時候我們要測試的 API 會要求在 Header 帶著 Token 才能使用，這邊也記錄一下掛 Header 的做法。</p>
-<p>對執行緒群組右鍵 &gt; 新增，選擇「設定元素」，裡面就會有一票設定值可以選，這邊選擇「HTTP 標頭管理員」：</p>
-<p><img src="https://i.imgur.com/HYbxiCs.jpg" alt="Image"></p>
-<p>例如我們要指定 Post 的 Body 為 Json，就可以掛一個 <code>content-type</code> = <code>application/json</code>：</p>
-<p><img src="https://i.imgur.com/IAPpOCu.jpg" alt="Image"></p>
-<p>這樣就會加到 Header 上囉：</p>
-<p><img src="https://i.imgur.com/6Df2gvq.jpg" alt="Image"></p>
-<p>不過我們這次的範例只是一支簡單的查詢卡片，這邊就不用加上啦。讓我們進行下一步吧！</p>
-<h3 id="建立-listener">建立 Listener</h3>
-<p>當我們的小弟們去解決了目標之後，就必須要回來報告給我們知道。這邊讓我們一樣在執行緒群組上右鍵新增，並且選擇「接聽（Listener）」，先嘗試建立一個「檢視結果樹」：</p>
-<p><img src="https://i.imgur.com/PsNUHkJ.jpg" alt="Image"></p>
-<p>除了檢視結果樹以外也可以新增別的試試看，方便打完 API 之後確認，這邊再加上一個「Summary Report」，現在群組應該會長得像這樣：</p>
-<p><img src="https://i.imgur.com/LVfx6r7.jpg" alt="Image"></p>
-<p>等等打完之後再來確認這兩頁的內容。現在讓我們戳戳看 API 吧！</p>
-<h3 id="開始執行測試">開始執行測試</h3>
-<p>在最上面找到大家都很熟悉的綠色三角，戳下去就會執行這次的測試計畫，也就是照著剛剛的計畫烙一群小弟去揍 API</p>
-<p>它旁邊還有發現不對勁時使用的 STOP，更旁邊的神奇掃把是用來在結束之後滅證用的清除結果：</p>
-<p><img src="https://i.imgur.com/UHKKu0W.jpg" alt="Image"></p>
-<p>總之，用力給他按下綠色三角！</p>
-<p>這邊就先意思意思揍個一拳，執行之後就可以來看看我們的檢視結果樹：</p>
-<p><img src="https://i.imgur.com/rNVpHQD.jpg" alt="Image"></p>
-<p>可以看到結果樹中會顯示剛剛執行的結果，假設你打了兩百次這邊就會有兩百筆；右側則是這次 API 回傳的結果，通常都是看有沒有好好回 200 OK 就是了 xD</p>
-<p>此外也可以切換上面的頁籤，看這次 API 回傳的內容：</p>
-<p><img src="https://i.imgur.com/OEkzdit.jpg" alt="Image"></p>
-<p>接著切換到剛剛新增過的 Summary Report，可以看 API 回來的時間等資訊：</p>
-<p><img src="https://i.imgur.com/BhUNjbc.jpg" alt="Image"></p>
-<p>這樣就完成一次測試啦！</p>
-<p>為了慶祝完成來打個一萬次 API 先（？）</p>
-<p><img src="https://i.imgur.com/DX6uzQW.jpg" alt="Image"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Filters/RandomFilter.cs</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 隨機啟用 API 的 Filter</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;see ref=&#34;https://learn.microsoft.com/zh-tw/azure/azure-app-configuration/howto-feature-filters-aspnet-core&#34;/&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[FilterAlias(&#34;Random&#34;)]</span> <span style="color:#75715e">// 設定 Filter 的別名，讓 appsettings.json 可以使用這個別名</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RandomFilter</span> : IFeatureFilter
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Task&lt;<span style="color:#66d9ef">bool</span>&gt; EvaluateAsync(FeatureFilterEvaluationContext context)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> percentage = context.Parameters.GetValue&lt;<span style="color:#66d9ef">int</span>&gt;(<span style="color:#e6db74">&#34;Percentage&#34;</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> seed = Guid.NewGuid().GetHashCode();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> randomNumber = <span style="color:#66d9ef">new</span> Random(seed).Next(<span style="color:#ae81ff">100</span>);
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> isEnabled = randomNumber &lt;= percentage;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Task.FromResult(isEnabled);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著我們要把這個 FeatureFilter 拿去註冊：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Program.cs</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>builder.Services
+</span></span><span style="display:flex;"><span>    .AddFeatureManagement()
+</span></span><span style="display:flex;"><span>    .AddFeatureFilter&lt;RandomFilter&gt;() <span style="color:#75715e">// 加入自訂的 Feature Filter. see: Filters/RandomFilter.cs</span>
+</span></span><span style="display:flex;"><span>    ;
+</span></span></code></pre></div><p>接著就像前面的兩個範例一樣，直接拿來用就好嚕</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Controllers/DemoController.cs</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpGet(&#34;FeatureFilter/Random/&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">string</span>&gt; FeatureFilterRandom()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Demo 3: 實作：使用 IFeatureFilter 來隨機啟用 API - 直接查詢 Feature Flag</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> isEnabled = <span style="color:#66d9ef">await</span> _featureManager.IsEnabledAsync(FeatureFlags.RandomTrial);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> isEnabled 
+</span></span><span style="display:flex;"><span>        ? <span style="color:#e6db74">&#34;恭喜你！你抽中了香香新版邏輯的試用機會！&#34;</span>
+</span></span><span style="display:flex;"><span>        : <span style="color:#e6db74">&#34;什麼事也沒發生，又是臭臭邏輯的一天。&#34;</span>;
+</span></span><span style="display:flex;"><span>}  
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpGet(&#34;FeatureFilter/Random/FeatureGate&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[FeatureGate(FeatureFlags.RandomTrial)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> FeatureFilterRandomWithFeatureGate()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Demo 3: 實作：使用 IFeatureFilter 來隨機啟用 API - 透過 FeatureGate 來啟用</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;恭喜你！你抽中了很棒 API 的試用機會！&#34;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>來張動圖看看成果：</p>
+<p><img src="https://i.imgur.com/9l8N7EE.gif" alt="Image"></p>
+<h2 id="實作使用-featurefilter-來根據白名單啟用-api">實作：使用 FeatureFilter 來根據白名單啟用 API</h2>
+<p>接下來試試另一組場景，假設我們打算先讓十位合作客戶試用新功能，<br/>這時候也可以靠自製 FeatureFilter 來處理。</p>
+<blockquote>
+<p>備註：這一節會需要用到依賴注入相關的功能，還不熟的朋友可以參見<a href="/post/2021/11/newbie-6-dependency-injection/">依賴注入的筆記</a></p>
+</blockquote>
+<p>首先按照慣例，先加上我們的 Feature Flag<br/>
+這次就叫做 <code>Whitelist</code>，並且只指定 FeatureFilter 的名稱就好，不需要參數：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#75715e">// appsettings.json
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;FeatureManagement&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;NewLogicEnabled&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;NiceApiEnabled&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;RandomTrial&#34;</span>: {}, <span style="color:#75715e">// 好長，省略
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;Whitelist&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;EnabledFor&#34;</span>: [
+</span></span><span style="display:flex;"><span>      {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;Name&#34;</span>: <span style="color:#e6db74">&#34;Whitelist&#34;</span>
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Flags/FeatureFlags.cs</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FeatureFlags</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> NewLogicEnabled = <span style="color:#e6db74">&#34;NewLogicEnabled&#34;</span>; 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> NiceApiEnabled = <span style="color:#e6db74">&#34;NiceApiEnabled&#34;</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> RandomTrial = <span style="color:#e6db74">&#34;RandomTrial&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 新增 Whitelist</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">string</span> Whitelist = <span style="color:#e6db74">&#34;Whitelist&#34;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著，假裝一下我們在某張資料表裏面有白名單資料：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Repositories/WhitelistRepository.cs</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">IWhitelistRepository</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Task&lt;IEnumerable&lt;<span style="color:#66d9ef">string</span>&gt;&gt; GetWhitelistAsync();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WhitelistRepository</span> : IWhitelistRepository
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;IEnumerable&lt;<span style="color:#66d9ef">string</span>&gt;&gt; GetWhitelistAsync()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 假裝從資料庫中取得白名單 :)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> List&lt;<span style="color:#66d9ef">string</span>&gt;
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Apple&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Banana&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Cat&#34;</span>
+</span></span><span style="display:flex;"><span>        };
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 小提醒：如果真的連線到資料庫，然後名單的改動頻率很低，可以考慮加個快取</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>而且這個 Repo 也有好好註冊到 Program.cs。<br/>
+同時，因為後續的示範一定也需要從 Request 拿到使用者的身分<br/>
+這邊也註冊了 IHttpContextAccessor 來取得 Request 內容：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Program.cs</span>
+</span></span><span style="display:flex;"><span>builder.Services.AddHttpContextAccessor();
+</span></span><span style="display:flex;"><span>builder.Services.AddSingleton&lt;IWhitelistRepository, WhitelistRepository&gt;();
+</span></span></code></pre></div><blockquote>
+<p>延伸閱讀：<a href="https://learn.microsoft.com/zh-tw/aspnet/core/fundamentals/http-context?view=aspnetcore-8.0#access-httpcontext-from-custom-components">存取 ASP.NET Core 中的 HttpContext</a> 的「從自訂元件存取 HttpContext」小節</p>
+</blockquote>
+<blockquote>
+<p>備註：如果 FeatureFilter 依賴對象的生命週期是 Scope 的，會需要調整一下 FeatureManagement 的註冊，請看這一小節最後的補充。</p>
+</blockquote>
+<p>上游的假資料準備好了，接著就讓我們來實作白名單 FeatureFilter 吧：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Filters/WhitelistFilter.cs</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 白名單啟用 API 的 Filter</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[FilterAlias(&#34;Whitelist&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WhitelistFilter</span> : IFeatureFilter
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IWhitelistRepository _whitelistRepository;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> IHttpContextAccessor _httpContextAccessor;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> WhitelistFilter(
+</span></span><span style="display:flex;"><span>        IWhitelistRepository whitelistRepository, 
+</span></span><span style="display:flex;"><span>        IHttpContextAccessor httpContextAccessor)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _whitelistRepository = whitelistRepository;
+</span></span><span style="display:flex;"><span>        _httpContextAccessor = httpContextAccessor;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">bool</span>&gt; EvaluateAsync(FeatureFilterEvaluationContext context)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 粗暴地從 Request 的 Header 取出使用者名稱</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 實作時記得換成真正的使用者資訊來源，例如 JWT Token、拆好的 User 資訊、擲筊的結果，之類的</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> user = _httpContextAccessor.HttpContext?.Request.Headers[<span style="color:#e6db74">&#34;User&#34;</span>]; 
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">string</span>.IsNullOrWhiteSpace(user))
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 假裝從資料庫中取得白名單，檢查使用者是否在白名單中</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 實作時記得換成真正的白名單來源 &amp; 比對邏輯</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> whitelist = <span style="color:#66d9ef">await</span> _whitelistRepository.GetWhitelistAsync();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> whitelist.Any(x =&gt; x.Equals(user, StringComparison.OrdinalIgnoreCase)); <span style="color:#75715e">// 插個不分大小寫，避免我等等 Demo 手殘</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>搞定，開開心心來註冊囉：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Program.cs</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>builder.Services
+</span></span><span style="display:flex;"><span>    .AddFeatureManagement()
+</span></span><span style="display:flex;"><span>    .AddFeatureFilter&lt;RandomFilter&gt;()
+</span></span><span style="display:flex;"><span>    .AddFeatureFilter&lt;WhitelistFilter&gt;(); <span style="color:#75715e">// 把白名單的 FeatureFilter 掛上去</span>
+</span></span></code></pre></div><p>接著捏支 API 來測測看：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Controllers/DemoController.cs</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpGet(&#34;FeatureFilter/Whitelist/&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">async</span> Task&lt;<span style="color:#66d9ef">string</span>&gt; FeatureFilterWhitelist(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromHeader(Name = &#34;User&#34;)]</span> <span style="color:#66d9ef">string</span> user)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Demo 4: 實作：使用 IFeatureFilter 來根據白名單啟用 API</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> isEnabled = <span style="color:#66d9ef">await</span> _featureManager.IsEnabledAsync(FeatureFlags.Whitelist);
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> isEnabled 
+</span></span><span style="display:flex;"><span>        ? <span style="color:#e6db74">$&#34;{user} 先生/小姐，你好。歡迎使用本服務。您是我們第 9999 位 VIP 會員！&#34;</span>
+</span></span><span style="display:flex;"><span>        : <span style="color:#e6db74">$&#34;{user} 先生/小姐，你好。很抱歉，本服務尚未開放給您使用。請加入我們的 VIP 會員，取得優先體驗資格！&#34;</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>來張動圖看看成果：</p>
+<p><img src="https://i.imgur.com/r2gIrLw.gif" alt="Image"></p>
+<p>搞定，收工。又是美好的一天，準時下班囉</p>
+<blockquote>
+<p>補充：由於 FeatureManager 是 Singleton 的，而 AddFeatureFilter 會根據 FeatureManager 的生命週期來註冊 FeatureFilter，因此如果依賴對象的生命週期是 Scope，注入的時候就會發生錯誤。</p>
+<p>這時候請改用 AddScopedFeatureManagement：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Program.cs</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// builder.Services.AddFeatureManagement();</span>
+</span></span><span style="display:flex;"><span>builder.Services.AddScopedFeatureManagement();
+</span></span></code></pre></div><p>參考：<a href="https://github.com/microsoft/FeatureManagement-Dotnet/issues/15">Unable to inject Scoped/Transient services into FeatureFilter · Issue #15 · microsoft/FeatureManagement-Dotnet</a></p>
+<p>延伸閱讀：<a href="https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/#%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%89%E7%A8%AE%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F-transientscopedsingleton">依賴注入的三種生命週期 Transient、Scoped、Singleton</a></p>
+</blockquote>
 <h2 id="小結">小結</h2>
-<p>這次筆記了 JMeter 這套壓力測試工具的簡單使用方式，在大多數對 API 做測試的場合中，只需要新增幾個 JMeter 提供的元件就可以完成任務，可以說是相當方便。</p>
-<p>同時 JMeter 也提供了更多進階場景時用到的工具，來幫助我們在 Request 發送前後進行處理：例如在這次工作上用到的場景來說，就需要從設定元素中新增 CSV Data Set Config 來從 CSV 讀出需要的資訊，利用 <code>${參數名稱}</code> 的語法來把參數加到我們的 HTTP 請求：</p>
-<p><img src="https://i.imgur.com/442wtcA.jpg" alt="Image"></p>
-<p><img src="https://i.imgur.com/xwrJur8.jpg" alt="Image"></p>
-<p><img src="https://i.imgur.com/6i8kVCO.jpg" alt="Image"></p>
-<p>又或是新增前置處理器，如 JSR223 PreProcesser 來撰寫 JavaScript 腳本，先對參數進行處理等等：</p>
-<p><img src="https://i.imgur.com/Dv3eiya.jpg" alt="Image"></p>
-<p><img src="https://i.imgur.com/UZFyHTf.jpg" alt="Image"></p>
-<p>當然除了從 CSV 設定參數以外，JMeter 也提供了簡單的邏輯控制，像是從一數到十這種是完全沒問題的：</p>
-<p><img src="https://i.imgur.com/Mdwio69.jpg" alt="Image"></p>
-<p>有這些工具可以進行組合，可以說是相當方便。但大多時候我們只會需要用到基本的 Http Request。有興趣嘗試的朋友可以參考 Yuanchieh&rsquo;s Blog 的這篇：<a href="https://yuanchieh.page/posts/2021/2021-06-26-jmeter-%E4%BD%BF%E7%94%A8%E6%95%99%E5%AD%B8-+-%E8%87%AA%E5%AE%9A%E7%BE%A9%E8%AE%8A%E6%95%B8%E4%BD%BF%E7%94%A8/">壓測工具：JMeter 使用教學 + 自定義變數使用</a>，以及官方文件 <a href="https://jmeter.apache.org/usermanual/index.html">Apache JMeter - User&rsquo;s Manual</a> 來試試，這邊就不再贅述。</p>
-<p>雖然 JMeter 還是有一點小問題，例如那個只有一半的翻譯，還有<a href="https://stackoverflow.com/questions/53502142/apache-jmeter-showing-different-result-in-windows-and-linux-for-same-test">跑在 Linux 的表現會比 Windows 好</a>之類的現象</p>
-<p>但這無損它是個功能完善又簡單使用的壓力測試工具。需要的時候還是可以打開 JMeter，簡單掛個執行緒群組就揍起來，同事 API 寫好就直接把它打爛，不亦樂乎。</p>
-<p><del>雖然我的後端前輩最後跑去用更新更潮的 <a href="https://k6.io/">K6</a> 了，嘖。我筆記都寫完了欸，讓我看看是有多潮……</del></p>
-<p><img src="https://i.imgur.com/81n6ddE.jpg" alt="Image"></p>
-<p>那麼今天的筆記就到這邊，我們下次見！</p>
-<h2 id="參考資料與延伸閱讀">參考資料與延伸閱讀</h2>
+<p>稍微玩了一下 FeatureManagement，並且拿了一些前陣子遇過的場景來實作看看</p>
+<p>原本以為只是簡單的去組態抓開關，想不到 FeatureFilter 提供的自訂條件還蠻彈性的，挺香</p>
+<p>FeatureGate 無腦噴 404 也挺爽的（警告：請跟呼叫端的朋朋喬好= = 不然很危險，生命危險）</p>
+<p>如果有想要搞個 Feature Flag 的場合，推薦可以玩玩看。</p>
+<p>那麼，今天的筆記就到這邊。我們下篇見～</p>
+<h2 id="參考資料">參考資料</h2>
 <ul>
-<li>ＱＡ同事的工作坊</li>
-<li><a href="https://lufor129.medium.com/%E6%B8%AC%E5%A5%BD%E6%B8%AC%E6%BB%BF-%E4%B8%80-%E5%A3%93%E5%8A%9B%E6%B8%AC%E8%A9%A6jmeter-5356b5335628">測好測滿(一) : 壓力測試Jmeter | by LUFOR129 | Medium</a></li>
-<li><a href="https://ithelp.ithome.com.tw/articles/10203900?sc=hot">Day 20 Jmeter 壓力測試工具 - iT 邦幫忙</a></li>
-<li><a href="https://yuanchieh.page/posts/2021/2021-06-26-jmeter-%E4%BD%BF%E7%94%A8%E6%95%99%E5%AD%B8-+-%E8%87%AA%E5%AE%9A%E7%BE%A9%E8%AE%8A%E6%95%B8%E4%BD%BF%E7%94%A8/">壓測工具：JMeter 使用教學 + 自定義變數使用 | Yuanchieh&rsquo;s Blog</a></li>
-<li><a href="https://dotblogs.com.tw/yc421206/2022/10/15/load_stress_test_tool_for_jmeter">負載壓力測試工具 - JMeter - 余小章 @ 大內殿堂</a></li>
-<li><a href="https://www.astralweb.com.tw/jmeter-website-stress-testing-tutorial/">JMeter-網頁壓力測試教學 - Astral Web 歐斯瑞有限公司</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/105285382">jmeter 撒的一个谎，你可能都已经信以为真了 - 知乎 (zhihu.com)</a></li>
-<li><a href="https://jmeter.apache.org/usermanual/index.html">Apache JMeter - User&rsquo;s Manual</a></li>
+<li><a href="https://learn.microsoft.com/zh-tw/azure/azure-app-configuration/use-feature-flags-dotnet-core">如何在 .NET 應用程式中使用功能旗標的教學課程 | Microsoft Learn</a></li>
+<li><a href="https://dotblogs.com.tw/supershowwei/2020/11/02/154134">[料理佳餚] ASP.NET Core 的 Feature Flags（Feature Toggle） | 軟體主廚的程式料理廚房</a></li>
+<li>延伸閱讀（Azure App Configuration）：<a href="https://dotblogs.com.tw/anyun/2022/10/16/160158">使用 App Configuration 的 Feature manager 功能來實做 Feature Toggle/Flag 機制 | 黯雲端記事錄</a></li>
 </ul>
                         </div>
 
@@ -250,13 +559,13 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/2022/09/imtranslator/">在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧</a></li>
+        <li><a href="/post/2024/08/dotnet-ioptions/">.Net: 使用 IOptions 取得 appsettings.json 的設定值吧</a></li>
         
-        <li><a href="/post/2022/08/devtoys/">DevToys —— 開發人員的瑞士刀工具箱</a></li>
+        <li><a href="/post/2023/01/banner-1-system-drawing/">使用 .Net 的 System.Drawing 產生簡單的文字 Banner 初體驗</a></li>
         
-        <li><a href="/post/2022/08/snispate/">Snispate —— 方便的截圖小幫手，放下剪取工具和小畫家吧</a></li>
+        <li><a href="/post/2022/03/newbie-7-fluent-validation/">菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧</a></li>
         
-        <li><a href="/post/2022/06/angle-sharp/">C#: 使用 AngleSharp 爬蟲工具來抓取網頁內容吧</a></li>
+        <li><a href="/post/2021/11/newbie-6-dependency-injection/">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a></li>
         
         <li><a href="/post/2021/10/newbie-5-3-layer-architecture/">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a></li>
         
@@ -268,9 +577,11 @@
                             
                             <ul class="clearfix">
                                 
-                                <li><a href="https://igouist.github.io/tags/api">api</a></li>
+                                <li><a href="https://igouist.github.io/tags/csharp">csharp</a></li>
                                 
-                                <li><a href="https://igouist.github.io/tags/tools">tools</a></li>
+                                <li><a href="https://igouist.github.io/tags/dotnet">dotnet</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/appsettings">appsettings</a></li>
                                 
                             </ul>
                             
@@ -2783,7 +3094,7 @@
 </script>
                         <hr/>
                         <p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
-<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2022%2f10%2fjmeter%2f" width="100%" frameborder=0></iframe>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2024%2f08%2fdotnet-feature-flag-and-feature-management%2f" width="100%" frameborder=0></iframe>
                     </article>
                     
     
@@ -2818,22 +3129,14 @@
             <ul class="widget-list">
                 <nav id="TableOfContents">
   <ul>
-    <li><a href="#下載與開啟-jmeter">下載與開啟 JMeter</a>
-      <ul>
-        <li><a href="#更改語言">更改語言</a></li>
-      </ul>
-    </li>
-    <li><a href="#批次呼叫指定的-api">批次呼叫指定的 API</a>
-      <ul>
-        <li><a href="#建立-thread-group">建立 Thread Group</a></li>
-        <li><a href="#建立-http-request">建立 Http Request</a></li>
-        <li><a href="#補充設定-http-request-header">補充：設定 Http Request Header</a></li>
-        <li><a href="#建立-listener">建立 Listener</a></li>
-        <li><a href="#開始執行測試">開始執行測試</a></li>
-      </ul>
-    </li>
+    <li><a href="#認識一下-feature-flag">認識一下 Feature Flag</a></li>
+    <li><a href="#環境準備microsoftfeaturemanagement">環境準備：Microsoft.FeatureManagement</a></li>
+    <li><a href="#實作使用-isenabledasync-拿到-feature-flag-的值">實作：使用 IsEnabledAsync 拿到 Feature Flag 的值</a></li>
+    <li><a href="#實作使用-featuregate-來啟用和停用-api">實作：使用 FeatureGate 來啟用和停用 API</a></li>
+    <li><a href="#實作使用-featurefilter-自訂篩選條件隨機抽取使用者">實作：使用 FeatureFilter 自訂篩選條件、隨機抽取使用者</a></li>
+    <li><a href="#實作使用-featurefilter-來根據白名單啟用-api">實作：使用 FeatureFilter 來根據白名單啟用 API</a></li>
     <li><a href="#小結">小結</a></li>
-    <li><a href="#參考資料與延伸閱讀">參考資料與延伸閱讀</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
   </ul>
 </nav>
             </ul>

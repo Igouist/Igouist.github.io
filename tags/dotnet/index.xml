@@ -6,7 +6,34 @@
     <description>Recent content in Dotnet on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Sat, 03 Aug 2024 08:30:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 18 Aug 2024 13:00:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/tags/dotnet/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>.Net: 使用 FeatureManagement 套件來實作 Feature Flag 功能切換吧</title>
+      <link>https://igouist.github.io/post/2024/08/dotnet-feature-flag-and-feature-management/</link>
+      <pubDate>Sun, 18 Aug 2024 13:00:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2024/08/dotnet-feature-flag-and-feature-management/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/926KRip.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在做上一篇 &lt;a href=&#34;https://igouist.github.io/post/2024/08/dotnet-ioptions&#34;&gt;IOptions&lt;/a&gt; 的筆記時，剛好看到 FeatureManagement 這香東西。&lt;br/&gt;馬上來收錄一篇。順便也簡單整理一下 Feature Flag (= Feature Toggle) 的介紹。&lt;/p&gt;
+&lt;h2 id=&#34;認識一下-feature-flag&#34;&gt;認識一下 Feature Flag&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本部落格秉持著「簡單、友善、我好菜」的精神，按照慣例先簡單介紹一下&lt;br/&gt;
+已經知道的朋友就可以跳過這個小節，直接前往 #環境準備 囉。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;假設我們原本有 Old 邏輯：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Old();
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;天庭傳來諭令，要我們改成 New 邏輯。這簡單，我們就把 Old 砍掉，換成 New。非常自然，改完就佈版&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;New();
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;隔天，天庭又傳來諭令，New 需要調整一下，先不要了現在我們又需要把 New 邏輯砍掉，讓 Old 邏輯回來。簡單，但看來我們得再上一版&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Old();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// New();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;再隔天，大家可能猜到天庭又要幹嘛了，總之又上了一版&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Old();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;New();
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如此往復三萬八千次，工程師終於受不了了：「俺老孫每天在這切換 Old 跟 New，改完還得佈版，每天搞這些就飽了，我滴媽呀，不幹了」&lt;/p&gt;
+&lt;p&gt;就在老孫關燈走人的那一瞬間，突然靈光一現：等等，&lt;strong&gt;俺加個開關還不行嗎？&lt;/strong&gt;&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>.Net: 使用 IOptions 取得 appsettings.json 的設定值吧</title>
       <link>https://igouist.github.io/post/2024/08/dotnet-ioptions/</link>
