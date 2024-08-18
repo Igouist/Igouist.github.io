@@ -26,20 +26,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>【每天轉貼一篇文章】從動圖認識負載平衡（Load Balancing） | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="【每天轉貼一篇文章】從動圖認識負載平衡（Load Balancing） - 伊果的沒人看筆記本">
+    <title>Tweets | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="Tweets - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2024-04-04T23:38:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2024-04-04T23:38:00&#43;08:00">
+    <meta name="description" content="Tweets">
         
-        
-    <meta name="description" content="【每天轉貼一篇文章】從動圖認識負載平衡（Load Balancing）">
-        <meta name="author" content="Igouist">
-        
-    <meta property="og:url" content="https://igouist.github.io/repost/2024/04/0404-load-balancing/">
+    <meta name="author" content="Igouist">
+    <meta property="og:url" content="https://igouist.github.io/tweets/">
     <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link defer rel="stylesheet" href="/css/normalize.css">
@@ -88,7 +84,7 @@
                     
                     <a  href="https://igouist.github.io/repost/" title="Repost">Repost</a>
                     
-                    <a  href="https://igouist.github.io/tweets/" title="Tweets">Tweets</a>
+                    <a class="current" href="https://igouist.github.io/tweets/" title="Tweets">Tweets</a>
                     
                     <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
                     
@@ -109,10 +105,10 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">【每天轉貼一篇文章】從動圖認識負載平衡（Load Balancing）</h1>
+                            <h1 class="post-title">Tweets</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2024-4-4,
+                            1-1-1,
                         </date>
                         
                         
@@ -125,31 +121,33 @@
                         
 
                         <div class="post-content">
-                            <p>今天想轉貼有香香動畫(?)的科普文：
-<a href="https://samwho.dev/load-balancing/">Load Balancing - Sam Rose</a></p>
-<p>這篇文章用了簡單的動畫，讓讀者能直觀地了解當下 Request 的傳送狀況（看著球被丟給伺服器，意外地蠻療癒的）</p>
-<p><img src="https://i.imgur.com/xhY79Hx.gif" alt="Image"></p>
-<p>從最簡單的 1 個來源發送給 1 台伺服器（=只要一直把球丟過去給伺服器就好）開始</p>
-<p>接著，伺服器開始吃不下了。我們想要增加伺服器數量，但就需要把 Request 分配給他們兩台伺服器，這時候最簡單粗暴的做法就是<strong>輪詢（=輪流發球給他們）</strong></p>
-<p>然後再加入一些會在實務上遇到的狀況：每顆球（Request）要處理的工可能不一樣大，伺服器也不一定都一樣強。</p>
-<p>這樣一來，單純平均發球的輪詢作戰很快就會遇到胃口比較小的伺服器開始吃不下的尷尬狀況</p>
-<p>為了減輕這個狀況，我們可以在每個伺服器前面加個小小的<strong>排隊區（Request Queues）</strong>，雖然要排隊勢必會拉長時間，但至少掉球的狀況就減少了</p>
-<p>再進一步的話，我們可以<strong>針對伺服器的消化能力來替他們加個權重</strong>，不過手動標權重很容易翻車，所以要想辦法讓他自動調整權重，也就是要能「動態加權輪詢」</p>
-<p>例如根據最近三次的執行時間來計算伺服器的胃口(?)，再決定要發幾顆球給伺服器，比較餓吃比較快的就多發一點(??)</p>
-<hr>
-<p>除了吃不下把球吐掉以外，如果吃太久吃到 Timeout 也是不行的。而針對延遲問題，這篇最後介紹了「峰值指數加權移動平均（PEWMA）」</p>
-<p>做法其實也很直覺：抓一下最近這些伺服器的延遲如何、都處理了多久，然後再經過一些數學魔法(?) 來算出下一個 Request 給哪台伺服器比較好、看能不能讓延遲更少</p>
-<p>ps. 附上數學魔法的段落給那些看得懂的朋友：</p>
-<blockquote>
-<p>For each server, the algorithm keeps track of the latency from the last N requests. Instead of using this to calculate an average, it sums the values but with an exponentially decreasing scale factor. This results in a value where the older a latency is, the less it contributes to the sum. Recent requests influence the calculation more than old ones.<br/>
-對於每個伺服器，該演算法會追蹤從最後 N 個請求開始的延遲時間。不同於使用此來計算平均值，它將這些值相加，但使用指數遞減的比例因子。這導致一個值，其中較舊的延遲對總和的貢獻較小。最近的請求比舊的請求更影響計算。</p>
-<p>That value is then taken and multiplied by the number of open connections to the server and the result is the value we use to choose which server to send the next request to. Lower is better.<br/>
-然後，將該值乘以與伺服器的開放連接數，結果就是我們用來選擇下一個請求要發送到哪個伺服器的值。數值越低越好。</p>
-</blockquote>
-<hr>
-<p>但是相較前面著重在不要把球吐掉的「動態加權輪詢」，這套注重延遲問題的「峰值指數加權移動平均」就比較有可能發生更嚴重的吃不下問題</p>
-<p>作者有進行一些測試並繪製圖表，有興趣的朋友可以參考看看。感覺還是要根據狀況、評估對延遲或掉包的容忍程度，再決定採用怎樣的負載平衡策略會比較好</p>
-<p>那麼，今天的轉貼就到這邊，我們明天（大概）見～</p>
+                            <p>看到有些前輩的部落格有小空間可以記一些短感想、小廢文，心生羨慕<br/>
+串個 Twitter 當成碎碎念，感謝 <a href="https://github.com/agriyakhetarpal/hugo-twitter-timeline">hugo-twitter-timeline</a>，開箱即用。</p>
+
+
+
+
+
+
+
+
+    
+    
+
+
+
+
+
+
+<div class="twitter-timeline-container">
+    <a class="twitter-timeline" href="https://twitter.com/CRUD_Machine" data-lang=""
+        data-width="800" data-height="2000" data-dnt="true" data-theme="dark"
+        data-chrome="noheader noscrollbar transparent">
+        Tweets by CRUD_Machine</a>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+<br/>
+<br/>
                         </div>
 
                         
@@ -158,15 +156,15 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/repost/2024/04/0402-microsoft-clarity/">【每天轉貼一篇文章】用 Microsoft Clarity 觀察使用者行為</a></li>
+        <li><a href="/repost/2024/04/0429-repost-100-days/">【每天推薦一篇文章】轉貼 100 篇文章之後</a></li>
         
-        <li><a href="/repost/2024/04/observability-in-devops-30-days/">【每天推薦一篇文章】可觀測性 30 天</a></li>
+        <li><a href="/repost/2024/04/0428-atomic-habits/">【每天推薦一篇文章】原子習慣</a></li>
         
-        <li><a href="/repost/2024/03/0329-a-weight-loss-guide-for-engineers/">【每天推薦一篇文章】寫給工程師看的減肥指南</a></li>
+        <li><a href="/repost/2024/04/0427-big-note-system/">【每天推薦一篇文章】為什麼你「不需要」所謂的人生管理系統</a></li>
         
-        <li><a href="/repost/2024/03/0328-alert-alert-alert/">【每天推薦一篇文章】寫了無限 alert 迴圈竟然要被抓？！</a></li>
+        <li><a href="/repost/2024/04/0423-how-to-save-password/">【每天推薦一篇文章】存密碼的正確姿勢</a></li>
         
-        <li><a href="/repost/2024/03/0327-human-system-optimization/">【每天推薦一篇文章】人體系統優化指南</a></li>
+        <li><a href="/repost/2024/04/0419-encoding-encrypt-and-hashing/">【每天推薦一篇文章】編碼、加密、雜湊</a></li>
         
     </ul>
 </div>
@@ -2683,7 +2681,7 @@
 </script>
                         <hr/>
                         <p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
-<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2frepost%2f2024%2f04%2f0404-load-balancing%2f" width="100%" frameborder=0></iframe>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2ftweets%2f" width="100%" frameborder=0></iframe>
                     </article>
                     
     
