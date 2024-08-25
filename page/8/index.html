@@ -107,6 +107,59 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2020/07/oo-2-constructor-overload/" title="菜雞與物件導向 (2): 建構式、多載" >菜雞與物件導向 (2): 建構式、多載</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-7-12,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a></span>
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/naCjLay.png" alt=""></p>
+<p>我就直接說了，有用前面的程式碼區塊的人，絕對執行不了。因為我們建立哥布林和戰士這兩張卡片的時候，根本就沒有給他們數值呀！</p>
+<p>雖然可以先呼叫出來再賦值…</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card();
+</span></span><span style="display:flex;"><span>goblin.Name = <span style="color:#e6db74">&#34;哥布林&#34;</span>;
+</span></span><span style="display:flex;"><span>goblin.Attack = <span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span>goblin.Health = <span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/* ...其他賦值 */</span>
+</span></span></code></pre></div><p>這實在相當占空間，也有點奇怪。畢竟如果是阿福（狗），一出生的時候應該就確定了一些特徵才對，例如品種、血型、眼睛顏色這種。並不會出生後過一陣子，才突然決定這些東西，既然如此，我們在產生物件的時候，當然也會希望在<strong>建立的同時就先決定好一部份內容</strong>。</p>
+<p>這時候我們就可以藉由<strong>建構式</strong>的方式，在建立物件時就進行一些我們想要的操作。</p>
+<h2 id="建構式">建構式</h2>
+<p>事實上，<strong>當我們呼叫 <code>new Card()</code> 的時候</strong>（不覺得這個 () 很有呼叫方法的感覺嗎？）<strong>我們就是正在調用 Card 的建構式</strong>。而當我們沒有特別去定義建構式的時候，就會直接使用內建的建構式去幫我們產生物件。</p>
+<p>現在我們替 Card 新增一個建構式：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Card (<span style="color:#66d9ef">string</span> name, <span style="color:#66d9ef">int</span> attack, <span style="color:#66d9ef">int</span> health)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Name = name;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Attack = attack;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.Health = health;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/* ... 其他屬性和方法 */</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>在 C# 的時候，建構式必須和類別同名，且不需要定義回傳類型。當我們有了建構式，剛剛的例子就可以改寫成：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> goblin = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;哥布林&#34;</span>, attack: <span style="color:#ae81ff">3</span>, health: <span style="color:#ae81ff">2</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> warrior = <span style="color:#66d9ef">new</span> Card(name: <span style="color:#e6db74">&#34;戰士&#34;</span> , attack: <span style="color:#ae81ff">4</span>, health: <span style="color:#ae81ff">3</span>);
+</span></span><span style="display:flex;"><span>warrior.Hit(goblin);
+</span></span></code></pre></div><p><strong>建構式也就是建立這個物件時執行的函式</strong>，通常會用來進行初始化，也就是做一些建立物件必要的準備。例如傳遞必要屬性或是建構需要的其他物件、或是給予私有屬性初始值等等，例如說我們的卡牌一建立，就會需要知道它的名字和戰鬥力，這樣才有卡牌的感覺，而不該像一些 <a href="https://zh.wikipedia.org/wiki/%E6%AD%A6%E8%97%A4%E9%81%8A%E6%88%B2">壞決鬥者</a> 邊打牌邊偷偷印卡。</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-2-constructor-overload/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2020/07/oo-1-class-object/" title="菜雞與物件導向 (1): 類別、物件" >菜雞與物件導向 (1): 類別、物件</a>
                                 </h1>
                             </header>
@@ -491,36 +544,6 @@ J S P C
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2020/05/carbon/" title="Carbon —— 把程式碼片段截成有質感的圖片吧" >Carbon —— 把程式碼片段截成有質感的圖片吧</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-5-10,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/tools">Tools</a></span>
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/w3hexschool">w3HexSchool</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p>開始挑戰每週寫文之後，發現最大的敵人根本不是寫文這件事，而是自己的惰性啊。像這次母親節假期過太爽，差點兒就忘記發文…… 所以這週就還是 <del>偷懶</del> 工具介紹囉。</p>
-<p>今天要分享的是 <a href="https://carbon.now.sh/">Carbon</a> 這個工具，它能夠<strong>將貼上的程式碼輸出成圖片，並且支援程式碼上色</strong>，還可以自選字型、背景色等等，產出的圖可以說相當有質感。</p>
-<p>當傳送圖片比較快或排版比較好的場合（例如Line, Facebook..），或是在部落格和文件中想直接放漂亮圖片，以及<strong>需要示範給對方看可是又不想要對方直接複製貼上</strong>的時候可謂是相當實用。</p>
-<p>先來一張成果圖鎮樓
-<img src="https://i.imgur.com/jM07HAC.png" alt=""></p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2020/05/carbon/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -632,6 +655,10 @@ J S P C
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/" title="使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2">使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2024/08/dotnet-feature-flag-and-feature-management/" title=".Net: 使用 FeatureManagement 套件來實作 Feature Flag 功能切換吧">.Net: 使用 FeatureManagement 套件來實作 Feature Flag 功能切換吧</a>
     </li>
     
@@ -667,10 +694,6 @@ J S P C
         <a href="https://igouist.github.io/post/2023/01/polyglot-notebooks/" title="Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧">Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2023/01/nioh/" title="仁王＆仁王２　白金！">仁王＆仁王２　白金！</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -697,7 +720,7 @@ J S P C
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (30)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (31)</a>
     </li>
     
     <li>
@@ -912,7 +935,7 @@ J S P C
         
         <br/>
         <span>
-          &nbsp;&nbsp;Post Count： 94
+          &nbsp;&nbsp;Post Count： 95
         </span>
         
           <span id="busuanzi_container_site_pv">, PV： <span id="busuanzi_value_site_pv"></span></span>

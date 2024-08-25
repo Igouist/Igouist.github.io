@@ -116,6 +116,49 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/">使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2024-8-25,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p>這週忙著打黑悟空，簡單記一下前陣子同事遇到的一個場景：</p>
+<p>由於曆法的關係，SQL Server 的 datetime 範圍只能從 1753-01-01 開始。<br/>如果我們要寫入 0001-01-01 進去的話就會報錯</p>
+<pre tabindex="0"><code>SqlDateTime overflow. Must be between 1/1/1753 12:00:00 AM and 12/31/9999 11:59:59 PM.
+</code></pre><blockquote>
+<p>補充：關於曆法的部份，有興趣的朋友可以參考這篇：<br/><a href="https://sharedderrick.blogspot.com/2009/09/blog-post.html">淺談：消失的日期，以關聯式資料庫的日期資料類型為例 - 德瑞克：SQL Server 學習筆記</a></p>
+</blockquote>
+<p>這時候通常去把資料表欄位改成香香的 datetime2 就可以搞定，爽爽寫入 0001-01-01。</p>
+<p>但如果我們正在使用 Dapper，預設會把 C# 的 DateTime 映射到 SQL Server 的 datetime，所以還是會寫入失敗。</p>
+<p>這時候我們就需要明確地請 Dapper 幫我們使用 datetime2 來進行處理。</p>
+<hr>
+<p>如果傳遞的只是某個參數，使用 <code>DbType</code> 就行了：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> parameters = <span style="color:#66d9ef">new</span> DynamicParameters();
+</span></span><span style="display:flex;"><span>parameters.Add(<span style="color:#e6db74">&#34;@Birthday&#34;</span>, birthday, DbType.DateTime2);
+</span></span></code></pre></div><p>但如果傳遞的是某個 Model 裡的特定欄位呢？例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HistoricalEvent</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Guid EventId { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }       <span style="color:#75715e">// 歷史事件的唯一識別碼</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } <span style="color:#75715e">// 歷史事件的描述</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> DateTime EventDate { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } <span style="color:#75715e">// 歷史事件發生的日期, 可能早於 1753 年！</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這種時候就可以使用 AddTypeMap 來調整一下 Dapper 的映射型別。</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2020/03/bandon-2-sqlite/">我要訂便當 (2): 用 Python &#43; Sqlite 儲存訂單</a>
                                     </h1>
                                 </header>
@@ -290,6 +333,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/" title="使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2">使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2024/08/dotnet-feature-flag-and-feature-management/" title=".Net: 使用 FeatureManagement 套件來實作 Feature Flag 功能切換吧">.Net: 使用 FeatureManagement 套件來實作 Feature Flag 功能切換吧</a>
     </li>
     
@@ -325,10 +372,6 @@
         <a href="https://igouist.github.io/post/2023/01/polyglot-notebooks/" title="Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧">Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2023/01/nioh/" title="仁王＆仁王２　白金！">仁王＆仁王２　白金！</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -355,7 +398,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (30)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (31)</a>
     </li>
     
     <li>
@@ -570,7 +613,7 @@
         
         <br/>
         <span>
-          &nbsp;&nbsp;Post Count： 94
+          &nbsp;&nbsp;Post Count： 95
         </span>
         
           <span id="busuanzi_container_site_pv">, PV： <span id="busuanzi_value_site_pv"></span></span>

@@ -6,7 +6,36 @@
     <description>Recent content in Database on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
-    <lastBuildDate>Sun, 15 Mar 2020 20:49:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/tags/database/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 25 Aug 2024 15:20:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/tags/database/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2</title>
+      <link>https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/</link>
+      <pubDate>Sun, 25 Aug 2024 15:20:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/</guid>
+      <description>&lt;p&gt;這週忙著打黑悟空，簡單記一下前陣子同事遇到的一個場景：&lt;/p&gt;
+&lt;p&gt;由於曆法的關係，SQL Server 的 datetime 範圍只能從 1753-01-01 開始。&lt;br/&gt;如果我們要寫入 0001-01-01 進去的話就會報錯&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;SqlDateTime overflow. Must be between 1/1/1753 12:00:00 AM and 12/31/9999 11:59:59 PM.
+&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
+&lt;p&gt;補充：關於曆法的部份，有興趣的朋友可以參考這篇：&lt;br/&gt;&lt;a href=&#34;https://sharedderrick.blogspot.com/2009/09/blog-post.html&#34;&gt;淺談：消失的日期，以關聯式資料庫的日期資料類型為例 - 德瑞克：SQL Server 學習筆記&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;這時候通常去把資料表欄位改成香香的 datetime2 就可以搞定，爽爽寫入 0001-01-01。&lt;/p&gt;
+&lt;p&gt;但如果我們正在使用 Dapper，預設會把 C# 的 DateTime 映射到 SQL Server 的 datetime，所以還是會寫入失敗。&lt;/p&gt;
+&lt;p&gt;這時候我們就需要明確地請 Dapper 幫我們使用 datetime2 來進行處理。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;如果傳遞的只是某個參數，使用 &lt;code&gt;DbType&lt;/code&gt; 就行了：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; parameters = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DynamicParameters();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;parameters.Add(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;@Birthday&amp;#34;&lt;/span&gt;, birthday, DbType.DateTime2);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;但如果傳遞的是某個 Model 裡的特定欄位呢？例如：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;HistoricalEvent&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Guid EventId { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }       &lt;span style=&#34;color:#75715e&#34;&gt;// 歷史事件的唯一識別碼&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Description { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; } &lt;span style=&#34;color:#75715e&#34;&gt;// 歷史事件的描述&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; DateTime EventDate { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; } &lt;span style=&#34;color:#75715e&#34;&gt;// 歷史事件發生的日期, 可能早於 1753 年！&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這種時候就可以使用 AddTypeMap 來調整一下 Dapper 的映射型別。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>我要訂便當 (2): 用 Python &#43; Sqlite 儲存訂單</title>
       <link>https://igouist.github.io/post/2020/03/bandon-2-sqlite/</link>
