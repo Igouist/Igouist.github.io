@@ -107,6 +107,52 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/" title="菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記" >菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2021-10-4,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/bug">bug</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/EMdGkwr.png" alt="Image"></p>
+<h2 id="事發緣由">事發緣由</h2>
+<p>咱們內部套件中有個方法，會將各個參數組合為 QueryString 去打指定的 Api。就是這麼稀鬆平常的場景，神奇的事情就發生了。</p>
+<p>同樣的套件、同樣的語法，在團隊中兩個人的電腦上安裝執行，卻是一個成功一個失敗。</p>
+<p>原來該方法的參數中，包含一欄型別為 DateTime 的資料，並且會把該欄位的值拿來 ToString() 再做為參數傳遞給目標 Api。</p>
+<p>而呼叫失敗的人就是在這個 <code>DateTime.ToString()</code> 的過程中<strong>產生了中文字</strong>，使得目標 Api 接到參數後，無法將中文字轉換回 DateTime 而發生了錯誤。</p>
+<p>問題就浮現了：<strong>同一行 DateTime.ToString() 在不同電腦執行的結果竟然不一樣？！</strong></p>
+<p>為了讓我們更快了解狀況，現在就簡單地使用 Linqpad 進行測試：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    DateTime.Now.ToString().Dump();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>首先，在我的 Windows 時間設定中，完整時間的格式為 <code>09:40:07</code> ，也就是 24 小時制。</p>
+<p>現在讓我們先執行上面這段語法看看：</p>
+<pre tabindex="0"><code>// 2021/10/04 21:00:00
+</code></pre><p>接著讓我們變更時間格式看看。</p>
+<p>以我的 Win10 為例，在 Windows 工具列，也就是畫面的右下角右鍵，選擇 <code>調整日期時間 → 日期時間格式設定 → 變更資料格式</code>，將時間格式變更為 <code>上午 09:40:07</code>。</p>
+<p>重新啟動 Linqpad 再執行如下：</p>
+<pre tabindex="0"><code>// 2021/10/04 下午 09:00:00
+</code></pre><p>可以看到 <code>下午</code> 兩個字就蹦出來了！</p>
+<p>之所以會有這樣的差異，是因為 <code>DateTime.ToString()</code> 預設轉換的目標格式會是抓取目前執行緒的<strong>文化特性</strong>。</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/" title="菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧" >菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a>
                                 </h1>
                             </header>
@@ -533,39 +579,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2021/04/newbie-0-menu/" title="菜雞新訓記 (0): 前言" >菜雞新訓記 (0): 前言</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2021-4-5,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p><img src="https://i.imgur.com/uobV40z.png" alt="img"></p>
-<blockquote>
-<p>長夜將至，我從今開始守望。<br/>
-　　　　　　　　　　　　　　　　　　　　　　　　　　　　——《冰與火之歌》守夜人誓詞</p>
-</blockquote>
-<p>年初整理完物件導向系列後，休息（沉迷遊戲）了好一陣子，終於要繼續整理公司新訓的內容啦！</p>
-<p>因為這個系列會是公司新訓時期的筆記整理，所以會是比較簡易的實作紀錄，並不會太過深入，需要的時候會用延伸閱讀的形式補充上去。如果看文的過程中覺得有什麼能夠補充的，也歡迎告訴我呦。</p>
-<p>本系列預計會從 Git 的基本操作開始，簡單建立一個 Web Api 為主軸，逐步介紹相關的部份，例如簡單地引入套件、簡單地分層等等。基本方針就是直接抄襲 <a href="https://sunnyday0932.github.io/">隔壁同事的部落格</a>。</p>
-<p>後續有更新的文章，就會整理到這篇目錄中。或是也可以從 <a href="/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記</a> 裡面做系列文的查詢。</p>
-<p>那麼，就從第一篇：<a href="/post/2021/04/newbie-1-hello-git">Git 入門這樣做</a> 開始吧！</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2021/04/newbie-0-menu/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -677,6 +690,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2024/09/vscode-live-share/" title="VSCode: 使用 LiveShare 來即時線上協作吧">VSCode: 使用 LiveShare 來即時線上協作吧</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/" title="使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2">使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2</a>
     </li>
     
@@ -710,10 +727,6 @@
     
     <li>
         <a href="https://igouist.github.io/post/2023/01/banner-1-system-drawing/" title="使用 .Net 的 System.Drawing 產生簡單的文字 Banner 初體驗">使用 .Net 的 System.Drawing 產生簡單的文字 Banner 初體驗</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2023/01/polyglot-notebooks/" title="Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧">Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧</a>
     </li>
     
 </ul>
@@ -774,7 +787,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (22)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (23)</a>
     </li>
     
     <li>
@@ -884,6 +897,8 @@
     
     <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
     
+    <a href="https://igouist.github.io/tags/vscode/">vscode</a>
+    
     <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
     
     <a href="https://igouist.github.io/tags/windows/">windows</a>
@@ -957,7 +972,7 @@
         
         <br/>
         <span>
-          &nbsp;&nbsp;Post Count： 95
+          &nbsp;&nbsp;Post Count： 96
         </span>
         
           <span id="busuanzi_container_site_pv">, PV： <span id="busuanzi_value_site_pv"></span></span>
