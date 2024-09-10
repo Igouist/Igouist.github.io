@@ -6915,5 +6915,1178 @@ git remote
 &lt;/ul&gt;</description>
     </item>
     
+    <item>
+      <title>菜雞與物件導向 (4): 繼承</title>
+      <link>https://igouist.github.io/post/2020/07/oo-4-inheritance/</link>
+      <pubDate>Sun, 12 Jul 2020 23:53:04 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2020/07/oo-4-inheritance/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/g9FZ3WN.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著要介紹的是繼承 aka 物件導向三大特性之王 aka 濫用榜 Ko.1 ，繼承的強大幾乎和它的惡名一樣可怕，給一個從聊聊程式的這篇 &lt;a href=&#34;https://dotblogs.com.tw/initials/2016/06/10/171117&#34;&gt;[心得整理] c# 物件導向程式 - 2.封裝、繼承、多型的三大特性&lt;/a&gt; 摘過來的例子就可以略知一二了：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/IFV4xjr.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;什麼也不做，僅僅只是繼承而已，就取得了繼承對象（C# 中稱為基底類別）近乎全部的內容，真是太可怕了。在 C# 中，繼承可以取得基底類別除了 &lt;code&gt;Private&lt;/code&gt; 以外所有的內容，例如 &lt;code&gt;Protected&lt;/code&gt; 更是表明就是只給繼承使用的。&lt;/p&gt;
+&lt;p&gt;由此可見，在減少重複程式碼的路上，繼承無疑達到了全新的高度。&lt;/p&gt;
+&lt;p&gt;那麼繼承代表的是什麼意思呢？大多的網站都能直接說明：&lt;strong&gt;繼承是一種「is-a」的關係。當你能說出Ａ是一個Ｂ的時候，就代表你認為Ａ可以繼承自Ｂ&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;最直覺的繼承例子就是&lt;strong&gt;物種的分類&lt;/strong&gt;。舉例來說，狗跟貓都是哺乳類，因此他們都可以繼承到一些哺乳類共通的特徵（例如哺乳、用肺呼吸）。藉由繼承，我們可以把這些哺乳類共有的特徵全部放在哺乳類這個物件，再由狗和貓分別去繼承哺乳類，藉此讓他們都能得到哺乳類的特徵，再進一步發展出自己的特徵和行為，甚至重新定義基底類別的方法為自己所用。因此，像大話設計模式就將繼承說明如：繼承者是對於被繼承者的一種特殊化。&lt;/p&gt;
+&lt;p&gt;如此一來，當我們需要修改哺乳類的定義的時候，&lt;strong&gt;只需要修改一個地方，而繼承了哺乳類的這些物件（C# 中稱為衍生類別）全都能夠一起修改到，大大地減少了跑來跑去修改的次數，也讓程式碼的重複大幅度地減少&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;然而也因為如此，繼承最大的惡名出現了：&lt;strong&gt;繼承享受了取用基底類別內容的好處，卻也必須背負牽一髮動全身的風險&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;繼承的特性和封裝有天生的衝突。為了從封裝好的物件之中取得內容，減少程式碼的重複，我們有了繼承，然而這樣無疑破壞了基底類別的封裝，完整地暴露給了衍生類別，兩者之間形成了強&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;耦合&lt;/a&gt;的關係。&lt;/p&gt;
+&lt;p&gt;對於衍生類別而言，它必須依賴著基底類別，倘若哪天基底類別的屬性變更了，例如型別或名稱有變動，那麼所有衍生類別使用到的地方都會受到影響，這時候在程式碼裡的修改規模，將會隨著繼承的濫用程度提升，達到一個相當龐大的地步。&lt;/p&gt;
+&lt;p&gt;事實上，這是相當好理解的。我們藉由哺乳類去繼承出了狗科跟貓科兩個類別；那麼假設我們時光回溯，重新改變了哺乳類的演化過程，今天的哺乳類變成了三隻腳而且還有翅膀，那麼後面演化出來的狗跟貓又會怎麼樣呢？&lt;strong&gt;直接修改源頭，對後續的衍生者而言無疑是相當大的災難&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;同時由於繼承的方便和概念實在相當廣泛，因此也經常被胡亂使用。我個人就遇過專案之中，前人為了讓某個類別擁有各式各樣的方法，先後繼承了數學運算、連線至資料庫、畫面上的資料處理等等數個類別，形成一條既長又龐大的繼承鏈，最終達到了無法修改的地步。&lt;/p&gt;
+&lt;p&gt;沒有人知道這個合成怪獸是來做什麼的，這種&lt;a href=&#34;https://en.wikipedia.org/wiki/God_object&#34;&gt;神之物件&lt;/a&gt;搖身一變就變成滅世主宰，實在是相當恐怖。&lt;/p&gt;
+&lt;p&gt;因此對於繼承，前輩們通常只有一種叮囑：&lt;strong&gt;謹慎使用，或是乾脆不要用&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;對於繼承的概念，這邊推薦可以看看，&lt;a href=&#34;https://milikao.pixnet.net/blog/post/543592&#34;&gt;到底誰該去繼承誰？ 物件導向初學者應該要知道的事情(三)&lt;/a&gt; 這篇從圓和橢圓的各種繼承方式切入，很仔細地講解了不同思路使用繼承遇到的問題，尤其是示範完直覺的做法之後展示經典的段落相當重要。&lt;/p&gt;
+&lt;p&gt;另外，我們在後續的&lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle&#34;&gt;里氏替換原則&lt;/a&gt;也會提到繼承需要注意的一些問題，此處暫且按下不表。&lt;/p&gt;
+&lt;p&gt;那麼我們就回到卡牌的例子：&lt;/p&gt;
+&lt;p&gt;假使我們的卡牌現在有了功能卡，這類卡牌在遊戲王叫做魔法卡，而在爐石稱之為法術，雖然這也是一種卡片，但和前面提過的戰士和怪獸等等顯然完全不同。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;MagicCard&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Cost; &lt;span style=&#34;color:#75715e&#34;&gt;// 資源花費&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Magic Effect; &lt;span style=&#34;color:#75715e&#34;&gt;// 法術效果&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; _description;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; MagicCard() { &lt;span style=&#34;color:#75715e&#34;&gt;/* 建構式 */&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Description { &lt;span style=&#34;color:#75715e&#34;&gt;/* set; get; */&lt;/span&gt;} 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;魔法卡並沒有攻擊力和生命值，只有對應的法術效果。同時，我們發現卡牌有資源花費的需要，像是爐石戰記或是殺戮尖塔這類有資源的遊戲，打出卡片的時候會需要花費水晶等資源，藉此限制玩家一回合內能使用的策略。&lt;/p&gt;
+&lt;p&gt;現在我們明顯可以發現兩個問題：這兩個種類的卡片，都是卡片呀！而且，內容有一半都是重複的。這是我們該使用繼承的時機了。&lt;/p&gt;
+&lt;p&gt;首先我們將原本的卡片更改為 怪獸卡。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;MonsterCard&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Cost;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Attack;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Health;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; _description;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; MonsterCard() { &lt;span style=&#34;color:#75715e&#34;&gt;/* 建構式 */&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Description { &lt;span style=&#34;color:#75715e&#34;&gt;/* set; get; */&lt;/span&gt;} 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Hit(MonsterCard target) { &lt;span style=&#34;color:#75715e&#34;&gt;/* 一些痛揍其他怪獸卡的方法 */&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著我們開始設計基底類別：卡片。我們可以觀察到，怪獸卡和魔法卡相同的部分有：名稱、敘述和卡片花費。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Card&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Cost;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; _description;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Description { &lt;span style=&#34;color:#75715e&#34;&gt;/* set; get; */&lt;/span&gt;} 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;將原本的怪獸卡和魔法卡改成繼承自卡片類別，並且將重複的部份移除，直接取用基底類別的內容就好。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;MonsterCard&lt;/span&gt; : Card
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Attack;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Health;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; MonsterCard() { &lt;span style=&#34;color:#75715e&#34;&gt;/* 建構式 */&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Hit(MonsterCard target) { &lt;span style=&#34;color:#75715e&#34;&gt;/* 一些痛揍其他怪獸卡的方法 */&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;MagicCard&lt;/span&gt; : Card
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Cost;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Magic Effect;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; MagicCard() { &lt;span style=&#34;color:#75715e&#34;&gt;/* 建構式 */&lt;/span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以看到我們在 C# 的繼承方式是使用 &lt;code&gt;類別 : 基底類別&lt;/code&gt; 的方式來宣告。並且也能發現，怪獸卡的內容變簡潔了。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; goblin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MonsterCard(name: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;哥布林&amp;#34;&lt;/span&gt;, attack: &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, health: &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; warrior = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MonsterCard(name: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;戰士&amp;#34;&lt;/span&gt;, attack: &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;, health: &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;warrior.Description = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;他是一個專殺哥布林的戰士！&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;warrior.Hit(goblin);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;並且在使用上也沒有任何差錯，我們仍然能給予怪獸卡名字和敘述。&lt;/p&gt;
+&lt;p&gt;當然在實際的卡牌遊戲中，魔法卡還能細分出更多種類，因此魔法卡類別還能再被一些更細的分類，例如指向法術等等去繼承，形成如同樹狀的繼承關係，如同物種演化一般。&lt;/p&gt;
+&lt;p&gt;繼承的段落也快結束了，這邊再次叮嚀一番：&lt;strong&gt;除非你很確定，否則請不要使用繼承&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;繼承帶來了相當大的好處，減少的重複程式碼量號稱三特性之冠；但同時他帶來的後果也是最嚴重的，堪稱三特性中的擊墜之王，鏖殺了數以萬計濫用和誤用的工程師…和維護他們系統的工程師，不可不慎。&lt;/p&gt;
+&lt;p&gt;但如果已經看到了這裡，還請你先記著繼承的概念，在不遠處的將來你將會遇到他那不太像又有點像的兄弟：介面。這邊就先打住。&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-5-polymorphism&#34;&gt;下一篇&lt;/a&gt;就讓我們繼續來看三特性的末席：多型吧。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本系列下一篇：&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-5-polymorphism&#34;&gt;菜雞與物件導向 (5): 多型&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10204633&#34;&gt;不要造神 (神一般的物件) - 可不可以不要寫糙 code&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://milikao.pixnet.net/blog/post/543592&#34;&gt;到底誰該去繼承誰？ 物件導向初學者應該要知道的事情(三)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://medium.com/@ChunYeung/%E4%BB%80%E9%BA%BC%E6%98%AFoo-%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E8%88%87%E7%B9%BC%E6%89%BF-6955239576af&#34;&gt;什麼是OO？物件導向與繼承 - Chun Yeung - Medium&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://dotblogs.com.tw/initials/2016/06/10/171117&#34;&gt;[心得整理] c# 物件導向程式 - 2.封裝、繼承、多型的三大特性 - 聊聊程式&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://medium.com/@totoroLiu/%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-object-oriented-programming-%E6%A6%82%E5%BF%B5-5f205d437fd6&#34;&gt;物件導向(Object Oriented Programming)概念 - Po-Ching Liu - Medium&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/csharp/tutorials/inheritance&#34;&gt;C# 和 .NET 中的繼承 - Microsoft Docs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.tenlong.com.tw/products/9789866761799&#34;&gt;《大話設計模式》附錄：物件導向基礎&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;推薦系列文&#34;&gt;推薦系列文&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-5-polymorphism&#34;&gt;菜雞與物件導向 (5): 多型&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-7-interface&#34;&gt;菜雞與物件導向 (7): 介面&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle&#34;&gt;菜雞與物件導向 (12): 里氏替換原則&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;同系列文章&#34;&gt;同系列文章&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-0-object-oriented&#34;&gt;菜雞與物件導向 (0): 前言&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-1-class-object&#34;&gt;菜雞與物件導向 (1): 類別、物件&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-2-constructor-overload&#34;&gt;菜雞與物件導向 (2): 建構式、多載&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-3-encapsulation&#34;&gt;菜雞與物件導向 (3): 封裝&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-4-inheritance&#34;&gt;菜雞與物件導向 (4): 繼承&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-5-polymorphism&#34;&gt;菜雞與物件導向 (5): 多型&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-6-abstract-override&#34;&gt;菜雞與物件導向 (6): 抽象、覆寫&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-7-interface&#34;&gt;菜雞與物件導向 (7): 介面&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;菜雞與物件導向 (8): 內聚、耦合&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-9-solid&#34;&gt;菜雞與物件導向 (9): SOLID&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle&#34;&gt;菜雞與物件導向 (10): 單一職責原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-11-open-closed-principle&#34;&gt;菜雞與物件導向 (11): 開放封閉原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle&#34;&gt;菜雞與物件導向 (12): 里氏替換原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle&#34;&gt;菜雞與物件導向 (13): 介面隔離原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle&#34;&gt;菜雞與物件導向 (14): 依賴反轉原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/12/oo-15-least-knowledge-principle&#34;&gt;菜雞與物件導向 (15): 最少知識原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/01/oo-ex1-end2020&#34;&gt;菜雞與物件導向 (Ex1): 小結&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>菜雞與物件導向 (3): 封裝</title>
+      <link>https://igouist.github.io/post/2020/07/oo-3-encapsulation/</link>
+      <pubDate>Sun, 12 Jul 2020 23:53:03 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2020/07/oo-3-encapsulation/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/cc9DLDo.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;封裝包含了兩個重要的觀念：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;控制物件和外部進行互動的出入口&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;隱藏物件內部的細節資訊&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;強者我同事整理的&lt;a href=&#34;https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-3_%E5%B0%81%E8%A3%9Dencapsulation%E7%B9%BC%E6%89%BFinheritance%E8%88%87%E5%A4%9A%E5%9E%8Bpolymorphism/&#34;&gt;文章&lt;/a&gt;裡的例子就舉得不錯：當你按下鍵盤的Ａ鍵，螢幕隨即出現了Ａ，你不必知道中間發生了什麼事，你只需要知道怎麼操作和最後得到什麼就可以了。&lt;/p&gt;
+&lt;p&gt;其中鍵盤提供的按鍵，就是我們對電腦進行互動的出入口；而電腦實際上做了什麼事情，也被隱藏了起來，讓我們只需要關注結果就好。&lt;/p&gt;
+&lt;p&gt;此外我也看到過販賣機的例子，&lt;strong&gt;當你去販賣機買飲料，你也不需要知道裡面的構造，只要知道你選了飲料投了錢，飲料就會跑出來就行&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;從上面的兩個例子，相信大家已經掌握到封裝的概念了：&lt;strong&gt;將物件視作一個整體，把內部的實作內容隱藏起來，讓使用者只需要知道怎麼使用這個物件即可。&lt;/strong&gt;（相似的思路，我們後續的&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-7-interface&#34;&gt;介面&lt;/a&gt;會再提到）&lt;/p&gt;
+&lt;p&gt;如果封裝做得夠好，除了可以將程式碼整理得井井有條以外，也能讓物件內部的修改不會直接影響到使用物件的地方，達成了降耦合的目標&lt;/p&gt;
+&lt;p&gt;並且也能讓物件的使用者直覺地知道如何使用物件提供的方法，如此使用者就可以專注在更高層次的抽象，而不用被物件內部的細節所干擾。&lt;/p&gt;
+&lt;p&gt;最後，從上面的敘述中我們可以察覺到要實現封裝，最重要的就是：&lt;strong&gt;對外的開放程度（存取範圍）的控制&lt;/strong&gt;。或是套一句前輩的說法：&lt;strong&gt;給程式碼隱私的空間&lt;/strong&gt;。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;補充：如果想問「什麼是耦合？」的朋友，建議可以看看這篇：&lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10203659&#34;&gt;實務上的高內聚與低耦合&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;或是參照本系列後續的 &lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;內聚與耦合&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;存取範圍與存取子&#34;&gt;存取範圍與存取子&lt;/h2&gt;
+&lt;p&gt;先讓我們從存取範圍開始說起吧，因為我個人慣用的是 C#，因此就介紹一下 C# 是怎麼控制存取範圍的。&lt;/p&gt;
+&lt;p&gt;在 C# 之中，類別裡控制可見度是使用修飾子來定義存取範圍，也就是當我們替類別宣告欄位時常看到的 &lt;code&gt;Public&lt;/code&gt; 和 &lt;code&gt;Private&lt;/code&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Public&lt;/code&gt;: 這是公開的，所有人都看得到&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Private&lt;/code&gt;: 這是私有的，只有自己看得到&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;除了最常用的這兩個以外，還有其他的修飾子可以先知道一下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Protected&lt;/code&gt;: 這是受到保護的，只有自己和繼承的孩子們看得到&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;internal&lt;/code&gt;: 這是內部的，只有身為同一個組件的朋友們看得到&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Protected internal&lt;/code&gt;：組合上面兩個，也就是可以給同個組件的朋友們，或是其他組件繼承的孩子們看見&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;接下來的部分會以最常見的 &lt;code&gt;Public&lt;/code&gt; 和 &lt;code&gt;Private&lt;/code&gt; 來繼續說明，對存取範圍的這些修飾子有興趣的朋友，可以參照 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/accessibility-levels&#34;&gt;存取範圍層級&lt;/a&gt; 的說明。&lt;/p&gt;
+&lt;p&gt;現在我們已經知道了有哪些修飾子可以用來控制存取範圍，但為什麼我們會需要宣告存取範圍的大小呢？其根本是為了&lt;strong&gt;將控制權掌握在物件本身&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;就像大話設計模式比喻的：物件就像間房子，我們不希望被看光光，可以看見的 &lt;code&gt;Public&lt;/code&gt; 就像門和窗，而不該看見的 &lt;code&gt;Private&lt;/code&gt; 則是用牆壁隱藏起來，而對於這間房子而言，門窗是可以控制的。&lt;/p&gt;
+&lt;p&gt;對於這部分的範例，我覺得 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/using-properties&#34;&gt;微軟文件的範例&lt;/a&gt; 裡設定月份的區塊已經能很清楚表達了。但為了這篇文章的一致性，還是硬擠著一個範例出來：&lt;/p&gt;
+&lt;p&gt;某一天，我們突然決定讓使用者可以傳入卡牌敘述了，但是卡牌上能顯示的字數有限，只能顯示 30 個字，因此首先我們先把卡牌敘述改成私有的：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Card&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Level;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Attack;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Health;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; _description; &lt;span style=&#34;color:#75715e&#34;&gt;// 更改為私有的&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/* 一些其他方法 */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;呃可能第一步就會讓人有些疑惑：「啊你要給人家傳東西進來還改私有？」但等等，且聽我娓娓道來：&lt;strong&gt;C# 中的屬性，是用 &lt;code&gt;Set&lt;/code&gt; 和 &lt;code&gt;Get&lt;/code&gt; 兩個方法去存取的&lt;/strong&gt;，又稱做&lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/restricting-accessor-accessibility&#34;&gt;存取子&lt;/a&gt;。這兩個看門仔也就擔當了房屋的門窗、出入境時的海關、古代大戰中的關隘這類「控制進出通道」的角色。&lt;/p&gt;
+&lt;p&gt;現在讓我們試著規劃出我們的門和窗，在上面的例子中，我們想要當卡牌的敘述進來時，保持在 30 個字：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Card&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 略&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; _description;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Description
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;value&lt;/span&gt;.Length &amp;gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; &amp;amp;&amp;amp; &lt;span style=&#34;color:#66d9ef&#34;&gt;value&lt;/span&gt;.Length &amp;lt; &lt;span style=&#34;color:#ae81ff&#34;&gt;30&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;._description = &lt;span style=&#34;color:#66d9ef&#34;&gt;value&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; System.Exception(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;就跟你說限 30 個字看不懂喔！&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;._description;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/* 一些其他方法 */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如此一來我們就能對存取屬性時的行為進行管控囉。&lt;/p&gt;
+&lt;p&gt;那可能有些朋友會有疑惑：那為什麼我不能直接對外開放卡牌敘述，然後修改的時候檢查完再傳進來 set 就好了呢？這個就牽涉到一些「改太多地方了我要死啦」的悲情故事，這邊再舉個例子給大家體會一下。&lt;/p&gt;
+&lt;p&gt;例如說，我們的卡片現在加入了戰力指數系統，這個戰力是預先從卡片的各項資訊計算好，並存放在資料庫的。而且因為計算的關係可能有小數點後十位之類的，那我們拿出來的時候可能會長這樣：&lt;code&gt;Power: 99.256256&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;而在建立類別的時候，也很自然地選用了 &lt;code&gt;double&lt;/code&gt; 來處理，於是現在類別就長這樣：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Card&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt; Power;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這個系統上線運行了一段時間之後，突然上頭來了需求：請把所有顯示到卡片敘述的地方都改成小數點後兩位就好。&lt;/p&gt;
+&lt;p&gt;假設我們不能直接修改從資料表取出來時的數值（或是已經改了然後被前輩電）因為記 Log 或是什麼戰力對決(?)功能還會需要用到原本的戰力數值之類的理由，因此物件存放的戰力數值必須和資料表中的一致等等，總之不允許改資料&lt;/p&gt;
+&lt;p&gt;如果先前直接開放存取，那麼這下子要改的地方就變成「所有使用到這個屬性的地方」，再要是當場看到 Visual Studio 上面寫：&lt;code&gt;99 個參考&lt;/code&gt;，那可能當場整個腦子就直接下班了。&lt;/p&gt;
+&lt;p&gt;但如果我們是使用 &lt;code&gt;get&lt;/code&gt; 和 &lt;code&gt;set&lt;/code&gt; 的方式去處理的話，那麼我們只需要修改 &lt;code&gt;get&lt;/code&gt; 存取子的規則，讓它讀取的時候幫忙四捨五入到小數點第二位就好了：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Card&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{   
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt; _power;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt; Power 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    { 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt; { &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;._power = &lt;span style=&#34;color:#66d9ef&#34;&gt;value&lt;/span&gt;; } 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt; { &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; Math.Round(&lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;._power, &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;);}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這樣應該就能看出使用 &lt;code&gt;get&lt;/code&gt; 和 &lt;code&gt;set&lt;/code&gt; 去把攔位封裝起來的好處了，也就是：&lt;strong&gt;把「資料進出時加以處理的主導權」留在物件本身&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;而在 C# 裡，如果你並沒有（或是說「還沒有」）要特別針對存取另做額外處理，可以直接使用&lt;strong&gt;自動實作&lt;/strong&gt;：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Description { &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這樣實際上就會自動幫你建立一個私有屬性，並且只能經由這個公開屬性的 &lt;code&gt;set&lt;/code&gt; 和 &lt;code&gt;get&lt;/code&gt; 進行存取。&lt;/p&gt;
+&lt;p&gt;藉由自動實作來簡化寫法之後，例如唯讀就可以這樣寫：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Description { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;或是&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Description { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;使用自動實作時，若要加上預設值的話請這樣寫&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Description { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; } = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;這是一張卡牌。&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以說是方便很多。將來如果要針對設值給值的地方進行修改，也會比較方便一點。&lt;/p&gt;
+&lt;p&gt;稍微了解了上面提到的存取範圍、存取子、自動實作這些工具之後，現在，我們就可以決定外部的使用者能看到物件的哪些部份了。&lt;/p&gt;
+&lt;h2 id=&#34;隱藏複雜度&#34;&gt;隱藏複雜度&lt;/h2&gt;
+&lt;p&gt;當然，封裝的概念並不僅僅只是對屬性定義存取範圍如此而已，&lt;strong&gt;提高類別內的內聚性，降低對外的耦合性，隱藏複雜資訊才是最重要的方針&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;也就是說，我們需要妥善地運用「把大的類別和方法切割成小的類別和方法」、「活用存取範圍，對外隱藏複雜資訊、對內切割成各個工作的私有方法」等等技巧，才能夠更接近完善的封裝一點。然而這只能在設計時，或是維護到頭痛才能親自體會了。&lt;/p&gt;
+&lt;p&gt;接續著上面的技巧來說：&lt;strong&gt;當你面對在一個公開方法中需要處理一長串的商業邏輯，以至於需要將他們切割成數個小函式時，將它們宣告成 &lt;code&gt;Private&lt;/code&gt; 就是相當好的選擇&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;例如說，我們有個連線到資料庫取得客戶資料的方法（可能是 &lt;code&gt;UserRepository.Get(int UserId)&lt;/code&gt; 這種感覺），可能我們除了 &lt;code&gt;Public&lt;/code&gt; 的 &lt;code&gt;Get&lt;/code&gt; 方法以外，還有一些 &lt;code&gt;Private&lt;/code&gt; 的 &lt;code&gt;ConnectDB&lt;/code&gt; 等輔助方法。&lt;/p&gt;
+&lt;p&gt;這意味著這些工具僅讓你的物件內部使用，外面的人不應該直接調用其中的任何功能，同時又能幫助你的主要流程變得更簡潔，提升維護和修改時的速度。&lt;/p&gt;
+&lt;p&gt;同時以資料庫的例子來說：&lt;strong&gt;呼叫這個函式的使用端不需要知道這個函式是怎麼連線到資料庫的，又是怎麼搜尋出資料的，只需要知道呼叫了之後能拿到客戶資料就好&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;兩個物件之間「知道」得越多，其耦合就越高。替換和修改時互相牽連的機會和規模也越大，因此封裝可以說是物件導向的基石也不為過。封裝的好或不好（亦即物件是否足夠內聚，其職責是否單一，暴露內部資訊的多寡等等），直接關係到整個架構的優劣，不可謂不慎。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;補充：封裝的核心在於「隱藏複雜資訊」。而我們前段所提到需要注意的幾個部份：&lt;/p&gt;
+&lt;p&gt;「物件是否內聚」可以參照 &lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;菜雞與物件導向 (8): 內聚、耦合&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;「職責是否單一」可以參照 &lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle&#34;&gt;菜雞與物件導向 (10): 單一職責原則&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;這些概念之間彼此相扣，此處就先按下不表。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;小結&#34;&gt;小結&lt;/h2&gt;
+&lt;p&gt;封裝的部分就講到這裡，並不是很難理解，但是要封裝得好，或是說知道怎樣才算封裝得好，還是需要經驗，不是我這種菜雞一時半刻能理得白說得清的，之後有心得再和大家分享。&lt;/p&gt;
+&lt;p&gt;封裝、繼承、多型並稱物件導向三大特性，我們也會按照這個順序快速地介紹。接著我們就繼續來看 &lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-4-inheritance&#34;&gt;繼承&lt;/a&gt; 吧！&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本系列下一篇：&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-4-inheritance&#34;&gt;菜雞與物件導向 (4): 繼承&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;延伸閱讀：&lt;a href=&#34;https://igouist.github.io/post/2020/12/oo-15-least-knowledge-principle&#34;&gt;菜雞與物件導向 (15): 最少知識原則&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10203659&#34;&gt;實務上的高內聚與低耦合 - 可不可以不要寫糙 code&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://medium.com/@ChunYeung/%E4%BB%80%E9%BA%BC%E6%98%AFoo-%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91%E8%88%87%E5%B0%81%E8%A3%9D-80379c24e62&#34;&gt;什麼是OO？物件導向與封裝 - Chun Yeung - Medium&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-3_%E5%B0%81%E8%A3%9Dencapsulation%E7%B9%BC%E6%89%BFinheritance%E8%88%87%E5%A4%9A%E5%9E%8Bpolymorphism/&#34;&gt;Object Oriented物件導向-3:封裝(Encapsulation)、繼承(Inheritance)與多型(polymorphism) - Sian&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://dotblogs.com.tw/initials/2016/06/10/171117&#34;&gt;[心得整理] c# 物件導向程式 - 2.封裝、繼承、多型的三大特性 - 聊聊程式&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.ithome.com.tw/node/45903&#34;&gt;思考物件導向(1)物件導向與封裝 - 蔡學鏞&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://medium.com/@totoroLiu/%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-object-oriented-programming-%E6%A6%82%E5%BF%B5-5f205d437fd6&#34;&gt;物件導向(Object Oriented Programming)概念 - Po-Ching Liu - Medium&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.tenlong.com.tw/products/9789866761799&#34;&gt;《大話設計模式》附錄：物件導向基礎&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://aihuadesign.com/2020/03/16/access-modifiers-c-sharp/&#34;&gt;Public? Private? 比較各種修飾詞存取範圍 – 理工宅 Nelson&amp;rsquo;s Diary (aihuadesign.com)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/accessibility-levels&#34;&gt;存取範圍層級 - C# 參考 | Microsoft Docs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/restricting-accessor-accessibility&#34;&gt;限制存取子的存取範圍 - C# 程式設計手冊 | Microsoft Docs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;推薦系列文&#34;&gt;推薦系列文&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;菜雞與物件導向 (8): 內聚、耦合&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle&#34;&gt;菜雞與物件導向 (10): 單一職責原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-11-open-closed-principle&#34;&gt;菜雞與物件導向 (11): 開放封閉原則&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;同系列文章&#34;&gt;同系列文章&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-0-object-oriented&#34;&gt;菜雞與物件導向 (0): 前言&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-1-class-object&#34;&gt;菜雞與物件導向 (1): 類別、物件&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-2-constructor-overload&#34;&gt;菜雞與物件導向 (2): 建構式、多載&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-3-encapsulation&#34;&gt;菜雞與物件導向 (3): 封裝&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-4-inheritance&#34;&gt;菜雞與物件導向 (4): 繼承&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-5-polymorphism&#34;&gt;菜雞與物件導向 (5): 多型&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-6-abstract-override&#34;&gt;菜雞與物件導向 (6): 抽象、覆寫&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-7-interface&#34;&gt;菜雞與物件導向 (7): 介面&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;菜雞與物件導向 (8): 內聚、耦合&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-9-solid&#34;&gt;菜雞與物件導向 (9): SOLID&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle&#34;&gt;菜雞與物件導向 (10): 單一職責原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-11-open-closed-principle&#34;&gt;菜雞與物件導向 (11): 開放封閉原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle&#34;&gt;菜雞與物件導向 (12): 里氏替換原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle&#34;&gt;菜雞與物件導向 (13): 介面隔離原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle&#34;&gt;菜雞與物件導向 (14): 依賴反轉原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/12/oo-15-least-knowledge-principle&#34;&gt;菜雞與物件導向 (15): 最少知識原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/01/oo-ex1-end2020&#34;&gt;菜雞與物件導向 (Ex1): 小結&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>菜雞與物件導向 (2): 建構式、多載</title>
+      <link>https://igouist.github.io/post/2020/07/oo-2-constructor-overload/</link>
+      <pubDate>Sun, 12 Jul 2020 23:53:02 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2020/07/oo-2-constructor-overload/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/naCjLay.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;我就直接說了，有用前面的程式碼區塊的人，絕對執行不了。因為我們建立哥布林和戰士這兩張卡片的時候，根本就沒有給他們數值呀！&lt;/p&gt;
+&lt;p&gt;雖然可以先呼叫出來再賦值…&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; goblin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;goblin.Name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;哥布林&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;goblin.Attack = &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;goblin.Health = &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/* ...其他賦值 */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這實在相當占空間，也有點奇怪。畢竟如果是阿福（狗），一出生的時候應該就確定了一些特徵才對，例如品種、血型、眼睛顏色這種。並不會出生後過一陣子，才突然決定這些東西，既然如此，我們在產生物件的時候，當然也會希望在&lt;strong&gt;建立的同時就先決定好一部份內容&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;這時候我們就可以藉由&lt;strong&gt;建構式&lt;/strong&gt;的方式，在建立物件時就進行一些我們想要的操作。&lt;/p&gt;
+&lt;h2 id=&#34;建構式&#34;&gt;建構式&lt;/h2&gt;
+&lt;p&gt;事實上，&lt;strong&gt;當我們呼叫 &lt;code&gt;new Card()&lt;/code&gt; 的時候&lt;/strong&gt;（不覺得這個 () 很有呼叫方法的感覺嗎？）&lt;strong&gt;我們就是正在調用 Card 的建構式&lt;/strong&gt;。而當我們沒有特別去定義建構式的時候，就會直接使用內建的建構式去幫我們產生物件。&lt;/p&gt;
+&lt;p&gt;現在我們替 Card 新增一個建構式：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Card&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card (&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; attack, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; health)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Name = name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Attack = attack;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Health = health;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/* ... 其他屬性和方法 */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在 C# 的時候，建構式必須和類別同名，且不需要定義回傳類型。當我們有了建構式，剛剛的例子就可以改寫成：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; goblin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card(name: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;哥布林&amp;#34;&lt;/span&gt;, attack: &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, health: &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; warrior = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card(name: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;戰士&amp;#34;&lt;/span&gt; , attack: &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;, health: &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;warrior.Hit(goblin);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;建構式也就是建立這個物件時執行的函式&lt;/strong&gt;，通常會用來進行初始化，也就是做一些建立物件必要的準備。例如傳遞必要屬性或是建構需要的其他物件、或是給予私有屬性初始值等等，例如說我們的卡牌一建立，就會需要知道它的名字和戰鬥力，這樣才有卡牌的感覺，而不該像一些 &lt;a href=&#34;https://zh.wikipedia.org/wiki/%E6%AD%A6%E8%97%A4%E9%81%8A%E6%88%B2&#34;&gt;壞決鬥者&lt;/a&gt; 邊打牌邊偷偷印卡。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;註：當然有建立時執行的，也就會有消滅時執行的。請參見 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/destructors&#34;&gt;解構式&lt;/a&gt;，由於較少用到，此處先按下不表。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;多載&#34;&gt;多載&lt;/h2&gt;
+&lt;p&gt;當然，有了建構式就會有更多問題。現在我們只有一個方法可以建立卡牌了，這無疑是相當不彈性的，例如說我希望預設的攻擊力和血量就是四呢？實際上我們經常會遇到需要用不同素材去建立一個物件的場合，這時候就必須得提到另一個要點：多載了。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;多載指的就是可以有很多個同樣名字的方法，各自去接不同的參數&lt;/strong&gt;。例如說我們的 Card 建構式就可以利用多載來改造一下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Card&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card (&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; attack, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; health)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Name = name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Attack = attack;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Health = health;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card (&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Name = name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Attack = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Level;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Health = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Level;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card ()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Noname&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Attack = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Level;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Health = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Level;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如此一來，我們在建立卡片的時候就能夠有更多選擇了，現在我們可以根據狀況給予需要的參數，剩下的就交給建構式去處理就好。&lt;/p&gt;
+&lt;p&gt;實務上，如果規則或是建立的步驟一致的話，為了能夠把規則集中到一個地方方便修改，並且減少多餘的程式碼。我們通常會試著讓其他的建構式去呼叫主要的建構式，在 C# 中，呼叫自己的建構式是使用 &lt;code&gt;: this()&lt;/code&gt; 來進行的，例如：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card (&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; attack, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; health)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Name = name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Attack = attack;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Health = health;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 會呼叫上面那個建構式&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card (&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name) : &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;(name: name, attack: &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;, health: &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 呼叫完 Card(name, attack, health) 之後做的事&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 會呼叫上面那一個建構式&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card () : &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;(name: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Noname&amp;#34;&lt;/span&gt;) 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 呼叫完 Card(name) 之後做的事   &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如此一來只要建構的方式有變更，我們只需要集中修改第一個建構式就好了。這部份的流程也可以參照 &lt;a href=&#34;https://dotblogs.com.tw/yc421206/2011/07/25/32097&#34;&gt;[C#.NET] 為建構子建立正確的初始化 - 余小章 @ 大內殿堂&lt;/a&gt; 這篇的說明。&lt;/p&gt;
+&lt;p&gt;當然多載也不只是用在建構子，而是大多數時候都可以用的寫法。例如當你的函式&lt;strong&gt;雖然做同樣的事，但允許接收不同的參數來處理時，就請考慮使用多載&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;例如說當你要記錄發生錯誤時的 Log ，就能允許只傳遞錯誤內容，或是傳遞錯誤內容和當時操作的參數，甚至是當下的環境資料等等。&lt;/p&gt;
+&lt;p&gt;又或者是查詢客戶資料（GetUser 之類的）的函式，提供使用 客戶代號，或是 訂單編號 等不同的方式進行查詢時，就可以考慮多載的應用。&lt;/p&gt;
+&lt;p&gt;例如說 .net 中協助類別對映的名套件 &lt;a href=&#34;https://igouist.github.io/post/2020/07/automapper&#34;&gt;AutoMapper&lt;/a&gt;，在轉換類別的 Map 方法就很漂亮地使用了多載：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/DAgNTwc.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;註：看不到圖片的可以直接看 &lt;a href=&#34;https://github.com/AutoMapper/AutoMapper/blob/master/src/AutoMapper/Mapper.cs&#34;&gt;Github&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;當然隨著多載的應用越來越稀鬆平常，時至今日，我們只要使用&lt;strong&gt;選擇性參數&lt;/strong&gt;就可以輕鬆達到一樣的效果囉：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card (&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Noname&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; attack = &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; health = &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Name = name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Attack = attack;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Health = health;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;當有預設值的時候，該參數就會變成可選的，這時候就可以輕鬆決定要傳進來的內容了。當然，如果傳進來的並非只是數量上的差別，而是整個型別都不一樣的話，還是要回歸到多載的做法，建立兩個同名但不同傳入參數類型的方法，可讀性會比較高呦。&lt;/p&gt;
+&lt;p&gt;多載提供的好處在於：&lt;strong&gt;同個目標的函式可以根據傳入的參數不同做不一樣的處理&lt;/strong&gt;。例如當我們寫了一個連線取資料的方法，可以分為&lt;/p&gt;
+&lt;p&gt;(1) 傳入連線的話，就使用連線取得資料&lt;/p&gt;
+&lt;p&gt;(2) 傳入連線字串的話，就先用連線字串開啟連線，再使用連線取得資料&lt;/p&gt;
+&lt;p&gt;等等，根據參數的場合來進行處理。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;藉由傳入不同的參數類型和數量，就可以處理不同狀況的內容，既擴展了函式在使用上的彈性，同時也增加函式能派上用場的時機&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;而最重要的是這將讓編寫程式的人員去思考：&lt;strong&gt;我設計的這個方法將能應用在什麼場景？&lt;/strong&gt; 這將會成為一個相當優良的習慣。&lt;/p&gt;
+&lt;p&gt;那麼這次就說到這裡，我們&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-3-encapsulation&#34;&gt;下篇&lt;/a&gt;見！&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本系列下一篇：&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-3-encapsulation&#34;&gt;菜雞與物件導向 (3): 封裝&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://matthung0807.blogspot.com/2018/02/java-overload.html&#34;&gt;Java 什麼是多載(Overload), 覆寫(Override), 多型(Polymorphism) - 菜鳥工程師肉豬&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-2_%E5%BB%BA%E6%A7%8B%E5%BC%8Fconstructor%E5%A4%9A%E8%BC%89overloading%E8%88%87%E8%A6%86%E5%AF%ABoverriding/&#34;&gt;Object Oriented物件導向-2:建構式(Constructor)、多載(Overloading)與覆寫(Overriding) - Sian&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://dotblogs.com.tw/yc421206/2011/07/25/32097&#34;&gt;[C#.NET] 為建構子建立正確的初始化 - 余小章 @ 大內殿堂&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://adon988.logdown.com/posts/1185453-c-destructors-teaching-notes-using-visual-studio&#34;&gt;C# 解構子 Destructors - 教學筆記&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.tenlong.com.tw/products/9789866761799&#34;&gt;《大話設計模式》附錄：物件導向基礎&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;同系列文章&#34;&gt;同系列文章&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-0-object-oriented&#34;&gt;菜雞與物件導向 (0): 前言&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-1-class-object&#34;&gt;菜雞與物件導向 (1): 類別、物件&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-2-constructor-overload&#34;&gt;菜雞與物件導向 (2): 建構式、多載&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-3-encapsulation&#34;&gt;菜雞與物件導向 (3): 封裝&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-4-inheritance&#34;&gt;菜雞與物件導向 (4): 繼承&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-5-polymorphism&#34;&gt;菜雞與物件導向 (5): 多型&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-6-abstract-override&#34;&gt;菜雞與物件導向 (6): 抽象、覆寫&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-7-interface&#34;&gt;菜雞與物件導向 (7): 介面&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;菜雞與物件導向 (8): 內聚、耦合&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-9-solid&#34;&gt;菜雞與物件導向 (9): SOLID&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle&#34;&gt;菜雞與物件導向 (10): 單一職責原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-11-open-closed-principle&#34;&gt;菜雞與物件導向 (11): 開放封閉原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle&#34;&gt;菜雞與物件導向 (12): 里氏替換原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle&#34;&gt;菜雞與物件導向 (13): 介面隔離原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle&#34;&gt;菜雞與物件導向 (14): 依賴反轉原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/12/oo-15-least-knowledge-principle&#34;&gt;菜雞與物件導向 (15): 最少知識原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/01/oo-ex1-end2020&#34;&gt;菜雞與物件導向 (Ex1): 小結&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>菜雞與物件導向 (1): 類別、物件</title>
+      <link>https://igouist.github.io/post/2020/07/oo-1-class-object/</link>
+      <pubDate>Sun, 12 Jul 2020 23:53:01 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2020/07/oo-1-class-object/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TIEIXm5.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;直覺上你當然知道什麼是物件；物件就在你的身邊。&lt;/p&gt;
+&lt;p&gt;汽車、iPhone、收音機、吐司機、廚房用具等等，你說得出來的都是。&lt;/p&gt;
+&lt;p&gt;　　——《深入淺出學會編寫程式》&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;什麼是物件？一切都是物件。&lt;/p&gt;
+&lt;p&gt;物件導向試圖讓抽象的程式碼，更貼近於我們的實際生活，其認為一切是由各式各樣的人事物互動所組成的，因此有了物件這個共通、最基本的概念。&lt;/p&gt;
+&lt;p&gt;假設現實世界存在一頭狗，叫做阿福。而我們想要在虛擬世界裡表達「有一隻叫做阿福的狗」這件事&lt;/p&gt;
+&lt;p&gt;這時候就要在系統裡有一個能代表「阿福（狗）」的東西存在，也就是「阿福」這個物件。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;關於「把現實世界的物件，抽象化成程式世界裡的物件」的邏輯，可以參考 &lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10201905&#34;&gt;一個語言如果不改變你的思考方式，就不值得學？談程式語言的本質&lt;/a&gt; 這篇，尤其是選擇保留哪些資訊的部份我認為描述得很好。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;現在我們知道，&lt;strong&gt;物件就是用來在虛擬世界中代表「某個特定的東西」&lt;/strong&gt;，例如說叫做阿福的狗就是一個物件，阿福今天晚上要吃的飼料罐也是一個物件。&lt;/p&gt;
+&lt;p&gt;理解物件的概念是相當直覺且迅速的，畢竟你我身邊有著數不清的東西，它們都是一件一件的物件，但這樣的理解還不夠明確。&lt;/p&gt;
+&lt;p&gt;就像前文所引的 &lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10201905&#34;&gt;談程式語言的本質&lt;/a&gt; 文中所提到的，在抽象化的同時我們必然要選擇保留哪些資訊。&lt;/p&gt;
+&lt;p&gt;例如說阿福這隻狗，是一個物件；飼料罐也是一個物件&lt;/p&gt;
+&lt;p&gt;而這些物件之間還會彼此互動，例如說阿福是一隻狗，而我們觀察到狗都有吃東西這個&lt;strong&gt;動作&lt;/strong&gt;，例如「阿福吃了飼料」&lt;/p&gt;
+&lt;p&gt;同時物件也會有一些專屬於它的&lt;strong&gt;特徵&lt;/strong&gt;，例如說阿福是黑色的，我們就知道狗有毛色的差別。&lt;/p&gt;
+&lt;p&gt;那麼我們要怎麼表達「阿福」作為一隻「狗」擁有的那些動作和特徵呢？狗的毛色？狗可以吃飼料？&lt;/p&gt;
+&lt;p&gt;我們需要選擇怎麼去描述「狗」－－也就是阿福這隻狗，被我們抽象化後的樣子，我們需要將它用程式碼的方式定義出來。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;這時候我們就會需要類別，來定義出我們觀察到同一類的物件該有哪些特徵和動作，也就是我們替物件「分門別類」後、篩選出特定資訊的抽象化結果&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;延續前面的例子，假設今天我們從阿福身上觀察到進食跟毛色兩個狗的重要資訊，我們就可以建立類別 Dog：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Dog&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; color;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Eat(IFood food) { &lt;span style=&#34;color:#75715e&#34;&gt;/* 進食與消化之類的 */&lt;/span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;藉由我們定義的類別，就可以從類別中實例化（＝建立）出物件。&lt;/p&gt;
+&lt;p&gt;也就是說，現在我們終於可以用「狗」這個類別，來表達出我們需要的「阿福」了：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Dog afu = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Dog(); &lt;span style=&#34;color:#75715e&#34;&gt;// 阿福是一隻狗&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Console.Write(afu.Color); &lt;span style=&#34;color:#75715e&#34;&gt;// 阿福是黑色的&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;afu.Eat(food); &lt;span style=&#34;color:#75715e&#34;&gt;// 阿福會吃食物&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;類別最常看到的比喻，就是物件的設計圖。我們藉由類別去定義我們要的物件有什麼特徵、有什麼功能，再從類別根據設計圖產生物件出來使用。&lt;/p&gt;
+&lt;p&gt;這個從類別中產生的物件，就等於是這個類別定義的一個實際的例子，所以我們也會把類別產生的物件叫做&lt;strong&gt;實例&lt;/strong&gt;。而從類別產生物件的過程，就叫做實例化。&lt;/p&gt;
+&lt;p&gt;也就是說，類別實際上就是我們認知中對這個物件的定義，我們篩選出&lt;strong&gt;我們需要的、我們認為這個物件應該具有的這些特徵和功能&lt;/strong&gt;，按照我們的認知去設計了類別&lt;/p&gt;
+&lt;p&gt;接著我們再利用這個類別告訴程式如何建立出我們認為的這個物件，最終我們才能在程式中使用我們需要的這個物件。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;當我們定義了一個狗的類別，我們實際上是在描述我們眼中的、我們歸納出來的、我們需要的「狗」&lt;/strong&gt;，我們認為狗就是會吃東西。&lt;/p&gt;
+&lt;p&gt;接著，&lt;strong&gt;我們再從我們設計好的這份定義，去實例化出我們需要的狗：阿福&lt;/strong&gt;，於是阿福就有了吃東西的能力。&lt;/p&gt;
+&lt;p&gt;我們有了抽象化的設計圖之後，就可以利用這個設計圖去建立多個符合這個設計的物件。例如說前面的狗，我們就可以建立出黑色的阿福，黃色的阿黃等等。&lt;/p&gt;
+&lt;p&gt;在現實中，我們將阿福、阿黃等等歸類為狗這個概念，而到了程式裡，我們利用這個狗的概念定義出類別，進而產生阿福、阿黃。&lt;/p&gt;
+&lt;p&gt;從這邊也能察覺到：類別是一個歸納好的概念，這概念中包含許多獨立的個體，也就是物件，而這些物件之間的差異則從我們定義類別時選擇的特徵去區分。&lt;/p&gt;
+&lt;p&gt;因此，一個人設計的類別，和他使用物件的方式，反映了他對於這個物件的看法和他覺得需要的內容。&lt;/p&gt;
+&lt;p&gt;同時，&lt;strong&gt;使用物件導向也意味著：比起 &lt;code&gt;EatFood(dog, food)&lt;/code&gt; 而言，我們認同 &lt;code&gt;Dog.Eat(food)&lt;/code&gt; 更直覺和易於理解。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;那麼這邊就讓我們以卡牌遊戲舉例，理所當然卡牌遊戲不能沒有卡牌。&lt;/p&gt;
+&lt;p&gt;對我來說卡牌通常都需要這些&lt;strong&gt;特徵&lt;/strong&gt;，我們在物件裡稱為&lt;strong&gt;屬性&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;卡片名稱&lt;/li&gt;
+&lt;li&gt;攻擊力&lt;/li&gt;
+&lt;li&gt;防禦力&lt;/li&gt;
+&lt;li&gt;卡牌描述&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;等等，另外卡牌也應該能作出某些&lt;strong&gt;動作&lt;/strong&gt;，也就是這個物件的&lt;strong&gt;方法&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;攻擊&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;我們確認了這些要素以後，就可以把它設計成一個類別 &lt;code&gt;Card&lt;/code&gt; 如下&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Card&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Level;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Attack;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Health;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Description;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 攻擊目標卡片&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Hit(Card target) 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        target.damage(&lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Attack)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 被攻擊的時候扣血&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; damage(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; attack) 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Health -= attack;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Health &amp;lt;= &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;) 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        { 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;/* 可能呼叫死翹翹方法？ */&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;抱歉我菜，如果有真的設計卡牌遊戲的工程師經過拜託不要打我。&lt;/p&gt;
+&lt;p&gt;接著我們就能在需要的時候藉由這個類別來實例化我們的卡牌：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; goblin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; warrior = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;warrior.Hit(goblin);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;再提醒一次：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;類別是定義、是設計圖、是描述；物件是類別產生的實體、是實際上的執行者&lt;/li&gt;
+&lt;li&gt;類別是抽象化的資訊，例如「狗」；物件則是一個特定的實例，例如「叫做阿福的狗」&lt;/li&gt;
+&lt;li&gt;承上，狗的類別用來告訴程式什麼是狗；叫做阿福的物件則是程式根據我們的指示，建立出來的一條指定的狗&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;到此應該能夠初步掌握物件和類別的概念了。這邊推薦一下可以閱讀保哥的這篇 &lt;a href=&#34;https://blog.miniasp.com/post/2009/08/27/OOP-Basis-What-is-class-and-object&#34;&gt;物件導向基礎：何謂類別(Class)？何謂物件(Object)？&lt;/a&gt;，裡面除了對物件和類別有更易懂的介紹和舉例以外，還有十題概念題可以幫助你搞懂物件和類別的意義與差異，相當值得一看。另外，也可以參考這幾篇的說明：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://ytyubox.github.io/posts/2020/02/29/oop-discussion/&#34;&gt;有物件導向的世界與沒有物件導向的世界&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://matthung0807.blogspot.com/2017/10/java_24.html&#34;&gt;Java 物件導向的概念 - 菜鳥工程師肉豬&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-1_%E9%A1%9E%E5%88%A5class%E8%88%87%E5%AF%A6%E9%AB%94object/&#34;&gt;Object Oriented物件導向-1:類別(Class)與實體(Object) - Sian&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;物件的部份由於是最初的概念，不免多廢話了一些。下一篇開始就讓我們快速看過物件導向的幾項功能和特性。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本系列下一篇：&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-2-constructor-overload&#34;&gt;菜雞與物件導向 (2): 建構式、多載&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;2022.12.02 補充：感謝公司前輩簡潔有力的說明，修正了開頭時對物件的介紹&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10201905&#34;&gt;一個語言如果不改變你的思考方式，就不值得學？談程式語言的本質&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.miniasp.com/post/2009/08/27/OOP-Basis-What-is-class-and-object&#34;&gt;物件導向基礎：何謂類別(Class)？何謂物件(Object)？ - The Will Will Web&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://ytyubox.github.io/posts/2020/02/29/oop-discussion/&#34;&gt;有物件導向的世界與沒有物件導向的世界&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://matthung0807.blogspot.com/2017/10/java_24.html&#34;&gt;Java 物件導向的概念 - 菜鳥工程師肉豬&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-1_%E9%A1%9E%E5%88%A5class%E8%88%87%E5%AF%A6%E9%AB%94object/&#34;&gt;Object Oriented物件導向-1:類別(Class)與實體(Object) - Sian&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://notepad.yehyeh.net/Content/CSharp/CH01/03ObjectOrient/1ObjectAndClass/index.php&#34;&gt;[C#] 物件與類別 - Yehyen&amp;rsquo;s Notepad&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/concepts/object-oriented-programming&#34;&gt;物件導向程式設計（C#） - Microsoft Docs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://medium.com/@totoroLiu/%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-object-oriented-programming-%E6%A6%82%E5%BF%B5-5f205d437fd6&#34;&gt;物件導向(Object Oriented Programming)概念 - Po-Ching Liu - Medium&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.tenlong.com.tw/products/9789866761799&#34;&gt;《大話設計模式》附錄：物件導向基礎&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.books.com.tw/products/0010824582&#34;&gt;《深入淺出學會編寫程式》Ch7：模組、方法、類別以及物件&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;同系列文章&#34;&gt;同系列文章&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-0-object-oriented&#34;&gt;菜雞與物件導向 (0): 前言&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-1-class-object&#34;&gt;菜雞與物件導向 (1): 類別、物件&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-2-constructor-overload&#34;&gt;菜雞與物件導向 (2): 建構式、多載&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-3-encapsulation&#34;&gt;菜雞與物件導向 (3): 封裝&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-4-inheritance&#34;&gt;菜雞與物件導向 (4): 繼承&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-5-polymorphism&#34;&gt;菜雞與物件導向 (5): 多型&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-6-abstract-override&#34;&gt;菜雞與物件導向 (6): 抽象、覆寫&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-7-interface&#34;&gt;菜雞與物件導向 (7): 介面&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;菜雞與物件導向 (8): 內聚、耦合&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-9-solid&#34;&gt;菜雞與物件導向 (9): SOLID&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle&#34;&gt;菜雞與物件導向 (10): 單一職責原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-11-open-closed-principle&#34;&gt;菜雞與物件導向 (11): 開放封閉原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle&#34;&gt;菜雞與物件導向 (12): 里氏替換原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle&#34;&gt;菜雞與物件導向 (13): 介面隔離原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle&#34;&gt;菜雞與物件導向 (14): 依賴反轉原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/12/oo-15-least-knowledge-principle&#34;&gt;菜雞與物件導向 (15): 最少知識原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/01/oo-ex1-end2020&#34;&gt;菜雞與物件導向 (Ex1): 小結&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>菜雞與物件導向 (0): 前言</title>
+      <link>https://igouist.github.io/post/2020/07/oo-0-object-oriented/</link>
+      <pubDate>Sun, 12 Jul 2020 23:53:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2020/07/oo-0-object-oriented/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9UtcyAf.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在訂便當告一段落之後，其實就已經和同事約好要來整理公司新訓的筆記。但儘管已經到職快一年了，有些工具已經在專案碰過好幾次。但遇到需要跟朋友討論，或是聽前輩說明觀念的時候，還是不自主地會想「我真的懂嗎？」故一直是挺畏懼的。&lt;/p&gt;
+&lt;p&gt;但幸虧同事的鼓勵和以身作則，最終還是開啟了這個新系列，決定直接開坑把當初前輩新訓指導過的部分整理下來，也算是讓自己能趁著這機會好好複習一番，把自己的想法跟心得記錄下來。&lt;/p&gt;
+&lt;p&gt;另外，如果你是真心希望弄懂物件導向的朋友，這邊推薦&lt;a href=&#34;https://www.tenlong.com.tw/products/9789866761799&#34;&gt;《大話設計模式》&lt;/a&gt;的附錄，內容對物件導向的介紹清晰易懂且循序漸進，非常適合作為了解物件導向的起頭。&lt;/p&gt;
+&lt;p&gt;本篇的段落將會分成以下幾個部份，由於只是筆記一下，因此會附上一些知識點的參考資料，看見的時候可以先行閱讀；末尾也會附上有關的參考資料及文章，對於這類概念性的東西，一向是推薦多方閱讀以增強理解，就像保哥寫的：「&lt;strong&gt;如果你問 100 個人這個問題，可能會得到 200 個答案，所以你一定要有自己獨到、有自信、精闢的見解或描述方式&lt;/strong&gt;。」如果有寫得不錯的文章想推薦給我，或是有地方需要補充和指證，還請不吝指教。共勉之。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-0-object-oriented&#34;&gt;菜雞與物件導向 (0): 前言&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-1-class-object&#34;&gt;菜雞與物件導向 (1): 類別、物件&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-2-constructor-overload&#34;&gt;菜雞與物件導向 (2): 建構式、多載&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-3-encapsulation&#34;&gt;菜雞與物件導向 (3): 封裝&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-4-inheritance&#34;&gt;菜雞與物件導向 (4): 繼承&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-5-polymorphism&#34;&gt;菜雞與物件導向 (5): 多型&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-6-abstract-override&#34;&gt;菜雞與物件導向 (6): 抽象、覆寫&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-7-interface&#34;&gt;菜雞與物件導向 (7): 介面&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;菜雞與物件導向 (8): 內聚、耦合&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-9-solid&#34;&gt;菜雞與物件導向 (9): SOLID&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle&#34;&gt;菜雞與物件導向 (10): 單一職責原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-11-open-closed-principle&#34;&gt;菜雞與物件導向 (11): 開放封閉原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle&#34;&gt;菜雞與物件導向 (12): 里氏替換原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle&#34;&gt;菜雞與物件導向 (13): 介面隔離原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle&#34;&gt;菜雞與物件導向 (14): 依賴反轉原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/12/oo-15-least-knowledge-principle&#34;&gt;菜雞與物件導向 (15): 最少知識原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/01/oo-ex1-end2020&#34;&gt;菜雞與物件導向 (Ex1): 小結&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;最後，儘管這系列的篇幅會有點長，但我覺得仍做不到說明透徹，&lt;del&gt;畢竟大部份也是只花一天壓線趕工出來的&lt;/del&gt;。因此往後如果有想到什麼地方必須修正，或是找到什麼更好的表達方式，還是會回來修改這系列文章，希望能逐漸修訂成讓我自己都能輕鬆看懂的物件導向入門文。&lt;/p&gt;
+&lt;p&gt;下一篇就直接從類別和物件開始囉。那麼，還請各位閱覽拙見，為此先道一聲感謝。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本系列下一篇：&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-1-class-object&#34;&gt;菜雞與物件導向 (1): 類別、物件&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;8/9 註記：和朋友們聊過之後，發現之前集中成一篇感覺太長了，更何況新訓的內容也是包山包海。因此將原先的內文拆解成多篇文章，做成系列文；由於一些大人的原因（例如不想打亂鼠年全馬、不想重註冊 URL 等等），本篇就留著作為目錄使用，以上。&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title>AutoMapper —— 類別轉換超省力</title>
+      <link>https://igouist.github.io/post/2020/07/automapper/</link>
+      <pubDate>Sun, 05 Jul 2020 23:40:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2020/07/automapper/</guid>
+      <description>&lt;p&gt;類別間的轉換幾乎是每個專案每個工程師都會碰到的動作，舉凡是分層架構每層之間的轉換，如 Dto 轉換成 ViewModel；或是接收到資料要塞進自定義的類別時也需要進行轉換。但&lt;strong&gt;在遠古時代，當我們要把一個類別的資料倒進另一個類別時，總免不了一番折騰&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;例如一個卡片對戰遊戲的資料庫，光是要先把卡片資料讀取出來就需要：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/c81Hx5I.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;有些時候也會看見用 Foreach 然後逐一傳值的場景，或是各種差不多的變種情況。同樣的是，光是將一個簡單的卡片資訊轉換成 ViewModel，就花了一大段在做對映的處理。這個過程本身枯燥乏味又占空間，更可怕的是，&lt;strong&gt;如果有個陳年資料表，動不動就上百個欄位，那這個轉換過程的恐怖程度可想而知&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;幸好！天無絕人之路，這種時候就是本日的主角 —— AutoMapper 出場的時候了。&lt;/p&gt;
+&lt;p&gt;當 AutoMapper 一出手，轉換的過程瞬間就變成：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/KxHAKpi.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;是不是精簡很多呢？接著就讓我們來看看怎麼開始使用吧！&lt;/p&gt;
+&lt;h2 id=&#34;安裝與使用&#34;&gt;安裝與使用&lt;/h2&gt;
+&lt;p&gt;首先，當然要先到 NuGet 把 AutoMapper 給裝下來。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TEAZwU7.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/3ADyJXv.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;確認安裝之後，就開始基本的使用吧。&lt;/p&gt;
+&lt;p&gt;只需要&lt;strong&gt;先註冊好 Mapper 的設定內容，也就是哪些類別之間可以互相對映；再實體化 Mapper 出來使用就可以了&lt;/strong&gt;。直接看程式碼應該就能理解：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;CardViewModel&amp;gt; GetCard()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; data = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.GetCardFromRepositoryMock();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        cfg.CreateMap&amp;lt;Card, CardViewModel&amp;gt;()); &lt;span style=&#34;color:#75715e&#34;&gt;// 註冊Model間的對映&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; mapper = config.CreateMapper(); &lt;span style=&#34;color:#75715e&#34;&gt;// 建立 Mapper&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; result = mapper.Map&amp;lt;IEnumerable&amp;lt;CardViewModel&amp;gt;&amp;gt;(data); &lt;span style=&#34;color:#75715e&#34;&gt;// 轉換型別&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;沒錯，只需要簡簡單單幾步， &lt;strong&gt;AutoMapper 會自動將指定類別間同樣名稱的屬性內容做轉換&lt;/strong&gt; ，因此能夠省下相當多的功夫，也能夠隱藏類別本身的內容，專心在處理功能本身。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;註：網路上挺多 AutoMapper 的文章會直接使用 &lt;code&gt;Mapper.CreateMap()&lt;/code&gt; 這類靜態方法，然而這些方法已經在 AutoMapper 5 的時候被廢除，改成現在由 &lt;code&gt;MapperConfiguration&lt;/code&gt; 產生 Mapper 的方法。&lt;/p&gt;
+&lt;p&gt;然而整體的使用方式仍然大同小異，這些文章仍能稍微調整並使用，惟使用過程中需自己注意語法的差異和多加測試。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;客製化轉換&#34;&gt;客製化轉換&lt;/h3&gt;
+&lt;p&gt;但當然實際上我們並不一定每個欄位的名稱都是一模一樣的，總是會有遇到同個資料在不同層的 Model 裡名稱不一樣的時候，又或者是某個欄位是由兩三個欄位組成的時候。對於這種需要客製化的轉換，這時候我們就可以在註冊對映時對欄位內容的對映方式做指定：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    cfg.CreateMap&amp;lt;Card, CardViewModel&amp;gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .ForMember(x =&amp;gt; x.Id, y =&amp;gt; y.MapFrom(o =&amp;gt; o.CardId))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .ForMember(x =&amp;gt; x.Name, y =&amp;gt; y.MapFrom(o =&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;{o.Id}: {o.Name}&amp;#34;&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ); &lt;span style=&#34;color:#75715e&#34;&gt;// 註冊Model間的對映 建立設定檔&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以看到 &lt;strong&gt;我們能用 &lt;code&gt;ForMember&lt;/code&gt; 去對類別成員做操作，並傳入目標的類別成員，以及該成員對應的操作，像這邊就使用 &lt;code&gt;MapFrom&lt;/code&gt; 來指定目標類別成員的轉換來源&lt;/strong&gt;，這樣就可以達到轉換時的客製化了。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;註：對於欄位之間有使用 &lt;code&gt;ForMember&lt;/code&gt; 來處理過內容再轉換的型別，建議在轉換型別時，也就是實際 mapper.Map() 的時候，稍做註解提醒一下。&lt;/p&gt;
+&lt;p&gt;尤其是會將 Mapper 的 Config 集中整理的架構裡更應該要對額外的操作做揭露，這樣對彼此都好。真的。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;補充：AutoMapper 在轉換像是 &lt;code&gt;IEnumerable&amp;lt;T&amp;gt;&lt;/code&gt; 這類的集合時，預設會將來源為 Null 的成員轉換成空集合（而非 Null）&lt;/p&gt;
+&lt;p&gt;如果希望 Null 就好好轉換成 Null 的朋友，可以在建立設定檔時用 &lt;code&gt;cfg.AllowNullCollections = true;&lt;/code&gt; 來讓所有為 Null 的空集合轉換對象都乖乖保持 Null&lt;/p&gt;
+&lt;p&gt;也能夠在 ForMember 的時候使用 AllowNull 來針對欄位指定規則。例如 &lt;code&gt;ForMember(x =&amp;gt; x.Members, y =&amp;gt; y.AllowNull())&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;需要更詳細說明的朋友，也可以參照官方文檔的 &lt;a href=&#34;https://docs.automapper.org/en/stable/Lists-and-arrays.html#handling-null-collections&#34;&gt;Handling null collections&lt;/a&gt; 一節&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;忽略指定的欄位&#34;&gt;忽略指定的欄位&lt;/h3&gt;
+&lt;p&gt;除了會有欄位名稱和來源的不同以外，最常遇到的應該就是兩個類別之間大多數欄位雖然對映，但某幾個欄位是沒有對映的。例如傳送給前端使用時一併送出其他來源的資料，但資料由資料表取出時並沒有這個欄位，必須轉換以後再呼叫別的方法去補上資料。&lt;strong&gt;如果直接使用 Map 來進行轉換，就會發生找不到對映欄位的錯誤。這時候就可以使用 &lt;code&gt;Ignore&lt;/code&gt; 來忽略掉指定的欄位&lt;/strong&gt;。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    cfg.CreateMap&amp;lt;Card, CardViewModel&amp;gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       .ForMember(x =&amp;gt; x.ImgUri, y =&amp;gt; y.Ignore())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如上述程式碼，可能卡片的圖像位置必須由別的方式取得，這種情況我們在 &lt;code&gt;ForMember&lt;/code&gt; 的時候就可以將其指定為 &lt;code&gt;Ignore&lt;/code&gt; 讓 AutoMapper 不要去嘗試轉換它。除了 &lt;code&gt;Ignore&lt;/code&gt; 以外，AutoMapper 還有配備像是 &lt;code&gt;IgnoreAllPropertiesWithAnInaccessibleSetter&lt;/code&gt; 這種光方法名稱長度就有點強的大殺器，也還有像是 &lt;code&gt;AllowNull&lt;/code&gt; 等更多對欄位操作的方法，這部份請各位在使用時按照需求自行摸索。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;註(1)：上述舉的例子中有需要從多個來源轉換為一個類別的場合，可以參照 &lt;a href=&#34;https://kevintsengtw.blogspot.com/2014/03/automapper.html&#34;&gt;AutoMapper 兩個物件對映到一個類別 - mrkt 的程式學習筆記&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;註(2)：上面使用到的 Ignore 方法還是有些眉角需要注意，可以參照 &lt;a href=&#34;https://dotblogs.com.tw/supershowwei/2016/07/17/162815&#34;&gt;[料理佳餚] AutoMapper 中不容忽視的 Ignore() Mapping 的順序 - 軟體主廚的程式料理廚房&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;註(3)：面對一些比較複雜的轉換時，也可以考慮使用 &lt;a href=&#34;https://igouist.github.io/post/2021/12/automapper-convert-using/&#34;&gt;ConvertUsing&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;最後還要補充的一個方法是 &lt;code&gt;ReverseMap&lt;/code&gt; ，它能夠反轉對映，建立一個反方向的對映表。當你的類別之間可能需要往回轉型，又或是想要忽略來源類別的欄位時，&lt;code&gt;ReverseMap&lt;/code&gt; 就會顯得相當有用。通常為了避免轉來轉去轉出意外，建議註冊時還是補上一個 &lt;code&gt;ReverseMap&lt;/code&gt; 為佳。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    cfg.CreateMap&amp;lt;Card, CardViewModel&amp;gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       .ForMember(x =&amp;gt; x.Id, y =&amp;gt; y.MapFrom(o =&amp;gt; o.CardId))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       .ForMember(x =&amp;gt; x.ImgUri, y =&amp;gt; y.Ignore())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       .ReverseMap() &lt;span style=&#34;color:#75715e&#34;&gt;// 反轉&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    );
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;到目前為止，程式碼可能會變成如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;CardViewModel&amp;gt; GetCard()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; data = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.GetCardFromRepositoryMock();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        cfg.CreateMap&amp;lt;Card, CardViewModel&amp;gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;           .ForMember(x =&amp;gt; x.Id, y =&amp;gt; y.MapFrom(o =&amp;gt; o.CardId))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;           .ForMember(x =&amp;gt; x.Name, y =&amp;gt; y.MapFrom(o =&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;{o.Id}: {o.Name}&amp;#34;&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;           .ForMember(x =&amp;gt; x.ImgUri, y =&amp;gt; y.Ignore())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;           .ReverseMap());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; mapper = config.CreateMapper(); &lt;span style=&#34;color:#75715e&#34;&gt;// 建立 Mapper&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; result = mapper.Map&amp;lt;IEnumerable&amp;lt;CardViewModel&amp;gt;&amp;gt;(data); &lt;span style=&#34;color:#75715e&#34;&gt;// 轉換型別&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;(2021/6/9) 補充：&lt;/p&gt;
+&lt;p&gt;在我們前面提到的欄位轉換時，要特別注意兩個欄位的型別是否能夠對應上。由於 AutoMapper 會貼心地幫我們進行轉換，但有些時候可能會產生問題，讓我們看看下面這個例子：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Boo&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt; Val { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Foo&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Val { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Foo Sut()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; boo = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Boo
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Val = &lt;span style=&#34;color:#ae81ff&#34;&gt;2.65&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    };
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        cfg.CreateMap&amp;lt;Boo, Foo&amp;gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; mapper = config.CreateMapper();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; foo = mapper.Map&amp;lt;Foo&amp;gt;(boo);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; foo; &lt;span style=&#34;color:#75715e&#34;&gt;// 3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以看到上面這個例子中，我們可以把 &lt;code&gt;double&lt;/code&gt; 的欄位直接 Mapping 到 &lt;code&gt;int&lt;/code&gt; 的欄位上，因為 AutoMapper 的貼心，所以不會出錯，但過程中還是可能發生喪失精度的問題。&lt;/p&gt;
+&lt;p&gt;像是例子中的 2.65 就直接變成了 3，如果符合我們的需求（例如本來就打算轉型）倒是沒關係，但如果是因為不小心轉到的話，在找問題上可能就會比較麻煩。&lt;/p&gt;
+&lt;p&gt;因此在轉換的時候，還請特別留意一下轉換雙方的型別，測試一下轉換結果是不是自己要的結果會比較好呦。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;簡化整理&#34;&gt;簡化整理&lt;/h2&gt;
+&lt;p&gt;可能看到這裡有些讀者就開始疑惑了：這好像跟一開始簡介不太一樣啊，詐欺？又或者是：我每個方法裡面都要重新建一個 Mapper？這不太對吧？&lt;/p&gt;
+&lt;p&gt;的確是這樣沒錯，AutoMapper 要達到更簡潔，還需要再做一些整理。例如使用 Profile 將對映關係集中起來，以及把 Mapper 的建構抽取出來。可能是在建構式建立共用的 Mapper ，或是以依賴注入 (Dependency Injection) 的方式來注入 Mapper 等等。以下就逐步進行介紹。&lt;/p&gt;
+&lt;h3 id=&#34;profile&#34;&gt;Profile&lt;/h3&gt;
+&lt;p&gt;首先我們先建立一個用來放對映關係的 Profile。我個人習慣會另開一個 Mappings 資料夾，並按照轉換所在的分層 + Mappings 來命名。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ServiceMappings&lt;/span&gt; : Profile
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; ServiceMappings()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        CreateMap&amp;lt;Card, CardViewModel&amp;gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .ForMember(x =&amp;gt; x.Id, y =&amp;gt; y.MapFrom(o =&amp;gt; o.CardId))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .ForMember(x =&amp;gt; x.Name, y =&amp;gt; y.MapFrom(o =&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;{o.Id}: {o.Name}&amp;#34;&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .ForMember(x =&amp;gt; x.ImgUri, y =&amp;gt; y.AllowNull())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .ReverseMap(); 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// ...其他的對映內容 (使用 CreateMap&amp;lt;&amp;gt; 建立下一組)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;從上面可以看到，我們&lt;strong&gt;繼承 AutoMapper 提供的 Profile 類，接著在建構式裡面將需要的轉換關係組都建立起來&lt;/strong&gt;。接著當我們建立 Mapper 時，就可以直接用 &lt;code&gt;AddProfile&lt;/code&gt; 和建立好的 Profile 來直接讀入對映關係：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;CardViewModel&amp;gt; GetCard()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; data = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.GetCardFromRepositoryMock();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt; cfg.AddProfile&amp;lt;ServiceMappings&amp;gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; mapper = config.CreateMapper(); &lt;span style=&#34;color:#75715e&#34;&gt;// 用設定檔建立 Mapper&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; result = mapper.Map&amp;lt;IEnumerable&amp;lt;CardViewModel&amp;gt;&amp;gt;(data); &lt;span style=&#34;color:#75715e&#34;&gt;// 轉換型別&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;當然，&lt;strong&gt;在 &lt;code&gt;MapperConfiguration&lt;/code&gt; 的時候是可以對 cfg 去做多次 &lt;code&gt;AddProfile&lt;/code&gt; 的&lt;/strong&gt;，既然可以載入多組對映關係，就代表可以按照實務上的運用去將對映關係做分類和整理。&lt;/p&gt;
+&lt;p&gt;這邊還是要再度提醒一下，將 &lt;code&gt;CreateMap&lt;/code&gt; 都整理到 Profile 之後，若是有些類別之間的轉換有對欄位做額外的處理，例如 DateTime 去除時間只留下年月日，又或是某幾個欄位銜接成一個欄位等等，&lt;strong&gt;在實際進行類別轉換的時候需要註記一下，請後續的維護人員或團隊夥伴記得先確認過 Profile，避免造成一些隱藏重要資訊挖洞給人跳的問題&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id=&#34;整理到建構式&#34;&gt;整理到建構式&lt;/h3&gt;
+&lt;p&gt;接著由於一個處理資料或商業邏輯的部分通常會有許多方法都用到 Mapper，因此將建立 Mapper 的過程取出來避免重複絕對是必要的。故整理的第一步就是將 Mapper 的建立拆分出來，不再等每次用到的時候才建，而是先建立好一個 Mapper，需要的時候再來使用它。&lt;/p&gt;
+&lt;p&gt;這邊就先嘗試將其挪到私有變數和建構式處理：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; IMapper _mapper;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; MapSimpleService() &lt;span style=&#34;color:#75715e&#34;&gt;// 建構式&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        cfg.AddProfile&amp;lt;ServiceMappings&amp;gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;._mapper = config.CreateMapper();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;那麼我們實際上的方法就會變成：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;CardViewModel&amp;gt; GetCard()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; data = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.GetCardFromRepositoryMock();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; result = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;._mapper.Map&amp;lt;IEnumerable&amp;lt;CardViewModel&amp;gt;&amp;gt;(data);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;走向注入&#34;&gt;走向注入&lt;/h3&gt;
+&lt;p&gt;由於本篇篇幅無法說明好依賴注入（DI）的概念，相關的部份就留待在&lt;a href=&#34;https://igouist.github.io/post/2021/11/newbie-6-dependency-injection&#34;&gt;之後的文章&lt;/a&gt;中說明，這邊就以 .net Core 為示範來記錄一下步驟，提供給已經會 DI 的朋友參考。&lt;/p&gt;
+&lt;p&gt;在開始之前，我們會需要再前往 NuGet 安裝 AutoMapper DI 用的套件：
+&lt;img src=&#34;https://i.imgur.com/hae1zfj.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著在 &lt;code&gt;Startup.cs&lt;/code&gt; 裡的 &lt;code&gt;ConfigureServices&lt;/code&gt; 加上 &lt;code&gt;services.AddAutoMapper(typeof(Startup))&lt;/code&gt; 來註冊我們的 Mapper：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; ConfigureServices(IServiceCollection services)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    services.AddControllers(); 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// Demo 用的 Service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    services.AddScoped&amp;lt;IMapSimpleService, MapSimpleService&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 註冊 Mapper&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    services.AddAutoMapper(&lt;span style=&#34;color:#66d9ef&#34;&gt;typeof&lt;/span&gt;(Startup)); 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可能有些人會有點疑惑：前面還需要 &lt;code&gt;MapperConfiguration&lt;/code&gt; 怎麼這次不用了呢？那是因為 &lt;code&gt;AddAutoMapper&lt;/code&gt; 的時候就會用反射去取得同組件中的 &lt;code&gt;Profile&lt;/code&gt; 來載入，所以這部分就可以不用擔心，只要專心在使用上就好。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;(2021/4/23) 補充：&lt;/p&gt;
+&lt;p&gt;感謝同事們的討論，這邊也補充給大家參考一下&lt;/p&gt;
+&lt;p&gt;當我們直接使用 &lt;code&gt;services.AddAutoMapper(typeof(Startup));&lt;/code&gt; 註冊的時候，AutoMapper 會去抓我們 &lt;code&gt;typeof&lt;/code&gt; 的型別，並對該型別所在的 Assembly 進行反射找出所有的 &lt;code&gt;Profile&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;但如果你有用到多層的架構、或是不同的組件內都有 &lt;code&gt;Profile&lt;/code&gt; 需要註冊，又或者只是想要逐個 &lt;code&gt;Profile&lt;/code&gt; 進行註冊，方便進行控管的話，可以考慮使用 &lt;strong&gt;&lt;code&gt;AddProfile&lt;/code&gt;&lt;/strong&gt; 或 &lt;strong&gt;&lt;code&gt;AddProfiles&lt;/code&gt;&lt;/strong&gt; 的方式來進行註冊，例如：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;services.AddAutoMapper(config =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    config.AddProfile&amp;lt;ControllerProfile&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    config.AddProfile&amp;lt;ServiceProfile&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這樣的可讀性更好，也能讓維護的人迅速掌握當前的 Profile，有需要的朋友可以嘗試看看。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;(2021/8/27) 補充：&lt;/p&gt;
+&lt;p&gt;感謝 &lt;a href=&#34;https://raychiutw.github.io/&#34;&gt;Ray&lt;/a&gt; 大大提供的方法，這邊也補充給大家參考一下&lt;/p&gt;
+&lt;p&gt;我們前面有提到 &lt;code&gt;AddAutoMapper&lt;/code&gt; 會對該型別所在的 Assembly 進行反射找出所有的 &lt;code&gt;Profile&lt;/code&gt;，那麼我們也可以轉換一下思路：只要把全部的組件都丟到 &lt;code&gt;AddAutoMapper&lt;/code&gt; 裡就好了！這種時候我們就可以利用反射來達到我們的目的：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;相較於 &lt;code&gt;AddProfile&lt;/code&gt; 這種逐一新增 &lt;code&gt;Profile&lt;/code&gt; 的作法，利用反射會讓註冊顯得更乾淨，並且也更不容易有所遺漏。各位可以按照開發的場景選擇一下註冊的方式，有需要的朋友也可以都嘗試看看。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;註冊好之後，我們就能將剛剛的示範部分更改為使用注入的方式來取得 Mapper：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; IMapper _mapper;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; MapSimpleService(IMapper mapper) &lt;span style=&#34;color:#75715e&#34;&gt;// 建構式&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;._mapper = mapper;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;執行之後就能確認確實有轉換到值囉！最後再來對照一下商業邏輯的部份：&lt;/p&gt;
+&lt;p&gt;－－瘦身前－－&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;CardViewModel&amp;gt; GetCard()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; data = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.GetCardFromRepositoryMock();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; result = data.Select(x =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; CardViewModel
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Id = x.Id,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Name = x.Name,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Cost = x.Cost,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Attack = x.Attack,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Health = x.Health,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Note = x.Note &lt;span style=&#34;color:#75715e&#34;&gt;// ...etc&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        });
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;－－瘦身後－－&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;CardViewModel&amp;gt; GetCard()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; data = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.GetCardFromRepositoryMock();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; result = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;._mapper.Map&amp;lt;IEnumerable&amp;lt;CardViewModel&amp;gt;&amp;gt;(data);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;結語&#34;&gt;結語&lt;/h2&gt;
+&lt;p&gt;當我們把類別轉換的區段利用 AutoMapper 擷取出來，就能&lt;strong&gt;讓原本的程式碼更著重在該方法本身的邏輯和功能&lt;/strong&gt;，而不會被冗長的轉換過程洗版，使用 Mapper 的方法只要知道這兩個類別能夠互相轉換即可。除了看起來更舒服、更能將焦點放在方法本身以外，也能夠讓維護時的修改更加直覺，若是轉換的過程需要修改，就去變更 Profile，不需要去變動實現商業邏輯的方法本身，這樣就能朝單一職責的目標更前進一點。&lt;/p&gt;
+&lt;p&gt;到這邊算是把 AutoMapper 基本的用法介紹過一遍了，當然還有很多進階的用法和需要注意的部分並沒有說明完全，但相信這樣的紀錄已經能夠幫助我在將來需要的時候回想起怎麼使用，和解決大部分需要做類別轉換的場景了。剩餘的延伸閱讀將會補充在參考資料裡，那麼下週見～&lt;/p&gt;
+&lt;h2 id=&#34;參考資料及延伸閱讀&#34;&gt;參考資料及延伸閱讀&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://dotblogs.com.tw/yc421206/2016/07/15/automapper_version_5_MapperConfiguration&#34;&gt;[AutoMapper] AutoMapper 5.0.2 的新寫法 - 余小章 @ 大內殿堂&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://kevintsengtw.blogspot.com/2013/04/automapper.html&#34;&gt;使用 AutoMapper 處理類別之間的對映轉換 - mrkt 的程式學習筆記&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://kevintsengtw.blogspot.com/2014/03/automapper.html&#34;&gt;AutoMapper 兩個物件對映到一個類別 - mrkt 的程式學習筆記&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://kevintsengtw.blogspot.com/2013/04/automapper-configuration.html&#34;&gt;AutoMapper 的設定 (Configuration) - mrkt 的程式學習筆記&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://dotblogs.com.tw/yc421206/2014/12/12/147619&#34;&gt;[C#.NET] 使用 AutoMapper.Profile 簡化對應設定 - 余小章 @ 大內殿堂&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10157130&#34;&gt;AutoMapper 介紹 - 簡單化Entity和ViewModel之間的轉換&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://dotblogs.com.tw/keigen/2017/06/28/151917&#34;&gt;AutoMapper 初體驗 - 中年大叔的鹹魚翻身作戰計畫&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://iter01.com/155318.html&#34;&gt;.NET Core 中依賴注入 AutoMapper 小記 - IT人&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://dotblogs.com.tw/supershowwei/2016/07/17/162815&#34;&gt;[料理佳餚] AutoMapper 中不容忽視的 Ignore() Mapping 的順序 - 軟體主廚的程式料理廚房&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/12/automapper-convert-using/&#34;&gt;AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Visual studio 環境設定 —— 字型、套件、快捷鍵</title>
+      <link>https://igouist.github.io/post/2020/03/visualstudio/</link>
+      <pubDate>Sat, 28 Mar 2020 00:11:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2020/03/visualstudio/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;目標：整理一下自己用的&lt;strong&gt;字型、插件和快捷鍵&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;今天在工作時寫到一半突然藍屏，重開機之後俺的地表最強編譯器 Visual Studio 整個就開始鬧脾氣，打開專案整排都是 Error，連 System.Object 都找不到，差點往生。還好用了修復功能之後一切恢復正常，但是載入的插件和一些個人設定就這樣重置了……&lt;/p&gt;
+&lt;p&gt;為了之後可能還會遇到相同的事情，這邊就先將平常的 Visual Studio 環境用到的設定做一份紀錄，之後遇到新插件或是什麼功能也可以回來更新這篇文，如此一來下次又被洗白的時候就可以回來參考了。&lt;/p&gt;
+&lt;p&gt;這邊主要會記錄三個部分，並隨時可能更新。主要是字型、使用的插件以及常用的快捷鍵。&lt;/p&gt;
+&lt;p&gt;&lt;del&gt;不過我的 Visual Studio 也被洗白了所以這篇會跟著找回失落插件的歷程慢慢補上QQ&lt;/del&gt;&lt;/p&gt;
+&lt;h2 id=&#34;字型&#34;&gt;字型&lt;/h2&gt;
+&lt;p&gt;字型部分必定、絕對要使用&lt;strong&gt;等寬字型&lt;/strong&gt;，這是必要的前提也是絕對的共識，畢竟你不會希望有什麼神秘空白，或是推個版就排版大炸裂之類的。&lt;/p&gt;
+&lt;p&gt;推薦先參閱 &lt;a href=&#34;https://kevintsengtw.blogspot.com/2014/08/blog-post.html&#34;&gt;換個好字型讓程式開發有效率&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;(2021/1/27) 補充：字型也可以看 &lt;a href=&#34;https://devfonts.gafi.dev/&#34;&gt;devfonts&lt;/a&gt; 。裡面直接放了超多 Coding 常用字型，也可以貼上 Code 直接進行比較，相當貼心。想逛一下挑個順眼字型的朋友直接試試唄。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;consolas&#34;&gt;Consolas&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/az9u0B3.png&#34; alt=&#34;&#34;&gt;
+內建就有的字體，個人認為在不想另外下載字體的時候是相當優質的選擇。&lt;/p&gt;
+&lt;p&gt;看起來粗粗圓圓的很放鬆。&lt;/p&gt;
+&lt;h3 id=&#34;firacode&#34;&gt;FiraCode&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9OJpMXL.png&#34; alt=&#34;&#34;&gt;
+&lt;a href=&#34;https://github.com/tonsky/FiraCode&#34;&gt;FiraCode&lt;/a&gt;，整體看起來就是乾淨優雅，尤其是連字能使得整個 Code 更有滑順的感覺，十分推薦。&lt;/p&gt;
+&lt;p&gt;然而，FiraCode 雖然陪伴我一段不短的時間，但還是有一個致命的缺陷：不支援中文！&lt;/p&gt;
+&lt;p&gt;於是後來我基本上都使用下面介紹的這款&lt;/p&gt;
+&lt;h3 id=&#34;更紗黑體&#34;&gt;更紗黑體&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/yVMe5wC.png&#34; alt=&#34;&#34;&gt;
+&lt;a href=&#34;https://github.com/be5invis/Sarasa-Gothic&#34;&gt;更紗黑體&lt;/a&gt; 除了同樣支援連字以外，更支援多國語系。例如繁中就是有標註 TC 的字形，看見中英文都套用上去就是一陣舒服。是現在我的主力。&lt;/p&gt;
+&lt;p&gt;至於不想用等寬字體的朋友，都看到這裡了，沒關係。下面這套推薦給你們&lt;/p&gt;
+&lt;h3 id=&#34;ink-free&#34;&gt;Ink Free&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/EShjvS5.png&#34; alt=&#34;&#34;&gt;
+就是這麼直接！這麼舒服！如果你的同事要過來 Code Review，不要猶豫字體直接換下去！&lt;/p&gt;
+&lt;h2 id=&#34;變更環境字體&#34;&gt;變更環境字體&lt;/h2&gt;
+&lt;p&gt;前面介紹了一些好用的字體，以及 &lt;a href=&#34;https://devfonts.gafi.dev/&#34;&gt;devfonts&lt;/a&gt; 這個超讚網站。接著就讓我們來設定 Visual Studio 的字體吧。&lt;/p&gt;
+&lt;p&gt;在 &lt;code&gt;工具 &amp;gt; 選項 &amp;gt; 環境 &amp;gt; 字型與色彩&lt;/code&gt; 中，能設定當前使用的字型。其中顯示設定可以選擇要變更哪個區塊的字型，最常用的應該就是改程式碼字型的「文字編輯器」了。&lt;/p&gt;
+&lt;p&gt;這邊推薦一下我個人還會調整的部份：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;CodeLens&lt;/li&gt;
+&lt;li&gt;陳述式完成&lt;/li&gt;
+&lt;li&gt;編譯器工具提示&lt;/li&gt;
+&lt;li&gt;環境&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/m2zfp6K.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;影響到的範圍會有&lt;/p&gt;
+&lt;p&gt;環境相關的字體，例如上方的工具列&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/H5t6Jun.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9hYcnfn.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;按下 &lt;code&gt;Alt + Enter&lt;/code&gt; 的小提示、方法上方的 CodeLen 小提示（N 個參考那個）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/lHf3SHe.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;自動補完和註解說明等等&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/SaMzVkA.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;另外我個人還會把清單裡任何加上 &lt;code&gt;[]&lt;/code&gt; 的部份的字型也改掉：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;所有文具工具&lt;/li&gt;
+&lt;li&gt;監看式、區域變數及自動變數工具視窗&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果再搭配上&lt;a href=&#34;#%E9%85%8D%E8%89%B2%E4%B8%BB%E9%A1%8C&#34;&gt;配色主題&lt;/a&gt;就可以把整個 IDE 弄得更賞心悅目囉！&lt;/p&gt;
+&lt;h2 id=&#34;擴充套件&#34;&gt;擴充套件&lt;/h2&gt;
+&lt;h3 id=&#34;codemaid&#34;&gt;CodeMaid&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=SteveCadwallader.CodeMaid&#34;&gt;CodeMaid&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;極實用，我平常主要用到的功能是看&lt;strong&gt;複雜度&lt;/strong&gt;和&lt;strong&gt;自動排版&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/pf897N7.png&#34; alt=&#34;&#34;&gt;
+安裝之後可以開啟 CodeMaid Spade，其中函式右側的就是該函式的複雜度，複雜度指得就是該函式中各種不同狀況的路徑數量，例如一個 IF 就會有兩條路徑。&lt;/p&gt;
+&lt;p&gt;而複雜度相當高的時候 CodeMaid Spade 的字體會變成紅色，屆時就應該思考這個函式是否做了太多事情，也就是有太多&lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle&#34;&gt;職責&lt;/a&gt;？是否應該把部分功能抽出來？平常可以迅速地提供參考。關於複雜度相關的工具也可以參閱：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://kevintsengtw.blogspot.com/2015/09/visual-studio-microsoft-codelens-code.html&#34;&gt;Visual Studio - Microsoft CodeLens Code Health Indicator&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://kevintsengtw.blogspot.com/2015/02/visual-studio-code-metrics-viewer-2013.html&#34;&gt;Visual Studio 計算程式碼度量 - Code Metrics Viewer 2013&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/sb2440G.png&#34; alt=&#34;&#34;&gt;
+除了看見複雜度以外，這個插件的主要功能就在於程式碼的排版和整理，甚至可以設定成每當儲存時自動排版一次。對我這種懶人來說可是一大福音。但要小心跟其他人協作的時候如果全部重新排版可能動到人家的 Code 而且推送時的變更會爆炸多，要稍微注意。平常就養成順手 &lt;code&gt;Ctrl + K&lt;/code&gt;、&lt;code&gt;Ctrl + D&lt;/code&gt; 的習慣會更好。&lt;/p&gt;
+&lt;h3 id=&#34;codemaintainibility&#34;&gt;CodeMaintainibility&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;市集頁面： &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=ognjen-babic.code-maintainibility&#34;&gt;Code Maintainibility&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;提到複雜度，也可以安裝這套 Code Maintainibility，在看複雜度的時候能夠更快更方便！&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/90Ox0rF.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;一樣在「管理擴充功能」直接搜尋就可以了，但這個套件似乎有改版過。我更新了 Visual Studio 才搜尋得到，如果找不到的朋友可以先嘗試更新看看。&lt;/p&gt;
+&lt;p&gt;安裝之後就可以直接在各個 Function 上方的 CodeLens 直接看到複雜度指標囉！&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/No3C6yH.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;點開來也會顯示各項指標，包括可維護性、霍爾斯特德複雜度等等&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/aOCbIp1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;也可以在設定之中調整預設顯示的指標&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/amDpQtp.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;這樣在撰寫和重構程式碼的時候就可以迅速又清楚看見複雜度指標，&lt;s&gt;心裡也至少有個底&lt;/s&gt;，可以說是方便不少呢&lt;/p&gt;
+&lt;h3 id=&#34;editor-guidelines&#34;&gt;Editor Guidelines&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=PaulHarrington.EditorGuidelines&#34;&gt;Editor Guidelines&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在指定字數位置&lt;strong&gt;劃出直的輔助線&lt;/strong&gt;，我都用來標示出 100 字元 和 120 字元的位置，用來提醒自己要換行，以保持程式碼可以直直地閱讀下去，而不會為了往右滾動或是因為自動斷行在奇怪地方而中斷。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/yBffyf3.png&#34; alt=&#34;&#34;&gt;
+可以看見右側有輔助線，通常只要長到碰到該線我就會將該行程式碼做斷行的調整。&lt;/p&gt;
+&lt;p&gt;安裝之後可以在編輯器的任何位置按下右鍵，就可以增加和移除輔助線。
+&lt;img src=&#34;https://i.imgur.com/0YqkYFI.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;如果想要在確切字元位置（如 100 字元），則可以在 &lt;code&gt;檢視 → 其他視窗 → 命令視窗&lt;/code&gt; 裡面輸入指令來加入輔助線&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Edit.AddGuideline 100 // 添加輔助線
+Edit.RemoveAllGuidelines // 移除輔助線
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;關於換行的重要性，這篇 &lt;a href=&#34;https://kevintsengtw.blogspot.com/2015/02/visual-studio-part1.html&#34;&gt;調整你的 Visual Studio - Part.1&lt;/a&gt; 說明得很仔細，並且也有上面 CodeMaid 的介紹，我之所以打算紀錄我的套件等也是基於這幾篇，推薦閱讀。&lt;/p&gt;
+&lt;h3 id=&#34;codeblockendtag&#34;&gt;CodeBlockEndTag&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=KhaosPrinz.CodeBlockEndTag&#34;&gt;CodeBlockEndTag&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;主要是在&lt;strong&gt;括弧的結束部分會顯示出這個括弧所屬的區塊&lt;/strong&gt;（如附圖）。我有看見許多同事都使用替括弧上色的作法，不過我個人不喜歡太過五彩繽紛的感覺，因此強烈推薦這款插件。&lt;/p&gt;
+&lt;p&gt;下載之後可以在 &lt;code&gt;工具 → 選項 → KC Extensions&lt;/code&gt; 裡面調整，有 當上括弧在畫面外時才顯示下括弧的文字，以及一律顯示（我個人都是使用一律顯示）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/sRCndm3.png&#34; alt=&#34;&#34;&gt;
+可以看見 IF 跟函式結束的地方都有標示出括弧對應的區塊，在多層巢狀的時候相當有幫助。（雖然說更重要的是應該避免做出多層巢狀就是了）&lt;/p&gt;
+&lt;h3 id=&#34;smartpaster&#34;&gt;SmartPaster&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=martinw.SmartPaster2013&#34;&gt;SmartPaster2019&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;貼上的時候可以&lt;strong&gt;選擇貼上的格式&lt;/strong&gt;，在插件介紹頁的示意圖就能夠一目瞭然。&lt;/p&gt;
+&lt;h3 id=&#34;time-savers&#34;&gt;Time Savers&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=YannDuran.VisualStudioTimeSavers&#34;&gt;Time Savers&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;單純的省時小工具，可以&lt;strong&gt;在上方的工具列幫你長出一些 建置、以管理員重開等按鍵&lt;/strong&gt;。畢竟和建置那些可以直接快捷鍵的動作不一樣，有時候沒有以系統管理員身分開 Visual Studio 的時候會遇到一些神秘錯誤，重開又挺麻煩，因此直接放顆按鈕在上面是真的省了不少時間，要記得遵守工程師的美德：懶惰。能省時就省時！&lt;/p&gt;
+&lt;h3 id=&#34;claudiaide&#34;&gt;ClaudiaIDE&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=kbuchi.ClaudiaIDE&#34;&gt;ClaudiaIDE&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;這個跟效率就沒啥太大關係了，所以特別放在壓軸哈，這插件主要是用來&lt;strong&gt;修改編譯區塊的背景&lt;/strong&gt;使用的。&lt;/p&gt;
+&lt;p&gt;剛安裝下來之後打開 Visual Studio 就會看到一個妹子。
+&lt;img src=&#34;https://i.imgur.com/op0y1wf.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;當然這個背景圖是可以自由變更的，打開 &lt;code&gt;工具 → 選項 → ClaudiaIDE&lt;/code&gt; 就會看到以下的設置畫面
+&lt;img src=&#34;https://i.imgur.com/O3KAm0N.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;主要會變動的地方會有 Opacity 透明度、File Path 圖片路徑 以及 Image Stretch 圖片填滿或是延展 這些設定，根據個人經驗，盡量用深色背景圖加上透明會比較順眼，主要還是要以不干擾閱讀程式碼為主&lt;/p&gt;
+&lt;p&gt;像我這麼低調的換個藍底的 VS Logo 就足夠竊喜好一陣子了
+&lt;img src=&#34;https://i.imgur.com/gjlxy52.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;順帶一提我同事的背景圖是用這張，嗯……
+&lt;img src=&#34;https://i.imgur.com/YER0385.png&#34; alt=&#34;&#34;&gt;
+（載下來示範截圖之後立馬換回來，實在過於微妙）&lt;/p&gt;
+&lt;h3 id=&#34;visual-studio-iconizer&#34;&gt;Visual Studio Iconizer&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=OlegTarasov.VisualStudioIconizerforVisualStudio15&#34;&gt;Visual Studio Iconizer&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;這個則是讓你的 Visual Studio 質感飛升的關鍵：它會替你的工具欄加上 icon！&lt;/p&gt;
+&lt;p&gt;先來看看原本的工具視窗釘選之後長怎樣：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/s0zVMsN.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;安裝後：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/004mjQq.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;當然如果怕找不到的話，也可以圖文並行（&lt;code&gt;工具 → 選項 → iconizer&lt;/code&gt;）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ScUCjeU.png&#34; alt=&#34;Image&#34;&gt;&lt;img src=&#34;https://i.imgur.com/WjLE5Tf.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;output-enhancer--metaoutput&#34;&gt;Output enhancer &amp;amp; MetaOutput&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=NikolayBalakin.Outputenhancer&#34;&gt;Output enhancer&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;最後來介紹個實用的 Output enhancer：替你的輸出視窗上色&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/KGW1DrK.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;警告跟錯誤等等就會更顯眼囉！&lt;/p&gt;
+&lt;p&gt;如果想要更進一步也可以使用他們的另一款整合過的 &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=ViacheslavLozinskyi.MetaOutput-2019&#34;&gt;MetaOutput&lt;/a&gt;（&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=ViacheslavLozinskyi.MetaOutput-2022&#34;&gt;2022&lt;/a&gt;），輸出視窗就會變為條列式：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/IRBlGGv.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;除了會折疊輸出訊息以外，也能調整哪部分訊息可以省略：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/KQutBi1.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;也可以進行搜尋：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/0lNna9g.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;個人覺得挺方便的。雖然日常狀況還是等紅字跳出來再說 XD&lt;/p&gt;
+&lt;h2 id=&#34;設定&#34;&gt;設定&lt;/h2&gt;
+&lt;h3 id=&#34;變更-visual-studio-程式碼的配色為新版本-2019&#34;&gt;變更 Visual Studio 程式碼的配色為新版本 (2019)&lt;/h3&gt;
+&lt;p&gt;Visual Studio 2019 預設的程式碼配色會是 2017 版本的，因此可以先調整更改成 2019 版本。&lt;/p&gt;
+&lt;p&gt;更改的位置在 &lt;code&gt;工具 &amp;gt; 選項 &amp;gt; 文字編輯器 &amp;gt; C# (看個人使用語言) &amp;gt; 進階&lt;/code&gt; 接著拉至最底找到 &lt;code&gt;編輯器色彩配置&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/lbUP19r.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;把它更改成 2019 版本的就可以囉&lt;/p&gt;
+&lt;p&gt;變更前：
+&lt;img src=&#34;https://i.imgur.com/IMr2ViF.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;變更後：
+&lt;img src=&#34;https://i.imgur.com/s0zYjmu.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;可以看到變數、方法都有上色了，在整排 Linq 連發的 Code 裡面可是相當實用呢&lt;/p&gt;
+&lt;h3 id=&#34;開啟內嵌提示&#34;&gt;開啟內嵌提示&lt;/h3&gt;
+&lt;p&gt;這邊推薦把「內嵌提示」這個實驗性功能打開，可以大大增加程式碼的可讀性。&lt;/p&gt;
+&lt;p&gt;首先讓我們先到 &lt;code&gt;選項 &amp;gt; 文字編輯器 &amp;gt; C# &amp;gt; 進階&lt;/code&gt;，並且往下拉就可以看到內嵌提示。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/FMERRDD.png&#34; alt=&#34;image-20210830065440439&#34;&gt;&lt;/p&gt;
+&lt;p&gt;其中「&lt;strong&gt;顯示內嵌參數名稱&lt;/strong&gt;」勾選起來的話，就會在呼叫方法時顯示該參數的名稱，如下圖的 &lt;code&gt;startIndex&lt;/code&gt; 和 &lt;code&gt;length&lt;/code&gt;：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/7QCEEkY.png&#34; alt=&#34;image-20210830065736932&#34;&gt;&lt;/p&gt;
+&lt;p&gt;像這種呼叫方法時傳遞的常數，例如 &lt;code&gt;0&lt;/code&gt;、&lt;code&gt;false&lt;/code&gt; 等等，加上參數名稱就能大大提升可讀性。&lt;/p&gt;
+&lt;p&gt;但當我們是傳遞變數的時候，常常都已經針對該物件做好妥善的命名了，所以可以把子項的「當參數名稱符合方法的意圖時，不出現提示」也勾選起來，避免命名已經足夠描述內容時反而造成干擾。&lt;/p&gt;
+&lt;p&gt;接著「&lt;strong&gt;顯示內嵌類型提示&lt;/strong&gt;」也可以勾選起來，顧名思義就是會在洽當的時候提醒你「這東西是這個型別呦！」的小助手。&lt;/p&gt;
+&lt;p&gt;其中我會關閉第一項「顯示有推斷類型之變數的提示」，它的效果就是每當你使用 &lt;code&gt;var&lt;/code&gt; 的時候就會顯示推測的型別，例如：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/nGyRm6J.png&#34; alt=&#34;image-20210830071205401&#34;&gt;&lt;/p&gt;
+&lt;p&gt;可以看到 &lt;code&gt;var&lt;/code&gt; 的後面會補上型別。&lt;del&gt;不過這樣我排版就亂掉了，而且我就是打算把型別丟給 C# 處理才用 var 的所以掰掰&lt;/del&gt;&lt;/p&gt;
+&lt;p&gt;而第二項「&lt;strong&gt;顯示 Lambda 參數類型的提示&lt;/strong&gt;」這個就相當推薦打開了，作用的方式會像這樣：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/RVqvtcJ.png&#34; alt=&#34;image-20210830071404915&#34;&gt;&lt;/p&gt;
+&lt;p&gt;當你在使用 Linq 的時候，就能更清楚知道現在自己在操作的是哪個型別、哪個部分。在 &lt;code&gt;Join&lt;/code&gt;、&lt;code&gt;Groupby&lt;/code&gt; 等等需要對串列連續地進行處理的時候，能夠發揮莫大的功效，特別強烈推薦要打開。&lt;/p&gt;
+&lt;h3 id=&#34;對目前所在行醒目提示&#34;&gt;對目前所在行醒目提示&lt;/h3&gt;
+&lt;p&gt;這段其實是發完文之後才補充的啦，這邊要推薦一個好用的設定：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;工具 &amp;gt; 選項 &amp;gt; 環境 &amp;gt; 字型與色彩&lt;/code&gt; 然後在下拉式選單找到 &lt;code&gt;反白顯示目前的行&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;就可以對游標所在的那行做醒目提示囉！&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/qvh8i8l.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;圖中的綠色就是醒目提示。&lt;/p&gt;
+&lt;p&gt;之前和大前輩聊到這個反白行，前輩表示他很討厭，因為他不太需要一條會干擾的色塊告訴他正在這&lt;/p&gt;
+&lt;p&gt;但像我這種菜雞，按著 Ctrl + G 就不知道自己飛哪裡去了，還是標記一下好哈哈。&lt;/p&gt;
+&lt;h3 id=&#34;調整索引標籤設定&#34;&gt;調整索引標籤設定&lt;/h3&gt;
+&lt;p&gt;個人習慣將索引標籤放在右側，如此一來就可以更清楚地看到檔案名稱，而且條列式地由上往下看還是比較符合平時看 Code 的習慣。&lt;/p&gt;
+&lt;p&gt;索引標籤的位置可以在 &lt;code&gt;工具 &amp;gt; 選項 &amp;gt; 環境 &amp;gt; 索引標籤和視窗&lt;/code&gt; 裡進行調整：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/sIRwNBz.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;這邊也強烈建議將 專案/路徑 分組勾選開來，可以幫助我們更快找到開啟的索引：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/urbQnTd.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在 Visual Studio 2022 時，可以更進一步打開依專案著色索引的功能：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/4mmuJqs.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/5fVIZlL.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;這樣開一堆索引要找的時候就更快了！&lt;/p&gt;
+&lt;p&gt;&lt;del&gt;如果從來不用索引標籤，就是無情的 &lt;code&gt;Ctrl T&lt;/code&gt; 或是 &lt;code&gt;Ctrl Tab&lt;/code&gt; 打全場的也可以不用上色沒關係就是了…&lt;/del&gt;&lt;/p&gt;
+&lt;h2 id=&#34;配色主題&#34;&gt;配色主題&lt;/h2&gt;
+&lt;h3 id=&#34;one-dark-pro&#34;&gt;One Dark Pro&lt;/h3&gt;
+&lt;p&gt;這邊推薦我在 Visual Studio Code 也很愛用的主題：&lt;strong&gt;One Dark Pro&lt;/strong&gt;，前陣子才發現居然在 Visual Studio 上也能看到熟悉的配色，馬上就安裝下來了。&lt;/p&gt;
+&lt;p&gt;因為它也是擴充套件之一，所以一樣讓我們打開 &lt;code&gt;延伸模組 &amp;gt; 管理延伸模組&lt;/code&gt;，並搜尋 &lt;code&gt;One Dark Pro&lt;/code&gt;，找到並安裝下來：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/pXGqoqd.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;下載好之後需要關閉 Visual Studio 安裝一下。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/CGuQ6ge.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;安裝好了之後重新開啟 Visual Studio，並前往 &lt;code&gt;工具 &amp;gt; 選項&lt;/code&gt;，在左邊找到 &lt;code&gt;環境&lt;/code&gt;，就可以從色彩佈景主題裡選擇 One Dark Pro 囉：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ZrtztVV.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/4oBef8K.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;果然還是熟悉的配色最對味～大家也可以嘗試安裝看看配色主題呦！會有一番新滋味呢。&lt;/p&gt;
+&lt;h2 id=&#34;快捷鍵&#34;&gt;快捷鍵&lt;/h2&gt;
+&lt;p&gt;最後大概整理一下平常會按到的快捷鍵，方便上班在外可以直接回來偷看。（希望有朝一日能夠寫起來時雙手不離鍵盤 XD）&lt;/p&gt;
+&lt;h3 id=&#34;偵錯&#34;&gt;偵錯&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;執行(debug)：F5&lt;/li&gt;
+&lt;li&gt;執行(non debug)：Ctrl + F5&lt;/li&gt;
+&lt;li&gt;全部儲存：Ctrl + Shift + S&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;單步執行：F11 (F10)&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;切換斷點：F9&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;啟用/停用斷點：Ctrl + F9&lt;/li&gt;
+&lt;li&gt;刪除所有斷點：Ctrl + Shift + F9&lt;/li&gt;
+&lt;li&gt;（單元測試）對全部測試：Ctrl + R, A&lt;/li&gt;
+&lt;li&gt;（單元測試）對全部偵錯：Ctrl + R, Ctrl + A&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;檢視&#34;&gt;檢視&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;程式碼編輯器分頁切換 ：Ctrl+TAB&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;顯示屬性窗口：F4&lt;/li&gt;
+&lt;li&gt;關閉目前視窗：Ctrl + F4&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;移至定義：F12&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;列出參考：Shift + F12&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;移至目標：Ctrl + T =&amp;gt; 輸入目標&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;巡覽列：Ctrl + F2 =&amp;gt; Tab&lt;/li&gt;
+&lt;li&gt;工具列：Alt + (對應鍵)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;線上搜尋微軟官方文件：F1&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;回到編輯器區塊：F7&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/03/visual-studio-bookmark/&#34;&gt;書籤&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;在指定行號上新增書籤：Ctrl + K, Ctrl + K&lt;/li&gt;
+&lt;li&gt;開啟書籤視窗：Ctrl + K, Ctrl + W&lt;/li&gt;
+&lt;li&gt;移動到上一個書籤：Ctrl + K, Ctrl + P&lt;/li&gt;
+&lt;li&gt;移動到下一個書籤：Ctrl + K, Ctrl + N&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;編輯&#34;&gt;編輯&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;選取目前文字：Ctrl + W&lt;/li&gt;
+&lt;li&gt;選取同個變數：Shift + Ctrl + ↑/↓&lt;/li&gt;
+&lt;li&gt;選取目標區塊：Shift + Ctrl + }&lt;/li&gt;
+&lt;li&gt;註解選取範圍：Ctrl + K,C&lt;/li&gt;
+&lt;li&gt;取消註解選取範圍：Ctrl + K,U&lt;/li&gt;
+&lt;li&gt;選取文字改小寫：Ctrl + U&lt;/li&gt;
+&lt;li&gt;選取文字改大寫：Ctrl + Shift + U&lt;/li&gt;
+&lt;li&gt;呼叫出類別成員：Ctrl + J (編到一半時 tips 突然不見很好用)&lt;/li&gt;
+&lt;li&gt;收攏原始碼：Ctrl + M, O&lt;/li&gt;
+&lt;li&gt;展開原始碼：Ctrl + M, L&lt;/li&gt;
+&lt;li&gt;收攏／展開當前區塊：Ctrl + M, Ctrl + M&lt;/li&gt;
+&lt;li&gt;刪除目前這行：Ctrl + Shift + L&lt;/li&gt;
+&lt;li&gt;刪除目前往後：Ctrl + Delete&lt;/li&gt;
+&lt;li&gt;檔案最前面：Shift + Home&lt;/li&gt;
+&lt;li&gt;檔案最後面：Shift + End&lt;/li&gt;
+&lt;li&gt;選到最前面：Ctrl + Shift + Home&lt;/li&gt;
+&lt;li&gt;選到最後面：Ctrl + Shift + End&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;跳至行號：Ctrl + G&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;在上面插入一行： Ctrl + Enter&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;多行選取：Shift + Alt + ↑ or ↓&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;打開右鍵選單：Shift + F10&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://kevintsengtw.blogspot.com/2014/08/blog-post.html&#34;&gt;換個好字型讓程式開發有效率&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://kevintsengtw.blogspot.com/2015/02/visual-studio-part1.html&#34;&gt;調整你的 Visual Studio - Part.1&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://kevintsengtw.blogspot.com/2015/02/visual-studio-part2.html&#34;&gt;調整你的 Visual Studio - Part.2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://kevintsengtw.blogspot.com/2015/09/visual-studio-microsoft-codelens-code.html&#34;&gt;Visual Studio - Microsoft CodeLens Code Health Indicator&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://kevintsengtw.blogspot.com/2015/02/visual-studio-code-metrics-viewer-2013.html&#34;&gt;Visual Studio 計算程式碼度量 - Code Metrics Viewer 2013&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.csdn.net/HW140701/article/details/85162678?depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-1&amp;amp;utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-1&#34;&gt;Visual Studio 增加每行最多字符数限制参考线&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;各位整理快捷鍵的大大們，族繁不及備載&lt;/li&gt;
+&lt;li&gt;感謝辦公室門口旁邊的不知名同事，讓我發現可以放 &lt;del&gt;妹子&lt;/del&gt; 圖片在 Visual Studio 裡&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
   </channel>
 </rss>

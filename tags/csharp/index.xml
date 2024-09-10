@@ -7170,5 +7170,1566 @@ GET /api/product/1
 &lt;/ul&gt;</description>
     </item>
     
+    <item>
+      <title>C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑</title>
+      <link>https://igouist.github.io/post/2020/08/system-environment/</link>
+      <pubDate>Sun, 02 Aug 2020 13:31:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2020/08/system-environment/</guid>
+      <description>&lt;p&gt;有時候我們會需要取得一些系統資訊，例如說取得設備和當前使用者等資料來寫 Log，或是取得特殊資料夾路徑、讀取環境變數等等。這些時候就可以使用 &lt;code&gt;System.Environment&lt;/code&gt; ，這邊就稍微紀錄一下用法。&lt;/p&gt;
+&lt;p&gt;先列出幾個常用的&lt;strong&gt;環境資訊&lt;/strong&gt;，詳細可查詢的內容可以到 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/api/system.environment?view=netcore-3.1&#34;&gt;Environment Class&lt;/a&gt; 查詢：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/8L67T46.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;資料夾路徑&lt;/strong&gt;則需要用 &lt;code&gt;Environment.GetFolderPath&lt;/code&gt; 搭配 &lt;code&gt;Environment.SpecialFolder&lt;/code&gt; 列舉使用，該列舉包含資料夾可以到 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/api/system.environment.specialfolder?view=netcore-3.1&#34;&gt;Environment.SpecialFolder Enum&lt;/a&gt; 查詢。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/aOQ30KB.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;除此之外還有一些實用的方法，例如用 &lt;code&gt;GetEnvironmentVariable&lt;/code&gt; 取得&lt;strong&gt;環境變數&lt;/strong&gt;，如此就可以將部分資訊交由環境變數來決定：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/pRj4yEA.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;而最常用的應該就是 NewLine 了，畢竟不同環境的&lt;strong&gt;換行符號&lt;/strong&gt;可能會不同，養成用 NewLine 的習慣總是好的：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/jvjNnJK.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://jjnnykimo.pixnet.net/blog/post/21585496&#34;&gt;C# 取得系統特殊目錄及環境變數 - 狼翔天地&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://apmtechtony.blogspot.com/2017/09/c-environmentspecialfolder.html&#34;&gt;C# 取得系統特殊目錄及環境變數 Environment.SpecialFolder 與 Environment.GetEnvironmentVariable 差別&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>C#: 程式碼風格備忘</title>
+      <link>https://igouist.github.io/post/2020/07/code-style/</link>
+      <pubDate>Sat, 25 Jul 2020 00:16:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2020/07/code-style/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;前言：本篇是整理公司規範和網路文章後，方便我自己在各個場所也能回來查閱使用的，故仍會不定時修改（畢竟我這人挺三心二意的）。另外本篇有重新調整過行距，發現有點跑版的朋友可以先 Ctrl+F5 一下，感謝閱讀。&lt;/p&gt;
+&lt;p&gt;如果你想知道的是如何寫出更優雅、更乾淨、品質更高的程式碼，那並不是該看這篇我個人的備忘錄，我會建議可以閱讀&lt;a href=&#34;https://www.tenlong.com.tw/products/9789862017050?list_name=e-106&#34;&gt;《無暇的程式碼》&lt;/a&gt;。或是可以參考這幾篇，我覺得都寫得很好：&lt;a href=&#34;https://ithelp.ithome.com.tw/users/20107637/ironman/1927&#34;&gt;可不可以不要寫糙 code&lt;/a&gt;、&lt;a href=&#34;https://ithelp.ithome.com.tw/users/20107637/ironman/1927&#34;&gt;Clean Code 無瑕的程式碼閱讀筆記&lt;/a&gt;、&lt;a href=&#34;https://ithelp.ithome.com.tw/users/20112160/ironman/1988&#34;&gt;易讀程式之美學&lt;/a&gt;，共勉之。&lt;/p&gt;
+&lt;p&gt;如果你是正巧路過並且也寫 C#，希望這篇能讓你做為參考。但請記得，程式碼風格沒有絕對，最終還是回歸到團隊能否接受和將來的可維護性去考慮，畢竟教條是死的，人是活的。了解這樣做背後的原因，以及為自己寫的程式碼負責，這些都比對著隻字片語斤斤計較更加重要。&lt;/p&gt;
+&lt;p&gt;Nothing is true, everything is permitted. —— Assassin&amp;rsquo;s creed.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;命名原則&#34;&gt;命名原則&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;想像下一個接手你程式碼的人是個暴力傾向的重度精神病患者&lt;/p&gt;
+&lt;p&gt;而且他知道你住在哪。　　—— 《無瑕的程式碼》&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;使用&lt;strong&gt;有意義的命名&lt;/strong&gt;，請重視描述性。除了迴圈計數器例外&lt;/li&gt;
+&lt;li&gt;盡量不要超過五個單字&lt;/li&gt;
+&lt;li&gt;業界和慣例中有對應縮寫時可以使用縮寫&lt;/li&gt;
+&lt;li&gt;承上，縮寫兩個字母時全大寫，三個字母以上時只第一字大寫&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;命名空間&#34;&gt;命名空間&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;基礎類別庫：{組織} . {大類/應用範圍} . {小類/專案名稱}
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;MyStudio.Libs.Basic&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;MyStudio.Libs.Web.BaseTools&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;專案類別庫：{專案名稱} . {子專案/類別/用途}
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;MyProject.Permiss.Proxy&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;MyProject.Permiss.Repository&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;類別&#34;&gt;類別&lt;/h3&gt;
+&lt;p&gt;使用&lt;strong&gt;名詞&lt;/strong&gt;或名詞片語，不使用任何前綴，須和檔案名稱相同
+類別應該要能夠在 25 個字之內做出描述&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;基底類別 (Basic Class)&lt;/strong&gt;：後綴 &lt;strong&gt;Base&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;public class ProductBase&lt;/code&gt; （=產品基底類別）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;一般類別 (General Class)&lt;/strong&gt;  註：抽象類別與一般類別的命名相同
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;public class Product&lt;/code&gt; （=產品類別）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;集合類別 (Collection Class)&lt;/strong&gt;：後綴 &lt;strong&gt;Collection&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;public class ProductCollection&lt;/code&gt; （=產品集合類別）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;工廠類別 (Factory Class)&lt;/strong&gt;：後綴 &lt;strong&gt;Factory&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;public class ProductFactory&lt;/code&gt; （=產品工廠類別）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Help 類別&lt;/strong&gt;：應以 Help 名稱、Help 性質方式命名
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;public class SystemTimeHelp&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;有使用 Partial 的類別&lt;/strong&gt;：檔名按照類別階層命名
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;public partial class Core&lt;/code&gt; 此類別分散到 Album 和 Banner
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;internal Public class Album&lt;/code&gt;  -&amp;gt; 檔名為 &lt;code&gt;Core.Album.cs&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;internal Public class Banner&lt;/code&gt; -&amp;gt; 檔名為 &lt;code&gt;Core.Banner.cs&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;列舉&lt;/strong&gt;：大駱駝峰，並後綴 &lt;strong&gt;Enum&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;public enum KeywordTypeEnum&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;介面&lt;/strong&gt;：大駱駝峰，前綴 &lt;code&gt;I&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ICarFactory&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;變數屬性&#34;&gt;變數、屬性&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;公開變數使用大駱駝峰&lt;/strong&gt;，例如 &lt;code&gt;public string Name { set; get; }&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;私有變數使用小駱駝峰&lt;/strong&gt;，例如 &lt;code&gt;private int approvalRating&lt;/code&gt;，看專案決定需不需要加上底線當前綴&lt;/p&gt;
+&lt;p&gt;常數一律大寫，但建議使用 static readonly 然後使用大駱駝峰。因為前輩的文件表示過使用常數連結 DLL 時如果修改 DLL 的常數再參考但尚未建置時會導致一些神奇的錯誤&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;const double PI = 3.14159;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;static readonly double Pi = 3.14159;&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;命名變數時的注意事項：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;包含邊界的極值優先使用 &lt;code&gt;min&lt;/code&gt; 與 &lt;code&gt;max&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;閉區間優先使用 &lt;code&gt;first&lt;/code&gt; 與 &lt;code&gt;end&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;半開放區間優先使用 &lt;code&gt;begin&lt;/code&gt; 與 &lt;code&gt;end&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Boolean 變數開頭必須使用 &lt;code&gt;is&lt;/code&gt; &lt;code&gt;can&lt;/code&gt; &lt;code&gt;has&lt;/code&gt; &lt;code&gt;should&lt;/code&gt; 或有狀態差異的形容詞&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;宣告變數時的注意事項：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;變數越多越難記得所有變數
+&lt;ul&gt;
+&lt;li&gt;減少沒用到的、或對可讀性沒有幫助的變數&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;變數存活的範圍越大，就必須記越久
+&lt;ul&gt;
+&lt;li&gt;盡量&lt;strong&gt;避免使用全域變數&lt;/strong&gt;，縮限並控制所有變數的範圍&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;變數越常改變越難記得目前的數值和意義
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;偏好單次寫入變數&lt;/strong&gt;，盡量不要過度重複寫入造成混亂&lt;/li&gt;
+&lt;li&gt;當變數內容改變，就可以考慮宣告成新的變數&lt;/li&gt;
+&lt;li&gt;變數的宣告和其命名都是為了讓閱讀者&lt;strong&gt;能直接看出改變的差異或當下變數的狀態&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;方法&#34;&gt;方法&lt;/h3&gt;
+&lt;p&gt;一律使用大駱駝峰，前綴字規定如下&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;擷取&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Get&lt;/code&gt;：從資料庫抓回資料&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Search&lt;/code&gt;：頁面或定義為搜尋時&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Find&lt;/code&gt;：在既有的資料集合找資料&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Fetch&lt;/code&gt;：從遠端 (透過API) 獲取資料，例如：`FetchUsers()&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;load&lt;/code&gt;：從本地端加載資料，例如：&lt;code&gt;LoadFile()&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;修改&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Update&lt;/code&gt;：對資料庫的異動&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Modify&lt;/code&gt;：現有變數或資料集合的變動&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;建立&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Insert&lt;/code&gt;：資料庫的資料建立&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Create&lt;/code&gt;：資料集合或物件的建立&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Generate&lt;/code&gt;：單純產生特定資料供使用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;刪除&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Delete&lt;/code&gt;：資料庫的資料刪除（資料將不存在）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Remove&lt;/code&gt;：資料集合的資料移除／資料間的關係移除（資料仍存在）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;其他&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Convert&lt;/code&gt;：代碼轉文字／編碼之間的轉換&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;calculate/calc&lt;/code&gt;：通過計算獲取資料，例如：&lt;code&gt;CalcBMI()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;show&lt;/code&gt;：顯示物件，例如：&lt;code&gt;ShowDialog()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;on&lt;/code&gt;：定義 event 的時候使用，像是 &lt;code&gt;OnClick()&lt;/code&gt;, &lt;code&gt;OnChange()&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;handle&lt;/code&gt;：當 &lt;code&gt;OnClick&lt;/code&gt; 之類的 event 發生時所觸發的 function&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;方法中用到的參數視作私有變數&lt;/strong&gt;，使用小駱駝峰，如 &lt;code&gt;(string name, int age)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;如果有泛型直接使用 &lt;code&gt;T&lt;/code&gt; 做表示（如 &lt;code&gt;List&amp;lt;T&amp;gt; T1, List&amp;lt;T&amp;gt; T2&lt;/code&gt;）&lt;/p&gt;
+&lt;p&gt;其他注意事項：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;比起弄很多大櫃子然後把東西都塞進去，分工明確的小抽屜更方便靈活&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;輸入參數應該越少越好，如果參數高於三個以上，試著&lt;strong&gt;換個思路&lt;/strong&gt;重構這個方法&lt;/li&gt;
+&lt;li&gt;輸入參數&lt;strong&gt;不要使用傳入 Boolean 來改變類別和函式的行為&lt;/strong&gt;（違反單一職責）&lt;/li&gt;
+&lt;li&gt;有多載的需求時，將輸入參數最多的宣告設為 virtual，其他較少輸入參數的則以呼叫最多輸入參數的函式來完成建構&lt;/li&gt;
+&lt;li&gt;如果&lt;strong&gt;類別的名稱已經有足夠的說明，則方法名稱就不需要再複誦一次&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;例如 &lt;code&gt;ProductService.GetProduct()&lt;/code&gt; 就是贅詞&lt;/li&gt;
+&lt;li&gt;可以改為 &lt;code&gt;ProductService.Get()&lt;/code&gt; 就好&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;呼叫方法時，如果傳入參數無法直接識別內容，則應使用具名傳遞
+&lt;ul&gt;
+&lt;li&gt;例如 &lt;code&gt;Get(productId, true)&lt;/code&gt; 很難看出來 true 代表的意思&lt;/li&gt;
+&lt;li&gt;可以改為 &lt;code&gt;Get(productId, isInStock: true)&lt;/code&gt; 就好&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;回傳值除了單純的運算式以外，一律回傳變數&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;(2022/1/25) 補充：&lt;/p&gt;
+&lt;p&gt;最近在命名方法時，關於動詞的部份我會參考兩個實用的東東，這邊也分享給各位：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/EngTW/English-for-Programmers&#34;&gt;EngTW/English-for-Programmers: 《程式英文》：用英文提昇程式可讀性 (github.com)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.microsoft.com/zh-tw/powershell/scripting/developer/cmdlet/approved-verbs-for-windows-powershell-commands?view=powershell-7.2#common-verbs&#34;&gt;已核准的 PowerShell 命令動詞 - PowerShell | Microsoft Docs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;斷行與縮排&#34;&gt;斷行與縮排&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;整潔的程式碼讀起來就像一篇優美的散文&lt;/p&gt;
+&lt;p&gt;　　—— 《無瑕的程式碼》&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;不要過多的斷行，也不要都擠在一起，&lt;strong&gt;組織成不同的段落&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;方法之間空一行&lt;/li&gt;
+&lt;li&gt;參數過長時斷至下一行&lt;/li&gt;
+&lt;li&gt;程式碼單行欄位數目以不超過 100~120 字元為原則&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;不要省略括弧，&lt;strong&gt;讓程式碼範疇／區塊明顯可見&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;迴圈和 IF 等區塊確實斷行和使用括弧，以維持可閱讀性&lt;/li&gt;
+&lt;li&gt;運算式的優先部分也要加上括弧，方便一眼看出計算順序&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;使 code 的&lt;strong&gt;順序流暢&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;參數按照傳入的順序排列&lt;/li&gt;
+&lt;li&gt;相似方法之間的傳入參數順序盡可能一致&lt;/li&gt;
+&lt;li&gt;相關的宣告和操作放在一起&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;當因為參數過多的時候必須斷到下一行時，從第一個參數之前就開始斷行
+&lt;ul&gt;
+&lt;li&gt;因本條規則斷行後，則一個參數獨立一行，必要時具名，使閱讀時能直接往下閱讀&lt;/li&gt;
+&lt;li&gt;不過如果方法參數過多，應先考慮是否重構該方法，極可能違反單一職責&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;風格一致、風格一致、風格一致&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;邏輯運算&#34;&gt;邏輯運算&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;儘管區塊只有一行（例如 if else），&lt;strong&gt;仍一律使用大括號&lt;/strong&gt;，避免改寫時沒注意到&lt;/li&gt;
+&lt;li&gt;條件式的左側為「變化值」、右側則是前者的「比較基準」
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;符合口語邏輯&lt;/strong&gt;：如果你高於 180 公分 =&amp;gt; &lt;code&gt;if(lenght &amp;gt; 180)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;處理 if/else 的順序時，大多有以下思路
+&lt;ul&gt;
+&lt;li&gt;先處理&lt;strong&gt;肯定&lt;/strong&gt;的再處理否定的（如：if 成功 else 失敗）&lt;/li&gt;
+&lt;li&gt;先處理&lt;strong&gt;簡單&lt;/strong&gt;的再處理複雜的（如：if 吃了一顆糖 else 吃了兩顆糖以上）&lt;/li&gt;
+&lt;li&gt;先處理比較&lt;strong&gt;有趣或明顯&lt;/strong&gt;的（舉例舉不出來= =）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;三元運算式&#34;&gt;三元運算式&lt;/h3&gt;
+&lt;p&gt;簡單卻繁瑣的時候使用，但是複雜的時候就乖乖用 if else。例如：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; gender = (member.Sex == &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;F&amp;#34;&lt;/span&gt;) ? &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;女性&amp;#34;&lt;/span&gt; : &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;男性&amp;#34;&lt;/span&gt;; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 很棒&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; result = (exponent &amp;gt;= &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;)? mantissa * (&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &amp;lt;&amp;lt; exponent): mantissa / (&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &amp;lt;&amp;lt; -exponent)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// ？？？&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;迴圈&#34;&gt;迴圈&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;迴圈不要用 do/while
+&lt;ul&gt;
+&lt;li&gt;因為大多數方法和區塊邏輯判斷都在前面，因此使用後置條件會影響閱讀性&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;減少巢狀結構，不要玩波動拳
+&lt;ul&gt;
+&lt;li&gt;減少巢狀的有效方法是「&lt;strong&gt;儘早返回&lt;/strong&gt;」：直接離開當前的函式&lt;/li&gt;
+&lt;li&gt;迴圈中可以使用 &lt;code&gt;continue&lt;/code&gt; 或 &lt;code&gt;break&lt;/code&gt; 來直接進入下一個或離開&lt;/li&gt;
+&lt;li&gt;在方法／函式中可以先處理能直接 &lt;code&gt;return&lt;/code&gt; 結果離開的區塊&lt;/li&gt;
+&lt;li&gt;發生錯誤或非預期結果時可以直接擲出錯誤 &lt;code&gt;throw new Exception&lt;/code&gt; 中斷程式&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;存取修飾詞&#34;&gt;存取修飾詞&lt;/h3&gt;
+&lt;p&gt;型別的存取層級，用來控制其他程式碼能不能使用這些型別或內容成員，也就是&lt;strong&gt;指定能夠存取的範圍，進而避免誤用、亂用或其他錯誤&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Public
+&lt;ul&gt;
+&lt;li&gt;可以讓同組件和參考該組件的任何其他程式碼存取&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Private
+&lt;ul&gt;
+&lt;li&gt;只能由相同類別或結構中的程式碼存取&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Protected
+&lt;ul&gt;
+&lt;li&gt;只能由相同類別或結構，或是從該類別衍生的類別存取&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Internal / Friend
+&lt;ul&gt;
+&lt;li&gt;可由相同組件的任何程式碼存取，但是其他組件的程式碼不能存取&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Static / Shared
+&lt;ul&gt;
+&lt;li&gt;用來宣告靜態成員&lt;/li&gt;
+&lt;li&gt;此成員屬於型別本身而不屬於任何物件（＝全實體共用同個成員）&lt;/li&gt;
+&lt;li&gt;不能用在索引子 (Indexer)、解構函式 (Destructor) 以及不在類別裡的型別&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;註解&#34;&gt;註解&lt;/h3&gt;
+&lt;p&gt;基本上對各個格式（如結構、函數）都必須加上說明註解，其中的參數和成員（例如列舉）也必須說明。
+VS 中 /// 就會幫忙把參數註解格式打好。例如：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-C#&#34; data-lang=&#34;C#&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 資料庫連線類別&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;DatabaseConstants&lt;/span&gt; : IDatabaseConstants
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// Something&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;重點在於：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;簡短敘述，避免模稜兩可或不知去向的代名詞（例如：更新那個東東）&lt;/li&gt;
+&lt;li&gt;描述函式行為，例如（計算檔案的行數 =&amp;gt; 計算檔案中的換行位元個數(\n)）&lt;/li&gt;
+&lt;li&gt;描述處理過程的原因，要知道做了什麼可以直接看程式碼，要知道為什麼做只能看註解&lt;/li&gt;
+&lt;li&gt;常數旁邊一定要做原因或用途的說明&lt;/li&gt;
+&lt;li&gt;函式可以加上範例 &lt;code&gt;&amp;lt;example&amp;gt; Strip(&amp;quot;aba&amp;quot;,&amp;quot;ab&amp;quot;) return &amp;quot;a&amp;quot; &amp;lt;/example&amp;gt;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;移除不需要的註解，例如日誌、署名、重複資訊、被註解掉的 code 之類&lt;/li&gt;
+&lt;li&gt;使用註解標籤：Todo = 待辦事項； Fixme = 需修復；可搭配 VS 內建的&lt;a href=&#34;https://reurl.cc/rl1Kab&#34;&gt;工作清單&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;附錄型別&#34;&gt;附錄：型別&lt;/h3&gt;
+&lt;h4 id=&#34;實質型別&#34;&gt;實質型別&lt;/h4&gt;
+&lt;p&gt;包含所有的數字型別、布林、字元和日期，以及結構和列舉&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;傳值&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;不允許 Null （除非特別指派 Nullable）&lt;/li&gt;
+&lt;li&gt;有隱含的預設建構式，不需要用 new&lt;/li&gt;
+&lt;li&gt;初始化之後才能使用&lt;/li&gt;
+&lt;li&gt;資料傳遞時是將&lt;strong&gt;資料&lt;/strong&gt;複製到另一個變數&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;參考型別&#34;&gt;參考型別&lt;/h4&gt;
+&lt;p&gt;能進一步分為陣列和類別型別，其中包含字串、所有陣列、類別、委派和介面。以及匿名和通用型別&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;傳址&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;必須要使用 new 建立實體，並將該實體的參考記在變數&lt;/li&gt;
+&lt;li&gt;資料傳遞時是將&lt;strong&gt;參考&lt;/strong&gt;複製到另一個變數&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;註記：&lt;strong&gt;字串比較特別&lt;/strong&gt;，實際上比較像一個結構。可以試著當成字元的串列比較好記，可以從 &lt;code&gt;char[] letters = {&#39;H&#39;,&#39;e&#39;,&#39;l&#39;,&#39;l&#39;,&#39;o&#39;};&lt;/code&gt; 和 &lt;code&gt;string a = new string(letters);&lt;/code&gt; 的實驗中感覺到一絲端倪。字串建立後也不允許直接變更，可能是藉此閃避一些更改時的問題。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&#34;轉型&#34;&gt;轉型&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;隱含轉換&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;屬於安全的轉換，所以不用使用特殊語法&lt;/li&gt;
+&lt;li&gt;小型到大型整數型別的轉換（如 int -&amp;gt; long）&lt;/li&gt;
+&lt;li&gt;衍生型別 (Derived Class) 到基底型別 (Base Class) 的轉換&lt;/li&gt;
+&lt;li&gt;例如 &lt;code&gt;int num = 2147483647; long bigNum = num;&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;明確轉換&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;資料可能在轉換中遺失或失敗時，需要使用轉型運算子&lt;/li&gt;
+&lt;li&gt;往精確度較低或範圍較小的型別進行的數值轉換（如 double -&amp;gt; int）&lt;/li&gt;
+&lt;li&gt;基底類別往衍生類別的轉換&lt;/li&gt;
+&lt;li&gt;例如 &lt;code&gt;double x = 1234.7; int y= (int)x&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;使用 Helper 類別轉換&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;在不相容型別間進行轉換時使用（如 int -&amp;gt; System.DateTime）&lt;/li&gt;
+&lt;li&gt;使用 Helper 進行轉換（如 Int32.Parse），例如
+&lt;ul&gt;
+&lt;li&gt;System.BitConverter 類別&lt;/li&gt;
+&lt;li&gt;System.Convert 類別&lt;/li&gt;
+&lt;li&gt;內建數字型別 (Numeric Type) 的 Parse 方法&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;例如 &lt;code&gt;string x = &amp;quot;2016-04-08&amp;quot;; DateTime z = System.DateTime.Parse(x)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>菜雞與物件導向 (2): 建構式、多載</title>
+      <link>https://igouist.github.io/post/2020/07/oo-2-constructor-overload/</link>
+      <pubDate>Sun, 12 Jul 2020 23:53:02 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2020/07/oo-2-constructor-overload/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/naCjLay.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;我就直接說了，有用前面的程式碼區塊的人，絕對執行不了。因為我們建立哥布林和戰士這兩張卡片的時候，根本就沒有給他們數值呀！&lt;/p&gt;
+&lt;p&gt;雖然可以先呼叫出來再賦值…&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; goblin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;goblin.Name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;哥布林&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;goblin.Attack = &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;goblin.Health = &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/* ...其他賦值 */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這實在相當占空間，也有點奇怪。畢竟如果是阿福（狗），一出生的時候應該就確定了一些特徵才對，例如品種、血型、眼睛顏色這種。並不會出生後過一陣子，才突然決定這些東西，既然如此，我們在產生物件的時候，當然也會希望在&lt;strong&gt;建立的同時就先決定好一部份內容&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;這時候我們就可以藉由&lt;strong&gt;建構式&lt;/strong&gt;的方式，在建立物件時就進行一些我們想要的操作。&lt;/p&gt;
+&lt;h2 id=&#34;建構式&#34;&gt;建構式&lt;/h2&gt;
+&lt;p&gt;事實上，&lt;strong&gt;當我們呼叫 &lt;code&gt;new Card()&lt;/code&gt; 的時候&lt;/strong&gt;（不覺得這個 () 很有呼叫方法的感覺嗎？）&lt;strong&gt;我們就是正在調用 Card 的建構式&lt;/strong&gt;。而當我們沒有特別去定義建構式的時候，就會直接使用內建的建構式去幫我們產生物件。&lt;/p&gt;
+&lt;p&gt;現在我們替 Card 新增一個建構式：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Card&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card (&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; attack, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; health)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Name = name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Attack = attack;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Health = health;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/* ... 其他屬性和方法 */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在 C# 的時候，建構式必須和類別同名，且不需要定義回傳類型。當我們有了建構式，剛剛的例子就可以改寫成：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; goblin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card(name: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;哥布林&amp;#34;&lt;/span&gt;, attack: &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, health: &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; warrior = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card(name: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;戰士&amp;#34;&lt;/span&gt; , attack: &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;, health: &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;warrior.Hit(goblin);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;建構式也就是建立這個物件時執行的函式&lt;/strong&gt;，通常會用來進行初始化，也就是做一些建立物件必要的準備。例如傳遞必要屬性或是建構需要的其他物件、或是給予私有屬性初始值等等，例如說我們的卡牌一建立，就會需要知道它的名字和戰鬥力，這樣才有卡牌的感覺，而不該像一些 &lt;a href=&#34;https://zh.wikipedia.org/wiki/%E6%AD%A6%E8%97%A4%E9%81%8A%E6%88%B2&#34;&gt;壞決鬥者&lt;/a&gt; 邊打牌邊偷偷印卡。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;註：當然有建立時執行的，也就會有消滅時執行的。請參見 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/csharp/programming-guide/classes-and-structs/destructors&#34;&gt;解構式&lt;/a&gt;，由於較少用到，此處先按下不表。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;多載&#34;&gt;多載&lt;/h2&gt;
+&lt;p&gt;當然，有了建構式就會有更多問題。現在我們只有一個方法可以建立卡牌了，這無疑是相當不彈性的，例如說我希望預設的攻擊力和血量就是四呢？實際上我們經常會遇到需要用不同素材去建立一個物件的場合，這時候就必須得提到另一個要點：多載了。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;多載指的就是可以有很多個同樣名字的方法，各自去接不同的參數&lt;/strong&gt;。例如說我們的 Card 建構式就可以利用多載來改造一下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Card&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card (&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; attack, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; health)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Name = name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Attack = attack;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Health = health;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card (&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Name = name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Attack = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Level;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Health = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Level;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card ()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Noname&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Attack = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Level;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Health = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Level;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如此一來，我們在建立卡片的時候就能夠有更多選擇了，現在我們可以根據狀況給予需要的參數，剩下的就交給建構式去處理就好。&lt;/p&gt;
+&lt;p&gt;實務上，如果規則或是建立的步驟一致的話，為了能夠把規則集中到一個地方方便修改，並且減少多餘的程式碼。我們通常會試著讓其他的建構式去呼叫主要的建構式，在 C# 中，呼叫自己的建構式是使用 &lt;code&gt;: this()&lt;/code&gt; 來進行的，例如：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card (&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; attack, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; health)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Name = name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Attack = attack;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Health = health;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 會呼叫上面那個建構式&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card (&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name) : &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;(name: name, attack: &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;, health: &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 呼叫完 Card(name, attack, health) 之後做的事&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 會呼叫上面那一個建構式&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card () : &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;(name: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Noname&amp;#34;&lt;/span&gt;) 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 呼叫完 Card(name) 之後做的事   &lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如此一來只要建構的方式有變更，我們只需要集中修改第一個建構式就好了。這部份的流程也可以參照 &lt;a href=&#34;https://dotblogs.com.tw/yc421206/2011/07/25/32097&#34;&gt;[C#.NET] 為建構子建立正確的初始化 - 余小章 @ 大內殿堂&lt;/a&gt; 這篇的說明。&lt;/p&gt;
+&lt;p&gt;當然多載也不只是用在建構子，而是大多數時候都可以用的寫法。例如當你的函式&lt;strong&gt;雖然做同樣的事，但允許接收不同的參數來處理時，就請考慮使用多載&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;例如說當你要記錄發生錯誤時的 Log ，就能允許只傳遞錯誤內容，或是傳遞錯誤內容和當時操作的參數，甚至是當下的環境資料等等。&lt;/p&gt;
+&lt;p&gt;又或者是查詢客戶資料（GetUser 之類的）的函式，提供使用 客戶代號，或是 訂單編號 等不同的方式進行查詢時，就可以考慮多載的應用。&lt;/p&gt;
+&lt;p&gt;例如說 .net 中協助類別對映的名套件 &lt;a href=&#34;https://igouist.github.io/post/2020/07/automapper&#34;&gt;AutoMapper&lt;/a&gt;，在轉換類別的 Map 方法就很漂亮地使用了多載：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/DAgNTwc.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;註：看不到圖片的可以直接看 &lt;a href=&#34;https://github.com/AutoMapper/AutoMapper/blob/master/src/AutoMapper/Mapper.cs&#34;&gt;Github&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;當然隨著多載的應用越來越稀鬆平常，時至今日，我們只要使用&lt;strong&gt;選擇性參數&lt;/strong&gt;就可以輕鬆達到一樣的效果囉：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Card (&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Noname&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; attack = &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; health = &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Name = name;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Attack = attack;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.Health = health;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;當有預設值的時候，該參數就會變成可選的，這時候就可以輕鬆決定要傳進來的內容了。當然，如果傳進來的並非只是數量上的差別，而是整個型別都不一樣的話，還是要回歸到多載的做法，建立兩個同名但不同傳入參數類型的方法，可讀性會比較高呦。&lt;/p&gt;
+&lt;p&gt;多載提供的好處在於：&lt;strong&gt;同個目標的函式可以根據傳入的參數不同做不一樣的處理&lt;/strong&gt;。例如當我們寫了一個連線取資料的方法，可以分為&lt;/p&gt;
+&lt;p&gt;(1) 傳入連線的話，就使用連線取得資料&lt;/p&gt;
+&lt;p&gt;(2) 傳入連線字串的話，就先用連線字串開啟連線，再使用連線取得資料&lt;/p&gt;
+&lt;p&gt;等等，根據參數的場合來進行處理。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;藉由傳入不同的參數類型和數量，就可以處理不同狀況的內容，既擴展了函式在使用上的彈性，同時也增加函式能派上用場的時機&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;而最重要的是這將讓編寫程式的人員去思考：&lt;strong&gt;我設計的這個方法將能應用在什麼場景？&lt;/strong&gt; 這將會成為一個相當優良的習慣。&lt;/p&gt;
+&lt;p&gt;那麼這次就說到這裡，我們&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-3-encapsulation&#34;&gt;下篇&lt;/a&gt;見！&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本系列下一篇：&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-3-encapsulation&#34;&gt;菜雞與物件導向 (3): 封裝&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://matthung0807.blogspot.com/2018/02/java-overload.html&#34;&gt;Java 什麼是多載(Overload), 覆寫(Override), 多型(Polymorphism) - 菜鳥工程師肉豬&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-2_%E5%BB%BA%E6%A7%8B%E5%BC%8Fconstructor%E5%A4%9A%E8%BC%89overloading%E8%88%87%E8%A6%86%E5%AF%ABoverriding/&#34;&gt;Object Oriented物件導向-2:建構式(Constructor)、多載(Overloading)與覆寫(Overriding) - Sian&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://dotblogs.com.tw/yc421206/2011/07/25/32097&#34;&gt;[C#.NET] 為建構子建立正確的初始化 - 余小章 @ 大內殿堂&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://adon988.logdown.com/posts/1185453-c-destructors-teaching-notes-using-visual-studio&#34;&gt;C# 解構子 Destructors - 教學筆記&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.tenlong.com.tw/products/9789866761799&#34;&gt;《大話設計模式》附錄：物件導向基礎&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;同系列文章&#34;&gt;同系列文章&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-0-object-oriented&#34;&gt;菜雞與物件導向 (0): 前言&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-1-class-object&#34;&gt;菜雞與物件導向 (1): 類別、物件&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-2-constructor-overload&#34;&gt;菜雞與物件導向 (2): 建構式、多載&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-3-encapsulation&#34;&gt;菜雞與物件導向 (3): 封裝&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-4-inheritance&#34;&gt;菜雞與物件導向 (4): 繼承&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-5-polymorphism&#34;&gt;菜雞與物件導向 (5): 多型&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-6-abstract-override&#34;&gt;菜雞與物件導向 (6): 抽象、覆寫&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-7-interface&#34;&gt;菜雞與物件導向 (7): 介面&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;菜雞與物件導向 (8): 內聚、耦合&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-9-solid&#34;&gt;菜雞與物件導向 (9): SOLID&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle&#34;&gt;菜雞與物件導向 (10): 單一職責原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-11-open-closed-principle&#34;&gt;菜雞與物件導向 (11): 開放封閉原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle&#34;&gt;菜雞與物件導向 (12): 里氏替換原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle&#34;&gt;菜雞與物件導向 (13): 介面隔離原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle&#34;&gt;菜雞與物件導向 (14): 依賴反轉原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/12/oo-15-least-knowledge-principle&#34;&gt;菜雞與物件導向 (15): 最少知識原則&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/01/oo-ex1-end2020&#34;&gt;菜雞與物件導向 (Ex1): 小結&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>AutoMapper —— 類別轉換超省力</title>
+      <link>https://igouist.github.io/post/2020/07/automapper/</link>
+      <pubDate>Sun, 05 Jul 2020 23:40:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2020/07/automapper/</guid>
+      <description>&lt;p&gt;類別間的轉換幾乎是每個專案每個工程師都會碰到的動作，舉凡是分層架構每層之間的轉換，如 Dto 轉換成 ViewModel；或是接收到資料要塞進自定義的類別時也需要進行轉換。但&lt;strong&gt;在遠古時代，當我們要把一個類別的資料倒進另一個類別時，總免不了一番折騰&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;例如一個卡片對戰遊戲的資料庫，光是要先把卡片資料讀取出來就需要：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/c81Hx5I.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;有些時候也會看見用 Foreach 然後逐一傳值的場景，或是各種差不多的變種情況。同樣的是，光是將一個簡單的卡片資訊轉換成 ViewModel，就花了一大段在做對映的處理。這個過程本身枯燥乏味又占空間，更可怕的是，&lt;strong&gt;如果有個陳年資料表，動不動就上百個欄位，那這個轉換過程的恐怖程度可想而知&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;幸好！天無絕人之路，這種時候就是本日的主角 —— AutoMapper 出場的時候了。&lt;/p&gt;
+&lt;p&gt;當 AutoMapper 一出手，轉換的過程瞬間就變成：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/KxHAKpi.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;是不是精簡很多呢？接著就讓我們來看看怎麼開始使用吧！&lt;/p&gt;
+&lt;h2 id=&#34;安裝與使用&#34;&gt;安裝與使用&lt;/h2&gt;
+&lt;p&gt;首先，當然要先到 NuGet 把 AutoMapper 給裝下來。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TEAZwU7.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/3ADyJXv.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;確認安裝之後，就開始基本的使用吧。&lt;/p&gt;
+&lt;p&gt;只需要&lt;strong&gt;先註冊好 Mapper 的設定內容，也就是哪些類別之間可以互相對映；再實體化 Mapper 出來使用就可以了&lt;/strong&gt;。直接看程式碼應該就能理解：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;CardViewModel&amp;gt; GetCard()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; data = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.GetCardFromRepositoryMock();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        cfg.CreateMap&amp;lt;Card, CardViewModel&amp;gt;()); &lt;span style=&#34;color:#75715e&#34;&gt;// 註冊Model間的對映&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; mapper = config.CreateMapper(); &lt;span style=&#34;color:#75715e&#34;&gt;// 建立 Mapper&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; result = mapper.Map&amp;lt;IEnumerable&amp;lt;CardViewModel&amp;gt;&amp;gt;(data); &lt;span style=&#34;color:#75715e&#34;&gt;// 轉換型別&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;沒錯，只需要簡簡單單幾步， &lt;strong&gt;AutoMapper 會自動將指定類別間同樣名稱的屬性內容做轉換&lt;/strong&gt; ，因此能夠省下相當多的功夫，也能夠隱藏類別本身的內容，專心在處理功能本身。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;註：網路上挺多 AutoMapper 的文章會直接使用 &lt;code&gt;Mapper.CreateMap()&lt;/code&gt; 這類靜態方法，然而這些方法已經在 AutoMapper 5 的時候被廢除，改成現在由 &lt;code&gt;MapperConfiguration&lt;/code&gt; 產生 Mapper 的方法。&lt;/p&gt;
+&lt;p&gt;然而整體的使用方式仍然大同小異，這些文章仍能稍微調整並使用，惟使用過程中需自己注意語法的差異和多加測試。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;客製化轉換&#34;&gt;客製化轉換&lt;/h3&gt;
+&lt;p&gt;但當然實際上我們並不一定每個欄位的名稱都是一模一樣的，總是會有遇到同個資料在不同層的 Model 裡名稱不一樣的時候，又或者是某個欄位是由兩三個欄位組成的時候。對於這種需要客製化的轉換，這時候我們就可以在註冊對映時對欄位內容的對映方式做指定：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    cfg.CreateMap&amp;lt;Card, CardViewModel&amp;gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .ForMember(x =&amp;gt; x.Id, y =&amp;gt; y.MapFrom(o =&amp;gt; o.CardId))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .ForMember(x =&amp;gt; x.Name, y =&amp;gt; y.MapFrom(o =&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;{o.Id}: {o.Name}&amp;#34;&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ); &lt;span style=&#34;color:#75715e&#34;&gt;// 註冊Model間的對映 建立設定檔&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以看到 &lt;strong&gt;我們能用 &lt;code&gt;ForMember&lt;/code&gt; 去對類別成員做操作，並傳入目標的類別成員，以及該成員對應的操作，像這邊就使用 &lt;code&gt;MapFrom&lt;/code&gt; 來指定目標類別成員的轉換來源&lt;/strong&gt;，這樣就可以達到轉換時的客製化了。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;註：對於欄位之間有使用 &lt;code&gt;ForMember&lt;/code&gt; 來處理過內容再轉換的型別，建議在轉換型別時，也就是實際 mapper.Map() 的時候，稍做註解提醒一下。&lt;/p&gt;
+&lt;p&gt;尤其是會將 Mapper 的 Config 集中整理的架構裡更應該要對額外的操作做揭露，這樣對彼此都好。真的。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;補充：AutoMapper 在轉換像是 &lt;code&gt;IEnumerable&amp;lt;T&amp;gt;&lt;/code&gt; 這類的集合時，預設會將來源為 Null 的成員轉換成空集合（而非 Null）&lt;/p&gt;
+&lt;p&gt;如果希望 Null 就好好轉換成 Null 的朋友，可以在建立設定檔時用 &lt;code&gt;cfg.AllowNullCollections = true;&lt;/code&gt; 來讓所有為 Null 的空集合轉換對象都乖乖保持 Null&lt;/p&gt;
+&lt;p&gt;也能夠在 ForMember 的時候使用 AllowNull 來針對欄位指定規則。例如 &lt;code&gt;ForMember(x =&amp;gt; x.Members, y =&amp;gt; y.AllowNull())&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;需要更詳細說明的朋友，也可以參照官方文檔的 &lt;a href=&#34;https://docs.automapper.org/en/stable/Lists-and-arrays.html#handling-null-collections&#34;&gt;Handling null collections&lt;/a&gt; 一節&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;忽略指定的欄位&#34;&gt;忽略指定的欄位&lt;/h3&gt;
+&lt;p&gt;除了會有欄位名稱和來源的不同以外，最常遇到的應該就是兩個類別之間大多數欄位雖然對映，但某幾個欄位是沒有對映的。例如傳送給前端使用時一併送出其他來源的資料，但資料由資料表取出時並沒有這個欄位，必須轉換以後再呼叫別的方法去補上資料。&lt;strong&gt;如果直接使用 Map 來進行轉換，就會發生找不到對映欄位的錯誤。這時候就可以使用 &lt;code&gt;Ignore&lt;/code&gt; 來忽略掉指定的欄位&lt;/strong&gt;。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    cfg.CreateMap&amp;lt;Card, CardViewModel&amp;gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       .ForMember(x =&amp;gt; x.ImgUri, y =&amp;gt; y.Ignore())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如上述程式碼，可能卡片的圖像位置必須由別的方式取得，這種情況我們在 &lt;code&gt;ForMember&lt;/code&gt; 的時候就可以將其指定為 &lt;code&gt;Ignore&lt;/code&gt; 讓 AutoMapper 不要去嘗試轉換它。除了 &lt;code&gt;Ignore&lt;/code&gt; 以外，AutoMapper 還有配備像是 &lt;code&gt;IgnoreAllPropertiesWithAnInaccessibleSetter&lt;/code&gt; 這種光方法名稱長度就有點強的大殺器，也還有像是 &lt;code&gt;AllowNull&lt;/code&gt; 等更多對欄位操作的方法，這部份請各位在使用時按照需求自行摸索。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;註(1)：上述舉的例子中有需要從多個來源轉換為一個類別的場合，可以參照 &lt;a href=&#34;https://kevintsengtw.blogspot.com/2014/03/automapper.html&#34;&gt;AutoMapper 兩個物件對映到一個類別 - mrkt 的程式學習筆記&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;註(2)：上面使用到的 Ignore 方法還是有些眉角需要注意，可以參照 &lt;a href=&#34;https://dotblogs.com.tw/supershowwei/2016/07/17/162815&#34;&gt;[料理佳餚] AutoMapper 中不容忽視的 Ignore() Mapping 的順序 - 軟體主廚的程式料理廚房&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;註(3)：面對一些比較複雜的轉換時，也可以考慮使用 &lt;a href=&#34;https://igouist.github.io/post/2021/12/automapper-convert-using/&#34;&gt;ConvertUsing&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;最後還要補充的一個方法是 &lt;code&gt;ReverseMap&lt;/code&gt; ，它能夠反轉對映，建立一個反方向的對映表。當你的類別之間可能需要往回轉型，又或是想要忽略來源類別的欄位時，&lt;code&gt;ReverseMap&lt;/code&gt; 就會顯得相當有用。通常為了避免轉來轉去轉出意外，建議註冊時還是補上一個 &lt;code&gt;ReverseMap&lt;/code&gt; 為佳。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    cfg.CreateMap&amp;lt;Card, CardViewModel&amp;gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       .ForMember(x =&amp;gt; x.Id, y =&amp;gt; y.MapFrom(o =&amp;gt; o.CardId))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       .ForMember(x =&amp;gt; x.ImgUri, y =&amp;gt; y.Ignore())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       .ReverseMap() &lt;span style=&#34;color:#75715e&#34;&gt;// 反轉&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    );
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;到目前為止，程式碼可能會變成如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;CardViewModel&amp;gt; GetCard()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; data = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.GetCardFromRepositoryMock();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        cfg.CreateMap&amp;lt;Card, CardViewModel&amp;gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;           .ForMember(x =&amp;gt; x.Id, y =&amp;gt; y.MapFrom(o =&amp;gt; o.CardId))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;           .ForMember(x =&amp;gt; x.Name, y =&amp;gt; y.MapFrom(o =&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;{o.Id}: {o.Name}&amp;#34;&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;           .ForMember(x =&amp;gt; x.ImgUri, y =&amp;gt; y.Ignore())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;           .ReverseMap());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; mapper = config.CreateMapper(); &lt;span style=&#34;color:#75715e&#34;&gt;// 建立 Mapper&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; result = mapper.Map&amp;lt;IEnumerable&amp;lt;CardViewModel&amp;gt;&amp;gt;(data); &lt;span style=&#34;color:#75715e&#34;&gt;// 轉換型別&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;(2021/6/9) 補充：&lt;/p&gt;
+&lt;p&gt;在我們前面提到的欄位轉換時，要特別注意兩個欄位的型別是否能夠對應上。由於 AutoMapper 會貼心地幫我們進行轉換，但有些時候可能會產生問題，讓我們看看下面這個例子：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Boo&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt; Val { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Foo&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Val { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Foo Sut()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; boo = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Boo
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Val = &lt;span style=&#34;color:#ae81ff&#34;&gt;2.65&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    };
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        cfg.CreateMap&amp;lt;Boo, Foo&amp;gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; mapper = config.CreateMapper();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; foo = mapper.Map&amp;lt;Foo&amp;gt;(boo);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; foo; &lt;span style=&#34;color:#75715e&#34;&gt;// 3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以看到上面這個例子中，我們可以把 &lt;code&gt;double&lt;/code&gt; 的欄位直接 Mapping 到 &lt;code&gt;int&lt;/code&gt; 的欄位上，因為 AutoMapper 的貼心，所以不會出錯，但過程中還是可能發生喪失精度的問題。&lt;/p&gt;
+&lt;p&gt;像是例子中的 2.65 就直接變成了 3，如果符合我們的需求（例如本來就打算轉型）倒是沒關係，但如果是因為不小心轉到的話，在找問題上可能就會比較麻煩。&lt;/p&gt;
+&lt;p&gt;因此在轉換的時候，還請特別留意一下轉換雙方的型別，測試一下轉換結果是不是自己要的結果會比較好呦。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;簡化整理&#34;&gt;簡化整理&lt;/h2&gt;
+&lt;p&gt;可能看到這裡有些讀者就開始疑惑了：這好像跟一開始簡介不太一樣啊，詐欺？又或者是：我每個方法裡面都要重新建一個 Mapper？這不太對吧？&lt;/p&gt;
+&lt;p&gt;的確是這樣沒錯，AutoMapper 要達到更簡潔，還需要再做一些整理。例如使用 Profile 將對映關係集中起來，以及把 Mapper 的建構抽取出來。可能是在建構式建立共用的 Mapper ，或是以依賴注入 (Dependency Injection) 的方式來注入 Mapper 等等。以下就逐步進行介紹。&lt;/p&gt;
+&lt;h3 id=&#34;profile&#34;&gt;Profile&lt;/h3&gt;
+&lt;p&gt;首先我們先建立一個用來放對映關係的 Profile。我個人習慣會另開一個 Mappings 資料夾，並按照轉換所在的分層 + Mappings 來命名。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ServiceMappings&lt;/span&gt; : Profile
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; ServiceMappings()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        CreateMap&amp;lt;Card, CardViewModel&amp;gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .ForMember(x =&amp;gt; x.Id, y =&amp;gt; y.MapFrom(o =&amp;gt; o.CardId))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .ForMember(x =&amp;gt; x.Name, y =&amp;gt; y.MapFrom(o =&amp;gt; &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;{o.Id}: {o.Name}&amp;#34;&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .ForMember(x =&amp;gt; x.ImgUri, y =&amp;gt; y.AllowNull())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .ReverseMap(); 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// ...其他的對映內容 (使用 CreateMap&amp;lt;&amp;gt; 建立下一組)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;從上面可以看到，我們&lt;strong&gt;繼承 AutoMapper 提供的 Profile 類，接著在建構式裡面將需要的轉換關係組都建立起來&lt;/strong&gt;。接著當我們建立 Mapper 時，就可以直接用 &lt;code&gt;AddProfile&lt;/code&gt; 和建立好的 Profile 來直接讀入對映關係：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;CardViewModel&amp;gt; GetCard()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; data = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.GetCardFromRepositoryMock();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt; cfg.AddProfile&amp;lt;ServiceMappings&amp;gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; mapper = config.CreateMapper(); &lt;span style=&#34;color:#75715e&#34;&gt;// 用設定檔建立 Mapper&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; result = mapper.Map&amp;lt;IEnumerable&amp;lt;CardViewModel&amp;gt;&amp;gt;(data); &lt;span style=&#34;color:#75715e&#34;&gt;// 轉換型別&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;當然，&lt;strong&gt;在 &lt;code&gt;MapperConfiguration&lt;/code&gt; 的時候是可以對 cfg 去做多次 &lt;code&gt;AddProfile&lt;/code&gt; 的&lt;/strong&gt;，既然可以載入多組對映關係，就代表可以按照實務上的運用去將對映關係做分類和整理。&lt;/p&gt;
+&lt;p&gt;這邊還是要再度提醒一下，將 &lt;code&gt;CreateMap&lt;/code&gt; 都整理到 Profile 之後，若是有些類別之間的轉換有對欄位做額外的處理，例如 DateTime 去除時間只留下年月日，又或是某幾個欄位銜接成一個欄位等等，&lt;strong&gt;在實際進行類別轉換的時候需要註記一下，請後續的維護人員或團隊夥伴記得先確認過 Profile，避免造成一些隱藏重要資訊挖洞給人跳的問題&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3 id=&#34;整理到建構式&#34;&gt;整理到建構式&lt;/h3&gt;
+&lt;p&gt;接著由於一個處理資料或商業邏輯的部分通常會有許多方法都用到 Mapper，因此將建立 Mapper 的過程取出來避免重複絕對是必要的。故整理的第一步就是將 Mapper 的建立拆分出來，不再等每次用到的時候才建，而是先建立好一個 Mapper，需要的時候再來使用它。&lt;/p&gt;
+&lt;p&gt;這邊就先嘗試將其挪到私有變數和建構式處理：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; IMapper _mapper;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; MapSimpleService() &lt;span style=&#34;color:#75715e&#34;&gt;// 建構式&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        cfg.AddProfile&amp;lt;ServiceMappings&amp;gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;._mapper = config.CreateMapper();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;那麼我們實際上的方法就會變成：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;CardViewModel&amp;gt; GetCard()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; data = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.GetCardFromRepositoryMock();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; result = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;._mapper.Map&amp;lt;IEnumerable&amp;lt;CardViewModel&amp;gt;&amp;gt;(data);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;走向注入&#34;&gt;走向注入&lt;/h3&gt;
+&lt;p&gt;由於本篇篇幅無法說明好依賴注入（DI）的概念，相關的部份就留待在&lt;a href=&#34;https://igouist.github.io/post/2021/11/newbie-6-dependency-injection&#34;&gt;之後的文章&lt;/a&gt;中說明，這邊就以 .net Core 為示範來記錄一下步驟，提供給已經會 DI 的朋友參考。&lt;/p&gt;
+&lt;p&gt;在開始之前，我們會需要再前往 NuGet 安裝 AutoMapper DI 用的套件：
+&lt;img src=&#34;https://i.imgur.com/hae1zfj.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著在 &lt;code&gt;Startup.cs&lt;/code&gt; 裡的 &lt;code&gt;ConfigureServices&lt;/code&gt; 加上 &lt;code&gt;services.AddAutoMapper(typeof(Startup))&lt;/code&gt; 來註冊我們的 Mapper：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; ConfigureServices(IServiceCollection services)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    services.AddControllers(); 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// Demo 用的 Service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    services.AddScoped&amp;lt;IMapSimpleService, MapSimpleService&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 註冊 Mapper&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    services.AddAutoMapper(&lt;span style=&#34;color:#66d9ef&#34;&gt;typeof&lt;/span&gt;(Startup)); 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可能有些人會有點疑惑：前面還需要 &lt;code&gt;MapperConfiguration&lt;/code&gt; 怎麼這次不用了呢？那是因為 &lt;code&gt;AddAutoMapper&lt;/code&gt; 的時候就會用反射去取得同組件中的 &lt;code&gt;Profile&lt;/code&gt; 來載入，所以這部分就可以不用擔心，只要專心在使用上就好。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;(2021/4/23) 補充：&lt;/p&gt;
+&lt;p&gt;感謝同事們的討論，這邊也補充給大家參考一下&lt;/p&gt;
+&lt;p&gt;當我們直接使用 &lt;code&gt;services.AddAutoMapper(typeof(Startup));&lt;/code&gt; 註冊的時候，AutoMapper 會去抓我們 &lt;code&gt;typeof&lt;/code&gt; 的型別，並對該型別所在的 Assembly 進行反射找出所有的 &lt;code&gt;Profile&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;但如果你有用到多層的架構、或是不同的組件內都有 &lt;code&gt;Profile&lt;/code&gt; 需要註冊，又或者只是想要逐個 &lt;code&gt;Profile&lt;/code&gt; 進行註冊，方便進行控管的話，可以考慮使用 &lt;strong&gt;&lt;code&gt;AddProfile&lt;/code&gt;&lt;/strong&gt; 或 &lt;strong&gt;&lt;code&gt;AddProfiles&lt;/code&gt;&lt;/strong&gt; 的方式來進行註冊，例如：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;services.AddAutoMapper(config =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    config.AddProfile&amp;lt;ControllerProfile&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    config.AddProfile&amp;lt;ServiceProfile&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這樣的可讀性更好，也能讓維護的人迅速掌握當前的 Profile，有需要的朋友可以嘗試看看。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;(2021/8/27) 補充：&lt;/p&gt;
+&lt;p&gt;感謝 &lt;a href=&#34;https://raychiutw.github.io/&#34;&gt;Ray&lt;/a&gt; 大大提供的方法，這邊也補充給大家參考一下&lt;/p&gt;
+&lt;p&gt;我們前面有提到 &lt;code&gt;AddAutoMapper&lt;/code&gt; 會對該型別所在的 Assembly 進行反射找出所有的 &lt;code&gt;Profile&lt;/code&gt;，那麼我們也可以轉換一下思路：只要把全部的組件都丟到 &lt;code&gt;AddAutoMapper&lt;/code&gt; 裡就好了！這種時候我們就可以利用反射來達到我們的目的：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;相較於 &lt;code&gt;AddProfile&lt;/code&gt; 這種逐一新增 &lt;code&gt;Profile&lt;/code&gt; 的作法，利用反射會讓註冊顯得更乾淨，並且也更不容易有所遺漏。各位可以按照開發的場景選擇一下註冊的方式，有需要的朋友也可以都嘗試看看。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;註冊好之後，我們就能將剛剛的示範部分更改為使用注入的方式來取得 Mapper：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; IMapper _mapper;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; MapSimpleService(IMapper mapper) &lt;span style=&#34;color:#75715e&#34;&gt;// 建構式&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;._mapper = mapper;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;執行之後就能確認確實有轉換到值囉！最後再來對照一下商業邏輯的部份：&lt;/p&gt;
+&lt;p&gt;－－瘦身前－－&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;CardViewModel&amp;gt; GetCard()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; data = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.GetCardFromRepositoryMock();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; result = data.Select(x =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; CardViewModel
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Id = x.Id,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Name = x.Name,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Cost = x.Cost,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Attack = x.Attack,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Health = x.Health,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Note = x.Note &lt;span style=&#34;color:#75715e&#34;&gt;// ...etc&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        });
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;－－瘦身後－－&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;CardViewModel&amp;gt; GetCard()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; data = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;.GetCardFromRepositoryMock();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; result = &lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt;._mapper.Map&amp;lt;IEnumerable&amp;lt;CardViewModel&amp;gt;&amp;gt;(data);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;結語&#34;&gt;結語&lt;/h2&gt;
+&lt;p&gt;當我們把類別轉換的區段利用 AutoMapper 擷取出來，就能&lt;strong&gt;讓原本的程式碼更著重在該方法本身的邏輯和功能&lt;/strong&gt;，而不會被冗長的轉換過程洗版，使用 Mapper 的方法只要知道這兩個類別能夠互相轉換即可。除了看起來更舒服、更能將焦點放在方法本身以外，也能夠讓維護時的修改更加直覺，若是轉換的過程需要修改，就去變更 Profile，不需要去變動實現商業邏輯的方法本身，這樣就能朝單一職責的目標更前進一點。&lt;/p&gt;
+&lt;p&gt;到這邊算是把 AutoMapper 基本的用法介紹過一遍了，當然還有很多進階的用法和需要注意的部分並沒有說明完全，但相信這樣的紀錄已經能夠幫助我在將來需要的時候回想起怎麼使用，和解決大部分需要做類別轉換的場景了。剩餘的延伸閱讀將會補充在參考資料裡，那麼下週見～&lt;/p&gt;
+&lt;h2 id=&#34;參考資料及延伸閱讀&#34;&gt;參考資料及延伸閱讀&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://dotblogs.com.tw/yc421206/2016/07/15/automapper_version_5_MapperConfiguration&#34;&gt;[AutoMapper] AutoMapper 5.0.2 的新寫法 - 余小章 @ 大內殿堂&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://kevintsengtw.blogspot.com/2013/04/automapper.html&#34;&gt;使用 AutoMapper 處理類別之間的對映轉換 - mrkt 的程式學習筆記&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://kevintsengtw.blogspot.com/2014/03/automapper.html&#34;&gt;AutoMapper 兩個物件對映到一個類別 - mrkt 的程式學習筆記&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://kevintsengtw.blogspot.com/2013/04/automapper-configuration.html&#34;&gt;AutoMapper 的設定 (Configuration) - mrkt 的程式學習筆記&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://dotblogs.com.tw/yc421206/2014/12/12/147619&#34;&gt;[C#.NET] 使用 AutoMapper.Profile 簡化對應設定 - 余小章 @ 大內殿堂&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10157130&#34;&gt;AutoMapper 介紹 - 簡單化Entity和ViewModel之間的轉換&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://dotblogs.com.tw/keigen/2017/06/28/151917&#34;&gt;AutoMapper 初體驗 - 中年大叔的鹹魚翻身作戰計畫&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://iter01.com/155318.html&#34;&gt;.NET Core 中依賴注入 AutoMapper 小記 - IT人&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://dotblogs.com.tw/supershowwei/2016/07/17/162815&#34;&gt;[料理佳餚] AutoMapper 中不容忽視的 Ignore() Mapping 的順序 - 軟體主廚的程式料理廚房&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/12/automapper-convert-using/&#34;&gt;AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Electron.net —— 把網頁包成桌面應用吧</title>
+      <link>https://igouist.github.io/post/2020/06/electron-net/</link>
+      <pubDate>Sun, 28 Jun 2020 19:41:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2020/06/electron-net/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://github.com/ElectronNET/Electron.NET/raw/master/assets/images/electron.net-logo.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;因緣際會下想要弄出一些單機小工具來跑，這時候正巧接觸到 &lt;a href=&#34;https://github.com/ElectronNET/Electron.NET&#34;&gt;Electron.net&lt;/a&gt; 這個神器，特別紀錄一下以免忘記。這是 &lt;a href=&#34;https://www.electronjs.org/&#34;&gt;Electron&lt;/a&gt; 搭配 .net Core 的框架， &lt;strong&gt;Electron 是用 Chromium 和 Node.js 將網頁封裝成桌面應用程式&lt;/strong&gt;，像是 Visual Studio Code、Slack 也都有使用到 Electron。而 &lt;a href=&#34;https://github.com/ElectronNET/Electron.NET&#34;&gt;Electron.net&lt;/a&gt; 顧名思義就是 .net 用的 Electron 框架囉。&lt;/p&gt;
+&lt;p&gt;這邊記錄一下自己嘗試時載入套件和建置的流程，主要參考自黑大的 &lt;a href=&#34;https://blog.darkthread.net/blog/electron-net/&#34;&gt;用 ASP.NET Core 寫桌面 GUI 應用程式 - Electron.NET&lt;/a&gt; 和 &lt;a href=&#34;https://blog.darkthread.net/blog/electron-api-brief/&#34;&gt;Electron.NET API 快速巡覽&lt;/a&gt; 這兩篇文章，以及官方的 &lt;a href=&#34;https://github.com/ElectronNET/electron.net-api-demos&#34;&gt;API DEMO&lt;/a&gt;，特此感謝。&lt;/p&gt;
+&lt;p&gt;本篇小節：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%AE%89%E8%A3%9D%E5%A5%97%E4%BB%B6%E5%8F%8A%E7%92%B0%E5%A2%83%E8%A8%AD%E7%BD%AE&#34;&gt;安裝套件及環境設置&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%89%8D%E5%BE%8C%E7%AB%AF%E5%82%B3%E5%80%BC-ipcmain-ipcrenderer&#34;&gt;前後端傳值 (IpcMain, IpcRenderer)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E6%89%93%E5%8C%85%E6%88%90%E5%9F%B7%E8%A1%8C%E6%AA%94exe&#34;&gt;打包成執行檔（.exe）&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%BE%8C%E8%A8%98&#34;&gt;後記&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99&#34;&gt;參考資料&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;那麼首先從建立新專案開始，這邊用 .net Core MVC 來測試&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/xf2fOwT.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/O0jwPZF.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;安裝套件及環境設置&#34;&gt;安裝套件及環境設置&lt;/h2&gt;
+&lt;p&gt;建立專案之後，前往 Nuget 先把 &lt;strong&gt;ElectronNET API&lt;/strong&gt; 安裝下來&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/hT5JZu0.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;安裝完畢之後，開始做一些前置動作，首先：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Program.cs&lt;/code&gt; 的部分，加上 &lt;code&gt;.UseElectron(args)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Vm7P1ds.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Startup.cs&lt;/code&gt; 的部分，加上 &lt;code&gt;Task.Run(async () =&amp;gt; await Electron.WindowManager.CreateWindowAsync()&lt;/code&gt;，讓專案啟動時一併啟動 Electron&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/gvsXNx4.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著打開命令提示字元或 Powershell ，輸入 &lt;code&gt;dotnet tool install ElectronNET.CLI -g&lt;/code&gt; 安裝 ElectronNET 工具。如果有安裝成功應該會看到下圖的回傳。如果已經安裝，就可以直接進到下一步。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/hf4mg6u.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著移動到專案資料夾，並輸入 &lt;code&gt;electronize init&lt;/code&gt; 進行初始化，將會建立資料夾和必需檔案，這一步一定要確認成功並顯示 &lt;code&gt;Everything done&lt;/code&gt;，否則後面怎麼跑也起不來。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/q6RdjDm.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;補充：如果 &lt;code&gt;electronize init&lt;/code&gt; 的時候跳出 &amp;ldquo;Path cannot be null on init&amp;rdquo; 的錯誤，請移動到 &lt;code&gt;Startup.cs&lt;/code&gt; 或是 &lt;code&gt;Program.cs&lt;/code&gt; 所在的目錄再試一次。&lt;/p&gt;
+&lt;p&gt;參考來源：&lt;a href=&#34;https://github.com/ElectronNET/Electron.NET/issues/245&#34;&gt;Electron.NET&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;最後輸入 &lt;code&gt;electronize start&lt;/code&gt; 就可以準備看專案 On 起來囉！&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/HoSdpvU.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;另外除了 &lt;code&gt;electronize start&lt;/code&gt;，環境設置完畢後也可以直接從 Visual Studio 偵錯囉～&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/iFqkq6d.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;成功從桌面應用開起來了！&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Y89i3HK.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;前後端傳值-ipcmain-ipcrenderer&#34;&gt;前後端傳值 (IpcMain, IpcRenderer)&lt;/h2&gt;
+&lt;p&gt;在 Electron 中，會分成&lt;strong&gt;跑應用程式的主處理序 (main process)&lt;/strong&gt;、和&lt;strong&gt;處理網頁畫面的渲染處理序 (renderer process)&lt;/strong&gt;。而兩者之間的&lt;strong&gt;溝通則經由 &lt;code&gt;Ipc&lt;/code&gt; 開啟頻道傳遞訊息來實現&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;這邊簡單嘗試一次，首先，我們先在 &lt;code&gt;Views/Home/index.cshtml&lt;/code&gt; 加上一個簡單的按鈕&lt;/p&gt;
+&lt;p&gt;並且加上 JavaScript 發送訊息和接收訊息的方法&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/DaNlQgS.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; { &lt;span style=&#34;color:#a6e22e&#34;&gt;ipcRenderer&lt;/span&gt; } &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;require&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;electron&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 發送訊息，這邊傳送一個 Hello
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;function&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;sendMessageToServer&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;ipcRenderer&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;send&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;channelToServer&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Hello&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 接收訊息
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;ipcRenderer&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;on&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;channelToClient&amp;#39;&lt;/span&gt;, (&lt;span style=&#34;color:#a6e22e&#34;&gt;event&lt;/span&gt;, &lt;span style=&#34;color:#a6e22e&#34;&gt;arg&lt;/span&gt;) =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    document.&lt;span style=&#34;color:#a6e22e&#34;&gt;getElementById&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Welcome&amp;#34;&lt;/span&gt;).&lt;span style=&#34;color:#a6e22e&#34;&gt;innerText&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;arg&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著到對應的 &lt;code&gt;Controllers/HomeController&lt;/code&gt; 的 &lt;code&gt;Index()&lt;/code&gt; 也加上接受到訊息之後加工並發出訊息的處理&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Xw3AX8r.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IActionResult Index()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 接收訊息&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Electron.IpcMain.On(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;channelToServer&amp;#34;&lt;/span&gt;, (args) =&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// 傳送訊息，把接收到的訊息再加上 World&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; mainWindow = Electron.WindowManager.BrowserWindows.First(); &lt;span style=&#34;color:#75715e&#34;&gt;// 現在只有一個視窗所以直接拿&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Electron.IpcMain.Send(mainWindow, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;channelToClient&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;{args}, world!&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    });
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; View();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著就讓我們執行看看，當我們按下按鈕&amp;hellip;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/qdkrpQ5.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/HYo0DUp.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;這樣就能成功在前後端之間傳值了！但要注意，它是建立一個 Channel 來傳遞訊息，所以&lt;strong&gt;兩邊的 channel 名稱可不能錯了&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;另外也有提供同步版本的 &lt;code&gt;ipcRendered.sendSync()&lt;/code&gt; 與 &lt;code&gt;Electron.IpcMain.OnSync()&lt;/code&gt; 等等方法，相關的操作可以參照官方的 &lt;a href=&#34;https://github.com/ElectronNET/electron.net-api-demos&#34;&gt;API DEMO&lt;/a&gt; 中的 &lt;code&gt;Controllers/IpcController.cs&lt;/code&gt; 及 &lt;code&gt;Views/Ipc/Index.cshtml&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;而關於 IPC 的說明，可以參考這篇 &lt;a href=&#34;https://medium.com/@terracotta_ko/electron-ipc-%E6%A9%9F%E5%88%B6-2a1b087c9ae5&#34;&gt;[Electron] IPC 機制&lt;/a&gt;，以及官方文件：&lt;a href=&#34;https://www.electronjs.org/docs/api/ipc-main&#34;&gt;ipcMain&lt;/a&gt;、&lt;a href=&#34;https://www.electronjs.org/docs/api/ipc-renderer&#34;&gt;ipcRenderer&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;打包成執行檔exe&#34;&gt;打包成執行檔（.exe）&lt;/h2&gt;
+&lt;p&gt;既然是桌面軟體，當然是要包裝成 exe 直接執行囉。畢竟總不能做了個小工具分享給朋友，還要「欸你自己開專案建置一下」吧 XD&lt;/p&gt;
+&lt;p&gt;在專案資料夾下用命令列輸入指令 &lt;code&gt;electronize build /target win&lt;/code&gt; ，其中 &lt;code&gt;/target&lt;/code&gt; 除了 win 也可以指定 osx, liunx 等等&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/4iSSuCC.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;編譯需要一段時間，直到看見 &lt;code&gt;done&lt;/code&gt; 就可以了&lt;/p&gt;
+&lt;p&gt;編出來的安裝包和執行檔會在 &lt;code&gt;bin\Desktop&lt;/code&gt; 和 &lt;code&gt;bin\Desktop\win-unpacked&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/JKqNsVl.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;稍微打開看看&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Ywg2CoQ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;可以正常執行！&lt;/p&gt;
+&lt;h2 id=&#34;後記&#34;&gt;後記&lt;/h2&gt;
+&lt;p&gt;目前只做到專案成功跑起來和一些簡單的測試而已，幸虧黑大的文章跟網路上的一些教學相當完整，並沒有花費太多時間。但是畢竟約好了要玩玩看這個框架，且許多功能沒有試過，例如 &lt;a href=&#34;https://blog.darkthread.net/blog/electron-api-brief/&#34;&gt;Electron.NET API 快速巡覽&lt;/a&gt; 提到的大多功能，&lt;del&gt;因此還在煩惱後續的紀錄要集中在這一篇還是另外開成系列文，這部分等下週更新再說囉。&lt;/del&gt;&lt;/p&gt;
+&lt;p&gt;6/29 更新: 最後還是決定把最近嘗試的都集中在這一篇了，畢竟我還是挺懶的，這樣比較好找嘛～&lt;/p&gt;
+&lt;p&gt;另外有興趣自己試試的朋友，也可以參閱 &lt;a href=&#34;https://www.electronjs.org/docs&#34;&gt;官方文檔&lt;/a&gt; 其實相當完整。基本上只要會寫網頁，就能夠寫桌面 GUI，真是有夠賺。&lt;/p&gt;
+&lt;p&gt;最後要特別感謝一下，當我開 Visual Studio 預設的範本時，赫然發現只有 Angular 和 React 的模板可以直接用，竟然沒有 Vue！真是嚇傻我了，幸好最後有找到 &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=alexandredotnet.netcorevuejs&amp;amp;ssr=false#overview&#34;&gt;VueJS with Asp.Net Core 3.1 Web API Template&lt;/a&gt; 才不致落得自造輪子的下場，感謝前輩們和社群的貢獻，南無南無。&lt;/p&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.darkthread.net/blog/electron-net/&#34;&gt;用 ASP.NET Core 寫桌面 GUI 應用程式 - Electron.NET - 黑暗執行緒&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.darkthread.net/blog/electron-api-brief/&#34;&gt;Electron.NET API 快速巡覽 - 黑暗執行緒&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10200819&#34;&gt;ElectronNET : .NET Core+NodeJS做跨平台桌面程式 - iT邦幫忙&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://medium.com/@terracotta_ko/electron-ipc-%E6%A9%9F%E5%88%B6-2a1b087c9ae5&#34;&gt;[Electron] IPC 機制&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.electronjs.org/docs&#34;&gt;Electronjs - Docs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>C#: 位元旗標 (Bit flag) 與列舉</title>
+      <link>https://igouist.github.io/post/2020/06/bit-flags-and-enum/</link>
+      <pubDate>Sun, 14 Jun 2020 21:27:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2020/06/bit-flags-and-enum/</guid>
+      <description>&lt;p&gt;前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。&lt;/p&gt;
+&lt;p&gt;平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告個 Boolean 來處理。但這次遇到的是同時有多個「有／沒有」的狀況，但我遇到的程式碼並沒有分成多個 Bool 去做處理，而是直接儲存成一個數值。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;由於「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列的話，就只需要一個數字就可以紀錄或傳遞給其他系統了&lt;/strong&gt;。例如最常見的用處是在權限系統，若有「讀」、「寫」、「執行」等權限，那麼我們按照這個順序去排列，當 &lt;code&gt;讀＝可、寫＝不可、執行＝可&lt;/code&gt; 的時候，就記做 &lt;code&gt;101&lt;/code&gt; = &lt;code&gt;5&lt;/code&gt;。這種直接用一組位元表示狀態的方式就叫做&lt;strong&gt;位元旗標（Bit flag）&lt;/strong&gt;&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;1 讀   = 可
+0 寫   = 不可
+1 執行 = 可
+
+/* 橫放 */
+=&amp;gt; 101 (2進位) 
+=&amp;gt; 5 
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。&lt;/p&gt;
+&lt;h2 id=&#34;enum--flags&#34;&gt;Enum &amp;amp; Flags&lt;/h2&gt;
+&lt;p&gt;在 C# 中已經有方便的工具可以處理數字列表，我們可以建立一個叫做 SkillEnum 的&lt;strong&gt;列舉（Enum）&lt;/strong&gt;，並且按照上面說明的，將老闆提到的每個技能各自用一個位元來表示。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[Flags]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;enum&lt;/span&gt; SkillEnum
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    C = &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,     &lt;span style=&#34;color:#75715e&#34;&gt;// 0001&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    PHP = &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;,   &lt;span style=&#34;color:#75715e&#34;&gt;// 0010&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    SQL = &lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;,   &lt;span style=&#34;color:#75715e&#34;&gt;// 0100&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Java = &lt;span style=&#34;color:#ae81ff&#34;&gt;8&lt;/span&gt;,  &lt;span style=&#34;color:#75715e&#34;&gt;// 1000&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;註：&lt;code&gt;[Flags]&lt;/code&gt;的標籤是指 C# 專門提供給位元旗標使用的 Enum，請參見 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/api/system.flagsattribute?view=netcore-3.1&#34;&gt;FlagsAttribute&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用 ToString() 也能更方便看見旗標內容&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;有了這個列舉之後，我們就可以&lt;strong&gt;表達不同排列組合的狀況&lt;/strong&gt;了。例如：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;* C: C
+* P: PHP
+* S: SQL
+* J: Java
+===========
+J S P C
+0 0 0 0 =&amp;gt; 什麼都不會
+0 0 0 1 =&amp;gt; 只會 C
+0 0 1 1 =&amp;gt; 同時會 C 和 PHP
+1 0 1 0 =&amp;gt; 同時 PHP 和 Java
+1 1 1 1 =&amp;gt; 全部都會
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;查詢--and&#34;&gt;查詢 =&amp;gt; AND&lt;/h2&gt;
+&lt;p&gt;那麼假使今天來的新人 Bob，他會 C, PHP 兩種語言，那現在他的資料欄位，就會是這兩種語言對應的位置為 1，其餘為 0，也就是 &lt;code&gt;0011&lt;/code&gt; =  &lt;code&gt;3&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; BobSkills = &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// var BobSkills = 0b_0011; // C + PHP&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;當 &lt;strong&gt;查詢&lt;/strong&gt; 的時候，就將 Bob 的數值和目標數值做 &lt;strong&gt;&lt;code&gt;AND&lt;/code&gt;&lt;/strong&gt; 運算。例如說我們想知道 Bob 會不會 C，就可以將 &lt;code&gt;3&lt;/code&gt;（二進位 &lt;code&gt;0011&lt;/code&gt;） 和代表 C 的 &lt;code&gt;1&lt;/code&gt; （二進位 &lt;code&gt;0001&lt;/code&gt;） 做 &lt;code&gt;&amp;amp;&lt;/code&gt;，即可知道 Bob 會不會 C。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    J S P C
+    0 0 1 1 Bob
+AND 0 0 0 1 SkillEnum.C
+-----------
+    0 0 0 1 =&amp;gt; 1 &amp;gt; 0 =&amp;gt; True
+&lt;/code&gt;&lt;/pre&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    J S P C
+    0 0 1 1 Bob
+AND 1 0 0 0 SkillEnum.Java
+-----------
+    0 0 0 0 =&amp;gt; 0 =&amp;gt; False
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;也就是必須要 &lt;strong&gt;同個位置的值都是 1&lt;/strong&gt;，在這邊就是指 Bob 的技能中 Java 的欄位，和 SkillEnum 中對應的欄位都要是 1 的時候，才會有數值。否則就會是 0：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; BobSkills = &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// var BobSkills = 0b_0011; // C + PHP&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 確認是否有某個 Flag，使用 And(&amp;amp;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; isBobKnowC = BobSkills &amp;amp; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;)SkillEnum.C;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;Bob 會使用 C 嗎？{Convert.ToBoolean(isBobKnowC)}&amp;#34;&lt;/span&gt;.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// True&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; isBobKnowJava = BobSkills &amp;amp; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;)SkillEnum.Java;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;Bob 會使用 Java 嗎？{Convert.ToBoolean(isBobKnowJava)}&amp;#34;&lt;/span&gt;.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// False&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;賦予--or&#34;&gt;賦予 =&amp;gt; OR&lt;/h2&gt;
+&lt;p&gt;那假設 Bob 經過一番苦練，又掌握了 SQL 這門語言呢？當我們要 &lt;strong&gt;賦予&lt;/strong&gt; 的時候，就需要用 &lt;strong&gt;&lt;code&gt;OR&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;也就是當 &lt;strong&gt;兩者之間任一為 1&lt;/strong&gt; 的時候，在這邊也就是當 Bob 的技能和我們要求給他的 SkillEnum 同位置只要有一個是 1，那就會有數值：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    J S P C
+    0 0 1 1 Bob
+ OR 0 1 0 0 SkillEnum.SQL
+-----------
+    0 1 1 1 =&amp;gt; New Bob
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;例如說原本 Bob 不會 SQL，所以 SQL 那一欄就會是 0 。而我們把它和 SkillEnum.SQL（也就是只有 SQL 那一欄是 1 ）做 OR 運算後，接著我們只要將運算好的結果再賦值給 Bob，這樣 Bob 的 SQL 欄位就會變成 1 了，同時也不會影響到其他欄位。&lt;/p&gt;
+&lt;p&gt;現在我們就可以用 &lt;code&gt;OR&lt;/code&gt; 把 SQL 的技能傳授給 Bob：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; isBobKnowSQL = BobSkills &amp;amp; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;)SkillEnum.SQL;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;Bob 會使用 SQL 嗎？{Convert.ToBoolean(isBobKnowSQL)}&amp;#34;&lt;/span&gt;.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// False&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 賦予某個 Flag，使用 OR (|)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;BobSkills = BobSkills | (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;)SkillEnum.SQL;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;（Bob 學習 SQL 中）&amp;#34;&lt;/span&gt;.Dump();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;isBobKnowSQL = BobSkills &amp;amp; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;)SkillEnum.SQL;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;Bob 會使用 SQL 嗎？{Convert.ToBoolean(isBobKnowSQL)}&amp;#34;&lt;/span&gt;.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// True&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;移除--xor&#34;&gt;移除 =&amp;gt; XOR&lt;/h2&gt;
+&lt;p&gt;經過了很久很久以後，Bob 已經忘記當年學的 SQL 怎麼寫了。我們又要怎麼把他的 SQL 這項技能給拿掉呢？&lt;/p&gt;
+&lt;p&gt;當我們要 &lt;strong&gt;移除&lt;/strong&gt; 某一項旗標的時候，只需要使用 &lt;strong&gt;&lt;code&gt;XOR&lt;/code&gt;&lt;/strong&gt; 就行了。&lt;strong&gt;&lt;code&gt;XOR&lt;/code&gt; 是指互斥，就像磁碟兩極一樣。當兩者不同為 1，若相同時則為 0&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;因此當 Bob 代表 SQL 的欄位為 1 的時候，我們再將 SQL 為 1 的 的數值丟進去做 XOR，就可以把&lt;strong&gt;兩者同時為 &lt;code&gt;1&lt;/code&gt; 的欄位給變回 0&lt;/strong&gt;，並且讓原本為 1 的欄位持續為 1，原本為 0 的欄位持續為 0，達到移除指定目標的效果。&lt;/p&gt;
+&lt;p&gt;但在使用上要注意，必須&lt;strong&gt;先確認目標欄位的確有數值&lt;/strong&gt;，也就是 Bob 是真的已經會 SQL，&lt;strong&gt;否則&lt;/strong&gt;若原本不會 (0) 的將不小心學會 (0 XOR 1 =&amp;gt; 1)。&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    J S P C
+    0 1 1 1 Bob
+XOR 0 1 0 0 SkillEnum.SQL
+-----------
+    0 0 1 1 =&amp;gt; New Bob
+
+// 警告：使用 XOR 之前一定要先檢查，若原本是關閉 (0) 的將會被打開 (0 XOR 1 =&amp;gt; 1)
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;現在我們就讓 Bob 忘記他曾經學過的 SQL：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;isBobKnowSQL = BobSkills &amp;amp; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;)SkillEnum.SQL;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;Bob 會使用 SQL 嗎？{Convert.ToBoolean(isBobKnowSQL)}&amp;#34;&lt;/span&gt;.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// True&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 挪除某個 Flag，使用 XOR (^)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;BobSkills = BobSkills ^ (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;)SkillEnum.SQL;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;（Bob ... 忘記了SQL！）&amp;#34;&lt;/span&gt;.Dump();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;isBobKnowSQL = BobSkills &amp;amp; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;)SkillEnum.SQL;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;Bob 會使用 SQL 嗎？{Convert.ToBoolean(isBobKnowSQL)}&amp;#34;&lt;/span&gt;.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// False&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;多項賦予--or-or-or&#34;&gt;多項賦予 =&amp;gt; OR, OR, OR&lt;/h2&gt;
+&lt;p&gt;隨著 Bob 逐漸老去，公司也招來了新員工。如今換成 Bob 來幫他維護技能表了，那我們要怎麼用 SkillEnum 給這個菜雞&lt;strong&gt;預設值&lt;/strong&gt;呢？&lt;/p&gt;
+&lt;p&gt;聰明的你應該能猜出其實這也就是賦值！只要把&lt;strong&gt;有的項目全部 OR 起來&lt;/strong&gt;就可以了，這位新菜雞他會 C, SQL, Java：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    J S P C
+    0 0 0 0 Newbie
+ OR 0 0 0 1 SkillEnum.C
+ OR 0 1 0 0 SkillEnum.SQL
+ OR 1 0 0 0 SkillEnum.Java
+-----------
+    1 1 0 1 =&amp;gt; 13 =&amp;gt; Newbie&amp;#39;s Skills
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;那麼現在就讓我們用 C# 實作：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 賦與多個值 ＝ 一路 OR 下去&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; NewbieSkills =    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;)SkillEnum.C |   
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;)SkillEnum.SQL |     
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;)SkillEnum.Java; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;Bob 技能欄的十進位為：{NewbieSkills}&amp;#34;&lt;/span&gt;.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 13&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;Bob 技能欄的二進位為：{Convert.ToString(NewbieSkills, 2)}&amp;#34;&lt;/span&gt;.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 1101&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;列出內容--foreach-flags&#34;&gt;列出內容 =&amp;gt; Foreach, Flags&lt;/h2&gt;
+&lt;p&gt;那如果我想要確認現在有哪些欄位是開啟的呢？例如說，當我們要確認 Bob 會哪些程式語言的時候怎麼做呢？&lt;/p&gt;
+&lt;p&gt;既然用 AND 可以查詢其中一個位置，那麼只要將列舉和位元用迴圈逐一 AND 出來，就可以還原 Bob 的列表囉&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; enumCount = Enum.GetNames(&lt;span style=&#34;color:#66d9ef&#34;&gt;typeof&lt;/span&gt;(SkillEnum)).Count();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; NewbieSkillsList = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; List&amp;lt;&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt;&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; i = &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;; i &amp;lt; enumCount; i++)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(Convert.ToBoolean(Bob2Skills &amp;amp; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;)Math.Pow(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, i))) &lt;span style=&#34;color:#75715e&#34;&gt;// AND 運算&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        NewbieSkillsList.Add(((SkillEnum)Math.Pow(&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, i)).ToString());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;Newbie 會的語言有：{String.Join(&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;, NewbieSkillsList)}&amp;#34;&lt;/span&gt;.Dump();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// C, SQL, Java&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;不過上面這個依序列印的方式還是太麻煩了。如果有像前半段提到的，&lt;strong&gt;替 Enum 加上 &lt;code&gt;[Flags]&lt;/code&gt; 標籤&lt;/strong&gt;的話，用起來就更簡單了：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;Newbie 掌握的技能為：{(SkillEnum)NewbieSkills}&amp;#34;&lt;/span&gt;.Dump(); 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// C, SQL, Java&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;最後再總結一下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;檢查的時候用 &lt;code&gt;AND&lt;/code&gt; 找出目標的位置是否為 1&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;賦予內容時則用 &lt;code&gt;OR&lt;/code&gt; 讓指定的位置變成 1&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;移除的時候則用 &lt;code&gt;XOR&lt;/code&gt; 讓目標位置的 1 抵銷為 0&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;整理來說概念並不困難，只是一個位元對應一個對象，再視情況進行運算而已。但能應用的範圍相當廣泛，除了最常用的權限管理，其他諸如活動月份、門鎖狀況等等只要符合條件的情形都可以借這個方法來處理。這邊稍作紀錄，希望以後能派上用場。&lt;/p&gt;
+&lt;h2 id=&#34;延伸閱讀及參考資料&#34;&gt;延伸閱讀及參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://medium.com/@kazafchen/%E4%B8%80%E4%BB%B6intent%E6%95%99%E6%88%91%E7%9A%84%E4%BA%8B-bitwise-operation-dd3a388ae34e&#34;&gt;一件Intent教我的事： Bitwise Operation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://codertw.com/%E7%A8%8B%E5%BC%8F%E8%AA%9E%E8%A8%80/700165/&#34;&gt;JavaScript中的位運算和權限設計&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;補一下原出處： &lt;a href=&#34;https://juejin.im/post/5dc36f39e51d4529ed292910&#34;&gt;JavaScript 中的位运算和权限设计 - 掘金&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://shunnien.github.io/2017/06/27/byte-operator-auth/&#34;&gt;位元運算與權限控制 - ShunNien&amp;rsquo;s Blog&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://matthung0807.blogspot.com/2019/02/java-bit-flag.html&#34;&gt;Java bit flag - 菜鳥工程師肉豬&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.zhihu.com/question/34021773&#34;&gt;在写代码的过程中使用位运算的好处？ - 知乎&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.jianshu.com/p/262652908eb8&#34;&gt;位运算和权限管理系统 - 簡書&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://blogs.uuu.com.tw/Articles/post/2017/06/14/%E4%BD%BF%E7%94%A8%E5%88%97%E8%88%89%E8%88%87%E6%97%97%E6%A8%99%E8%A8%AD%E8%A8%88%E5%A4%9A%E9%81%B8.aspx&#34;&gt;使用列舉與旗標設計多選 - ProgrammerXDB Blog&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://zh.wikipedia.org/wiki/Chmod&#34;&gt;Chmod - 維基百科&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.podkalicki.com/bit-level-operations-bit-flags-and-bit-masks/&#34;&gt;Bit-level operations – bit flags and bit masks&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>EPPlus —— 輕鬆處理 Excel</title>
+      <link>https://igouist.github.io/post/2020/04/epplus/</link>
+      <pubDate>Sun, 12 Apr 2020 10:19:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2020/04/epplus/</guid>
+      <description>&lt;p&gt;前陣子工作需要匯出一些資料表，因此用到了 &lt;a href=&#34;https://github.com/EPPlusSoftware/EPPlus&#34;&gt;EPPlus&lt;/a&gt; 這套工具來把資料匯出成 Excel。由於這需求似乎會挺常遇到的，決定記一下。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;目標：稍微紀錄一下這次碰到 EPPlus 的用法。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;EPPlus 是在 .NET Framework 或 .NET Core 上提供控制 Excel 的元件，操作簡單好懂&lt;/strong&gt;，當有需要在網頁上讓人將表格資料下載成 Excel 的功能時就可以試著使用。常常一併被提起的還有另一個一樣老牌的相似功能元件 NPOI，不過我個人只用過 EPPlus 便不再贅述。關於更詳細的介紹，可以參閱黑暗執行緒的這篇 &lt;a href=&#34;https://blog.darkthread.net/blog/epplus/&#34;&gt;比 NPOI 更討喜的 Excel 元件 - EPPlus!&lt;/a&gt;，儘管是有些久遠的文章但仍能迅速了解 EEplus 的賣點和差異。&lt;/p&gt;
+&lt;p&gt;我在使用 EPPlus 時主要的參考來自於 &lt;a href=&#34;https://github.com/EPPlusSoftware/EPPlus/wiki&#34;&gt;EPPlus 的 Wiki&lt;/a&gt;，每個功能都有說明及範例，同時也有範例專案可以下載，寫得相當詳細。另外還找了如 &lt;a href=&#34;https://www.cnblogs.com/rumeng/p/3785748.html&#34;&gt;導出 Excel 之 Epplus 使用教程 - Wico&amp;rsquo;s Blog&lt;/a&gt;、&lt;a href=&#34;https://dotblogs.com.tw/malonestudyrecord/2018/03/21/103124&#34;&gt;使用 EPPLUS 操控 Excel - 碼農的學習日誌&lt;/a&gt; 這些有逐步說明的文章，在此感謝。&lt;/p&gt;
+&lt;h2 id=&#34;建立-excel&#34;&gt;建立 Excel&lt;/h2&gt;
+&lt;p&gt;首先從建立一個 Excel 開始；要注意的是開啟檔案之後也要記得建分頁出來。後續的寫入資料等都是對分頁去做動作。&lt;/p&gt;
+&lt;p&gt;我們使用 &lt;code&gt;new ExcelPackage()&lt;/code&gt; 來開一個新的 Excel 的處理工作，而結束之後一定要記得 &lt;code&gt;SaveAs&lt;/code&gt;。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;備註 (2020/4/12):&lt;/p&gt;
+&lt;p&gt;由於 EPPlus 升版和授權上的一些改變，如果直接使用會跳出 &lt;code&gt;LicenseException&lt;/code&gt; 用來通知你這件事。&lt;/p&gt;
+&lt;p&gt;因此現在需要先加上這行：&lt;br/&gt;
+&lt;code&gt;ExcelPackage.LicenseContext = LicenseContext.NonCommercial;&lt;/code&gt; &lt;br/&gt;
+來叫它閉嘴。&lt;/p&gt;
+&lt;p&gt;另外也有在 &lt;code&gt;App.config&lt;/code&gt; 中設定的作法，可參閱 &lt;a href=&#34;https://epplussoftware.com/developers/licenseexception&#34;&gt;LicenseException - EPPlus&lt;/a&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;備註 (2022/3/13):&lt;/p&gt;
+&lt;p&gt;因緣際會發現 EPPlus 的授權說明網頁現在已經有翻譯了，有遇到這個 LicenseException 的朋友可以去看一下：&lt;a href=&#34;https://epplussoftware.com/zh/Developers/LicenseException&#34;&gt;LicenseException - EPPlus Software&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;另外關於一些授權的部分，也可以參照小朱大大的這篇：&lt;a href=&#34;https://dotblogs.com.tw/regionbbs/2018/09/23/light-discussions-oss-licenses&#34;&gt;淺談軟體開源的授權條款&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ExcelPackage.LicenseContext = LicenseContext.NonCommercial; &lt;span style=&#34;color:#75715e&#34;&gt;// 關閉新許可模式通知&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 沒設置的話會跳出 Please set the excelpackage.licensecontext property&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; file = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; FileInfo(&lt;span style=&#34;color:#e6db74&#34;&gt;@&amp;#34;D:\ExampleExcel.xlsx&amp;#34;&lt;/span&gt;); &lt;span style=&#34;color:#75715e&#34;&gt;// 檔案路徑&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; excel = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ExcelPackage())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 建立分頁&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; ws = excel.Workbook.Worksheets.Add(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;MySheet&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 寫入資料試試&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ws.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;].Value = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;測試測試&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 儲存 Excel&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    excel.SaveAs(file);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;執行之後就可以看到檔案已經被建立囉
+&lt;img src=&#34;https://i.imgur.com/gHEE7OZ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;並且也出現了測試用的內容
+&lt;img src=&#34;https://i.imgur.com/LObC4zj.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;從這邊也可以認出 &lt;code&gt;ws.Cells[2, 1].Value&lt;/code&gt; 的第一個數字是&lt;code&gt;從 ↓ 數下來&lt;/code&gt;的，第二個是&lt;code&gt;往 → 數過去&lt;/code&gt;的（很抱歉這樣表示，因為我常弄反行跟列，這樣之後參考比較好理解）&lt;/p&gt;
+&lt;p&gt;另外眼尖的朋友也可以察覺到一個重點，&lt;strong&gt;儲存格是從 1 開始數的：不是 0 ！&lt;/strong&gt; 也就是說 &lt;code&gt;A1&lt;/code&gt; 這一格是 &lt;code&gt;[1, 1]&lt;/code&gt;，不要打成 &lt;code&gt;[0, 0]&lt;/code&gt; 了。當然，對於困擾的朋友，EEPlus 也提供了 &lt;code&gt;ws.Cells[&amp;quot;B1&amp;quot;]&lt;/code&gt; 的寫法，可以用字串傳入的方式直接指定在 Excel 的儲存格位置，比起數格子方便多了，後續也會在示範標註。&lt;/p&gt;
+&lt;h2 id=&#34;編輯-excel&#34;&gt;編輯 Excel&lt;/h2&gt;
+&lt;p&gt;編輯時和建立一樣，從 &lt;code&gt;ExcelPackage()&lt;/code&gt; 開始動作，這次我們將檔案直接傳入，如此 Save 的時候就可以不用再傳一次。關於各種操作直接在程式碼上的註解進行說明。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 特別注意，頁籤和儲存格等操作 是由 1 開始而非 0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 打開存在的 Excel 檔案&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; excelFile = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; FileInfo(&lt;span style=&#34;color:#e6db74&#34;&gt;@&amp;#34;D:\ExampleExcel.xlsx&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; excel = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ExcelPackage(excelFile))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 指定頁籤&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;//ExcelWorksheet sheet1 = excel.Workbook.Worksheets[1]; // 這邊用是 1 在 Core 用是 0 = =&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ExcelWorksheet sheet1 = excel.Workbook.Worksheets[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;MySheet&amp;#34;&lt;/span&gt;]; &lt;span style=&#34;color:#75715e&#34;&gt;// 可以使用頁籤名稱&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;#region -- 儲存格讀寫 --&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 寫入資料，[行－，列｜] 或直接指定 [&amp;#34;儲存格&amp;#34;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    sheet1.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;].Value = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;開啟測試&amp;#34;&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;// 嚴謹一點可以用 GetValue 和 SetValue 來操作&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;//sheet1.Cells[&amp;#34;B1&amp;#34;].Value = &amp;#34;開啟測試&amp;#34;; // 此兩行等價&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    sheet1.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;].Value = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;多格操作測試&amp;#34;&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;// 從 (3, 3) 一路框到 (5, 5)，包含頭尾&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;//sheet1.Cells[&amp;#34;C3:E5&amp;#34;].Value = &amp;#34;多格操作測試&amp;#34;; // 此兩行等價&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    sheet1.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;].LoadFromText(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LoadFromText Test&amp;#34;&lt;/span&gt;); &lt;span style=&#34;color:#75715e&#34;&gt;// 從字串讀入資料，可用於寫入 CSV 之類的場合&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; coll = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; List&amp;lt;&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt;&amp;gt; { &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LoadFromCollTest1&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LoadFromCollTest2&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LoadFromCollTest3&amp;#34;&lt;/span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    sheet1.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;].LoadFromCollection(coll); &lt;span style=&#34;color:#75715e&#34;&gt;// 從集合類型的參數讀入資料，會按照行（＝ D1 E1 F1...）依序排列&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 可從 LoadFromCollection 推測 LoadFromDataReader, LoadFromDataTable, LoadFromArrays 等函式的行為，故省略&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;#endregion -- 儲存格讀寫 --&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;#region -- 儲存格樣式 --&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 可以用宣告的方式一併操作指定區域內的儲存格&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; range = sheet1.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;])  &lt;span style=&#34;color:#75715e&#34;&gt;// 直接選取 A1 到 A5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        range.Value = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;樣式測試&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        range.Style.Font.Bold = &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;// 粗體&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        range.Style.Font.Color.SetColor(Color.White); &lt;span style=&#34;color:#75715e&#34;&gt;// 字體顏色&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        range.Style.Fill.PatternType = ExcelFillStyle.Solid; &lt;span style=&#34;color:#75715e&#34;&gt;// 設定背景填色方法，沒有這一行就上背景色會報錯&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                                                             &lt;span style=&#34;color:#75715e&#34;&gt;// Solid = 填滿；另外還有斜線、交叉線、條紋等&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        range.Style.Fill.BackgroundColor.SetColor(Color.DarkBlue); &lt;span style=&#34;color:#75715e&#34;&gt;// 儲存格顏色&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;#endregion -- 儲存格樣式 --&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    excel.Save(); &lt;span style=&#34;color:#75715e&#34;&gt;// 儲存變更&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;執行完的結果會像這樣，可以和上面的程式碼對照看是哪一部份的效果&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/dENLdol.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;以上部份嘗試了 資料的讀寫（如寫入單格的資料內容、寫入一個串列等）以及樣式的設定（字體顏色、儲存格顏色等）等。由於其中的操作能&lt;strong&gt;選擇的樣式相當繁多&lt;/strong&gt;，例如背景填色就有好幾種，因此列出來並不是明智的做法，先知道基本的語法之後再自己開編譯器看有哪些選項、或是將對應的操作拿到官方文檔找看有哪些會是比較實際的做法。&lt;/p&gt;
+&lt;p&gt;這篇只示範資料的寫入，當然 Excel 的處理沒有那麼簡單，可以參照 官方Wiki 的這兩個部份：&lt;a href=&#34;https://github.com/EPPlusSoftware/EPPlus/wiki/Formula-Calculation&#34;&gt;公式的計算&lt;/a&gt; 及 &lt;a href=&#34;https://github.com/EPPlusSoftware/EPPlus/wiki/Shapes,-Pictures,-Controls-and-Charts&#34;&gt;圖表的處理&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Epplus 的官方文檔範例寫得挺不錯的，有更進一步需求的朋友可以翻一下範例，抓下來跑跑看，可以解決大部分的問題。&lt;/p&gt;
+&lt;h2 id=&#34;泛型串列匯出-excel&#34;&gt;泛型串列匯出 Excel&lt;/h2&gt;
+&lt;p&gt;這邊紀錄一下工作需求時用到的做法，由於匯出資料的型別繁多，唯一的共通點就是都很多筆。為了方便寫了一個針對多筆的泛型匯出函式，特別在這裡記錄下來。
+其實這篇也是為了把這個部份記錄下來方便以後可以回來抄才開的坑…&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Main()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; data = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; List&amp;lt;testClass&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; testClass{ name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;香蕉&amp;#34;&lt;/span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; testClass{ name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;番茄&amp;#34;&lt;/span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; testClass{ name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;蘋果&amp;#34;&lt;/span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; testClass{ name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;鳳梨&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; excel = ExportExcel(data);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	excel.Dump();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; FileInfo ExportExcel&amp;lt;T&amp;gt;(IEnumerable&amp;lt;T&amp;gt; data) &lt;span style=&#34;color:#66d9ef&#34;&gt;where&lt;/span&gt; T: &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#75715e&#34;&gt;//var output = new MemoryStream();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; output = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; FileInfo(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;D:\\ExportExcelTest-&amp;#34;&lt;/span&gt; + DateTime.Now.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yyyy-MM-dd-hh-mm-ss&amp;#34;&lt;/span&gt;) + &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;.xlsx&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; excel = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ExcelPackage(output))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; ws = excel.Workbook.Worksheets.Add(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Sheet1&amp;#34;&lt;/span&gt;); &lt;span style=&#34;color:#75715e&#34;&gt;// 建立分頁&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#75715e&#34;&gt;// 用反射拿出有 DisplayName 的屬性&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; properties = &lt;span style=&#34;color:#66d9ef&#34;&gt;typeof&lt;/span&gt;(T)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .GetProperties()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .Where(prop =&amp;gt; prop.IsDefined(&lt;span style=&#34;color:#66d9ef&#34;&gt;typeof&lt;/span&gt;(DisplayNameAttribute)));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; rows = data.Count() + &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;;   &lt;span style=&#34;color:#75715e&#34;&gt;// 直：資料筆數（記得加標題列）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; cols = properties.Count(); &lt;span style=&#34;color:#75715e&#34;&gt;// 橫：類別中有別名的屬性數量&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(rows &amp;gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; &amp;amp;&amp;amp; cols &amp;gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			ws.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;].LoadFromCollection(data, &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;); &lt;span style=&#34;color:#75715e&#34;&gt;// 寫入資料&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			&lt;span style=&#34;color:#75715e&#34;&gt;// 儲存格格式&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; colNumber = &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			&lt;span style=&#34;color:#66d9ef&#34;&gt;foreach&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; prop &lt;span style=&#34;color:#66d9ef&#34;&gt;in&lt;/span&gt; properties)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				&lt;span style=&#34;color:#75715e&#34;&gt;// 時間處理，如果沒指定儲存格格式會變成 通用格式，就會以 int＝時間戳 的方式顯示&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (prop.PropertyType.Equals(&lt;span style=&#34;color:#66d9ef&#34;&gt;typeof&lt;/span&gt;(DateTime)) ||
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				   prop.PropertyType.Equals(&lt;span style=&#34;color:#66d9ef&#34;&gt;typeof&lt;/span&gt;(DateTime?)))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;					ws.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, colNumber, rows, colNumber].Style.Numberformat.Format = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;mm-dd-yy hh:mm:ss&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				colNumber += &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			&lt;span style=&#34;color:#75715e&#34;&gt;// 樣式準備&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; range = ws.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, rows, cols])
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				ws.Cells.Style.Font.Name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;新細明體&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				ws.Cells.Style.Font.Size = &lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				ws.Cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center; &lt;span style=&#34;color:#75715e&#34;&gt;// 置中&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				ws.Cells.AutoFitColumns(); &lt;span style=&#34;color:#75715e&#34;&gt;// 欄寬&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				&lt;span style=&#34;color:#75715e&#34;&gt;// 框線&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				range.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				range.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				range.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				range.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				&lt;span style=&#34;color:#75715e&#34;&gt;// 標題列&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; title = ws.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, cols];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				title.Style.Fill.PatternType = ExcelFillStyle.Solid; &lt;span style=&#34;color:#75715e&#34;&gt;// 設定背景填色方法&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				title.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			Debug.WriteLine(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;未列印資料，請檢查是否傳入資料為空，或指定類別未具有公開且加上 DisplayName 的屬性。&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		excel.Save(); &lt;span style=&#34;color:#75715e&#34;&gt;// 儲存 Excel&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#75715e&#34;&gt;//output.Position = 0; // 如果是使用 stream 的方式讓人下載，請記得將指標移回資料起始&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; output;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;testClass&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;	[DisplayName(&amp;#34;編號&amp;#34;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Guid id { &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; } = Guid.NewGuid();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;	[DisplayName(&amp;#34;名稱&amp;#34;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name { &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;結語&#34;&gt;結語&lt;/h2&gt;
+&lt;p&gt;這次是為了把小工具記下來，方便以後在外可以直接開網站起來左手抄右手所以硬是丟了一篇出來；關於基本操作的部份說明實在有點偷懶，以後有機會再進行補充和功能示範。現在還請海涵，幸虧官方的 Github 頁面 Wiki 實在相當完善，對操作有疑問的朋友可以先按照官方 Wiki 跑一次，相信可以非常快上手。&lt;/p&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/EPPlusSoftware/EPPlus/wiki&#34;&gt;EPPlus Wiki&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.darkthread.net/blog/epplus/&#34;&gt;比 NPOI 更討喜的 Excel 元件 - EPPlus! - 黑暗執行緒&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.cnblogs.com/rumeng/p/3785748.html&#34;&gt;導出 Excel 之 Epplus 使用教程 - Wico&amp;rsquo;s Blog&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://dotblogs.com.tw/malonestudyrecord/2018/03/21/103124&#34;&gt;使用 EPPLUS 操控 Excel - 碼農的學習日誌&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.itread01.com/content/1543037183.html&#34;&gt;.Net Excel 匯出圖表Demo(柱狀圖，多標籤頁) - IT閱讀&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Asp.net MVC: 連線資料庫、簡單實作 CRUD</title>
+      <link>https://igouist.github.io/post/2019/12/aspnet-connect-db/</link>
+      <pubDate>Mon, 09 Dec 2019 00:09:09 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2019/12/aspnet-connect-db/</guid>
+      <description>&lt;p&gt;在教學時直接使用 EF 對資料庫跑繫結的方式產生各頁面，但得到了「點一點東西就跑出來了搞不懂呀」的回饋，心想有道理。因此從頭開始實作一遍，並記錄下來。&lt;s&gt;（雖然做完還是覺得，直接用 EF 跑的話果然比較安全方便啊）&lt;/s&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;目標：&lt;strong&gt;實作一個 MVC 架構，具資料庫基本操作功能的網站&lt;/strong&gt;，其中包含連線至資料庫的 model、對其進行調用的 controller 以及顯示的 view。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;註：本文預設已在本地電腦上安裝了 &lt;a href=&#34;https://www.microsoft.com/zh-tw/sql-server/sql-server-editions-express&#34;&gt;SQL Server&lt;/a&gt;，並且建立了測試用的資料庫 Test 及表 card，詳情會在文章內述。另外，由於在寫這邊的時候是為了練習手動從編碼開始嘗試連線，故將不使用 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/aspnet/mvc/overview/getting-started/getting-started-with-ef-using-mvc/creating-an-entity-framework-data-model-for-an-asp-net-mvc-application&#34;&gt;EF 連線產生 Edmx&lt;/a&gt; 的方式，而是直接手工編寫程式碼進行操作。&lt;/p&gt;
+&lt;p&gt;另外，關於直接從資料表自動產生可操作的頁面，亦即使用 Entity Framework 做資料繫結的方式，請見 &lt;a href=&#34;https://igouist.github.io/post/2019/12/aspnet-connect-db-ef/&#34;&gt;Asp.net MVC 筆記：Entity Framework 連線資料庫&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;稍微補充一些簡單說明，給那些對 MVC 概念不是很熟悉的朋友：&lt;/p&gt;
+&lt;p&gt;MVC 是一種模式，就是做出一個程式的規則和架構，讓大家都按著這個架構撰寫程式碼。如此一來就可以簡化程式的開發過程，也增加了程式的可維護性和可讀性，適合多人同時作業——畢竟什麼該放在哪裡大家都有個共識。&lt;/p&gt;
+&lt;p&gt;而 MVC 顧名思義，就是將程式碼分成三個區塊：M、V 和 C。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Model&lt;/code&gt;：演算法、物件、資料處理等。像是數學邏輯、連接資料庫取得資料、狗的物件和拉不拉多的物件等等都放這裡&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;View&lt;/code&gt;：使用者會看到的部份，網頁的外觀。Html、Css 就是在這區工作。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Controller&lt;/code&gt;：流程控制和資料傳輸。也就是取得使用者傳送來的資料，決定讓哪支程式和哪個頁面出來做事，以及把 Model 送來的資料做處理後丟往 View 等等。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在小組報告的時候，Model 通常是默默做事的那個，View 則是專門上台報告的，Controller 負責指揮大家做事和組員間的溝通以及講幹話。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;首先我們從建立專案開始操作。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/eRyGBTb.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;選擇 .NET 的框架，並且在下面替專案取個名字。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/fdIYiCe.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;確認選擇的框架是 MVC。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/otUKDR0.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;建立連線資料庫用的-model&#34;&gt;建立連線資料庫用的 Model&lt;/h2&gt;
+&lt;p&gt;首先先在方案總管的 Models 資料夾裡新增一個類別。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/3L0gFuu.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;由於我們是從平地起家，手工連線，因此我們這邊選擇空白類別就可以了，取個淺顯易懂的名字並按下新增。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/JCnwaMU.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;新增之後應該能看見我們的類別。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/hQn75wu.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在連線到資料庫的部分，最首先的就是&lt;strong&gt;連線字串&lt;/strong&gt;。連線字串就像是地址加上鑰匙，可以想成你請人幫你到倉庫拿東西，必須先告訴他倉庫在哪再給他鑰匙進去拿一樣，程式必須藉由連線字串才能得知&lt;strong&gt;資料庫的位置和連線資料&lt;/strong&gt;，而不同的資料庫軟體的連線字串格式也有可能不同，例如說 MySQL 的連線字串格式就可以參考&lt;a href=&#34;https://www.itread01.com/p/1192499.html&#34;&gt;這篇&lt;/a&gt;。在本筆記之中，不同資料庫類型在實作上最大的差異大概就是連線字串了吧。&lt;/p&gt;
+&lt;p&gt;而在連線至 MSSQL 的部分，我個人習慣用 Visual studio 內建的功能做產生再按照需求作修改。首先讓我們打開畫面左上方的伺服器總管，並在資料連接上加入一個新的連接。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/VC0CfPE.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/G33iM6J.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著就可以看到加入連接的頁面，我們從上往下進行解說：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;資料來源&lt;/strong&gt;：用來更改資料庫來源的類型，例如 Access 或是其他類型資料庫的時候就可以更改這一項。我們這邊使用 SQL Server 進行示範。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;伺服器名稱&lt;/strong&gt;：SQL Server 的名稱，通常會在 SQL Server 安裝的時候做設定，預設是和電腦一樣。當遠端連線的時候，這邊可以改成輸入 IP。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;驗證&lt;/strong&gt;：比較常用的是 Windows 驗證和 SQL Server 驗證。&lt;strong&gt;Windows 驗證&lt;/strong&gt;即是當資料庫位於本機時，直接使用 Windows 登入者的資料驗證進資料庫。&lt;strong&gt;SQL Server 驗證&lt;/strong&gt;則是使用 SQL Server 中設定的帳號密碼來登入，遠端連線至資料庫取資料的時候就會用帳密連線。&lt;/p&gt;
+&lt;p&gt;至於這兩項的選擇需要看使用時的需求以及資料庫本身的設定進行選擇。本篇是直接在 SQL Server 所在的本機上進行架站，同時也沒有特別設定權限，因此直接使用 Windoes 驗證登入就可以了。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;資料庫名稱&lt;/strong&gt;：從 Server 裡面選擇要使用的 Database。在此處選擇了示範用的 Test 資料庫。&lt;/p&gt;
+&lt;p&gt;以上部分設定完之後，點選左下角的測試連接。若是測試連接沒有問題後，在進階的部分就可以看見已經產生好連線字串了。同時在這個頁面按下確定的話，將會在伺服器總管中連線至資料庫，也能從資料連接的部分對資料庫進行操作。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/eNiiXtj.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;↑ 可以從進階的部分看見連線字串。可以稍微看得出來連線字串的格式，其中 Data Source 放伺服器主機、Initial Catalog 放資料庫名稱、Integrated Security 放集成驗證（即 Windows 驗證），此外還有可能會有 UserID 放帳號、Password 放密碼等等。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ZssVFCq.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;↑ 如果選擇確定的話，就會建立連接。可以直接在這邊右鍵選擇各種功能以操作資料庫。&lt;/p&gt;
+&lt;p&gt;現在我們已經有了連線字串，先在我們的類別中將其宣告為一個私有且唯獨的字串常數。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/bVnef6n.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;註：在實務上的部份，連線字串通常會放置在網頁設定檔 Web.config 裡，因為網頁設定檔在使用者端是看不見的，所以這樣的做法比較安全，再利用 ConfigurationManager 的函式取得連線字串以使用。關於詳細的操作方式請參考&lt;a href=&#34;https://dotblogs.com.tw/sky5012357/2013/03/19/98161&#34;&gt;這篇&lt;/a&gt;或搜尋「連線字串 Web.config」。本篇為了教學及操作上的方便，才直接放置於程式碼內。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;解決連線字串的問題，接著我們來做一個 model 放我們的資料。可以從上面伺服器總管的圖看見我的資料表 card 有 id、 char_name、 card_name、card_level 四個欄位。&lt;/p&gt;
+&lt;p&gt;因此我們新建一個 card 類別如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;namespace&lt;/span&gt; DBconnTest.Models
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Card&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; ID { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Char_name  { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Card_name  { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Card_level { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;新建完成之後就回到我們的 資料庫連線類別 開始工作。&lt;/p&gt;
+&lt;h2 id=&#34;取得所有資料&#34;&gt;取得所有資料&lt;/h2&gt;
+&lt;p&gt;第一個目標是能夠取得 Card 資料表的所有資料，因此我們先將方法的部分建立出來，也就是一個會回傳 Card 的 List 的方法。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/utEyL3C.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;我們將會使用 SqlConnection 這個資料庫連線用的工具來操作資料庫，因此需要先在上面 &lt;code&gt;using System.Data.SqlClient&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;接著我們想要 GetCards 方法做的事有：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;利用連線字串連線至資料庫&lt;/li&gt;
+&lt;li&gt;下 SQL 指令拿到資料&lt;/li&gt;
+&lt;li&gt;將拿到的資料做成 Card 物件&lt;/li&gt;
+&lt;li&gt;將 Card 們組成一個 List&lt;/li&gt;
+&lt;li&gt;回傳 List 給前端使用。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;程式碼如下，其後逐步說明。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; List&amp;lt;Card&amp;gt; GetCards() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    List&amp;lt;Card&amp;gt; cards = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; List&amp;lt;Card&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    SqlConnection sqlConnection = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; SqlConnection(ConnStr);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    SqlCommand sqlCommand = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; SqlCommand(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;SELECT * FROM card&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    sqlCommand.Connection = sqlConnection;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    sqlConnection.Open();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    SqlDataReader reader = sqlCommand.ExecuteReader();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (reader.HasRows) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (reader.Read()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Card card = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                ID = reader.GetInt32(reader.GetOrdinal(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;id&amp;#34;&lt;/span&gt;)),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                Char_name  = reader.GetString(reader.GetOrdinal(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;char_name&amp;#34;&lt;/span&gt;)),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                Card_name  = reader.GetString(reader.GetOrdinal(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;card_name&amp;#34;&lt;/span&gt;)),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                Card_level = reader.GetString(reader.GetOrdinal(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;card_level&amp;#34;&lt;/span&gt;)),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            };
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            cards.Add(card);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Console.WriteLine(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;資料庫為空！&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    sqlConnection.Close();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; cards;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/KoB6QZU.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;首先，我們宣告了一個 Card 的 List 叫做 Cards 用來保存我們等等取得的資料。&lt;/p&gt;
+&lt;p&gt;接著我們利用連線字串 ConnStr 來建立了一個 &lt;strong&gt;SQL 連線物件 SqlConnection&lt;/strong&gt;。並宣告了一個 &lt;strong&gt;SQL 命令物件 SqlCommand&lt;/strong&gt; 來放置我們要執行的 SQL 指令。&lt;/p&gt;
+&lt;p&gt;這邊使用的是「由 card 資料表選取全部資料(*)」的指令。不論使用的是何種語言，後端連線到資料庫最重要的就是傳送指令至資料庫執行。關於 SQL 指令的使用方式，可以參照 &lt;a href=&#34;https://www.1keydata.com/tw/sql/sql.html&#34;&gt;1keyData 的 SQL 語法&lt;/a&gt; 或是 &lt;a href=&#34;http://www.w3school.com.cn/sql/index.asp&#34;&gt;w3school&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;此外要注意，實務上如果真的需要自己寫連線，下 SQL 的命令和參數時應該用 SqlParameter 的方式讓系統檢查後放入，不應該偷懶直接將字串和參數用 + 接起來就傳送，否則很容易遭遇 SQL injection 的攻擊。&lt;/p&gt;
+&lt;p&gt;我們將指令的目標連線指向我們的連線 sqlConnection，完成後&lt;strong&gt;開啟（open）連線&lt;/strong&gt;連至資料庫。&lt;/p&gt;
+&lt;p&gt;現在已經和資料庫連線了，但還沒執行我們的指令，宣告一個 &lt;strong&gt;sql 資料讀取物件 SqlDataReader&lt;/strong&gt; 來抓取執行指令（sqlCommand.ExecuteReader）時回傳的資料。&lt;/p&gt;
+&lt;p&gt;要注意，當 &lt;strong&gt;SqlDataReader 在讀取資料庫時，是一行一行地讀取&lt;/strong&gt;。因此，我們先判斷是否有讀到資料（HasRows = 有資料行嗎？），若有則逐行進行處理。在 Read() 的時候，運作的方式和我們人類 Read（讀） 書本是一樣的，會讀取一行的資料，因此我們利用 &lt;strong&gt;while&lt;/strong&gt; 迴圈一直閱讀直到不能讀為止。&lt;/p&gt;
+&lt;p&gt;當 reader 在讀取資料行時，我們先宣告一個 Card 來放置我們要的資料，這邊為了方便直接用 new 物件 { 資料 } 的方式宣告，跟單純宣告的和定義好的建構式看起來有些不同，但結果會建出一個 card 是一樣的，端看需求選用。&lt;/p&gt;
+&lt;p&gt;首先是取得資料的部份，利用 reader.GetOrdinal 去取得該欄位的索引值＼位置。例如說 card_name 是位於資料列的第三欄，那我們就會取得它的索引值為 2 （從 0 開始）。再利用 Get(類型，這邊的類型要配合資料庫內欄位的設定，例如 int32 配 int，string 配 nvarchar 之類) 的指令去取出對應索引值的資料。&lt;/p&gt;
+&lt;p&gt;雖然本篇示範的資料庫較小，能夠一目了然欄位所在的位置，下 reader.GetString(2) 也是能夠取得資料的。但其缺點也很明顯，若是資料庫欄位有所變更，抑或是資料庫欄位數量很多的時候，錯誤的風險就會相當大，因此用&lt;strong&gt;欄位名稱尋找索引值，再利用索引值取得資料內容的方式相對比較保險&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;另外，在處理回傳的資料時，會根據習慣和需求而有不同的做法，大多數的作法並不會一樣。例如說也有將回傳資料封裝成 Json 就丟給前端讓前端自己拆包自己頭痛的狀況存在，這部份在看其他人的連線教學或相關文章後就會比較了解。若是需要查詢相關的命令，例如說只執行命令時不回傳值，或單純只傳一個值，可以查詢微軟文件的 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/api/system.data.sqlclient.sqlcommand?view=netframework-4.7.2#%E5%82%99%E8%A8%BB&#34;&gt;SqlCommand 頁面&lt;/a&gt; 和 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/api/system.data.sqlclient.sqlconnection?view=netframework-4.7.2&#34;&gt;SqlConnection 頁面&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;將資料做成一個 card 後，我們將其放入我們的 List 也就是 cards。當全部的資料都讀完之後，絕對不能忘記關閉連線。最後回傳我們的 cards，到這邊 GetCards 就告一段落了。&lt;/p&gt;
+&lt;p&gt;為了測試，我們先到 HomeControlls 的 Index 做一點小修改。using 我們的 model 並且試試看用 GetCards 來取得資料。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/BzylqF3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著把 Home/Index.cshtml 也進行修改。將原本的全部砍掉，為了示範方便，直接 using models 並且用 Viewbag 拿出來看。（註：這邊熟練之後若想了解實務上較建議使用的傳值方式，可以搜尋 &amp;ldquo;ViewModel&amp;rdquo;）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/k7ZIPF6.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;可以看見資料有正常地取得了&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/gGzrAxl.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著就可以開始處理前端顯示的部份，例如使用 &lt;a href=&#34;https://bootstrap.hexschool.com/docs/4.0/content/tables/&#34;&gt;Bootstrap 的表格&lt;/a&gt; 進行排版，或是其他 css 啦模板啦，都是沒問題的囉！&lt;/p&gt;
+&lt;h2 id=&#34;新增資料&#34;&gt;新增資料&lt;/h2&gt;
+&lt;p&gt;既然能夠取得資料了，接下來就來做一些基本的操作吧。首先從新增資料開始。&lt;/p&gt;
+&lt;p&gt;為了後續操作方便和美觀，先從我們顯示資料的 Index 開始做處理。先將它改成bootstarp 的表格樣式，並且留一格之後放操作項。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-html&#34; data-lang=&#34;html&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;table&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;table&amp;#34;&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;thead&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;tr&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;資料庫編號&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;角色名稱&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;卡片名稱&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;卡片等級&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;tr&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;thead&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;tbody&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        @foreach (Card card in cards) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;tr&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;@card.ID&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;@card.Char_name&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;@card.Card_name&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;@card.Card_level&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;&amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;th&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;tr&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;tbody&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;table&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/6z2UNud.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;比剛剛好多了：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/EO3xE9b.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;既然要新增資料，那一定要有個頁面能夠輸入新增的資料內容。因此我們回到 HomeController 來準備新增一個頁面。首先先把預設的 About 和 Contact 刪掉，也將 Views 裡的這兩頁給刪掉，我們不會用到它們了。&lt;/p&gt;
+&lt;p&gt;接著就來建立 CreateCard ：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/T7lxFzj.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;之後也必須建立 View 才可以。在 CreatrCard 上點右鍵，選擇新增檢視。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/fS17EpU.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Nl7yqjA.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在這一步直接按下 Add 就會新增一個空白的 View 可以使用了。如果想讓系統自己幫你產生，Template 指得就是樣板，裡面已經包含新增刪除等操作會使用到的介面，選擇後再於 Model class 選取要操作的 Model 物件的話，就會自動產生好一個功能頁面讓你修改。不過開頭已經說過這次要純手工，因此我們就直接按下 Add 吧。&lt;/p&gt;
+&lt;p&gt;要把資料從 View 丟到 Controller 的方法很多，例如 form 表單或是 ajax 傳值都是可行的。我們這邊用 form 表單做回傳，另外使用 bootstarp 簡單排個版，程式碼如下&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/IGumNlE.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-html&#34; data-lang=&#34;html&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;h2&lt;/span&gt;&amp;gt;新增 Card&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;h2&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;br&lt;/span&gt; /&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;form&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;method&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;post&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;action&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/Home/CreateCard&amp;#34;&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;div&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;form-group row&amp;#34;&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;label&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;for&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;inputCharName&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;col-sm-2&amp;#34;&lt;/span&gt;&amp;gt;角色名稱&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;label&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;div&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;col-sm-10&amp;#34;&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;input&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;type&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;text&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;id&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;inputCharName&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Char_name&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;form-control&amp;#34;&lt;/span&gt; /&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;div&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;div&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;div&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;form-group row&amp;#34;&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;label&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;for&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;inputCardName&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;col-sm-2&amp;#34;&lt;/span&gt;&amp;gt;卡片名稱&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;label&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;div&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;col-sm-10&amp;#34;&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;input&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;type&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;text&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;id&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;inputCardName&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Card_name&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;form-control&amp;#34;&lt;/span&gt; /&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;div&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;div&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;div&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;form-group row&amp;#34;&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;label&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;for&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;inputCardLevel&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;col-sm-2&amp;#34;&lt;/span&gt;&amp;gt;卡片等級&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;label&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;div&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;col-sm-10&amp;#34;&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;input&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;type&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;number&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;id&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;inputCardLevel&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Card_level&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;form-control&amp;#34;&lt;/span&gt; /&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;div&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;div&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;input&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;btn btn-default&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;type&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;submit&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;value&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;新增&amp;#34;&lt;/span&gt;/&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;form&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以看見我們首先做了一個 form 表單，並&lt;strong&gt;指定這張表單將用 post 的方式將資料傳送到 /Home/CreateCard 這個路徑&lt;/strong&gt;。屆時我們送出的時候，就會送到 HomeController 中有規定收取 post 的 CreateCard() 方法做處理。&lt;/p&gt;
+&lt;p&gt;在&lt;strong&gt;表單中最重要的就是各個 input 的 name 屬性&lt;/strong&gt;，當資料傳送的時候，會使用 name 做為資料的欄位名稱。因此這邊的 name 一定要能和我們的 card 物件的資料對應上，才能讓它自動轉換。&lt;/p&gt;
+&lt;p&gt;接著用 &lt;a href=&#34;https://v3.bootcss.com/css/#forms&#34;&gt;bootstrap 的格式&lt;/a&gt;做了三組輸入框，以及一個提交按鈕。運行後頁面正常就可以進行下一步了。&lt;/p&gt;
+&lt;p&gt;首先我們再度回到 HomeController，做一個 POST 才能進來的 CreateCard 方法來接取表單，並且讓它將傳入的表單資料做成我們建立的 Card 物件。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/yi7ZMvq.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;這個方法中應該要能將 card 的資料傳入資料庫，但我們還沒有實做傳入資料庫的方法，因此我們要回到當初建立的&lt;strong&gt;資料庫連線用的 model&lt;/strong&gt;（本範例中為 DBconn）去實作一個新增用的函式。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/mrVWpCe.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;新增的函式跟前面做過的查詢相差無幾，最大的差別在於新增的 SQL 語法是 &lt;a href=&#34;https://www.1keydata.com/tw/sql/sqlinsert.html&#34;&gt;INSERT INTO&lt;/a&gt; 。必須再提醒一次，最注意的一點是，&lt;u&gt;&lt;strong&gt;在@字串中放置的參數，需要用 SqlParameter 的方式讓系統檢查後放入，不應該偷懶直接將字串和參數用 + 接起來就傳送，否則很容易遭遇 &lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10189201&#34;&gt;SQL injection&lt;/a&gt; 的攻擊&lt;/strong&gt;&lt;/u&gt;，被亂下 SQL 指令。&lt;/p&gt;
+&lt;p&gt;處理好 model 中控制資料庫的部分之後，我們再回到 Controller 把這段添加上去。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/adCSxgq.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;可以看到當我們收到表單後，就會嘗試呼叫資料庫物件調用新增的函式做新增，如果新增時出了錯就會把錯誤訊息列印在輸出欄，最後回到首頁。&lt;/p&gt;
+&lt;p&gt;最後只要在首頁把新增的按鈕放上去就大功告成囉！&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/mJBPdDA.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;試跑幾次流程，可以看到有成功新增資料囉：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/3ylj9P6.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;修改資料&#34;&gt;修改資料&lt;/h2&gt;
+&lt;p&gt;接著要嘗試修改資料，修改資料和新增最大的不同是會多一步先將原本的該筆資料取出。首先先將首頁修改一下，在每一行的結尾放上修改資料的連結。由於做成連結的 ActionLink 並不能放進像 model 這麼複雜的資料，所以在實務上都是以傳遞 id 為主。（ ActionLink 會把我們的資料做成連結、用 get 變成網址。所以 editCard.html?ID=2 這個它還看得懂，editCard.html?card=&amp;amp;$%* 這種它就不知道怎麼表達了）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/MVj0OKY.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;我們一樣回到 Controller 新增一個方法，只是這次我們要求先把要修改的資料也傳到頁面做處理。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/PLW4abi.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;現在我們遇到的問題是：我們需要把 id 變成實際的卡片資料，必須利用這個 id 去取得資料。所以我們到 model 新增一個用 id 搜尋卡片資料的方法。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/r80dGT6.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;可以看見單筆查詢的做法基本上和前面做過的拿全部資料所差無幾，只是一個搜全部一個搜條件而已。最大的差異在於我們傳遞了一個 ID 進去，並且在 SQL 指令的地方利用 &lt;a href=&#34;https://www.1keydata.com/tw/sql/sqlwhere.html&#34;&gt;WHERE 下了搜尋條件&lt;/a&gt;，並且只回傳一項資料。&lt;/p&gt;
+&lt;p&gt;現在我們回到 Controller 將我們的 ID 搜尋方法放進去，並將回傳的 card 用傳遞 model 的方式傳到 View，期待它能聽話。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/gtNloFh.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著我們要新增編輯的頁面（View）了，一樣右鍵新增檢視，並複製新增頁面的程式碼修改如下。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/k9ZyG7o.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;特別標示紅色的部分要多加注意。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;首先我們傳入了 model，因此要先用 @model 告訴它我們傳遞的是哪個 model&lt;/li&gt;
+&lt;li&gt;修改我們表單的回傳目標&lt;/li&gt;
+&lt;li&gt;新增一格用來放置 ID，但是 ID 是不能修改的，因此把它設成唯讀&lt;/li&gt;
+&lt;li&gt;接著我們將 model 的值先放入各個欄位，才能在修改的時候顯示原本的資料。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;做完這一步的時候可以先從首頁執行是不是可以順利取得單筆資料。&lt;/p&gt;
+&lt;p&gt;修改完的資料必須回傳然後告訴資料庫修改的結果，因此我們和新增一樣要做一個 Post 的編輯方法來接收上面的表單。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/8flx7rK.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;現在我們該再度前往 資料庫控制的 model 加上修改資料庫內容的方法了。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/dkBbur8.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;一樣是和前面的新增資料很像，但這邊使用的 SQL 語法是更新資料用的 &lt;a href=&#34;https://www.1keydata.com/tw/sql/sqlupdate.html&#34;&gt;UPDATE 語法&lt;/a&gt;並且結合了前面的 WHERE 來指定要更改的項目。完成之後我們就可以把它加到 Controller 的方法上囉：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ZdyuZub.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;這樣就宣告完工了！實際上來編輯一次吧&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Qtvhalt.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;將寫程式修改成打呼看看&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/E9dGERa.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;可以看到成功變更囉！&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/KAq6XkV.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;刪除資料&#34;&gt;刪除資料&lt;/h2&gt;
+&lt;p&gt;如果前面都大致上了解的話，刪除就是小菜一碟。&lt;/p&gt;
+&lt;p&gt;首先我們先回到首頁列表，在編輯後面加上刪除的連結（我是用｜隔開而已，也可以另外新增一格甚至做成按鈕沒關係）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/WTn9MXw.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著我們到 Controller 增加一個刪除的方法，因為我們並沒有要做一個「確認刪除嗎？」的頁面，所以最後直接回到首頁列表就可以了。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ZScM56X.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著就到資料庫互動的物件來實作刪除的部分。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/cJe4pic.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;非常簡單，只有 SQL 語法的部分有更動，使用的是&lt;a href=&#34;https://www.1keydata.com/tw/sql/sqldelete.html&#34;&gt; DELETE 指令&lt;/a&gt;，由於只是刪除，因此我們果斷地打開連線，砍下去，關閉連線走人。&lt;/p&gt;
+&lt;p&gt;回到 Controller 把這個函式添加上去&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/xFyaY8s.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;然後就可以試試看能不能刪除資料囉！&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/GzrN6Ca.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;點下刪除了之後－－&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/6O9vyNA.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;資料就不見了！（其實蠻危險的？）&lt;/p&gt;
+&lt;h2 id=&#34;結語&#34;&gt;結語&lt;/h2&gt;
+&lt;p&gt;已經實作了顯示列表、新增、修改、查詢和刪除。所謂萬變不離其宗，基本的資料庫操作都離不開這些方法，熟悉了這些做法的概念之後就沒有問題了，剩下大多是顯示的時候做美化、排序等等的剩餘工作。Good Job！&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Asp.net MVC: Entity Framework 連線資料庫</title>
+      <link>https://igouist.github.io/post/2019/12/aspnet-connect-db-ef/</link>
+      <pubDate>Mon, 09 Dec 2019 00:09:08 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2019/12/aspnet-connect-db-ef/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;目標：將 &lt;a href=&#34;https://igouist.github.io/post/2019/12/aspnet-connect-db/&#34;&gt;上一篇的 Asp.net MVC：連線資料庫、簡單實作 CRUD&lt;/a&gt; 的資料庫基礎功能改成以 &lt;strong&gt;Entity Framework&lt;/strong&gt; 產生的方式跑一遍&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;既然上一篇介紹了土法煉鋼動手做的資料庫取值方式，就覺得不順手把從 EF 建立出基本功能介面的方式記錄下來似乎是有點奇怪。實際上開始寫成筆記之後才發現對內容尚不是很了解，例如一直用 Data First 產生頁面但對 Code First 以程式碼產生架構的方式很不熟。儘管如此仍稍微紀錄一下，之後有更深的了解（例如 ASP.NET Identity 或 Code First 等部分）再進一步做成筆記。另外也可參考較詳細的&lt;a href=&#34;https://docs.microsoft.com/zh-tw/aspnet/mvc/overview/getting-started/getting-started-with-ef-using-mvc/creating-an-entity-framework-data-model-for-an-asp-net-mvc-application&#34;&gt;官方文檔&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;開一個新的專案來示範。前面新增專案的部分都和前一篇一樣，檔案 → 新增專案 → .NET Framework → MVC 這樣&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;備註：旁邊有個變更驗證的部分是 ASP.NET Identity，在做會員系統的時候有用過，但這篇不會用到，為怕忘記故於此紀錄，另可參照 2013 年的&lt;a href=&#34;http://2or3.blogspot.com/2013/12/mvc5-aspnet-identity.html&#34;&gt;這篇&lt;/a&gt;及官方文檔。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;專案開啟後，我們在 Model 新增 ADO.net 實體資料模型&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/oSsVE3o.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/WKo3Sd5.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著有分為幾種方法，主要是從資料庫產生模型，和資料庫產生 Code First 的模型，可參見 &lt;a href=&#34;http://kevintsengtw.blogspot.com/2013/10/aspnet-mvc-entity-framework-code-first.html&#34;&gt;ASP.NET MVC 使用 Entity Framework Code First - 基礎入門&lt;/a&gt; 裡的說明。這篇會使用來自資料庫的 EF Designer 模型這個選項做建置。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/XkWWJzn.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;選擇了之後就會進到連線資料庫的部分，按照指示一步一步連線到資料庫。這邊也會幫你將連線字串儲存到 Web.config 裡。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/bU52Zv0.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著選取我們在這個模型中要包含的資料表。要注意下半部分的複數化或單數化建議是不要勾選，否則它會幫你把資料庫那些順手改個名，出事的機率會很高。&lt;/p&gt;
+&lt;p&gt;成功的話就可以看見資料表出現在 edmx 檔的視窗裡了：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/QTld12h.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著我們來建立 Controller ：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/d3s6lSO.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/n810bKz.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;上一篇我們為了從頭開始因此選擇空的 Controller，這邊則可以按照要求選擇自己需要的就可以了。我們選擇使用 EF 建立 Controller 和 View。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/FsiSn3w.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著這邊選擇要進行操作的那個類，以及資料連接的字串，就能看到它開始從模型產生囉！&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;註：如果在這步驟發生錯誤，先嘗試重建方案看看。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;如果一切順利，應該能看見它已經幫你建立好具有 列表、新增、修改、刪除和查詢的 Action 和 View&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/GEodVlL.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;測試時基本功能也能順利地使用&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/5SGg5PJ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;心得：利用這個方式可以快速地產生具有基本操作功能的網頁，以此為基礎進行修改的話就能省下非常多的時間，可以說是非常強大的。但實際上其細節有非常多的地方可以處理，還是要更深的理解才能完全發揮呢。&lt;/p&gt;</description>
+    </item>
+    
   </channel>
 </rss>
