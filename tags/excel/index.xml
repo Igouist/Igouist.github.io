@@ -18,7 +18,194 @@
 &lt;p&gt;目標：稍微紀錄一下這次碰到 EPPlus 的用法。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&lt;strong&gt;EPPlus 是在 .NET Framework 或 .NET Core 上提供控制 Excel 的元件，操作簡單好懂&lt;/strong&gt;，當有需要在網頁上讓人將表格資料下載成 Excel 的功能時就可以試著使用。常常一併被提起的還有另一個一樣老牌的相似功能元件 NPOI，不過我個人只用過 EPPlus 便不再贅述。關於更詳細的介紹，可以參閱黑暗執行緒的這篇 &lt;a href=&#34;https://blog.darkthread.net/blog/epplus/&#34;&gt;比 NPOI 更討喜的 Excel 元件 - EPPlus!&lt;/a&gt;，儘管是有些久遠的文章但仍能迅速了解 EEplus 的賣點和差異。&lt;/p&gt;
-&lt;p&gt;我在使用 EPPlus 時主要的參考來自於 &lt;a href=&#34;https://github.com/EPPlusSoftware/EPPlus/wiki&#34;&gt;EPPlus 的 Wiki&lt;/a&gt;，每個功能都有說明及範例，同時也有範例專案可以下載，寫得相當詳細。另外還找了如 &lt;a href=&#34;https://www.cnblogs.com/rumeng/p/3785748.html&#34;&gt;導出 Excel 之 Epplus 使用教程 - Wico&amp;rsquo;s Blog&lt;/a&gt;、&lt;a href=&#34;https://dotblogs.com.tw/malonestudyrecord/2018/03/21/103124&#34;&gt;使用 EPPLUS 操控 Excel - 碼農的學習日誌&lt;/a&gt; 這些有逐步說明的文章，在此感謝。&lt;/p&gt;</description>
+&lt;p&gt;我在使用 EPPlus 時主要的參考來自於 &lt;a href=&#34;https://github.com/EPPlusSoftware/EPPlus/wiki&#34;&gt;EPPlus 的 Wiki&lt;/a&gt;，每個功能都有說明及範例，同時也有範例專案可以下載，寫得相當詳細。另外還找了如 &lt;a href=&#34;https://www.cnblogs.com/rumeng/p/3785748.html&#34;&gt;導出 Excel 之 Epplus 使用教程 - Wico&amp;rsquo;s Blog&lt;/a&gt;、&lt;a href=&#34;https://dotblogs.com.tw/malonestudyrecord/2018/03/21/103124&#34;&gt;使用 EPPLUS 操控 Excel - 碼農的學習日誌&lt;/a&gt; 這些有逐步說明的文章，在此感謝。&lt;/p&gt;
+&lt;h2 id=&#34;建立-excel&#34;&gt;建立 Excel&lt;/h2&gt;
+&lt;p&gt;首先從建立一個 Excel 開始；要注意的是開啟檔案之後也要記得建分頁出來。後續的寫入資料等都是對分頁去做動作。&lt;/p&gt;
+&lt;p&gt;我們使用 &lt;code&gt;new ExcelPackage()&lt;/code&gt; 來開一個新的 Excel 的處理工作，而結束之後一定要記得 &lt;code&gt;SaveAs&lt;/code&gt;。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;備註 (2020/4/12):&lt;/p&gt;
+&lt;p&gt;由於 EPPlus 升版和授權上的一些改變，如果直接使用會跳出 &lt;code&gt;LicenseException&lt;/code&gt; 用來通知你這件事。&lt;/p&gt;
+&lt;p&gt;因此現在需要先加上這行：&lt;br/&gt;
+&lt;code&gt;ExcelPackage.LicenseContext = LicenseContext.NonCommercial;&lt;/code&gt; &lt;br/&gt;
+來叫它閉嘴。&lt;/p&gt;
+&lt;p&gt;另外也有在 &lt;code&gt;App.config&lt;/code&gt; 中設定的作法，可參閱 &lt;a href=&#34;https://epplussoftware.com/developers/licenseexception&#34;&gt;LicenseException - EPPlus&lt;/a&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;備註 (2022/3/13):&lt;/p&gt;
+&lt;p&gt;因緣際會發現 EPPlus 的授權說明網頁現在已經有翻譯了，有遇到這個 LicenseException 的朋友可以去看一下：&lt;a href=&#34;https://epplussoftware.com/zh/Developers/LicenseException&#34;&gt;LicenseException - EPPlus Software&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;另外關於一些授權的部分，也可以參照小朱大大的這篇：&lt;a href=&#34;https://dotblogs.com.tw/regionbbs/2018/09/23/light-discussions-oss-licenses&#34;&gt;淺談軟體開源的授權條款&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ExcelPackage.LicenseContext = LicenseContext.NonCommercial; &lt;span style=&#34;color:#75715e&#34;&gt;// 關閉新許可模式通知&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 沒設置的話會跳出 Please set the excelpackage.licensecontext property&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; file = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; FileInfo(&lt;span style=&#34;color:#e6db74&#34;&gt;@&amp;#34;D:\ExampleExcel.xlsx&amp;#34;&lt;/span&gt;); &lt;span style=&#34;color:#75715e&#34;&gt;// 檔案路徑&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; excel = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ExcelPackage())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 建立分頁&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; ws = excel.Workbook.Worksheets.Add(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;MySheet&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 寫入資料試試&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ws.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;].Value = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;測試測試&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 儲存 Excel&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    excel.SaveAs(file);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;執行之後就可以看到檔案已經被建立囉
+&lt;img src=&#34;https://i.imgur.com/gHEE7OZ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;並且也出現了測試用的內容
+&lt;img src=&#34;https://i.imgur.com/LObC4zj.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;從這邊也可以認出 &lt;code&gt;ws.Cells[2, 1].Value&lt;/code&gt; 的第一個數字是&lt;code&gt;從 ↓ 數下來&lt;/code&gt;的，第二個是&lt;code&gt;往 → 數過去&lt;/code&gt;的（很抱歉這樣表示，因為我常弄反行跟列，這樣之後參考比較好理解）&lt;/p&gt;
+&lt;p&gt;另外眼尖的朋友也可以察覺到一個重點，&lt;strong&gt;儲存格是從 1 開始數的：不是 0 ！&lt;/strong&gt; 也就是說 &lt;code&gt;A1&lt;/code&gt; 這一格是 &lt;code&gt;[1, 1]&lt;/code&gt;，不要打成 &lt;code&gt;[0, 0]&lt;/code&gt; 了。當然，對於困擾的朋友，EEPlus 也提供了 &lt;code&gt;ws.Cells[&amp;quot;B1&amp;quot;]&lt;/code&gt; 的寫法，可以用字串傳入的方式直接指定在 Excel 的儲存格位置，比起數格子方便多了，後續也會在示範標註。&lt;/p&gt;
+&lt;h2 id=&#34;編輯-excel&#34;&gt;編輯 Excel&lt;/h2&gt;
+&lt;p&gt;編輯時和建立一樣，從 &lt;code&gt;ExcelPackage()&lt;/code&gt; 開始動作，這次我們將檔案直接傳入，如此 Save 的時候就可以不用再傳一次。關於各種操作直接在程式碼上的註解進行說明。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 特別注意，頁籤和儲存格等操作 是由 1 開始而非 0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 打開存在的 Excel 檔案&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; excelFile = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; FileInfo(&lt;span style=&#34;color:#e6db74&#34;&gt;@&amp;#34;D:\ExampleExcel.xlsx&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; excel = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ExcelPackage(excelFile))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 指定頁籤&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;//ExcelWorksheet sheet1 = excel.Workbook.Worksheets[1]; // 這邊用是 1 在 Core 用是 0 = =&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ExcelWorksheet sheet1 = excel.Workbook.Worksheets[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;MySheet&amp;#34;&lt;/span&gt;]; &lt;span style=&#34;color:#75715e&#34;&gt;// 可以使用頁籤名稱&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;#region -- 儲存格讀寫 --&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 寫入資料，[行－，列｜] 或直接指定 [&amp;#34;儲存格&amp;#34;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    sheet1.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;].Value = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;開啟測試&amp;#34;&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;// 嚴謹一點可以用 GetValue 和 SetValue 來操作&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;//sheet1.Cells[&amp;#34;B1&amp;#34;].Value = &amp;#34;開啟測試&amp;#34;; // 此兩行等價&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    sheet1.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;].Value = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;多格操作測試&amp;#34;&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;// 從 (3, 3) 一路框到 (5, 5)，包含頭尾&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;//sheet1.Cells[&amp;#34;C3:E5&amp;#34;].Value = &amp;#34;多格操作測試&amp;#34;; // 此兩行等價&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    sheet1.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;].LoadFromText(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LoadFromText Test&amp;#34;&lt;/span&gt;); &lt;span style=&#34;color:#75715e&#34;&gt;// 從字串讀入資料，可用於寫入 CSV 之類的場合&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; coll = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; List&amp;lt;&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt;&amp;gt; { &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LoadFromCollTest1&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LoadFromCollTest2&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LoadFromCollTest3&amp;#34;&lt;/span&gt; };
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    sheet1.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;].LoadFromCollection(coll); &lt;span style=&#34;color:#75715e&#34;&gt;// 從集合類型的參數讀入資料，會按照行（＝ D1 E1 F1...）依序排列&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 可從 LoadFromCollection 推測 LoadFromDataReader, LoadFromDataTable, LoadFromArrays 等函式的行為，故省略&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;#endregion -- 儲存格讀寫 --&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;#region -- 儲存格樣式 --&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 可以用宣告的方式一併操作指定區域內的儲存格&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; range = sheet1.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;])  &lt;span style=&#34;color:#75715e&#34;&gt;// 直接選取 A1 到 A5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        range.Value = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;樣式測試&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        range.Style.Font.Bold = &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;// 粗體&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        range.Style.Font.Color.SetColor(Color.White); &lt;span style=&#34;color:#75715e&#34;&gt;// 字體顏色&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        range.Style.Fill.PatternType = ExcelFillStyle.Solid; &lt;span style=&#34;color:#75715e&#34;&gt;// 設定背景填色方法，沒有這一行就上背景色會報錯&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                                                             &lt;span style=&#34;color:#75715e&#34;&gt;// Solid = 填滿；另外還有斜線、交叉線、條紋等&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        range.Style.Fill.BackgroundColor.SetColor(Color.DarkBlue); &lt;span style=&#34;color:#75715e&#34;&gt;// 儲存格顏色&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;#endregion -- 儲存格樣式 --&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    excel.Save(); &lt;span style=&#34;color:#75715e&#34;&gt;// 儲存變更&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;執行完的結果會像這樣，可以和上面的程式碼對照看是哪一部份的效果&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/dENLdol.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;以上部份嘗試了 資料的讀寫（如寫入單格的資料內容、寫入一個串列等）以及樣式的設定（字體顏色、儲存格顏色等）等。由於其中的操作能&lt;strong&gt;選擇的樣式相當繁多&lt;/strong&gt;，例如背景填色就有好幾種，因此列出來並不是明智的做法，先知道基本的語法之後再自己開編譯器看有哪些選項、或是將對應的操作拿到官方文檔找看有哪些會是比較實際的做法。&lt;/p&gt;
+&lt;p&gt;這篇只示範資料的寫入，當然 Excel 的處理沒有那麼簡單，可以參照 官方Wiki 的這兩個部份：&lt;a href=&#34;https://github.com/EPPlusSoftware/EPPlus/wiki/Formula-Calculation&#34;&gt;公式的計算&lt;/a&gt; 及 &lt;a href=&#34;https://github.com/EPPlusSoftware/EPPlus/wiki/Shapes,-Pictures,-Controls-and-Charts&#34;&gt;圖表的處理&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Epplus 的官方文檔範例寫得挺不錯的，有更進一步需求的朋友可以翻一下範例，抓下來跑跑看，可以解決大部分的問題。&lt;/p&gt;
+&lt;h2 id=&#34;泛型串列匯出-excel&#34;&gt;泛型串列匯出 Excel&lt;/h2&gt;
+&lt;p&gt;這邊紀錄一下工作需求時用到的做法，由於匯出資料的型別繁多，唯一的共通點就是都很多筆。為了方便寫了一個針對多筆的泛型匯出函式，特別在這裡記錄下來。
+其實這篇也是為了把這個部份記錄下來方便以後可以回來抄才開的坑…&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Main()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; data = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; List&amp;lt;testClass&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; testClass{ name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;香蕉&amp;#34;&lt;/span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; testClass{ name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;番茄&amp;#34;&lt;/span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; testClass{ name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;蘋果&amp;#34;&lt;/span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; testClass{ name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;鳳梨&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; excel = ExportExcel(data);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	excel.Dump();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; FileInfo ExportExcel&amp;lt;T&amp;gt;(IEnumerable&amp;lt;T&amp;gt; data) &lt;span style=&#34;color:#66d9ef&#34;&gt;where&lt;/span&gt; T: &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#75715e&#34;&gt;//var output = new MemoryStream();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; output = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; FileInfo(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;D:\\ExportExcelTest-&amp;#34;&lt;/span&gt; + DateTime.Now.ToString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;yyyy-MM-dd-hh-mm-ss&amp;#34;&lt;/span&gt;) + &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;.xlsx&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; excel = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ExcelPackage(output))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; ws = excel.Workbook.Worksheets.Add(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Sheet1&amp;#34;&lt;/span&gt;); &lt;span style=&#34;color:#75715e&#34;&gt;// 建立分頁&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#75715e&#34;&gt;// 用反射拿出有 DisplayName 的屬性&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; properties = &lt;span style=&#34;color:#66d9ef&#34;&gt;typeof&lt;/span&gt;(T)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .GetProperties()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .Where(prop =&amp;gt; prop.IsDefined(&lt;span style=&#34;color:#66d9ef&#34;&gt;typeof&lt;/span&gt;(DisplayNameAttribute)));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; rows = data.Count() + &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;;   &lt;span style=&#34;color:#75715e&#34;&gt;// 直：資料筆數（記得加標題列）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; cols = properties.Count(); &lt;span style=&#34;color:#75715e&#34;&gt;// 橫：類別中有別名的屬性數量&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;(rows &amp;gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; &amp;amp;&amp;amp; cols &amp;gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			ws.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;].LoadFromCollection(data, &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;); &lt;span style=&#34;color:#75715e&#34;&gt;// 寫入資料&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			&lt;span style=&#34;color:#75715e&#34;&gt;// 儲存格格式&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; colNumber = &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			&lt;span style=&#34;color:#66d9ef&#34;&gt;foreach&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; prop &lt;span style=&#34;color:#66d9ef&#34;&gt;in&lt;/span&gt; properties)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				&lt;span style=&#34;color:#75715e&#34;&gt;// 時間處理，如果沒指定儲存格格式會變成 通用格式，就會以 int＝時間戳 的方式顯示&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (prop.PropertyType.Equals(&lt;span style=&#34;color:#66d9ef&#34;&gt;typeof&lt;/span&gt;(DateTime)) ||
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				   prop.PropertyType.Equals(&lt;span style=&#34;color:#66d9ef&#34;&gt;typeof&lt;/span&gt;(DateTime?)))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;					ws.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, colNumber, rows, colNumber].Style.Numberformat.Format = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;mm-dd-yy hh:mm:ss&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				colNumber += &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			&lt;span style=&#34;color:#75715e&#34;&gt;// 樣式準備&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; range = ws.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, rows, cols])
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				ws.Cells.Style.Font.Name = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;新細明體&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				ws.Cells.Style.Font.Size = &lt;span style=&#34;color:#ae81ff&#34;&gt;12&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				ws.Cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center; &lt;span style=&#34;color:#75715e&#34;&gt;// 置中&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				ws.Cells.AutoFitColumns(); &lt;span style=&#34;color:#75715e&#34;&gt;// 欄寬&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				&lt;span style=&#34;color:#75715e&#34;&gt;// 框線&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				range.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				range.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				range.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				range.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				&lt;span style=&#34;color:#75715e&#34;&gt;// 標題列&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; title = ws.Cells[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;, cols];
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				title.Style.Fill.PatternType = ExcelFillStyle.Solid; &lt;span style=&#34;color:#75715e&#34;&gt;// 設定背景填色方法&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;				title.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;			Debug.WriteLine(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;未列印資料，請檢查是否傳入資料為空，或指定類別未具有公開且加上 DisplayName 的屬性。&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		excel.Save(); &lt;span style=&#34;color:#75715e&#34;&gt;// 儲存 Excel&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#75715e&#34;&gt;//output.Position = 0; // 如果是使用 stream 的方式讓人下載，請記得將指標移回資料起始&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; output;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;testClass&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;	[DisplayName(&amp;#34;編號&amp;#34;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Guid id { &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; } = Guid.NewGuid();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;	[DisplayName(&amp;#34;名稱&amp;#34;)]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name { &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;結語&#34;&gt;結語&lt;/h2&gt;
+&lt;p&gt;這次是為了把小工具記下來，方便以後在外可以直接開網站起來左手抄右手所以硬是丟了一篇出來；關於基本操作的部份說明實在有點偷懶，以後有機會再進行補充和功能示範。現在還請海涵，幸虧官方的 Github 頁面 Wiki 實在相當完善，對操作有疑問的朋友可以先按照官方 Wiki 跑一次，相信可以非常快上手。&lt;/p&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/EPPlusSoftware/EPPlus/wiki&#34;&gt;EPPlus Wiki&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.darkthread.net/blog/epplus/&#34;&gt;比 NPOI 更討喜的 Excel 元件 - EPPlus! - 黑暗執行緒&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.cnblogs.com/rumeng/p/3785748.html&#34;&gt;導出 Excel 之 Epplus 使用教程 - Wico&amp;rsquo;s Blog&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://dotblogs.com.tw/malonestudyrecord/2018/03/21/103124&#34;&gt;使用 EPPLUS 操控 Excel - 碼農的學習日誌&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.itread01.com/content/1543037183.html&#34;&gt;.Net Excel 匯出圖表Demo(柱狀圖，多標籤頁) - IT閱讀&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
   </channel>
