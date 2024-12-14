@@ -131,15 +131,39 @@
                         <div class="post-content">
                             <p><img src="https://i.imgur.com/dh0Jo4t.png" alt="Image"></p>
 <p>因為手邊的 .Net Core API 專案越來越多，蠻常會需要讀 appsetting.json 的 Config，每次都要重找文章有點麻煩，這邊就來筆記一篇。</p>
-<hr>
+<div class="toc">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#認識-appsettingsjson">認識 Appsettings.json</a></li>
+    <li><a href="#使用-ioptions-來註冊--注入">使用 IOptions 來註冊 &amp; 注入</a></li>
+    <li><a href="#補充addoptions--對-ioptions-加入驗證">補充：AddOptions &amp; 對 IOptions 加入驗證</a></li>
+    <li><a href="#補充ioptionsioptionsmonitorioptionssnapshot">補充：IOptions、IOptionsMonitor、IOptionsSnapshot</a>
+      <ul>
+        <li><a href="#ioptions">IOptions</a></li>
+        <li><a href="#ioptionsmonitor">IOptionsMonitor</a></li>
+        <li><a href="#ioptionssnapshot">IOptionsSnapshot</a></li>
+      </ul>
+    </li>
+    <li><a href="#延伸閱讀">延伸閱讀</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+    <li><a href="#附錄試一下-ioptionsmonitor">附錄：試一下 IOptionsMonitor</a></li>
+  </ul>
+</nav>
+</div>
+<h2 id="認識-appsettingsjson">認識 Appsettings.json</h2>
 <p>首先簡單介紹一下 appsettings.json 是在幹嘛的：</p>
-<p>我們開發的時候，常常會需要弄一些設定值，再用這些設定值用來控制我們程式的某些行為。</p>
-<p>例如「某功能的上限值是 <code>10</code>」、「某項開關在測試環境是 <code>false</code>」、「某服務信件的發送者要用 <code>noreply9527</code>」，另外常見的還有連線字串、寫 Log 時的 logging level 等等</p>
-<p><strong>這些設定值會和程式碼拆開，放在設定檔集中管理</strong>，再讓程式碼從設定檔讀取相關的設定值來用就好。有了設定檔，要調整修改也比較方便：要增加或是修改設定值，都只要先往設定檔衝就行。</p>
-<p>既然兩邊拆開了，我們也就可以簡單地替換這些設定值來應對不同狀況（例如正式環境和測試環境套用兩組不同的設定檔，或是在自己電腦測試的時候快速改個值之類的），彈性可說是 UPUP</p>
+<p>我們開發的時候，常常會需要先設定好一些服務參數、組態設定之類的設定值，再用這些設定值用來控制我們程式的某些行為。例如：</p>
+<ul>
+<li>「某功能的上限值是 <code>10</code>」</li>
+<li>「某項開關在測試環境是 <code>false</code>」</li>
+<li>「某服務信件的發送者要用 <code>noreply9527</code>」</li>
+</ul>
+<p>另外常見的還有連線字串、寫 Log 時的 logging level 等等。</p>
+<p><strong>這些設定值會和程式碼拆開，放在設定檔集中管理</strong>，再讓程式碼從設定檔讀取相關的設定值來用就好，藉此來把設定值的管理和使用做個關注點分離。</p>
+<p>有了設定檔，要調整修改也比較方便：要增加或是修改設定值，都只要先往設定檔衝就行。並且因為兩邊拆開了，我們也就可以簡單地替換這些設定值來應對不同狀況（例如正式環境和測試環境套用兩組不同的設定檔，或是在自己電腦測試的時候快速改個值之類的），彈性可說是 UPUP！</p>
 <p>更重要的是，這樣我們就不需要把一大堆東西寫死在程式碼的各個地方，也就不會要改個值還要先搜尋整個專案再一個一個挖出來改了。<del>我按 Shift Ctrl F 已經按到哭</del></p>
 <p>把設定值抽出去丟到設定檔之後，我們就得到了：集中管理設定值、方便修改和替換、減少程式碼中又重複又寫死的臭東西等等好處。</p>
-<p>而在 .Net Core 開始的 .Net API 框架裡，<strong>這個設定檔就是 appsettings.json</strong>。<br/>前面提到的像是日誌等級、功能旗標之類的這些設定值，就會放在 appsettings.json 裡面。</p>
+<p><strong>在 .Net Core 的世界裡，這個設定檔就是 appsettings.json</strong>。<br/>前面提到的像是日誌等級、功能旗標之類的這些設定值，就會放在 appsettings.json 裡面。</p>
 <p>而當我們想要從 appsettings.json 把這些設定值給讀出來的時候，<br/>就可以使用我們的 IOptions 啦！</p>
 <h2 id="使用-ioptions-來註冊--注入">使用 IOptions 來註冊 &amp; 注入</h2>
 <blockquote>
@@ -284,18 +308,19 @@
 <h3 id="ioptions">IOptions</h3>
 <p>用起來最簡單方便，個人推👍</p>
 <p>IOptions 會註冊為 Singleton，所以大家都會用同一組。也只有第一次建立的時候會抓設定檔的內容。後面就算跑去偷改檔案，也不會被影響（想更新？重啟站台吧）</p>
-<p>如果設定檔不太常改動的話，直接用這個簡單做一做是最方便的，也省資源。</p>
+<p>如果設定檔不太常改動的話，直接用 IOptions 簡單做一做是最方便的，也省資源。</p>
 <h3 id="ioptionsmonitor">IOptionsMonitor</h3>
 <p>IOptionsMonitor 同樣也會註冊為 Singleton，但是它會去偷聽設定檔有沒有更新。<br/>當設定檔有更新的時候 IOptionsMonitor 也會一起更新，所以能夠隨時取得目前版本的設定值</p>
 <p>取值的方法名稱也很明確表達這點，大家都是 <code>_options.Value</code>，<br/>但 IOptionsMonitor 的是 <code>_options.CurrentValue</code></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>_options = _options.Value,
 </span></span><span style="display:flex;"><span>_optionsMonitor = _optionsMonitor.CurrentValue,
-</span></span></code></pre></div><p>如果我們的功能非常依賴設定值，而且又希望隨時更新的時候，就可以考慮使用。<br/>但要小心如果 API 正在處理 Request，然後又剛好正在修改設定檔的話，可能會有一些靈異現象</p>
+</span></span></code></pre></div><p>如果我們的功能非常依賴設定值，而且又希望隨時更新（像留言區 Cash 大補充的 Hot Reload）的時候，就可以考慮使用 IOptionsMonitor。</p>
+<p>但要小心如果 API 正在處理 Request，然後又剛好正在修改設定檔的話，可能會有一些靈異現象（？）</p>
 <p>弄這篇筆記的時候也動手試了一下 IOptionsMonitor，但有點小佔版面，就放在最後的附錄（讓我之後可以回來抄）了。</p>
 <h3 id="ioptionssnapshot">IOptionsSnapshot</h3>
 <p>IOptionsSnapshot 會註冊為 Scope，所以每個請求進來的時候，都會各自去拿一次目前的設定檔內容，並且就用這一份設定檔內容處理這一次請求</p>
 <p>我個人感覺最中規中矩。吃得到設定檔的變動，但也不會像 <code>IOptionsMonitor</code> <br/>搞到前一秒還是 true 下一秒就是 false🤔</p>
-<p>如果有改動 Config 的需求，又希望同個請求之間不要太奇異的時候就可以考慮使用</p>
+<p>如果有改動 Config 的需求，又能接受下一組 Request 進來才吃到的時候（或是希望不要發生靈異現象），就可以考慮使用 IOptionsSnapshot。</p>
 <hr>
 <p>大概這樣。但我個人平常都還是 IOptions 優先，<br/>如果真的有需要即時反應設定檔的變動時，再把另外兩個拿出來討論吧。</p>
 <h2 id="延伸閱讀">延伸閱讀</h2>
@@ -455,7 +480,7 @@
     }
     var key = "2024-08-18";
     var value = dataMap.get(key);
-    var wordCount =  4771 ;
+    var wordCount =  4875 ;
     var link = "/post/2024/08/dotnet-feature-flag-and-feature-management/";
     var title = ".Net: 使用 FeatureManagement 套件來實作功能切換（Feature Toggle）吧";
     
@@ -467,7 +492,7 @@
     }
     var key = "2024-08-03";
     var value = dataMap.get(key);
-    var wordCount =  2935 ;
+    var wordCount =  3134 ;
     var link = "/post/2024/08/dotnet-ioptions/";
     var title = ".Net: 使用 IOptions 取得 appsettings.json 的設定值吧";
     
@@ -1763,7 +1788,7 @@
     }
     var key = "2023-01-28";
     var value = dataMap.get(key);
-    var wordCount =  2748 ;
+    var wordCount =  2832 ;
     var link = "/post/2023/01/polyglot-notebooks/";
     var title = "Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧";
     
@@ -1979,7 +2004,7 @@
     }
     var key = "2021-11-28";
     var value = dataMap.get(key);
-    var wordCount =  10797 ;
+    var wordCount =  10844 ;
     var link = "/post/2021/11/newbie-6-dependency-injection/";
     var title = "菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧";
     
@@ -2964,6 +2989,29 @@
 </form>
     </section>
     
+    
+        <section class="widget">
+            <h3 class="widget-title">文章目錄</h3>
+            <ul class="widget-list">
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#認識-appsettingsjson">認識 Appsettings.json</a></li>
+    <li><a href="#使用-ioptions-來註冊--注入">使用 IOptions 來註冊 &amp; 注入</a></li>
+    <li><a href="#補充addoptions--對-ioptions-加入驗證">補充：AddOptions &amp; 對 IOptions 加入驗證</a></li>
+    <li><a href="#補充ioptionsioptionsmonitorioptionssnapshot">補充：IOptions、IOptionsMonitor、IOptionsSnapshot</a>
+      <ul>
+        <li><a href="#ioptions">IOptions</a></li>
+        <li><a href="#ioptionsmonitor">IOptionsMonitor</a></li>
+        <li><a href="#ioptionssnapshot">IOptionsSnapshot</a></li>
+      </ul>
+    </li>
+    <li><a href="#延伸閱讀">延伸閱讀</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+    <li><a href="#附錄試一下-ioptionsmonitor">附錄：試一下 IOptionsMonitor</a></li>
+  </ul>
+</nav>
+            </ul>
+        </section>
     
     
     <section class="widget">

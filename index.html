@@ -237,6 +237,20 @@
                             <div class="post-content">
                                 <p><img src="https://i.imgur.com/926KRip.png" alt="Image"></p>
 <p>在做上一篇 <a href="/post/2024/08/dotnet-ioptions">IOptions</a> 的筆記時，剛好看到 FeatureManagement 這香東西。<br/>馬上來收錄一篇。順便也簡單整理一下 Feature Flag (≒Feature Toggle) 的介紹。</p>
+<div class="toc">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#認識一下-feature-flag">認識一下 Feature Flag</a></li>
+    <li><a href="#環境準備microsoftfeaturemanagement">環境準備：Microsoft.FeatureManagement</a></li>
+    <li><a href="#實作使用-isenabledasync-拿到-feature-flag-的值">實作：使用 IsEnabledAsync 拿到 Feature Flag 的值</a></li>
+    <li><a href="#實作使用-featuregate-來啟用和停用-api">實作：使用 FeatureGate 來啟用和停用 API</a></li>
+    <li><a href="#實作使用-featurefilter-自訂篩選條件隨機抽取使用者">實作：使用 FeatureFilter 自訂篩選條件、隨機抽取使用者</a></li>
+    <li><a href="#實作使用-featurefilter-來根據白名單啟用-api">實作：使用 FeatureFilter 來根據白名單啟用 API</a></li>
+    <li><a href="#小結">小結</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+</div>
 <h2 id="認識一下-feature-flag">認識一下 Feature Flag</h2>
 <blockquote>
 <p>本部落格秉持著「簡單、友善、我好菜」的精神，按照慣例先簡單介紹一下<br/>
@@ -281,15 +295,39 @@
                             <div class="post-content">
                                 <p><img src="https://i.imgur.com/dh0Jo4t.png" alt="Image"></p>
 <p>因為手邊的 .Net Core API 專案越來越多，蠻常會需要讀 appsetting.json 的 Config，每次都要重找文章有點麻煩，這邊就來筆記一篇。</p>
-<hr>
+<div class="toc">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#認識-appsettingsjson">認識 Appsettings.json</a></li>
+    <li><a href="#使用-ioptions-來註冊--注入">使用 IOptions 來註冊 &amp; 注入</a></li>
+    <li><a href="#補充addoptions--對-ioptions-加入驗證">補充：AddOptions &amp; 對 IOptions 加入驗證</a></li>
+    <li><a href="#補充ioptionsioptionsmonitorioptionssnapshot">補充：IOptions、IOptionsMonitor、IOptionsSnapshot</a>
+      <ul>
+        <li><a href="#ioptions">IOptions</a></li>
+        <li><a href="#ioptionsmonitor">IOptionsMonitor</a></li>
+        <li><a href="#ioptionssnapshot">IOptionsSnapshot</a></li>
+      </ul>
+    </li>
+    <li><a href="#延伸閱讀">延伸閱讀</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+    <li><a href="#附錄試一下-ioptionsmonitor">附錄：試一下 IOptionsMonitor</a></li>
+  </ul>
+</nav>
+</div>
+<h2 id="認識-appsettingsjson">認識 Appsettings.json</h2>
 <p>首先簡單介紹一下 appsettings.json 是在幹嘛的：</p>
-<p>我們開發的時候，常常會需要弄一些設定值，再用這些設定值用來控制我們程式的某些行為。</p>
-<p>例如「某功能的上限值是 <code>10</code>」、「某項開關在測試環境是 <code>false</code>」、「某服務信件的發送者要用 <code>noreply9527</code>」，另外常見的還有連線字串、寫 Log 時的 logging level 等等</p>
-<p><strong>這些設定值會和程式碼拆開，放在設定檔集中管理</strong>，再讓程式碼從設定檔讀取相關的設定值來用就好。有了設定檔，要調整修改也比較方便：要增加或是修改設定值，都只要先往設定檔衝就行。</p>
-<p>既然兩邊拆開了，我們也就可以簡單地替換這些設定值來應對不同狀況（例如正式環境和測試環境套用兩組不同的設定檔，或是在自己電腦測試的時候快速改個值之類的），彈性可說是 UPUP</p>
+<p>我們開發的時候，常常會需要先設定好一些服務參數、組態設定之類的設定值，再用這些設定值用來控制我們程式的某些行為。例如：</p>
+<ul>
+<li>「某功能的上限值是 <code>10</code>」</li>
+<li>「某項開關在測試環境是 <code>false</code>」</li>
+<li>「某服務信件的發送者要用 <code>noreply9527</code>」</li>
+</ul>
+<p>另外常見的還有連線字串、寫 Log 時的 logging level 等等。</p>
+<p><strong>這些設定值會和程式碼拆開，放在設定檔集中管理</strong>，再讓程式碼從設定檔讀取相關的設定值來用就好，藉此來把設定值的管理和使用做個關注點分離。</p>
+<p>有了設定檔，要調整修改也比較方便：要增加或是修改設定值，都只要先往設定檔衝就行。並且因為兩邊拆開了，我們也就可以簡單地替換這些設定值來應對不同狀況（例如正式環境和測試環境套用兩組不同的設定檔，或是在自己電腦測試的時候快速改個值之類的），彈性可說是 UPUP！</p>
 <p>更重要的是，這樣我們就不需要把一大堆東西寫死在程式碼的各個地方，也就不會要改個值還要先搜尋整個專案再一個一個挖出來改了。<del>我按 Shift Ctrl F 已經按到哭</del></p>
 <p>把設定值抽出去丟到設定檔之後，我們就得到了：集中管理設定值、方便修改和替換、減少程式碼中又重複又寫死的臭東西等等好處。</p>
-<p>而在 .Net Core 開始的 .Net API 框架裡，<strong>這個設定檔就是 appsettings.json</strong>。<br/>前面提到的像是日誌等級、功能旗標之類的這些設定值，就會放在 appsettings.json 裡面。</p>
+<p><strong>在 .Net Core 的世界裡，這個設定檔就是 appsettings.json</strong>。<br/>前面提到的像是日誌等級、功能旗標之類的這些設定值，就會放在 appsettings.json 裡面。</p>
 <p>而當我們想要從 appsettings.json 把這些設定值給讀出來的時候，<br/>就可以使用我們的 IOptions 啦！</p>
 <h2 id="使用-ioptions-來註冊--注入">使用 IOptions 來註冊 &amp; 注入</h2>
 <blockquote>
