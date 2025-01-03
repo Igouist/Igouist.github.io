@@ -1,0 +1,3950 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-92586970-4"></script>
+    <script async>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-92586970-4');
+    </script>
+
+    
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "lpnoqxbhhj");
+    </script>
+
+    <meta name="generator" content="Hugo 0.117.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧 - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2021-05-02T12:39:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2021-05-02T12:39:00&#43;08:00">
+        
+        <meta name="keywords" content="Api, web api, Restful, Restful Api, HTTP Status Code, HTTP Method, .net core, dotnet core">
+    <meta name="description" content="對 Web Api、Restful Api、HTTP Method、HTTP Request &amp; Response、HTTP Status 狀態碼等 API 相關的知識點做個筆記，並用 .net Core 建立一個簡易的 Web Api 專案">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/post/2021/05/newbie-2-webapi/">
+    <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link defer rel="stylesheet" href="/css/normalize.css">
+    
+        <link defer rel="stylesheet" href="/css/prism.css">
+    
+    <link defer rel="stylesheet" href="/css/style.css">
+    <script async type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    
+    <script data-ad-client="ca-pub-2119949858103459" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script async>
+    (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "[map[]]",
+        enable_page_level_ads: true
+    });
+    </script>
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp-and-dotnet/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/life/" title="Life">Life</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/repost/" title="Repost">Repost</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2021-5-2,
+                        </date>
+                        
+                        <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="busuanzi_container_page_pv">
+                                <span id="busuanzi_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+
+                        <div class="post-content">
+                            <p><img src="https://i.imgur.com/d2xM94x.png" alt="Image"></p>
+<p>這是俺整理公司新訓內容的第二篇文章，目標是<strong>對 Api, Restful Api, HTTP 等相關的知識點做個筆記，並用 .net Core 建立一個簡易的 Web Api 專案</strong>。</p>
+<h2 id="前言基本觀念">前言、基本觀念</h2>
+<p>我們在 <a href="/post/2021/04/newbie-1-hello-git">上一篇</a> 記錄了新訓第一天的 Git 操作筆記。接著在這篇，我們終於要進入 .net Core 啦！</p>
+<p>目前的規劃是先從建立一個可以使用的、最簡單版本的 Web Api 服務開始，再將各個工具擴增進來。所以後續的文章應該都會以這篇的簡易 API 為基底繼續延伸下去（如果順利的話啦）</p>
+<p>這篇文章的前半段會用來記錄一些<strong>使用或開發 API 常用到的相關知識</strong>，如果對 HTTP 的部分已經有點頭緒，或是迫不及待想直接動手用 .net Core 開 Api 服務的朋友們，可以直接跳到 <a href="#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a> 的部份。那麼，我們開始吧～</p>
+<hr>
+<h3 id="什麼是-api">什麼是 API</h3>
+<p>我們在物件導向的 <a href="/post/2020/07/oo-7-interface/">介面</a> 時有稍微聊過所謂介面（Interface）的概念：「在兩個系統，或是兩個分層之間要介接的時候，只需要提供我這個功能的接口／介面給對方，就能讓對方知道如何使用」</p>
+<p>API（Application Programming Interface）也是同樣的道理：</p>
+<p><strong>在不同的應用程式或服務（Application）之間，使用程式碼（Programming）的方式提供一組 介面（Interface），讓提供方和使用方可以藉由這組介面銜接起來。</strong></p>
+<p>API 最貼切的比喻就是我們在 <a href="/post/2020/07/oo-3-encapsulation">封裝篇</a> 也用過的<strong>販賣機</strong>：販賣機會提供不同飲料的按鈕，當我們選擇了其中一個按鈕按下、投了錢之後，對應的飲料就會掉下來。</p>
+<p>對應回來就是：我們到了某個服務（販賣機），去拿我們想要的資料（飲料），所以呼叫了該服務的某支 API（按鈕）並且提供了一些該 API 要求的資料（投錢），最後 API 就會把我們想要的資料交給我們（飲料）</p>
+<p>再用更實際的例子來說就像是：假設我們想要做一款可以查詢台北市的公車動態的 APP，於是我們到了提供公車動態的運輸資料服務 <a href="https://tdx.transportdata.tw/api-service/swagger/basic/2998e851-81d0-40f5-b26d-77e2f5ac4118#/">TDX (Transport Data eXchange)</a> 去找我們想要的 API，過程中我們可能需要告訴服務我們要查的是台北市，最後服務就會將公車動態的資料交給我們。</p>
+<p>關於 API 的部份，推薦可以先閱讀過 Huli 大大的這兩篇，將基本觀念說明的相當好懂且透徹：</p>
+<ul>
+<li><a href="https://medium.com/@hulitw/learning-tcp-ip-http-via-sending-letter-5d3299203660">從傳紙條輕鬆學習基本網路概念</a></li>
+<li><a href="https://medium.com/@hulitw/ramen-and-api-6238437dc544">從拉麵店的販賣機理解什麼是 API</a></li>
+</ul>
+<p>另外，也推一下我在 CodingBar 看到的這篇 <a href="https://medium.com/codingbar/api-%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E9%BA%BC-%E7%94%A8%E7%99%BD%E8%A9%B1%E6%96%87%E5%B8%B6%E4%BD%A0%E8%AA%8D%E8%AD%98-95f65a9cfc33">API 到底是什麼？ 用白話文帶你認識</a> 和它所引用的影片：</p>
+<iframe src="https://www.youtube.com/embed/zvKadd9Cflc" width="100%" height="480" frameborder="0" scrolling="no" allowfullscreen></iframe>
+<hr>
+<h3 id="什麼是-restful-api">什麼是 Restful API</h3>
+<p>都提到 API 了，當然不能不提 Restful 了。<strong>Restful 說起來比較像是 API 界的一種流派</strong>，大概就像「飛天御劍流」之於「劍道」的關係一樣。只不過因為 Restful 太 Restful（？），所以幾乎已經成為主流了。</p>
+<p>那麼 Restful 到底是什麼呢？</p>
+<p>前一段我們有提過，API 的一個重點是：提供我這個功能需要的接口／介面給對方，就能讓對方知道如何使用。</p>
+<p>如果有點進去看 Huli 大大的文章，尤其是 <a href="https://medium.com/@hulitw/learning-tcp-ip-http-via-sending-letter-5d3299203660">傳紙條</a> 那一篇的話，應該會察覺到在資料交換的過程中，最重要的一環就是建立共識，或者說是建立原則以降低溝通成本。</p>
+<p>Restful 想做的也是同一件事：只要大家都有一個制定路由的共識，就可以降低閱讀和維護成本。</p>
+<p>原先的 API 在路由的制定上並沒有什麼原則，幾乎就是看提供者爽怎麼訂就怎麼訂：</p>
+<pre tabindex="0"><code>/api/create-order
+/api/getProduct?id=1
+/api/productDetailByProductId
+</code></pre><p>但這樣就會造成額外的溝通成本。</p>
+<p>為了消除這些溝通成本，Restful 就出現了！Restful 提倡使用「<strong>符合 HTTP 語意</strong>」和「<strong>以資源為主</strong>」的方式來處理 API 的路由。</p>
+<p>我們用白話一點的方式來理解：大多數時候，我們發出的請求都是「對『什麼東西』做『什麼動作』」，也就是通常會有一個「<strong>動詞</strong>」和一個「<strong>目標</strong>」，Restful 就是從這兩個部份下手來達成共識。</p>
+<p>那我們從「動作」的部分開始，也就是建立「符合 HTTP 語意」的共識：<strong>我們可以利用 HTTP 定義的請求方法（HTTP Method，也被稱為 HTTP 動作）來表達我們的要求</strong>。</p>
+<p>上面推薦過的 Huli 大大這篇<a href="https://medium.com/@hulitw/learning-tcp-ip-http-via-sending-letter-5d3299203660">傳紙條文章</a>中有提到，因為能做的事情太多了，光是一個訂便當相關的動作，既可以訂購便當，也要能查有哪些便當可以訂，或是訂好了卻要換成別的便當等等。因此為了將動作做個統一，就在紙條的 Header 加了欄位，用來<strong>標示這次動作是哪種類型</strong>，這就是所謂的 HTTP 方法。</p>
+<h4 id="常見的-http-method">常見的 HTTP Method</h4>
+<p>我們比較常見的 HTTP 方法有這幾個：</p>
+<ul>
+<li><strong><code>GET</code></strong>
+<ul>
+<li>用來<strong>查詢</strong>、取得資源。例如說「<strong>Get 最新的一筆訂單</strong>」</li>
+</ul>
+</li>
+<li><strong><code>POST</code></strong>
+<ul>
+<li>用來<strong>建立</strong>新資源。例如說「<strong>Post 一筆新訂單</strong>」</li>
+<li>也可以用來當萬用動詞，就是不太確定歸類在哪一個、使用其他動詞遇到障礙的時候使用</li>
+</ul>
+</li>
+<li><strong><code>PUT</code></strong>
+<ul>
+<li>通常用來<strong>更新</strong>現有的資源。例如說「<strong>Put 一號訂單的新訂單內容</strong>」</li>
+<li>如果服務有額外處理的話，有時候也會做成 沒有這筆資源就新增一筆</li>
+</ul>
+</li>
+<li><strong><code>PATCH</code></strong>
+<ul>
+<li>用來更新資源的時候做「<strong>部分更新</strong>」。例如說「<strong>Patch 一號訂單的出貨狀況</strong>」</li>
+</ul>
+</li>
+<li><strong><code>DELETE</code></strong>
+<ul>
+<li>用來<strong>刪除</strong>資源，例如說「<strong>Delete 一號訂單</strong>」</li>
+</ul>
+</li>
+</ul>
+<p>其中有幾個部分可能會讓人有點疑惑，這邊稍微整理一下，也歡迎大家補充：</p>
+<hr>
+<h4 id="put-vs-patch-都是更新">PUT vs PATCH 都是更新？</h4>
+<p>兩者的更新方式不太一樣。通常 PUT 會指整批更新、PATCH 是指部分更新。</p>
+<p>以產品舉例的話：</p>
+<ul>
+<li><code>PUT</code> 比較像是把整個產品資料丟上去，然後整團更新掉</li>
+<li><code>PATCH</code> 則是只更新一部份，像是只丟產品名稱上去，然後就只更新名稱</li>
+</ul>
+<hr>
+<h4 id="post-的萬用動詞是什麼意思">POST 的「萬用動詞」是什麼意思？</h4>
+<ul>
+<li>我們有時還是會遇到不太確定要歸類到哪個動詞，或是其他動詞處理不來的情況，預設就使用 <code>POST</code> 處理</li>
+<li>例如說，以 <code>GET</code> 查詢的時候，參數的規劃有些問題導致於 QueryString 放不太下，就可以考慮改用 <code>POST</code>，並將參數放入 Body</li>
+</ul>
+<hr>
+<h4 id="安全safe冪等idempotent">安全（Safe）、冪等（idempotent）</h4>
+<p>在查詢 HTTP 動作的時候（例如維基百科的<a href="https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE#%E8%AF%B7%E6%B1%82%E6%96%B9%E6%B3%95">請求方法</a>），總是會看到「安全（Safe）」、「冪等（idempotent）」這些用詞，是什麼意思？</p>
+<ul>
+<li><strong>安全（Safe）的方法是指沒有對資料進行變更的操作</strong>。例如：
+<ul>
+<li>當我 <code>GET</code> 的時候，我單純只是查詢資料<br/>不會對資料進行任何變動，所以是安全的</li>
+<li>反過來說像是 <code>PUT</code>, <code>DELETE</code> 這些會對資料進行變更的方法就是不安全的</li>
+<li>使用不安全的方法的時候，就得要考慮用特殊的方式告訴系統的使用者該操作可能的變更。例如前端呼叫前會跳出視窗警告：「確認是否刪除」等等</li>
+</ul>
+</li>
+<li><strong>冪等（idempotent）則是指該方法在同樣的條件下，不管重複作幾次，對資源的結果都相同</strong>。例如：
+<ul>
+<li>我一直 <code>GET</code>，不管我 <code>GET</code> 幾次，資料還是同樣那一份不會變動</li>
+<li>我一直 <code>PUT</code>，不管我 <code>PUT</code> 同樣的參數幾次，資料的結果還是會長一樣</li>
+<li>我一直 <code>DELETE</code>，不管我 <code>DELETE</code> 幾次，那一份資料都一樣不在了</li>
+<li>我一直 <code>POST</code> ，就會一直長出新資料（！注意，不是 idempotent ！）</li>
+<li><code>PATCH</code> 的部份比較特殊一點：
+<ul>
+<li>因為我們要求更新這個資源的某一些部份的時候，並不能確定其他地方會不會變動<br/></li>
+<li>例如說，我們更新了 產品描述 這個欄位，結果其實還有一個欄位是 版本號，然後服務偵測到每次更新都會自動增加。<br/>這樣我們就算重複 <code>PATCH</code> 結果也有可能不一樣，因此 <code>PATCH</code> 並不能算是 idempotent 的</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>當我們知道一支 API 是不是安全的、是不是冪等的，也就可以幫助我們知道這支 API 能不能重試，當遇到某些問題時能不能大膽地再打一次請求過去。</p>
+<p>例如說連續查詢兩次並不會對資料進行任何變動，就可以原地重查一次；但面對扣款這種危險狀況，我們當然就不會想再扣一次錢。當我們確實按照安全和冪等這些特性來運用 HTTP 動詞，就可以讓使用端得到這些資訊。</p>
+<hr>
+<h4 id="小小結與推薦閱讀">小小結與推薦閱讀</h4>
+<p>那麼補充就先到這裡。除了上面只列出了我個人平常比較常接觸的 HTTP 方法之外，其他還有 <code>HEAD</code>、<code>TRACE</code> 等等，有興趣的朋友可以再逛逛 MDN 的 <a href="https://developer.mozilla.org/zh-TW/docs/Web/HTTP/Methods">HTTP 請求方法</a>。</p>
+<p>現在我們大概知道了有這些 HTTP 方法可以使用，也因此已經將動作抽離出來了。接著就輪到我們要進行這些動作的「目標」了，這部份則要求：我們在制定路由的時候，應該從「<strong>資源</strong>」的角度下去考慮。</p>
+<p>這相當直覺，例如「新增 訂單」、「查詢 產品」這樣，我們動作後面接續的應該要是一個資源。從這個方式下去定的話，上面的範例應該就會變成：</p>
+<pre tabindex="0"><code>POST /api/order
+GET /api/product/1
+</code></pre><p>很明確就能夠看出<strong>意圖</strong>。這邊就讓我們來看看微軟的 <a href="https://docs.microsoft.com/zh-tw/azure/architecture/best-practices/api-design#define-operations-in-terms-of-http-methods">Web Api 設計</a> 文中的範例表格：</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>POST</th>
+<th>GET</th>
+<th>PUT</th>
+<th>DELETE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/customers</td>
+<td>建立新客戶</td>
+<td>擷取所有客戶</td>
+<td>大量更新客戶</td>
+<td>移除所有客戶</td>
+</tr>
+<tr>
+<td>/customers/1</td>
+<td>錯誤</td>
+<td>擷取客戶 1 的詳細資料</td>
+<td>更新客戶 1 的詳細資料 (若有的話)</td>
+<td>移除客戶 1</td>
+</tr>
+<tr>
+<td>/customers/1/orders</td>
+<td>為客戶 1 建立新訂單</td>
+<td>擷取客戶 1 的所有訂單</td>
+<td>大量更新客戶 1 的訂單</td>
+<td>移除客戶 1 的所有訂單</td>
+</tr>
+</tbody>
+</table>
+<br/>
+<p>這邊大致上有個感覺就行了，畢竟 Restful 是一種風格，並沒有強烈的規定，只要符合共識和約束，就可以算是 Restful 了。</p>
+<p>在微軟把拔的 <a href="https://learn.microsoft.com/zh-tw/azure/architecture/best-practices/api-design">RESTful Web API 設計</a> 中，援引了 Leonard Richardson 的 API 成熟度模型：</p>
+<ul>
+<li>等級 0：定義一個 URI，而所有的作業對此 URI 都是 POST 要求</li>
+<li>等級 1：針對個別資源建立不同的 URI</li>
+<li>等級 2：使用 HTTP 方法來定義資源上的作業</li>
+<li>等級 3：使用<a href="https://learn.microsoft.com/zh-tw/azure/architecture/best-practices/api-design#use-hateoas-to-enable-navigation-to-related-resources">超媒體 (HATEOAS)</a></li>
+</ul>
+<p>目前就內文所述，大多數的已發行 API 約略是等級 2 附近，也就是這次介紹的：使用 HTTP 動詞 + 從資源出發的設計方針。只要掌握這個方向，基本上就沒什麼問題了。</p>
+<p>同樣的，這個訂立的原則，也就得仰賴多去看人家的 Api 怎麼設計來培養了。但只要把握幾個重點：建立共識、提高可讀性，還有設計的時候好好和來介接的夥伴喬一下，基本上就不會有什麼差錯啦，畢竟這東西很彈性的。</p>
+<p>當然，本篇只是稍微說明而已，非常鼓勵各位朋友再進一步搜尋了解。最後推一下這兩篇 Restful API 相關的文章：</p>
+<ul>
+<li><a href="https://progressbar.tw/posts/53">休息(REST)式架構? 寧靜式(RESTful)的Web API是現在的潮流？</a>
+<ul>
+<li>我個人覺得寫得很清楚明瞭，並且範例也相當好懂，咱們當初新訓的時候也是看這篇來了解概念的</li>
+</ul>
+</li>
+<li><a href="https://tw.twincl.com/programming/*641y">簡明 RESTful API 設計要點</a>
+<ul>
+<li>針對一些要點有說明，有興趣的朋友可以稍微看過一遍。內文提到的 HTTP Status 我們等等也會進行說明</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="什麼是-http-request-和-response">什麼是 HTTP Request 和 Response</h3>
+<p>現在讓我們運用動詞（HTTP 動詞）和名詞（Restful 風格的路由），就可以組出像是 <code>GET product/1</code> 這樣子的 Api 路徑。用寄送信封的方式來說的話，現在我們就等於已經掌握了寄送的地址。</p>
+<p>我們有了地址之後，才能寄信到這個地址給對方，並且等待對方的回信（話說這年頭大家都用網路通訊了，會不會過幾年沒人看得懂這組經典比喻啊？）。</p>
+<p>而我們有了 Api 的地址（URL）之後，就可以<strong>對這個地址上的服務送出一個 Request（請求），服務接受到請求之後，就會給予我們一個 Response（回應）</strong>。</p>
+<p>這個送出請求、取得回應的動作，就是網路運作的原理。例如當你打開瀏覽器到某個網站，就是對該網站發出一個取得網站內容的請求，網站再給你網站內容的回應。</p>
+<blockquote>
+<p>補充一下，聰明的朋友可能發現了，我們前面介紹的 Api 也就是這組動作：當我們呼叫某個服務，例如 Google Map 的 Api，也就是對目標的 Api 發出了一個想要使用服務的請求，服務再針對請求給予回應。因此，要想了解 Api 的各個知識點，接觸 HTTP 是必不可免的。</p>
+<p>但 HTTP 這水挺深的哪，所以我們這篇的紀錄先以「打 Api 服務的時候不至於都看不懂」為目標進行，稍微介紹一下 Request 和 Response 的內容吧。來日方長嘛。</p>
+</blockquote>
+<p>Request 和 Response 的內容，有興趣的朋友可以直接在瀏覽器進入開發人員工具就能看到了，以 Edge 和 Chrome 為例：首先按下 F12 ，並找到網路（Network）的部分，就可以看到進入網頁的各個請求和回應，隨便點開一個就會有 Request 和 Response 的內容囉：</p>
+<p><img src="https://i.imgur.com/kdK0xo1.png" alt=""></p>
+<p>或者是可以直接參考 NotFalse 技術客的這篇 <a href="https://notfalse.net/39/http-message-format">HTTP/1.1 — 訊息格式 (Message Format)</a>，裡面對 HTTP 請求格式的各個部分上色並逐步講解的方式讓我蠻喜歡的，相當清楚。</p>
+<p>接著就讓我們來看一下訊息的格式，通常會分成三個比較主要的區塊：<strong>Start Line</strong>、<strong>Header</strong>、<strong>Body</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-JSON" data-lang="JSON"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">HTTP/</span><span style="color:#ae81ff">1.1</span> <span style="color:#ae81ff">200</span> <span style="color:#960050;background-color:#1e0010">OK</span> <span style="color:#75715e">// Start Line
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Header
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">Content-Type:</span> <span style="color:#960050;background-color:#1e0010">application/json;</span> <span style="color:#960050;background-color:#1e0010">charset=utf</span><span style="color:#ae81ff">-8</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">Date:</span> <span style="color:#960050;background-color:#1e0010">Mon,</span> <span style="color:#ae81ff">26</span> <span style="color:#960050;background-color:#1e0010">Apr</span> <span style="color:#ae81ff">2021</span> <span style="color:#ae81ff">14</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">00</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">31</span> <span style="color:#960050;background-color:#1e0010">GMT</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Body
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;nike&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;category&#34;</span>: <span style="color:#e6db74">&#34;shoes&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><hr>
+<p>首先讓我們看看 Start Line：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Json" data-lang="Json"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">HTTP/</span><span style="color:#ae81ff">1.1</span> <span style="color:#ae81ff">200</span> <span style="color:#960050;background-color:#1e0010">OK</span> <span style="color:#75715e">// Start Line
+</span></span></span></code></pre></div><p>Start Line 在 Request 的時候又叫做 Request-line，會標明 HTTP Method、URL、HTTP 版本。</p>
+<p>例如 <code>GET /product/1 HTTP/1.1</code>。我們 <a href="#%E9%97%9C%E6%96%BC-restful-%E8%88%87-http-method">上一節</a> 學的 HTTP 動作（GET、POST…）和路由地址（<code>/product/1</code>）就是用在這裡。</p>
+<p>而 Start Line 在 Response 的時候又叫做 Status-line，會標明 HTTP 版本、HTTP 狀態碼（Status Code）和描述。</p>
+<p>例如 <code>HTTP/1.1 200 OK</code>，這個狀態碼就是 Response 中的主要回應，我們在 <a href="#%E9%97%9C%E6%96%BC-http-status-code">下一節</a> 會介紹一些常看到的 Status Code，現在先知道這裡就是服務用來告訴你「好呀」跟「不要」的地方即可。</p>
+<p>Start Line 會放在整個訊息的第一行，之後會用個空行做分隔，後面再接著 Header。</p>
+<hr>
+<p>讓我們順著來看看 Header：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Json" data-lang="Json"><span style="display:flex;"><span><span style="color:#75715e">// Header
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">Content-Type:</span> <span style="color:#960050;background-color:#1e0010">application/json;</span> <span style="color:#960050;background-color:#1e0010">charset=utf</span><span style="color:#ae81ff">-8</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">Date:</span> <span style="color:#960050;background-color:#1e0010">Mon,</span> <span style="color:#ae81ff">26</span> <span style="color:#960050;background-color:#1e0010">Apr</span> <span style="color:#ae81ff">2021</span> <span style="color:#ae81ff">14</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">00</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">31</span> <span style="color:#960050;background-color:#1e0010">GMT</span>
+</span></span></code></pre></div><p><strong>Header 又叫作標頭、表頭等，主要是用來放這次訊息相關的參數和資訊</strong>。</p>
+<p>例如說用 Content-Type 來說明這次訊息傳輸的格式，可能是表示 HTML 的 <code>text/html</code>，或者是表示 JSON 的 <code>application/json</code> 等等；也有可能用 <code>cookie</code> 來表示瀏覽器當前紀錄的資訊等等。</p>
+<p>Header 可以放的資訊有挺多種的，有興趣的朋友可以看看這篇 <a href="https://medium.com/ttyy2985/http%E5%89%8D%E5%BE%8C%E7%AB%AF%E5%82%B3%E8%BC%B8%E6%B5%81%E7%A8%8B-8ee40ffca1bd">HTTP 前後端傳輸流程</a>，列出了常見的 HTTP Header 欄位；如果好奇上面提到的 Content-Type 有那些常用的種類，也可以參照這篇 <a href="https://medium.com/hobo-engineer/ricky%E7%AD%86%E8%A8%98-postman-%E5%B8%B8%E8%A6%8B%E7%9A%84-content-type-b17a75396668">Postman 常見的 Content-type</a>，這邊就先按下不表。</p>
+<blockquote>
+<p>補充：除了規範的 Header 欄位以外，我們有時也會在 Header 裡放一些自訂的欄位。以前的慣例是用 <code>X-</code> 開頭來標示，例如 <code>X-Custom-Header</code>，但 <a href="https://datatracker.ietf.org/doc/html/rfc6648">RFC 6648</a> 建議停止繼續用 <code>X-</code>，而是直接用好讀好懂的名稱來定 Header 就好了。</p>
+</blockquote>
+<hr>
+<p>Header 結束之後，按照訊息的種類和內容，可以再加上 Body，兩者之間會空一行隔開：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Json" data-lang="Json"><span style="display:flex;"><span><span style="color:#75715e">// Body
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;nike&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;category&#34;</span>: <span style="color:#e6db74">&#34;shoes&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><strong>Body 又叫做回應主體，是非必須、選填的，通常我們會用來存放本次訊息需要的資料</strong>。</p>
+<p>以寄信來舉例的話，Header 就像是外面的 寄信人、收件人等資訊，而 Body 則是裡面的信件內文。但要注意，一個訊息並不一定要有 Body，就像我們也可以只寄送明信片一樣。很常聽到的一個比喻就是：GET 就像明信片、POST 就像是包裹，中間就是需不需要附加 Body 的差別。</p>
+<p>當 GET 的時候，我們通常並不會用到 Body，如果有需要附上參數的話，GET 我們會放到 QueryString（就是接續在往指後面，常常見到的 ?a=1&amp;b=2 那串）。</p>
+<p>例如說取得產品列表，我們需要向 <code>/product</code> 發出 <code>GET</code> 請求，同時我們又只想要類別是鞋子、關鍵字為 Nike 的產品，那我們組出來的整個 URL 和 QueryString 可能就是這樣的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-JSON" data-lang="JSON"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">/product?category=shoes&amp;keyword=nike</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">/*</span> <span style="color:#960050;background-color:#1e0010">這邊會有一些</span> <span style="color:#960050;background-color:#1e0010">Header</span> <span style="color:#960050;background-color:#1e0010">*/</span>
+</span></span></code></pre></div><p>其他的場景，例如 POST 時，如果有需要附上資料，我們通常會用到 Json 或 XML 之類的格式放到 Body 中。例如我們現在要新增一筆新的產品，是叫做 Nike 的鞋子，那可能就會附上：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-JSON" data-lang="JSON"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">POST</span> <span style="color:#960050;background-color:#1e0010">/product</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">/*</span> <span style="color:#960050;background-color:#1e0010">這邊會有一些</span> <span style="color:#960050;background-color:#1e0010">Header</span> <span style="color:#960050;background-color:#1e0010">*/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;nike&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;category&#34;</span>: <span style="color:#e6db74">&#34;shoes&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>如果是 XML 的話，可能就會是這樣表示：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-XML" data-lang="XML"><span style="display:flex;"><span><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;root&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;name&gt;</span>nike<span style="color:#f92672">&lt;/name&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&lt;category&gt;</span>shoes<span style="color:#f92672">&lt;/category&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/root&gt;</span>
+</span></span></code></pre></div><p>當然也有可能是用其他的格式，只要服務願意接受，兩邊能夠通訊其實也就沒什麼關係，說到底網頁最基本的部分也還是一個回傳 HTML 格式的 Response。所以各位如果遇見了沒看過的格式也不用驚慌，因為放在這裡都一樣是用來表示資料的格式，只是表達的方式不一樣而已。</p>
+<p>不過我平常開發和使用 API 都是用 JSON 的場合居多（個人覺得體感上 JSON 已經快一統 API 的天下了），強烈建議至少還是要能看懂 JSON。</p>
+<blockquote>
+<p>備註：關於 JSON 如果不太了解的朋友，可以參閱 <a href="http://miniaspreading.github.io/guide-to-json/1-what-is-json.html">JSON精要讀書紀錄</a></p>
+</blockquote>
+<hr>
+<p>最後再複習一次，當我們呼叫一個 API 的時候，我們可能會送出一個 HTTP Request（請求）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-JSON" data-lang="JSON"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">/product/</span><span style="color:#ae81ff">1</span> <span style="color:#960050;background-color:#1e0010">HTTP/</span><span style="color:#ae81ff">1.1</span> <span style="color:#75715e">// Start Line
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Header
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">user-agent:</span> <span style="color:#960050;background-color:#1e0010">Mozilla/</span><span style="color:#ae81ff">5.0</span> <span style="color:#960050;background-color:#1e0010">(Windows</span> <span style="color:#960050;background-color:#1e0010">NT</span> <span style="color:#ae81ff">10.0</span><span style="color:#960050;background-color:#1e0010">;</span> <span style="color:#960050;background-color:#1e0010">Win</span><span style="color:#ae81ff">64</span><span style="color:#960050;background-color:#1e0010">;</span> <span style="color:#960050;background-color:#1e0010">x</span><span style="color:#ae81ff">64</span><span style="color:#960050;background-color:#1e0010">)</span> <span style="color:#75715e">//...其他一堆標頭
+</span></span></span></code></pre></div><p>然後服務就會回給我們一個 HTTP Response（回應）</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-JSON" data-lang="JSON"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">HTTP/</span><span style="color:#ae81ff">1.1</span> <span style="color:#ae81ff">200</span> <span style="color:#960050;background-color:#1e0010">OK</span> <span style="color:#75715e">// Start Line
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Header
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#960050;background-color:#1e0010">Content-Type:</span> <span style="color:#960050;background-color:#1e0010">application/json;</span> <span style="color:#960050;background-color:#1e0010">charset=utf</span><span style="color:#ae81ff">-8</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">Date:</span> <span style="color:#960050;background-color:#1e0010">Mon,</span> <span style="color:#ae81ff">26</span> <span style="color:#960050;background-color:#1e0010">Apr</span> <span style="color:#ae81ff">2021</span> <span style="color:#ae81ff">14</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">00</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">31</span> <span style="color:#960050;background-color:#1e0010">GMT</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Body
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;nike&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;category&#34;</span>: <span style="color:#e6db74">&#34;shoes&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這樣我們就成功交換資料啦！</p>
+<p>……當然，所謂天有不測風雲，API 有 500 Internal Server ERROR，沒有每次打 API 都一定是 OK 的啦，其他什麼 404, 500 動不動就會跑出來。</p>
+<p>就像我們去網路購物的時候，按下購買把購物車清空後，網頁就會告訴我們「訂單成立」或是「結帳失敗」等等，當 API 的使用者將這個要求發送給 API 服務，服務就會告訴使用者針對這個要求的回應。這就是我們之前提到的 HTTP 狀態碼（Status Code）出場的時候了。</p>
+<hr>
+<h3 id="什麼是-http-status-code">什麼是 HTTP Status Code</h3>
+<p>在上個小節中我們有提到，<strong>Response 的 Start Line 會帶著一組 HTTP 狀態碼（Status Code）和描述，用來告訴你這次請求的回應</strong>。</p>
+<p>大概就像是<strong>告白</strong>之後的好呀、謝謝你、你是個好人等等，回應也有分成很多種，這邊就稍微紀錄一下平常遇到的幾種狀態。</p>
+<hr>
+<p>1xx: 參考資訊</p>
+<ul>
+<li>大多是在正式回應之前先暫時給使用者一些資訊。就像是「先讓我考慮一下…」</li>
+</ul>
+<hr>
+<p>2xx: 成功</p>
+<ul>
+<li><strong>200: 要求成功</strong>。就像是「好呀」</li>
+<li><strong>201: 已建立</strong>。要求新增資源的時候會用到，就像是「OK，那我掛穩交囉」</li>
+<li><strong>204: 無內容</strong>。雖然點頭了，可是什麼話也沒說</li>
+</ul>
+<hr>
+<p>3xx: 重新導向</p>
+<ul>
+<li><strong>301: 永久轉址</strong>。就像是傳了簡訊之後得到「她換手機了，我是她爸」</li>
+<li><strong>303: 臨時轉址</strong>，原本存在但是換了位置，就像是打電話過去結果「她出門了，我是她爸」</li>
+<li><strong>304: 沒有變動</strong>，可以直接去快取拿就好。就像是「說啥呢，我們都結婚五十年了= =」</li>
+</ul>
+<hr>
+<p>4xx: 用戶端錯誤</p>
+<ul>
+<li><strong>400: 要求錯誤</strong>，大多數使用者造成無法處理的問題都會丟到這，可能是<br/>參數沒給、這個網域不存在等等。就像是『她』說「其實我是 ♂ 的呦，沒關係嗎？」</li>
+<li><strong>401: 拒絕存取</strong>，可能是沒有登入、授權失敗等等。<br/>就像是「你是誰？！我根本不認識你啊？！」</li>
+<li><strong>403: 禁止使用</strong>，可能是沒有權限、沒有憑證、被拒絕等等。<br/>就像是「抱歉，你的長相實在…抱歉。」</li>
+<li><strong>404: 找不到</strong>，這個應該是最常見的用戶端錯誤了。<br/>就像是「你認錯人了吧…？」</li>
+<li><strong>418: <a href="https://blog.huli.tw/2019/06/14/http-status-code-418-teapot/">我是個茶壺</a></strong>，啊人家就只是個茶壺…</li>
+</ul>
+<hr>
+<p>5xx: 伺服器錯誤</p>
+<ul>
+<li><strong>500: 內部伺服器錯誤</strong>，大多數問題都會被丟到這一類，我們開發人員頭痛的時候就到了…</li>
+<li><strong>501: 未實作</strong>，通常對一個只提供 <code>GET</code> 的 <code>URL</code> 打 <code>POST</code> 就會看到了。<br/>就像是「我已經結婚囉，謝謝你呢 ^^」</li>
+<li><strong>502: 無效回應</strong>。就像是「我也喜歡哆啦Ａ夢呢」</li>
+<li><strong>503: 伺服器維護或過載</strong>。追求者太多了，根本沒空回你。</li>
+<li><strong>504: 閘道逾時</strong>。（已讀不回）。</li>
+</ul>
+<hr>
+<p>對還有哪些 HTTP Status 或是想對每個 HTTP Status 發生的狀況了解得更詳細的朋友，可以參閱以下兩篇：</p>
+<ul>
+<li><a href="https://noob.tw/http-status-code/">常見與不常見的 HTTP Status Code - Noob&rsquo;s Space</a>
+<ul>
+<li>除了列出常見的 HTTP 狀態，還收錄了一些非官方和惡搞的</li>
+<li>看了這篇知道更多 HTTP Status Code 之後，本網站正考慮支持 HTTP Status 735</li>
+</ul>
+</li>
+<li><a href="https://blog.miniasp.com/post/2009/01/16/Web-developer-should-know-about-HTTP-Status-Code">網頁開發人員應了解的 HTTP 狀態碼 - The Will Will Web</a>
+<ul>
+<li>針對每個狀態有更詳細的說明，並列出了更細的 IIS 擴充狀態，例如 401.1 - 登入失敗等等</li>
+<li>強力推薦 Dotnet 相關的開發人員看個一遍有個印象</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="什麼是-stateless">什麼是 Stateless</h3>
+<blockquote>
+<p>2021.05.04: 發文之後發現忘記提到無狀態了，所以這邊回來補充一下。</p>
+</blockquote>
+<p>接續前面提到的 Restful 風格，在 API 的制定上，Restful 還有另一個要求，就是必須是 <strong>無狀態的（Stateless）</strong>。</p>
+<p>無狀態是指：伺服器不會儲存使用者的狀態，當使用者呼叫 API 的時候，應該給予所有 API 需要的內容。</p>
+<p>用比較的方式來說：原本的 API 設計可能會保存使用者的動作狀態，然後留到下一次呼叫的時候再接著使用，那這樣的 API 設計的時候就像是制定食譜，必須要求使用者照順序才可以正常運作。</p>
+<p>例如必須先打Ａ，再打Ｂ，最後打Ｃ，沒有照順序打的話就會因為狀態不對而壞掉。但這樣的做法其實就是所謂的 <a href="https://dotblogs.azurewebsites.net/Im_sqz777/2021/04/18/what-is-temporal-coupling">時序耦合</a>，不僅造成測試和使用上的困擾，也相當的不直覺、相當的有「味道」。</p>
+<p>而我們在 Restful 的時候，是用資源的方式下去考慮，所以應該把重點放在資源的操作，而不是狀態的管理和流程，否則就會很奇怪。例如說你去買雞蛋，然後老闆突然跟你說：不行喔，因為你還沒買過牛奶。哇，整個就莫名其妙。</p>
+<p>所以在 Restful 的設計上，<strong>每一次呼叫都應該要是獨立的呼叫</strong>，設計的時候就是以資源為主體，再利用這些資源互相搭配來完成功能。</p>
+<p>例如說「登入之後跳出使用者待結帳的訂單，並且 Show 出訂單中的產品」這種情況，我們就不該要求使用者一定要照順序打，然後伺服器再來記住登入的資訊、使用者的編號、訂單的編號等等，除了記錄一堆多餘的資訊，更把 API 的使用場景給卡死了，相當不 OK。</p>
+<p>這邊用資源的角度出發的話，應該讓「登入」、「查詢訂單（使用者呼叫時提供使用者編號）」、「查詢產品（使用者呼叫時提供訂單編號）」組合起來，從「將這些資源的操作組合在一起完成功能」的角度出發，那在別的流程就可以重複使用這些 API 來組成功能，同時也能分別對各個功能進行開發跟測試。</p>
+<p>如此一來，就能提升彈性、自由度。同時，因為伺服器不用紀錄狀態，讓每一次呼叫都是獨立的呼叫，不只可以重複使用，聚焦在資源上也能讓操作變得簡潔。進一步來說，因為狀態不會被綁死在特定的機器上，那就可以開始搞擴大加機器做分散式啦。</p>
+<blockquote>
+<p>補充一下：當然，要做到完全沒有狀態是很難的，但我們可以做到讓伺服器不要綁死、每個呼叫都是盡量獨立的，來盡可能使得服務乾淨、有彈性、可分散處理。</p>
+<p>同時也因為這樣，為了讓使用者的狀態不會遺失（例如登入狀態），就得做到使用者的每個呼叫都要能夠證明自己的身份，所以才有了壓成 Token、把身分驗證的伺服器分離等等的驗證做法，這個部份我們有空再來填坑吧。</p>
+</blockquote>
+<h2 id="正式開工">正式開工</h2>
+<p>現在，我們已經大概了解 API 以及 Restful API 的一些相關知識了，接著就讓我們來實際建立一個簡單的 API 服務吧！</p>
+<h3 id="新建-net-core-web-api-專案">新建 .net Core Web API 專案</h3>
+<p>首先打開我們的 Visual Studio，建立新的專案。</p>
+<p><img src="https://i.imgur.com/tRvVsFa.png" alt=""></p>
+<p>我們這次用 .net Core 來進行示範，並且用官方內建的 Web API 框架直接開場，所以這邊選擇 Asp.net Core Web API。</p>
+<p><img src="https://i.imgur.com/lyjhWFS.png" alt=""></p>
+<blockquote>
+<p>註：這些<strong>建立專案的畫面和選項隨著版本可能會有點不一樣</strong>，例如說可能會先選擇 .net Core 的 Web 服務之後，後續再勾選 API 的選項等等。例如之前的 <a href="/post/2019/12/aspnet-connect-db">Asp.net MVC</a> 文章中，就需要在選擇範本的時候選擇是 MVC 或 Web API 的範本。就麻煩各位再稍微見機行事一下。</p>
+</blockquote>
+<p><img src="https://i.imgur.com/NCQj9Wf.png" alt=""></p>
+<p>接著輸入專案名稱和選擇專案路徑，我在這邊採用 Newbie/Noob 的 N（而且 Project N 感覺很潮？），各位嘗試的時候可以自由取名，但要注意後續用到 <code>ProjectN</code> 這個名字的部分必須和你取的名字一致呦。</p>
+<p><img src="https://i.imgur.com/Lbr3qkw.png" alt=""></p>
+<p>這是紀錄採用的版本為長期支援的 .net Core 3.1（如果這個步驟有選擇其他版本的朋友，後續安裝套件的時候可能要注意一下版本相容性的問題）</p>
+<p>建立之後我們的專案結構應該會長這樣：</p>
+<p><img src="https://i.imgur.com/lGGHzDN.png" alt=""></p>
+<p>恭喜各位，到這一步的時候，<strong>Web API 服務已經建好了！</strong></p>
+<p><del>直接用範本就是這麼爽，謝謝微軟把拔。</del></p>
+<p>我們先來稍微認識一下環境設定相關的成員：</p>
+<hr>
+<p><code>Properties/launchSettings.json</code></p>
+<ul>
+<li>用來放我們偵錯專案時套用的環境設定，例如說我們偵錯的時候預設要打開哪個頁面（launchUrl）就是在這邊設定</li>
+<li>可以參見 <a href="https://blog.poychang.net/visual-studio-launch-settings-iis-express-iis-project-executable/">launchSettings.json 的 commandName 是做什麼用的？</a></li>
+</ul>
+<hr>
+<p><code>appsettings.json</code></p>
+<ul>
+<li>用來放組態資料，像是連線字串、Log 的紀錄層級等等就會丟在這</li>
+<li>以前用過 <code>web.config</code> 的朋友可能會比較熟。但在 .net Core 已經將不同職責的設定區塊拆分出去給<br/> <code>appsettings.json</code>、<code>.csproj</code> 等等，並且可以繫結強型別，所以更乾淨了。（感謝 Mike 和 <a href="https://sunnyday0932.github.io">Sian</a> 的說明）</li>
+<li>關於兩者的差異和讀取 <code>appsettings.json</code> 的方法，可以參照余小章大大的這篇 <a href="https://dotblogs.com.tw/yc421206/2020/06/28/how_to_read_config_appsettings_json_via_net_core_31">如何讀取 AppSettings.json 組態設定檔</a></li>
+</ul>
+<hr>
+<p><code>Startup.cs</code></p>
+<ul>
+<li>設定服務的行為、註冊依賴注入相關的東西就丟在這，像之前註冊 <a href="/post/2020/07/automapper">AutoMapper</a> 服務的時候就是在這裡設定</li>
+<li>我們後續還會常常過來找 Startup 玩</li>
+</ul>
+<hr>
+<p><code>Program.cs</code></p>
+<ul>
+<li>整個應用程式的進入點</li>
+<li>關於服務啟動之後的順序和 <code>Program.cs</code>, <code>Startup.cs</code> 的內容，<br/>可以參照 <a href="https://blog.johnwu.cc/article/ironman-day02-asp-net-core-application-lifetime.html">ASP.NET Core 2 系列 - 程式生命週期 (Application Lifetime) - John Wu&rsquo;s Blog</a></li>
+</ul>
+<hr>
+<p>現在這個時間點，我們還不會對設定的部分動什麼手腳，只要對這些東西有個瞭解就好了。</p>
+<p>我們把鏡頭轉到剛剛沒提到的其他檔案，可以看到還有 <code>WeatherForecast.cs</code> 和 <code>Controllers</code> 及裡面的 <code>WeatherForecastController.cs</code>。</p>
+<blockquote>
+<p>補充一下，如果之前已經對 MVC 架構有點熟悉度的朋友，應該對 <code>Controller</code> 這個詞不陌生了。</p>
+<p>Web API 的範本其實也是同樣的概念，只是 <code>View</code> 的部分已經交給呼叫 Api 服務的使用者去處理了，而這邊的 <code>WeatherForecast.cs</code> 打開可以發現只是純粹的天氣資料，也就是個 <code>Model</code> 或 <code>ViewModel</code> 之類的東西。</p>
+<p>至於 <code>Controller</code> 的職責仍然沒有什麼變化，就是個第一線的交通警察。所以先前做過 MVC 的朋友大概會覺得比較親近一些吧。大概。</p>
+</blockquote>
+<p>這邊可以看到 <code>WeatherForecast.cs</code> 只是個用在 <code>WeatherForecastController</code> 的天氣資料類別。所以我們直接打開 <code>WeatherForecastController</code> 來觀察一下：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WeatherForecastController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">readonly</span> <span style="color:#66d9ef">string</span>[] Summaries = <span style="color:#66d9ef">new</span>[]
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;Freezing&#34;</span>, <span style="color:#e6db74">&#34;Bracing&#34;</span>, <span style="color:#e6db74">&#34;Chilly&#34;</span>, <span style="color:#e6db74">&#34;Cool&#34;</span>, <span style="color:#e6db74">&#34;Mild&#34;</span>,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;Warm&#34;</span>, <span style="color:#e6db74">&#34;Balmy&#34;</span>, <span style="color:#e6db74">&#34;Hot&#34;</span>, <span style="color:#e6db74">&#34;Sweltering&#34;</span>, <span style="color:#e6db74">&#34;Scorching&#34;</span>
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">readonly</span> ILogger&lt;WeatherForecastController&gt; _logger;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> WeatherForecastController(ILogger&lt;WeatherForecastController&gt; logger)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _logger = logger;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;WeatherForecast&gt; Get()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> rng = <span style="color:#66d9ef">new</span> Random();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Enumerable.Range(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">5</span>).Select(index =&gt; <span style="color:#66d9ef">new</span> WeatherForecast
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Date = DateTime.Now.AddDays(index),
+</span></span><span style="display:flex;"><span>            TemperatureC = rng.Next(-<span style="color:#ae81ff">20</span>, <span style="color:#ae81ff">55</span>),
+</span></span><span style="display:flex;"><span>            Summary = Summaries[rng.Next(Summaries.Length)]
+</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>        .ToArray();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>首先在整個類別開始的地方加上了兩個屬性（Attribute）：<code>[ApiController]</code> 很明顯告訴我們這是個 Api Controller，而接著的 <code>[Route(&quot;[controller]&quot;)]</code> 用來決定我們這個 controller 的路由。</p>
+<p><strong>這邊要特別注意 <code>Route</code> 這個屬性，我們會在 Controller 和 Function 上用這個屬性來制定我們的 Api 的 URL，也就是我們前面 <a href="#%E9%97%9C%E6%96%BC-restful-%E8%88%87-http-method">Restful 小節</a> 提過的「用資源制定路由」要處理的部分。</strong></p>
+<p>現在可以看到 <code>Route</code> 的內容是 <code>[controller]</code>，所以會直接採用 controller 的名稱，在這邊也就會是 <code>/WeatherForecast/</code>。</p>
+<p>如果有需要額外客製化路由的話，只要修改 <code>Route</code> 標籤就可以了，例如：改成 <code>Route(&quot;hello&quot;)</code> 的話，就會變成 <code>/hello/</code>；那如果我們接著在 Function 上掛上 <code>Route(&quot;world&quot;)</code> 的話，該方法的路由就會變成 <code>/hello/world/</code>，以此類推。</p>
+<p>接著我們繼續往下看，可以看到放了一列不同的天氣 <code>string[] Summaries</code>，還有一些屬性與使用依賴注入的建構子範例 <code>WeatherForecastController()</code>，這個部份我們在後續的章節會再說明。</p>
+<p>在建構式之後，我們會看到 <code>Get()</code> 方法，方法名稱並沒有什麼太大的關係，這邊要注意的重點在於：<strong>上面也掛了 <code>HttpGet</code> 的屬性，這個部份用來制定我們該方法所對應的 HTTP Method，也就是我們前面 <a href="#%E9%97%9C%E6%96%BC-restful-%E8%88%87-http-method">Restful 小節</a> 提過的「符合 HTTP 語意」所要處理的部分，例如 <code>GET</code>, <code>POST</code> 等等，就可以用 <code>[HttpGet]</code>, <code>[HttpPost]</code> 等屬性來標示</strong>。</p>
+<p>最後這個 <code>Get()</code> 方法會隨機丟回天氣跟氣溫。現在就讓我們實際來呼叫看看吧！</p>
+<blockquote>
+<p>備註：由於本系列還沒教到使用 Postman 或 Thunder client 這類直接呼叫 API 的方便小工具，所以呼叫的部分會使用瀏覽器或命令列進行示範，已經會使用這類工具的朋友可以用自己順手的工具嘗試就好囉。</p>
+</blockquote>
+<p>現在讓我們直接執行看看：</p>
+<p><img src="https://i.imgur.com/61SgLPf.png" alt=""></p>
+<p>由於 <code>Properties/launchSettings.json</code> 裡有設定了 <code>launchUrl</code> 就是 <code>weatherforecast</code>，所以我們應該會直接看到它幫忙打開瀏覽器，並取得（<code>GET</code>）了 <code>https://localhost:{yourIISPort}/weatherforecast</code> 的結果：</p>
+<p><img src="https://i.imgur.com/4jl7qvd.png" alt=""></p>
+<blockquote>
+<p>小提示：如果瀏覽器打開沒有自動排版而是一整陀的朋友，可以先去裝個 <a href="https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc">JsonView</a> 來保護眼睛。安裝前後差異可以參見 <a href="/post/2020/05/jsonview">Json View —— 用 Chrome 打開 Json 的正確方式</a></p>
+</blockquote>
+<p>那如果是要用 Powershell 呼叫 API 的朋友，可以使用 <code>Invoke-RestMethod</code> 來進行呼叫，再用 <code>ConvertTo-Json</code> 轉換成比較好讀的格式，例如：<code>Invoke-RestMethod https://localhost:{yourIISPort}/weatherforecast | ConvertTo-Json</code>。注意 yourIISPort 這兒是你啟動後的 port 號，像是 <code>https://localhost:44304/weatherforecast</code>。</p>
+<p><img src="https://i.imgur.com/QSp7VRr.png" alt=""></p>
+<blockquote>
+<p>備註：Linux 的朋友就直接使用 Curl 來打就行了唄。另外，上面的 Powershell 語法特別感謝這篇 <a href="https://blog.poychang.net/using-powershell-call-http-request/">使用 PowerShell 呼叫 Web API 請求</a></p>
+</blockquote>
+<p>到這邊我們就做完了簡單的認識，也確認我們新建的專案確實好好活著囉。</p>
+<hr>
+<h3 id="動手實作-crud">動手實作 CRUD</h3>
+<p>既然我們前面已經去逛過預設的 <code>WeatherForecastController</code> 了，現在就讓我們來自己建一個吧。</p>
+<p>沒有脈絡就做不了事，先讓我們來訂一個情境：這是一個卡片對戰遊戲的卡片管理功能，一張卡片包含：卡片編號（ID）、卡片名稱和卡片敘述三個欄位。</p>
+<p>因為我這個人喜歡整理、愛好整潔（？）這邊就先讓我們新增一個 <code>Models</code> 資料夾，用來存放卡片的類別</p>
+<p><img src="https://i.imgur.com/Zoci28m.png" alt=""></p>
+<p>建立 <code>Models</code> 資料夾之後，在 <code>Models</code> 裡面新增 <code>Card.cs</code>：</p>
+<p><img src="https://i.imgur.com/EeAPqZv.png" alt=""></p>
+<p>現在應該會是這個樣子：</p>
+<p><img src="https://i.imgur.com/b6hcSaw.png" alt=""></p>
+<p>接著讓我們打開 <code>Card.cs</code>，加上卡片的各個欄位：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 卡片</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Card</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 卡片編號</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 卡片名稱</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 卡片描述</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>完成卡片類別的建立之後，讓我們前往 <code>Controller</code>，新建一個 <code>CardController.cs</code>：</p>
+<p><img src="https://i.imgur.com/XRbNmT4.png" alt=""></p>
+<p>我們打開 <code>CardController.cs</code>。這個類別裡面現在應該是空空如也：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 啥也沒有</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著我們就開始逐步施工吧（這邊的步驟可以去隔壁抄 <code>WeatherForecastController.cs</code> 也 OK 啦）</p>
+<p>首先，我們要先繼承 <code>ControllerBase</code> 取得控制器該有的方法和成員。接著，我們要加上 <code>[ApiController]</code> 的屬性給這個類別，讓他知道他現在負責搞 API 了。</p>
+<p>如果過程中跑出紅線的話，就按一下燈泡或用 <code>Alt + Enter</code> 把該 using 的東西給 using 進來。現在應該會像這樣：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 啥也沒有</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>接著讓我們加上 <code>Route</code>，因為我們按照資源下去設計的話，<code>Route</code> 多半也是 <code>/card</code> 這樣子的路徑，因此我們繼續使用 <code>[Route(&quot;[controller]&quot;)]</code> 就可以了。如果各位要做的 API 資源在這邊需要客製化，再自己改成想要的字串即可。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 啥也沒有</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這邊就讓我們先建立一個 <code>static</code> 並且為空的 <code>IEnumerable&lt;Card&gt;</code> 的私有成員，用來驗證我們後續開的功能是否可以正常運作</p>
+<blockquote>
+<p>備註：我們會在下一個章節把這部分更改為連線資料庫去變更真正的資料，這邊就先用私有成員假裝一下唄。</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 測試用的資料集合</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> List&lt;Card&gt; _cards = <span style="color:#66d9ef">new</span> List&lt;Card&gt;();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這樣事前工作已經準備完畢了，讓我們來加上操作方法吧！</p>
+<p>首先先來一個查詢所有卡片的 Function，同樣用 <code>[HttpGet]</code> 來標明這是個 <code>GET</code> 方法，並且<strong>因為我們沒有特別指定路由，所以目前就是接著類別 <code>CardController</code> 的 <code>/card</code>，也就是 <code>GET /card</code></strong>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 查詢卡片列表</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpGet]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> List&lt;Card&gt; GetList()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> _cards;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>然後讓我們加上一個單獨查詢單張卡片的方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 查詢卡片</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpGet]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;{id}&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Card Get([FromRoute] <span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> _cards.FirstOrDefault(card =&gt; card.Id == id);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>可以注意到我們用 <code>Route</code> 來指定了這個方法的 URL，<strong>並且用 <code>{id}</code> 的方式告訴 API 說這一格是參數 <code>int id</code> 所在的位置</strong>。</p>
+<p>這樣的話這個方法的 Route 就會變成 <code>GET /card/1</code>（查詢 ID 為 1 的卡片） 這種感覺。實際使用的時候我們會很經常用 <code>{參數}</code> 這種方法來把參數加入到 Route 並制定 Function 對應的 URL，以此達到符合 Restful 的感覺。</p>
+<p>另一個可以注意到的地方是<strong>我們在 Function 的參數上加上了 <code>[FromRoute]</code> 的屬性來告訴 API 說 <code>int id</code> 這個參數是來自於 Route 上的</strong>。</p>
+<p>除了 <code>FromRoute</code> 以外，還有 <code>GET</code> 時很常用到的 <code>[FromQuery]</code> 或舊版本的 <code>[FromUri]</code>（指這個參數從 QueryString 也就是 ?a=1&amp;b=2 那串裡面接收）、<code>POST</code> 和其他狀況常用到的 <code>[FromBody]</code>（指這個參數要從 Body 接收）等等，可以讓我們標明參數的來源。</p>
+<blockquote>
+<p>補充說明一下，雖然也有簡單型別預設從 Uri，複雜型別預設從 Body 等等貼心的設定，但個人認為還是盡量都標明出來，對自己和後續維護的人都會比較好一點…。</p>
+</blockquote>
+<p>接著讓我們加入新增卡片，還有編輯卡片的方法吧，在這之前我們先建立一個 <code>Parameter</code> 資料夾，用來放一些傳入的參數，並且新增一個 <code>CardParameter</code> 來當作我們新增和修改卡片的參數類別：</p>
+<p><img src="https://i.imgur.com/fiqBwZM.png" alt=""></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 卡片參數</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardParameter</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 卡片名稱</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Name { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 卡片描述</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>補充：雖然也有建立一個對應的類別，接著就只使用這個類別的作法，像是先前的 <a href="https://igouist.github.io/post/2019/12/aspnet-connect-db/">Asp.net MVC</a>，我們就只使用一個對應資料表欄位的類別來完成 CRUD 全部的操作。放到這裡來說的話，也就是只用 <code>Card</code> 類別，查詢也是用這個類別顯示，更新也是用這個類別當作參數。</p>
+<p>但有些情況的時候，我們會希望傳進來新增或修改的參數跟類別並不一致，例如當我們新增 <code>Card</code> 的時候，並不需要 <code>Id</code> 這個欄位；又或是有些資料表中有 <code>CreateTime</code>、<code>UpdateTime</code> 這類程式自動填入、顯示的時候才有意義的欄位，就不會在新增或更新的時候對外開放；又或者是分層架構這類每一層要求的欄位並不一樣的情況等等。這些時候，我們就會採取將參數，也就是 <code>Parameter</code> 切分成一個單獨的類別進行管控。</p>
+<p>基本上就像即使是同一張表，我們也會根據顯示的狀況來製作成不同的 <code>ViewModel</code> 一樣，我們也會根據傳入的狀況來決定 <code>Parameter</code> 的範圍。這個部份我們會在分層架構的時候再介紹一次，現在只要大致有<strong>可以把「顯示用類別」和「參數用類別」拆成不同的類別來進行出入口管制</strong>的概念就可以。</p>
+</blockquote>
+<p>建立完參數之後，我們就可以回到 <code>CardController</code> 來加上新增和更新的方法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 新增卡片</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpPost]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IActionResult Insert([FromBody] CardParameter parameter)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    _cards.Add(<span style="color:#66d9ef">new</span> Card
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Id = _cards.Any() 
+</span></span><span style="display:flex;"><span>          ? _cards.Max(card =&gt; card.Id) + <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>          : <span style="color:#ae81ff">0</span>, <span style="color:#75715e">// 臨時防呆，如果沒東西就從 0 開始</span>
+</span></span><span style="display:flex;"><span>        Name = parameter.Name,
+</span></span><span style="display:flex;"><span>        Description = parameter.Description
+</span></span><span style="display:flex;"><span>    });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> Ok();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 更新卡片</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpPut]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;{id}&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IActionResult Update(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromRoute]</span> <span style="color:#66d9ef">int</span> id,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromBody]</span> CardParameter parameter)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> targetCard = _cards.FirstOrDefault(card =&gt; card.Id == id);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (targetCard <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> NotFound();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    targetCard.Name = parameter.Name;
+</span></span><span style="display:flex;"><span>    targetCard.Description = parameter.Description;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> Ok();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這邊的 <code>[HttpPost]</code>、<code>[HttpPut]</code> 以及 <code>[FromRpute]</code>、<code>[FromBody]</code> 我們在前面都已經掌握了。但在這裡我們還是可以看到 <code>return Ok()</code> 和 <code>return NotFound()</code> 這兩個新朋友。</p>
+<p>聰明的朋友看 return 的方法名稱應該已經猜到了，這就是我們前面提過的 <a href="#%E9%97%9C%E6%96%BC-http-status-code">HTTP Status</a>。當然前面查詢成功的時候和這邊的 <code>Ok()</code> 一樣是 <code>200</code> 的狀態，此外還有代表 <code>400</code> 的 <code>BadRequest()</code>、代表 <code>404</code> 的 <code>NotFound()</code> 等等。</p>
+<p>除此之外，我們也不是每次都會回傳 <code>IActionResult</code>，可能也會是自訂的錯誤型別等等，所以也看過使用 <code>Response.StatusCode</code> 來直接設定 Http Status Code 的做法，例如 <code>Response.StatusCode = 200;</code> 之後再進行回傳的做法，各位再視情況使用吧。</p>
+<p>現在 CRUD 四大天王，我們已經只剩下 D 了，現在就來把刪除卡片的方法補上吧：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// 刪除卡片</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[HttpDelete]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;{id}&#34;)]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IActionResult Delete([FromRoute] <span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    _cards.RemoveAll(card =&gt; card.Id == id);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> Ok();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這樣四大天王（包含查詢列表通常是五個）就到齊了，現在的 <code>CardController</code> 應該是長這樣的：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 測試用的資料集合</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> List&lt;Card&gt; _cards = <span style="color:#66d9ef">new</span> List&lt;Card&gt;();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 查詢卡片列表</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> List&lt;Card&gt; GetList()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> _cards;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 查詢卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpGet]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Card Get([FromRoute] <span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> _cards.FirstOrDefault(card =&gt; card.Id == id);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 新增卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpPost]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IActionResult Insert([FromBody] CardParameter parameter)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _cards.Add(<span style="color:#66d9ef">new</span> Card
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Id = _cards.Any() 
+</span></span><span style="display:flex;"><span>                ? _cards.Max(card =&gt; card.Id) + <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>                : <span style="color:#ae81ff">0</span>, <span style="color:#75715e">// 臨時防呆，如果沒東西就從 0 開始</span>
+</span></span><span style="display:flex;"><span>            Name = parameter.Name,
+</span></span><span style="display:flex;"><span>            Description = parameter.Description
+</span></span><span style="display:flex;"><span>        });
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Ok();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 更新卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;parameter&#34;&gt;卡片參數&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpPut]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IActionResult Update(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [FromRoute]</span> <span style="color:#66d9ef">int</span> id,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">        [FromBody]</span> CardParameter parameter)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">var</span> targetCard = _cards.FirstOrDefault(card =&gt; card.Id == id);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (targetCard <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> NotFound();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        targetCard.Name = parameter.Name;
+</span></span><span style="display:flex;"><span>        targetCard.Description = parameter.Description;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Ok();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 刪除卡片</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;param name=&#34;id&#34;&gt;卡片編號&lt;/param&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [HttpDelete]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [Route(&#34;{id}&#34;)]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IActionResult Delete([FromRoute] <span style="color:#66d9ef">int</span> id)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        _cards.RemoveAll(card =&gt; card.Id == id);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Ok();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>最後讓我們啟動來測試一下吧！</p>
+<hr>
+<blockquote>
+<p>備註：和上面同樣地，因為這邊還沒說明到 Postman 等測試軟體，所以直接使用 Powershell 進行示範，已經有慣用軟體，或是直接寫一個腳本出來接的朋友，請用自己方便順手的測試方法去呼叫就好囉。</p>
+</blockquote>
+<p>讓我們打開 Powershell，繼續使用 <code>Invoke-RestMethod</code> 來呼叫 API 試試看，別忘了 Port 要換成你啟動專案時 IIS 掛上去的 Port</p>
+<p>首先讓我們新增一張卡片：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">44304</span>/card `
+</span></span><span style="display:flex;"><span> -Method <span style="color:#e6db74">&#39;POST&#39;</span> `
+</span></span><span style="display:flex;"><span> -Headers @{ <span style="color:#e6db74">&#34;Content-Type&#34;</span> = <span style="color:#e6db74">&#34;application/json&#34;</span>; } `
+</span></span><span style="display:flex;"><span> -Body <span style="color:#e6db74">&#34;{</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">name</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">: </span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">mycard</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">,</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">description</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">: </span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">sample card</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">}&#34;</span>
+</span></span></code></pre></div><p>接著讓我們查詢看看所有卡片，看看新增的卡片在不在：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">44304</span>/card | ConvertTo-Json
+</span></span></code></pre></div><p><img src="https://i.imgur.com/IvHYdZR.png" alt=""></p>
+<p>既然卡片已經存在了，讓我們試試看編輯，把「我的卡片」改成「我們的卡片」，<del>打倒富農份子</del>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">44304</span>/card/<span style="color:#ae81ff">0</span> `
+</span></span><span style="display:flex;"><span> -Method <span style="color:#e6db74">&#39;PUT&#39;</span> `
+</span></span><span style="display:flex;"><span> -Headers @{ <span style="color:#e6db74">&#34;Content-Type&#34;</span> = <span style="color:#e6db74">&#34;application/json&#34;</span>; } `
+</span></span><span style="display:flex;"><span> -Body <span style="color:#e6db74">&#34;{</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">name</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">: </span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">ourcard</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">,</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">description</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">: </span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">sample card</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">}&#34;</span>
+</span></span></code></pre></div><p>並且用查詢單張卡片的方式來查詢卡片資料：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">44304</span>/card/<span style="color:#ae81ff">0</span> | ConvertTo-Json
+</span></span></code></pre></div><p><img src="https://i.imgur.com/FjFHdSt.png" alt=""></p>
+<p>如果編輯的卡片不存在，會噴出 404：</p>
+<p><img src="https://i.imgur.com/j6Dom6l.png" alt=""></p>
+<p>最後讓我們來試試刪除：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">44304</span>/card/<span style="color:#ae81ff">0</span> `
+</span></span><span style="display:flex;"><span> -Method <span style="color:#e6db74">&#39;DELETE&#39;</span>
+</span></span></code></pre></div><p>然後同樣使用查詢全部，應該要沒有任何卡片了：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">44304</span>/card | ConvertTo-Json
+</span></span></code></pre></div><p><img src="https://i.imgur.com/0WNEkAm.png" alt=""></p>
+<p>到這邊就確認我們的 API 服務（也就是基本的 CRUD）已經 ON 起來啦！</p>
+<hr>
+<h2 id="小結">小結</h2>
+<p>這邊我們紀錄了一些會用到的 HTTP 基礎知識，並用 Asp.net Core 的 Web API 範本新建了一個 API 服務，也加入了自己設定的 CRUD。</p>
+<p>但要特別注意，雖然我們對外的開口已經建起來了，但這時候的 Card 還只是個用 static 變數假裝的空殼，只要站台重啟就會消失了。</p>
+<p>正所謂「<strong>沒有連到資料庫的 CRUD，就像是沒有加醬汁的料理！</strong>」，我們在下一集就要來把我們的 Api 服務連接到資料庫啦！</p>
+<p>那麼，我們下次見～</p>
+<blockquote>
+<p>2021.05.08 補充：</p>
+<p>範本預設的 <code>WeatherForecast.cs</code> 和 <code>WeatherForecastController</code> 在將來的文章將不會再用到，繼續下一篇實作之前可以先刪除囉～</p>
+<p>有刪除的朋友記得要去 <code>launchSettings.json</code> 把 <code>launchUrl</code> 改成 card，下次啟動才會直接到我們這次新加的 CardController 呦！</p>
+</blockquote>
+<blockquote>
+<p>本系列下一篇：<a href="/post/2021/05/newbie-3-dapper">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a></p>
+</blockquote>
+<h2 id="本系列文章">本系列文章</h2>
+<ul>
+<li><a href="/post/2021/04/newbie-0-menu">菜雞新訓記 (0): 目錄</a></li>
+<li><a href="/post/2021/04/newbie-1-hello-git">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a></li>
+<li><a href="/post/2021/05/newbie-2-webapi">菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧</a></li>
+<li><a href="/post/2021/05/newbie-3-dapper">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a></li>
+<li><a href="/post/2021/05/newbie-4-swagger">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a></li>
+<li><a href="/post/2021/10/newbie-5-3-layer-architecture">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a></li>
+<li><a href="/post/2021/11/newbie-6-dependency-injection">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a></li>
+<li><a href="/post/2022/03/newbie-7-fluent-validation">菜雞新訓記 (7): 使用 FluentValidation 來驗證傳入參數吧</a></li>
+</ul>
+<h2 id="參考資料">參考資料</h2>
+<ul>
+<li><a href="https://medium.com/@hulitw/learning-tcp-ip-http-via-sending-letter-5d3299203660">從傳紙條輕鬆學習基本網路概念 - huli</a></li>
+<li><a href="https://medium.com/@hulitw/ramen-and-api-6238437dc544">從拉麵店的販賣機理解什麼是 API - huli</a></li>
+<li><a href="https://medium.com/codingbar/api-%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E9%BA%BC-%E7%94%A8%E7%99%BD%E8%A9%B1%E6%96%87%E5%B8%B6%E4%BD%A0%E8%AA%8D%E8%AD%98-95f65a9cfc33">API 到底是什麼？ 用白話文帶你認識 - BAR 主特調</a></li>
+<li><a href="https://docs.microsoft.com/zh-tw/azure/architecture/best-practices/api-design">Web API 設計 - Microsoft Docs</a></li>
+<li><a href="https://progressbar.tw/posts/53">休息(REST)式架構? 寧靜式(RESTful)的Web API是現在的潮流？ - 進度條</a></li>
+<li><a href="https://tw.twincl.com/programming/*641y">簡明 RESTful API 設計要點 - Twincl</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10230223">不做怎麼知道系列之Android開發者的30天後端養成故事 Day22 - 什麼是真正的 RESTful API? #RESTful API應該長什麼樣子?</a></li>
+<li><a href="https://sunnyday0932.github.io/2020/dotnet-core-webapi%E5%AF%A6%E4%BD%9C-4-restful-api%E4%BB%8B%E7%B4%B9/">dotnet Core WebApi實作-4 RESTful API介紹 _ Sian</a></li>
+<li><a href="https://medium.com/%E8%90%AC%E4%BA%8B%E5%B1%8B%E9%98%BF%E6%B3%B0%E7%9A%84%E7%9F%A5%E8%AD%98%E6%B5%B7/cs-2-%E6%AF%8F%E6%AF%8F%E8%81%BD%E5%88%B0%E5%B7%A5%E7%A8%8B%E5%B8%AB%E8%AA%AA-api-%E6%89%80%E4%BB%A5%E5%88%B0%E5%BA%95%E4%BB%80%E9%BA%BC%E6%98%AF-api-%E5%95%8A-b155662425e">CS #2 — 每每聽到工程師說 API，所以到底什麼是 API 啊？ - 萬事屋阿泰的知識海</a></li>
+<li><a href="https://notfalse.net/39/http-message-format">HTTP/1.1 — 訊息格式 (Message Format) - NotFalse</a></li>
+<li><a href="https://medium.com/ttyy2985/http%E5%89%8D%E5%BE%8C%E7%AB%AF%E5%82%B3%E8%BC%B8%E6%B5%81%E7%A8%8B-8ee40ffca1bd">HTTP 前後端傳輸流程 - ttyy2985</a></li>
+<li><a href="https://medium.com/hobo-engineer/ricky%E7%AD%86%E8%A8%98-postman-%E5%B8%B8%E8%A6%8B%E7%9A%84-content-type-b17a75396668">Postman 常見的 Content-type - hobo-engineer</a></li>
+<li><a href="https://noob.tw/http-status-code/">常見與不常見的 HTTP Status Code - Noob&rsquo;s Space</a></li>
+<li><a href="https://blog.miniasp.com/post/2009/01/16/Web-developer-should-know-about-HTTP-Status-Code">網頁開發人員應了解的 HTTP 狀態碼 - The Will Will Web</a></li>
+<li><a href="https://dotblogs.com.tw/yc421206/2020/06/28/how_to_read_config_appsettings_json_via_net_core_31">如何讀取 AppSettings.json 組態設定檔 - 余小章</a></li>
+<li><a href="https://blog.poychang.net/visual-studio-launch-settings-iis-express-iis-project-executable/">launchSettings.json 的 commandName 是做什麼用的？</a></li>
+<li><a href="https://blog.johnwu.cc/article/ironman-day02-asp-net-core-application-lifetime.html">ASP.NET Core 2 系列 - 程式生命週期 (Application Lifetime) - John Wu&rsquo;s Blog</a></li>
+<li><a href="https://blog.poychang.net/using-powershell-call-http-request/">使用 PowerShell 呼叫 Web API 請求</a></li>
+<li><a href="https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE">超文本傳輸協定 - 維基百科</a></li>
+</ul>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2021/04/newbie-0-menu/">菜雞新訓記 (0): 前言</a></li>
+        
+        <li><a href="/post/2021/04/newbie-1-hello-git/">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a></li>
+        
+        <li><a href="/post/2021/01/oo-ex1-end2020/">菜雞與物件導向 (Ex1): 小結</a></li>
+        
+        <li><a href="/post/2020/12/oo-15-least-knowledge-principle/">菜雞與物件導向 (15): 最少知識原則</a></li>
+        
+        <li><a href="/post/2020/12/oo-14-dependency-inversion-principle/">菜雞與物件導向 (14): 依賴反轉原則</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/newbieguide">NewbieGuide</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/dotnet">dotnet</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/csharp">csharp</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/api">api</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                        <hr/>
+                        <div id="heatmap" style="
+  max-width: 800px;
+  height: 180px;
+  padding: 2px;
+  text-align: center;"
+></div>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.3.0/dist/echarts.min.js"></script>
+<script type="text/javascript">
+  
+
+  var chartDom = document.getElementById('heatmap');
+  var myChart = echarts.init(chartDom);
+  window.onresize = function() {
+      myChart.resize();
+  };
+  var option;
+
+  
+  
+  
+  
+  
+  
+  var dataMap = new Map();
+  
+    var key = "2024-11-22";
+    var value = dataMap.get(key);
+    var wordCount =  2882 ;
+    var link = "/post/2024/11/2024-busan-travel/";
+    var title = "菜雞出門玩：2024 韓國釜山";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-09-01";
+    var value = dataMap.get(key);
+    var wordCount =  685 ;
+    var link = "/post/2024/09/vscode-live-share/";
+    var title = "VSCode: 使用 LiveShare 來即時線上協作吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-08-25";
+    var value = dataMap.get(key);
+    var wordCount =  1032 ;
+    var link = "/post/2024/08/dapper-datetime-0001-01-01/";
+    var title = "使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-08-18";
+    var value = dataMap.get(key);
+    var wordCount =  4875 ;
+    var link = "/post/2024/08/dotnet-feature-flag-and-feature-management/";
+    var title = ".Net: 使用 FeatureManagement 套件來實作功能切換（Feature Toggle）吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-08-03";
+    var value = dataMap.get(key);
+    var wordCount =  3134 ;
+    var link = "/post/2024/08/dotnet-ioptions/";
+    var title = ".Net: 使用 IOptions 取得 appsettings.json 的設定值吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-08-01";
+    var value = dataMap.get(key);
+    var wordCount =  1680 ;
+    var link = "/post/2024/08/nine-sols/";
+    var title = "九日　白金！";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-29";
+    var value = dataMap.get(key);
+    var wordCount =  1111 ;
+    var link = "/repost/2024/04/0429-repost-100-days/";
+    var title = "【每天推薦一篇文章】轉貼 100 篇文章之後";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-28";
+    var value = dataMap.get(key);
+    var wordCount =  2131 ;
+    var link = "/repost/2024/04/0428-atomic-habits/";
+    var title = "【每天推薦一篇文章】原子習慣";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-27";
+    var value = dataMap.get(key);
+    var wordCount =  1645 ;
+    var link = "/repost/2024/04/0427-big-note-system/";
+    var title = "【每天推薦一篇文章】為什麼你「不需要」所謂的人生管理系統";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-23";
+    var value = dataMap.get(key);
+    var wordCount =  2119 ;
+    var link = "/repost/2024/04/0423-how-to-save-password/";
+    var title = "【每天推薦一篇文章】存密碼的正確姿勢";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-20";
+    var value = dataMap.get(key);
+    var wordCount =  1074 ;
+    var link = "/repost/2024/04/0419-encoding-encrypt-and-hashing/";
+    var title = "【每天推薦一篇文章】編碼、加密、雜湊";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-18";
+    var value = dataMap.get(key);
+    var wordCount =  631 ;
+    var link = "/repost/2024/04/0418-question/";
+    var title = "【每天推薦一篇文章】精準提問術";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-16";
+    var value = dataMap.get(key);
+    var wordCount =  873 ;
+    var link = "/repost/2024/04/0416-frontlight-and-backlight/";
+    var title = "【每天推薦一篇文章】電子書的背光與前光";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-15";
+    var value = dataMap.get(key);
+    var wordCount =  578 ;
+    var link = "/repost/2024/04/0415-cap-and-remembrance-inc/";
+    var title = "【每天推薦一篇文章】CAP 定理與 Remembrance Inc.";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-14";
+    var value = dataMap.get(key);
+    var wordCount =  315 ;
+    var link = "/repost/2024/04/0414-bad-smells-on-code-review/";
+    var title = "【每天推薦一篇文章】Code Review 的壞味道";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-14";
+    var value = dataMap.get(key);
+    var wordCount =  678 ;
+    var link = "/post/2024/04/fate-samurai-remnant/";
+    var title = "Fate/Samurai Remnant　白金！";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-12";
+    var value = dataMap.get(key);
+    var wordCount =  1081 ;
+    var link = "/repost/2024/04/0412-programming-is-a-pyramid-of-abstraction/";
+    var title = "【每天推薦一篇文章】程式設計是一座抽象化的金字塔";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-11";
+    var value = dataMap.get(key);
+    var wordCount =  281 ;
+    var link = "/repost/2024/04/0411-git-add-push-remote/";
+    var title = "【每天推薦一篇文章】Git 同時推送到兩個遠端 Repo";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-10";
+    var value = dataMap.get(key);
+    var wordCount =  1404 ;
+    var link = "/repost/2024/04/0410-postmortem-culture/";
+    var title = "【每天推薦一篇文章】事後檢討：從失敗中學習";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-09";
+    var value = dataMap.get(key);
+    var wordCount =  1181 ;
+    var link = "/repost/2024/04/0408-the-values-of-software-developer/";
+    var title = "【每天推薦一篇文章】軟體開發者的價值";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-07";
+    var value = dataMap.get(key);
+    var wordCount =  1371 ;
+    var link = "/repost/2024/04/0407-the-values-of-software-development/";
+    var title = "【每天推薦一篇文章】軟體開發的價值觀";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-05";
+    var value = dataMap.get(key);
+    var wordCount =  808 ;
+    var link = "/repost/2024/04/0405-user-story-and-coffee/";
+    var title = "【每天轉貼一篇文章】我是想睡覺的工程師，我想要提神，所以我需要打翻咖啡";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-04";
+    var value = dataMap.get(key);
+    var wordCount =  1029 ;
+    var link = "/repost/2024/04/0404-load-balancing/";
+    var title = "【每天轉貼一篇文章】從動圖認識負載平衡（Load Balancing）";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-02";
+    var value = dataMap.get(key);
+    var wordCount =  548 ;
+    var link = "/repost/2024/04/0402-microsoft-clarity/";
+    var title = "【每天轉貼一篇文章】用 Microsoft Clarity 觀察使用者行為";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-04-01";
+    var value = dataMap.get(key);
+    var wordCount =  2657 ;
+    var link = "/repost/2024/04/observability-in-devops-30-days/";
+    var title = "【每天推薦一篇文章】可觀測性 30 天";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-29";
+    var value = dataMap.get(key);
+    var wordCount =  851 ;
+    var link = "/repost/2024/03/0329-a-weight-loss-guide-for-engineers/";
+    var title = "【每天推薦一篇文章】寫給工程師看的減肥指南";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-28";
+    var value = dataMap.get(key);
+    var wordCount =  426 ;
+    var link = "/repost/2024/03/0328-alert-alert-alert/";
+    var title = "【每天推薦一篇文章】寫了無限 alert 迴圈竟然要被抓？！";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-27";
+    var value = dataMap.get(key);
+    var wordCount =  310 ;
+    var link = "/repost/2024/03/0327-human-system-optimization/";
+    var title = "【每天推薦一篇文章】人體系統優化指南";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-26";
+    var value = dataMap.get(key);
+    var wordCount =  1130 ;
+    var link = "/repost/2024/03/0326-how-to-ideate-and-come-up-with-product-solutions/";
+    var title = "【每天推薦一篇文章】如何發想解決方案？";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-25";
+    var value = dataMap.get(key);
+    var wordCount =  520 ;
+    var link = "/repost/2024/03/0325-airtable/";
+    var title = "【每天推薦一篇文章】Airtable: 簡單的需求用簡單的儲存工具";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-24";
+    var value = dataMap.get(key);
+    var wordCount =  845 ;
+    var link = "/repost/2024/03/0323-let-data-guide-your-decision-making/";
+    var title = "【每天推薦一篇文章】讓數據幫你決策";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-22";
+    var value = dataMap.get(key);
+    var wordCount =  686 ;
+    var link = "/repost/2024/03/0322-a-developer-s-guide-to-interviewing/";
+    var title = "【每天推薦一篇文章】如何面試一間公司";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-21";
+    var value = dataMap.get(key);
+    var wordCount =  797 ;
+    var link = "/repost/2024/03/0321-anemic-domain-model/";
+    var title = "【每天推薦一篇文章】貧血模型與充血模型";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-20";
+    var value = dataMap.get(key);
+    var wordCount =  1102 ;
+    var link = "/repost/2024/03/0320-dopamine/";
+    var title = "【每天推薦一篇文章】爽與痛的平衡：多巴胺";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-19";
+    var value = dataMap.get(key);
+    var wordCount =  1278 ;
+    var link = "/repost/2024/03/0319-reorder-message/";
+    var title = "【每天推薦一篇文章】訊息順序問題 \u0026 早期驗證";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-18";
+    var value = dataMap.get(key);
+    var wordCount =  147 ;
+    var link = "/repost/2024/03/0318-encoding/";
+    var title = "【每天推薦一篇文章】編碼是什麼？從傳紙條學習編碼";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-17";
+    var value = dataMap.get(key);
+    var wordCount =  948 ;
+    var link = "/repost/2024/03/0317-suggestions-for-unit-testing/";
+    var title = "【每天推薦一篇文章】有關單元測試的建議";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-16";
+    var value = dataMap.get(key);
+    var wordCount =  712 ;
+    var link = "/repost/2024/03/0316-geohash/";
+    var title = "【每天推薦一篇文章】Geohash";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-13";
+    var value = dataMap.get(key);
+    var wordCount =  834 ;
+    var link = "/repost/2024/03/0313-minimum-viable-product/";
+    var title = "【每天推薦一篇文章】最小可行性產品 (MVP)";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-12";
+    var value = dataMap.get(key);
+    var wordCount =  631 ;
+    var link = "/repost/2024/03/0312-six-steps-to-tackle-ambiguous-requirements/";
+    var title = "【每天推薦一篇文章】面對模糊需求的六個步驟";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-11";
+    var value = dataMap.get(key);
+    var wordCount =  488 ;
+    var link = "/repost/2024/03/0311-sla/";
+    var title = "【每天推薦一篇文章】多服務的 SLA 計算方式";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-10";
+    var value = dataMap.get(key);
+    var wordCount =  210 ;
+    var link = "/repost/2024/03/0310-the-great-mental-models/";
+    var title = "【每天推薦一篇文章】思考的框架";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-09";
+    var value = dataMap.get(key);
+    var wordCount =  839 ;
+    var link = "/repost/2024/03/0309-a-brief-history-of-airbnb-architecture/";
+    var title = "【每天推薦一篇文章】Airbnb 的架構演進";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-08";
+    var value = dataMap.get(key);
+    var wordCount =  236 ;
+    var link = "/repost/2024/03/0308-reverse-interview/";
+    var title = "【每天推薦一篇文章】反問面試官的時候到了";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-07";
+    var value = dataMap.get(key);
+    var wordCount =  425 ;
+    var link = "/repost/2024/03/0307-sociable-unit-test/";
+    var title = "【每天推薦一篇文章】社交型單元測試";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-06";
+    var value = dataMap.get(key);
+    var wordCount =  834 ;
+    var link = "/repost/2024/03/0306-develop-review/";
+    var title = "【每天推薦一篇文章】軟體開發的復盤";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-05";
+    var value = dataMap.get(key);
+    var wordCount =  1043 ;
+    var link = "/repost/2024/03/0305-consistent-hashing/";
+    var title = "【每天推薦一篇文章】Consistent Hashing";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-04";
+    var value = dataMap.get(key);
+    var wordCount =  424 ;
+    var link = "/repost/2024/03/0304-event-storming-is-good/";
+    var title = "【每天推薦一篇文章】Event storming 是個好東西";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-03";
+    var value = dataMap.get(key);
+    var wordCount =  185 ;
+    var link = "/repost/2024/03/0303-numbers-everyone-should-know/";
+    var title = "【每天推薦一篇文章】設計系統時應該知道的一些數字";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-02";
+    var value = dataMap.get(key);
+    var wordCount =  818 ;
+    var link = "/repost/2024/03/0302-deterministic-aperture/";
+    var title = "【每天推薦一篇文章】Deterministic Aperture";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-01";
+    var value = dataMap.get(key);
+    var wordCount =  633 ;
+    var link = "/repost/2024/03/0301-guid-and-logical-fragmentation/";
+    var title = "【每天推薦一篇文章】GUID 與索引破碎";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-03-01";
+    var value = dataMap.get(key);
+    var wordCount =  851 ;
+    var link = "/repost/2024/02/0229-event-storming/";
+    var title = "【每天推薦一篇文章】認識 Event Storming";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-28";
+    var value = dataMap.get(key);
+    var wordCount =  1105 ;
+    var link = "/repost/2024/02/0228-stiff-software/";
+    var title = "【每天推薦一篇文章】硬硬的軟體";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-27";
+    var value = dataMap.get(key);
+    var wordCount =  852 ;
+    var link = "/repost/2024/02/0227-change-your-company/";
+    var title = "【每天推薦一篇文章】上游思維";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-26";
+    var value = dataMap.get(key);
+    var wordCount =  1052 ;
+    var link = "/repost/2024/02/0226-technical-debt/";
+    var title = "【每天推薦一篇文章】技術債（Technical Debt）";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-25";
+    var value = dataMap.get(key);
+    var wordCount =  365 ;
+    var link = "/repost/2024/02/0225-what3words/";
+    var title = "【每天推薦一篇文章】用三個詞來定位地點吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-24";
+    var value = dataMap.get(key);
+    var wordCount =  238 ;
+    var link = "/repost/2024/02/0224-function/";
+    var title = "【每天推薦一篇文章】需要變成 Function 的都只是因為重複使用而已嗎？";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-23";
+    var value = dataMap.get(key);
+    var wordCount =  180 ;
+    var link = "/repost/2024/02/0223-git-worktree/";
+    var title = "【每天推薦一篇文章】git worktree";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-22";
+    var value = dataMap.get(key);
+    var wordCount =  534 ;
+    var link = "/repost/2024/02/0222-risk-storming/";
+    var title = "【每天推薦一篇文章】Risk-storming";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-21";
+    var value = dataMap.get(key);
+    var wordCount =  648 ;
+    var link = "/repost/2024/02/0221-why-sleep/";
+    var title = "【每天推薦一篇文章】為什麼要睡覺";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-20";
+    var value = dataMap.get(key);
+    var wordCount =  1060 ;
+    var link = "/repost/2024/02/0220-tackling-the-challenges-of-using-event-driven-architecture-in-a-billing-system/";
+    var title = "【每天推薦一篇文章】在計費系統中使用 Event-Driven Architecture 的挑戰";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-19";
+    var value = dataMap.get(key);
+    var wordCount =  508 ;
+    var link = "/repost/2024/02/0219-free-writing/";
+    var title = "【每天推薦一篇文章】自由書寫術";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-18";
+    var value = dataMap.get(key);
+    var wordCount =  813 ;
+    var link = "/repost/2024/02/0218-lateral-thinking/";
+    var title = "【每天推薦一篇文章】水平思考與六頂帽子";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-17";
+    var value = dataMap.get(key);
+    var wordCount =  388 ;
+    var link = "/repost/2024/02/0217-endowment-effect/";
+    var title = "【每天推薦一篇文章】稟賦效應";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-16";
+    var value = dataMap.get(key);
+    var wordCount =  436 ;
+    var link = "/repost/2024/02/0216-sora/";
+    var title = "【每天推薦一篇文章】Sora, 使用 AI 從文字產生影片";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-15";
+    var value = dataMap.get(key);
+    var wordCount =  291 ;
+    var link = "/repost/2024/02/0215-pair-programming/";
+    var title = "【每天推薦一篇文章】Pair Programming!";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-14";
+    var value = dataMap.get(key);
+    var wordCount =  233 ;
+    var link = "/repost/2024/02/0214-spotify-shuffle-songs/";
+    var title = "【每天推薦一篇文章】不隨機的隨機撥放";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-13";
+    var value = dataMap.get(key);
+    var wordCount =  541 ;
+    var link = "/repost/2024/02/0213-your-body-language-may-shape-who-you-are/";
+    var title = "【每天推薦一篇文章】姿勢決定你是誰";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-12";
+    var value = dataMap.get(key);
+    var wordCount =  955 ;
+    var link = "/repost/2024/02/0212-say-no-to-overworked/";
+    var title = "【每天推薦一篇文章】過勞崇拜";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-11";
+    var value = dataMap.get(key);
+    var wordCount =  416 ;
+    var link = "/repost/2024/02/0211-taiwan-llm/";
+    var title = "【每天推薦一篇文章】Taiwan LLM";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-10";
+    var value = dataMap.get(key);
+    var wordCount =  469 ;
+    var link = "/repost/2024/02/0210-git-commit-message/";
+    var title = "【每天推薦一篇文章】Git Commit Message 這樣寫會更好";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-09";
+    var value = dataMap.get(key);
+    var wordCount =  1141 ;
+    var link = "/repost/2024/02/0209-time-fire-brigade/";
+    var title = "【每天推薦一篇文章】時間管理：防火、救火、選擇和餘裕";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-08";
+    var value = dataMap.get(key);
+    var wordCount =  287 ;
+    var link = "/repost/2024/02/0208-ai-is-my-sehan/";
+    var title = "【每天推薦一篇文章】把 AI 當成小弟來指揮";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-07";
+    var value = dataMap.get(key);
+    var wordCount =  493 ;
+    var link = "/repost/2024/02/0207-the-lighting-monkey/";
+    var title = "【每天推薦一篇文章】燈猴的傳說";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-06";
+    var value = dataMap.get(key);
+    var wordCount =  1344 ;
+    var link = "/repost/2024/02/0206-restful-api-all-in-post/";
+    var title = "【每天推薦一篇文章】REST API 全用 POST?";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-05";
+    var value = dataMap.get(key);
+    var wordCount =  446 ;
+    var link = "/repost/2024/02/0205-i-am-a-teapot/";
+    var title = "【每天推薦一篇文章】I’m a teapot";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-04";
+    var value = dataMap.get(key);
+    var wordCount =  1767 ;
+    var link = "/repost/2024/02/0204-airbnb-engineering-avoiding-double-payments-in-a-distributed-payments-system/";
+    var title = "【每天推薦一篇文章】Airbnb 如何在分散支付系統中避免重複支付";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-03";
+    var value = dataMap.get(key);
+    var wordCount =  1138 ;
+    var link = "/repost/2024/02/0203-hype-driven-development/";
+    var title = "【每天推薦一篇文章】一窩蜂驅動開發";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-03";
+    var value = dataMap.get(key);
+    var wordCount =  164 ;
+    var link = "/post/2024/01/lottery-is-goodness/";
+    var title = "我買彩券是為了做一個善良的人";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-02";
+    var value = dataMap.get(key);
+    var wordCount =  278 ;
+    var link = "/repost/2024/02/0202-can-software-architecture-apply-to-game-development/";
+    var title = "【每天推薦一篇文章】軟體架構適用於遊戲開發嗎？";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-02-01";
+    var value = dataMap.get(key);
+    var wordCount =  1350 ;
+    var link = "/repost/2024/02/0201-development-slowness-in-big-and-legacy-applications/";
+    var title = "【每天推薦一篇文章】大規模專案變慢的原因";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-31";
+    var value = dataMap.get(key);
+    var wordCount =  288 ;
+    var link = "/repost/2024/01/0131-recaptcha-enterprise/";
+    var title = "【每天推薦一篇文章】reCAPTCHA 強制升級";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-30";
+    var value = dataMap.get(key);
+    var wordCount =  191 ;
+    var link = "/repost/2024/01/0130-chinese-copywriting-guidelines/";
+    var title = "【每天推薦一篇文章】中英文之間要加空格";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-29";
+    var value = dataMap.get(key);
+    var wordCount =  1025 ;
+    var link = "/repost/2024/01/0129-rose-seed/";
+    var title = "【每天推薦一篇文章】玫瑰種子";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-28";
+    var value = dataMap.get(key);
+    var wordCount =  307 ;
+    var link = "/repost/2024/01/0128-rule-of-three-principle/";
+    var title = "【每天推薦一篇文章】三次原則（Rule Of Three principle）";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-27";
+    var value = dataMap.get(key);
+    var wordCount =  588 ;
+    var link = "/repost/2024/01/0127-choose-the-most-suitable-technology/";
+    var title = "【每天推薦一篇文章】選擇最合適的技術，而不是最熟的技術";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-26";
+    var value = dataMap.get(key);
+    var wordCount =  873 ;
+    var link = "/repost/2024/01/0126-is-git-flow-right/";
+    var title = "【每天推薦一篇文章】Git 分支策略有「正確」選擇嗎？";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-25";
+    var value = dataMap.get(key);
+    var wordCount =  1167 ;
+    var link = "/repost/2024/01/0125-programmer-with-ai/";
+    var title = "【每天推薦一篇文章】開發人員該如何看待 AI 帶來的改變";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-24";
+    var value = dataMap.get(key);
+    var wordCount =  340 ;
+    var link = "/repost/2024/01/0124-joke-kappa/";
+    var title = "【每天推薦一篇文章】JokeKappa";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-23";
+    var value = dataMap.get(key);
+    var wordCount =  556 ;
+    var link = "/repost/2024/01/0123-gestalttheorie/";
+    var title = "【每天推薦一篇文章】UI 設計與完形心理學";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-22";
+    var value = dataMap.get(key);
+    var wordCount =  1433 ;
+    var link = "/repost/2024/01/0122-learn-in-public-with-blog/";
+    var title = "【每天推薦一篇文章】公開學習與部落格";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-21";
+    var value = dataMap.get(key);
+    var wordCount =  1848 ;
+    var link = "/repost/2024/01/0121-procrastination/";
+    var title = "【每天推薦一篇文章】動力是需要刻意創造的";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-21";
+    var value = dataMap.get(key);
+    var wordCount =  1211 ;
+    var link = "/repost/2024/01/0120-di-and-ioc/";
+    var title = "【每天推薦一篇文章】複習一下依賴注入";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-19";
+    var value = dataMap.get(key);
+    var wordCount =  1063 ;
+    var link = "/repost/2024/01/0119-value-and-price-of-time/";
+    var title = "【每天推薦一篇文章】把時間當成一種資源";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-18";
+    var value = dataMap.get(key);
+    var wordCount =  955 ;
+    var link = "/repost/2024/01/0118-attack-calendar/";
+    var title = "【每天推薦一篇文章】進攻型行事曆⚔️";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-17";
+    var value = dataMap.get(key);
+    var wordCount =  490 ;
+    var link = "/repost/2024/01/0117-ipoac/";
+    var title = "【每天推薦一篇文章】鴿子封包🕊️";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-16";
+    var value = dataMap.get(key);
+    var wordCount =  623 ;
+    var link = "/repost/2024/01/0116-snowflake/";
+    var title = "【每天推薦一篇文章】認識雪花 ID";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-15";
+    var value = dataMap.get(key);
+    var wordCount =  1178 ;
+    var link = "/repost/2024/01/0115-start-with-why/";
+    var title = "【每天推薦一篇文章】先問為什麼";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-14";
+    var value = dataMap.get(key);
+    var wordCount =  1481 ;
+    var link = "/repost/2024/01/0114-intrinsic-and-soullike-games/";
+    var title = "【每天推薦一篇文章】內在動機與魂系遊戲";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-13";
+    var value = dataMap.get(key);
+    var wordCount =  893 ;
+    var link = "/repost/2024/01/0113-code-review/";
+    var title = "【每天推薦一篇文章】從 Code Review 的小事看大事";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-12";
+    var value = dataMap.get(key);
+    var wordCount =  260 ;
+    var link = "/repost/2024/01/0112-ninja-code/";
+    var title = "【每天推薦一篇文章】忍者程式碼（Ninja Code）";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-11";
+    var value = dataMap.get(key);
+    var wordCount =  902 ;
+    var link = "/repost/2024/01/0111-learn-coding/";
+    var title = "【每天推薦一篇文章】當我們在學程式時，要學的到底是什麼？";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-10";
+    var value = dataMap.get(key);
+    var wordCount =  728 ;
+    var link = "/repost/2024/01/0110-language-affect-the-way-you-think-about-programming/";
+    var title = "【每天推薦一篇文章】一個語言如果不改變你的思考方式，就不值得學？";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-09";
+    var value = dataMap.get(key);
+    var wordCount =  527 ;
+    var link = "/repost/2024/01/0109-progressive-summary/";
+    var title = "【每天推薦一篇文章】漸進式總結";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-08";
+    var value = dataMap.get(key);
+    var wordCount =  283 ;
+    var link = "/repost/2024/01/0108-lsb/";
+    var title = "【每天推薦一篇文章】看不見的圖片浮水印: 隱寫術";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-07";
+    var value = dataMap.get(key);
+    var wordCount =  297 ;
+    var link = "/repost/2024/01/0107-zwsp/";
+    var title = "【每天推薦一篇文章】殺人於無形的零寬空格";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-06";
+    var value = dataMap.get(key);
+    var wordCount =  724 ;
+    var link = "/repost/2024/01/0106-flow/";
+    var title = "【每天推薦一篇文章】用「設計適合自己的挑戰」，取代「能力焦慮」";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-05";
+    var value = dataMap.get(key);
+    var wordCount =  382 ;
+    var link = "/repost/2024/01/0105-bizthinkingkeeplearning/";
+    var title = "【每天推薦一篇文章】學習永動機";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2024-01-04";
+    var value = dataMap.get(key);
+    var wordCount =  237 ;
+    var link = "/repost/2024/01/0104-toaster/";
+    var title = "【每天推薦一篇文章】軟體工程是個烤麵包機";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2023-04-05";
+    var value = dataMap.get(key);
+    var wordCount =  2007 ;
+    var link = "/post/2023/04/wolong/";
+    var title = "臥龍：蒼天殞落　白金！";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2023-01-29";
+    var value = dataMap.get(key);
+    var wordCount =  2348 ;
+    var link = "/post/2023/01/banner-2-midjourney-and-canva/";
+    var title = "使用 Midjourney AI 繪圖 \u0026 Canva 產生 Banner 初體驗";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2023-01-29";
+    var value = dataMap.get(key);
+    var wordCount =  2815 ;
+    var link = "/post/2023/01/banner-1-system-drawing/";
+    var title = "使用 .Net 的 System.Drawing 產生簡單的文字 Banner 初體驗";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2023-01-28";
+    var value = dataMap.get(key);
+    var wordCount =  2832 ;
+    var link = "/post/2023/01/polyglot-notebooks/";
+    var title = "Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2023-01-26";
+    var value = dataMap.get(key);
+    var wordCount =  613 ;
+    var link = "/post/2023/01/nioh/";
+    var title = "仁王＆仁王２　白金！";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2022-11-27";
+    var value = dataMap.get(key);
+    var wordCount =  1590 ;
+    var link = "/post/2022/11/soft-skills/";
+    var title = "《軟實力：軟體開發人員的生存手冊》心得";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2022-10-10";
+    var value = dataMap.get(key);
+    var wordCount =  2502 ;
+    var link = "/post/2022/10/jmeter/";
+    var title = "使用 JMeter 來對 API 壓力測試吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2022-10-01";
+    var value = dataMap.get(key);
+    var wordCount =  862 ;
+    var link = "/post/2022/10/sony-wh-1000xm5/";
+    var title = "Sony WH-1000XM5 使用一週心得";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2022-09-18";
+    var value = dataMap.get(key);
+    var wordCount =  740 ;
+    var link = "/post/2022/09/imtranslator/";
+    var title = "在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2022-09-12";
+    var value = dataMap.get(key);
+    var wordCount =  6835 ;
+    var link = "/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/";
+    var title = "使用 Azure Functions + Line Notify 來定時提醒公車到站時間";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2022-09-03";
+    var value = dataMap.get(key);
+    var wordCount =  2341 ;
+    var link = "/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/";
+    var title = "使用 Powershell + 工作排程器 + Line Notify 來定時提醒公車到站時間";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2022-08-27";
+    var value = dataMap.get(key);
+    var wordCount =  1381 ;
+    var link = "/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/";
+    var title = "菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2022-08-20";
+    var value = dataMap.get(key);
+    var wordCount =  546 ;
+    var link = "/post/2022/08/devtoys/";
+    var title = "DevToys —— 開發人員的瑞士刀工具箱";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2022-08-13";
+    var value = dataMap.get(key);
+    var wordCount =  7561 ;
+    var link = "/post/2022/08/azure-service-bus/";
+    var title = "使用 Azure Service Bus 來建立簡單的訊息佇列（Message Queue）吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2022-08-07";
+    var value = dataMap.get(key);
+    var wordCount =  746 ;
+    var link = "/post/2022/08/snispate/";
+    var title = "Snispate —— 方便的截圖小幫手，放下剪取工具和小畫家吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2022-06-18";
+    var value = dataMap.get(key);
+    var wordCount =  752 ;
+    var link = "/post/2022/06/wox-and-everything/";
+    var title = "使用 Wox \u0026 Everything 在 Windows 上得到良好的搜尋體驗";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2022-06-05";
+    var value = dataMap.get(key);
+    var wordCount =  3588 ;
+    var link = "/post/2022/06/angle-sharp/";
+    var title = "C#: 使用 AngleSharp 爬蟲工具來抓取網頁內容吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2022-06-03";
+    var value = dataMap.get(key);
+    var wordCount =  1040 ;
+    var link = "/post/2022/06/elder-ring-clear/";
+    var title = "艾爾登法環　白金！";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2022-03-13";
+    var value = dataMap.get(key);
+    var wordCount =  6828 ;
+    var link = "/post/2022/03/newbie-7-fluent-validation/";
+    var title = "菜雞新訓記 (7): 使用 Fluent Validation 來驗證參數吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2022-03-13";
+    var value = dataMap.get(key);
+    var wordCount =  689 ;
+    var link = "/post/2022/03/omni/";
+    var title = "Omni —— 實用的 Chrome 分頁書籤搜尋欄";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2021-12-05";
+    var value = dataMap.get(key);
+    var wordCount =  1228 ;
+    var link = "/post/2021/12/automapper-convert-using/";
+    var title = "AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2021-11-28";
+    var value = dataMap.get(key);
+    var wordCount =  10844 ;
+    var link = "/post/2021/11/newbie-6-dependency-injection/";
+    var title = "菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2021-10-16";
+    var value = dataMap.get(key);
+    var wordCount =  1185 ;
+    var link = "/post/2021/10/swagger-enable-authorize/";
+    var title = "在 Swagger UI 加上驗證按鈕，讓 Request Header 傳遞 Authorize Token";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2021-10-04";
+    var value = dataMap.get(key);
+    var wordCount =  2979 ;
+    var link = "/post/2021/10/csharp-datatime-tostring-cultureinfo/";
+    var title = "菜雞抓蟲: DateTime.ToString() 之我們不一樣 \u0026 CultureInfo 文化特性小筆記";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2021-10-03";
+    var value = dataMap.get(key);
+    var wordCount =  15155 ;
+    var link = "/post/2021/10/newbie-5-3-layer-architecture/";
+    var title = "菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2021-08-19";
+    var value = dataMap.get(key);
+    var wordCount =  1927 ;
+    var link = "/post/2021/08/set-default-value-with-model-when-fromuri/";
+    var title = "菜雞抓蟲: 使用 FromUri 的複雜型別在有傳遞 QueryString 的情況下會先建立再賦值";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2021-06-26";
+    var value = dataMap.get(key);
+    var wordCount =  1143 ;
+    var link = "/post/2021/06/zero-width-space/";
+    var title = "菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2021-06-13";
+    var value = dataMap.get(key);
+    var wordCount =  4141 ;
+    var link = "/post/2021/06/benchmarkdotnet/";
+    var title = "C#: BenchmarkDotnet —— 效能測試好簡單";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2021-05-16";
+    var value = dataMap.get(key);
+    var wordCount =  5245 ;
+    var link = "/post/2021/05/newbie-4-swagger/";
+    var title = "菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2021-05-09";
+    var value = dataMap.get(key);
+    var wordCount =  10133 ;
+    var link = "/post/2021/05/newbie-3-dapper/";
+    var title = "菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2021-05-02";
+    var value = dataMap.get(key);
+    var wordCount =  13983 ;
+    var link = "/post/2021/05/newbie-2-webapi/";
+    var title = "菜雞新訓記 (2): 認識 Api \u0026 使用 .net Core 來建立簡單的 Web Api 服務吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2021-05-02";
+    var value = dataMap.get(key);
+    var wordCount =  383 ;
+    var link = "/post/2021/05/visual-studio-split-window-in-one-file/";
+    var title = "Visual Studio: 在同一個檔案分割視窗";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2021-04-05";
+    var value = dataMap.get(key);
+    var wordCount =  18684 ;
+    var link = "/post/2021/04/newbie-1-hello-git/";
+    var title = "菜雞新訓記 (1): 使用 Git 來進行版本控制吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2021-04-05";
+    var value = dataMap.get(key);
+    var wordCount =  454 ;
+    var link = "/post/2021/04/newbie-0-menu/";
+    var title = "菜雞新訓記 (0): 前言";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2021-03-13";
+    var value = dataMap.get(key);
+    var wordCount =  96 ;
+    var link = "/post/2021/03/sekiro-darksouls3-clear/";
+    var title = "隻狼、黑暗靈魂３　白金！";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2021-03-13";
+    var value = dataMap.get(key);
+    var wordCount =  489 ;
+    var link = "/post/2021/03/visual-studio-bookmark/";
+    var title = "Visual Studio: 書籤 (bookmarks)";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2021-01-01";
+    var value = dataMap.get(key);
+    var wordCount =  3588 ;
+    var link = "/post/2021/01/oo-ex1-end2020/";
+    var title = "菜雞與物件導向 (Ex1): 小結";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-12-20";
+    var value = dataMap.get(key);
+    var wordCount =  2057 ;
+    var link = "/post/2020/12/oo-15-least-knowledge-principle/";
+    var title = "菜雞與物件導向 (15): 最少知識原則";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-12-13";
+    var value = dataMap.get(key);
+    var wordCount =  3871 ;
+    var link = "/post/2020/12/oo-14-dependency-inversion-principle/";
+    var title = "菜雞與物件導向 (14): 依賴反轉原則";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-12-06";
+    var value = dataMap.get(key);
+    var wordCount =  495 ;
+    var link = "/post/2020/12/7_taskbar/";
+    var title = "7+ Taskbar Tweaker —— 簡單方便的 Windows 工作列調整工具";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-11-29";
+    var value = dataMap.get(key);
+    var wordCount =  3426 ;
+    var link = "/post/2020/11/i-am-doing-well-after-leaving-the-company/";
+    var title = "讀《離開公司，我過得還不錯》";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-11-22";
+    var value = dataMap.get(key);
+    var wordCount =  387 ;
+    var link = "/post/2020/11/bugs-install-dotnet-core-on-amazon-ami-requires-openssl/";
+    var title = "菜雞抓蟲: 在 Amazon Linux AMI 安裝 .Net Core 時卡在 Requires: openssl-libs";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-11-15";
+    var value = dataMap.get(key);
+    var wordCount =  2887 ;
+    var link = "/post/2020/11/oo-13-interface-segregation-principle/";
+    var title = "菜雞與物件導向 (13): 介面隔離原則";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-11-08";
+    var value = dataMap.get(key);
+    var wordCount =  994 ;
+    var link = "/post/2020/11/dark-reader/";
+    var title = "Dark Reader —— 暗黑模式愛好者的 Chrome 必備套件";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-11-01";
+    var value = dataMap.get(key);
+    var wordCount =  2700 ;
+    var link = "/post/2020/11/oo-12-liskov-substitution-principle/";
+    var title = "菜雞與物件導向 (12): 里氏替換原則";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-10-25";
+    var value = dataMap.get(key);
+    var wordCount =  2911 ;
+    var link = "/post/2020/10/oo-11-open-closed-principle/";
+    var title = "菜雞與物件導向 (11): 開放封閉原則";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-10-18";
+    var value = dataMap.get(key);
+    var wordCount =  2710 ;
+    var link = "/post/2020/10/markdown/";
+    var title = "菜雞的 Markdown 筆記";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-10-11";
+    var value = dataMap.get(key);
+    var wordCount =  727 ;
+    var link = "/post/2020/10/external-screen/";
+    var title = "聊一下外接螢幕";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-10-02";
+    var value = dataMap.get(key);
+    var wordCount =  3720 ;
+    var link = "/post/2020/10/oo-10-single-responsibility-principle/";
+    var title = "菜雞與物件導向 (10): 單一職責原則";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-09-27";
+    var value = dataMap.get(key);
+    var wordCount =  773 ;
+    var link = "/post/2020/09/csharp-trulp/";
+    var title = "C#: 元組 (Tuple)";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-09-20";
+    var value = dataMap.get(key);
+    var wordCount =  2327 ;
+    var link = "/post/2020/09/oo-9-solid/";
+    var title = "菜雞與物件導向 (9): SOLID";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-09-13";
+    var value = dataMap.get(key);
+    var wordCount =  2868 ;
+    var link = "/post/2020/09/oo-8-cohesion-and-coupling/";
+    var title = "菜雞與物件導向 (8): 內聚、耦合";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-09-06";
+    var value = dataMap.get(key);
+    var wordCount =  3934 ;
+    var link = "/post/2020/09/start-with-why/";
+    var title = "讀《先問為什麼》";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-08-30";
+    var value = dataMap.get(key);
+    var wordCount =  1178 ;
+    var link = "/post/2020/08/csharp-timezone/";
+    var title = "C#: 時區轉換、民國西元、國曆農曆、中文月份週期";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-08-15";
+    var value = dataMap.get(key);
+    var wordCount =  2962 ;
+    var link = "/post/2020/08/powershell-beauty/";
+    var title = "Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-08-09";
+    var value = dataMap.get(key);
+    var wordCount =  749 ;
+    var link = "/post/2020/08/csharp-string-interpolation/";
+    var title = "C#: 字串插值 (String interpolation) 的格式化";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-08-02";
+    var value = dataMap.get(key);
+    var wordCount =  274 ;
+    var link = "/post/2020/08/system-environment/";
+    var title = "C#: 使用 System.Environment 取得環境資訊、特殊資料夾路徑";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-07-25";
+    var value = dataMap.get(key);
+    var wordCount =  3818 ;
+    var link = "/post/2020/07/code-style/";
+    var title = "C#: 程式碼風格備忘";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-07-18";
+    var value = dataMap.get(key);
+    var wordCount =  2438 ;
+    var link = "/post/2020/07/pocket/";
+    var title = "Pocket —— 稍後閱讀，想看再看";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-07-12";
+    var value = dataMap.get(key);
+    var wordCount =  3311 ;
+    var link = "/post/2020/07/oo-7-interface/";
+    var title = "菜雞與物件導向 (7): 介面";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-07-12";
+    var value = dataMap.get(key);
+    var wordCount =  2048 ;
+    var link = "/post/2020/07/oo-6-abstract-override/";
+    var title = "菜雞與物件導向 (6): 抽象、覆寫";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-07-12";
+    var value = dataMap.get(key);
+    var wordCount =  2550 ;
+    var link = "/post/2020/07/oo-5-polymorphism/";
+    var title = "菜雞與物件導向 (5): 多型";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-07-12";
+    var value = dataMap.get(key);
+    var wordCount =  2690 ;
+    var link = "/post/2020/07/oo-4-inheritance/";
+    var title = "菜雞與物件導向 (4): 繼承";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-07-12";
+    var value = dataMap.get(key);
+    var wordCount =  3696 ;
+    var link = "/post/2020/07/oo-3-encapsulation/";
+    var title = "菜雞與物件導向 (3): 封裝";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-07-12";
+    var value = dataMap.get(key);
+    var wordCount =  2296 ;
+    var link = "/post/2020/07/oo-2-constructor-overload/";
+    var title = "菜雞與物件導向 (2): 建構式、多載";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-07-12";
+    var value = dataMap.get(key);
+    var wordCount =  2728 ;
+    var link = "/post/2020/07/oo-1-class-object/";
+    var title = "菜雞與物件導向 (1): 類別、物件";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-07-12";
+    var value = dataMap.get(key);
+    var wordCount =  954 ;
+    var link = "/post/2020/07/oo-0-object-oriented/";
+    var title = "菜雞與物件導向 (0): 前言";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-07-05";
+    var value = dataMap.get(key);
+    var wordCount =  4265 ;
+    var link = "/post/2020/07/automapper/";
+    var title = "AutoMapper —— 類別轉換超省力";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-06-28";
+    var value = dataMap.get(key);
+    var wordCount =  1577 ;
+    var link = "/post/2020/06/electron-net/";
+    var title = "Electron.net —— 把網頁包成桌面應用吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-06-20";
+    var value = dataMap.get(key);
+    var wordCount =  4047 ;
+    var link = "/post/2020/06/darkhorse/";
+    var title = "讀《黑馬思維》";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-06-14";
+    var value = dataMap.get(key);
+    var wordCount =  2865 ;
+    var link = "/post/2020/06/bit-flags-and-enum/";
+    var title = "C#: 位元旗標 (Bit flag) 與列舉";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-06-07";
+    var value = dataMap.get(key);
+    var wordCount =  1477 ;
+    var link = "/post/2020/06/wakatime/";
+    var title = "WakaTime —— 我 Coding 了多久？";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-05-31";
+    var value = dataMap.get(key);
+    var wordCount =  1652 ;
+    var link = "/post/2020/05/bandon-5-heroku-debug/";
+    var title = "我要訂便當 (5): Heroku 填坑小記";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-05-17";
+    var value = dataMap.get(key);
+    var wordCount =  446 ;
+    var link = "/post/2020/05/jsonview/";
+    var title = "Json View —— 用 Chrome 打開 Json 的正確方式";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-05-10";
+    var value = dataMap.get(key);
+    var wordCount =  859 ;
+    var link = "/post/2020/05/carbon/";
+    var title = "Carbon —— 把程式碼片段截成有質感的圖片吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-05-03";
+    var value = dataMap.get(key);
+    var wordCount =  3201 ;
+    var link = "/post/2020/05/bandon-4-heroku/";
+    var title = "我要訂便當 (4): 將 Python 腳本部署上 Heroku";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-04-26";
+    var value = dataMap.get(key);
+    var wordCount =  390 ;
+    var link = "/post/2020/04/css-variables/";
+    var title = "CSS: 變數 (Variables)";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-04-19";
+    var value = dataMap.get(key);
+    var wordCount =  3093 ;
+    var link = "/post/2020/04/feedly/";
+    var title = "Feedly —— 用 RSS 訂閱來主動篩選資訊吧";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-04-12";
+    var value = dataMap.get(key);
+    var wordCount =  2597 ;
+    var link = "/post/2020/04/epplus/";
+    var title = "EPPlus —— 輕鬆處理 Excel";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-04-05";
+    var value = dataMap.get(key);
+    var wordCount =  1637 ;
+    var link = "/post/2020/04/bandon-3-line-notify/";
+    var title = "我要訂便當 (3): 用 Python + Line Notify 傳送通知";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-03-28";
+    var value = dataMap.get(key);
+    var wordCount =  4988 ;
+    var link = "/post/2020/03/visualstudio/";
+    var title = "Visual studio 環境設定 —— 字型、套件、快捷鍵";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-03-22";
+    var value = dataMap.get(key);
+    var wordCount =  2151 ;
+    var link = "/post/2020/03/sikulix/";
+    var title = "SikuliX —— 針對圖形介面寫自動化腳本的小幫手";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-03-15";
+    var value = dataMap.get(key);
+    var wordCount =  2980 ;
+    var link = "/post/2020/03/bandon-2-sqlite/";
+    var title = "我要訂便當 (2): 用 Python + Sqlite 儲存訂單";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2020-03-08";
+    var value = dataMap.get(key);
+    var wordCount =  2987 ;
+    var link = "/post/2020/03/bandon-1-selenium/";
+    var title = "我要訂便當 (1): 用 Python + Selenium 控制瀏覽器取得訂單";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2019-12-09";
+    var value = dataMap.get(key);
+    var wordCount =  2492 ;
+    var link = "/post/2019/12/ptt-crawler-and-listener/";
+    var title = "Python: 用爬蟲在 PTT 上監聽關鍵字並寄通知信";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2019-12-09";
+    var value = dataMap.get(key);
+    var wordCount =  5582 ;
+    var link = "/post/2019/12/android-fetch-mysql-using-xampp/";
+    var title = "Android: MySQL 連線筆記（使用XAMPP）";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2019-12-09";
+    var value = dataMap.get(key);
+    var wordCount =  6150 ;
+    var link = "/post/2019/12/aspnet-connect-db/";
+    var title = "Asp.net MVC: 連線資料庫、簡單實作 CRUD";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }
+    var key = "2019-12-09";
+    var value = dataMap.get(key);
+    var wordCount =  851 ;
+    var link = "/post/2019/12/aspnet-connect-db-ef/";
+    var title = "Asp.net MVC: Entity Framework 連線資料庫";
+    
+    
+    if (value == null) {
+      dataMap.set(key, [{wordCount, link, title}]);
+    } else {
+      value.push({wordCount, link, title});
+    }var data = [];
+  
+  for (const [key, value] of dataMap.entries()) {
+    var sum = 0;
+    for (const v of value) {
+      sum += v.wordCount;
+    }
+    data.push([key, (sum / 1000).toFixed(1)]);
+  }
+  
+  var startDate = new Date();
+  var year_Mill = startDate.setFullYear((startDate.getFullYear() - 1));
+  var startDate = +new Date(year_Mill);
+  var endDate = +new Date();
+
+  var dayTime = 3600 * 24 * 1000;
+  startDate = echarts.format.formatTime('yyyy-MM-dd', startDate);
+  endDate = echarts.format.formatTime('yyyy-MM-dd', endDate);
+
+  
+  function heatmap_width(months){             
+    var startDate = new Date();
+    var mill = startDate.setMonth((startDate.getMonth() - months));
+    var endDate = +new Date();
+    startDate = +new Date(mill);
+
+    endDate = echarts.format.formatTime('yyyy-MM-dd', endDate);
+    startDate = echarts.format.formatTime('yyyy-MM-dd', startDate);
+
+    var showmonth = [];
+    showmonth.push([
+        startDate,
+        endDate
+    ]);
+    return showmonth
+  };
+
+  function getRangeArr() {
+    const windowWidth = window.innerWidth;
+    if (windowWidth >= 600) {
+      return heatmap_width(12);
+    } else if (windowWidth >= 400) {
+      return heatmap_width(9);
+    } else {
+      return heatmap_width(6);
+    }
+  }
+
+  option = {
+    title: {
+        top: 0,
+        left: 'center',
+        text: '寫作熱力圖',
+        textStyle: {
+            color: '#BBBBBB'
+        }
+    },
+    tooltip: {
+      hideDelay: 1000,
+      enterable: true,
+      position: 'top',
+      backgroundColor: '#3d3e40',
+      borderColor: '#888888',
+      itemStyle: {
+        color: '#3d3e40'
+      },
+      textStyle: {
+        color: '#BBBBBB'
+      },
+      formatter: function (p) {
+        const date = p.data[0];
+        const posts = dataMap.get(date);
+        var content = `${date}`;
+        for (const [i, post] of posts.entries()) {
+            content += "<br>";
+            var link = post.link;
+            var title = post.title;
+            var wordCount = (post.wordCount / 1000).toFixed(1);
+            content += `<a href="${link}" target="_blank">${title} (${wordCount}k words)</a>`
+        }
+        return content;
+      }
+    },
+    visualMap: {
+        min: 0,
+        max: 10,
+        type: 'piecewise',
+        orient: 'horizontal',
+        left: 'center',
+        top: 30,
+        inRange: {   
+          
+          color: ['#7aa874aa', '#7AA874' ] 
+        },
+        splitNumber: 4,
+        text: ['k', ''],
+        showLabel: true,
+        itemGap: 20,
+        textStyle: {
+          color: '#BBBBBB'
+        }
+    },
+    calendar: {
+        top: 80,
+        left: 20,
+        right: 4,
+        cellSize: ['auto', 12],
+        range: getRangeArr(),
+        itemStyle: {
+            color: '#3d3e40',
+            borderWidth: 2.5,
+            borderColor: '#21252b',
+        },
+        yearLabel: { 
+            show: false 
+        },
+        monthLabel: { 
+            color: '#BBBBBB',
+            nameMap: 'EN'
+        },
+        dayLabel: { 
+            show: false 
+        },
+        
+        splitLine: {
+          lineStyle: {
+            color: 'rgba(0, 0, 0, 0.0)',
+            
+            
+            
+            
+          }
+        }
+    },
+    series: {
+        type: 'heatmap',
+        coordinateSystem: 'calendar',
+        data: data,
+        itemStyle: {
+            color: '#7AA874'
+        }
+    }
+  };
+  myChart.setOption(option);
+  myChart.on('click', function(params) {
+    if (params.componentType === 'series') {
+      
+      const post = dataMap.get(params.data[0])[0];
+      const link = window.location.origin + post.link;
+      window.open(link, '_blank').focus();
+    }
+});
+</script>
+                        <hr/>
+                        <p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2021%2f05%2fnewbie-2-webapi%2f" width="100%" frameborder=0></iframe>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+    
+    
+        <section class="widget">
+            <h3 class="widget-title">文章目錄</h3>
+            <ul class="widget-list">
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言基本觀念">前言、基本觀念</a>
+      <ul>
+        <li><a href="#什麼是-api">什麼是 API</a></li>
+        <li><a href="#什麼是-restful-api">什麼是 Restful API</a></li>
+        <li><a href="#什麼是-http-request-和-response">什麼是 HTTP Request 和 Response</a></li>
+        <li><a href="#什麼是-http-status-code">什麼是 HTTP Status Code</a></li>
+        <li><a href="#什麼是-stateless">什麼是 Stateless</a></li>
+      </ul>
+    </li>
+    <li><a href="#正式開工">正式開工</a>
+      <ul>
+        <li><a href="#新建-net-core-web-api-專案">新建 .net Core Web API 專案</a></li>
+        <li><a href="#動手實作-crud">動手實作 CRUD</a></li>
+      </ul>
+    </li>
+    <li><a href="#小結">小結</a></li>
+    <li><a href="#本系列文章">本系列文章</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+            </ul>
+        </section>
+    
+    
+    <section class="widget">
+        <h3 class="widget-title">系列文</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E6%88%91%E8%A6%81%E8%A8%82%E4%BE%BF%E7%95%B6/">我要訂便當 (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">轉貼文</h3>
+<ul class="widget-list">    
+    
+    <li>
+        <a href="https://igouist.github.io/repost/">每天推薦一篇文章 (101)</a>
+    </li>
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/post/2024/11/2024-busan-travel/" title="菜雞出門玩：2024 韓國釜山">菜雞出門玩：2024 韓國釜山</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2024/09/vscode-live-share/" title="VSCode: 使用 LiveShare 來即時線上協作吧">VSCode: 使用 LiveShare 來即時線上協作吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/" title="使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2">使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2024/08/dotnet-feature-flag-and-feature-management/" title=".Net: 使用 FeatureManagement 套件來實作功能切換（Feature Toggle）吧">.Net: 使用 FeatureManagement 套件來實作功能切換（Feature Toggle）吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2024/08/dotnet-ioptions/" title=".Net: 使用 IOptions 取得 appsettings.json 的設定值吧">.Net: 使用 IOptions 取得 appsettings.json 的設定值吧</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2024/08/nine-sols/" title="九日　白金！">九日　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2024/04/fate-samurai-remnant/" title="Fate/Samurai Remnant　白金！">Fate/Samurai Remnant　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2024/01/lottery-is-goodness/" title="我買彩券是為了做一個善良的人">我買彩券是為了做一個善良的人</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/04/wolong/" title="臥龍：蒼天殞落　白金！">臥龍：蒼天殞落　白金！</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/post/2023/01/banner-2-midjourney-and-canva/" title="使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗">使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/azure/">azure (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/bug/">bug (4)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (31)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/life/">life (10)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (17)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/powershell/">powershell (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (4)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (23)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/ai-tools/">ai-tools</a>
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/anglesharp/">anglesharp</a>
+    
+    <a href="https://igouist.github.io/tags/api/">api</a>
+    
+    <a href="https://igouist.github.io/tags/appsettings/">appsettings</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/azure/">azure</a>
+    
+    <a href="https://igouist.github.io/tags/azure-functions/">azure-functions</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/benchmarkdotnet/">benchmarkdotnet</a>
+    
+    <a href="https://igouist.github.io/tags/bug/">bug</a>
+    
+    <a href="https://igouist.github.io/tags/chrome/">chrome</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/dapper/">dapper</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/game/">game</a>
+    
+    <a href="https://igouist.github.io/tags/git/">git</a>
+    
+    <a href="https://igouist.github.io/tags/headphone/">headphone</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/life/">life</a>
+    
+    <a href="https://igouist.github.io/tags/line-notify/">line-notify</a>
+    
+    <a href="https://igouist.github.io/tags/linux/">linux</a>
+    
+    <a href="https://igouist.github.io/tags/markdown/">markdown</a>
+    
+    <a href="https://igouist.github.io/tags/midjourney/">midjourney</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/queue/">queue</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/rrs/">rrs</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/service-bus/">service-bus</a>
+    
+    <a href="https://igouist.github.io/tags/soft-skills/">soft-skills</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/swagger/">swagger</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/travel/">travel</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/vscode/">vscode</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/windows/">windows</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友鏈</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://wellss12.github.io/" title="Wells">Wells</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://www.facebook.com/arthurc.study" title="arthurc">亞瑟的學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://kevintsengtw.blogspot.com/" title="mrkt">mrkt 的程式學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://raychiutw.github.io/" title="ray">Ray&#39;s Notes</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://andrewliang25.github.io/" title="Andrew">Null Playground</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+    <h3 class="widget-title">統計資訊</h3>
+    <ul class="widget-list">
+        <li>文章總數: 97</li>
+        
+        <li>瀏覽次數: <span id="busuanzi_value_site_pv">-</span></li>
+        
+        <li>本站訂閱: <a href="https://igouist.github.io/index.xml" target="_blank"><u>RSS</u> (index.xml)</a></li>
+    </ul>
+</section>
+
+    <section class="widget">
+    <h3 class="widget-title">工商服務</h3>
+    <ul class="widget-list">
+
+        
+        <a href="https://www.facebook.com/@DDDCommunity.tw/"><img src="https://i.imgur.com/5ItLxex.png" alt="DDDTaiwan" style="width:245px;height:120px;"></a>
+        <br/>
+
+        
+        <script src="https://skilltree.my/Promotion/d3f87796-6f35-491a-9fec-700c86b3097b?w=245"></script>
+        <br/><br/>
+
+        
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-2119949858103459"
+            data-ad-slot="9031038367"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </ul>
+</section>
+
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019-2024 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
+</body>
+</html>

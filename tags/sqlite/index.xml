@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Sqlite on 伊果的沒人看筆記本</title>
+    <link>https://igouist.github.io/tags/sqlite/</link>
+    <description>Recent content in Sqlite on 伊果的沒人看筆記本</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hant-TW</language>
+    <follow_challenge>
+      <feedId>56200764111934464</feedId>
+      <userId>41821085092905984</userId>
+    </follow_challenge>
+    <lastBuildDate>Sun, 31 May 2020 23:24:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/tags/sqlite/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>我要訂便當 (5): Heroku 填坑小記</title>
+      <link>https://igouist.github.io/post/2020/05/bandon-5-heroku-debug/</link>
+      <pubDate>Sun, 31 May 2020 23:24:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2020/05/bandon-5-heroku-debug/</guid>
+      <description>&lt;p&gt;在上一集的 &lt;a href=&#34;https://igouist.github.io/post/2020/05/bandon-4-heroku/&#34;&gt;將 Python 腳本部署上 Heroku&lt;/a&gt; 中，記錄了將 Python 腳本放上 Heroku 的過程，但仍然沒有將我們的 &lt;a href=&#34;https://igouist.github.io/tags/bandon/&#34;&gt;訂便當小幫手&lt;/a&gt; 給放上去。之前有稍微提到是因為過程中遇到了一些問題，最後決定將這些問題和找到的前人解決文記錄在這一篇，將來再遇到的時候就可以參考。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;SQLite 要改成用 PostgreSQL&lt;/li&gt;
+&lt;li&gt;在 Heroku 上執行 Selenium&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;一sqlite-要改成用-postgresql&#34;&gt;一、SQLite 要改成用 PostgreSQL&lt;/h2&gt;
+&lt;p&gt;在之前的 &lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-2-sqlite/&#34;&gt;我要訂便當(2) —— 用 Python + Sqlite 儲存訂單&lt;/a&gt; 中，為了方便及簡單性，選擇了較輕便的 SQLite 來儲存我們爬回來的訂單資訊。然而，SQLite 將資料儲存在小檔案以便於攜帶的做法，在 Heroku 上將會遭遇像是各個 dyno 的資料不同步等許多問題，因此 Heroku 是不建議使用 SQLite 的。&lt;/p&gt;
+&lt;p&gt;在 Heroku 的開發文件中的 &lt;a href=&#34;https://devcenter.heroku.com/articles/sqlite3&#34;&gt;SQLite on Heroku&lt;/a&gt; 有關於這部分的詳細說明，並直接提到「&lt;em&gt;If you were to use SQLite on Heroku, you would lose your entire database at least once every 24 hours.&lt;/em&gt;」同時，官方也提供了他們的建議：&lt;strong&gt;PostgreSQL&lt;/strong&gt;。相較於輕便但只能同時單一寫入而且還會在 dyno 炸掉的 SQLite，PostgreSQL 的完整性更符合 Heroku 對服務的要求。&lt;/p&gt;
+&lt;p&gt;關於在 Heroku 上使用 PostgreSQL 的做法，這篇 &lt;a href=&#34;https://swf.com.tw/?p=1327&#34;&gt;佈署 Python Flask 網站留言板應用程式到 Heroku + PostgreSQL 資料庫系統&lt;/a&gt; 說明得相當詳細。&lt;/p&gt;
+&lt;p&gt;這邊簡述一下操作過程（當然，還是建議進入上面推薦的網頁直接照圖操作）&lt;/p&gt;
+&lt;p&gt;首先，先進到專案的頁面，選擇 Resources 分頁並往下到 Add-on，擴充套件基本上都從這裡開始安裝，事實上遇到的許多問題都會到這裡用擴充套件解決。在此就先輸入 Postgres 並安裝 Heroku Postgres，並且選擇免費方案。&lt;/p&gt;
+&lt;p&gt;安裝完畢之後，可以點選 Heroku Postgres 進入擴充套件管理的頁面，這邊進去 Setting 就可以進行相關的設定，也能從這邊取得帳號、密碼及資料庫URL。&lt;/p&gt;
+&lt;p&gt;Heroku 部分設定完畢之後，就要回來改我們便當的程式碼。相對於當初 SQLite 時使用的 sqlite3 包，這次要操作 PostgreSQL 則是要使用 python-psycopg2 這個包。&lt;/p&gt;
+&lt;p&gt;相關的操作可以參考 Gitbook.net 的這篇 &lt;a href=&#34;http://tw.gitbook.net/postgresql/2013080998.html&#34;&gt;PostgreSQL 連接 Python&lt;/a&gt;。可以發現整體的操作方式和之前使用 sqlite3 並沒有什麼太大的不同，因此略做修改之後就可以使用囉。&lt;/p&gt;
+&lt;h3 id=&#34;本區段的參考資料&#34;&gt;本區段的參考資料&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://swf.com.tw/?p=1327&#34;&gt;佈署 Python Flask 網站留言板應用程式到 Heroku + PostgreSQL 資料庫系統&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10199016&#34;&gt;[Ting&amp;rsquo;s筆記Day5] 在部署到Heroku之前，將Rails專案從SQLite設定為PostgreSQL - iT邦幫忙&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://tw.gitbook.net/postgresql/2013080998.html&#34;&gt;PostgreSQL 連接 Pytho - Gitbook&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://devcenter.heroku.com/articles/sqlite3&#34;&gt;SQLite on Heroku - Heroku Dev Center&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;二在-heroku-上執行-selenium&#34;&gt;二、在 Heroku 上執行 Selenium&lt;/h2&gt;
+&lt;p&gt;前面的 &lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-1-selenium/&#34;&gt;我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單&lt;/a&gt; 中，能取得訂單內容主要都是依賴於 Selenium 控 chrome 上。然而我們丟上 Heroku 後… 哪來的瀏覽器啊！因此遭遇到了這整個專案最大的存在危機（？）&lt;/p&gt;
+&lt;p&gt;幸好後來有找到這篇 &lt;a href=&#34;https://medium.com/@mikelcbrowne/running-chromedriver-with-python-selenium-on-heroku-acc1566d161c&#34;&gt;Running ChromeDriver with Python Selenium on Heroku&lt;/a&gt;，裡面有說明如何順利在 Heroku 上跑 Selenium，實在是相當感謝，這邊也記錄一下。&lt;/p&gt;
+&lt;p&gt;我們在前面 &lt;a href=&#34;https://igouist.github.io/post/2020/05/bandon-4-heroku/&#34;&gt;我要訂便當(4-1) —— 將 Python 腳本部署上 Heroku&lt;/a&gt; 有提到，Heroku 有建置包這東西來協助建置專案，也提到 Python 是 heroku-buildpack-python。這邊就是建置包去建出 webdriver，因此使用 &lt;code&gt;heroku buildpacks:add&lt;/code&gt; 的指令去加入 &lt;code&gt;heroku-buildpack-chromedriver heroku buildpa&lt;/code&gt; 這個建置包。&lt;/p&gt;
+&lt;p&gt;加入完畢之後，要設定 heroku 的 config 去指定 chrome 和 chrome driver 的路徑&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;heroku config:set GOOGLE_CHROME_BIN=/app/.apt/usr/bin/google_chrome
+heroku config:set CHROMEDRIVER_PATH=/app/.chromedriver/bin/chromedriver
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;最後只要修改程式就可以囉，一樣先指定好路徑&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;GOOGLE_CHROME_PATH &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/app/.apt/usr/bin/google_chrome&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;CHROMEDRIVER_PATH &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/app/.chromedriver/bin/chromedriver&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;並且在設定 selenium 的部份加上一些 chrome 的參數&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;chrome_options&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;add_argument(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;--disable-gpu&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;chrome_options&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;add_argument(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;--no-sandbox&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;chrome_options&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;binary_location &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; GOOGLE_CHROME_PATH
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在初始化 &lt;code&gt;webdriver.Chrome&lt;/code&gt; 一併傳入就可以囉！說起來之前 chrome 被我改壞時，也是靠 -no-sandbox 才開起來的，關於 sandbox ，可以看 Google 的 &lt;a href=&#34;https://www.google.com/googlebooks/chrome/med_26.html&#34;&gt;這篇漫畫&lt;/a&gt;，或是這篇 &lt;a href=&#34;https://www.inside.com.tw/article/14031-google-chrome-browser-10-years-history&#34;&gt;Inside 的簡單介紹&lt;/a&gt;。&lt;/p&gt;
+&lt;h3 id=&#34;本區段的參考資料-1&#34;&gt;本區段的參考資料&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://medium.com/@mikelcbrowne/running-chromedriver-with-python-selenium-on-heroku-acc1566d161c&#34;&gt;Running ChromeDriver with Python Selenium on Heroku - Michael Browne - Medium&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://b0212066.pixnet.net/blog/post/213602412-heroku-%E4%BD%BF%E7%94%A8-selenium-%E7%9A%84-webdriver&#34;&gt;Heroku 上使用 webdriver 爬蟲抓資料 - Kevin的部落格&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://stackoverflow.com/questions/41059144/running-chromedriver-with-python-selenium-on-heroku&#34;&gt;Running ChromeDriver with Python selenium on Heroku - Stackoverflow&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;結語&#34;&gt;結語&lt;/h2&gt;
+&lt;p&gt;訂便當系列到這邊也告一段落了。事實上到了中後期，為了配合公司環境已經把爬蟲放在公司跑，並改成拿去接公司指定的通訊軟體，Line notify 這邊就比較少繼續碰了。中間遇到的一些問題也是有空加減解的程度，因此暫時沒有繼續更新訂便當的打算了。&lt;/p&gt;
+&lt;p&gt;但 Heroku 實在是挺方便，之後應該還是會嘗試把其他東西丟上來跑看看，也因此還是覺得要把這些小問題記錄下來，之後如果遇到別的相關問題，也比較方便集中起來，因此就有了這兩篇的紀錄。&lt;/p&gt;
+&lt;p&gt;那麼本週就到這裡，之後還會找新的坑來跳，畢竟菜雞就是不斷地踩坑嘛！感謝收看～&lt;/p&gt;
+&lt;h2 id=&#34;我要訂便當系列&#34;&gt;我要訂便當系列&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-1-selenium/&#34;&gt;我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-2-sqlite/&#34;&gt;我要訂便當(2) —— 用 Python + Sqlite 儲存訂單&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/04/bandon-3-line-notify/&#34;&gt;我要訂便當(3) —— 用 Python + Line Notify 傳送通知&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/05/bandon-4-heroku/&#34;&gt;我要訂便當(4) —— 將 Python 腳本部署上 Heroku&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/05/bandon-5-heroku-debug/&#34;&gt;我要訂便當(5) —— Heroku 填坑小記&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>我要訂便當 (2): 用 Python &#43; Sqlite 儲存訂單</title>
+      <link>https://igouist.github.io/post/2020/03/bandon-2-sqlite/</link>
+      <pubDate>Sun, 15 Mar 2020 20:49:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2020/03/bandon-2-sqlite/</guid>
+      <description>&lt;p&gt;前情回顧：上一集在 &lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-1-selenium/&#34;&gt;我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單&lt;/a&gt; 中，我們藉由自動化套件 Selenium 控制 Chrome 成功從訂便當網站裡取得訂單資訊了。但只能夠取得現在的訂單，和原本有新訂單的時候才通知的目標仍然有點差距，那麼，如何判斷有沒有新訂單呢？只要和上一次讀取時的訂單相比就能知道了。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;目標：將訂單儲存起來，判斷有沒有新訂單。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;這一篇主要的做法主要參考自 &lt;a href=&#34;https://www.youtube.com/watch?v=pI3FDACJFAs&#34;&gt;大數軟體 - 如何透過 Line 發送最新一集的漫畫&lt;/a&gt; 中，關於如何判斷是否有最新一集漫畫的部分。這系列的影片步驟明瞭，說明直接，同時標題也很對我胃口（我就喜歡把工具拿來生活周遭玩的感覺），因此這邊也推薦一下，有興趣的可以去看看。&lt;/p&gt;
+&lt;p&gt;回歸正題，這篇的第一部分就是要使用 Sqlite 將抓到的訂單儲存起來。Sqlite 顧名思義就是 SQL + Lite 的感覺，主打小巧輕便。它會將資料儲存在一個檔案中，並且支援精簡的 SQL 指令，可以說是相當方便。&lt;/p&gt;
+&lt;p&gt;在 Python 要對 Sqlite 做操作主要是藉由 sqlite3 這個包，因此在接下來的步驟前，請先安裝這個包。關於 Sqlite3 的基本操作，可以參閱 &lt;a href=&#34;https://www.runoob.com/sqlite/sqlite-python.html&#34;&gt;菜鳥教程的 SQLite - Python&lt;/a&gt; 教學。&lt;/p&gt;
+&lt;p&gt;基本上和一般資料庫的操作邏輯並無太多差異，主要也是以 &lt;code&gt;sqlite3.connect&lt;/code&gt; 先連線到資料庫中，再使用如 &lt;code&gt;connection.execute&lt;/code&gt; 等的執行語法來進行操作。同時連線之後也可以使用其他資料框架提供的儲存和讀取等方法來處理，上方的菜鳥教程已有完整的教學流程，因此這邊就不多做說明，以下將會直接寫出操作資料庫動作的函式。&lt;/p&gt;
+&lt;h2 id=&#34;儲存與讀取訂單&#34;&gt;儲存與讀取訂單&lt;/h2&gt;
+&lt;p&gt;由於我們的情境相對簡單，只需要儲存和讀取。因此我們直接建立這兩個方法來操作。且因為我們在上一集讀回來的資料已經轉成 DataFrame，因此可以直接調用相關的方法進行操作。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;saveToDb&lt;/span&gt;(data, dbname, tablename):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39; 將資料表存放到 sqlLite 資料庫 &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;with&lt;/span&gt; lite&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;connect(dbname) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; db:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        data&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_sql(tablename, con &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; db, if_exists &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;replace&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;readFromDb&lt;/span&gt;(dbname, tablename):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39; 從資料庫取出上次資料表 &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;with&lt;/span&gt; lite&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;connect(dbname) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; db:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; pandas&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;read_sql_query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;SELECT * FROM &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;{tablename}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;format(tablename &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; tablename), db)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;delDataInDb&lt;/span&gt;(dbname, tablename):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39; 將指定資料表的資料刪除 &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;with&lt;/span&gt; lite&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;connect(dbname) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; db:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        cursor &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; db&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;cursor()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        cursor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;execute(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;SELECT * FROM &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;{tablename}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;format(tablename&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;tablename))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        db&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;commit()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        cursor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;close()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;另外也要考慮到可能是第一次連接到資料庫，若是指定的資料表不存在可能會報錯，因此加上一個檢查有沒有資料表的方法。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;IsDbTableExist&lt;/span&gt;(dbname, tablename):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39; 確認是否有資料表 &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;with&lt;/span&gt; lite&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;connect(dbname) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; db:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        c &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; db&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;cursor()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        c&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;execute(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;SELECT count(*) FROM sqlite_master WHERE type=&amp;#39;table&amp;#39; AND name=&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;{tablename}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;format(tablename &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; tablename))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; c&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;fetchone()[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; : 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;False&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這些小零件完成之後，就可以把它們加到主要的流程裡。最簡單的順序應該是這樣的&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- 取得網路訂單資訊
+- 和資料庫的訂單資訊比對
+    - 如果有差異，且訂單變多代表有新訂單！ → 後續的通知等動作
+    - 如果沒有差異，或是訂單變少了，代表沒有新訂單。 → 按兵不動
+- 將新的資料存回資料庫
+- 結束
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;按照這個流程加入之前的主程式後，就會變得如下（全程式將附於文末）&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;():
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    url &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;https://dinbendon.net/do/login&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    dbname &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;order.sqlite&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    tablename &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bandon&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    order &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fetch_bandon(url)  &lt;span style=&#34;color:#75715e&#34;&gt;# 連線到便當網取得訂單資訊&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; order &lt;span style=&#34;color:#f92672&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;None&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;or&lt;/span&gt; len(order) &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;目前沒有進行中的訂單&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# 如果資料庫沒資料表（＝第一次執行）先存一次建個環境&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; IsDbTableExist(dbname, tablename) &lt;span style=&#34;color:#f92672&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;False&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;資料庫無過往訂單，即將儲存目前訂單並退出&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        saveToDb(order, dbname, tablename)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        print_order(order)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    oldOrder &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; readFromDb(dbname, tablename)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    orderList &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; list(order[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;目標&amp;#39;&lt;/span&gt;])
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    oldOrderList &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; list(oldOrder[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;目標&amp;#39;&lt;/span&gt;])
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;#print_order(order)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    delDataInDb(dbname, tablename)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    saveToDb(order, dbname, tablename)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# 如果上次訂單是空的&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; oldOrder &lt;span style=&#34;color:#f92672&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;None&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;or&lt;/span&gt; len(oldOrder) &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;資料庫無過往訂單，即將儲存目前訂單並退出&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; orderList &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; oldOrderList &lt;span style=&#34;color:#f92672&#34;&gt;or&lt;/span&gt; len(orderList) &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; len(oldOrderList):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;訂單無變動，程式即將退出&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;偵測到訂單變動！&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# 做點通知的事&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;尚未實作任何通知，程式即將終止…&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print_order(order)
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;完成之後，接著進行測試，首先用顧客帳號登入便當網，確認一下目前的訂單內容&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/R1KEk0P.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著先執行過一次&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/NvyBzsF.png&#34; alt=&#34;&#34;&gt;
+&lt;img src=&#34;https://i.imgur.com/d9CS1eH.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;可以看見有確實抓到訂單部分，並且在 py 檔所在的位置也多出了一個 sqlite 檔案存放我們的資料。&lt;/p&gt;
+&lt;p&gt;那麼接著直接再執行一次，確認是不是會確認資料一致&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/phs8YTv.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著登入便當網，自己發起一個團購試試&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/VIvjywx.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著我們再執行試試能不能告訴我們有差異&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/GpQkhyv.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;可以看見確實有抓到差異了！&lt;/p&gt;
+&lt;p&gt;接著要實作任何通知都相當簡單了，只要將和之前不一樣的部分取出就可以取得新增的訂單，或是可以記錄每個訂單的開始和結束時間做管理，可以說能做的事相當多。&lt;/p&gt;
+&lt;p&gt;屆此已經完成了預定將訂單做儲存和偵測有沒有變動的部分，故這篇就先到這裡打住。原本考慮到這部分相較之下篇幅比較短，是不是該跟下一段落合併成一篇，但考量之後還是作罷。&lt;/p&gt;
+&lt;p&gt;畢竟大多時候也是做給自己往後參考用的，希望能把過程和看過的資料記錄下來，將來需要的時候可以自己抄自己，因此還是決定將不同套件的部份作切割，也是在這時候確定了這系列將會有四篇。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/04/bandon-3-line-notify/&#34;&gt;下一篇&lt;/a&gt; 將處理通知的部分，用到的技巧也在上面稍微提到過囉！那麼就下週再見～&lt;/p&gt;
+&lt;h2 id=&#34;補充怎麼看-sqlite-裡的資料&#34;&gt;補充：怎麼看 Sqlite 裡的資料？&lt;/h2&gt;
+&lt;p&gt;紀錄一下看 Sqlite 檔案裡資料的方法。&lt;/p&gt;
+&lt;p&gt;由於 Sqlite 主打輕便可攜，因此平常的需求大多也是看資料而已。使用 &lt;a href=&#34;https://sqlitebrowser.org/&#34;&gt;DB Browser for SQLite&lt;/a&gt; 就足夠了&lt;/p&gt;
+&lt;p&gt;不過我個人是比較偏好直接從 VS Code 裡就打開看，這時候就需要安裝擴充套件。&lt;/p&gt;
+&lt;p&gt;我是採用 &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=alexcvzz.vscode-sqlite&#34;&gt;Sqlite 這個套件&lt;/a&gt;，該頁面就已經有操作示範了，使用相當簡單。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/qjHRK9z.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;只要先用 Ctrl + Shift + P 叫出命令提示區，輸入 Sqlite 之後，開啟資料庫就可以用簡單的操作來看內容或執行 SQL 指令，這邊強烈推薦。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Ces9nxj.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;我要訂便當系列&#34;&gt;我要訂便當系列&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-1-selenium/&#34;&gt;我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-2-sqlite/&#34;&gt;我要訂便當(2) —— 用 Python + Sqlite 儲存訂單&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/04/bandon-3-line-notify/&#34;&gt;我要訂便當(3) —— 用 Python + Line Notify 傳送通知&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/05/bandon-4-heroku/&#34;&gt;我要訂便當(4) —— 將 Python 腳本部署上 Heroku&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/05/bandon-5-heroku-debug/&#34;&gt;我要訂便當(5) —— Heroku 填坑小記&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.youtube.com/watch?v=pI3FDACJFAs&#34;&gt;大數軟體 - 如何透過 Line 發送最新一集的漫畫&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.runoob.com/sqlite/sqlite-python.html&#34;&gt;菜鳥教程 - SQLite Python&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.aaronlife.com/v1/teaching/android_sqlite.html&#34;&gt;SQLite 資料庫介紹 - Aaron Ho&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10204523&#34;&gt;DAY22 - 搞懂如何導入sqlite - iT邦幫忙&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://yhhuang1966.blogspot.com/2018/04/python-sqlite_28.html&#34;&gt;Python 學習筆記 : 資料庫存取測試 (一) SQLite - 小狐狸事務所&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;附錄目前程式碼&#34;&gt;附錄：目前程式碼&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-Python&#34; data-lang=&#34;Python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; selenium &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; webdriver
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; re
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; time
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; sqlite3 &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; lite
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 自動檢查團購便當網&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;():
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    url &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;https://dinbendon.net/do/login&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    dbname &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;order.sqlite&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    tablename &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bandon&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    order &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fetch_bandon(url)  &lt;span style=&#34;color:#75715e&#34;&gt;# 連線到便當網取得訂單資訊&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; order &lt;span style=&#34;color:#f92672&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;None&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;or&lt;/span&gt; len(order) &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;目前沒有進行中的訂單&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# 如果資料庫沒資料表（＝第一次執行）先存一次建個環境&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; IsDbTableExist(dbname, tablename) &lt;span style=&#34;color:#f92672&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;False&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;資料庫無過往訂單，即將儲存目前訂單並退出&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        saveToDb(order, dbname, tablename)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        print_order(order)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    oldOrder &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; readFromDb(dbname, tablename)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    orderList &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; list(order[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;目標&amp;#39;&lt;/span&gt;])
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    oldOrderList &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; list(oldOrder[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;目標&amp;#39;&lt;/span&gt;])
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;#print_order(order)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    delDataInDb(dbname, tablename)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    saveToDb(order, dbname, tablename)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# 如果上次訂單是空的&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; oldOrder &lt;span style=&#34;color:#f92672&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;None&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;or&lt;/span&gt; len(oldOrder) &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;資料庫無過往訂單，即將儲存目前訂單並退出&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; orderList &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; oldOrderList &lt;span style=&#34;color:#f92672&#34;&gt;or&lt;/span&gt; len(orderList) &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; len(oldOrderList):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;訂單無變動，程式即將退出&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;偵測到訂單變動！&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# 做點通知的事&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;尚未實作任何通知，程式即將終止…&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print_order(order)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;fetch_bandon&lt;/span&gt;(url, username&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;guest&amp;#34;&lt;/span&gt;, password&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;guest&amp;#34;&lt;/span&gt;):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39; 開啟瀏覽器並連線到便當網取得資料 &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    options &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; webdriver&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;ChromeOptions()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;#options.add_argument(&amp;#39;headless&amp;#39;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    driver &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; webdriver&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Chrome(options&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;options)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    driver&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get(url)  &lt;span style=&#34;color:#75715e&#34;&gt;# 連線到訂便當頁面&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    time&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;sleep(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;) &lt;span style=&#34;color:#75715e&#34;&gt;# 演一下&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# 輸入帳密&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    driver&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;find_element_by_name(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;username&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;send_keys(username)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    driver&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;find_element_by_name(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;password&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;send_keys(password)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# 輸入驗證碼&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ques &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; driver&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;find_elements_by_class_name(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;alignRight&amp;#34;&lt;/span&gt;)[&lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;text
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    temp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; re&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;findall(&lt;span style=&#34;color:#e6db74&#34;&gt;r&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;\d+\.?\d*&amp;#34;&lt;/span&gt;, ques)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    answer &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; int(temp[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;]) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; int(temp[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;])
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    driver&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;find_element_by_name(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;result&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;send_keys(answer)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# 提交表單&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    driver&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;find_element_by_name(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;submit&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;click()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;#time.sleep(1)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;# 取出訂單表格列&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    rows &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; driver&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;find_elements_by_css_selector(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;div#inProgressBox&amp;gt;table&amp;gt;tbody&amp;gt;tr&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; len(rows) &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        driver&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;close()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; list()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    bandons &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [list(map(getText, row&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;find_elements_by_css_selector(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;td&amp;gt;div&amp;gt;a&amp;gt;span&amp;#34;&lt;/span&gt;))) &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; row &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; rows]  &lt;span style=&#34;color:#75715e&#34;&gt;# 取出每一列資料的文字&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    driver&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;close()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    tableHeader &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;人數&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;發起人&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;目標&amp;#39;&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    bandons_df &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pandas&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;DataFrame(bandons, columns&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;tableHeader)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; bandons_df
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;print_order&lt;/span&gt;(data):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39;列印訂單資料，看起來整齊一點&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; index, row &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; data&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;iterrows():
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; row &lt;span style=&#34;color:#f92672&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;not&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;None&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;(&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;{hcount:&amp;gt;4s}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;) &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;{orderer}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;: &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;{order:&amp;lt;40s}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;format(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                orderer &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; str(row[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;發起人&amp;#39;&lt;/span&gt;]),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                order &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; str(row[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;目標&amp;#39;&lt;/span&gt;]),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                hcount &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; str(row[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;人數&amp;#39;&lt;/span&gt;])))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;getText&lt;/span&gt;(x):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; x&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;text
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;saveToDb&lt;/span&gt;(data, dbname, tablename):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39; 將資料表存放到 sqlLite 資料庫 &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;with&lt;/span&gt; lite&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;connect(dbname) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; db:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        data&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;to_sql(tablename, con&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;db, if_exists&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;replace&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;readFromDb&lt;/span&gt;(dbname, tablename):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39; 從資料庫取出上次資料表 &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;with&lt;/span&gt; lite&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;connect(dbname) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; db:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; pandas&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;read_sql_query(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;SELECT * FROM &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;{tablename}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;format(tablename&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;tablename), db)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;delDataInDb&lt;/span&gt;(dbname, tablename):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39; 將指定資料表的資料刪除 &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;with&lt;/span&gt; lite&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;connect(dbname) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; db:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        cursor &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; db&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;cursor()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        cursor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;execute(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;SELECT * FROM &lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;{tablename}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;format(tablename&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;tablename))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        db&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;commit()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        cursor&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;close()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;IsDbTableExist&lt;/span&gt;(dbname, tablename):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#39;&amp;#39; 確認是否有資料表 &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;with&lt;/span&gt; lite&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;connect(dbname) &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; db:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        c &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; db&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;cursor()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        c&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;execute(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;SELECT count(*) FROM sqlite_master WHERE type=&amp;#39;table&amp;#39; AND name=&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;{tablename}&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;format(tablename&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;tablename))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; c&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;fetchone()[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;] &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;True&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;False&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; __name__ &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    main()
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

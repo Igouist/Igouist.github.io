@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>PHP on 伊果的沒人看筆記本</title>
+    <link>https://igouist.github.io/tags/php/</link>
+    <description>Recent content in PHP on 伊果的沒人看筆記本</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hant-TW</language>
+    <follow_challenge>
+      <feedId>56200764111934464</feedId>
+      <userId>41821085092905984</userId>
+    </follow_challenge>
+    <lastBuildDate>Mon, 09 Dec 2019 00:09:10 +0800</lastBuildDate><atom:link href="https://igouist.github.io/tags/php/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Android: MySQL 連線筆記（使用XAMPP）</title>
+      <link>https://igouist.github.io/post/2019/12/android-fetch-mysql-using-xampp/</link>
+      <pubDate>Mon, 09 Dec 2019 00:09:10 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2019/12/android-fetch-mysql-using-xampp/</guid>
+      <description>&lt;p&gt;之前做給學弟妹參考的簡單筆記，順手放上來，以後遇到的時候可以回來參考。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;目標：利用 XAMPP 簡單地架設一個伺服器環境，建立資料庫，並且能在 Android 上取得資料庫的資料。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;架設伺服器環境&#34;&gt;架設伺服器環境&lt;/h2&gt;
+&lt;p&gt;在電腦架設伺服器環境的工具有很多種，例如 &lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10190366&#34;&gt;Windows 內建就有的 IIS&lt;/a&gt;（通常拿來搭配 ASP.net）以及微軟的 &lt;a href=&#34;https://snippetinfo.net/media/1869&#34;&gt;WAMP&lt;/a&gt; 等等，或是直接用 &lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10075496&#34;&gt;Node.js&lt;/a&gt; 跑環境兼後端，不勝枚舉。今天要拿來實作的是 &lt;strong&gt;XAMPP&lt;/strong&gt; 這一款。XAMPP 嚴格說起來並不算是一個軟體，而是一個&lt;strong&gt;架站懶人包&lt;/strong&gt;，它的名字是由這些東西組成的：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;X = 跨平台&lt;/li&gt;
+&lt;li&gt;A = Apache：網頁伺服器軟體&lt;/li&gt;
+&lt;li&gt;M = MySQL：資料庫軟體&lt;/li&gt;
+&lt;li&gt;P = PHP：程式語言，可以閱覽 &lt;a href=&#34;http://www.w3school.com.cn/php/&#34;&gt;w3school：PHP&lt;/a&gt; 和 &lt;a href=&#34;http://www.runoob.com/php/php-tutorial.html&#34;&gt;菜鳥教程：PHP&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;P = Perl：程式語言，可以閱覽 &lt;a href=&#34;http://www.runoob.com/perl/perl-tutorial.html&#34;&gt;菜鳥教程：Perl&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;此外還包含了一些信件軟體、伺服器紀錄軟體等等，遇見的時候會再解釋。&lt;/p&gt;
+&lt;p&gt;首先請到 &lt;a href=&#34;https://www.apachefriends.org/zh_tw/index.html&#34;&gt;XAMPP 官方網站&lt;/a&gt;下載最新版本的 XAMPP，下載完畢後開啟安裝。允許安裝之後什麼都還沒做，就會先送你一個警告視窗：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ttMHySF.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;簡單來說提醒你就是因為 UAC（使用者帳戶控制）的關係，請不要安裝到 &lt;code&gt;C:\&lt;/code&gt; 啦、&lt;code&gt;C:\Program Files(x86)&lt;/code&gt; 這些 XAMPP 可能會無法取得權限的地方。按下 OK 之後就可以正式進入安裝程序了。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/PVNIstP.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著就是勾選要安裝的軟體，預設是全選，稍微說明一下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;FileZila FTP Server：檔案傳輸用的，要讓使用者上傳下載檔案就需要這個&lt;/li&gt;
+&lt;li&gt;Mercury Mail Server：電子郵件系統，會需要由伺服器寄信收信的時候使用&lt;/li&gt;
+&lt;li&gt;Tomcat：&lt;del&gt;追老鼠用的&lt;/del&gt; &lt;a href=&#34;http://www.runoob.com/jsp/jsp-tutorial.html&#34;&gt;.jsp 架構&lt;/a&gt;的網頁用的&lt;/li&gt;
+&lt;li&gt;phpMyAdmin：MySQL 的圖形化操作介面，必裝，真的Hen方便&lt;/li&gt;
+&lt;li&gt;Webalizer：紀錄伺服器LOG和分析程式&lt;/li&gt;
+&lt;li&gt;Fake Sendmail：搭配 Mail Server 服用的，虛擬 EMail&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;del&gt;說這麼多但其實我都直接按Next&lt;/del&gt;&lt;/p&gt;
+&lt;p&gt;下一頁會要求選擇安裝路徑，預設是 C:\xampp，不用更改（如果非得要改位置的話，記得前面有警告過要先確認安裝位置資料夾的權限）。之後就是一些免費聲明、看看我們官網之類的，一直下一步就會開始安裝了。安裝完畢後會直接開啟 XAMPP 的主控台。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/PQLHjN1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;選擇完語言進入主控台後，先試著把 Apache 和 MySQL 開起來試試。等下面的訊息視窗跑完，Apache 和 MySQL 顯示綠色後就代表開啟成功了。（紅色的話就代表要去 Google 了）&lt;/p&gt;
+&lt;p&gt;打開瀏覽器，在網址列輸入 Localhost 或 127.0.0.1 或是直接在主控台 Apache 的部分按下 Admin 來看本機預設網頁是否連得上，如果能看見下面這個畫面就代表 XAMPP 有開啟了 80 Port 並註冊防火牆，伺服器軟體有正常運作。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ZLn2hpc.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著檢查 MySQL 有沒有正常運作，我們有下載 phpMyAdmin，所以直接到 &lt;code&gt;http://localhost/phpmyadmin/&lt;/code&gt; 或在主控台 MySQL 的部分按下 Admin 看能不能看見 MySQL 的主控台。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/BEGogla.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;都確定開得起來之後，伺服器環境就架設完畢了，接著要開始進行設定。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;備註：由於 MySQL 和 XAMPP 就是一個綁定的關係，且有簡單安裝使用的特性，因此本篇的資料庫都以 MySQL 做說明。當然在實際應用的時候還有很多不同的資料庫可以選擇，例如&lt;a href=&#34;https://docs.microsoft.com/zh-tw/sql/relational-databases/lesson-1-connecting-to-the-database-engine?view=sql-server-2017&#34;&gt;微軟的 SQL Server&lt;/a&gt;(申請 &lt;a href=&#34;https://imagine.microsoft.com/zh-tw&#34;&gt;microsoft imagine&lt;/a&gt; 可以免費取得)、 Azure 的雲端 SQL Database，甚至是&lt;a href=&#34;https://aws.amazon.com/tw/nosql/&#34;&gt;最近比較潮的 NoSQL&lt;/a&gt;，例如 MongoDB、Cassandra 等等。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;設定伺服器環境&#34;&gt;設定伺服器環境&lt;/h2&gt;
+&lt;h3 id=&#34;一更改預設開啟文件的方式&#34;&gt;（一）更改預設開啟文件的方式&lt;/h3&gt;
+&lt;p&gt;先宣導一下，在這個步驟你&lt;strong&gt;應該&lt;/strong&gt;先去下載一個編譯器，這邊推薦 &lt;a href=&#34;https://notepad-plus-plus.org&#34;&gt;Notepad++ &lt;/a&gt;。當然如果你已經有慣用的編譯器，像是 &lt;a href=&#34;https://code.visualstudio.com&#34;&gt;VS Code&lt;/a&gt;、&lt;a href=&#34;https://atom.io&#34;&gt;Atom&lt;/a&gt; 甚至 &lt;a href=&#34;https://www.vim.org&#34;&gt;Vim&lt;/a&gt; ，都可以！就是拜託&lt;strong&gt;不要用記事本&lt;/strong&gt;直接開，程式碼會全部擠在一起。當然如果你天生神力就當我沒說過。&lt;/p&gt;
+&lt;p&gt;因此第一步就是更改預設的開啟檔案，如下（路徑請選擇你要用的編譯器）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/N8RqnPh.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;選好了之後按 Save 就行。&lt;/p&gt;
+&lt;h3 id=&#34;二設定-mysql-的登入驗證方式&#34;&gt;（二）設定 MySQL 的登入驗證方式&lt;/h3&gt;
+&lt;p&gt;前面測試的時候直接就可以進入資料庫的控制頁面是非常危險的，任何人使用你的電腦都可以自由進出資料庫，過於羞恥，因此我們首先要先更改進入資料庫時的驗證方式。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://i.imgur.com/ykdGwAs.png&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;在 Apache 的 config 裡面找到 phpMyAdmin，會打開設定檔，接著找到以下這段&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/q4zxpaF.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;auth_type 是指連線方式。&lt;strong&gt;預設是 config，我們需要把它改成 cookie&lt;/strong&gt;。它們間的差別在於 config 是將帳號及密碼存在 &lt;code&gt;config.inc.php&lt;/code&gt;，之後自動登入；而 cookie：用資料庫驗證帳號密碼登入，比較安全。更改完記得按存檔，存檔之後回到主控台把 Apache 和 MySQL 都關掉重開，重啟後就可以到 MySQL 的控制頁面。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ONA96MP.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;再度進入 MySQL 的控制頁面後應該就會有要求登入的視窗出現了。預設的帳號是root，密碼是空白。當然建議登入後先點選修改密碼把預設的空白密碼改掉。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/jJh5I9X.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;三建立資料庫與資料表&#34;&gt;（三）建立資料庫與資料表&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;有基礎的 SQL 和資料庫的概念會更好，你可能會需要 &lt;a href=&#34;https://www.1keydata.com/tw/sql/sql.html&#34;&gt;SQL語法教學&lt;/a&gt; 或  &lt;a href=&#34;http://www.sqlzoo.net/&#34;&gt;A Gentle Introduction to SQL&lt;/a&gt; 以及一些關於資料庫用語的知識&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;修改密碼後，我們來練習實際建一個資料庫。點選上方進入資料庫列表&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/WyoqSoU.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著可以看見預設的系統資料庫，我們直接建立一個新的。第一個欄位是輸入資料庫名稱，請只輸入小寫字母和底線，不要有大寫字母。&lt;/p&gt;
+&lt;p&gt;第二個欄位則是資料庫的編碼，我們屬於中文語系，utf8_unicode_ci 和 utf8_general_ci 是最常用的，雖然 utf8_general_ci 對某些語言的支援有一些小問題，但是速度較快。而 utf8_unicode_ci 則比較精確，不過速度會慢一些&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TfCvdU0.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;建立資料庫之後，我們還必須先建立一個資料表。這兩者之間的關係就像是 Excel 檔案和其中的一個分頁一樣。輸入名稱（一樣只用小寫字母）和欄位的數量之後就可以按下執行了。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/w1Yuypd.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著就是資料表詳細設計的部分，最左邊是該欄位的&lt;strong&gt;名稱&lt;/strong&gt;，名稱一樣請不要包含大寫字母，會產生一些錯誤。&lt;/p&gt;
+&lt;p&gt;接著是&lt;strong&gt;資料型別&lt;/strong&gt;（關於SQL 的資料型別部分，可以參見&lt;a href=&#34;https://docs.microsoft.com/zh-tw/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-2017&#34;&gt;微軟技術中心&lt;/a&gt;或&lt;a href=&#34;https://www.tad0616.net/modules/tad_book3/html.php?tbdsn=455&#34;&gt;SQL常用資料類型&lt;/a&gt;）較常用的有 int 整數、float 浮點數、varcher 變動長度字串、date 日期與 time 時間等等。接著需要定義長度。通常名稱、型態、長度會是最重要的。&lt;/p&gt;
+&lt;p&gt;接著可以注意到右邊有個 A_I，是 &lt;strong&gt;Auto Increment&lt;/strong&gt;，通常用於 ID 、表單編號這類資料上面，是指該欄位是由系統自動填寫，每次新增資料的時候自動給值，如此就能讓第一筆是 1、第二筆是 2 這樣子自動 +1，不用人工輸入。預設會由 1 開始，每次增加 1 ，按下 A_I 之後，會確認前綴字元的數量，像我們使用 INT 的場合可以不用填入直接按確認。另一個常用的是&lt;strong&gt;空值&lt;/strong&gt;，如果勾選就代表該欄位可以接受 Null，反之則不可。&lt;/p&gt;
+&lt;p&gt;下部分會要求給資料表&lt;strong&gt;註解&lt;/strong&gt;，以及該&lt;strong&gt;資料表的資料類型&lt;/strong&gt;，沒有填寫的話預設是參照資料庫的編碼，這部分如前所述。最後右下角部分有預覽 SQL 以及儲存的功能。預覽 SQL 可以產生這一頁操作的 SQL 指令。（即使用了圖形化控制台，還是有很多地方可以使用指令進行操作比較方便）&lt;/p&gt;
+&lt;p&gt;完成基本資料之後就可以試著執行，能看到資料表的表格就算是成功建立了&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/O8JDdqu.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;警告：如果在建立之後跳出了 illegal string offset 錯誤，極有可能是資料庫或資料表等名稱使用了大寫字母或特殊字元，導致 MySQL 建立資料庫的 PHP 檔案發生錯誤。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;現在我們已經建立個一個新的資料庫，也建立了新的資料表，現在讓我們更改該資料庫的權限，增加一個能連線到此資料庫的帳戶。請在左側點選剛剛建立的資料庫，並點擊上方工具列的權限。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/OeI1Xwv.png&#34; alt=&#34;&#34;&gt;
+&lt;img src=&#34;https://i.imgur.com/X3bLMTK.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著可以看到能存取該資料庫的帳戶，現在當然只有預設的 root。現在嘗試建立一個新的使用者帳號。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/nwQqRtY.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;輸入帳號和密碼，主機通常是選擇限制本機登入，之後再遠端操作。下部分是權限相關的部分，可以直接全選。確認完之後就可以按下執行，如此就可以新增新的使用者了。&lt;/p&gt;
+&lt;p&gt;最後我們得在剛剛新建立的資料表中，利用上面工具列的 新增 或 SQL 頁面替資料表加入幾筆資料，後續比較方便測試。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;在這一章你必須學會新建資料庫、資料表、使用者以及設定權限。現在你可以花點時間&lt;strong&gt;自由摸索 phpMyAdmin 的操作介面&lt;/strong&gt;。記住，不要把系統資料庫玩壞。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;建立連線用檔案&#34;&gt;建立連線用檔案&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如果你需要了解 PHP 相關語法，可以參閱 &lt;a href=&#34;http://www.w3school.com.cn/php/&#34;&gt;w3school：PHP&lt;/a&gt; 和 &lt;a href=&#34;http://www.runoob.com/php/php-tutorial.html&#34;&gt;菜鳥教程：PHP&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;一般來說，我們會在伺服器上預先寫好一個腳本檔案，主要負責去和資料庫連線、執行我們寫好的 SQL 取得資料並回傳；之後我們像是手機、網頁需要資料的時候，只需要去呼叫這個腳本檔案就行了。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/hiSn00p.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;這樣做可以只執行我們預先準備好的 SQL 語法和語法的限制，提高安全性（你不會希望可以由手機或網頁端等等&lt;a href=&#34;https://www.puritys.me/docs-blog/article-11-SQL-Injection-%E5%B8%B8%E8%A6%8B%E7%9A%84%E9%A7%AD%E5%AE%A2%E6%94%BB%E6%93%8A%E6%96%B9%E5%BC%8F.html&#34;&gt;自由地撰寫或更改SQL語法給資料庫&lt;/a&gt;的，當然你膽子夠大&lt;del&gt;或是專題快來不及了&lt;/del&gt;的話再考慮嘗試從手機端下 SQL 指令給吧)，也可以將同樣的工作腳本重複使用，不同的工作加以區別。總之，我們需要在伺服器端的電腦上先編寫一個腳本檔案來取得資料庫的資料。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;備註：本篇以 PHP 為範例，其他可在伺服器運行的語言如 Asp.net C#、Python 等等也都可以做出回傳資料的網頁接口，應考量選用的資料庫加以選擇。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;XAMPP 的網站資料夾預設在 &lt;code&gt;C:\xampp\htdocs&lt;/code&gt;，我們在此新增一個 PHP 檔案命名為 GetData.php 並開啟。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-php&#34; data-lang=&#34;php&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;?&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;php&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 設定 MySQL 的連線資訊並開啟連線
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 資料庫位置、使用者名稱、使用者密碼、資料庫名稱
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    $link &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;mysqli_connect&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;localhost&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;admin&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;******&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;newdatabase&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    $link &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;set_charset&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;UTF8&amp;#34;&lt;/span&gt;); &lt;span style=&#34;color:#75715e&#34;&gt;// 設定語系避免亂碼
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// SQL 指令
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    $result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; $link &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;query&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;SELECT * FROM `newtable`&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; ($row &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; $result&lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;fetch_assoc&lt;/span&gt;()) &lt;span style=&#34;color:#75715e&#34;&gt;// 當該指令執行有回傳
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        $output[] &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; $row; &lt;span style=&#34;color:#75715e&#34;&gt;// 就逐項將回傳的東西放到陣列中
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 將資料陣列轉成 Json 並顯示在網頁上，並要求不把中文編成 UNICODE
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;json_encode&lt;/span&gt;($output, &lt;span style=&#34;color:#a6e22e&#34;&gt;JSON_UNESCAPED_UNICODE&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    $link &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;close&lt;/span&gt;(); &lt;span style=&#34;color:#75715e&#34;&gt;// 關閉資料庫連線
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TDwalqp.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;完成連線至資料庫的程式後，請實際開啟瀏覽器輸入 localhost/GetData.php 測試看看能不能抓到資料。（如果是一片空白，請先確認資料表是否已經有新增資料，接著確認是否有成功連線）&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;備註：搜尋 MySQL 相關的 PHP 語法時，可能會有 mysql 和 mysqli 兩種不同的方法。然而 mysql 已經在 PHP 7.0 被廢除，因此 GOOGLE 時請不要找太久遠的資料。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/VbC4Sgz.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;成功的話應該能看見網頁輸出了資料表中資料的 JSON，之後我們就是要用 Android 連線到這個網頁並取得資料。此外，若是要搜尋不同資料表的資料或是特定條件的資料，只需要更改 SQL 語法即可。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;備註：關於 JSON 可以參閱 &lt;a href=&#34;http://miniaspreading.github.io/guide-to-json/1-what-is-json.html&#34;&gt;JSON精要讀書紀錄&lt;/a&gt;，另外常用的 SQL 操作還有新增、修改、刪除等，有興趣的同學可以嘗試自己實作。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;警告&lt;/strong&gt;：本篇僅教學如何連線取值，實際應用時請對取得資料的網頁進行&lt;strong&gt;資料驗證或加密&lt;/strong&gt;。你可能需要了解 &lt;a href=&#34;https://blog.toright.com/posts/1203/%E6%B7%BA%E8%AB%87-http-method%EF%BC%9A%E8%A1%A8%E5%96%AE%E4%B8%AD%E7%9A%84-get-%E8%88%87-post-%E6%9C%89%E4%BB%80%E9%BA%BC%E5%B7%AE%E5%88%A5%EF%BC%9F.html&#34;&gt;GET 和 POST 的差異&lt;/a&gt; 、於 PHP 端要求傳入特定的參數進行驗證後才能取得資料等等。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;在-android-連線取得資料&#34;&gt;在 Android 連線取得資料&lt;/h2&gt;
+&lt;p&gt;打開 Android studio，建立新專案，然後簡單開個版面如下就好，目標是按下按鈕之後把資料顯示在 Textview 裡面。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/M5GJLzV.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著我們開啟 MainActivity.java，先宣告按鈕並寫上監聽事件，這次教直接在程式碼內做事件宣告的寫法，請在 onCreate 的部分撰寫以下程式碼，讓 Android 在一開始執行的時候就連接好按鈕事件。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;protected&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;onCreate&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;Bundle savedInstanceState&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;super&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;onCreate&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;savedInstanceState&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    setContentView&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;R&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;layout&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;activity_main&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Button button &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; findViewById&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;R&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;id&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;button&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 宣告按鈕
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 宣告按鈕的監聽器監聽按鈕是否被按下
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 跟上次在 View 設定的方式並不一樣，是在程式碼做設定
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 我只是覺得好像應該也教一下這種寫法
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    button&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;setOnClickListener&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; View&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;OnClickListener&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#a6e22e&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// 按鈕事件
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;onClick&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;View view&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// 按下之後會執行的程式碼，可以直接寫也可以呼叫方法
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著我們要建立一個函式處理連線的部分，由於我們會用到 Apache 的 HTTP 套件，我們得先引用套件包。請先打開 Build.gradle 在 android 的部分加入 &lt;code&gt;useLibrary &#39;org.apache.http.legacy&#39;&lt;/code&gt; 進行引用。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/t895n3N.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;引用完畢之後上面會顯示通知要求你重新同步這個專案，按下 sync now 之後等待它專案同步完畢。接著我們還得要上網的權限才能取得資料，因此要到 AndroidManifest.xml 這地方加上網路權限的許可 &lt;code&gt;&amp;lt;uses-permission android:name=&amp;quot;android.permission.INTERNET&amp;quot; /&amp;gt;&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/pIRps1G.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;引用了工具也取得權限之後，我們就可以回到 Java 程式碼的部分了。這邊先按每一段進行解說，&lt;strong&gt;最後會貼上整頁的程式碼&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;整體程式的思路是這樣的：由於 Android 本身的限制，和網路連線的部分必須要用另一個執行緒，不能干涉到主流程，因此我們需要先宣告一個執行緒。而它執行的事件部分，我們需要先宣告和 HTTP 有關的函式庫和物件，接著利用這些物件連線到我們伺服器上的網頁，最後把網頁上的資料拉回來。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;備註：HTTP 的部分，可以參考 &lt;a href=&#34;http://fiend1120.pixnet.net/blog/post/193711428&#34;&gt;Android HTTP Get 及 Post&lt;/a&gt; &lt;br/&gt;而執行緒的部分，可以參考 &lt;a href=&#34;https://medium.com/@totoroLiu/program-process-thread-%E5%B7%AE%E7%95%B0-4a360c7345e5&#34;&gt;Program/Process/Thread 差異&lt;/a&gt; 以及 &lt;a href=&#34;http://ccckmit.wikidot.com/thread&#34;&gt;Thread 的概念&lt;/a&gt;&lt;br/&gt;和 Android 相關的程式部分可以參考 &lt;a href=&#34;http://andcooker.blogspot.com/2012/09/android-runnable-handler.html&#34;&gt;Android 執行緒 - Runnable 與 Handler&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;2020.04.21 補充：HTTP 的部分可以看 &lt;a href=&#34;https://medium.com/@hulitw/learning-tc-ip-http-via-sending-letter-5d3299203660&#34;&gt;從傳紙條輕鬆學習基本網路概念&lt;/a&gt; 這篇，寫得很不錯又好懂&lt;/p&gt;
+&lt;p&gt;2021.06.02 補充：在之後的 .NET 的系列文補上了 HTTP 和 API 的一些基本知識。有興趣的朋友可以參閱本部落格的這篇 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi&#34;&gt;認識 Api 與建置 Web Api 服務&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;首先是建立一個執行緒的部分：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 建立一個執行緒執行的事件取得網路資料
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// Android 有規定，連線網際網路的動作都不能再主線程做執行
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 畢竟如果使用者連上網路結果等太久整個系統流程就卡死了
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; Runnable mutiThread &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Runnable&lt;span style=&#34;color:#f92672&#34;&gt;(){&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;run&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// 當這個執行緒完全跑完後執行
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;            runOnUiThread&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Runnable&lt;span style=&#34;color:#f92672&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;run&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著在裡面撰寫處理 HTTP 相關的部分：&lt;/p&gt;
+&lt;p&gt;（註：先用圖片說明，程式碼將放於最後）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/gN7AxTX.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;用上面宣告的物件開始進行連線並處理取得的資料：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/LpURZmA.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在執行緒完成的時候放到 textview 裡面：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/JzLk5he.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;最後在程式建立時把執行緒放到按鈕的事件裡面，讓按鈕可以觸發這一套流程&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/qG2NQPN.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;完成的整個程式碼如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;MainActivity&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;extends&lt;/span&gt; AppCompatActivity &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    TextView textView&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 把視圖的元件宣告成全域變數
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    Button button&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    String result&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 儲存資料用的字串
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;protected&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;onCreate&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;Bundle savedInstanceState&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;super&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;onCreate&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;savedInstanceState&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        setContentView&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;R&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;layout&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;activity_main&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#75715e&#34;&gt;// 找到視圖的元件並連接
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        button &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; findViewById&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;R&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;id&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;button&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        textView &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; findViewById&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;R&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;id&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;textView&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// 宣告按鈕的監聽器監聽按鈕是否被按下
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// 跟上次在 View 設定的方式並不一樣
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// 我只是覺得好像應該也教一下這種寫法
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;        button&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;setOnClickListener&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; View&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;OnClickListener&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#a6e22e&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// 按鈕事件
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;onClick&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;View view&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#75715e&#34;&gt;// 按下之後會執行的程式碼
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                &lt;span style=&#34;color:#75715e&#34;&gt;// 宣告執行緒
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                Thread thread &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Thread&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;mutiThread&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                thread&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;start&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;();&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 開始執行
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#75715e&#34;&gt;/* ======================================== */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 建立一個執行緒執行的事件取得網路資料
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// Android 有規定，連線網際網路的動作都不能再主線程做執行
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 畢竟如果使用者連上網路結果等太久整個系統流程就卡死了
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; Runnable mutiThread &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Runnable&lt;span style=&#34;color:#f92672&#34;&gt;(){&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;run&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                URL url &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; URL&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;http://140.127.35.130/GetData.php&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#75715e&#34;&gt;// 開始宣告 HTTP 連線需要的物件，這邊通常都是一綑的
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                HttpURLConnection connection &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;HttpURLConnection&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; url&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;openConnection&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#75715e&#34;&gt;// 建立 Google 比較挺的 HttpURLConnection 物件
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                connection&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;setRequestMethod&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;POST&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#75715e&#34;&gt;// 設定連線方式為 POST
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                connection&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;setDoOutput&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 允許輸出
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                connection&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;setDoInput&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 允許讀入
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                connection&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;setUseCaches&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 不使用快取
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                connection&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;connect&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;();&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 開始連線
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; responseCode &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    connection&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;getResponseCode&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;();&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#75715e&#34;&gt;// 建立取得回應的物件
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;responseCode &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                   HttpURLConnection&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;HTTP_OK&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;){&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#75715e&#34;&gt;// 如果 HTTP 回傳狀態是 OK ，而不是 Error
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                    InputStream inputStream &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        connection&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;getInputStream&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;();&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#75715e&#34;&gt;// 取得輸入串流
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                    BufferedReader bufReader &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; BufferedReader&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; InputStreamReader&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;inputStream&lt;span style=&#34;color:#f92672&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;utf-8&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;),&lt;/span&gt; 8&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#75715e&#34;&gt;// 讀取輸入串流的資料
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                    String box &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 宣告存放用字串
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                    String line &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 宣告讀取用的字串
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                    &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;((&lt;/span&gt;line &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; bufReader&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;readLine&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;())&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        box &lt;span style=&#34;color:#f92672&#34;&gt;+=&lt;/span&gt; line &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;\n&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#75715e&#34;&gt;// 每當讀取出一列，就加到存放字串後面
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                    &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    inputStream&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;close&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;();&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 關閉輸入串流
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                    result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; box&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 把存放用字串放到全域變數
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#75715e&#34;&gt;// 讀取輸入串流並存到字串的部分
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                &lt;span style=&#34;color:#75715e&#34;&gt;// 取得資料後想用不同的格式
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                &lt;span style=&#34;color:#75715e&#34;&gt;// 例如 Json 等等，都是在這一段做處理
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;catch&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;Exception e&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; e&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;toString&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;();&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 如果出事，回傳錯誤訊息
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// 當這個執行緒完全跑完後執行
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;            runOnUiThread&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Runnable&lt;span style=&#34;color:#f92672&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;run&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;()&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    textView&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;setText&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;result&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 更改顯示文字
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;而執行結果會像這樣：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/YpuFWMd.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;現在你可以使用 Android 取得資料庫的資料了，快嘗試應用這個技術做一個 APP 來玩吧！&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;本篇完成後，有興趣或希望&lt;strong&gt;進階&lt;/strong&gt;學習的同學可以嘗試挑戰以下的部分：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;連接 MySQL 的 PHP 部分，製作新增、修改、刪除&lt;/li&gt;
+&lt;li&gt;另外利用 PHP 結合 HTML，製作出能新增刪除資料表內容的網頁&lt;/li&gt;
+&lt;li&gt;Android 向 PHP 取得資料時，在 PHP 端實做資料驗證，令 Android 端必須傳遞一個符合的 token 才能取得資料&lt;/li&gt;
+&lt;li&gt;Android 向 PHP 取得資料時，使資料在 PHP 端進行加密，而在 Android 端進行解密。&lt;/li&gt;
+&lt;li&gt;Android 取得資料後，嘗試使用 json 儲存取得的資料&lt;/li&gt;
+&lt;li&gt;Android 取得資料後，使用 ListView 按照格式顯示每一筆資料（可以依序參考&lt;a href=&#34;http://learnexp.tw/%e3%80%90android%e3%80%91listview-%e6%95%99%e5%ad%b8-%e5%be%9e-4%e5%88%b05/&#34;&gt;這篇&lt;/a&gt;、&lt;a href=&#34;http://huli.logdown.com/posts/280137-android-custom-listview&#34;&gt;這篇&lt;/a&gt;和&lt;a href=&#34;https://codemango.blogspot.com/2017/04/android-studio-listview-filter.html&#34;&gt;這篇&lt;/a&gt;）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
