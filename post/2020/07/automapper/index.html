@@ -219,7 +219,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> result;
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
-<p>(2021/6/9) 補充：</p>
+<p>2021.06.09 補充：</p>
 <p>在我們前面提到的欄位轉換時，要特別注意兩個欄位的型別是否能夠對應上。由於 AutoMapper 會貼心地幫我們進行轉換，但有些時候可能會產生問題，讓我們看看下面這個例子：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Boo</span>
 </span></span><span style="display:flex;"><span>{
@@ -315,7 +315,7 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>可能有些人會有點疑惑：前面還需要 <code>MapperConfiguration</code> 怎麼這次不用了呢？那是因為 <code>AddAutoMapper</code> 的時候就會用反射去取得同組件中的 <code>Profile</code> 來載入，所以這部分就可以不用擔心，只要專心在使用上就好。</p>
 <blockquote>
-<p>(2021/4/23) 補充：</p>
+<p>2021.04.23 補充：</p>
 <p>感謝同事們的討論，這邊也補充給大家參考一下</p>
 <p>當我們直接使用 <code>services.AddAutoMapper(typeof(Startup));</code> 註冊的時候，AutoMapper 會去抓我們 <code>typeof</code> 的型別，並對該型別所在的 Assembly 進行反射找出所有的 <code>Profile</code>。</p>
 <p>但如果你有用到多層的架構、或是不同的組件內都有 <code>Profile</code> 需要註冊，又或者只是想要逐個 <code>Profile</code> 進行註冊，方便進行控管的話，可以考慮使用 <strong><code>AddProfile</code></strong> 或 <strong><code>AddProfiles</code></strong> 的方式來進行註冊，例如：</p>
@@ -327,7 +327,7 @@
 </span></span></code></pre></div><p>這樣的可讀性更好，也能讓維護的人迅速掌握當前的 Profile，有需要的朋友可以嘗試看看。</p>
 </blockquote>
 <blockquote>
-<p>(2021/8/27) 補充：</p>
+<p>2021.08.27 補充：</p>
 <p>感謝 <a href="https://raychiutw.github.io/">Ray</a> 大大提供的方法，這邊也補充給大家參考一下</p>
 <p>我們前面有提到 <code>AddAutoMapper</code> 會對該型別所在的 Assembly 進行反射找出所有的 <code>Profile</code>，那麼我們也可以轉換一下思路：只要把全部的組件都丟到 <code>AddAutoMapper</code> 裡就好了！這種時候我們就可以利用反射來達到我們的目的：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

@@ -296,7 +296,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
-&lt;p&gt;(2021/6/9) 補充：&lt;/p&gt;
+&lt;p&gt;2021.06.09 補充：&lt;/p&gt;
 &lt;p&gt;在我們前面提到的欄位轉換時，要特別注意兩個欄位的型別是否能夠對應上。由於 AutoMapper 會貼心地幫我們進行轉換，但有些時候可能會產生問題，讓我們看看下面這個例子：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Boo&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
@@ -392,7 +392,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可能有些人會有點疑惑：前面還需要 &lt;code&gt;MapperConfiguration&lt;/code&gt; 怎麼這次不用了呢？那是因為 &lt;code&gt;AddAutoMapper&lt;/code&gt; 的時候就會用反射去取得同組件中的 &lt;code&gt;Profile&lt;/code&gt; 來載入，所以這部分就可以不用擔心，只要專心在使用上就好。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;(2021/4/23) 補充：&lt;/p&gt;
+&lt;p&gt;2021.04.23 補充：&lt;/p&gt;
 &lt;p&gt;感謝同事們的討論，這邊也補充給大家參考一下&lt;/p&gt;
 &lt;p&gt;當我們直接使用 &lt;code&gt;services.AddAutoMapper(typeof(Startup));&lt;/code&gt; 註冊的時候，AutoMapper 會去抓我們 &lt;code&gt;typeof&lt;/code&gt; 的型別，並對該型別所在的 Assembly 進行反射找出所有的 &lt;code&gt;Profile&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;但如果你有用到多層的架構、或是不同的組件內都有 &lt;code&gt;Profile&lt;/code&gt; 需要註冊，又或者只是想要逐個 &lt;code&gt;Profile&lt;/code&gt; 進行註冊，方便進行控管的話，可以考慮使用 &lt;strong&gt;&lt;code&gt;AddProfile&lt;/code&gt;&lt;/strong&gt; 或 &lt;strong&gt;&lt;code&gt;AddProfiles&lt;/code&gt;&lt;/strong&gt; 的方式來進行註冊，例如：&lt;/p&gt;
@@ -404,7 +404,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這樣的可讀性更好，也能讓維護的人迅速掌握當前的 Profile，有需要的朋友可以嘗試看看。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;blockquote&gt;
-&lt;p&gt;(2021/8/27) 補充：&lt;/p&gt;
+&lt;p&gt;2021.08.27 補充：&lt;/p&gt;
 &lt;p&gt;感謝 &lt;a href=&#34;https://raychiutw.github.io/&#34;&gt;Ray&lt;/a&gt; 大大提供的方法，這邊也補充給大家參考一下&lt;/p&gt;
 &lt;p&gt;我們前面有提到 &lt;code&gt;AddAutoMapper&lt;/code&gt; 會對該型別所在的 Assembly 進行反射找出所有的 &lt;code&gt;Profile&lt;/code&gt;，那麼我們也可以轉換一下思路：只要把全部的組件都丟到 &lt;code&gt;AddAutoMapper&lt;/code&gt; 裡就好了！這種時候我們就可以利用反射來達到我們的目的：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
