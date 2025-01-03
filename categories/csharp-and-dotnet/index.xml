@@ -9159,9 +9159,10 @@ VS 中 /// 就會幫忙把參數註解格式打好。例如：&lt;/p&gt;
       
       <guid>https://igouist.github.io/post/2020/06/bit-flags-and-enum/</guid>
       <description>&lt;p&gt;前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。&lt;/p&gt;
-&lt;p&gt;平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告個 Boolean 來處理。但這次遇到的是同時有多個「有／沒有」的狀況，而我遇到的程式碼並沒有分成多個 Bool 去做處理，而是直接儲存成一個數值。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;由於「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列的話，就只需要一個數字就可以紀錄或傳遞給其他系統了&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;例如最常見的權限系統：假設我們有「讀」、「寫」、「執行」的權限，接著就可以按照這個順序，用 1 和 0 來代表「有／沒有」來排列位元&lt;/p&gt;
+&lt;p&gt;平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告個 Boolean 來處理。例如 &lt;code&gt;bool isNice = false&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;但這次遇到的是同時有多組「有／沒有」的狀況，而我遇到的程式碼並沒有分成多個 Bool 去做處理，而是直接儲存成一個數值。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;這是因為「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列的話，就只需要一個數字就可以紀錄並傳遞給其他系統了。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;例如最常見的權限系統：假設我們有「讀」、「寫」、「執行」的權限，接著就可以按照這個順序，用 1 和 0 來代表「有／沒有」來排列位元，&lt;/p&gt;
 &lt;p&gt;也就是說，如果權限是 &lt;code&gt;讀＝可、寫＝不可、執行＝可&lt;/code&gt; 的時候，就記做 &lt;code&gt;101&lt;/code&gt; = &lt;code&gt;5&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;這種直接用一組位元來表示狀態的方式，就叫做&lt;strong&gt;位元旗標（Bit flag）&lt;/strong&gt;&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;1 讀   = 可
@@ -9171,9 +9172,9 @@ VS 中 /// 就會幫忙把參數註解格式打好。例如：&lt;/p&gt;
 /* 橫放 */
 =&amp;gt; 101 (2進位) 
 =&amp;gt; 5 
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。&lt;/p&gt;
-&lt;h2 id=&#34;enum--flags&#34;&gt;Enum &amp;amp; Flags&lt;/h2&gt;
-&lt;p&gt;在 C# 中已經有方便的工具可以處理數字列表，我們可以建立一個叫做 SkillEnum 的&lt;strong&gt;列舉（Enum）&lt;/strong&gt;，並且按照上面說明的，將老闆提到的每個技能各自用一個位元來表示。&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;enum--flags&#34;&gt;Enum &amp;amp; Flags&lt;/h2&gt;
+&lt;p&gt;假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。這時候要怎麼做呢？&lt;/p&gt;
+&lt;p&gt;在 C# 中已經有方便的工具可以處理位元旗標，我們可以建一組叫做 SkillEnum 的&lt;strong&gt;列舉（Enum）&lt;/strong&gt;，並且按照上面說明的，將老闆提到的每個技能各自用一個位元來表示。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[Flags]&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;enum&lt;/span&gt; SkillEnum
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
