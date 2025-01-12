@@ -10,7 +10,96 @@
       <feedId>56200764111934464</feedId>
       <userId>41821085092905984</userId>
     </follow_challenge>
-    <lastBuildDate>Sun, 01 Sep 2024 15:00:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/categories/tools/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 12 Jan 2025 00:00:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/categories/tools/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>WakaTime: 隱藏敏感資訊、開啟離線暫存、卡在 Initialized 時的參考解法</title>
+      <link>https://igouist.github.io/post/2025/01/wakatime-hide-project-name-and-offline-and-initialized/</link>
+      <pubDate>Sun, 12 Jan 2025 00:00:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2025/01/wakatime-hide-project-name-and-offline-and-initialized/</guid>
+      <description>&lt;p&gt;WakaTime 是一款紀錄 Coding 時間的好用工具，只要安裝 IDE 的擴充套件，就可以輕鬆地記錄各個語言、編輯器、專案所用的時間。我從 2020 年寫了篇 &lt;a href=&#34;https://igouist.github.io/post/2020/06/wakatime/&#34;&gt;WakaTime 介紹文章&lt;/a&gt; 開始，也一路用到現在 2025 了，已經習慣動不動上去看兩眼的生活。&lt;/p&gt;
+&lt;p&gt;但在相對封閉的一些環境進行開發時，我們可能需要先對 WakaTime 調整一些設定才能用得安心，這篇筆記就分享一下最近遇到的三個場景，供有興趣的朋友參考參考。&lt;/p&gt;
+&lt;h2 id=&#34;在-wakatime-隱藏敏感資訊檔案名稱專案名稱&#34;&gt;在 WakaTime 隱藏敏感資訊（檔案名稱、專案名稱…）&lt;/h2&gt;
+&lt;p&gt;Wakatime 除了會記錄使用的程式語言和 IDE 等工具以外，也會紀錄專案、檔案路徑等等。但有時候我們可能並不希望記錄這些資訊（像是業主委託的專案名稱有點敏感啦、路徑可能有個人姓名之類的），這時就需要調整 Wakatime 的 Config，來把相關的資訊隱藏起來。&lt;/p&gt;
+&lt;p&gt;Wakatime 的設定會放在 &lt;code&gt;.wakatime.cfg&lt;/code&gt; &lt;br/&gt;（Windows 預設會在 &lt;code&gt;C:\Users\{User}\&lt;/code&gt; 或 &lt;code&gt;C:\Users\{User}\.wakatime&lt;/code&gt;）&lt;/p&gt;
+&lt;p&gt;開啟之後就會看見自己的 API Key 等設定，像這樣：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-toml&#34; data-lang=&#34;toml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;[&lt;span style=&#34;color:#a6e22e&#34;&gt;settings&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;api_key&lt;/span&gt; = &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;***&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;能在 &lt;code&gt;.wakatime.cfg&lt;/code&gt; 調整的設定值可以參考官方文檔：&lt;a href=&#34;https://github.com/wakatime/wakatime-cli/blob/develop/USAGE.md&#34;&gt;USAGE.md&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;因為這次我們的目標是隱藏資訊，所以會用到的主要是 Hide 四兄弟：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;hide_file_names&lt;/code&gt;：隱藏檔案名稱&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;hide_branch_names&lt;/code&gt;：隱藏分支名稱&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;hide_project_names&lt;/code&gt;：隱藏專案名稱&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;hide_project_folder&lt;/code&gt;：隱藏專案資料夾&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;全打開的話會像這樣：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-toml&#34; data-lang=&#34;toml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;[&lt;span style=&#34;color:#a6e22e&#34;&gt;settings&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;api_key&lt;/span&gt; = &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;***&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;hide_file_names&lt;/span&gt; = &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;hide_branch_names&lt;/span&gt; = &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;hide_project_names&lt;/span&gt; = &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;hide_project_folder&lt;/span&gt; = &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接下來讓我們簡單認識一下它們。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;開啟 &lt;code&gt;hide_file_names&lt;/code&gt;（隱藏檔案名稱）之後，檔案名稱就不會傳送上去。&lt;/p&gt;
+&lt;p&gt;在 WakaTime 看見的會是 HIDDEN：
+&lt;img src=&#34;https://i.imgur.com/xbKTWlCm.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;補充：因為檔案名稱變成 HIDDEN 了，所以如果原本有用自訂規則來偵測副檔名之類的做法（像 &lt;code&gt;.linq&lt;/code&gt; =&amp;gt; C#）就會吃不到囉。如果有使用 Custom rules 的朋友請再注意一下。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;p&gt;開啟 &lt;code&gt;hide_project_names&lt;/code&gt;（隱藏專案名稱）之後，則會幫你的專案取一個新名字。這個名字會在專案資料夾底下建一個 &lt;code&gt;.wakatime-project&lt;/code&gt; 的檔案並存放在裡面。&lt;/p&gt;
+&lt;p&gt;在 WakaTime 看見的就會是這組專案名稱囉：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/vwtakngm.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;最後這組 &lt;code&gt;hide_project_folder&lt;/code&gt; 則是會隱藏完整路徑。&lt;/p&gt;
+&lt;p&gt;原本的路徑像是這樣的話：&lt;code&gt;/User/me/projects/bar/src/file.ts&lt;/code&gt; &lt;br/&gt;
+就會變成這樣：&lt;code&gt;src/file.ts&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;如果路徑上有個人資訊的時候，像是 &lt;code&gt;C:\Users\{User}\...\file.ts&lt;/code&gt; 的話，就很適合把 &lt;code&gt;hide_project_folder&lt;/code&gt; 打開。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;除了上面四個 &lt;code&gt;hide&lt;/code&gt; 兄弟以外，另一個隱藏資訊常用的設定是 &lt;code&gt;hostname&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;推薦在電腦名稱需要隱藏的時候使用，例如：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-toml&#34; data-lang=&#34;toml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;[&lt;span style=&#34;color:#a6e22e&#34;&gt;settings&lt;/span&gt;]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;hostname&lt;/span&gt; = &lt;span style=&#34;color:#a6e22e&#34;&gt;nice_machine&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在 WakaTime 就可以看見自訂的機器名稱囉：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/R9T4TfTm.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;開啟-wakatime-離線暫存offline&#34;&gt;開啟 WakaTime 離線暫存（Offline）&lt;/h2&gt;
+&lt;p&gt;除了隱藏專案相關的敏感資訊以外，有時候我們也會到一些暫時無法聯網的地方工作。&lt;/p&gt;
+&lt;p&gt;這時候像 Git 這種可以離線工作、連線再上傳的工具就非常方便。&lt;/p&gt;
+&lt;p&gt;而 WakaTime 同樣也有 Offline 模式，開啟之後即使是離線的，也會把相關的紀錄暫存起來，等到有網路的時候再上傳。&lt;/p&gt;
+&lt;p&gt;要開啟的話，同樣要先到上面提到的 &lt;code&gt;.wakatime.cfg&lt;/code&gt;，加上：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-toml&#34; data-lang=&#34;toml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;offline&lt;/span&gt; = &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這樣當我們沒有接上網路的時候，WakaTime 就會顯示離線模式：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/CfQU139.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;離線模式時，會將資料暫存在 &lt;code&gt;.wakatime/offline_heartbeats.bdb&lt;/code&gt;，等待重新連線後再上傳&lt;/p&gt;
+&lt;p&gt;這樣就可以安心繼續 Coding 囉～&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;如果想手動上傳的話，也可以找到 &lt;code&gt;.wakatime/&lt;/code&gt; 底下的 Wakatime CLI，直接呼叫上傳離線資料的指令&lt;/p&gt;
+&lt;p&gt;以我在 Windows 64 位元的工作機為例，應該會找到 &lt;code&gt;wakatime-cli-windows-amd64.exe&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;接著就可以使用 &lt;code&gt;--sync-offline-activity&lt;/code&gt; 來同步資料：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 確認待上傳的離線資料筆數&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;.\wakatime-cli-windows-amd64.exe --offline-count
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 上傳離線資料&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;.\wakatime-cli-windows-amd64.exe --sync-offline-activity &lt;span style=&#34;color:#ae81ff&#34;&gt;9999&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/akMO4XA.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;wakatime-卡在初始化initialized試試下載-wakatime-cli&#34;&gt;WakaTime 卡在初始化（initialized）？試試下載 WakaTime-CLI&lt;/h2&gt;
+&lt;p&gt;這次還有遇到一個怪怪的狀況：WakaTime 的狀態一直卡在初始化（initialized）&lt;/p&gt;
+&lt;p&gt;折磨半天之後，終於找到了問題：我的開發環境連不到 Github，而 &lt;strong&gt;WakaTime 會嘗試上去 Github 更新 WakaTime CLI&lt;/strong&gt;，於是就卡住了。&lt;/p&gt;
+&lt;p&gt;這時候可以嘗試手動下載 WakaTime CLI 來解決。首先到 &lt;a href=&#34;https://github.com/wakatime/wakatime-cli/releases&#34;&gt;github/wakaTime-cli - Release&lt;/a&gt;，根據作業系統下載對應的壓縮檔（我用另一台電腦上去拉的）&lt;/p&gt;
+&lt;p&gt;解壓縮之後會得到 &lt;code&gt;wakatime-cli-{os}-{version}.exe&lt;/code&gt;，以我在 Windows 64 位元的工作機為例，就會是 &lt;code&gt;wakatime-cli-windows-amd64.exe&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;把這個 &lt;code&gt;exe&lt;/code&gt; 手動丟到 &lt;code&gt;.wakatime&lt;/code&gt; 資料夾裡，就可以重開 IDE 觀察看看有沒有疏通囉～&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;備註：因為初始化的步驟不僅這項，也可能還有其他原因導致卡住&lt;br/&gt;如果有用其他解法成功打通的朋友也歡迎分享～&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/wakatime/wakatime-cli/blob/develop/USAGE.md&#34;&gt;USAGE.md - wakatime/wakatime-cli&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/wakatime/vscode-wakatime/issues/156&#34;&gt;Wakatime stuck at VS Code initializing #156 - wakatime/vscode-wakatime&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
     <item>
       <title>VSCode: 使用 LiveShare 來即時線上協作吧</title>
       <link>https://igouist.github.io/post/2024/09/vscode-live-share/</link>

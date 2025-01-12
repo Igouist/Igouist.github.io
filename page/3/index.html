@@ -105,6 +105,36 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/" title="菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions" >菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2022-8-27,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/azure">Azure</a></span>
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/bug">Bug</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/00WQGqR.png" alt="Image"></p>
+<h2 id="tldr">TL;DR</h2>
+<p>當發現<strong>需要執行很久的 ServiceBus Trigger Function 有重複執行的情況</strong>出現時，可以嘗試到<a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-bindings-service-bus?tabs=in-process%2Cextensionv5%2Cextensionv3&amp;pivots=programming-language-csharp#hostjson-settings">官方的 Host.json 設定指引</a>，按照 SDK 版本找到對應的「<strong>訊息鎖定最大持續時間</strong>」設定，例如 maxAutoLockRenewalDuration（延伸模組 5.x+）或 maxAutoRenewDuration（Functions 2.x），並加入專案的 Host.json</p>
+<p><strong>因為 ServiceBus 在傳遞訊息之後，如果超過一段時間（MaxAutoRenewDuration）內沒有得到回應，就會解除信件的鎖並嘗試重新傳遞</strong>，這時候如果原先的 Function 仍在執行，就會一前一後重複執行 Function 並發生許多光怪陸離的事，例如寫入兩筆資訊、重複複製資料之類的。</p>
+<p>建議如果調整了有 ServiceBus Trigger Function 的 Azure Functions Timeout 設定時，或是發現某支 ServiceBus Trigger 的 Functions 執行時間過長，就要一併注意 MaxAutoRenewDuration 的設定，避免重複執行的情況出現。</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2022/08/devtoys/" title="DevToys —— 開發人員的瑞士刀工具箱" >DevToys —— 開發人員的瑞士刀工具箱</a>
                                 </h1>
                             </header>
@@ -413,49 +443,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/" title="菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧" >菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2021-11-28,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p><img src="https://i.imgur.com/2XYv7X2.png" alt="Image"></p>
-<p>這是俺整理公司新訓內容的第六篇文章，目標是<strong>紀錄什麼是依賴注入（Dependency Injection）</strong>。包含：</p>
-<ul>
-<li><a href="/post/2021/11/newbie-6-dependency-injection#%E7%82%BA%E4%BB%80%E9%BA%BC%E9%9C%80%E8%A6%81%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5">為什麼要依賴注入</a></li>
-<li><a href="/post/2021/11/newbie-6-dependency-injection#%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5%E7%9A%84%E7%A8%AE%E9%A1%9E">依賴注入的種類（建構式注入、屬性注入、方法注入）</a></li>
-<li><a href="/post/2021/11/newbie-6-dependency-injection#%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%89%E7%A8%AE%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F-transientscopedsingleton">.net Core 中依賴注入的生命週期</a></li>
-</ul>
-<p>並用 <a href="/post/2021/11/newbie-6-dependency-injection#%E5%AF%A6%E4%BD%9C">.net Core 實際跑一次依賴注入</a>，<strong>藉由將控制權轉移給注入容器，解除分層與分層間、類別與類別間的依賴和耦合關係，達到以介面分離實作的目標</strong>。</p>
-<h2 id="前言">前言</h2>
-<p>西元前的某一天，憂心的皇帝在朝堂內繞著柱子走，正巧被路過的廷尉看見。</p>
-<p>廷尉：「敢問陛下在煩惱什麼呢？」</p>
-<p>皇帝：『朕這是在想封賞的事兒哪。前朝之所以覆滅，根本的原因就在於大肆封賞臣下，四處分封土地給他們做諸侯。</p>
-<p>這些諸侯呢，肆意起用自己喜歡的人擔任要職、結黨營私，心情好就 <code>new 將軍(&quot;我ㄉ朋友&quot;);</code>，<br/>十天就封了十個將軍。這些人若犯了錯，要處理他們還得看諸侯面子；而諸侯一聲令下，這些人便群起造反。</p>
-<p>並且，這些諸侯之間彼此喜歡直接往來，動不動就在自家裡下命令給 <code>隔壁諸侯.借糧草(100)</code>，哪天就變成 <code>隔壁諸侯.揪團造反()</code>。彼此之間偷來暗去，實在難以掌握。</p>
-<p>最後呢，一個逆賊起來造反，若要將他給辦了，附近諸侯就一起響應，每個都一齊報錯，Exception 成千上百，國家也就這樣滅了，想到這朕就頭痛得很，不知愛卿可有法子？』</p>
-<p>廷尉想了一想，便說：「陛下，此事要點還是在於諸侯之間<strong>相互依賴、彼此耦合</strong>，致生禍端。</p>
-<p>臣有一計，先收回諸侯的人事任命權，使其不可私自 <code>new</code> 自己人，所有人事異動，須<strong>由中央進行管理與派遣</strong>。這樣即使諸侯要造反，也不知道下面這群打工仔是不是自己人。大家各司其職，諸侯做好自己的行政作業，打工仔派到崗位就做好自己的工作，彼此不直接依賴，這樣出事的機率就少了。</p>
-<p>其次，明令禁止諸侯私自往來，對諸侯們進行隔離，若是有公務上的需要，<strong>一律藉由中央提供的接口來溝通</strong>，彼此之間明訂契約，由中央進行隔離與調派，諸侯間就只需要按照協議好的合約下去合作，這樣勾結的機會也就少了，耦合也就降低了。陛下覺得如何？」</p>
-<p>皇帝大喜：『如此甚好！治眾如治寡，在於分而治之。此計可有名字？』</p>
-<p>「此乃－－依賴注入之計！」</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -567,6 +554,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2025/01/wakatime-hide-project-name-and-offline-and-initialized/" title="WakaTime: 隱藏敏感資訊、開啟離線暫存、卡在 Initialized 時的參考解法">WakaTime: 隱藏敏感資訊、開啟離線暫存、卡在 Initialized 時的參考解法</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2024/11/2024-busan-travel/" title="菜雞出門玩：2024 韓國釜山">菜雞出門玩：2024 韓國釜山</a>
     </li>
     
@@ -600,10 +591,6 @@
     
     <li>
         <a href="https://igouist.github.io/post/2023/04/wolong/" title="臥龍：蒼天殞落　白金！">臥龍：蒼天殞落　白金！</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2023/01/banner-2-midjourney-and-canva/" title="使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗">使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗</a>
     </li>
     
 </ul>
@@ -664,7 +651,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (23)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (24)</a>
     </li>
     
 </ul>
@@ -823,7 +810,7 @@
     <section class="widget">
     <h3 class="widget-title">統計資訊</h3>
     <ul class="widget-list">
-        <li>文章總數: 97</li>
+        <li>文章總數: 98</li>
         
         <li>瀏覽次數: <span id="busuanzi_value_site_pv">-</span></li>
         
