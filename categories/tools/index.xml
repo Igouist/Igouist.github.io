@@ -10,7 +10,57 @@
       <feedId>56200764111934464</feedId>
       <userId>41821085092905984</userId>
     </follow_challenge>
-    <lastBuildDate>Sun, 12 Jan 2025 00:00:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/categories/tools/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 01 Feb 2025 08:15:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/categories/tools/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>JMeter: 使用 Constant Throughput Timer 設置固定吞吐量</title>
+      <link>https://igouist.github.io/post/2025/02/jmeter-constant-throughput-timer/</link>
+      <pubDate>Sat, 01 Feb 2025 08:15:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2025/02/jmeter-constant-throughput-timer/</guid>
+      <description>&lt;p&gt;我們在之前 &lt;a href=&#34;https://igouist.github.io/post/2022/10/jmeter&#34;&gt;JMeter&lt;/a&gt; 的筆記時，介紹過直接對服務爆打一波的作法：簡單來說就是打好幾輪看看服務撐不撐得住，然後紀錄能吃的最大數量，可以說是非常暴力的做法。&lt;/p&gt;
+&lt;p&gt;但如果我們想要模擬某個固定數值的請求量（例如每分鐘 100 次請求）、又或是需要用固定速率打出去（例如每 5 秒得敲一下），就不能像上次一樣粗暴地全力出擊了。&lt;/p&gt;
+&lt;p&gt;這時候，&lt;strong&gt;我們就可以用 JMeter 提供的 Constant Throughput Timer（固定吞吐量計時器）來限制呼叫頻率&lt;/strong&gt;，馬上來筆記一篇。&lt;/p&gt;
+&lt;hr&gt;
+&lt;blockquote&gt;
+&lt;p&gt;以下範例會使用到 JMeter 的 HTTP Request 等功能，還不太瞭解的朋友推薦先閱讀上一篇筆記：&lt;a href=&#34;https://igouist.github.io/post/2022/10/jmeter&#34;&gt;使用 JMeter 來對 API 壓力測試吧&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;先確認一下環境：我們有一組腳本，內容只是簡單地戳一下 API&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/O3yDOx1.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;現在我們希望可以模擬線上使用者在尖峰時段的使用頻率，並確認我們服務挺得過去，所以需要把這組腳本調整成：&lt;strong&gt;「每分鐘戳 20 次，持續五分鐘」&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;補充：有時候我們收到的需求會是「持續五分鐘，然後總量為 100」這種，意思是差不多的，反正先確認好 &lt;strong&gt;「每分鐘的數量 x 持續幾分鐘 = 總量」&lt;/strong&gt; 這幾個關鍵數字再說嚕。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;首先讓我們加入一組 Constant Throughput Timer：
+&lt;img src=&#34;https://i.imgur.com/ymK5ZCq.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;並且找到 Constant Throughput Timer 裡面的 &lt;strong&gt;Target Throughput（每分鐘呼叫次數）&lt;/strong&gt;，我們這次的需求是每分鐘要戳他個 20 次，這邊就直接放 20.0：
+&lt;img src=&#34;https://i.imgur.com/I29PVrK.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著回到 Thread Group，因為我們這次的場景是用時間來計算的，所以需要&lt;strong&gt;把底下的 Specify Thread Lifetime 打開，並根據要執行的時間來填上秒數&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;因為我們的需求是跑 5 分鐘，所以先丟個 300 秒：
+&lt;img src=&#34;https://i.imgur.com/0eam5FB.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;而且我們這次是用執行時間計算數量的，不希望 Loop Count 影響到我們，直接甩個 Infinite 給他（對，我們就是模擬有個使用者坐在那邊無聊一直按按鈕，而且他節奏感還很好）&lt;/p&gt;
+&lt;p&gt;執行之後就可以確認總量跟每分鐘的吞吐量有沒有符合我們的設置囉：
+&lt;img src=&#34;https://i.imgur.com/h98Pdvd.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;很好！現在我們已經會使用 Constant Throughput Timer 來控制壓力測試時的吞吐量了。&lt;/p&gt;
+&lt;p&gt;有興趣的朋友可以回去調整各個參數觀察看看，也可以改個 Thread Group 的 Thread 數量看看結果差異，例如當我把上面範例的 Thread 改成 2：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/1iY0YdJ.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;可以看見數量跟吞吐量都有影響（算總數寫報告的時候記得別算錯了 xD）&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;最後整理一下 Constant Throughput Timer 的適用場景，有以下狀況的時候就可以考慮使用：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;模擬某個固定數值的請求量（例如每分鐘Ｘ次）&lt;/li&gt;
+&lt;li&gt;需要穩定地以固定速率發送請求（不能一開頭就重拳出擊）&lt;/li&gt;
+&lt;li&gt;老闆說：「我們這個測試不能更貼近真實使用者一點嗎？」&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;各位朋友可以再動手玩玩看。我們下次見～&lt;/p&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.blazemeter.com/blog/jmeter-throughput&#34;&gt;How to Use JMeter&amp;rsquo;s Throughput Timer - blazemeter&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.csdn.net/m0_38039437/article/details/104115312&#34;&gt;Jmeter 吞吐量定时器 Constant Throughput Timer&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;還有最實際的：
+&lt;img src=&#34;https://i.imgur.com/UttrtAL.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>WakaTime: 隱藏敏感資訊、開啟離線暫存、卡在 Initialized 時的參考解法</title>
       <link>https://igouist.github.io/post/2025/01/wakatime-hide-project-name-and-offline-and-initialized/</link>

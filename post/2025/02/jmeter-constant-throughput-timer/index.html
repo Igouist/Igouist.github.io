@@ -26,20 +26,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
-    <title>菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記 | 伊果的沒人看筆記本</title>
-    <meta property="og:title" content="菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記 - 伊果的沒人看筆記本">
+    <title>JMeter: 使用 Constant Throughput Timer 設置固定吞吐量 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="JMeter: 使用 Constant Throughput Timer 設置固定吞吐量 - 伊果的沒人看筆記本">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2021-10-04T22:00:00&#43;08:00">
+    <meta property="article:published_time" content="2025-02-01T08:15:00&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2021-10-04T22:00:00&#43;08:00">
+    <meta property="article:modified_time" content="2025-02-01T08:15:00&#43;08:00">
         
-        <meta name="keywords" content="CultureInfo, DateTimeFormat, NumberFormat, 文化特性, InvariantCulture, DateTime, ToString">
-    <meta name="description" content="同一行 DateTime.ToString() 在不同電腦執行竟然不一樣？！ 馬上做成 C# 的 CultureInfo 文化特性筆記，包含 DateTimeFormat, NumberFormat, InvariantCulture 等，無情備忘。">
+        <meta name="keywords" content="jmeter, 壓力測試, Constant Throughput Timer, jmeter 固定頻率, jmeter 吞吐量">
+    <meta name="description" content="在進行壓力測試的時候，如果我們想要模擬某個固定數值的請求量（例如每分鐘 100 次請求）、又或是需要用固定速率打出去（例如每 5 秒得敲一下），就可以用 JMeter 提供的 Constant Throughput Timer（固定吞吐量計時器）來限制呼叫頻率">
         <meta name="author" content="Igouist">
         
-    <meta property="og:url" content="https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/">
+    <meta property="og:url" content="https://igouist.github.io/post/2025/02/jmeter-constant-throughput-timer/">
     <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link defer rel="stylesheet" href="/css/normalize.css">
@@ -107,17 +107,15 @@
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記</h1>
+                            <h1 class="post-title">JMeter: 使用 Constant Throughput Timer 設置固定吞吐量</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2021-10-4,
+                            2025-2-1,
                         </date>
                         
                         <div class="post-meta">
                             
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
-                            
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/bug">bug</a></span>
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/tools">tools</a></span>
                             
                         </div>
                         
@@ -131,171 +129,48 @@
                         
 
                         <div class="post-content">
-                            <p><img src="https://i.imgur.com/EMdGkwr.png" alt="Image"></p>
-<h2 id="事發緣由">事發緣由</h2>
-<p>咱們內部套件中有個方法，會將各個參數組合為 QueryString 去打指定的 Api。就是這麼稀鬆平常的場景，神奇的事情就發生了。</p>
-<p>同樣的套件、同樣的語法，在團隊中兩個人的電腦上安裝執行，卻是一個成功一個失敗。</p>
-<p>原來該方法的參數中，包含一欄型別為 DateTime 的資料，並且會把該欄位的值拿來 ToString() 再做為參數傳遞給目標 Api。</p>
-<p>而呼叫失敗的人就是在這個 <code>DateTime.ToString()</code> 的過程中<strong>產生了中文字</strong>，使得目標 Api 接到參數後，無法將中文字轉換回 DateTime 而發生了錯誤。</p>
-<p>問題就浮現了：<strong>同一行 DateTime.ToString() 在不同電腦執行的結果竟然不一樣？！</strong></p>
-<p>為了讓我們更快了解狀況，現在就簡單地使用 Linqpad 進行測試：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    DateTime.Now.ToString().Dump();
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>首先，在我的 Windows 時間設定中，完整時間的格式為 <code>09:40:07</code> ，也就是 24 小時制。</p>
-<p>現在讓我們先執行上面這段語法看看：</p>
-<pre tabindex="0"><code>// 2021/10/04 21:00:00
-</code></pre><p>接著讓我們變更時間格式看看。</p>
-<p>以我的 Win10 為例，在 Windows 工具列，也就是畫面的右下角右鍵，選擇 <code>調整日期時間 → 日期時間格式設定 → 變更資料格式</code>，將時間格式變更為 <code>上午 09:40:07</code>。</p>
-<p>重新啟動 Linqpad 再執行如下：</p>
-<pre tabindex="0"><code>// 2021/10/04 下午 09:00:00
-</code></pre><p>可以看到 <code>下午</code> 兩個字就蹦出來了！</p>
-<p>之所以會有這樣的差異，是因為 <code>DateTime.ToString()</code> 預設轉換的目標格式會是抓取目前執行緒的<strong>文化特性</strong>。</p>
-<h2 id="文化特性">文化特性</h2>
-<p>在 CSharp 中有個專門負責處理文化特性、地區設定等在地化處理的類別：<strong>CultureInfo</strong>。舉凡國家地區的資訊、時間日期的格式、字串的排序方式等等，都是它的工作。</p>
-<p>要取得當前的文化特性，我們可以使用 <code>CultureInfo.CurrentCulture</code>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>CultureInfo.CurrentCulture.Dump(); <span style="color:#75715e">// zh-TW</span>
-</span></span></code></pre></div><p>可以看到我們目前的文化特性是 <code>zh-TW</code>，這個格式叫做 <a href="https://zh.wikipedia.org/wiki/IETF%E8%AA%9E%E8%A8%80%E6%A8%99%E7%B1%A4">IETF 語言標籤</a>，其中 <code>zh</code> 是指語言，<code>TW</code> 則是地區。例如說 <code>en-US</code> 就是「英語，美國」。</p>
+                            <p>我們在之前 <a href="/post/2022/10/jmeter">JMeter</a> 的筆記時，介紹過直接對服務爆打一波的作法：簡單來說就是打好幾輪看看服務撐不撐得住，然後紀錄能吃的最大數量，可以說是非常暴力的做法。</p>
+<p>但如果我們想要模擬某個固定數值的請求量（例如每分鐘 100 次請求）、又或是需要用固定速率打出去（例如每 5 秒得敲一下），就不能像上次一樣粗暴地全力出擊了。</p>
+<p>這時候，<strong>我們就可以用 JMeter 提供的 Constant Throughput Timer（固定吞吐量計時器）來限制呼叫頻率</strong>，馬上來筆記一篇。</p>
+<hr>
 <blockquote>
-<p>補充：關於語言標籤，有需要查詢的朋友可以翻看看 <a href="http://www.i18nguy.com/unicode/language-identifiers.html">i18n 的 RFC 3066 表</a>。
-<br/>此外，我們平常用的語言標籤還會有一些子標籤之類的，例如 <code>zh-Hant-HK</code>，可以參見 <a href="https://www.w3.org/International/articles/language-tags/">Language tags in HTML and XML (w3.org)</a></p>
+<p>以下範例會使用到 JMeter 的 HTTP Request 等功能，還不太瞭解的朋友推薦先閱讀上一篇筆記：<a href="/post/2022/10/jmeter">使用 JMeter 來對 API 壓力測試吧</a></p>
 </blockquote>
+<p>先確認一下環境：我們有一組腳本，內容只是簡單地戳一下 API</p>
+<p><img src="https://i.imgur.com/O3yDOx1.png" alt="Image"></p>
+<p>現在我們希望可以模擬線上使用者在尖峰時段的使用頻率，並確認我們服務挺得過去，所以需要把這組腳本調整成：<strong>「每分鐘戳 20 次，持續五分鐘」</strong></p>
 <blockquote>
-<p>補充：除了 <code>CurrentCulture</code> 以外，CultureInfo 還有另一組文化特性的設定：<code>CurrentUICulture</code>。從名稱上可以看得出來，前者是用來預設系統的文化設定，例如數值、排序等等；而加上 <code>UI</code> 的後者，則是用來預設使用者介面要顯示什麼語言。</p>
-<p>當然，大多數時候這兩個文化特性會是一樣的，不過如果想要國際化，弄個使用者介面的多國語言版本，就需要特別注意一下囉！</p>
+<p>補充：有時候我們收到的需求會是「持續五分鐘，然後總量為 100」這種，意思是差不多的，反正先確認好 <strong>「每分鐘的數量 x 持續幾分鐘 = 總量」</strong> 這幾個關鍵數字再說嚕。</p>
+</blockquote>
+<p>首先讓我們加入一組 Constant Throughput Timer：
+<img src="https://i.imgur.com/ymK5ZCq.png" alt="Image"></p>
+<p>並且找到 Constant Throughput Timer 裡面的 <strong>Target Throughput（每分鐘呼叫次數）</strong>，我們這次的需求是每分鐘要戳他個 20 次，這邊就直接放 20.0：
+<img src="https://i.imgur.com/I29PVrK.png" alt="Image"></p>
+<p>接著回到 Thread Group，因為我們這次的場景是用時間來計算的，所以需要<strong>把底下的 Specify Thread Lifetime 打開，並根據要執行的時間來填上秒數</strong>。</p>
+<p>因為我們的需求是跑 5 分鐘，所以先丟個 300 秒：
+<img src="https://i.imgur.com/0eam5FB.png" alt="Image"></p>
+<p>而且我們這次是用執行時間計算數量的，不希望 Loop Count 影響到我們，直接甩個 Infinite 給他（對，我們就是模擬有個使用者坐在那邊無聊一直按按鈕，而且他節奏感還很好）</p>
+<p>執行之後就可以確認總量跟每分鐘的吞吐量有沒有符合我們的設置囉：
+<img src="https://i.imgur.com/h98Pdvd.png" alt="Image"></p>
+<p>很好！現在我們已經會使用 Constant Throughput Timer 來控制壓力測試時的吞吐量了。</p>
+<p>有興趣的朋友可以回去調整各個參數觀察看看，也可以改個 Thread Group 的 Thread 數量看看結果差異，例如當我把上面範例的 Thread 改成 2：</p>
+<p><img src="https://i.imgur.com/1iY0YdJ.png" alt="Image"></p>
+<p>可以看見數量跟吞吐量都有影響（算總數寫報告的時候記得別算錯了 xD）</p>
+<hr>
+<p>最後整理一下 Constant Throughput Timer 的適用場景，有以下狀況的時候就可以考慮使用：</p>
 <ul>
-<li><a href="https://stackoverflow.com/questions/329033/what-is-the-difference-between-currentculture-and-currentuiculture-properties-of">What is the difference between CurrentCulture and CurrentUICulture properties of CultureInfo in .NET? - Stack Overflow</a></li>
-<li><a href="https://dotblogs.com.tw/yc421206/2015/11/26/multiple_language_culture">ASP.NET 多國語系 - 了解文化特性 | 余小章 @ 大內殿堂 - 點部落 (dotblogs.com.tw)</a></li>
-<li><a href="https://dotblogs.azurewebsites.net/shadow/2018/09/03/172157">ASP.net Core 多國語系 Part 1 初探篇 | 高級打字員的技術雲 - 點部落 (dotblogs.azurewebsites.net)</a></li>
+<li>模擬某個固定數值的請求量（例如每分鐘Ｘ次）</li>
+<li>需要穩定地以固定速率發送請求（不能一開頭就重拳出擊）</li>
+<li>老闆說：「我們這個測試不能更貼近真實使用者一點嗎？」</li>
 </ul>
-</blockquote>
-<p>接著讓我們來看看裡面包了哪些重要東西吧：</p>
-<p><img src="https://i.imgur.com/UFOiAjM.png" alt="Image"></p>
-<h3 id="datetimeformat">DateTimeFormat</h3>
-<p><code>DateTimeFormat</code> 是用來放跟 <code>DateTime</code> 相關的設定值的，其中包含了該文化的日期時間的顯示格式。</p>
-<p>我們同樣用 Linqpad 看一下裡面有些什麼：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>CultureInfo.CurrentCulture.DateTimeFormat.Dump();
-</span></span></code></pre></div><p><img src="https://i.imgur.com/P843qZ0.png" alt="Image"></p>
-<p>可以看到裡面包含了一年有哪些月份和名稱、一週有哪些日子和名稱，以及一堆時間格式。</p>
-<p>那一堆時間格式主要是對照 <a href="https://docs.microsoft.com/zh-tw/dotnet/standard/base-types/standard-date-and-time-format-strings">標準日期和時間格式字串</a> 的。</p>
-<p>例如 ShortDatePattern 就是對應到文件中的簡短日期模式（<code>&quot;d&quot;</code>），也就是說，當我們 <code>ToString</code> 的時候，如果使用 &ldquo;d&rdquo; 的話，就會根據文化特性顯示該文化的「簡短日期」以此類推。</p>
-<blockquote>
-<p>關於這部分的欄位內容，可以參照 Vito 大大的 <a href="http://vito-note.blogspot.com/2012/03/blog-post_28.html#%E9%A1%AF%E7%A4%BA%E8%88%87%E6%96%87%E5%8C%96%E7%89%B9%E6%80%A7%E7%9B%B8%E9%97%9C%E7%9A%84%E8%B3%87%E8%A8%8A">使用文化特性</a> 這篇文章，裡面的整理已經相當詳細，供各位參考。</p>
-</blockquote>
-<blockquote>
-<p>補充：我們常常會看到 <code>ToString(&quot;yyyy-MM-dd HH:mm:ss&quot;)</code> 這種用法，但要小心這邊的 <strong><code>-</code> 和 <code>:</code> 其實是用來標示日期和時間的分隔符號</strong>，並不是真正的 <code>-</code> 和 <code>:</code>。</p>
-<p>所以 <code>:</code> 在 format 的時候，會被替換為 <code>TimeSeparator</code>；<br/>而 <code>/</code> 同樣也會使用 <code>DateSeparator</code></p>
-<p>也就是說，如果你使用的文化特性 <code>TimeSeparator</code> 是 <code>#</code> 的話，<code>HH:mm:ss</code> 在 <code>21:07:00</code> 出來的結果將會是 <code>21#07#00</code>。如果發現 ToString 出來的結果怪怪的，可以優先檢查文化特性的這兩個分隔符號有沒有問題。</p>
-<p>相關的說明請參見 <a href="https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings#date-and-time-separator-specifiers">Date and time separator specifiers</a> 這一小節。</p>
-</blockquote>
-<p>現在讓我們用 <code>Thread.CurrentThread.CurrentCulture</code> 來更改當前執行緒的時間，並用完整日期時間模式（<code>&quot;F&quot;</code>）來測試看看：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> date = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2006</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>Thread.CurrentThread.CurrentCulture = <span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;zh-tw&#34;</span>);
-</span></span><span style="display:flex;"><span>date.ToString(<span style="color:#e6db74">&#34;F&#34;</span>).Dump(); <span style="color:#75715e">// 2006年1月2日 03:04:05</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>Thread.CurrentThread.CurrentCulture = <span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;zh-cn&#34;</span>);
-</span></span><span style="display:flex;"><span>date.ToString(<span style="color:#e6db74">&#34;F&#34;</span>).Dump(); <span style="color:#75715e">// 2006年1月2日 3:04:05</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>Thread.CurrentThread.CurrentCulture = <span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;en-us&#34;</span>);
-</span></span><span style="display:flex;"><span>date.ToString(<span style="color:#e6db74">&#34;F&#34;</span>).Dump(); <span style="color:#75715e">// Monday, January 2, 2006 3:04:05 AM</span>
-</span></span></code></pre></div><p>當然，在 ToString 的時候直接扔文化特性進去也是可以的：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> date = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2006</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>);
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>date.ToString(<span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;zh-tw&#34;</span>)).Dump(); <span style="color:#75715e">// 2006/1/2 03:04:05</span>
-</span></span><span style="display:flex;"><span>date.ToString(<span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;zh-cn&#34;</span>)).Dump(); <span style="color:#75715e">// 2006/1/2 3:04:05</span>
-</span></span><span style="display:flex;"><span>date.ToString(<span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;en-us&#34;</span>)).Dump(); <span style="color:#75715e">// 1/2/2006 3:04:05 AM</span>
-</span></span></code></pre></div><p>而本篇起因的翻船事件，我們可以試著觀察一下 <code>CultureInfo</code> 的預設曆法，也就是 <code>Calendar</code> 的內容：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>	CultureInfo.CurrentCulture.Calendar.Dump();
-</span></span><span style="display:flex;"><span>	CultureInfo.CurrentUICulture.Calendar.Dump();
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 完整時間格式: 15:04:05</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// MinSupportedDateTime 0001/1/1 上午 12:00:00</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// MaxSupportedDateTime 9999/12/31 下午 11:59:59</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 完整時間格式: 下午 03:04:05</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// MinSupportedDateTime 0001/1/1 00:00:00</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// MaxSupportedDateTime 9999/12/31 23:59:59</span>
-</span></span></code></pre></div><p>可以明確看到格式的變更，兇手就在我們之中！</p>
-<blockquote>
-<p>其實文檔已經明確地說了：使用者可以透過主控台的『地區及語言選項』部分，選擇覆寫與 Windows 目前文化特性相關聯的一些值。
-（<a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.globalization.cultureinfo.calendar">CultureInfo.Calendar 屬性 (System.Globalization) | Microsoft Docs</a>）</p>
-</blockquote>
-<p>當然，我們也可以調整 Calendar 來把曆法換掉。例如說當我們要做西元年轉民國年的時候，就可以把 Calendar 指定為 TaiwanCalendar 來處理。</p>
-<blockquote>
-<p>這部分請參照：<a href="https://kevintsengtw.blogspot.com/2014/06/c.html">mrkt 的程式學習筆記: 基本題 - C# 西元年轉換取得民國年格式字串</a></p>
-</blockquote>
-<p>有了這些日期時間的格式，我們就可以用它們來處理一些日常的時間處理囉～例如：</p>
-<ul>
-<li><a href="https://dotblogs.com.tw/supershowwei/2016/10/17/141620">食譜好菜 DateTime 具有文化特性的格式化及時區的轉換 | 軟體主廚的程式料理廚房 - 點部落 (dotblogs.com.tw)</a></li>
-<li><a href="https://dotblogs.com.tw/echo/2016/10/16/dotnet_dayofweek_displaybycultureinfo">【.NET】利用 CultureInfo 取得各語系星期顯示名稱 | 暴走的程式碼… - 點部落 (dotblogs.com.tw)</a></li>
-</ul>
-<h3 id="numberformat">NumberFormat</h3>
-<p>除了日期格式以外，數值也是各個文化常常不同的部份。在 <code>CultureInfo</code> 中的 <code>NumberFormat</code> 就是用來處理數值相關的格式。</p>
-<p>我們同樣用 Linqpad 看一下裡面有些什麼：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>CultureInfo.CurrentCulture.NumberFormat.Dump();
-</span></span></code></pre></div><p><img src="https://i.imgur.com/yqswJrJ.png" alt="Image"></p>
-<p>可以看見裡面包含了 <code>CurrencySymbol</code> 貨幣符號、<code>PercentSymbol</code> 百分比符號、<code>CurrencyNegativePattern</code> 貨幣負數格式 等等數值相關的設定。</p>
-<p>現在讓我們使用 <code>ToString(&quot;C&quot;)</code> 來指定轉換為貨幣格式，並且丟不同的文化特性進去看看吧：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> price = -<span style="color:#ae81ff">49.99</span>;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>price.ToString(<span style="color:#e6db74">&#34;C&#34;</span>, <span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;zh-tw&#34;</span>)).Dump(); <span style="color:#75715e">// -NT$49.99</span>
-</span></span><span style="display:flex;"><span>price.ToString(<span style="color:#e6db74">&#34;C&#34;</span>, <span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;zh-cn&#34;</span>)).Dump(); <span style="color:#75715e">// ¥-49.99</span>
-</span></span><span style="display:flex;"><span>price.ToString(<span style="color:#e6db74">&#34;C&#34;</span>, <span style="color:#66d9ef">new</span> CultureInfo(<span style="color:#e6db74">&#34;en-us&#34;</span>)).Dump(); <span style="color:#75715e">// ($49.99)</span>
-</span></span></code></pre></div><p>可以看見整個格式都不一樣了呢。</p>
-<blockquote>
-<p>備註：<code>CurrencyNegativePattern</code> 這類的格式只會存數字編號，例如 0 對應到 ($n) 之類的。
-各編號對應的格式可以參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.globalization.numberformatinfo.currencynegativepattern">NumberFormatInfo.CurrencyNegativePattern 屬性 (System.Globalization) | Microsoft Docs</a></p>
-</blockquote>
-<h3 id="invariantculture">InvariantCulture</h3>
-<p>那麼，當我們想要<strong>統一格式</strong>的時候呢？例如說我們在世界各地都有服務，這些客戶端的資訊會集中傳回主伺服器。要是直接 <code>ToString</code> 那鐵定是每個地方回來的時間、貨幣和數值格式都不一樣的。該怎麼辦呢？總不能發個字串下去叫大家寫死吧囧？</p>
-<p>這時候就可以使用 <code>InvariantCulture</code> 啦！</p>
-<p>讓我們看看文檔是怎麼說明的：「取得與文化特性無關的 (不變的) CultureInfo 物件」、「<strong>不區分文化特性的文化特性不區分文化特性</strong>」（也太饒舌）</p>
-<p>也就是說，只要使用約定好一起使用這組不變的文化特性，就可以保證大家的格式都是同一套囉。</p>
-<p>使用的時候可以 <code>CultureInfo.InvariantCulture</code> 或是直接 <code>new CultureInfo(&quot;&quot;)</code> 就可以取得這組不變的文化特性。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> culinfo = CultureInfo.InvariantCulture;
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> date = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2006</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>);
-</span></span><span style="display:flex;"><span>date.ToString(culinfo).Dump(); <span style="color:#75715e">// 01/02/2006 03:04:05</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> price = -<span style="color:#ae81ff">49.99</span>;
-</span></span><span style="display:flex;"><span>price.ToString(<span style="color:#e6db74">&#34;C&#34;</span>, culinfo).Dump(); <span style="color:#75715e">// (¤49.99)</span>
-</span></span></code></pre></div><p><del>不過如果覺得 月/日/年 的格式很鳥的話，其實大家約好挑一組文化特性就好了齁？</del></p>
-<h2 id="後日談">後日談</h2>
-<p>最後交代一下篇頭的問題怎麼解決的：</p>
-<p>直接把該套件打開然後把 <code>.ToString()</code> 加上 <code>&quot;yyyy/MM/dd&quot;</code> 打完收工囧。</p>
-<p>就是這麼簡單。爽發一篇廢文，筆記筆記。</p>
-<blockquote>
-<p>2022.05.06 補充：</p>
-<p>朋友在將 Asp.net Framework 的服務佈到多台 Windows Server 上時，也遇到了時區設定不一致的問題。</p>
-<p>經過一番排查，最後決定<strong>在 Web.config 中的 System.web 設定 Globalization 指定服務採用的時區</strong>來解決這個問題。</p>
-<p>這邊也提供相關的資訊給遇到同樣問題的朋友們參考：</p>
-<ul>
-<li><a href="https://dotblogs.com.tw/yc421206/2015/11/26/multiple_language_culture">多國語系 - 了解文化特性 | 余小章 @ 大內殿堂 - 點部落 (dotblogs.com.tw)</a>
-<ul>
-<li>請參閱：「在 Web.config 設定文化特性」一節</li>
-</ul>
-</li>
-<li><a href="https://docs.microsoft.com/zh-tw/troubleshoot/developer/webapps/aspnet/development/set-current-culture">在 ASP.NET 中以程式設計方式設定目前的文化環境 | Microsoft Docs</a></li>
-</ul>
-</blockquote>
+<p>各位朋友可以再動手玩玩看。我們下次見～</p>
 <h2 id="參考資料">參考資料</h2>
 <ul>
-<li><a href="http://vito-note.blogspot.com/2012/03/blog-post_28.html">VITO の 學習筆記: 使用文化特性 (vito-note.blogspot.com)</a></li>
-<li><a href="https://dotblogs.com.tw/yc421206/2015/11/26/multiple_language_culture">ASP.NET 多國語系 - 了解文化特性 | 余小章 @ 大內殿堂 - 點部落 (dotblogs.com.tw)</a></li>
-<li><a href="https://dotblogs.com.tw/supershowwei/2016/10/17/141620">食譜好菜 DateTime 具有文化特性的格式化及時區的轉換 | 軟體主廚的程式料理廚房 - 點部落 (dotblogs.com.tw)</a></li>
-<li><a href="https://dotblogs.com.tw/echo/2016/10/16/dotnet_dayofweek_displaybycultureinfo">【.NET】利用 CultureInfo 取得各語系星期顯示名稱 | 暴走的程式碼… - 點部落 (dotblogs.com.tw)</a></li>
-<li><a href="https://dotblogs.azurewebsites.net/shadow/2018/09/03/172157">ASP.net Core 多國語系 Part 1 初探篇 | 高級打字員的技術雲 - 點部落 (dotblogs.azurewebsites.net)</a></li>
-<li><a href="https://www.cnblogs.com/GreenLeaves/p/6757917.html">C# CultureInfo 中常用的 InvariantCulture - 郑小超 - 博客园 (cnblogs.com)</a></li>
-<li><a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.globalization.cultureinfo">CultureInfo 類別 (System.Globalization) | Microsoft Docs</a></li>
-<li><a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.globalization.cultureinfo.currentculture">CultureInfo.CurrentCulture 屬性 (System.Globalization) | Microsoft Docs</a></li>
-<li><a href="https://stackoverflow.com/questions/329033/what-is-the-difference-between-currentculture-and-currentuiculture-properties-of">What is the difference between CurrentCulture and CurrentUICulture properties of CultureInfo in .NET? - Stack Overflow</a></li>
-<li><a href="https://stackoverflow.com/questions/9760237/what-does-cultureinfo-invariantculture-mean">.net - What does CultureInfo.InvariantCulture mean? - Stack Overflow</a></li>
+<li><a href="https://www.blazemeter.com/blog/jmeter-throughput">How to Use JMeter&rsquo;s Throughput Timer - blazemeter</a></li>
+<li><a href="https://blog.csdn.net/m0_38039437/article/details/104115312">Jmeter 吞吐量定时器 Constant Throughput Timer</a></li>
 </ul>
+<p>還有最實際的：
+<img src="https://i.imgur.com/UttrtAL.png" alt="Image"></p>
                         </div>
 
                         
@@ -304,15 +179,15 @@
     <h2>其他文章</h2>
     <ul class="listing">
         
-        <li><a href="/post/2020/08/csharp-timezone/">C#: 時區轉換、民國西元、國曆農曆、中文月份週期</a></li>
+        <li><a href="/post/2022/10/jmeter/">使用 JMeter 來對 API 壓力測試吧</a></li>
         
-        <li><a href="/post/2021/08/set-default-value-with-model-when-fromuri/">菜雞抓蟲: 使用 FromUri 的複雜型別在有傳遞 QueryString 的情況下會先建立再賦值</a></li>
+        <li><a href="/post/2022/09/imtranslator/">在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧</a></li>
         
-        <li><a href="/post/2021/06/zero-width-space/">菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！</a></li>
+        <li><a href="/post/2022/08/devtoys/">DevToys —— 開發人員的瑞士刀工具箱</a></li>
         
-        <li><a href="/post/2020/11/bugs-install-dotnet-core-on-amazon-ami-requires-openssl/">菜雞抓蟲: 在 Amazon Linux AMI 安裝 .Net Core 時卡在 Requires: openssl-libs</a></li>
+        <li><a href="/post/2022/08/snispate/">Snispate —— 方便的截圖小幫手，放下剪取工具和小畫家吧</a></li>
         
-        <li><a href="/post/2020/09/csharp-trulp/">C#: 元組 (Tuple)</a></li>
+        <li><a href="/post/2022/06/angle-sharp/">C#: 使用 AngleSharp 爬蟲工具來抓取網頁內容吧</a></li>
         
     </ul>
 </div>
@@ -322,9 +197,9 @@
                             
                             <ul class="clearfix">
                                 
-                                <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
+                                <li><a href="https://igouist.github.io/tags/api">api</a></li>
                                 
-                                <li><a href="https://igouist.github.io/tags/bug">bug</a></li>
+                                <li><a href="https://igouist.github.io/tags/tools">tools</a></li>
                                 
                             </ul>
                             
@@ -2897,7 +2772,7 @@
 </script>
                         <hr/>
                         <p>哈囉，如果你也有 LikeCoin，也覺得我的文章有幫上忙的話，還請不吝給我拍拍手呦，謝謝～ ;) </p>
-<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2021%2f10%2fcsharp-datatime-tostring-cultureinfo%2f" width="100%" frameborder=0></iframe>
+<iframe class="LikeCoin" height="190" src="https://button.like.co/in/embed/igouist/button?referrer=https%3a%2f%2figouist.github.io%2fpost%2f2025%2f02%2fjmeter-constant-throughput-timer%2f" width="100%" frameborder=0></iframe>
                     </article>
                     
     
@@ -2926,26 +2801,6 @@
 </form>
     </section>
     
-    
-        <section class="widget">
-            <h3 class="widget-title">文章目錄</h3>
-            <ul class="widget-list">
-                <nav id="TableOfContents">
-  <ul>
-    <li><a href="#事發緣由">事發緣由</a></li>
-    <li><a href="#文化特性">文化特性</a>
-      <ul>
-        <li><a href="#datetimeformat">DateTimeFormat</a></li>
-        <li><a href="#numberformat">NumberFormat</a></li>
-        <li><a href="#invariantculture">InvariantCulture</a></li>
-      </ul>
-    </li>
-    <li><a href="#後日談">後日談</a></li>
-    <li><a href="#參考資料">參考資料</a></li>
-  </ul>
-</nav>
-            </ul>
-        </section>
     
     
     <section class="widget">
