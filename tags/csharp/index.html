@@ -115,6 +115,43 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2025/05/csharp-convert-html-to-pdf-using-dinktopdf/">C#: 使用 DinkToPdf 把 HTML 轉成 PDF 吧</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2025-5-3,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/y3Oofpkl.jpeg" alt="Image"></p>
+<p>最近做的一項需求是要把 HTML 轉換成 PDF，過程中決定使用 <a href="https://github.com/rdvojmoc/DinkToPdf">DinkToPdf</a> 來處理這一段。</p>
+<p>考慮到現在拿到的一些文件模板都是 HTML 檔了，感覺以後會蠻常碰到這個場景，決定來筆記一篇，給未來的我複製貼上。</p>
+<h3 id="環境準備">環境準備</h3>
+<p>首先，當然是要先到 Nuget 安裝這篇的主角：<a href="https://www.nuget.org/packages/DinkToPdf">DinkToPdf</a></p>
+<p><img src="https://i.imgur.com/vdQqBOll.jpeg" alt="Image"></p>
+<p>由於 DinkToPdf 只負責包裝給 C# 這段，<strong>實際上要產出 PDF 還得用到 wkhtmltopdf 這個工具</strong>，因此還需要先弄到 wkhtmltopdf 的檔案。</p>
+<p>不過作者也知道大家不是很想另外跑去找，所以 wkhtmltopdf 的組件檔案可以直接從 <a href="https://github.com/rdvojmoc/DinkToPdf/tree/master/v0.12.4">DinkToPdf 的 Repo</a> 拿。但要記得要按照作業系統下載對應的 wkhtmltopdf 檔案：</p>
+<ul>
+<li>Windows =&gt; libwkhtmltox.dll</li>
+<li>Linux =&gt; libwkhtmltox.so</li>
+<li>macOS =&gt; libwkhtmltox.dylib</li>
+</ul>
+<p><del>但全部都載也不會有人阻止你就是了。</del></p>
+<p>最後把 libwkhtmltox 放到專案的根目錄底下，DinkToPdf 就呼叫得到囉！<br/>（問就是魔法，不服的自己去啃 <a href="https://learn.microsoft.com/zh-tw/dotnet/standard/native-interop/pinvoke">P/Invoke</a>）</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2025/05/csharp-convert-html-to-pdf-using-dinktopdf/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/">使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2</a>
                                     </h1>
                                 </header>
@@ -533,51 +570,6 @@
                             </article>
                             <hr color="#D9D9D9" />
                         
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/">菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2021-10-4,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
-                                    
-                                        <a href="https://igouist.github.io/categories/bug">bug</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <p><img src="https://i.imgur.com/EMdGkwr.png" alt="Image"></p>
-<h2 id="事發緣由">事發緣由</h2>
-<p>咱們內部套件中有個方法，會將各個參數組合為 QueryString 去打指定的 Api。就是這麼稀鬆平常的場景，神奇的事情就發生了。</p>
-<p>同樣的套件、同樣的語法，在團隊中兩個人的電腦上安裝執行，卻是一個成功一個失敗。</p>
-<p>原來該方法的參數中，包含一欄型別為 DateTime 的資料，並且會把該欄位的值拿來 ToString() 再做為參數傳遞給目標 Api。</p>
-<p>而呼叫失敗的人就是在這個 <code>DateTime.ToString()</code> 的過程中<strong>產生了中文字</strong>，使得目標 Api 接到參數後，無法將中文字轉換回 DateTime 而發生了錯誤。</p>
-<p>問題就浮現了：<strong>同一行 DateTime.ToString() 在不同電腦執行的結果竟然不一樣？！</strong></p>
-<p>為了讓我們更快了解狀況，現在就簡單地使用 Linqpad 進行測試：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    DateTime.Now.ToString().Dump();
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>首先，在我的 Windows 時間設定中，完整時間的格式為 <code>09:40:07</code> ，也就是 24 小時制。</p>
-<p>現在讓我們先執行上面這段語法看看：</p>
-<pre tabindex="0"><code>// 2021/10/04 21:00:00
-</code></pre><p>接著讓我們變更時間格式看看。</p>
-<p>以我的 Win10 為例，在 Windows 工具列，也就是畫面的右下角右鍵，選擇 <code>調整日期時間 → 日期時間格式設定 → 變更資料格式</code>，將時間格式變更為 <code>上午 09:40:07</code>。</p>
-<p>重新啟動 Linqpad 再執行如下：</p>
-<pre tabindex="0"><code>// 2021/10/04 下午 09:00:00
-</code></pre><p>可以看到 <code>下午</code> 兩個字就蹦出來了！</p>
-<p>之所以會有這樣的差異，是因為 <code>DateTime.ToString()</code> 預設轉換的目標格式會是抓取目前執行緒的<strong>文化特性</strong>。</p>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
                     
 
                     
@@ -659,6 +651,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2025/05/csharp-convert-html-to-pdf-using-dinktopdf/" title="C#: 使用 DinkToPdf 把 HTML 轉成 PDF 吧">C#: 使用 DinkToPdf 把 HTML 轉成 PDF 吧</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2025/04/shin-sangoku-musou-origins/" title="《真三國無雙：起源》白金心得">《真三國無雙：起源》白金心得</a>
     </li>
     
@@ -694,10 +690,6 @@
         <a href="https://igouist.github.io/post/2024/08/dotnet-ioptions/" title=".Net: 使用 IOptions 取得 appsettings.json 的設定值吧">.Net: 使用 IOptions 取得 appsettings.json 的設定值吧</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2024/08/nine-sols/" title="《九日》白金心得">《九日》白金心得</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -724,7 +716,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (31)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (32)</a>
     </li>
     
     <li>
@@ -869,6 +861,8 @@
     
     <a href="https://igouist.github.io/tags/life/">life</a>
     
+    <a href="https://igouist.github.io/tags/line/">line</a>
+    
     <a href="https://igouist.github.io/tags/line-notify/">line-notify</a>
     
     <a href="https://igouist.github.io/tags/linux/">linux</a>
@@ -882,6 +876,8 @@
     <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
     
     <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/pdf/">pdf</a>
     
     <a href="https://igouist.github.io/tags/php/">php</a>
     
@@ -927,7 +923,7 @@
     <section class="widget">
     <h3 class="widget-title">統計資訊</h3>
     <ul class="widget-list">
-        <li>文章總數: 101</li>
+        <li>文章總數: 102</li>
         
         <li>瀏覽次數: <span id="busuanzi_value_site_pv">-</span></li>
         

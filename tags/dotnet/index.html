@@ -115,6 +115,43 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2025/05/csharp-convert-html-to-pdf-using-dinktopdf/">C#: 使用 DinkToPdf 把 HTML 轉成 PDF 吧</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2025-5-3,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/y3Oofpkl.jpeg" alt="Image"></p>
+<p>最近做的一項需求是要把 HTML 轉換成 PDF，過程中決定使用 <a href="https://github.com/rdvojmoc/DinkToPdf">DinkToPdf</a> 來處理這一段。</p>
+<p>考慮到現在拿到的一些文件模板都是 HTML 檔了，感覺以後會蠻常碰到這個場景，決定來筆記一篇，給未來的我複製貼上。</p>
+<h3 id="環境準備">環境準備</h3>
+<p>首先，當然是要先到 Nuget 安裝這篇的主角：<a href="https://www.nuget.org/packages/DinkToPdf">DinkToPdf</a></p>
+<p><img src="https://i.imgur.com/vdQqBOll.jpeg" alt="Image"></p>
+<p>由於 DinkToPdf 只負責包裝給 C# 這段，<strong>實際上要產出 PDF 還得用到 wkhtmltopdf 這個工具</strong>，因此還需要先弄到 wkhtmltopdf 的檔案。</p>
+<p>不過作者也知道大家不是很想另外跑去找，所以 wkhtmltopdf 的組件檔案可以直接從 <a href="https://github.com/rdvojmoc/DinkToPdf/tree/master/v0.12.4">DinkToPdf 的 Repo</a> 拿。但要記得要按照作業系統下載對應的 wkhtmltopdf 檔案：</p>
+<ul>
+<li>Windows =&gt; libwkhtmltox.dll</li>
+<li>Linux =&gt; libwkhtmltox.so</li>
+<li>macOS =&gt; libwkhtmltox.dylib</li>
+</ul>
+<p><del>但全部都載也不會有人阻止你就是了。</del></p>
+<p>最後把 libwkhtmltox 放到專案的根目錄底下，DinkToPdf 就呼叫得到囉！<br/>（問就是魔法，不服的自己去啃 <a href="https://learn.microsoft.com/zh-tw/dotnet/standard/native-interop/pinvoke">P/Invoke</a>）</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2025/05/csharp-convert-html-to-pdf-using-dinktopdf/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/">使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2</a>
                                     </h1>
                                 </header>
@@ -516,38 +553,6 @@
                             </article>
                             <hr color="#D9D9D9" />
                         
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2021-5-9,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <p><img src="https://i.imgur.com/aIHQL5Z.png" alt="Image"></p>
-<p>這是俺整理公司新訓內容的第三篇文章，目標是<strong>在 .NET Core 簡單地使用 Dapper 連線到資料庫並完成 CRUD 的功能</strong>。</p>
-<p>接續 <a href="/post/2021/05/newbie-2-webapi">上一篇</a> 的進度，我們接著要來連線到資料庫中完成我們的 Web Api 的 CRUD 範例。因為從新訓時期到現在工作團隊作業上主要都是使用 Dapper 來做連線資料庫的工作，這邊就直接用 Dapper 來推進吧！</p>
-<p><strong>Dapper 有多好用呢？它輕量、它簡單、它快速</strong>。總之先把大神們的介紹文直接拿來鎮樓：</p>
-<ul>
-<li><a href="https://blog.darkthread.net/blog/dapper/">短小精悍的.NET ORM神器 &ndash; Dapper - 黑暗執行緒</a></li>
-<li><a href="https://dotblogs.com.tw/mrkt/2016/06/10/153606">另一種資料存取對映處理方式的選擇 - Dapper - mrkt 的程式學習筆記</a></li>
-<li><a href="https://www.huanlintalk.com/2014/03/a-micro-orm-dapper.html">好用的微型 ORM：Dapper - Huanlin 學習筆記</a></li>
-</ul>
-<p>那麼按照慣例，我們先來 <del>吹捧今天的主角</del> 說明一點簡單的前因後果吧。想直接實作的朋友，可以跳到<a href="#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a>的小節呦。</p>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
                     
 
                     
@@ -629,6 +634,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2025/05/csharp-convert-html-to-pdf-using-dinktopdf/" title="C#: 使用 DinkToPdf 把 HTML 轉成 PDF 吧">C#: 使用 DinkToPdf 把 HTML 轉成 PDF 吧</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2025/04/shin-sangoku-musou-origins/" title="《真三國無雙：起源》白金心得">《真三國無雙：起源》白金心得</a>
     </li>
     
@@ -664,10 +673,6 @@
         <a href="https://igouist.github.io/post/2024/08/dotnet-ioptions/" title=".Net: 使用 IOptions 取得 appsettings.json 的設定值吧">.Net: 使用 IOptions 取得 appsettings.json 的設定值吧</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2024/08/nine-sols/" title="《九日》白金心得">《九日》白金心得</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -694,7 +699,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (31)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (32)</a>
     </li>
     
     <li>
@@ -839,6 +844,8 @@
     
     <a href="https://igouist.github.io/tags/life/">life</a>
     
+    <a href="https://igouist.github.io/tags/line/">line</a>
+    
     <a href="https://igouist.github.io/tags/line-notify/">line-notify</a>
     
     <a href="https://igouist.github.io/tags/linux/">linux</a>
@@ -852,6 +859,8 @@
     <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
     
     <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/pdf/">pdf</a>
     
     <a href="https://igouist.github.io/tags/php/">php</a>
     
@@ -897,7 +906,7 @@
     <section class="widget">
     <h3 class="widget-title">統計資訊</h3>
     <ul class="widget-list">
-        <li>文章總數: 101</li>
+        <li>文章總數: 102</li>
         
         <li>瀏覽次數: <span id="busuanzi_value_site_pv">-</span></li>
         

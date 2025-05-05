@@ -10,7 +10,123 @@
       <feedId>56200764111934464</feedId>
       <userId>41821085092905984</userId>
     </follow_challenge>
-    <lastBuildDate>Sun, 27 Apr 2025 20:00:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 03 May 2025 00:00:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>C#: 使用 DinkToPdf 把 HTML 轉成 PDF 吧</title>
+      <link>https://igouist.github.io/post/2025/05/csharp-convert-html-to-pdf-using-dinktopdf/</link>
+      <pubDate>Sat, 03 May 2025 00:00:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2025/05/csharp-convert-html-to-pdf-using-dinktopdf/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/y3Oofpkl.jpeg&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;最近做的一項需求是要把 HTML 轉換成 PDF，過程中決定使用 &lt;a href=&#34;https://github.com/rdvojmoc/DinkToPdf&#34;&gt;DinkToPdf&lt;/a&gt; 來處理這一段。&lt;/p&gt;
+&lt;p&gt;考慮到現在拿到的一些文件模板都是 HTML 檔了，感覺以後會蠻常碰到這個場景，決定來筆記一篇，給未來的我複製貼上。&lt;/p&gt;
+&lt;h3 id=&#34;環境準備&#34;&gt;環境準備&lt;/h3&gt;
+&lt;p&gt;首先，當然是要先到 Nuget 安裝這篇的主角：&lt;a href=&#34;https://www.nuget.org/packages/DinkToPdf&#34;&gt;DinkToPdf&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/vdQqBOll.jpeg&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;由於 DinkToPdf 只負責包裝給 C# 這段，&lt;strong&gt;實際上要產出 PDF 還得用到 wkhtmltopdf 這個工具&lt;/strong&gt;，因此還需要先弄到 wkhtmltopdf 的檔案。&lt;/p&gt;
+&lt;p&gt;不過作者也知道大家不是很想另外跑去找，所以 wkhtmltopdf 的組件檔案可以直接從 &lt;a href=&#34;https://github.com/rdvojmoc/DinkToPdf/tree/master/v0.12.4&#34;&gt;DinkToPdf 的 Repo&lt;/a&gt; 拿。但要記得要按照作業系統下載對應的 wkhtmltopdf 檔案：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Windows =&amp;gt; libwkhtmltox.dll&lt;/li&gt;
+&lt;li&gt;Linux =&amp;gt; libwkhtmltox.so&lt;/li&gt;
+&lt;li&gt;macOS =&amp;gt; libwkhtmltox.dylib&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;del&gt;但全部都載也不會有人阻止你就是了。&lt;/del&gt;&lt;/p&gt;
+&lt;p&gt;最後把 libwkhtmltox 放到專案的根目錄底下，DinkToPdf 就呼叫得到囉！&lt;br/&gt;（問就是魔法，不服的自己去啃 &lt;a href=&#34;https://learn.microsoft.com/zh-tw/dotnet/standard/native-interop/pinvoke&#34;&gt;P/Invoke&lt;/a&gt;）&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;libwkhtmltox 準備好之後，因為我的示範環境是 .Net 8 的 API，所以還需要註冊 DinkToPdf 的 &lt;code&gt;IConverter&lt;/code&gt; 到 DI 框架上。&lt;/p&gt;
+&lt;p&gt;這邊額外說明一下，&lt;code&gt;IConverter&lt;/code&gt; 其實有兩個版本的實作：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;BasicConverter&lt;/code&gt;：最直接的簡易版本，會直接去呼叫 libwkhtmltox&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;SynchronizedConverter&lt;/code&gt;：有搞執行緒安全的版本，會讓任務排隊依序處理&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;但通常我們就直接參考官方給的範例無腦註冊 &lt;code&gt;SynchronizedConverter&lt;/code&gt; 就行了：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;services.AddSingleton(&lt;span style=&#34;color:#66d9ef&#34;&gt;typeof&lt;/span&gt;(IConverter), &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; SynchronizedConverter(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; PdfTools()));
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這邊要特別提醒一點：&lt;strong&gt;DinkToPdf 的 IConverter 一定要註冊成單例！&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;即使今天不是使用 DI 框架來注入的話，也一定要把呼叫的 Converter 包裝成單例，否則會導致多個 Converter 去操作 libwkhtmltox 而發生錯誤。&lt;/p&gt;
+&lt;p&gt;如果在使用 DinkToPdf 的時候，發現產生的 PDF 會有「一次正常、一次跑版、一次正常、一次跑版」之類的靈異現象，通常就是沒有把 Converter 包成單例所造成的組件呼叫錯誤。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;如果懶得找檔案搞單例什麼的，也可以像我一樣，直接找人家包好的工具爽爽用：&lt;/p&gt;
+&lt;p&gt;這邊我選擇直接開 Nuget 安裝 &lt;a href=&#34;https://www.nuget.org/packages/HtmlToPdfConverter/&#34;&gt;HtmlToPdfConverter&lt;/a&gt;，它已經把 wkhtmltopdf 組件包含在套件裡了，還封裝了一層。我們只需要在 DI 註冊時加上：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;services.AddHtmlToPdfConverter();
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;它就會自己呼叫 &lt;code&gt;RuntimeInformation.IsOSPlatform&lt;/code&gt; 來載入對應的 libwkhtmltox 組件檔案了。（有興趣的朋友也可以參考 &lt;a href=&#34;https://github.com/Cr3ature/HtmlToPdfConverter/blob/master/Source/HtmlToPdfConverter.Core/Configuration/ServiceCollectionExtenstion.cs&#34;&gt;HtmlToPdfConverter Repo 的寫法&lt;/a&gt;）&lt;/p&gt;
+&lt;p&gt;不管是選擇自己放組件，還是直接挖人家包好的。總之材料準備好之後，就可以開工啦！&lt;/p&gt;
+&lt;h3 id=&#34;實作紀錄&#34;&gt;實作紀錄&lt;/h3&gt;
+&lt;p&gt;首先，假設我們有某組 HTML 內容：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; GetHtmlContent()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 為了簡單示範，直接寫死一組字串&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; html =
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;    &amp;lt;!DOCTYPE html&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;html lang=&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;zh-Hant&amp;#34;&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;head&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;meta charset=&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;UTF-8&amp;#34;&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;title&amp;gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;測試&lt;/span&gt; DinkToPdf&amp;lt;/title&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;style&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            body {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                font-family: &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&amp;#39;標楷體&amp;#39;&lt;/span&gt;, sans-serif;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                padding: &lt;span style=&#34;color:#ae81ff&#34;&gt;20&lt;/span&gt;px;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            h1 {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                color: &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;#&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;333&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;/style&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;/head&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;body&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;h1&amp;gt;Hello world&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;！&lt;/span&gt;&amp;lt;/h1&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &amp;lt;p&amp;gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;我來，我見，我&lt;/span&gt; PDF&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;。&lt;/span&gt;&amp;lt;/p&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;/body&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;/html&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&amp;#34;;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 我們也有可能是從檔案讀的嘛，留這段方便我複製貼上&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// var path = @&amp;#34;C:\temp\test.html&amp;#34;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// var html = File.ReadAllText(path, Encoding.UTF8);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; html;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著就是 DinkToPdf 上場的時候，首先我們需要宣告一組 &lt;code&gt;HtmlToPdfDocument&lt;/code&gt;，並設置一些文件相關的特性。&lt;/p&gt;
+&lt;p&gt;我們這種最簡單的例子，直接設定 A4 直向給他就可以了：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; doc = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; HtmlToPdfDocument()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    GlobalSettings = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; GlobalSettings()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        PaperSize = PaperKind.A4,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Orientation = Orientation.Portrait,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;};
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;補充：可調整的項目請參考 &lt;a href=&#34;https://github.com/rdvojmoc/DinkToPdf/blob/master/src/DinkToPdf/Settings/GlobalSettings.cs&#34;&gt;GlobalSettings.cs&lt;/a&gt; 的欄位，像是一些彩色／黑白啦、文件大小跟方向等等都可以從這裡調整。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;有了基本的文件之後，就可以直接把我們前面的 HTML 整坨塞進去：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;doc.Objects.Add(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ObjectSettings()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	HtmlContent = html,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	WebSettings = { DefaultEncoding = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;utf-8&amp;#34;&lt;/span&gt; },
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	HeaderSettings = { FontName = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;標楷體&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;});
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;都 OK 之後就可以把 &lt;code&gt;IConverter&lt;/code&gt; 叫出來轉檔案囉：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 為了方便示範直接 new 一個 SynchronizedConverter&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 實際使用時請從 DI 之類的地方取得單例物件重複用&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; converter = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; SynchronizedConverter(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; PdfTools());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; pdfBytes = converter.Convert(doc);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;最後就可以根據狀況，看是要存成檔案，還是要把 bytes[] 傳遞到下一站：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 把前面產生的 PDF 儲存成檔案&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 如果要繼續對 PDF 進行加工的話（例如後續用 PDFSharp 接手）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 也可以考慮傳遞上面的 pdfBytes 就好&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; outputPath = &lt;span style=&#34;color:#e6db74&#34;&gt;@&amp;#34;C:\temp\output.pdf&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;File.WriteAllBytes(outputPath, pdfBytes);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Console.WriteLine(&lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;已產生 PDF：{outputPath}&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這樣就搞定啦，馬上打開來看看：
+&lt;img src=&#34;https://i.imgur.com/UZlxDcnl.jpeg&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;後話&#34;&gt;後話&lt;/h3&gt;
+&lt;p&gt;如果像我一樣拿到 HTML 的樣板，最後要產製 PDF 的話，DinkToPdf 算是個不錯的小工具，尤其程式撰寫的部份蠻簡單的，相關設定丟一丟就可以直接轉換檔案了。&lt;/p&gt;
+&lt;p&gt;比起程式碼部份，反而環境設定的坑還比較多，如果沒乖乖丟組件檔案，又或是註冊的時候沒有好好做成單例，就會發生各種怪怪的事情（果然還是留一篇筆記給未來的我抄比較安全）&lt;/p&gt;
+&lt;p&gt;原本有考慮 PdfSharp 最常搭配的 HtmlRenderer.PdfSharp，但它已經&lt;a href=&#34;https://github.com/ArthurHub/HTML-Renderer&#34;&gt;停止維護&lt;/a&gt;；而看起來像是移植版本的 HtmlRendererCore.PdfSharp 光用 Linqpad 裝看看就跳出一排東西，實在不敢直接用：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/VNVILNjl.jpeg&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;最後繞了半圈，還是把 libwkhtmltox.dll 丟一丟、DinkToPdf 叫一叫最簡單方便，畢竟早點下班才是正義，阿彌陀佛。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>《真三國無雙：起源》白金心得</title>
       <link>https://igouist.github.io/post/2025/04/shin-sangoku-musou-origins/</link>
