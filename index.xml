@@ -40,7 +40,7 @@
 &lt;li&gt;&lt;code&gt;SynchronizedConverter&lt;/code&gt;：有搞執行緒安全的版本，會讓任務排隊依序處理&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;但通常我們就直接參考官方給的範例無腦註冊 &lt;code&gt;SynchronizedConverter&lt;/code&gt; 就行了：&lt;/p&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;services.AddSingleton(&lt;span style=&#34;color:#66d9ef&#34;&gt;typeof&lt;/span&gt;(IConverter), &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; SynchronizedConverter(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; PdfTools()));
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;services.AddSingleton&amp;lt;IConverter&amp;gt;(_ =&amp;gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; SynchronizedConverter(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; PdfTools()));
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這邊要特別提醒一點：&lt;strong&gt;DinkToPdf 的 IConverter 一定要註冊成單例！&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;即使今天不是使用 DI 框架來注入的話，也一定要把呼叫的 Converter 包裝成單例，否則會導致多個 Converter 去操作 libwkhtmltox 而發生錯誤。&lt;/p&gt;
 &lt;p&gt;如果在使用 DinkToPdf 的時候，發現產生的 PDF 會有「一次正常、一次跑版、一次正常、一次跑版」之類的靈異現象，通常就是沒有把 Converter 包成單例所造成的組件呼叫錯誤。&lt;/p&gt;

@@ -153,7 +153,7 @@
 <li><code>SynchronizedConverter</code>：有搞執行緒安全的版本，會讓任務排隊依序處理</li>
 </ul>
 <p>但通常我們就直接參考官方給的範例無腦註冊 <code>SynchronizedConverter</code> 就行了：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddSingleton(<span style="color:#66d9ef">typeof</span>(IConverter), <span style="color:#66d9ef">new</span> SynchronizedConverter(<span style="color:#66d9ef">new</span> PdfTools()));
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddSingleton&lt;IConverter&gt;(_ =&gt; <span style="color:#66d9ef">new</span> SynchronizedConverter(<span style="color:#66d9ef">new</span> PdfTools()));
 </span></span></code></pre></div><p>這邊要特別提醒一點：<strong>DinkToPdf 的 IConverter 一定要註冊成單例！</strong></p>
 <p>即使今天不是使用 DI 框架來注入的話，也一定要把呼叫的 Converter 包裝成單例，否則會導致多個 Converter 去操作 libwkhtmltox 而發生錯誤。</p>
 <p>如果在使用 DinkToPdf 的時候，發現產生的 PDF 會有「一次正常、一次跑版、一次正常、一次跑版」之類的靈異現象，通常就是沒有把 Converter 包成單例所造成的組件呼叫錯誤。</p>
@@ -302,7 +302,7 @@
   
     var key = "2025-05-03";
     var value = dataMap.get(key);
-    var wordCount =  1683 ;
+    var wordCount =  1684 ;
     var link = "/post/2025/05/csharp-convert-html-to-pdf-using-dinktopdf/";
     var title = "C#: 使用 DinkToPdf 把 HTML 轉成 PDF 吧";
     
@@ -3221,7 +3221,7 @@
         
         <li>本站訂閱: <a href="https://igouist.github.io/index.xml" target="_blank"><u>RSS</u> (index.xml)</a></li>
         
-        <li>本文字數：1683</li>
+        <li>本文字數：1684</li>
         
     </ul>
 </section>
