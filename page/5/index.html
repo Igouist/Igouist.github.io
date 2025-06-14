@@ -106,6 +106,58 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2021/08/set-default-value-with-model-when-fromuri/" title="菜雞抓蟲: 使用 FromUri 的複雜型別在有傳遞 QueryString 的情況下會先建立再賦值" >菜雞抓蟲: 使用 FromUri 的複雜型別在有傳遞 QueryString 的情況下會先建立再賦值</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2021-8-19,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p><img src="https://i.imgur.com/TuGp6Lk.png" alt="Image"></p>
+<h2 id="事發緣由">事發緣由</h2>
+<p>在 .net Framework 4.6.2 MVC 的 ApiController 中，某個查詢資料列表的方法除了提供查詢條件的參數以外，還有提供選擇性的分頁參數。也就是像這樣子：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-CSharp" data-lang="CSharp"><span style="display:flex;"><span><span style="color:#a6e22e">[HttpGet]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IEnumerable&lt;Boo&gt; GetBoos(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromUri]</span> SearchBooParameter parameter,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromUri]</span> PagingParameter paging = <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 呼叫 Service 查資料...</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>由於需要調整該功能的預設排序，改為由大到小，又不想背負更改大量共用的 <code>PagingParameter</code> 去影響到其他使用到的地方，決定在 Controller 這裡簡單用預測值加上判斷處理一下就好</p>
+<p>相信著「若使用者沒有傳遞 paging 相關的參數，應該就會是給定的預設值 <code>null</code> 吧！」的我，用了 <code>if (paging is null)</code> 進行判斷：若是 <code>null</code> 的情況就將其中用來標示排序方向的成員 <code>isDesc</code> 設定為 true，開開心心交差。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-CSharp" data-lang="CSharp"><span style="display:flex;"><span><span style="color:#a6e22e">[HttpGet]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> IEnumerable&lt;Boo&gt; GetBoos(
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromUri]</span> SearchBooParameter parameter,
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">    [FromUri]</span> PagingParameter paging = <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (paging <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        paging = <span style="color:#66d9ef">new</span> PagingParameter();
+</span></span><span style="display:flex;"><span>        paging.isDesc = <span style="color:#66d9ef">true</span>; <span style="color:#75715e">// 預設由大到小</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 呼叫 Service 查資料...</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>但實際使用之後發現：即使只有傳入查詢條件參數、未傳遞 paging 時，資料仍然由小到大顯示，且 <code>paging.isDesc</code> 竟然是 false，並未被更改到。也就是說，即使未傳遞 paging，它也並不是 null！</p>
+<p>實測之後發現：若在呼叫該 API 的時候，給定一個完全無關的參數，例如 <code>?a=1</code>，則 paging 還是會被建立一個實體出來，並無視 <code>= null</code> 這個預設值。因此就導致了非預期（＝跟我想的不一樣啊！）的行為。</p>
+<p>這邊直接先講結論：<strong>如果有傳遞 QueryString 的任何參數時，不管這些參數跟指定的類別有沒有關係，放在 <code>[FromUri]</code> 的複雜型別都會先建立出實體，再嘗試和 QueryString 的內容進行比對與設值</strong>。</p>
+<p>設定在 <code>[FromUri]</code> 的複雜型別身上的預設值，像是 <code>[FromUri] PagingParameter paging = null</code> 只有完全沒給任何 QueryString 的時候才會吃到。（不過因為預設值只能是常數的關係，基本上就是指 defualt 的 null）</p>
+<p>因此如果遇到要給定預設值的場合，還是得乖乖地針對型別中的成員做設定比較保險，例如 <code>bool isDesc { get; set; } = true</code>。另外，因為完全沒給 QueryString 的時候還是會是 null，故該有的參數檢查仍然不能漏了。</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2021/08/set-default-value-with-model-when-fromuri/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2021/06/zero-width-space/" title="菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！" >菜雞抓蟲: Url 變得怪怪的？你可能是零寬空格（ZWSP）的受害者！</a>
                                 </h1>
                             </header>
@@ -504,35 +556,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2021/03/visual-studio-bookmark/" title="Visual Studio: 書籤 (bookmarks)" >Visual Studio: 書籤 (bookmarks)</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2021-3-13,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/tools">Tools</a></span>
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/ide">IDE</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p>今天從同事們那邊學到了書籤這個方便功能，趁還記得的時候來做個紀錄。</p>
-<p>那麼馬上就來操作一次：</p>
-<p>使用 <code>Ctrl K</code>, <code>Ctrl K</code> 可以在指定的行號上加上一個「書籤」</p>
-<p><img src="https://i.imgur.com/uSBHhGt.png" alt=""></p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2021/03/visual-studio-bookmark/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -648,6 +671,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2025/06/imgur-temporarily-over-capacity-maybe-your-ip-banned/" title="Imgur 一直 temporarily over capacity 嗎？你可能被關小黑屋了">Imgur 一直 temporarily over capacity 嗎？你可能被關小黑屋了</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2025/06/disable-onedrive-sync-and-restore-documents-folder/" title="Windows: 關閉 OneDrive 同步，並把我的文件移回預設路徑">Windows: 關閉 OneDrive 同步，並把我的文件移回預設路徑</a>
     </li>
     
@@ -681,10 +708,6 @@
     
     <li>
         <a href="https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/" title="使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2">使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2024/08/dotnet-feature-flag-and-feature-management/" title=".Net: 使用 FeatureManagement 套件來實作功能切換（Feature Toggle）吧">.Net: 使用 FeatureManagement 套件來實作功能切換（Feature Toggle）吧</a>
     </li>
     
 </ul>
@@ -733,7 +756,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/murmur/">murmur (1)</a>
+        <a href="https://igouist.github.io/categories/murmur/">murmur (2)</a>
     </li>
     
     <li>
@@ -829,6 +852,10 @@
     <a href="https://igouist.github.io/tags/bug/">bug</a>
     
     <a href="https://igouist.github.io/tags/chrome/">chrome</a>
+    
+    <a href="https://igouist.github.io/tags/code-readability/">code-readability</a>
+    
+    <a href="https://igouist.github.io/tags/copilot/">copilot</a>
     
     <a href="https://igouist.github.io/tags/crawler/">crawler</a>
     
@@ -926,7 +953,7 @@
     <section class="widget">
     <h3 class="widget-title">統計資訊</h3>
     <ul class="widget-list">
-        <li>文章總數: 103</li>
+        <li>文章總數: 104</li>
         
         <li>瀏覽次數: <span id="busuanzi_value_site_pv">-</span></li>
         

@@ -106,6 +106,50 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2025/06/imgur-temporarily-over-capacity-maybe-your-ip-banned/" title="Imgur 一直 temporarily over capacity 嗎？你可能被關小黑屋了" >Imgur 一直 temporarily over capacity 嗎？你可能被關小黑屋了</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2025-6-14,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/murmur">murmur</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <blockquote>
+<p>直接先講結論，給正在查這條錯誤訊息而來到這邊的朋朋參考：</p>
+<ol>
+<li>先看 <a href="https://status.imgur.com/">imgur status</a> 確定 Imgur 服務有沒有正常</li>
+<li>優先判斷是不是網路問題：如果有其他網路，更換網路試試看</li>
+<li>如果開著 VPN，關掉再試試看； 反之如果沒開 VPN，找一組跳去外國試看看</li>
+<li>到這邊還是不行的話，代表你遇到的狀況跟我不一樣，就，祝你好運</li>
+</ol>
+</blockquote>
+<p>前陣子寫文章要上傳圖片的時候一直無法上傳，覺得奇怪就去 Imgur 看了一下，結果登入按了啥反應也沒有，忘記密碼也沒反應。</p>
+<p>開 F12 只看到 &ldquo;Imgur is temporarily over capacity. Please try again later.&quot;，例如忘記密碼的回應：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;data&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;error&#34;</span>: <span style="color:#e6db74">&#34;Imgur is temporarily over capacity. Please try again later.&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;success&#34;</span>: <span style="color:#66d9ef">false</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;status&#34;</span>: <span style="color:#ae81ff">500</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>奇怪的是用手機的 Imgur 可以正常登入，但換成筆電仍然是不能登入。但既然錯誤訊息都說它們已經 over capacity 了，這點輕微的靈異現象應該也都是合理的（吧）</p>
+<p>本來想說「那就等等唄，誰系統沒壞過」，秉持一份工程師不為難工程師的善心，大不了就等系統恢復再用就好</p>
+<p>但幾天過去了，感覺事情越來越不對勁……</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2025/06/imgur-temporarily-over-capacity-maybe-your-ip-banned/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2025/06/disable-onedrive-sync-and-restore-documents-folder/" title="Windows: 關閉 OneDrive 同步，並把我的文件移回預設路徑" >Windows: 關閉 OneDrive 同步，並把我的文件移回預設路徑</a>
                                 </h1>
                             </header>
@@ -440,64 +484,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2024/08/dotnet-feature-flag-and-feature-management/" title=".Net: 使用 FeatureManagement 套件來實作功能切換（Feature Toggle）吧" >.Net: 使用 FeatureManagement 套件來實作功能切換（Feature Toggle）吧</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-8-18,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p><img src="https://i.imgur.com/926KRip.png" alt="Image"></p>
-<p>在做上一篇 <a href="/post/2024/08/dotnet-ioptions">IOptions</a> 的筆記時，剛好看到 FeatureManagement 這香東西。<br/>馬上來收錄一篇。順便也簡單整理一下 Feature Flag (≒Feature Toggle) 的介紹。</p>
-<div class="toc">
-    <nav id="TableOfContents">
-  <ul>
-    <li><a href="#認識一下-feature-flag">認識一下 Feature Flag</a></li>
-    <li><a href="#環境準備microsoftfeaturemanagement">環境準備：Microsoft.FeatureManagement</a></li>
-    <li><a href="#實作使用-isenabledasync-拿到-feature-flag-的值">實作：使用 IsEnabledAsync 拿到 Feature Flag 的值</a></li>
-    <li><a href="#實作使用-featuregate-來啟用和停用-api">實作：使用 FeatureGate 來啟用和停用 API</a></li>
-    <li><a href="#實作使用-featurefilter-自訂篩選條件隨機抽取使用者">實作：使用 FeatureFilter 自訂篩選條件、隨機抽取使用者</a></li>
-    <li><a href="#實作使用-featurefilter-來根據白名單啟用-api">實作：使用 FeatureFilter 來根據白名單啟用 API</a></li>
-    <li><a href="#小結">小結</a></li>
-    <li><a href="#參考資料">參考資料</a></li>
-  </ul>
-</nav>
-</div>
-<h2 id="認識一下-feature-flag">認識一下 Feature Flag</h2>
-<blockquote>
-<p>本部落格秉持著「簡單、友善、我好菜」的精神，按照慣例先簡單介紹一下<br/>
-已經知道的朋友就可以跳過這個小節，直接前往 #環境準備 囉。</p>
-</blockquote>
-<p>假設我們原本有 Old 邏輯：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Old();
-</span></span></code></pre></div><p>天庭傳來諭令，要我們改成 New 邏輯。這簡單，我們就把 Old 砍掉，換成 New。非常自然，改完就佈版</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>New();
-</span></span></code></pre></div><p>隔天，天庭又傳來諭令，New 需要調整一下，先不要了<br/>
-現在我們又需要把 New 邏輯砍掉，讓 Old 邏輯回來。<br/>
-簡單，但看來我們得再上一版</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>Old();
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// New();</span>
-</span></span></code></pre></div><p>再隔天，大家可能猜到天庭又要幹嘛了，總之又上了一版</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Old();</span>
-</span></span><span style="display:flex;"><span>New();
-</span></span></code></pre></div><p>如此往復三萬八千次，工程師終於受不了了：「俺老孫每天在這切換 Old 跟 New，改完還得佈版，每天搞這些就飽了，我滴媽呀，不幹了」</p>
-<p>就在老孫關燈走人的那一瞬間，突然靈光一現：等等，<strong>俺加個開關還不行嗎？</strong></p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2024/08/dotnet-feature-flag-and-feature-management/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -609,6 +595,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2025/06/imgur-temporarily-over-capacity-maybe-your-ip-banned/" title="Imgur 一直 temporarily over capacity 嗎？你可能被關小黑屋了">Imgur 一直 temporarily over capacity 嗎？你可能被關小黑屋了</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2025/06/disable-onedrive-sync-and-restore-documents-folder/" title="Windows: 關閉 OneDrive 同步，並把我的文件移回預設路徑">Windows: 關閉 OneDrive 同步，並把我的文件移回預設路徑</a>
     </li>
     
@@ -642,10 +632,6 @@
     
     <li>
         <a href="https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/" title="使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2">使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2</a>
-    </li>
-    
-    <li>
-        <a href="https://igouist.github.io/post/2024/08/dotnet-feature-flag-and-feature-management/" title=".Net: 使用 FeatureManagement 套件來實作功能切換（Feature Toggle）吧">.Net: 使用 FeatureManagement 套件來實作功能切換（Feature Toggle）吧</a>
     </li>
     
 </ul>
@@ -694,7 +680,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/murmur/">murmur (1)</a>
+        <a href="https://igouist.github.io/categories/murmur/">murmur (2)</a>
     </li>
     
     <li>
@@ -790,6 +776,10 @@
     <a href="https://igouist.github.io/tags/bug/">bug</a>
     
     <a href="https://igouist.github.io/tags/chrome/">chrome</a>
+    
+    <a href="https://igouist.github.io/tags/code-readability/">code-readability</a>
+    
+    <a href="https://igouist.github.io/tags/copilot/">copilot</a>
     
     <a href="https://igouist.github.io/tags/crawler/">crawler</a>
     
@@ -887,7 +877,7 @@
     <section class="widget">
     <h3 class="widget-title">統計資訊</h3>
     <ul class="widget-list">
-        <li>文章總數: 103</li>
+        <li>文章總數: 104</li>
         
         <li>瀏覽次數: <span id="busuanzi_value_site_pv">-</span></li>
         
