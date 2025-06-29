@@ -10,7 +10,86 @@
       <feedId>56200764111934464</feedId>
       <userId>41821085092905984</userId>
     </follow_challenge>
-    <lastBuildDate>Sat, 14 Jun 2025 13:30:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 29 Jun 2025 15:00:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>.Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧</title>
+      <link>https://igouist.github.io/post/2025/06/dotnet-using-iservicecollection-extensions-to-enforce-registration-constraints/</link>
+      <pubDate>Sun, 29 Jun 2025 15:00:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2025/06/dotnet-using-iservicecollection-extensions-to-enforce-registration-constraints/</guid>
+      <description>&lt;p&gt;在之前的&lt;a href=&#34;https://igouist.github.io/post/2021/11/newbie-6-dependency-injection&#34;&gt;依賴注入文章&lt;/a&gt;的「組合根請稍作分類」小節，我們介紹過使用 IServiceCollection 的擴充方法來對要註冊的服務進行分類和管理的做法：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ServiceCollectionExtensions&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/// 註冊 Nice Service&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; IServiceCollection AddNiceServices(&lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt; IServiceCollection services)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		services.AddScoped&amp;lt;INiceService, NiceService&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// ...一些相關的註冊&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;		&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; services;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Program.cs&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;builder.Services.AddNiceServices();
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;一直以來我都採用這個方法來簡單地拆分我的服務註冊，在大多數的場合已經足夠使用（尤其是只關注目前的專案時）。&lt;/p&gt;
+&lt;p&gt;但前幾天在看某個套件的實作時，開發的朋朋跟我分享了一些延伸的做法，感覺合理又常見，屬於有注意到就會記得的小技巧，決定馬上來記錄一篇筆記。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;場景是這樣的：當我們在開發套件的時候，常常會有主要套件跟擴充用的延伸套件。&lt;/p&gt;
+&lt;p&gt;例如說，我可能會有一個主要的 &lt;code&gt;NiceTool&lt;/code&gt; 套件，跟擴展前者的 &lt;code&gt;NiceTool.Memory&lt;/code&gt; 套件&lt;/p&gt;
+&lt;p&gt;這兩個套件都會需要對 IServiceCollection 註冊一些服務，並且延伸套件 &lt;code&gt;NiceTool.Memory&lt;/code&gt; 需要確認 &lt;code&gt;NiceTool&lt;/code&gt; 的服務都有進行註冊才能正常運作。&lt;/p&gt;
+&lt;p&gt;如果我們想要先確保主要套件 &lt;code&gt;NiceTool&lt;/code&gt; 的服務都註冊了，再處理 &lt;code&gt;NiceTool.Memory&lt;/code&gt;，同時又想保留擴充組合的彈性給以後的 &lt;code&gt;NiceTool.SqlServer&lt;/code&gt;，甚至我們可能想在兩者各自的註冊加點工、傳遞點資訊，可以怎麼辦呢？&lt;/p&gt;
+&lt;p&gt;這時候就可以考慮&lt;strong&gt;包一個自家的 Builder，用這個 Builder 來把這些套件給串起來&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;以上面的例子來說，我可以製作一個 &lt;code&gt;INiceToolBuilder&lt;/code&gt;，並且把服務註冊時要用到的 &lt;code&gt;IServiceCollection&lt;/code&gt; 包在裡面：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;interface&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;INiceToolBuilder&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	IServiceCollection Services { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;NiceToolBuilder&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IServiceCollection Services { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; NiceToolBuilder(IServiceCollection services)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Services = services;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著，在作為註冊起點的主要套件 &lt;code&gt;NiceTool&lt;/code&gt; 裡，我就可以提供一個產生 &lt;code&gt;INiceToolBuilder&lt;/code&gt; 的擴充方法：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; INiceToolBuilder AddNiceTools(&lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt; IServiceCollection services)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	services.AddScoped&amp;lt;INiceService, NiceService&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#75715e&#34;&gt;// ...一些相關的註冊&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; builder = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; NiceToolBuilder(services);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; builder;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著，在延伸的 &lt;code&gt;NiceTool.Memory&lt;/code&gt;，我就可以接續著使用 &lt;code&gt;INiceToolBuilder&lt;/code&gt; 來對 &lt;code&gt;IServiceCollection&lt;/code&gt; 進行服務註冊：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; INiceToolBuilder AddNiceMemoryTools(&lt;span style=&#34;color:#66d9ef&#34;&gt;this&lt;/span&gt; INiceToolBuilder builder)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#75715e&#34;&gt;// 對 INiceToolBuilder 帶進來的 IServiceCollection 繼續進行服務註冊&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	builder.Services.AddScoped&amp;lt;INiceMemoryService, NiceMemoryService&amp;gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#75715e&#34;&gt;// ...一些相關的註冊&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; builder;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如此一來，我們就可以&lt;strong&gt;明示&lt;/strong&gt;使用者在註冊的時候，先把主要套件提供的服務註冊方法呼叫完並取得 &lt;code&gt;INiceToolBuilder&lt;/code&gt;，再進行延伸套件的服務註冊。如果有什麼資訊需要帶著一起走，也可以直接包在裡面就好。&lt;/p&gt;
+&lt;p&gt;在 &lt;code&gt;Program.cs&lt;/code&gt; 也可以用我們熟悉的串串樂舒暢地一路串完，並讓使用者自行組合：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;builder.Services
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	.AddNiceServices()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	.AddNiceMemoryTools();
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;是不是看起來乾淨舒服，又方便有約束力呢。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;為什麼會說這是「有注意到就會記得的小技巧」呢？因為這個做法其實還蠻常見的，尤其是各種套件和工具。&lt;/p&gt;
+&lt;p&gt;例如大家應該都很熟悉的 &lt;code&gt;AddHealthChecks()&lt;/code&gt;，回傳的就是 &lt;code&gt;IHealthChecksBuilder&lt;/code&gt;，後續就能接著去呼叫另一顆套件的 &lt;code&gt;AddSqlServer()&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;又或者是我們 &lt;a href=&#34;https://igouist.github.io/post/2024/08/dotnet-ioptions/&#34;&gt;IOptions 文章&lt;/a&gt;介紹過的 &lt;code&gt;AddOptions()&lt;/code&gt;，回傳的是 &lt;code&gt;OptionsBuilder&lt;/code&gt;；&lt;br/&gt;隔壁的 &lt;code&gt;AddLogging()&lt;/code&gt; 提供傳入 &lt;code&gt;ILoggingBuilder&lt;/code&gt; 的委派作為參數等等……&lt;/p&gt;
+&lt;p&gt;如果只是一路 &lt;code&gt;Add()&lt;/code&gt; &lt;code&gt;Use()&lt;/code&gt; &lt;code&gt;Add()&lt;/code&gt; &lt;code&gt;Use()&lt;/code&gt;，可能就不會注意到這個設計上的小巧思。&lt;/p&gt;
+&lt;p&gt;像我個人以前比較少做套件，大多時候都在服務內處理，習慣 IServiceCollection 幹到底，就不曾留心在這部份過。這次有朋朋跟我分享了這個眉角，馬上跟之前註冊各種套件工具時的記憶連了起來。&lt;/p&gt;
+&lt;p&gt;延伸想了一下，同樣的概念也不是只有套件開發的時候會用到，那不如記錄下來，以後才方便抄(?)&lt;/p&gt;
+&lt;p&gt;如此如此，這般這般，又成功靠偷朋朋的小技巧水了一篇，功德圓滿，阿彌陀佛。&lt;/p&gt;</description>
+    </item>
+    
     <item>
       <title>Imgur 一直 temporarily over capacity 嗎？先檢查網路看看吧</title>
       <link>https://igouist.github.io/post/2025/06/imgur-temporarily-over-capacity-maybe-your-ip-banned/</link>

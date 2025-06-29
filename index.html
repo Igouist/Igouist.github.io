@@ -106,6 +106,47 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2025/06/dotnet-using-iservicecollection-extensions-to-enforce-registration-constraints/" title=".Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧" >.Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2025-6-29,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p>在之前的<a href="https://igouist.github.io/post/2021/11/newbie-6-dependency-injection">依賴注入文章</a>的「組合根請稍作分類」小節，我們介紹過使用 IServiceCollection 的擴充方法來對要註冊的服務進行分類和管理的做法：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ServiceCollectionExtensions</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;summary&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// 註冊 Nice Service</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/// &lt;/summary&gt;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> IServiceCollection AddNiceServices(<span style="color:#66d9ef">this</span> IServiceCollection services)
+</span></span><span style="display:flex;"><span>	{
+</span></span><span style="display:flex;"><span>		services.AddScoped&lt;INiceService, NiceService&gt;();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// ...一些相關的註冊</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> services;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// Program.cs</span>
+</span></span><span style="display:flex;"><span>builder.Services.AddNiceServices();
+</span></span></code></pre></div><p>一直以來我都採用這個方法來簡單地拆分我的服務註冊，在大多數的場合已經足夠使用（尤其是只關注目前的專案時）。</p>
+<p>但前幾天在看某個套件的實作時，開發的朋朋跟我分享了一些延伸的做法，感覺合理又常見，屬於有注意到就會記得的小技巧，決定馬上來記錄一篇筆記。</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2025/06/dotnet-using-iservicecollection-extensions-to-enforce-registration-constraints/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2025/06/imgur-temporarily-over-capacity-maybe-your-ip-banned/" title="Imgur 一直 temporarily over capacity 嗎？先檢查網路看看吧" >Imgur 一直 temporarily over capacity 嗎？先檢查網路看看吧</a>
                                 </h1>
                             </header>
@@ -440,51 +481,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/" title="使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2" >使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2024-8-25,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p><img src="https://i.imgur.com/YLnFkUH.png" alt="Image"></p>
-<p>這週忙著打黑悟空，簡單記一下前陣子同事遇到的一個場景：</p>
-<p>由於曆法的關係，SQL Server 的 datetime 範圍只能從 1753-01-01 開始。<br/>如果我們要寫入 0001-01-01 進去的話就會報錯</p>
-<pre tabindex="0"><code>SqlDateTime overflow. Must be between 1/1/1753 12:00:00 AM and 12/31/9999 11:59:59 PM.
-</code></pre><blockquote>
-<p>補充：關於曆法的部份，有興趣的朋友可以參考這篇：<br/><a href="https://sharedderrick.blogspot.com/2009/09/blog-post.html">淺談：消失的日期，以關聯式資料庫的日期資料類型為例 - 德瑞克：SQL Server 學習筆記</a></p>
-</blockquote>
-<p>這時候通常去把資料表欄位改成香香的 datetime2 就可以搞定，爽爽寫入 0001-01-01。</p>
-<p>但如果我們正在使用 Dapper，預設會把 C# 的 DateTime 映射到 SQL Server 的 datetime，所以還是會寫入失敗。</p>
-<p>這時候我們就需要明確地請 Dapper 幫我們使用 datetime2 來進行處理。</p>
-<hr>
-<p>如果傳遞的只是某個參數，使用 <code>DbType</code> 就行了：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> parameters = <span style="color:#66d9ef">new</span> DynamicParameters();
-</span></span><span style="display:flex;"><span>parameters.Add(<span style="color:#e6db74">&#34;@Birthday&#34;</span>, birthday, DbType.DateTime2);
-</span></span></code></pre></div><p>但如果傳遞的是某個 Model 裡的特定欄位呢？例如：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HistoricalEvent</span>
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Guid EventId { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }       <span style="color:#75715e">// 歷史事件的唯一識別碼</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Description { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } <span style="color:#75715e">// 歷史事件的描述</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> DateTime EventDate { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; } <span style="color:#75715e">// 歷史事件發生的日期, 可能早於 1753 年！</span>
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>這種時候就可以使用 AddTypeMap 來調整一下 Dapper 的映射型別。</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -596,6 +592,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2025/06/dotnet-using-iservicecollection-extensions-to-enforce-registration-constraints/" title=".Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧">.Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2025/06/imgur-temporarily-over-capacity-maybe-your-ip-banned/" title="Imgur 一直 temporarily over capacity 嗎？先檢查網路看看吧">Imgur 一直 temporarily over capacity 嗎？先檢查網路看看吧</a>
     </li>
     
@@ -631,10 +631,6 @@
         <a href="https://igouist.github.io/post/2024/09/vscode-live-share/" title="VSCode: 使用 LiveShare 來即時線上協作吧">VSCode: 使用 LiveShare 來即時線上協作吧</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/" title="使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2">使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -661,7 +657,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (32)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (33)</a>
     </li>
     
     <li>
@@ -876,7 +872,7 @@
     <section class="widget">
     <h3 class="widget-title">統計資訊</h3>
     <ul class="widget-list">
-        <li>文章總數: 104</li>
+        <li>文章總數: 105</li>
         
         <li>瀏覽次數: <span id="busuanzi_value_site_pv">-</span></li>
         
