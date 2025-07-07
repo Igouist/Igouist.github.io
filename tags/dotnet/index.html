@@ -115,6 +115,48 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2025/07/dotnet-add-watermark-and-password-to-pdf-using-pdfsharp/">.Net: 使用 PDFSharp 在 PDF 加上浮水印和檔案密碼吧</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2025-7-7,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://image.igouist.net/0651b31b-6182-4988-bc4e-026afdbf34b0_11zon.jpg" alt=""></p>
+<p>接續前一篇 <a href="/post/2025/05/csharp-convert-html-to-pdf-using-dinktopdf/">使用 DinkToPdf 把 HTML 轉成 PDF</a>，這篇要來用 PDFSharp 對 PDF 檔案進行一些小小的調整。基本上就是紀錄一下這次遇到的需求和一些坑，主要的內容會有：</p>
+<ul>
+<li>替 PDF 加上浮水印</li>
+<li>實作 FontResolver 以支援中文字，避免 ⎕⎕⎕</li>
+<li>替 PDF 加上檔案密碼</li>
+</ul>
+<hr>
+<p>首先當然是要先安裝 <a href="https://www.nuget.org/packages/PDFsharp">PDFSharp</a> 套件：</p>
+<p><img src="https://image.igouist.net/PixPin_2025-07-07_15-54-50_11zon.jpg" alt=""></p>
+<p>接續上次的進度，我們把 PDF 檔案弄成了一組 <code>byte[]</code>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 在上一篇文章，我們使用 DinkToPdf 把 Html 轉成了 PDF 檔案的 byte[]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> pdfBytes = converter.Convert(doc);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 或是打開已存在的 PDF 檔案（留著讓我以後複製貼上）</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// var pdfBytes = File.ReadAllBytes(@&#34;C:\temp\output.pdf&#34;);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用 PdfSharp 由記憶體串流讀取轉換後的 PDF，開啟模式設定為 Modify（可以進行修改）</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">using</span> var document = PdfReader.Open(<span style="color:#66d9ef">new</span> MemoryStream(pdfBytes), PdfDocumentOpenMode.Modify);
+</span></span></code></pre></div><p>現在我們已經用 PDFSharp 開啟這個 PDF 檔案了，接著就讓我們從加上簡單的浮水印開始吧！</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2025/07/dotnet-add-watermark-and-password-to-pdf-using-pdfsharp/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2025/06/dotnet-using-iservicecollection-extensions-to-enforce-registration-constraints/">.Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧</a>
                                     </h1>
                                 </header>
@@ -530,40 +572,6 @@
                             </article>
                             <hr color="#D9D9D9" />
                         
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/">C#: BenchmarkDotnet —— 效能測試好簡單</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2021-6-13,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <p><img src="https://i.imgur.com/rhmeAUi.png" alt=""></p>
-<p>「你寫那什麼鬼東西？這個ＯＯＯ寫法比較好啦！」<br/>
-『聽你在屁！明明是這個ＸＸＸ寫法快= =』</p>
-<p>哇喔！等等！<strong>想戰效能嗎</strong>？那你一定需要這款 <strong>BenchmarkDotnet</strong>！</p>
-<h2 id="介紹與安裝">介紹與安裝</h2>
-<p><img src="https://github.com/dotnet/BenchmarkDotNet/raw/master/docs/logo/logo-wide.png" alt=""></p>
-<p>我們在 Coding 的時候，或多或少都會有「不知道這兩個寫法哪個比較好？」、「聽說Ａ寫法比Ｂ寫法快，真的嗎？」這類關於效能的疑問。</p>
-<p>在遠古時期，當我們需要驗證這種想法，可能就要用記錄秒數的方式，或是搭配迴圈、然後再印在畫面上等等這類土法煉鋼的方式。</p>
-<p>然而這種單純計秒數的 Print 流測試，可能比較到了時間成本，卻忽略了吃掉的記憶體這些空間成本；又或是每次都要插一堆列印文字的語句，因為麻煩就萌生退意等等…</p>
-<p>這時候就是 BenchmarkDotnet 出場的時候啦！</p>
-<p><strong>BenchmarkDotnet 是一款簡單好用的效能比較工具，可以幫助我們比對多組程式碼，並告訴我們平均的執行時間、耗用的記憶體等等。</strong></p>
-<p>只要使用 BenchmarkDotnet 這個神奇妙妙幫手，它就能幫我們搞定這些麻煩的事情，讓我們可以專注在要測試的程式碼內容囉。</p>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2021/06/benchmarkdotnet/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
                     
 
                     
@@ -645,6 +653,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2025/07/dotnet-add-watermark-and-password-to-pdf-using-pdfsharp/" title=".Net: 使用 PDFSharp 在 PDF 加上浮水印和檔案密碼吧">.Net: 使用 PDFSharp 在 PDF 加上浮水印和檔案密碼吧</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2025/06/dotnet-using-iservicecollection-extensions-to-enforce-registration-constraints/" title=".Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧">.Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧</a>
     </li>
     
@@ -680,10 +692,6 @@
         <a href="https://igouist.github.io/post/2024/11/2024-busan-travel/" title="菜雞出門玩：2024 韓國釜山">菜雞出門玩：2024 韓國釜山</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2024/09/vscode-live-share/" title="VSCode: 使用 LiveShare 來即時線上協作吧">VSCode: 使用 LiveShare 來即時線上協作吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -710,7 +718,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (33)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (34)</a>
     </li>
     
     <li>
@@ -925,7 +933,7 @@
     <section class="widget">
     <h3 class="widget-title">統計資訊</h3>
     <ul class="widget-list">
-        <li>文章總數: 105</li>
+        <li>文章總數: 106</li>
         
         <li>瀏覽次數: <span id="busuanzi_value_site_pv">-</span></li>
         

@@ -106,6 +106,63 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2020/08/csharp-timezone/" title="C#: 時區轉換、民國西元、國曆農曆、中文月份週期" >C#: 時區轉換、民國西元、國曆農曆、中文月份週期</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2020-8-30,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content">
+                                <p>聊到將時間從 UTC 轉到台灣時間，居然還是聽到朋友表示使用 +8 小時的做法，驚為天人。這種做法可能會造成後續的問題，例如時區並不會跟著變動，或是遇到日光節約等特殊狀況就容易出事。和西元民國轉換直接 -1911 一樣不穩定。</p>
+<p>這篇就用來記錄一下之前看過比較優雅的時區轉換方式，順便將先前存著的時間處理相關資料整理一下，方便之後需要時可以馬上回來查詢。</p>
+<h2 id="timezoneinfo-時區資訊">TimeZoneInfo: 時區資訊</h2>
+<p>轉換方式主要參考自 <a href="https://dotblogs.com.tw/supershowwei/2016/10/17/141620">[食譜好菜] DateTime 具有文化特性的格式化及時區的轉換</a> 及 <a href="https://docs.microsoft.com/zh-tw/dotnet/standard/datetime/converting-between-time-zones">在各時區間轉換時間</a>，感謝前人的指引。</p>
+<blockquote>
+<p>關於文化特性，也可以參考本站的 <a href="/post/2021/10/csharp-datatime-tostring-cultureinfo">菜雞抓蟲: DateTime.ToString() 之我們不一樣 &amp; CultureInfo 文化特性小筆記</a> 呦。</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 假設現在是要從標準時區 +00:00 轉換到台灣時區，故這邊使用 UtcNow 先取標準世界協調時間</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> nowDateTime = DateTime.UtcNow;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nowDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 2020/08/30 15:56:05 +00:00</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ==================================================</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 傳統的 直接對時間做計算的方式…</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> addedDateTime = nowDateTime.AddHours(<span style="color:#ae81ff">8</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>addedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 2020/08/30 23:56:05 +00:00</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 可以看到儘管時間變動了，時區仍然還在 +00:00</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ==================================================</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 使用 TimeZoneInfo 先取得台北時區</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> timeZone = TimeZoneInfo.FindSystemTimeZoneById(<span style="color:#e6db74">&#34;Taipei Standard Time&#34;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 再使用 TimeZoneInfo 來變更時間</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">var</span> convertedDateTime = TimeZoneInfo.ConvertTime(nowDateTime, timeZone);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>convertedDateTime.ToString(<span style="color:#e6db74">&#34;yyyy/MM/dd H:mm:ss zzz&#34;</span>).Dump();
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 2020/08/30 23:56:05 +08:00</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 可以看到除了時間變更以外，時區也切換到 +08:00 了！</span>
+</span></span></code></pre></div><p>上面取得台北時區的步驟，可以參照 <a href="https://docs.microsoft.com/en-us/previous-versions/windows/embedded/gg154758(v=winembedded.80)">Time Zone IDs</a> 來查詢想要的時區。這樣的時區切換方式，不僅副作用少，不會因為時區沒轉雷到後續接手的人，也省卻了擔心日光節約等等問題，這種事就交給微軟去煩惱吧！</p>……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2020/08/csharp-timezone/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2020/08/powershell-beauty/" title="Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh" >Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh</a>
                                 </h1>
                             </header>
@@ -489,62 +546,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2020/07/oo-3-encapsulation/" title="菜雞與物件導向 (3): 封裝" >菜雞與物件導向 (3): 封裝</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2020-7-12,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/object-oriented">Object-Oriented</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content">
-                                <p><img src="https://i.imgur.com/cc9DLDo.png" alt=""></p>
-<p>封裝包含了兩個重要的觀念：</p>
-<ul>
-<li><strong>控制物件和外部進行互動的出入口</strong></li>
-<li><strong>隱藏物件內部的細節資訊</strong></li>
-</ul>
-<p>強者我同事整理的<a href="https://sunnyday0932.github.io/2020/object-oriented%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91-3_%E5%B0%81%E8%A3%9Dencapsulation%E7%B9%BC%E6%89%BFinheritance%E8%88%87%E5%A4%9A%E5%9E%8Bpolymorphism/">文章</a>裡的例子就舉得不錯：當你按下鍵盤的Ａ鍵，螢幕隨即出現了Ａ，你不必知道中間發生了什麼事，你只需要知道怎麼操作和最後得到什麼就可以了。</p>
-<p>其中鍵盤提供的按鍵，就是我們對電腦進行互動的出入口；而電腦實際上做了什麼事情，也被隱藏了起來，讓我們只需要關注結果就好。</p>
-<p>此外我也看到過販賣機的例子，<strong>當你去販賣機買飲料，你也不需要知道裡面的構造，只要知道你選了飲料投了錢，飲料就會跑出來就行</strong>。</p>
-<p>從上面的兩個例子，相信大家已經掌握到封裝的概念了：<strong>將物件視作一個整體，把內部的實作內容隱藏起來，讓使用者只需要知道怎麼使用這個物件即可。</strong>（相似的思路，我們後續的<a href="/post/2020/07/oo-7-interface">介面</a>會再提到）</p>
-<p>如果封裝做得夠好，除了可以將程式碼整理得井井有條以外，也能讓物件內部的修改不會直接影響到使用物件的地方，達成了降耦合的目標</p>
-<p>並且也能讓物件的使用者直覺地知道如何使用物件提供的方法，如此使用者就可以專注在更高層次的抽象，而不用被物件內部的細節所干擾。</p>
-<p>最後，從上面的敘述中我們可以察覺到要實現封裝，最重要的就是：<strong>對外的開放程度（存取範圍）的控制</strong>。或是套一句前輩的說法：<strong>給程式碼隱私的空間</strong>。</p>
-<blockquote>
-<p>補充：如果想問「什麼是耦合？」的朋友，建議可以看看這篇：<a href="https://ithelp.ithome.com.tw/articles/10203659">實務上的高內聚與低耦合</a></p>
-<p>或是參照本系列後續的 <a href="/post/2020/09/oo-8-cohesion-and-coupling">內聚與耦合</a></p>
-</blockquote>
-<h2 id="存取範圍與存取子">存取範圍與存取子</h2>
-<p>先讓我們從存取範圍開始說起吧，因為我個人慣用的是 C#，因此就介紹一下 C# 是怎麼控制存取範圍的。</p>
-<p>在 C# 之中，類別裡控制可見度是使用修飾子來定義存取範圍，也就是當我們替類別宣告欄位時常看到的 <code>Public</code> 和 <code>Private</code>。</p>
-<ul>
-<li><code>Public</code>: 這是公開的，所有人都看得到</li>
-<li><code>Private</code>: 這是私有的，只有自己看得到</li>
-</ul>
-<p>除了最常用的這兩個以外，還有其他的修飾子可以先知道一下：</p>
-<ul>
-<li><code>Protected</code>: 這是受到保護的，只有自己和繼承的孩子們看得到</li>
-<li><code>internal</code>: 這是內部的，只有身為同一個組件的朋友們看得到</li>
-<li><code>Protected internal</code>：組合上面兩個，也就是可以給同個組件的朋友們，或是其他組件繼承的孩子們看見</li>
-</ul>
-<p>接下來的部分會以最常見的 <code>Public</code> 和 <code>Private</code> 來繼續說明，對存取範圍的這些修飾子有興趣的朋友，可以參照 <a href="https://docs.microsoft.com/zh-tw/dotnet/csharp/language-reference/keywords/accessibility-levels">存取範圍層級</a> 的說明。</p>
-<p>現在我們已經知道了有哪些修飾子可以用來控制存取範圍，但為什麼我們會需要宣告存取範圍的大小呢？其根本是為了<strong>將控制權掌握在物件本身</strong>。</p>
-<p>就像大話設計模式比喻的：物件就像間房子，我們不希望被看光光，可以看見的 <code>Public</code> 就像門和窗，而不該看見的 <code>Private</code> 則是用牆壁隱藏起來，而對於這間房子而言，門窗是可以控制的。</p>……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2020/07/oo-3-encapsulation/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -660,6 +661,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2025/07/dotnet-add-watermark-and-password-to-pdf-using-pdfsharp/" title=".Net: 使用 PDFSharp 在 PDF 加上浮水印和檔案密碼吧">.Net: 使用 PDFSharp 在 PDF 加上浮水印和檔案密碼吧</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2025/06/dotnet-using-iservicecollection-extensions-to-enforce-registration-constraints/" title=".Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧">.Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧</a>
     </li>
     
@@ -695,10 +700,6 @@
         <a href="https://igouist.github.io/post/2024/11/2024-busan-travel/" title="菜雞出門玩：2024 韓國釜山">菜雞出門玩：2024 韓國釜山</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2024/09/vscode-live-share/" title="VSCode: 使用 LiveShare 來即時線上協作吧">VSCode: 使用 LiveShare 來即時線上協作吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -725,7 +726,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (33)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (34)</a>
     </li>
     
     <li>
@@ -940,7 +941,7 @@
     <section class="widget">
     <h3 class="widget-title">統計資訊</h3>
     <ul class="widget-list">
-        <li>文章總數: 105</li>
+        <li>文章總數: 106</li>
         
         <li>瀏覽次數: <span id="busuanzi_value_site_pv">-</span></li>
         

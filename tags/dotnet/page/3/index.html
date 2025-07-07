@@ -115,6 +115,70 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2020/06/bit-flags-and-enum/">C#: 位元旗標 (Bit flag) 與列舉</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2020-6-14,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p>前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。</p>
+<p>平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告個 Boolean 來處理。例如 <code>bool isNice = false</code>。</p>
+<p>但這次遇到的是同時有多組「有／沒有」的狀況，而我遇到的程式碼並沒有分成多個 Bool 去做處理，而是直接儲存成一個數值。</p>
+<p><strong>這是因為「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列的話，就只需要一個數字就可以紀錄並傳遞給其他系統了。</strong></p>
+<p>例如最常見的權限系統：假設我們有「讀」、「寫」、「執行」的權限，接著就可以按照這個順序，用 1 和 0 來代表「有／沒有」來排列位元，</p>
+<p>也就是說，如果權限是 <code>讀＝可、寫＝不可、執行＝可</code> 的時候，就記做 <code>101</code> = <code>5</code>。</p>
+<p>這種直接用一組位元來表示狀態的方式，就叫做<strong>位元旗標（Bit flag）</strong></p>
+<pre tabindex="0"><code>1 讀   = 可
+0 寫   = 不可
+1 執行 = 可
+
+/* 橫放 */
+=&gt; 101 (2進位) 
+=&gt; 5 
+</code></pre><h2 id="enum--flags">Enum &amp; Flags</h2>
+<p>假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。這時候要怎麼做呢？</p>
+<p>在 C# 中已經有方便的工具可以處理位元旗標，我們可以建一組叫做 SkillEnum 的<strong>列舉（Enum）</strong>，並且按照上面說明的，將老闆提到的每個技能各自用一個位元來表示。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[Flags]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> SkillEnum
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    C = <span style="color:#ae81ff">1</span>,     <span style="color:#75715e">// 0001</span>
+</span></span><span style="display:flex;"><span>    PHP = <span style="color:#ae81ff">2</span>,   <span style="color:#75715e">// 0010</span>
+</span></span><span style="display:flex;"><span>    SQL = <span style="color:#ae81ff">4</span>,   <span style="color:#75715e">// 0100</span>
+</span></span><span style="display:flex;"><span>    Java = <span style="color:#ae81ff">8</span>,  <span style="color:#75715e">// 1000</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><blockquote>
+<p>註：<code>[Flags]</code>的標籤是指 C# 專門提供給位元旗標使用的 Enum，請參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.flagsattribute?view=netcore-3.1">FlagsAttribute</a>。</p>
+<p>只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用 ToString() 也能更方便看見旗標內容</p>
+</blockquote>
+<p>有了這個列舉之後，我們就可以<strong>表達不同排列組合的狀況</strong>了。例如：</p>
+<pre tabindex="0"><code>* C: C
+* P: PHP
+* S: SQL
+* J: Java
+===========
+J S P C
+0 0 0 0 =&gt; 什麼都不會
+0 0 0 1 =&gt; 只會 C
+0 0 1 1 =&gt; 同時會 C 和 PHP
+1 0 1 0 =&gt; 同時 PHP 和 Java
+1 1 1 1 =&gt; 全部都會
+</code></pre>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/06/bit-flags-and-enum/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2020/04/epplus/">EPPlus —— 輕鬆處理 Excel</a>
                                     </h1>
                                 </header>
@@ -275,6 +339,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2025/07/dotnet-add-watermark-and-password-to-pdf-using-pdfsharp/" title=".Net: 使用 PDFSharp 在 PDF 加上浮水印和檔案密碼吧">.Net: 使用 PDFSharp 在 PDF 加上浮水印和檔案密碼吧</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2025/06/dotnet-using-iservicecollection-extensions-to-enforce-registration-constraints/" title=".Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧">.Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧</a>
     </li>
     
@@ -310,10 +378,6 @@
         <a href="https://igouist.github.io/post/2024/11/2024-busan-travel/" title="菜雞出門玩：2024 韓國釜山">菜雞出門玩：2024 韓國釜山</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2024/09/vscode-live-share/" title="VSCode: 使用 LiveShare 來即時線上協作吧">VSCode: 使用 LiveShare 來即時線上協作吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -340,7 +404,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (33)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (34)</a>
     </li>
     
     <li>
@@ -555,7 +619,7 @@
     <section class="widget">
     <h3 class="widget-title">統計資訊</h3>
     <ul class="widget-list">
-        <li>文章總數: 105</li>
+        <li>文章總數: 106</li>
         
         <li>瀏覽次數: <span id="busuanzi_value_site_pv">-</span></li>
         

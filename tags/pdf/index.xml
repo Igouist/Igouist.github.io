@@ -10,7 +10,166 @@
       <feedId>56200764111934464</feedId>
       <userId>41821085092905984</userId>
     </follow_challenge>
-    <lastBuildDate>Mon, 05 May 2025 22:00:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/tags/pdf/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 07 Jul 2025 16:00:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/tags/pdf/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>.Net: 使用 PDFSharp 在 PDF 加上浮水印和檔案密碼吧</title>
+      <link>https://igouist.github.io/post/2025/07/dotnet-add-watermark-and-password-to-pdf-using-pdfsharp/</link>
+      <pubDate>Mon, 07 Jul 2025 16:00:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/2025/07/dotnet-add-watermark-and-password-to-pdf-using-pdfsharp/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/0651b31b-6182-4988-bc4e-026afdbf34b0_11zon.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接續前一篇 &lt;a href=&#34;https://igouist.github.io/post/2025/05/csharp-convert-html-to-pdf-using-dinktopdf/&#34;&gt;使用 DinkToPdf 把 HTML 轉成 PDF&lt;/a&gt;，這篇要來用 PDFSharp 對 PDF 檔案進行一些小小的調整。基本上就是紀錄一下這次遇到的需求和一些坑，主要的內容會有：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;替 PDF 加上浮水印&lt;/li&gt;
+&lt;li&gt;實作 FontResolver 以支援中文字，避免 ⎕⎕⎕&lt;/li&gt;
+&lt;li&gt;替 PDF 加上檔案密碼&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;首先當然是要先安裝 &lt;a href=&#34;https://www.nuget.org/packages/PDFsharp&#34;&gt;PDFSharp&lt;/a&gt; 套件：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/PixPin_2025-07-07_15-54-50_11zon.jpg&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接續上次的進度，我們把 PDF 檔案弄成了一組 &lt;code&gt;byte[]&lt;/code&gt;：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 在上一篇文章，我們使用 DinkToPdf 把 Html 轉成了 PDF 檔案的 byte[]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; pdfBytes = converter.Convert(doc);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 或是打開已存在的 PDF 檔案（留著讓我以後複製貼上）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// var pdfBytes = File.ReadAllBytes(@&amp;#34;C:\temp\output.pdf&amp;#34;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 使用 PdfSharp 由記憶體串流讀取轉換後的 PDF，開啟模式設定為 Modify（可以進行修改）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; var document = PdfReader.Open(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MemoryStream(pdfBytes), PdfDocumentOpenMode.Modify);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;現在我們已經用 PDFSharp 開啟這個 PDF 檔案了，接著就讓我們從加上簡單的浮水印開始吧！&lt;/p&gt;
+&lt;h2 id=&#34;替-pdf-加上浮水印&#34;&gt;替 PDF 加上浮水印&lt;/h2&gt;
+&lt;p&gt;加浮水印的時候要注意幾個小部份：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;PDF 是逐頁構成的，所以要 foreach &lt;code&gt;document.Pages&lt;/code&gt; 一頁一頁加上去&lt;/li&gt;
+&lt;li&gt;浮水印的原理是用繪圖工具把字畫上去，繪圖點的預設位置是座標 (0,0)，如果浮水印要壓成斜的話要記得先旋轉&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;以下採用直接對程式碼進行註解的說明方式，&lt;br/&gt;朋朋們也可以對照參考官方的 Sample：&lt;a href=&#34;https://pdfsharp.net/wiki-1.5/Print.aspx?Page=Watermark-sample&#34;&gt;PDFsharp Sample: Watermark&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; watermarkContent = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;waterwater&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 記得用 EmbedCompleteFontFile 把字體嵌進去 PDF 避免客戶亂碼&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;//（ps: 大家常用的 Always 選項已經被淘汰了）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 但要注意嵌入字體會讓 PDF 檔案變大&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; font = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; XFont(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    familyName: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Arial&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    emSize: &lt;span style=&#34;color:#ae81ff&#34;&gt;25&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    style: XFontStyleEx.Regular,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    pdfOptions: &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; XPdfFontOptions(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        PdfFontEncoding.Unicode, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        PdfFontEmbedding.EmbedCompleteFontFile));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 建立一個半透明的筆刷來繪製浮水印&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// XColor.FromArgb(50, 0, 0, 0) 表示透明度 50（0~255），顏色為黑色 (0, 0, 0)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; brush = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; XSolidBrush(XColor.FromArgb(&lt;span style=&#34;color:#ae81ff&#34;&gt;25&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 注意：每一頁都是單獨的 Page，所以浮水印要一頁一頁加&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;foreach&lt;/span&gt; (PdfPage page &lt;span style=&#34;color:#66d9ef&#34;&gt;in&lt;/span&gt; document.Pages)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 浮水印需要用繪圖工具，所以先從當前頁面開一個 XGraphics&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 其中 XGraphicsPdfPageOptions 的 Append 和 Prepend 會影響浮水印在現有物件前方或後方&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 可參考: https://github.com/Lakerfield/PdfSharp/blob/master/PDFsharp/code/PdfSharp/PdfSharp.Drawing/enums/XGraphicsPdfPageOptions.cs&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; var gfx = XGraphics.FromPdfPage(page, XGraphicsPdfPageOptions.Append);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 取得當前頁面的寬度與高度，以便計算頁面的中心點&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 因為旋轉會以畫面中央為中心處理，因此要將繪圖點先移動到頁面的中央再進行旋轉&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 確保後續加浮水印文字的角度正確&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 可以想像成桌子上放一張 A4 紙，然後用手指戳著一個點，再轉看看那張紙，會比較有畫面&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; pageWidth = page.Width;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; pageHeight = page.Height;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    gfx.TranslateTransform(pageWidth / &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, pageHeight / &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    gfx.RotateTransform(-&lt;span style=&#34;color:#ae81ff&#34;&gt;45&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 旋轉完之後，將繪圖點移回原本的位置（0, 0），準備壓字上去&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    gfx.TranslateTransform(-pageWidth / &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;, -pageHeight / &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 使用 DrawString 方法在頁面中央繪製浮水印文字&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 建立一個覆蓋整個頁面的 XRect，並以 Center 對齊格式顯示文字&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    gfx.DrawString(watermarkContent, font, brush, &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; XRect(&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;, pageWidth, pageHeight), XStringFormats.Center);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;最後存檔測一下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 儲存 PDF 文件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; fileName = &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;TestPdf_{DateTime.Now.ToString(&amp;#34;&lt;/span&gt;yyyyMMdd_HHmmss&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;)}.pdf&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; outputPath = &lt;span style=&#34;color:#e6db74&#34;&gt;@&amp;#34;C:\temp\&amp;#34;&lt;/span&gt; + fileName;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;document.Save(outputPath);
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;實作-fontresolver-以支援中文字&#34;&gt;實作 FontResolver 以支援中文字&lt;/h2&gt;
+&lt;p&gt;上面我們替 PDF 加上了浮水印，但浮水印有包含中文字的朋友可能會注意到中文都變成「⎕⎕⎕」了&lt;/p&gt;
+&lt;p&gt;這是因為 PDFSharp 在 Core 的版本預設只支援部分英文字體（它想要跨平台，但它沒法知道你用的平台都有啥字體），&lt;strong&gt;要讓 PDFSharp 使用中文字體的話，就要自行實作 FontResolver 並掛到 GlobalFontSettings 上&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;這部份可以參照官方文件 &lt;a href=&#34;https://docs.pdfsharp.net/PDFsharp/Topics/Fonts/Font-Resolving.html&#34;&gt;Font-Resolvin&lt;/a&gt; 的說明。&lt;br/&gt;同樣地，這邊也留一份程式碼作為示範（不然我以後上哪複製？）&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;首先實作字型解析用的 &lt;code&gt;CustomFontResolver&lt;/code&gt;，以標楷體為例：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 自訂字型解析器實作&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 沒做這個的話，中文會變成 ⎕⎕⎕&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// see: https://docs.pdfsharp.net/link/font-resolving.html&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;CustomFontResolver&lt;/span&gt; : IFontResolver
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; KaiFontKey = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;KAIU&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;[] GetFont(&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; faceName)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; fontPath = &lt;span style=&#34;color:#e6db74&#34;&gt;@&amp;#34;C:\Fonts\kaiu.ttf&amp;#34;&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;// 記得要改成字型檔案路徑&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (File.Exists(fontPath))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; File.ReadAllBytes(fontPath);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; FileNotFoundException(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;找不到字型檔案：&amp;#34;&lt;/span&gt; + fontPath);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; FontResolverInfo ResolveTypeface(&lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; familyName, &lt;span style=&#34;color:#66d9ef&#34;&gt;bool&lt;/span&gt; isBold, &lt;span style=&#34;color:#66d9ef&#34;&gt;bool&lt;/span&gt; isItalic)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (familyName.Equals(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;標楷體&amp;#34;&lt;/span&gt;, StringComparison.OrdinalIgnoreCase))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; FontResolverInfo(KaiFontKey);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// 如果之後要支援其他字型，可以註冊在這邊&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// 都找不到的時候就回去串內建的 PlatformFontResolver&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; PlatformFontResolver.ResolveTypeface(familyName, isBold, isItalic);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著在做浮水印之前做一個 &lt;code&gt;GlobalFontSettings&lt;/code&gt; 的註冊和防呆，並且調整一下我們 &lt;code&gt;XFont&lt;/code&gt; 的字型：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; watermarkContent = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;測試_中文字浮水印_浮水浮水&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 注意: 如果使用的字型是中文字，因為 PDFSharp 在 Core 的版本預設只支援部分英文字體（它沒法知道你用的平台都有啥字體）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 中文字體之類的會要求自訂字體解析，因此要自行實作 FontResolver 並掛到 GlobalFontSettings&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// see: https://docs.pdfsharp.net/link/font-resolving.html&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (GlobalFontSettings.FontResolver &lt;span style=&#34;color:#66d9ef&#34;&gt;is&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    GlobalFontSettings.FontResolver = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; CustomFontResolver();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 警告：這邊的 familyName（&amp;#34;標楷體&amp;#34;）必須和 FontResolver 的字體名稱一致，可以用 Const string 做一個強制關聯&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; font = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; XFont(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    familyName: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;標楷體&amp;#34;&lt;/span&gt;, 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    emSize: &lt;span style=&#34;color:#ae81ff&#34;&gt;25&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    style: XFontStyleEx.Regular,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    pdfOptions: &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; XPdfFontOptions(PdfFontEncoding.Unicode, PdfFontEmbedding.EmbedCompleteFontFile));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 略......&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這樣中文字就可以正常顯示囉～&lt;/p&gt;
+&lt;h2 id=&#34;替-pdf-加上檔案密碼&#34;&gt;替 PDF 加上檔案密碼&lt;/h2&gt;
+&lt;p&gt;除了浮水印以外，PDF 加上密碼也是很常見的需求，這篇也一併紀錄一下。&lt;/p&gt;
+&lt;p&gt;在 PDFSharp 加上密碼還蠻簡單的，只需要調整 &lt;code&gt;SecuritySettings&lt;/code&gt; 就好：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 3. 加密 PDF 文件&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// see: https://stackoverflow.com/questions/12383409/password-protecting-a-pdf-file&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;document.SecuritySettings.UserPassword = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;123&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;document.SecuritySettings.OwnerPassword = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;123&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;UserPassword&lt;/code&gt; 指的是開啟檔案時要輸入的密碼&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;OwnerPassword&lt;/code&gt; 則是列印、複製等操作時需要的密碼&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;但一般來說會習慣設成同一組，讓使用者可以進行完整的操作。&lt;/p&gt;
+&lt;h2 id=&#34;小結--碎碎念&#34;&gt;小結 &amp;amp; 碎碎念&lt;/h2&gt;
+&lt;p&gt;和上一篇 &lt;a href=&#34;https://igouist.github.io/post/2025/05/csharp-convert-html-to-pdf-using-dinktopdf/&#34;&gt;DinkToPdf&lt;/a&gt; 搭配，完成了這次「產製 PDF，並加上浮水印和密碼」的功能需求。&lt;/p&gt;
+&lt;p&gt;雖然需求本身並不難，能使用的工具也很多，但前期準備的時候還是踩了一些坑。主要是舊專案採用的 iText 已經改為收費授權，不能無腦照抄移植。接著就有了在上一篇也碎碎念過的這段：&lt;/p&gt;
+&lt;p&gt;原本想說用團隊成員碰過的 PDFSharp 三兩下收工，搜了一下也發現了 PdfSharpCore，那就來個 PdfSharpCore + HtmlRendererCore.PdfSharp 經典組合。結果裝下來發現這兩顆的依賴項目 SixLabors.ImageSharp 1.0.4 直接跳一堆弱點，嚇到不敢用。&lt;/p&gt;
+&lt;p&gt;幸好 PdfSharp 本體已經直接支援 .Net 8 了，最終決定使用本家 PdfSharp 進行開發，然後用 DinkToPdf 替代掉停止維護的 HtmlRenderer.PdfSharp，兜了個馬車，筆記一篇。&lt;/p&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.darkthread.net/blog/pdfsharp&#34;&gt;.NET 小技巧 - 使用 PdfSharp / PdfSharpCore 合併 PDF、加浮水印 - 黑暗執行緒&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://hackmd.io/@CloudyWing/ryhZuhFrp&#34;&gt;「TheArtOfDev.HtmlRenderer.PdfSharp」的踩雷歷程 - CloudyWing&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://docs.pdfsharp.net/PDFsharp/Overview/About.html&#34;&gt;Overview of PDFsharp (Library)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
     <item>
       <title>C#: 使用 DinkToPdf 把 HTML 轉成 PDF 吧</title>
       <link>https://igouist.github.io/post/2025/05/csharp-convert-html-to-pdf-using-dinktopdf/</link>
@@ -124,7 +283,14 @@
 &lt;p&gt;比起程式碼部份，反而環境設定的坑還比較多，如果沒乖乖丟組件檔案，又或是註冊的時候沒有好好做成單例，就會發生各種怪怪的事情（果然還是留一篇筆記給未來的我抄比較安全）&lt;/p&gt;
 &lt;p&gt;原本有考慮 PdfSharp 最常搭配的 HtmlRenderer.PdfSharp，但它已經&lt;a href=&#34;https://github.com/ArthurHub/HTML-Renderer&#34;&gt;停止維護&lt;/a&gt;；而看起來像是移植版本的 HtmlRendererCore.PdfSharp 光用 Linqpad 裝看看就跳出一排東西，實在不敢直接用：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://i.imgur.com/VNVILNjl.jpeg&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;最後繞了半圈，還是把 libwkhtmltox.dll 丟一丟、DinkToPdf 叫一叫最簡單方便，畢竟早點下班才是正義，阿彌陀佛。&lt;/p&gt;</description>
+&lt;p&gt;最後繞了半圈，還是把 libwkhtmltox.dll 丟一丟、DinkToPdf 叫一叫最簡單方便，畢竟早點下班才是正義，阿彌陀佛。&lt;/p&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.csdn.net/omage/article/details/114011447&#34;&gt;如何使用 Dinktopdf 在 .net core 项目里将 Html 转成 PDF - CSDN&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/rdvojmoc/DinkToPdf&#34;&gt;DinkToPdf - Github&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://stackoverflow.com/questions/75534946/second-call-to-dinktopdf-pdf-library-fails&#34;&gt;c# - Second call to dinktopdf pdf library fails - Stack Overflow&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/rdvojmoc/DinkToPdf/issues/44&#34;&gt;Subsequent PdfTools instances yield wrong PDF output · Issue #44 · rdvojmoc/DinkToPdf&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
   </channel>

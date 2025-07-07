@@ -115,6 +115,128 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2021-4-5,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/ojI91y9.png" alt="img"></p>
+<p>這是俺整理公司新訓內容的第一篇文章，目標是<strong>整理 Git 相關的筆記</strong>。</p>
+<ul>
+<li><a href="#%E5%89%8D%E8%A8%80%E6%8E%A8%E8%96%A6%E8%B3%87%E6%BA%90">前言、推薦資源</a>
+<ul>
+<li><a href="#%E4%BB%80%E9%BA%BC%E6%98%AF-git">什麼是 Git？</a></li>
+<li><a href="#%E4%BB%80%E9%BA%BC%E6%98%AF%E5%88%86%E6%95%A3%E5%BC%8F%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6">什麼是分散式版本控制？</a></li>
+<li><a href="#%E5%85%88%E5%91%8A%E8%A8%B4-git-%E6%88%91%E5%80%91%E6%98%AF%E8%AA%B0">先告訴 Git 我們是誰</a></li>
+</ul>
+</li>
+<li><a href="#%E5%BB%BA%E7%AB%8B%E4%B8%80%E5%80%8B%E6%96%B0%E7%9A%84%E5%84%B2%E5%AD%98%E5%BA%ABgit-init">建立一個新的儲存庫（Git Init）</a></li>
+<li><a href="#%E6%8A%8A%E6%AA%94%E6%A1%88%E5%8A%A0%E5%88%B0-git-%E7%9A%84%E8%BF%BD%E8%B9%A4%E7%9B%AE%E6%A8%99git-add">把檔案加到 Git 的追蹤目標（Git Add）</a></li>
+<li><a href="#%E6%8F%90%E4%BA%A4%E8%AE%8A%E6%9B%B4git-commit">提交變更（Git Commit）</a>
+<ul>
+<li><a href="#git-commit-%E7%9A%84%E8%A8%8A%E6%81%AF%E8%A9%B2%E6%80%8E%E9%BA%BC%E5%AF%AB">Git Commit 的訊息該怎麼寫？</a></li>
+<li><a href="#git-commit-%E7%9A%84%E6%99%82%E6%A9%9F">Git Commit 的時機？</a></li>
+<li><a href="#git-commit-%E5%92%8C-add-%E7%9A%84-combo-%E6%8A%80">Git Commit 和 Add 的 Combo 技</a></li>
+<li><a href="#%E5%8A%A0%E5%85%A5-gitignore-%E4%BE%86%E5%BF%BD%E7%95%A5%E6%8C%87%E5%AE%9A%E6%AA%94%E6%A1%88">加入 .gitignore 來忽略指定檔案</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9F%A5%E8%A9%A2-commit-%E7%B4%80%E9%8C%84git-log">查詢 Commit 紀錄（Git Log）</a></li>
+<li><a href="#%E6%9F%A5%E8%A9%A2%E5%85%A9%E5%80%8B-commit-%E4%B9%8B%E9%96%93%E7%9A%84%E5%B7%AE%E7%95%B0git-diff">查詢兩個 Commit 之間的差異（Git Diff）</a></li>
+<li><a href="#git-%E7%9A%84-head-%E6%98%AF%E4%BB%80%E9%BA%BC">Git 的 HEAD 是什麼？</a></li>
+<li><a href="#git-revert%E8%AE%93%E6%88%91%E5%80%91%E5%BE%80%E5%9B%9E%E8%B5%B0%E4%B8%80%E6%AD%A5">Git Revert：讓我們往回走一步</a></li>
+<li><a href="#git-reset%E8%AE%93%E6%88%91%E5%80%91%E6%90%AD%E4%B8%8A%E6%99%82%E5%85%89%E6%A9%9F">Git Reset：讓我們搭上時光機</a></li>
+<li><a href="#git-%E7%9A%84%E5%88%86%E6%94%AFbranch%E6%98%AF%E4%BB%80%E9%BA%BC">Git 的分支（Branch）是什麼？</a>
+<ul>
+<li><a href="#%E6%96%B0%E5%BB%BA%E5%88%86%E6%94%AFbranch%E8%88%87%E5%88%87%E6%8F%9B%E5%88%86%E6%94%AFcheckout">新建分支（branch）與切換分支（checkout）</a></li>
+<li><a href="#git-stash%E8%AE%93%E6%88%91%E5%80%91%E5%BF%AB%E9%80%9F%E5%AD%98%E5%80%8B%E6%AA%94">Git Stash：讓我們快速存個檔</a></li>
+<li><a href="#git-merge%E8%AE%93%E6%88%91%E5%80%91%E5%90%88%E4%BD%B5%E5%85%A9%E6%A2%9D%E5%88%86%E6%94%AF%E5%90%A7">Git Merge：讓我們合併兩條分支吧</a></li>
+<li><a href="#%E4%BB%80%E9%BA%BC%E6%98%AF%E8%A1%9D%E7%AA%81conflict">什麼是衝突（Conflict）？</a></li>
+<li><a href="#git-rebase%E8%AE%93%E6%88%91%E5%80%91%E7%A7%BB%E8%8A%B1%E6%8E%A5%E6%9C%A8">Git Rebase：讓我們移花接木</a></li>
+<li><a href="#%E6%88%91%E5%80%91%E7%8F%BE%E5%9C%A8%E6%9C%89%E5%93%AA%E4%BA%9B%E5%88%86%E6%94%AFgit-branch%E8%A6%81%E6%80%8E%E9%BA%BC%E5%88%AA%E9%99%A4%E5%88%86%E6%94%AF">我們現在有哪些分支（Git Branch）？要怎麼刪除分支？</a></li>
+<li><a href="#%E8%AA%8D%E8%AD%98-git-%E7%9A%84%E6%96%B7%E9%A0%ADdetached-head">認識 Git 的斷頭（detached HEAD）</a></li>
+<li><a href="#%E9%97%9C%E6%96%BC-git-%E7%9A%84%E5%88%86%E6%94%AF%E7%AD%96%E7%95%A5">關於 Git 的分支策略</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BB%80%E9%BA%BC%E6%98%AF-git-%E7%9A%84%E9%81%A0%E7%AB%AF%E5%84%B2%E5%AD%98%E5%BA%ABremote%E8%A6%81%E6%80%8E%E9%BA%BC%E6%8A%8A%E8%AE%8A%E6%9B%B4%E6%8E%A8%E9%80%81push%E5%88%B0%E9%81%A0%E7%AB%AF%E5%84%B2%E5%AD%98%E5%BA%AB">什麼是 Git 的遠端儲存庫（Remote）？要怎麼把變更推送（Push）到遠端儲存庫？</a></li>
+<li><a href="#%E8%A6%81%E6%80%8E%E9%BA%BC%E5%BE%9E-git-%E7%9A%84%E9%81%A0%E7%AB%AF%E5%84%B2%E5%AD%98%E5%BA%AB%E6%8B%BF%E5%88%B0%E8%AE%8A%E6%9B%B4%E8%AA%8D%E8%AD%98%E6%93%B7%E5%8F%96fatch%E6%8F%90%E5%8F%96pull">要怎麼從 Git 的遠端儲存庫拿到變更？認識擷取（Fatch）、提取（Pull）</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-git-clone-%E7%9B%B4%E6%8E%A5%E6%8A%8A%E9%81%A0%E7%AB%AF%E5%84%B2%E5%AD%98%E5%BA%AB%E7%9A%84-repo-%E6%8A%93%E4%B8%8B%E4%BE%86">使用 Git Clone 直接把遠端儲存庫的 Repo 抓下來</a></li>
+<li><a href="#%E8%AA%8D%E8%AD%98-git-%E7%9A%84%E6%8F%90%E5%8F%96%E8%A6%81%E6%B1%82pull-request-pr">認識 Git 的提取要求（pull request, PR）</a></li>
+<li><a href="#%E5%B0%8F%E7%B5%90">小結</a></li>
+<li><a href="#%E6%9C%AC%E7%B3%BB%E5%88%97%E6%96%87%E7%AB%A0">本系列文章</a></li>
+<li><a href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99">參考資料</a></li>
+</ul>
+<h2 id="前言推薦資源">前言、推薦資源</h2>
+<p>說來慚愧，前陣子 PTT 和臉書社團都有討論到相關科系畢業卻不會 Git 會不會太誇張，我正是畢業之後才開始用 Git 的那類人囧，相信像我一樣的人並不少，因此這個系列就決定從「<strong>新訓時學到的 Git 的基本操作</strong>」開始記錄。</p>
+<p>開始之前先感謝公司前輩和完善的新手教學，還有第一天就先學 Git 的優良傳統。另外，也感謝相當多優秀的 Git 學習資源，說明得也更為詳細深入，想好好了解 Git 的朋友也可以逛逛，這邊就先推薦一波：</p>
+<ul>
+<li><a href="https://gitbook.tw/">為你自己學 Git</a>
+<ul>
+<li>對新手非常友善。網站點進去後往下拉，可以看到大部分章節都能免費看，佛！</li>
+<li>最有價值的是裡面的各種狀況題。畢竟當你用 Git 不只需要基本操作的時候，呃，祝你好運</li>
+</ul>
+</li>
+<li><a href="https://backlog.com/git-tutorial/tw/">連猴子都能懂的 Git 入門指南</a>
+<ul>
+<li>從入門到進階篇跟過一次的話，基本操作就沒有問題了</li>
+<li>圖解讓人很好理解，而且在教學的實作部分會提供儲存庫讓你下載實作</li>
+</ul>
+</li>
+<li><a href="https://blog.darkthread.net/blog/category/Git">黑暗執行緒的 Git 分類文章</a>
+<ul>
+<li>同場加映：<a href="https://blog.darkthread.net/blog/my-git-cheatsheet/">黑暗執行緒的 Git 指令筆記</a></li>
+<li>黑大出品，品質保證</li>
+</ul>
+</li>
+<li><a href="https://learngitbranching.js.org/?locale=zh_TW">Learn Git Branching</a>
+<ul>
+<li>用遊戲通關的方式認識 Git，對於一些分支的概念會很有幫助</li>
+</ul>
+</li>
+<li><a href="https://ithelp.ithome.com.tw/users/20004901/ironman/525">30 天精通 Git 版本控管</a></li>
+<li><a href="https://git-scm.com/book/zh-tw/v2">Pro Git</a></li>
+</ul>
+<p>接下來我們就從認識 Git 開始吧！</p>
+<hr>
+<h3 id="什麼是-git">什麼是 Git？</h3>
+<p>你發生過以下狀況嗎？</p>
+<ul>
+<li>從沒做過版本控制，結果突然要改回前一版，不知所措</li>
+<li>使用資料夾／壓縮檔板控
+<ul>
+<li>20201201.rar, 20201215_v2.rar, 20201215_首頁.rar&hellip;&hellip;</li>
+<li>空間越吃越兇，東西越來越雜，事情越想越不對勁，但是不敢刪除</li>
+<li>其實不知道每一份實際上改了哪裡，要復原某一段的時候要找半天，不如直接重寫一段</li>
+</ul>
+</li>
+<li>團隊合作／分組報告，各自負責一個區域，結果複製來複製去組不起來，不只需要看眼科，修 BUG 還比寫的時間還多</li>
+<li>看到一段程式碼
+<ul>
+<li>完全不知道為什麼要這樣寫</li>
+<li>或是氣到要死，抓不到戰犯</li>
+</ul>
+</li>
+</ul>
+<p>那麼，你很有可能需要 Git！</p>
+<p><strong>Git 是一套分散式的版本控制，就像是打電動時的存檔</strong>。讓我們可以在面臨重要選擇的時候存檔、打王之前存檔、打贏的時候也存個檔。當然，像是那種有多劇情多結局的遊戲，也可以針對不同路線各自存檔。</p>
+<p>同時它也支援雲端存檔，你可以在電腦上存個檔，然後有網路的時候就丟上去雲端備份一下。而這個雲端備份是共用的，所以你可以跟朋友一起玩同一款遊戲，各自攻略不同的 BOSS，再把存檔和朋友互相交流交流，合成一個有兩份戰利品的存檔。</p>
+<p>這些功能在 Git 有著聽起來比較厲害的名字，例如認可（Commit）、分支（Branch）、分散式、合併（Merge）等等。我們後續再慢慢了解它們。</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2021/04/newbie-1-hello-git/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2021/04/newbie-0-menu/">菜雞新訓記 (0): 前言</a>
                                     </h1>
                                 </header>
@@ -463,70 +585,6 @@
                             </article>
                             <hr color="#D9D9D9" />
                         
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2020/06/bit-flags-and-enum/">C#: 位元旗標 (Bit flag) 與列舉</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2020-6-14,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <p>前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。</p>
-<p>平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告個 Boolean 來處理。例如 <code>bool isNice = false</code>。</p>
-<p>但這次遇到的是同時有多組「有／沒有」的狀況，而我遇到的程式碼並沒有分成多個 Bool 去做處理，而是直接儲存成一個數值。</p>
-<p><strong>這是因為「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列的話，就只需要一個數字就可以紀錄並傳遞給其他系統了。</strong></p>
-<p>例如最常見的權限系統：假設我們有「讀」、「寫」、「執行」的權限，接著就可以按照這個順序，用 1 和 0 來代表「有／沒有」來排列位元，</p>
-<p>也就是說，如果權限是 <code>讀＝可、寫＝不可、執行＝可</code> 的時候，就記做 <code>101</code> = <code>5</code>。</p>
-<p>這種直接用一組位元來表示狀態的方式，就叫做<strong>位元旗標（Bit flag）</strong></p>
-<pre tabindex="0"><code>1 讀   = 可
-0 寫   = 不可
-1 執行 = 可
-
-/* 橫放 */
-=&gt; 101 (2進位) 
-=&gt; 5 
-</code></pre><h2 id="enum--flags">Enum &amp; Flags</h2>
-<p>假使某天老闆靈光一現，決定接下來的新人員工都要記錄他們會的程式語言，並且他們報到的時候就會發一張公司列好的程式語言清單請他們勾選。這時候要怎麼做呢？</p>
-<p>在 C# 中已經有方便的工具可以處理位元旗標，我們可以建一組叫做 SkillEnum 的<strong>列舉（Enum）</strong>，並且按照上面說明的，將老闆提到的每個技能各自用一個位元來表示。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[Flags]</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">enum</span> SkillEnum
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    C = <span style="color:#ae81ff">1</span>,     <span style="color:#75715e">// 0001</span>
-</span></span><span style="display:flex;"><span>    PHP = <span style="color:#ae81ff">2</span>,   <span style="color:#75715e">// 0010</span>
-</span></span><span style="display:flex;"><span>    SQL = <span style="color:#ae81ff">4</span>,   <span style="color:#75715e">// 0100</span>
-</span></span><span style="display:flex;"><span>    Java = <span style="color:#ae81ff">8</span>,  <span style="color:#75715e">// 1000</span>
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><blockquote>
-<p>註：<code>[Flags]</code>的標籤是指 C# 專門提供給位元旗標使用的 Enum，請參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.flagsattribute?view=netcore-3.1">FlagsAttribute</a>。</p>
-<p>只要在 enum 上加上 Flags 的屬性，除了自動按照 2 的次元增加以外，在使用 ToString() 也能更方便看見旗標內容</p>
-</blockquote>
-<p>有了這個列舉之後，我們就可以<strong>表達不同排列組合的狀況</strong>了。例如：</p>
-<pre tabindex="0"><code>* C: C
-* P: PHP
-* S: SQL
-* J: Java
-===========
-J S P C
-0 0 0 0 =&gt; 什麼都不會
-0 0 0 1 =&gt; 只會 C
-0 0 1 1 =&gt; 同時會 C 和 PHP
-1 0 1 0 =&gt; 同時 PHP 和 Java
-1 1 1 1 =&gt; 全部都會
-</code></pre>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/06/bit-flags-and-enum/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
                     
 
                     
@@ -616,6 +674,10 @@ J S P C
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2025/07/dotnet-add-watermark-and-password-to-pdf-using-pdfsharp/" title=".Net: 使用 PDFSharp 在 PDF 加上浮水印和檔案密碼吧">.Net: 使用 PDFSharp 在 PDF 加上浮水印和檔案密碼吧</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2025/06/dotnet-using-iservicecollection-extensions-to-enforce-registration-constraints/" title=".Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧">.Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧</a>
     </li>
     
@@ -651,10 +713,6 @@ J S P C
         <a href="https://igouist.github.io/post/2024/11/2024-busan-travel/" title="菜雞出門玩：2024 韓國釜山">菜雞出門玩：2024 韓國釜山</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2024/09/vscode-live-share/" title="VSCode: 使用 LiveShare 來即時線上協作吧">VSCode: 使用 LiveShare 來即時線上協作吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -681,7 +739,7 @@ J S P C
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (33)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (34)</a>
     </li>
     
     <li>
@@ -896,7 +954,7 @@ J S P C
     <section class="widget">
     <h3 class="widget-title">統計資訊</h3>
     <ul class="widget-list">
-        <li>文章總數: 105</li>
+        <li>文章總數: 106</li>
         
         <li>瀏覽次數: <span id="busuanzi_value_site_pv">-</span></li>
         

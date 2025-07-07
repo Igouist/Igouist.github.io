@@ -115,6 +115,48 @@
                             <article class="post">
                                 <header>
                                     <h1 class="post-title">
+                                        <a href="https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a>
+                                    </h1>
+                                </header>
+                                <date class="post-meta meta-date">
+                                    2021-11-28,
+                                </date>
+                                
+                                <div class="post-meta meta-category">
+                                    
+                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
+                                    
+                                </div>
+                                
+                                <div class="post-content">
+                                    <p><img src="https://i.imgur.com/2XYv7X2.png" alt="Image"></p>
+<p>這是俺整理公司新訓內容的第六篇文章，目標是<strong>紀錄什麼是依賴注入（Dependency Injection）</strong>。包含：</p>
+<ul>
+<li><a href="/post/2021/11/newbie-6-dependency-injection#%E7%82%BA%E4%BB%80%E9%BA%BC%E9%9C%80%E8%A6%81%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5">為什麼要依賴注入</a></li>
+<li><a href="/post/2021/11/newbie-6-dependency-injection#%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5%E7%9A%84%E7%A8%AE%E9%A1%9E">依賴注入的種類（建構式注入、屬性注入、方法注入）</a></li>
+<li><a href="/post/2021/11/newbie-6-dependency-injection#%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%89%E7%A8%AE%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F-transientscopedsingleton">.net Core 中依賴注入的生命週期</a></li>
+</ul>
+<p>並用 <a href="/post/2021/11/newbie-6-dependency-injection#%E5%AF%A6%E4%BD%9C">.net Core 實際跑一次依賴注入</a>，<strong>藉由將控制權轉移給注入容器，解除分層與分層間、類別與類別間的依賴和耦合關係，達到以介面分離實作的目標</strong>。</p>
+<h2 id="前言">前言</h2>
+<p>西元前的某一天，憂心的皇帝在朝堂內繞著柱子走，正巧被路過的廷尉看見。</p>
+<p>廷尉：「敢問陛下在煩惱什麼呢？」</p>
+<p>皇帝：『朕這是在想封賞的事兒哪。前朝之所以覆滅，根本的原因就在於大肆封賞臣下，四處分封土地給他們做諸侯。</p>
+<p>這些諸侯呢，肆意起用自己喜歡的人擔任要職、結黨營私，心情好就 <code>new 將軍(&quot;我ㄉ朋友&quot;);</code>，<br/>十天就封了十個將軍。這些人若犯了錯，要處理他們還得看諸侯面子；而諸侯一聲令下，這些人便群起造反。</p>
+<p>並且，這些諸侯之間彼此喜歡直接往來，動不動就在自家裡下命令給 <code>隔壁諸侯.借糧草(100)</code>，哪天就變成 <code>隔壁諸侯.揪團造反()</code>。彼此之間偷來暗去，實在難以掌握。</p>
+<p>最後呢，一個逆賊起來造反，若要將他給辦了，附近諸侯就一起響應，每個都一齊報錯，Exception 成千上百，國家也就這樣滅了，想到這朕就頭痛得很，不知愛卿可有法子？』</p>
+<p>廷尉想了一想，便說：「陛下，此事要點還是在於諸侯之間<strong>相互依賴、彼此耦合</strong>，致生禍端。</p>
+<p>臣有一計，先收回諸侯的人事任命權，使其不可私自 <code>new</code> 自己人，所有人事異動，須<strong>由中央進行管理與派遣</strong>。這樣即使諸侯要造反，也不知道下面這群打工仔是不是自己人。大家各司其職，諸侯做好自己的行政作業，打工仔派到崗位就做好自己的工作，彼此不直接依賴，這樣出事的機率就少了。</p>
+<p>其次，明令禁止諸侯私自往來，對諸侯們進行隔離，若是有公務上的需要，<strong>一律藉由中央提供的接口來溝通</strong>，彼此之間明訂契約，由中央進行隔離與調派，諸侯間就只需要按照協議好的合約下去合作，這樣勾結的機會也就少了，耦合也就降低了。陛下覺得如何？」</p>
+<p>皇帝大喜：『如此甚好！治眾如治寡，在於分而治之。此計可有名字？』</p>
+<p>「此乃－－依賴注入之計！」</p>……
+                                    <p class="readmore"><a href="https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/">閱讀全文</a></p>
+                                </div>
+                            </article>
+                            <hr color="#D9D9D9" />
+                        
+                            <article class="post">
+                                <header>
+                                    <h1 class="post-title">
                                         <a href="https://igouist.github.io/post/2021/10/swagger-enable-authorize/">在 Swagger UI 加上驗證按鈕，讓 Request Header 傳遞 Authorize Token</a>
                                     </h1>
                                 </header>
@@ -443,45 +485,6 @@
                             </article>
                             <hr color="#D9D9D9" />
                         
-                            <article class="post">
-                                <header>
-                                    <h1 class="post-title">
-                                        <a href="https://igouist.github.io/post/2020/09/csharp-trulp/">C#: 元組 (Tuple)</a>
-                                    </h1>
-                                </header>
-                                <date class="post-meta meta-date">
-                                    2020-9-27,
-                                </date>
-                                
-                                <div class="post-meta meta-category">
-                                    
-                                        <a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a>
-                                    
-                                </div>
-                                
-                                <div class="post-content">
-                                    <p>因為隔壁介紹原則的部分有點卡住了，所以這週來紀錄一下挺常用到的方便東西：<strong>Tuple</strong></p>
-<p>這篇的 Tuple 指的是 C# 7.0 後提供的 <strong>ValueTuple</strong> 和相關語法，舊版得用 <code>Tuple.Create</code> 建立，成員的名稱也只能使用 Item1, Item2&hellip;，實用性並不是很高。但新 Tuple 出現後，方便程度大大提升，這邊就稍作紀錄一下。</p>
-<blockquote>
-<p>註：此處使用的 <code>Dump</code> 是 Linqpad 提供的輸出方法，把它當成 Print 就行了。</p>
-</blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
-</span></span><span style="display:flex;"><span>student.Item1.Dump(); <span style="color:#75715e">// 1</span>
-</span></span><span style="display:flex;"><span>student.Item2.Dump(); <span style="color:#75715e">// 王小明</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>student.Dump();
-</span></span></code></pre></div><p>可以看到 Tuple 的建立相當簡單，只需要用小括號 <code>()</code> 括選起來即可。建立後的內容就會像這樣：</p>
-<p><img src="https://i.imgur.com/H0wJglN.png" alt=""></p>
-<p>但這樣使用就和之前一樣，取出來時只能拿 Item1, Item2，放個幾天根本就不記得 Item1 裡面是啥東西了。這時我們就可以<strong>替成員們取名字</strong>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>(<span style="color:#66d9ef">int</span> ID, <span style="color:#66d9ef">string</span> Name) student = (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#34;王小明&#34;</span>);
-</span></span><span style="display:flex;"><span>student.ID.Dump(); <span style="color:#75715e">// 1</span>
-</span></span><span style="display:flex;"><span>student.Name.Dump(); <span style="color:#75715e">// 王小明</span>
-</span></span></code></pre></div><p>如此使用的時候就和一般操作物件的習慣沒有差別，也增加了可讀性。</p>……
-                                    <p class="readmore"><a href="https://igouist.github.io/post/2020/09/csharp-trulp/">閱讀全文</a></p>
-                                </div>
-                            </article>
-                            <hr color="#D9D9D9" />
-                        
                     
 
                     
@@ -571,6 +574,10 @@
 <ul class="widget-list">
     
     <li>
+        <a href="https://igouist.github.io/post/2025/07/dotnet-add-watermark-and-password-to-pdf-using-pdfsharp/" title=".Net: 使用 PDFSharp 在 PDF 加上浮水印和檔案密碼吧">.Net: 使用 PDFSharp 在 PDF 加上浮水印和檔案密碼吧</a>
+    </li>
+    
+    <li>
         <a href="https://igouist.github.io/post/2025/06/dotnet-using-iservicecollection-extensions-to-enforce-registration-constraints/" title=".Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧">.Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧</a>
     </li>
     
@@ -606,10 +613,6 @@
         <a href="https://igouist.github.io/post/2024/11/2024-busan-travel/" title="菜雞出門玩：2024 韓國釜山">菜雞出門玩：2024 韓國釜山</a>
     </li>
     
-    <li>
-        <a href="https://igouist.github.io/post/2024/09/vscode-live-share/" title="VSCode: 使用 LiveShare 來即時線上協作吧">VSCode: 使用 LiveShare 來即時線上協作吧</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -636,7 +639,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (33)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (34)</a>
     </li>
     
     <li>
@@ -851,7 +854,7 @@
     <section class="widget">
     <h3 class="widget-title">統計資訊</h3>
     <ul class="widget-list">
-        <li>文章總數: 105</li>
+        <li>文章總數: 106</li>
         
         <li>瀏覽次數: <span id="busuanzi_value_site_pv">-</span></li>
         
