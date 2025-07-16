@@ -17,7 +17,7 @@
       <pubDate>Sun, 25 Aug 2024 15:20:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/YLnFkUH.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/YLnFkUH.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這週忙著打黑悟空，簡單記一下前陣子同事遇到的一個場景：&lt;/p&gt;
 &lt;p&gt;由於曆法的關係，SQL Server 的 datetime 範圍只能從 1753-01-01 開始。&lt;br/&gt;如果我們要寫入 0001-01-01 進去的話就會報錯&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;SqlDateTime overflow. Must be between 1/1/1753 12:00:00 AM and 12/31/9999 11:59:59 PM.
@@ -100,7 +100,7 @@
       <pubDate>Sun, 09 May 2021 11:15:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2021/05/newbie-3-dapper/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/aIHQL5Z.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/aIHQL5Z.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這是俺整理公司新訓內容的第三篇文章，目標是&lt;strong&gt;在 .NET Core 簡單地使用 Dapper 連線到資料庫並完成 CRUD 的功能&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;接續 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi&#34;&gt;上一篇&lt;/a&gt; 的進度，我們接著要來連線到資料庫中完成我們的 Web Api 的 CRUD 範例。因為從新訓時期到現在工作團隊作業上主要都是使用 Dapper 來做連線資料庫的工作，這邊就直接用 Dapper 來推進吧！&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Dapper 有多好用呢？它輕量、它簡單、它快速&lt;/strong&gt;。總之先把大神們的介紹文直接拿來鎮樓：&lt;/p&gt;
@@ -182,7 +182,7 @@
 &lt;p&gt;接續我們 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi&#34;&gt;上一篇&lt;/a&gt; 的進度，在上一篇裡，我們對外開了一組簡單 CRUD 的 API，用來查增修刪我們的卡片資訊。&lt;/p&gt;
 &lt;p&gt;但當時只是開了簡單的服務，資料也是暫存的而已。所以這篇的目標是將我們的 API 服務連到資料庫，真正實現對卡片資料的操作。&lt;/p&gt;
 &lt;p&gt;先讓我們說明一下本篇的示範環境，假設在 Local 的 SQL Server 裡，有著一個 &lt;code&gt;Newbie&lt;/code&gt; 資料庫，其中有一張 &lt;code&gt;Card&lt;/code&gt; 的資料表。其結構如下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Gec9WeQ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Gec9WeQ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;CREATE&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;TABLE&lt;/span&gt; [dbo].[Card](
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	[Id] [int] &lt;span style=&#34;color:#66d9ef&#34;&gt;IDENTITY&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;NOT&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;NULL&lt;/span&gt;,
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	[Name] [nvarchar](&lt;span style=&#34;color:#ae81ff&#34;&gt;50&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;NULL&lt;/span&gt;,
@@ -198,9 +198,9 @@
 &lt;/blockquote&gt;
 &lt;p&gt;現在我們有了一張資料表，鏡頭轉回到我們的 .net Core Web API 服務。&lt;/p&gt;
 &lt;p&gt;既然今天的主角是 Dapper，當然要&lt;strong&gt;先打開 NuGet 把 Dapper 給安裝下來&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/rT0Nop6.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/66GtKJA.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/0fuLbQC.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/rT0Nop6.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/66GtKJA.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/0fuLbQC.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;恭喜你，你已經完成本篇文章實作的一半了。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h3 id=&#34;建立對應資料表的類別&#34;&gt;建立對應資料表的類別&lt;/h3&gt;
@@ -807,29 +807,29 @@
  -Method &amp;#39;POST&amp;#39; `
  -Headers @{ &amp;#34;Content-Type&amp;#34; = &amp;#34;application/json&amp;#34;; } `
  -Body &amp;#34;{`&amp;#34;name`&amp;#34;: `&amp;#34;mycard`&amp;#34;,`&amp;#34;description`&amp;#34;: `&amp;#34;sample card`&amp;#34;, `&amp;#34;attack`&amp;#34;: 3, `&amp;#34;health`&amp;#34;: 4, `&amp;#34;cost`&amp;#34;: 2 }&amp;#34;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/oQOv7VN.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/oQOv7VN.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;然後讓我們在 SSMS（SQL Server Management Studio）確認一下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/CuxT7jB.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/CuxT7jB.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著讓我們試試查詢：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Invoke-RestMethod https://localhost:44304/card | ConvertTo-Json
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/XmKRKsm.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/XmKRKsm.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;既然查詢成功了，就針對這筆來試試看修改：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Invoke-RestMethod https://localhost:44304/card/1 `
  -Method &amp;#39;PUT&amp;#39; `
  -Headers @{ &amp;#34;Content-Type&amp;#34; = &amp;#34;application/json&amp;#34;; } `
  -Body &amp;#34;{`&amp;#34;name`&amp;#34;: `&amp;#34;ourcard`&amp;#34;,`&amp;#34;description`&amp;#34;: `&amp;#34;sample card`&amp;#34;, `&amp;#34;attack`&amp;#34;: 4, `&amp;#34;health`&amp;#34;: 5, `&amp;#34;cost`&amp;#34;: 3}&amp;#34;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Xo5JFyP.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Xo5JFyP.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;一樣在 SSMS 確認一下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/SxsQdc2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/SxsQdc2.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;看來我們有成功更新到，讓我們針對這筆來查詢看看：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Invoke-RestMethod https://localhost:44304/card/1 | ConvertTo-Json
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/iieIxee.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/iieIxee.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;查詢出來的也的確是變動過的結果了。最後，讓我們把這張卡片刪除，回歸乾淨吧！&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Invoke-RestMethod https://localhost:44304/card/1 `
  -Method &amp;#39;DELETE&amp;#39;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/WcNVRKA.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/WcNVRKA.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;確認資料表的卡片已經消失：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/a5toUnV.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/a5toUnV.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;到這邊我們就宣告完工啦！&lt;/p&gt;
 &lt;h2 id=&#34;小結&#34;&gt;小結&lt;/h2&gt;
 &lt;p&gt;我們把前篇的 Web API 服務利用 Dapper 連接到 SQL Server，並成功完成了基本的 CRUD 功能。&lt;/p&gt;

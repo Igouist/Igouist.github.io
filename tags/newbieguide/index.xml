@@ -17,7 +17,7 @@
       <pubDate>Sun, 13 Mar 2022 20:03:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/p6aSDH9.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/p6aSDH9.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這是俺整理公司新訓內容的第七篇文章，目標是紀錄 Fluent Validation 這個好用套件。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;FluentValidation 可以幫我們將 Api 傳入的參數的檢查用更口語、更乾淨的方式去處理&lt;/strong&gt;，除了可以將檢查邏輯拆分成單獨的 Validator 類別，更提供了許多內建的檢查規則和自訂的彈性，相當方便。&lt;/p&gt;
 &lt;p&gt;並且因為將參數的檢查邏輯整理出去，就可以和 Controller 本身的工作做簡單的拆分，達到關注點分離的目標。&lt;/p&gt;
@@ -93,7 +93,7 @@
 &lt;p&gt;這時候，&lt;strong&gt;只要有了 Fluent Validation，我們就可以在參數檢查上做得更好！&lt;/strong&gt;&lt;/p&gt;
 &lt;h2 id=&#34;安裝-fluent-validation&#34;&gt;安裝 Fluent Validation&lt;/h2&gt;
 &lt;p&gt;因為我們的示範專案是 .net Core 的 Api，所以讓我們安裝 FluentValidation.AspNetCore&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/5ubV1VG.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/5ubV1VG.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：這包裡面包含了 Fluent Validation 本體和支援 Dotnet Core 的 DI（DependencyInjection）工具。如果習慣將驗證部分拆成其他類別庫，或是不需要 DI 的朋友可以嘗試安裝 Fluent Validation 就好。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -101,7 +101,7 @@
 &lt;p&gt;要使用 Fluent Validation 來驗證參數，&lt;strong&gt;首先我們必須建立一個針對該參數的驗證器（Validator），並繼承 &lt;code&gt;AbstractValidator&amp;lt;T&amp;gt;&lt;/code&gt;&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;其中 &lt;code&gt;&amp;lt;T&amp;gt;&lt;/code&gt; 的泛型選擇驗證對象的類別即可，接著就可以在 Validator 的建構式來註冊我們要的驗證邏輯。&lt;/p&gt;
 &lt;p&gt;現在就讓我們針對前面例子的 &lt;code&gt;CardParameter&lt;/code&gt; 來建立 &lt;code&gt;CardParameterValidator&lt;/code&gt; 吧：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/BWDZX6R.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/BWDZX6R.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// Card Parameter 的驗證器&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
@@ -200,7 +200,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;使用-withname-和-withmessage-來自訂驗證訊息&#34;&gt;使用 WithName 和 WithMessage 來自訂驗證訊息&lt;/h3&gt;
 &lt;p&gt;雖然內建的驗證規則都有提供制式的回傳訊息，例如對 Attack 做 &lt;code&gt;.GreaterThanOrEqualTo(0)&lt;/code&gt; 驗證失敗時，會得到「&amp;lsquo;Attack&amp;rsquo; 必須大於或等於 &amp;lsquo;0&amp;rsquo;」的訊息&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/KIEDyhI.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/KIEDyhI.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;但我們也可以使用 &lt;code&gt;WithMessage&lt;/code&gt; 來針對驗證規則指定失敗時的自訂訊息：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 驗證器建構式: 在這裡註冊我們要驗證的規則&lt;/span&gt;
@@ -274,9 +274,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;CascadeMode 原先預設會是 &lt;code&gt;Continue&lt;/code&gt;，也就是即使驗證失敗也會繼續執行&lt;/p&gt;
 &lt;p&gt;例如說它可能一口氣犯了好幾條，就會全部驗證完再一併列出所有驗證失敗的項目：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ngLOMaE.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ngLOMaE.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;當我們把驗證器的 CascadeMode 指定為 &lt;code&gt;Stop&lt;/code&gt; 之後，犯第一條就會直接原地遣返：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/deSUlPf.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/deSUlPf.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;除了指定整個驗證器以外，我們也可以單獨指定某一條規則為天條：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 驗證器建構式: 在這裡註冊我們要驗證的規則&lt;/span&gt;
@@ -436,7 +436,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著我們就可以使用 &lt;code&gt;Validate&lt;/code&gt; 回傳的 &lt;code&gt;ValidationResult&lt;/code&gt; 來看驗證結果。&lt;/p&gt;
 &lt;p&gt;先讓我們用 Linqpad 的小範例把 &lt;code&gt;ValidationResult&lt;/code&gt; 的內容印出來看看：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/UcBHhci.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/UcBHhci.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到，&lt;code&gt;IsValid&lt;/code&gt; 會告訴我們是不是有通過驗證。如果沒有通過驗證的話，&lt;code&gt;Errors&lt;/code&gt; 就會有驗證失敗的內容。&lt;/p&gt;
 &lt;p&gt;現在讓我們加上驗證結果的檢查吧：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
@@ -473,8 +473,8 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;現在讓我們來呼叫 API 試試吧！&lt;/p&gt;
 &lt;p&gt;這邊直接使用先前建置好的 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-4-swagger/&#34;&gt;Swagger&lt;/a&gt; 頁面來測試，並且故意把攻擊力打成負數：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/dL34bdN.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/omN0dax.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/dL34bdN.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/omN0dax.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到回傳的確變成了我們驗證失敗的訊息。&lt;/p&gt;
 &lt;h2 id=&#34;註冊-validator-來自動進行驗證&#34;&gt;註冊 Validator 來自動進行驗證&lt;/h2&gt;
 &lt;p&gt;不過都已經到了 .net Core 時代，&lt;a href=&#34;https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/&#34;&gt;依賴注入&lt;/a&gt; 已經是內建的功能下，還要用 &lt;code&gt;new&lt;/code&gt; 一個驗證器這種直接依賴的方式還是有點不太舒服……所以 Fluent Validation 也有提供自動驗證的作法！&lt;/p&gt;
@@ -507,7 +507,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; StatusCode(&lt;span style=&#34;color:#ae81ff&#34;&gt;500&lt;/span&gt;);
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然後讓我們用 Swagger 再試一次看看：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/YLRkBg0.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/YLRkBg0.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到 Fluent Validation 自動幫我們擋了下來！&lt;/p&gt;
 &lt;h2 id=&#34;小結&#34;&gt;小結&lt;/h2&gt;
 &lt;p&gt;當檢查參數的過程越來越冗長，為了做到關注點分離、讓方法本體更專注在流程上的處理，我們會選擇將檢查參數的邏輯拆分出去，例如拆成一個私有的 Function 等等。&lt;/p&gt;
@@ -712,7 +712,7 @@
       <pubDate>Sun, 28 Nov 2021 20:13:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/2XYv7X2.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/2XYv7X2.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這是俺整理公司新訓內容的第六篇文章，目標是&lt;strong&gt;紀錄什麼是依賴注入（Dependency Injection）&lt;/strong&gt;。包含：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/11/newbie-6-dependency-injection#%E7%82%BA%E4%BB%80%E9%BA%BC%E9%9C%80%E8%A6%81%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5&#34;&gt;為什麼要依賴注入&lt;/a&gt;&lt;/li&gt;
@@ -952,7 +952,7 @@
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 註冊 ITestService 的實作為 TestService&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;services.AddScoped&amp;lt;ITestService, TestService&amp;gt;();
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如此一來，當 DI 容器發現要注入 &lt;code&gt;ITestService&lt;/code&gt; 的場合，就會替我們建構 &lt;code&gt;TestService&lt;/code&gt; 並注入。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Y5BexuX.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Y5BexuX.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;例如說我們的 &lt;code&gt;TestController&lt;/code&gt; 的建構式部分如下，可以看到我們有使用建構式注入：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; TestController(ITestService testService)
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
@@ -1251,9 +1251,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;雖然可以有效把註冊切分出去，但也會沒辦法在同個地方管理所有註冊，略麻煩，還是請真的有需要的時候再嘗試。這邊就當作分享這個做法給大家。&lt;/p&gt;
 &lt;h3 id=&#34;驗證&#34;&gt;驗證&lt;/h3&gt;
 &lt;p&gt;現在我們已經將三層的內容都改成使用注入了，最後就來測試一下是否有串接成功吧！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/SFfOkFT.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/SFfOkFT.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;下中斷點，可以看到我們 CardService 要求的 ICardRepository 的確傳入了實作的 CardRepository&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/1qS3DHL.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1qS3DHL.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;也成功從資料庫中查詢到卡片了！打完收工～&lt;/p&gt;
 &lt;h2 id=&#34;小結&#34;&gt;小結&lt;/h2&gt;
 &lt;p&gt;這篇文章介紹了一些依賴注入的作法，並在 .net Core 的專案上進行實作。這邊就做個小總結：&lt;/p&gt;
@@ -1338,7 +1338,7 @@
       <pubDate>Sun, 03 Oct 2021 14:00:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/S72H7sA.png&#34; alt=&#34;img&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/S72H7sA.webp&#34; alt=&#34;img&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這是俺整理公司新訓內容的第五篇文章，目標是&lt;strong&gt;使用三層式架構 (3-Layer Architecture) 來切分服務的關注點和職責&lt;/strong&gt;。&lt;/p&gt;
 &lt;h2 id=&#34;什麼是分層分層可以吃嗎&#34;&gt;什麼是分層？分層可以吃嗎？&lt;/h2&gt;
 &lt;blockquote&gt;
@@ -1355,7 +1355,7 @@
 &lt;/blockquote&gt;
 &lt;p&gt;一般來說，最常見的分層架構就是&lt;strong&gt;三層式架構&lt;/strong&gt;了。&lt;/p&gt;
 &lt;p&gt;三層式架構顧名思義就是把應用程式分成三層，通常會分成「&lt;strong&gt;展示層、商業邏輯層、資料存取層&lt;/strong&gt;」。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/RxSrWJm.jpg&#34; alt=&#34;分層架構01&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/RxSrWJm.webp&#34; alt=&#34;分層架構01&#34;&gt;&lt;/p&gt;
 &lt;p&gt;現在讓我們認識一些他們的分工吧！&lt;/p&gt;
 &lt;p&gt;三層式架構的常見分層有：&lt;/p&gt;
 &lt;ol&gt;
@@ -1460,7 +1460,7 @@
 &lt;/blockquote&gt;
 &lt;h4 id=&#34;快速鎖定目標縮小範圍&#34;&gt;快速鎖定目標、縮小範圍&lt;/h4&gt;
 &lt;p&gt;因為關注點分離成多個層（Layer）了，當物件的設計有符合職責的話，在開發或除錯時，甚至能像查詢表格一樣迅速！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/CZ0S51s.jpg&#34; alt=&#34;分層架構04&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/CZ0S51s.webp&#34; alt=&#34;分層架構04&#34;&gt;&lt;/p&gt;
 &lt;p&gt;當分層和類別的定義都合乎職責的時候，在接收到需求的同時也就能抓出目標範圍在哪了，例如：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;這次針對某功能的一些判斷邏輯有變動 =&amp;gt; OK，先從 Service 開始看&lt;/li&gt;
@@ -1769,16 +1769,16 @@
 &lt;h3 id=&#34;建立分層&#34;&gt;建立分層&lt;/h3&gt;
 &lt;p&gt;接著讓我們先來建立分層吧，這邊採用建立「類別庫」的方式來分層，對於一些比較小的專案，使用資料夾來分層也是沒有問題的。&lt;/p&gt;
 &lt;p&gt;首先，讓我們在方案總管對著方案按下右鍵，選擇 加入 → 新增專案&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/5kRtiNF.png&#34; alt=&#34;image-20210921153907902&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/5kRtiNF.webp&#34; alt=&#34;image-20210921153907902&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著找到類別庫，由於範例專案是使用 .net Core 3.1 的版本，故選擇 .net Core 為目標的類別庫：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/rh83s9z.png&#34; alt=&#34;image-20210921154045369&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/rh83s9z.webp&#34; alt=&#34;image-20210921154045369&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著讓我們用專案名稱 + Service 來命名這個專案：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/2TVpn3L.png&#34; alt=&#34;image-20210921154155709&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/2TVpn3L.webp&#34; alt=&#34;image-20210921154155709&#34;&gt;&lt;/p&gt;
 &lt;p&gt;下個畫面選擇完版本之後，就可以在解決方案看到多了一個 Service 的專案囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/3RBmvbp.png&#34; alt=&#34;image-20210921154319429&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/3RBmvbp.webp&#34; alt=&#34;image-20210921154319429&#34;&gt;&lt;/p&gt;
 &lt;p&gt;然後那個 Class1.cs 可以砍掉，我們不會用到。&lt;/p&gt;
 &lt;p&gt;接著請重複以上的步驟，建立 Repository 和 Common 的類別庫：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/OwXJY9F.png&#34; alt=&#34;image-20210921154728674&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/OwXJY9F.webp&#34; alt=&#34;image-20210921154728674&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：如果想要把專案做排序或整理的朋友，可以對解決方案右鍵，選擇 加入 → 新增方案資料夾，用資料夾去做排序和整理&lt;/p&gt;
 &lt;p&gt;&lt;del&gt;有的時候我都懷疑其他人的分層用 Business 和 Data 命名，該不會是為了排序起來比較好看……？！&lt;/del&gt;&lt;/p&gt;
@@ -1788,9 +1788,9 @@
 &lt;p&gt;一般的分層架構的依賴關係會是從上到下，也就是 展示層 → 商業邏輯層 → 資料存取層，然後他們三個都參考共用層。&lt;/p&gt;
 &lt;img src=&#34;https://i.imgur.com/uYlhVjn.jpg&#34; alt=&#34;分層架構05&#34; style=&#34;zoom:33%;&#34; /&gt;
 &lt;p&gt;現在讓我們從最外圍開始：對 &lt;code&gt;ProjectN&lt;/code&gt; （或是你 WEB／API 等等所在的專案）右鍵 → 加入 → 專案參考&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/SB841e8.png&#34; alt=&#34;image-20210921162356712&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/SB841e8.webp&#34; alt=&#34;image-20210921162356712&#34;&gt;&lt;/p&gt;
 &lt;p&gt;然後讓它參考我們的 Service 層以及共用的 Common：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/fawAtxz.png&#34; alt=&#34;image-20210921163054655&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/fawAtxz.webp&#34; alt=&#34;image-20210921163054655&#34;&gt;&lt;/p&gt;
 &lt;p&gt;同樣地，也請各位對 Service 和 Repository 進行同樣的操作加入參考。各層的參考關係現在應該要是這樣的：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;API or APP: Service + Common&lt;/li&gt;
@@ -1808,10 +1808,10 @@
 &lt;p&gt;對於分層是否要使用介面有疑惑的朋友，可以參考 mrkt 大大的這篇 &lt;a href=&#34;https://kevintsengtw.blogspot.com/2013/07/aspnet-mvc.html&#34;&gt;專案分層架構建議&lt;/a&gt; 中的「問題三、一定要用介面嗎？」的段落。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;接著，讓我們開始著手處理介面的部分吧，先讓我們在 &lt;code&gt;Service&lt;/code&gt; 中新增一個叫做 &lt;code&gt;Interface&lt;/code&gt; 的資料夾來放我們的介面。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/FATU0lt.png&#34; alt=&#34;image-20210921182347662&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/FATU0lt.webp&#34; alt=&#34;image-20210921182347662&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著因為是做卡片管理的 CRUD，當然要用 Card 當前綴。並且由於習慣的關係，只要是 Interface 我會在最前面加上一個 &lt;code&gt;I&lt;/code&gt; 來標示，所以讓我們在該資料夾下建立一個 &lt;code&gt;ICardService&lt;/code&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/vr5RTrG.png&#34; alt=&#34;image-20210921194022072&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/CAMytoF.png&#34; alt=&#34;image-20210921194110374&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/vr5RTrG.webp&#34; alt=&#34;image-20210921194022072&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/CAMytoF.webp&#34; alt=&#34;image-20210921194110374&#34;&gt;&lt;/p&gt;
 &lt;p&gt;如此一來就會建立一個空的介面。啊，記得加上 &lt;code&gt;Public&lt;/code&gt; 呦。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 卡片管理服務&lt;/span&gt;
@@ -1902,9 +1902,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int?&lt;/span&gt; MaxCost { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;不要忘了要回到 Interface 的地方好好 using 進來呦：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/vJSR9Qo.png&#34; alt=&#34;image-20210921200741002&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/vJSR9Qo.webp&#34; alt=&#34;image-20210921200741002&#34;&gt;&lt;/p&gt;
 &lt;p&gt;現在我們的 Service 層應該會是這個樣子的：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ScSGHFK.png&#34; alt=&#34;image-20210921200831418&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ScSGHFK.webp&#34; alt=&#34;image-20210921200831418&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著就讓我們用同樣的節奏來處理 Repository 吧。&lt;/p&gt;
 &lt;p&gt;首先仍然是先建立一個 &lt;code&gt;Interface&lt;/code&gt; 資料夾、建立一個 &lt;code&gt;ICardRepository&lt;/code&gt;，並加上我們的 CRUD 五天王：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
@@ -1992,7 +1992,7 @@
 &lt;p&gt;請盡量不要為了一路打到底就硬把這兩個條件綑綁在一起，弄成什麼「以交易金額與客戶年收入查詢訂單」的「專用」方法，這樣將來就很難&lt;strong&gt;重複使用&lt;/strong&gt;了。&lt;/p&gt;
 &lt;p&gt;（不過凡事都有例外嘛，當你的效能爆炸到被要求只能在 SQL 就先做完篩選的時候，或是只能從舊有功能移植過來的時候，還是要乖乖想辦法就是了囧…）&lt;/p&gt;
 &lt;p&gt;聊得遠了，讓我們回到 ProjectN 的 Repository，目前應該會是長這個樣子：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/iNQdSnm.png&#34; alt=&#34;image-20210921204201764&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/iNQdSnm.webp&#34; alt=&#34;image-20210921204201764&#34;&gt;&lt;/p&gt;
 &lt;p&gt;到這邊我們的介面和功能都訂好啦，接著就讓我們開始實作這些介面吧！&lt;/p&gt;
 &lt;h3 id=&#34;實作-repository&#34;&gt;實作 Repository&lt;/h3&gt;
 &lt;blockquote&gt;
@@ -2002,14 +2002,14 @@
 &lt;/blockquote&gt;
 &lt;p&gt;首先讓我們從 Repository 開始實作吧！&lt;/p&gt;
 &lt;p&gt;第一步就是建立實作的資料夾，方便和 &lt;code&gt;Interface&lt;/code&gt; 做個區隔，所以這邊在 Repository 建立一個 &lt;code&gt;Implement&lt;/code&gt; 資料夾，並在裡面建立 &lt;code&gt;CardRepository&lt;/code&gt; ：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/mxPAvRb.png&#34; alt=&#34;image-20210926181827673&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/mxPAvRb.webp&#34; alt=&#34;image-20210926181827673&#34;&gt;&lt;/p&gt;
 &lt;p&gt;建立之後，別忘記把類別改為 &lt;code&gt;Public&lt;/code&gt; 並告訴他我們要實作介面 &lt;code&gt;ICardRepository&lt;/code&gt;（記得 using）：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;CardRepository&lt;/span&gt; : ICardRepository
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著 IDE 通常都會提醒一下說你有哪些要求沒有做到，這邊就讓我偷懶一下直接讓 IDE 產生空方法：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/nJIaMAR.png&#34; alt=&#34;image-20210926182828485&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/nJIaMAR.webp&#34; alt=&#34;image-20210926182828485&#34;&gt;&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;CardRepository&lt;/span&gt; : ICardRepository
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;CardDataModel&amp;gt; GetList(CardSearchCondition info)
@@ -2041,7 +2041,7 @@
 &lt;p&gt;從資料庫裏面操作資料的 CRUD 相關部份我們在上一篇的 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-3-dapper/&#34;&gt;Dapper&lt;/a&gt; 章節已經做得差不多了，這邊就不再贅述，稍微補上這次新增的查詢列表就行。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：為了避免我之後回來抄的時候想不起來，這邊也放一下資料表目前狀況好了：
-&lt;img src=&#34;https://i.imgur.com/8qhFQBb.png&#34; alt=&#34;image-20211002135411755&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/8qhFQBb.webp&#34; alt=&#34;image-20211002135411755&#34;&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 卡片管理&lt;/span&gt;
@@ -2239,7 +2239,7 @@
 &lt;p&gt;如果是在本篇流程不打算使用 AutoMapper 的朋友，請在使用到 AutoMapper 的場合自行 new 出目標物件並賦值即可。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;首先一樣先建立實作用的資料夾，並建立 &lt;code&gt;CardService&lt;/code&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/rJ4rMgs.png&#34; alt=&#34;image-20211003091808904&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/rJ4rMgs.webp&#34; alt=&#34;image-20211003091808904&#34;&gt;&lt;/p&gt;
 &lt;p&gt;並且讓 IDE 幫忙把要實作的介面都先列出來：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;CardService&lt;/span&gt; : ICardService
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
@@ -2286,7 +2286,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 其他實作部分&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著是 DTO 的對映部分，先建立 Service 的對映表。我個人習慣跟隨公司慣例開一個 &lt;code&gt;Mappings&lt;/code&gt; 資料夾來放：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/wwEi2pW.png&#34; alt=&#34;image-20211003094809104&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/wwEi2pW.webp&#34; alt=&#34;image-20211003094809104&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：當專案還有 Mappings, Enum（列舉）和其他設定檔等等，資料夾就會變得挺多的。&lt;/p&gt;
 &lt;p&gt;這種時候，也可以把這類基礎建設相關的都放到 &lt;code&gt;Infrastructure&lt;/code&gt; 資料夾做個整理，閱讀和操作上會比較舒服。&lt;/p&gt;
@@ -2584,7 +2584,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;測試一下有沒有接上去&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/IHsfTjU.png&#34; alt=&#34;image-20211003114955056&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/IHsfTjU.webp&#34; alt=&#34;image-20211003114955056&#34;&gt;&lt;/p&gt;
 &lt;p&gt;打完收工！&lt;/p&gt;
 &lt;h2 id=&#34;自問自答心得篇&#34;&gt;自問自答心得篇&lt;/h2&gt;
 &lt;p&gt;實作結束之後，這邊就留個版面放一些上面沒提到／塞不進去／老人碎碎念的部份。&lt;/p&gt;
@@ -2721,7 +2721,7 @@
       <pubDate>Sun, 16 May 2021 22:42:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2021/05/newbie-4-swagger/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/lzjNys4.png&#34; alt=&#34;img&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/lzjNys4.webp&#34; alt=&#34;img&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這是俺整理公司新訓內容的第四篇文章，目標是&lt;strong&gt;簡單地使用 Swagger 工具來自動產生可互動的 API 文件&lt;/strong&gt;。&lt;/p&gt;
 &lt;h2 id=&#34;api-文件與-swagger&#34;&gt;API 文件與 Swagger&lt;/h2&gt;
 &lt;p&gt;在 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-3-dapper&#34;&gt;上一篇&lt;/a&gt; 我們建立了一個有簡單的 CRUD 的 Web API 服務，這篇我們就接續著 API 服務往下看吧！&lt;/p&gt;
@@ -2783,7 +2783,7 @@
 &lt;h2 id=&#34;安裝-swashbuckle-及啟用-swagger&#34;&gt;安裝 Swashbuckle 及啟用 Swagger&lt;/h2&gt;
 &lt;p&gt;現在讓我們把鏡頭回到我們在&lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-3-dapper&#34;&gt;上一篇&lt;/a&gt;裡使用 .net Core 預設的 Web API 範本建立的簡易 CRUD 服務。&lt;/p&gt;
 &lt;p&gt;首先，直奔 Nuget、搜尋 Swashbuckle，應該可以看到一整排：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9vn5HUG.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/9vn5HUG.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;我們這個示範專案的環境是 .net Core，所以我們選擇 &lt;strong&gt;&lt;code&gt;Swashbuckle.AspNetCore&lt;/code&gt;&lt;/strong&gt;，安裝了懶人包，就等於裝好了 Swashbuckle 家的 OpenAPI 三劍客 Swagger、SwaggerGen、SwaggerUI，之後的文件產生和進階操作也就不用煩惱了。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;環境不是 .net Core 的 Asp.net Web API 朋友，請安裝 &lt;code&gt;Swashbuckle&lt;/code&gt;，不過整體操作和顯示上並不會相差太多。&lt;/p&gt;
@@ -2793,7 +2793,7 @@
 &lt;li&gt;&lt;a href=&#34;https://kevintsengtw.blogspot.com/2015/12/swashbuckle-swagger-for-web-api.html&#34;&gt;Swashbuckle - Swagger for Web Api 顯示內容的調整 - mrkt 的程式學習筆記&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/En0Aarn.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/En0Aarn.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;安裝完成之後，就讓我們來註冊 Swagger 服務吧！&lt;/p&gt;
 &lt;p&gt;首先讓我們到 &lt;code&gt;Startup.cs&lt;/code&gt; 的 &lt;code&gt;ConfigureServices&lt;/code&gt;，加上 &lt;code&gt;services.AddSwaggerGen();&lt;/code&gt; 把 Swagger 的服務掛上去：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// This method gets called by the runtime.&lt;/span&gt;
@@ -2812,9 +2812,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;});
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這樣就啟用了 Swagger 的服務了。&lt;/p&gt;
 &lt;p&gt;現在讓我們執行偵錯，&lt;strong&gt;並且到專案目錄底下的 &lt;code&gt;/swagger&lt;/code&gt; 路徑&lt;/strong&gt;（以我為例就是 &lt;code&gt;localhost:44304/swagger&lt;/code&gt;），應該就能看到 Swagger 工具的介面啦！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/odrQ5IO.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/odrQ5IO.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;並且在上面可以注意到我們&lt;strong&gt;自動生成的 API JSON 文件，也就是前面註冊時看過的 &lt;code&gt;/swagger/v1/swagger.json&lt;/code&gt;&lt;/strong&gt;（以我為例就是 &lt;code&gt;localhost:44304/swagger/v1/swagger.json&lt;/code&gt;）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/HysAWQu.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/HysAWQu.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這邊大致上就可以了解到，&lt;strong&gt;Swagger 工具就是藉由去掃我們的 &lt;code&gt;ApiController&lt;/code&gt;，產生出對應的 API 規格的 JSON 檔案，再讀取這個 JSON 檔案來產生出 Swagger 的 UI 頁面&lt;/strong&gt;。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：這邊也可以對 Swagger 的 UI 路徑進行設定，不一定要在 &lt;code&gt;/swagger&lt;/code&gt; 底下。只需要在 &lt;code&gt;UseSwaggerUI&lt;/code&gt; 中使用 &lt;code&gt;RoutePrefix&lt;/code&gt; 就可以指定 Swagger UI 的 Route。&lt;/p&gt;
@@ -2830,11 +2830,11 @@
 &lt;p&gt;補充：如果有在 &lt;code&gt;Properties/launchSettings.json&lt;/code&gt; 設定偵錯時的起始頁面的朋友，也可以試試&lt;strong&gt;把起始頁面 &lt;code&gt;launchUrl&lt;/code&gt; 設定成 Swagger UI 的路徑&lt;/strong&gt;，例如 &lt;code&gt;&amp;quot;launchUrl&amp;quot;: &amp;quot;swagger&amp;quot;&lt;/code&gt;，平常測試的時候會順手很多，推薦給大家&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;接著讓我們用 Swagger UI 來測試一下 API 吧，首先讓我們新增一張卡片，選擇新增卡片的 API 並試試 &lt;code&gt;Try it out&lt;/code&gt;，可以看到範例和輸入 Body 的區塊：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/8ruN7w9.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/8ruN7w9.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;執行之後下方就會告訴我們執行結果和回傳：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/UUm4v20.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/UUm4v20.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著試試用 Swagger UI 來 GET 看看是不是真的有新增成功：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/I5eAVZm.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/I5eAVZm.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;確認 Swagger UI 的確和我們的 CardController 銜接在一起了，啟用服務成功！&lt;/p&gt;
 &lt;h2 id=&#34;使用-swaggerdoc-增加專案描述&#34;&gt;使用 SwaggerDoc 增加專案描述&lt;/h2&gt;
 &lt;p&gt;不過現在只是一個可以互動的操作介面而已，離可以取代文件還有一段距離，接著就讓我們一步一步來增加資訊到這個 UI 介面吧。&lt;/p&gt;
@@ -2862,15 +2862,15 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    });
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;});
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這邊可以填入版本、API 名稱和說明、聯絡方式等資訊，這些資訊會顯示在 Swagger UI 的開頭：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9v4DssU.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/9v4DssU.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;替自己的服務加上說明是絕對必要的，不過平時會比較常用的也是 &lt;code&gt;Title&lt;/code&gt;、&lt;code&gt;Description&lt;/code&gt; 這些基本欄位，各位再按照自己的服務調整吧。&lt;/p&gt;
 &lt;h2 id=&#34;使用-xml-文件和-includexmlcomments-從註解產生-api-說明&#34;&gt;使用 XML 文件和 IncludeXmlComments 從註解產生 API 說明&lt;/h2&gt;
 &lt;p&gt;我們有了整個服務的說明之後，當然也要替每一支 API 補上說明啦！&lt;/p&gt;
 &lt;p&gt;這邊我們可以採用&lt;strong&gt;產生 XML 檔案的方式來讓 Swagger 取得每支 API 在 Function 上的註解&lt;/strong&gt;，這樣就能自動產生 API 的說明了。&lt;/p&gt;
 &lt;p&gt;首先就是要打開 XML 文件，先讓我們從 &lt;code&gt;方案總管&lt;/code&gt; 對我們的專案 &lt;code&gt;右鍵&lt;/code&gt;，選擇 &lt;code&gt;屬性&lt;/code&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Iol6yxX.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Iol6yxX.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;進入屬性頁之後，&lt;strong&gt;到 &lt;code&gt;建置&lt;/code&gt;，找到 &lt;code&gt;XML 文件檔案&lt;/code&gt; 並勾選起來&lt;/strong&gt;，通常會自動幫你填入路徑：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/qWU9iJP.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/qWU9iJP.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：並非使用 Visual Studio 開發的朋友，也可以參考微軟文件的開啟方式：打開 &lt;code&gt;.csproj&lt;/code&gt; 檔案，並找到 &lt;code&gt;PropertyGroup&lt;/code&gt; 加上 &lt;code&gt;GenerateDocumentationFile&lt;/code&gt; ，並設為 true，例如：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-xml&#34; data-lang=&#34;xml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;PropertyGroup&amp;gt;&lt;/span&gt;
@@ -2912,35 +2912,35 @@
 &lt;p&gt;如果在前面的步驟有自己指定 XML 檔案產生路徑的朋友，這邊的 &lt;code&gt;xmlFile&lt;/code&gt; 也要記得和 XML 檔案路徑對應上呦。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;最後也是最重要的一步：&lt;strong&gt;確保你的 ApiController 底下的各 API 有乖乖加上註解&lt;/strong&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/yVQQIln.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/yVQQIln.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;小提示：搭配 &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=sergeb.GhostDoc&#34;&gt;GhostDoc&lt;/a&gt; 自動產生註解，又快又香！用過就回不去了。&lt;/p&gt;
 &lt;p&gt;相關的說明可以參見：&lt;a href=&#34;https://dotblogs.com.tw/wasichris/2016/01/21/172429&#34;&gt;使用 GhostDoc 自動產出符合語意的註解 - 搞搞就懂&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;確定 &lt;strong&gt;對專案開啟產生 XML、讓 Swagger 讀取 XML、乖乖寫註解&lt;/strong&gt; 三個步驟都有完成之後，就可以開啟 Swagger UI 來看看啦！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/quHdcGV.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/quHdcGV.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到每支 API 都有顯示註解的名稱了，讓我們跟沒有的時候比對一下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TsroNer.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/TsroNer.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;是不是貼心多了呢？&lt;/p&gt;
 &lt;p&gt;並且如果對參數、傳入和傳出的 Model 都有確實加上註解的話，在 API 的內容頁面就可以直接看到 QueryString 的參數，並且對 Model 點選 Schema 也會顯示 Model 的說明：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/pI9OJQD.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/kPQRL9m.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/pI9OJQD.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/kPQRL9m.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;如此一來參數和回傳，從名稱、說明、型別和範例都有了，這樣才有 API 文件的感覺嘛！&lt;/p&gt;
 &lt;p&gt;除了基本的 &lt;code&gt;summary&lt;/code&gt; 用來標示 API 的用途、&lt;code&gt;param&lt;/code&gt; 用來標記參數名稱之外，比較特別的就是可以加上 &lt;code&gt;remarks&lt;/code&gt; 來替 API 做更詳細的說明，例如：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/E79TDpY.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/E79TDpY.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這樣就會顯示在 Swagger UI 上該 API 點開的內文中：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ZFDLWsv.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ZFDLWsv.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;很適合用來進行更詳細的說明和備註。&lt;/p&gt;
 &lt;p&gt;通常我們做到這裡就差不多了已經具備 API 文件該有的部分了，不過資訊當然是多多益善嘛，接著就讓我們來補充一些小東西上去吧～&lt;/p&gt;
 &lt;h2 id=&#34;使用-produces-屬性和-response-註解補充回傳資訊&#34;&gt;使用 Produces 屬性和 response 註解補充回傳資訊&lt;/h2&gt;
 &lt;p&gt;我們在 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi&#34;&gt;API 的介紹&lt;/a&gt; 有提到：API 的回傳有許多格式，例如最常見的 JSON、XML，或者是純文字和檔案等等。&lt;/p&gt;
 &lt;p&gt;同時，我們也提過 API 可能會根據不同狀況，也會有不同的 HTTP Status 回應，例如 404: 找不到。但讓我們確認一下我們現在的文件…&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/IhWDMBe.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/IhWDMBe.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;看起來預設的 Media type 並沒有作用，並且也只有 200 成功時的狀況。現在就讓我們來補充一下吧！&lt;/p&gt;
 &lt;p&gt;在目標的 Api 方法上加上 &lt;code&gt;[Produces(&amp;quot;application/json&amp;quot;)]&lt;/code&gt; 就可以標示該方法的回傳格式為 &lt;code&gt;application/json&lt;/code&gt;，例如：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9S1o9sH.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/9S1o9sH.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這樣在 Swagger UI 上該 API 的 Responses 就會標記為指定的格式：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/OjRt09o.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/OjRt09o.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著，讓我們用 &lt;code&gt;ProducesResponseType&lt;/code&gt; 來指定回傳時的型別，以及在註解中使用 &lt;code&gt;&amp;lt;response&amp;gt;&lt;/code&gt; 標籤來替回傳時的 HTTP Status 加上說明吧：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 查詢卡片&lt;/span&gt;
@@ -2964,9 +2964,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/I90gVGu.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/I90gVGu.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這樣做的 Swagger UI 就會多出這些 HTTP Status 對應的資訊囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/owvkBq4.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/owvkBq4.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;到這邊我們就提供了各種情況對應的回傳啦，隔壁同事如果問你說「為啥我打是回 400 啊？」就可以對他說「&lt;a href=&#34;https://www.urbandictionary.com/define.php?term=RTFW&#34;&gt;RTFW&lt;/a&gt;！」&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;2021.07.03 補充：&lt;/p&gt;
@@ -2977,7 +2977,7 @@
 &lt;h2 id=&#34;小結&#34;&gt;小結&lt;/h2&gt;
 &lt;p&gt;這篇記錄了 Swagger 自動產生 API 規格文件的作法，從 API 的路由、說明、參數、Model 跟回傳值全方位說明，還可以試打 API，可以說是&lt;strong&gt;完美提供健全的 API 環境&lt;/strong&gt;啦。&lt;/p&gt;
 &lt;p&gt;阿彌陀佛阿彌陀佛，所謂寫一篇文件勝造七級浮屠，這個 Swagger 開下去，還不飛昇當神去了。正是：API 文件寫得好，同事溝通沒煩惱；Swagger 用得好，生文件只要一秒。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/THIt8EI.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/THIt8EI.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;那麼今天就記錄到這邊，最後就快速整理一下：&lt;/p&gt;
 &lt;p&gt;－ 關於 Swagger －&lt;/p&gt;
 &lt;ul&gt;
@@ -3052,7 +3052,7 @@
       <pubDate>Sun, 09 May 2021 11:15:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2021/05/newbie-3-dapper/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/aIHQL5Z.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/aIHQL5Z.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這是俺整理公司新訓內容的第三篇文章，目標是&lt;strong&gt;在 .NET Core 簡單地使用 Dapper 連線到資料庫並完成 CRUD 的功能&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;接續 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi&#34;&gt;上一篇&lt;/a&gt; 的進度，我們接著要來連線到資料庫中完成我們的 Web Api 的 CRUD 範例。因為從新訓時期到現在工作團隊作業上主要都是使用 Dapper 來做連線資料庫的工作，這邊就直接用 Dapper 來推進吧！&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Dapper 有多好用呢？它輕量、它簡單、它快速&lt;/strong&gt;。總之先把大神們的介紹文直接拿來鎮樓：&lt;/p&gt;
@@ -3134,7 +3134,7 @@
 &lt;p&gt;接續我們 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi&#34;&gt;上一篇&lt;/a&gt; 的進度，在上一篇裡，我們對外開了一組簡單 CRUD 的 API，用來查增修刪我們的卡片資訊。&lt;/p&gt;
 &lt;p&gt;但當時只是開了簡單的服務，資料也是暫存的而已。所以這篇的目標是將我們的 API 服務連到資料庫，真正實現對卡片資料的操作。&lt;/p&gt;
 &lt;p&gt;先讓我們說明一下本篇的示範環境，假設在 Local 的 SQL Server 裡，有著一個 &lt;code&gt;Newbie&lt;/code&gt; 資料庫，其中有一張 &lt;code&gt;Card&lt;/code&gt; 的資料表。其結構如下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Gec9WeQ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Gec9WeQ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;CREATE&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;TABLE&lt;/span&gt; [dbo].[Card](
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	[Id] [int] &lt;span style=&#34;color:#66d9ef&#34;&gt;IDENTITY&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;NOT&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;NULL&lt;/span&gt;,
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	[Name] [nvarchar](&lt;span style=&#34;color:#ae81ff&#34;&gt;50&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;NULL&lt;/span&gt;,
@@ -3150,9 +3150,9 @@
 &lt;/blockquote&gt;
 &lt;p&gt;現在我們有了一張資料表，鏡頭轉回到我們的 .net Core Web API 服務。&lt;/p&gt;
 &lt;p&gt;既然今天的主角是 Dapper，當然要&lt;strong&gt;先打開 NuGet 把 Dapper 給安裝下來&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/rT0Nop6.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/66GtKJA.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/0fuLbQC.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/rT0Nop6.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/66GtKJA.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/0fuLbQC.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;恭喜你，你已經完成本篇文章實作的一半了。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h3 id=&#34;建立對應資料表的類別&#34;&gt;建立對應資料表的類別&lt;/h3&gt;
@@ -3759,29 +3759,29 @@
  -Method &amp;#39;POST&amp;#39; `
  -Headers @{ &amp;#34;Content-Type&amp;#34; = &amp;#34;application/json&amp;#34;; } `
  -Body &amp;#34;{`&amp;#34;name`&amp;#34;: `&amp;#34;mycard`&amp;#34;,`&amp;#34;description`&amp;#34;: `&amp;#34;sample card`&amp;#34;, `&amp;#34;attack`&amp;#34;: 3, `&amp;#34;health`&amp;#34;: 4, `&amp;#34;cost`&amp;#34;: 2 }&amp;#34;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/oQOv7VN.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/oQOv7VN.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;然後讓我們在 SSMS（SQL Server Management Studio）確認一下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/CuxT7jB.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/CuxT7jB.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著讓我們試試查詢：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Invoke-RestMethod https://localhost:44304/card | ConvertTo-Json
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/XmKRKsm.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/XmKRKsm.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;既然查詢成功了，就針對這筆來試試看修改：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Invoke-RestMethod https://localhost:44304/card/1 `
  -Method &amp;#39;PUT&amp;#39; `
  -Headers @{ &amp;#34;Content-Type&amp;#34; = &amp;#34;application/json&amp;#34;; } `
  -Body &amp;#34;{`&amp;#34;name`&amp;#34;: `&amp;#34;ourcard`&amp;#34;,`&amp;#34;description`&amp;#34;: `&amp;#34;sample card`&amp;#34;, `&amp;#34;attack`&amp;#34;: 4, `&amp;#34;health`&amp;#34;: 5, `&amp;#34;cost`&amp;#34;: 3}&amp;#34;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Xo5JFyP.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Xo5JFyP.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;一樣在 SSMS 確認一下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/SxsQdc2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/SxsQdc2.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;看來我們有成功更新到，讓我們針對這筆來查詢看看：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Invoke-RestMethod https://localhost:44304/card/1 | ConvertTo-Json
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/iieIxee.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/iieIxee.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;查詢出來的也的確是變動過的結果了。最後，讓我們把這張卡片刪除，回歸乾淨吧！&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Invoke-RestMethod https://localhost:44304/card/1 `
  -Method &amp;#39;DELETE&amp;#39;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/WcNVRKA.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/WcNVRKA.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;確認資料表的卡片已經消失：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/a5toUnV.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/a5toUnV.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;到這邊我們就宣告完工啦！&lt;/p&gt;
 &lt;h2 id=&#34;小結&#34;&gt;小結&lt;/h2&gt;
 &lt;p&gt;我們把前篇的 Web API 服務利用 Dapper 連接到 SQL Server，並成功完成了基本的 CRUD 功能。&lt;/p&gt;
@@ -3842,7 +3842,7 @@
       <pubDate>Sun, 02 May 2021 12:39:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2021/05/newbie-2-webapi/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/d2xM94x.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/d2xM94x.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這是俺整理公司新訓內容的第二篇文章，目標是&lt;strong&gt;對 Api, Restful Api, HTTP 等相關的知識點做個筆記，並用 .net Core 建立一個簡易的 Web Api 專案&lt;/strong&gt;。&lt;/p&gt;
 &lt;h2 id=&#34;前言基本觀念&#34;&gt;前言、基本觀念&lt;/h2&gt;
 &lt;p&gt;我們在 &lt;a href=&#34;https://igouist.github.io/post/2021/04/newbie-1-hello-git&#34;&gt;上一篇&lt;/a&gt; 記錄了新訓第一天的 Git 操作筆記。接著在這篇，我們終於要進入 .net Core 啦！&lt;/p&gt;
@@ -4030,7 +4030,7 @@ GET /api/product/1
 &lt;p&gt;但 HTTP 這水挺深的哪，所以我們這篇的紀錄先以「打 Api 服務的時候不至於都看不懂」為目標進行，稍微介紹一下 Request 和 Response 的內容吧。來日方長嘛。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Request 和 Response 的內容，有興趣的朋友可以直接在瀏覽器進入開發人員工具就能看到了，以 Edge 和 Chrome 為例：首先按下 F12 ，並找到網路（Network）的部分，就可以看到進入網頁的各個請求和回應，隨便點開一個就會有 Request 和 Response 的內容囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/kdK0xo1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/kdK0xo1.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;或者是可以直接參考 NotFalse 技術客的這篇 &lt;a href=&#34;https://notfalse.net/39/http-message-format&#34;&gt;HTTP/1.1 — 訊息格式 (Message Format)&lt;/a&gt;，裡面對 HTTP 請求格式的各個部分上色並逐步講解的方式讓我蠻喜歡的，相當清楚。&lt;/p&gt;
 &lt;p&gt;接著就讓我們來看一下訊息的格式，通常會分成三個比較主要的區塊：&lt;strong&gt;Start Line&lt;/strong&gt;、&lt;strong&gt;Header&lt;/strong&gt;、&lt;strong&gt;Body&lt;/strong&gt;：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-JSON&#34; data-lang=&#34;JSON&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;HTTP/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1.1&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;200&lt;/span&gt; &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;OK&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// Start Line
@@ -4197,18 +4197,18 @@ GET /api/product/1
 &lt;p&gt;現在，我們已經大概了解 API 以及 Restful API 的一些相關知識了，接著就讓我們來實際建立一個簡單的 API 服務吧！&lt;/p&gt;
 &lt;h3 id=&#34;新建-net-core-web-api-專案&#34;&gt;新建 .net Core Web API 專案&lt;/h3&gt;
 &lt;p&gt;首先打開我們的 Visual Studio，建立新的專案。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/tRvVsFa.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/tRvVsFa.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;我們這次用 .net Core 來進行示範，並且用官方內建的 Web API 框架直接開場，所以這邊選擇 Asp.net Core Web API。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/lyjhWFS.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/lyjhWFS.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：這些&lt;strong&gt;建立專案的畫面和選項隨著版本可能會有點不一樣&lt;/strong&gt;，例如說可能會先選擇 .net Core 的 Web 服務之後，後續再勾選 API 的選項等等。例如之前的 &lt;a href=&#34;https://igouist.github.io/post/2019/12/aspnet-connect-db&#34;&gt;Asp.net MVC&lt;/a&gt; 文章中，就需要在選擇範本的時候選擇是 MVC 或 Web API 的範本。就麻煩各位再稍微見機行事一下。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/NCQj9Wf.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/NCQj9Wf.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著輸入專案名稱和選擇專案路徑，我在這邊採用 Newbie/Noob 的 N（而且 Project N 感覺很潮？），各位嘗試的時候可以自由取名，但要注意後續用到 &lt;code&gt;ProjectN&lt;/code&gt; 這個名字的部分必須和你取的名字一致呦。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Lbr3qkw.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Lbr3qkw.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這是紀錄採用的版本為長期支援的 .net Core 3.1（如果這個步驟有選擇其他版本的朋友，後續安裝套件的時候可能要注意一下版本相容性的問題）&lt;/p&gt;
 &lt;p&gt;建立之後我們的專案結構應該會長這樣：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/lGGHzDN.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/lGGHzDN.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;恭喜各位，到這一步的時候，&lt;strong&gt;Web API 服務已經建好了！&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;del&gt;直接用範本就是這麼爽，謝謝微軟把拔。&lt;/del&gt;&lt;/p&gt;
 &lt;p&gt;我們先來稍微認識一下環境設定相關的成員：&lt;/p&gt;
@@ -4287,14 +4287,14 @@ GET /api/product/1
 &lt;p&gt;備註：由於本系列還沒教到使用 Postman 或 Thunder client 這類直接呼叫 API 的方便小工具，所以呼叫的部分會使用瀏覽器或命令列進行示範，已經會使用這類工具的朋友可以用自己順手的工具嘗試就好囉。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;現在讓我們直接執行看看：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/61SgLPf.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/61SgLPf.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;由於 &lt;code&gt;Properties/launchSettings.json&lt;/code&gt; 裡有設定了 &lt;code&gt;launchUrl&lt;/code&gt; 就是 &lt;code&gt;weatherforecast&lt;/code&gt;，所以我們應該會直接看到它幫忙打開瀏覽器，並取得（&lt;code&gt;GET&lt;/code&gt;）了 &lt;code&gt;https://localhost:{yourIISPort}/weatherforecast&lt;/code&gt; 的結果：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/4jl7qvd.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/4jl7qvd.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;小提示：如果瀏覽器打開沒有自動排版而是一整陀的朋友，可以先去裝個 &lt;a href=&#34;https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc&#34;&gt;JsonView&lt;/a&gt; 來保護眼睛。安裝前後差異可以參見 &lt;a href=&#34;https://igouist.github.io/post/2020/05/jsonview&#34;&gt;Json View —— 用 Chrome 打開 Json 的正確方式&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;那如果是要用 Powershell 呼叫 API 的朋友，可以使用 &lt;code&gt;Invoke-RestMethod&lt;/code&gt; 來進行呼叫，再用 &lt;code&gt;ConvertTo-Json&lt;/code&gt; 轉換成比較好讀的格式，例如：&lt;code&gt;Invoke-RestMethod https://localhost:{yourIISPort}/weatherforecast | ConvertTo-Json&lt;/code&gt;。注意 yourIISPort 這兒是你啟動後的 port 號，像是 &lt;code&gt;https://localhost:44304/weatherforecast&lt;/code&gt;。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/QSp7VRr.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/QSp7VRr.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;備註：Linux 的朋友就直接使用 Curl 來打就行了唄。另外，上面的 Powershell 語法特別感謝這篇 &lt;a href=&#34;https://blog.poychang.net/using-powershell-call-http-request/&#34;&gt;使用 PowerShell 呼叫 Web API 請求&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -4304,11 +4304,11 @@ GET /api/product/1
 &lt;p&gt;既然我們前面已經去逛過預設的 &lt;code&gt;WeatherForecastController&lt;/code&gt; 了，現在就讓我們來自己建一個吧。&lt;/p&gt;
 &lt;p&gt;沒有脈絡就做不了事，先讓我們來訂一個情境：這是一個卡片對戰遊戲的卡片管理功能，一張卡片包含：卡片編號（ID）、卡片名稱和卡片敘述三個欄位。&lt;/p&gt;
 &lt;p&gt;因為我這個人喜歡整理、愛好整潔（？）這邊就先讓我們新增一個 &lt;code&gt;Models&lt;/code&gt; 資料夾，用來存放卡片的類別&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Zoci28m.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Zoci28m.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;建立 &lt;code&gt;Models&lt;/code&gt; 資料夾之後，在 &lt;code&gt;Models&lt;/code&gt; 裡面新增 &lt;code&gt;Card.cs&lt;/code&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/EeAPqZv.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/EeAPqZv.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;現在應該會是這個樣子：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/b6hcSaw.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/b6hcSaw.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著讓我們打開 &lt;code&gt;Card.cs&lt;/code&gt;，加上卡片的各個欄位：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 卡片&lt;/span&gt;
@@ -4331,7 +4331,7 @@ GET /api/product/1
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Description { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;完成卡片類別的建立之後，讓我們前往 &lt;code&gt;Controller&lt;/code&gt;，新建一個 &lt;code&gt;CardController.cs&lt;/code&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/XRbNmT4.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/XRbNmT4.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;我們打開 &lt;code&gt;CardController.cs&lt;/code&gt;。這個類別裡面現在應該是空空如也：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;CardController&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
@@ -4396,7 +4396,7 @@ GET /api/product/1
 &lt;p&gt;補充說明一下，雖然也有簡單型別預設從 Uri，複雜型別預設從 Body 等等貼心的設定，但個人認為還是盡量都標明出來，對自己和後續維護的人都會比較好一點…。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;接著讓我們加入新增卡片，還有編輯卡片的方法吧，在這之前我們先建立一個 &lt;code&gt;Parameter&lt;/code&gt; 資料夾，用來放一些傳入的參數，並且新增一個 &lt;code&gt;CardParameter&lt;/code&gt; 來當作我們新增和修改卡片的參數類別：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/fiqBwZM.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/fiqBwZM.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 卡片參數&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
@@ -4579,7 +4579,7 @@ GET /api/product/1
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; -Body &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;{&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;`&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;`&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;: &lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;`&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;mycard&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;`&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;,&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;`&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;description&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;`&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;: &lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;`&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;sample card&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;`&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}&amp;#34;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著讓我們查詢看看所有卡片，看看新增的卡片在不在：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Invoke-RestMethod https&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//localhost&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;44304&lt;/span&gt;/card | ConvertTo-Json
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/IvHYdZR.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/IvHYdZR.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;既然卡片已經存在了，讓我們試試看編輯，把「我的卡片」改成「我們的卡片」，&lt;del&gt;打倒富農份子&lt;/del&gt;：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Invoke-RestMethod https&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//localhost&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;44304&lt;/span&gt;/card/&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; `
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; -Method &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PUT&amp;#39;&lt;/span&gt; `
@@ -4587,15 +4587,15 @@ GET /api/product/1
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; -Body &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;{&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;`&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;name&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;`&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;: &lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;`&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;ourcard&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;`&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;,&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;`&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;description&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;`&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;: &lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;`&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;sample card&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;`&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;}&amp;#34;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;並且用查詢單張卡片的方式來查詢卡片資料：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Invoke-RestMethod https&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//localhost&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;44304&lt;/span&gt;/card/&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; | ConvertTo-Json
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/FjFHdSt.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/FjFHdSt.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;如果編輯的卡片不存在，會噴出 404：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/j6Dom6l.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/j6Dom6l.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;最後讓我們來試試刪除：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Invoke-RestMethod https&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//localhost&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;44304&lt;/span&gt;/card/&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; `
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; -Method &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;DELETE&amp;#39;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然後同樣使用查詢全部，應該要沒有任何卡片了：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Invoke-RestMethod https&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//localhost&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;44304&lt;/span&gt;/card | ConvertTo-Json
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/0WNEkAm.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/0WNEkAm.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;到這邊就確認我們的 API 服務（也就是基本的 CRUD）已經 ON 起來啦！&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;小結&#34;&gt;小結&lt;/h2&gt;
@@ -4652,7 +4652,7 @@ GET /api/product/1
       <pubDate>Mon, 05 Apr 2021 22:39:01 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2021/04/newbie-1-hello-git/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ojI91y9.png&#34; alt=&#34;img&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ojI91y9.webp&#34; alt=&#34;img&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這是俺整理公司新訓內容的第一篇文章，目標是&lt;strong&gt;整理 Git 相關的筆記&lt;/strong&gt;。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#%E5%89%8D%E8%A8%80%E6%8E%A8%E8%96%A6%E8%B3%87%E6%BA%90&#34;&gt;前言、推薦資源&lt;/a&gt;
@@ -4776,7 +4776,7 @@ GET /api/product/1
 &lt;p&gt;小提示：你可能需要先 &lt;a href=&#34;https://git-scm.com/downloads&#34;&gt;安裝 Git&lt;/a&gt;。&lt;br/&gt;安裝過程相當簡單，通常只需要下一步即可。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;首先我們得先確認 Git 已經準備好了，打開我們的命令視窗（Powershell 或是 CMD 之類的），輸入 &lt;code&gt;git --version&lt;/code&gt;，你應該能夠看見 Git 的版本資訊&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/YUKIdit.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/YUKIdit.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;另外，也可以輸入 &lt;code&gt;git --help&lt;/code&gt; 來查詢可用的指令。或是加上想用的指令，例如 &lt;code&gt;git --help clone&lt;/code&gt; 就會開啟該指令的文檔，臨時要確認指令和參數的時候相當有用。&lt;/p&gt;
 &lt;p&gt;Git 現在已經有相當多的 GUI 可以使用，真的很多。我個人在家的時候是使用 &lt;a href=&#34;https://desktop.github.com/&#34;&gt;GitHub Desktop&lt;/a&gt;、在公司大多時候使用 Visual Studio 內建的 Git 工具。此外，也見過朋友和同事使用 &lt;a href=&#34;https://www.gitkraken.com/&#34;&gt;GitKraken&lt;/a&gt;、&lt;a href=&#34;https://git-fork.com/&#34;&gt;Fork&lt;/a&gt; 等等。關於這些 Git 的 GUI，可以參考官方整理的 &lt;a href=&#34;https://git-scm.com/downloads/guis&#34;&gt;GUI Clients&lt;/a&gt; 頁面。&lt;/p&gt;
 &lt;p&gt;但由於我個人忘記指令的狀況頗為嚴重，而且也不是每個環境都有 GUI 可以用。因此這篇有關 Git 的部分將會以 CLI 指令為主進行紀錄。使用 GUI 介面的朋友也不用擔心，現在的介面都做得很精簡，&lt;s&gt;而且這篇也寫得很淺，&lt;/s&gt;很簡單就能找到各指令對應的操作。&lt;/p&gt;
@@ -4796,7 +4796,7 @@ GET /api/product/1
 &lt;hr&gt;
 &lt;h2 id=&#34;建立一個新的儲存庫git-init&#34;&gt;建立一個新的儲存庫（Git Init）&lt;/h2&gt;
 &lt;p&gt;現在讓我們從建立一個新的儲存庫開始。現在讓我們新增一個資料夾（在這邊我取名叫做 &lt;code&gt;hello-git&lt;/code&gt;）當作這篇 Git 紀錄的遊樂場：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/hPLoleB.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/hPLoleB.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;題外話：既然都打指令了，也可以試試來建立資料夾 &lt;br/&gt;Powershell 用 &lt;code&gt;New-Item C:\hello-git -ItemType &amp;quot;directory&amp;quot;&lt;/code&gt; &lt;br/&gt;隔壁棚 Linux 請用 &lt;code&gt;mkdir&lt;/code&gt; 來試試。&lt;br/&gt;不過基於懶惰，上面的示範是滑鼠右鍵建立的，耶嘿&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -4804,26 +4804,26 @@ GET /api/product/1
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;cd C:\hello-git
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;並且&lt;strong&gt;使用 &lt;code&gt;git init&lt;/code&gt; 將 Git 初始化&lt;/strong&gt;：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git init
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/WIckbA1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/WIckbA1.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;如此一來，這個資料夾就成為了「&lt;strong&gt;工作區（Working directory）&lt;/strong&gt;」，也就是「歸我 Git 管啦！」的意思&lt;/p&gt;
 &lt;p&gt;同時，我們也能在原本的 hello-git 資料夾中，發現多了一個 &lt;code&gt;.git&lt;/code&gt; 的隱藏檔案：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/3hgT4eP.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/3hgT4eP.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這個 &lt;code&gt;.git&lt;/code&gt; 就是用來幫我們處理一堆版本控制工作的地方，也叫做&lt;br/&gt;「&lt;strong&gt;儲存庫（Repository）&lt;/strong&gt;」。裡面會放一些設定值、已經確認變更的文件等等。&lt;/p&gt;
 &lt;p&gt;現在讓我們來確認一下這個工作區的狀況，&lt;code&gt;git status&lt;/code&gt; 將會列出當前的狀態，這將會是我們很常使用的指令。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/5XwsruS.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/5XwsruS.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到我們現在在 Master 分支，並且還沒有 Commit 任何東西。這兩個部分我們等等就會說明，現在就讓我們按照它的提示，來把檔案丟進去給 Git 試試吧。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;把檔案加到-git-的追蹤目標git-add&#34;&gt;把檔案加到 Git 的追蹤目標（Git Add）&lt;/h2&gt;
 &lt;p&gt;我們先到 hello-git 資料夾裡，新增一個 &lt;code&gt;A.txt&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/X8M9I67.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/X8M9I67.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;並且加入一些內容，例如「Hello!」&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/erpTd0w.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/erpTd0w.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;現在讓我們再次使用 &lt;code&gt;git status&lt;/code&gt; 觀察一下&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/J7ByoFh.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/J7ByoFh.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到 Git 已經發現 A.txt 的存在了，但它也告訴我們，它還沒有把 A.txt 放在 &lt;s&gt;眼裡&lt;/s&gt; 追蹤目標中&lt;/p&gt;
 &lt;p&gt;我們要用 &lt;code&gt;git add&lt;/code&gt; 指令，Git 才會把這個變更納入這次的動作中：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git add A.txt
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/fFlY2rK.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/fFlY2rK.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;現在可以看到我們新增檔案這個動作已經被 Git 捕捉到了。&lt;/p&gt;
 &lt;p&gt;前面有提過，&lt;strong&gt;我們在 &lt;code&gt;git init&lt;/code&gt; 之後，當下的資料夾就會變成「工作區」，而 .git 則會成為「儲存庫」。在這兩者之間，還會有一層「暫存區（Staging Area）」&lt;/strong&gt;（有些朋友會叫做「索引區（index）」，對象是一樣的）。&lt;/p&gt;
 &lt;p&gt;這三者之間的工作流程就像是一條工廠輸送帶：&lt;/p&gt;
@@ -4837,7 +4837,7 @@ GET /api/product/1
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git add --all
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這樣就會直接把所有變更抓進來囉。&lt;/p&gt;
 &lt;p&gt;當然，懶還要更懶，事實上現在的 GUI 工具，例如我接觸的 GitHub Desktop、Visual Studio 等等，其實都會自動幫忙 Add 了，真是貼心。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/dARJCu3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/dARJCu3.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;當我們把變更從工作區用 add 丟到暫存區之後，要怎麼再從暫存區丟進儲存庫呢？這時候就要使用 &lt;code&gt;Commit&lt;/code&gt; 了！&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;提交變更git-commit&#34;&gt;提交變更（Git Commit）&lt;/h2&gt;
@@ -4845,7 +4845,7 @@ GET /api/product/1
 &lt;p&gt;如果你有在使用 Git，Commit 絕對是你使用最多次的功能。&lt;strong&gt;當我們 Commit 之後，暫存區的變更就會寫入儲存庫，到這個步驟我們才真正地存檔成功。&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;現在讓我們來完成這次變更吧：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;git commit -m &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Add A.txt&amp;#34;&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/riSISaf.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/riSISaf.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;有看到 ~ file changed 就代表我們已經成功 Commit，把變更存進儲存庫囉！&lt;/p&gt;
 &lt;hr&gt;
 &lt;h3 id=&#34;git-commit-的訊息該怎麼寫&#34;&gt;Git Commit 的訊息該怎麼寫？&lt;/h3&gt;
@@ -4915,24 +4915,24 @@ GET /api/product/1
 &lt;p&gt;有些東西加入版本控制後，輕則讓你的 Git status 變得很雜亂、Commit 變得亂七八糟，重則影響到其他人的環境。因此我們要想辦法，讓這些東西不要加入版本控制裡。&lt;/p&gt;
 &lt;p&gt;這時候我們就可以加入 Git Igonre 來讓 Git 忽略這些東西。&lt;/p&gt;
 &lt;p&gt;現在讓我們來試試看，先新增一個 &lt;code&gt;Ignoreme.txt&lt;/code&gt; 檔案，接著再新增一個 &lt;code&gt;.gitignore&lt;/code&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/4QWKh8Y.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/4QWKh8Y.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;然後在 &lt;code&gt;.gitignore&lt;/code&gt; 中加上：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;ignoreme.txt
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;接著，讓我們再次呼叫　&lt;code&gt;git status&lt;/code&gt; 確認當前的狀態&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/k0sNgcN.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/k0sNgcN.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以發現居然只有剛剛新增的 &lt;code&gt;.gitignore&lt;/code&gt;，Git 真的就裝作沒看到 &lt;code&gt;Ignoreme.txt&lt;/code&gt; 了！&lt;/p&gt;
 &lt;p&gt;藉由 .gitignore 我們就能讓 Git 知道哪些檔案它不要亂插手，通常來說每個專案底下都會有一個共用的 .gitignore 檔案，避免某些人沒跟到就把不該推的東西給推上去了。&lt;/p&gt;
 &lt;p&gt;至於哪些東西不該推呢，東西這麼多怎麼列得完呢？感謝社群，&lt;a href=&#34;https://github.com/github/gitignore&#34;&gt;github/gitignore&lt;/a&gt; 這兒都已經整理好了。就算裡面找不到的，只要 Google &amp;ldquo;你的語言或框架 + gitignore&amp;rdquo; 通常都會有結果，例如 &lt;a href=&#34;https://github.com/Arasz/dotnet-ignore&#34;&gt;dotnet-ignore&lt;/a&gt;，我們菜雞只要爽爽用，&lt;/p&gt;
 &lt;p&gt;最後別忘了讓我們也把 &lt;code&gt;.gitigonre&lt;/code&gt; 也 Add 到我們的 Git 之中，並且 Commit 起來：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/WTr6t7f.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/WTr6t7f.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;查詢-commit-紀錄git-log&#34;&gt;查詢 Commit 紀錄（Git Log）&lt;/h2&gt;
 &lt;p&gt;現在我們已經可以成功存檔了，但有玩過遊戲的都知道，通常都會有個地方讓你看當前的存檔和紀錄等等。那麼&lt;strong&gt;在 Git 中要怎麼看我們的 Commit 記錄呢&lt;/strong&gt;？這時候就要用到 &lt;code&gt;log&lt;/code&gt; 指令。&lt;/p&gt;
 &lt;p&gt;由於只有存過一次也太寒酸了，現在讓我們把 A.txt 打開，將原本的 Hello! 改成 Hello world! 並且再 Commit 一次：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/uZY0Kjm.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/IhLiS0z.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/uZY0Kjm.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/IhLiS0z.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;然後，讓我們試試 &lt;code&gt;git log&lt;/code&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/hD1c1h1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/hD1c1h1.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;就可以看到我們前面的 Commit 內容囉！&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;小提示：如果 Log 太多頁的話，可以用空白鍵前往下一頁、按 q 離開。 Git 的操作使用的是 Less，關於常用的操作方式可以參考 &lt;a href=&#34;https://en.wikipedia.org/wiki/Less_(Unix)#Frequently_used_commands&#34;&gt;Less (Unix) #Frequently used commands&lt;/a&gt;&lt;/p&gt;
@@ -4963,10 +4963,10 @@ $env:LESSCHARSET=&amp;#39;utf-8&amp;#39;                         # Less 分頁�
 &lt;p&gt;但是如果你是 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/windows/wsl/install-win10&#34;&gt;在 Windows 也要安裝 Ubuntu，我就是要 Bashhhhh&lt;/a&gt; 的朋友就當我沒說。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;不過比起這樣的文字，我們比較常用的還是 Git 那相當有特色的線圖。現在讓我們試試&lt;br/&gt; &lt;code&gt;git log  --oneline --graph&lt;/code&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/V9ysh2L.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/V9ysh2L.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到 Log 變得相當精簡了。在我們後續會講到的&lt;a href=&#34;#git-%E7%9A%84%E5%88%86%E6%94%AFbranch%E6%98%AF%E4%BB%80%E9%BA%BC&#34;&gt;分支&lt;/a&gt;情景下，線圖還會幫忙畫出不同分支路線（平常有使用 Git 的 GUI 工具的朋友們應該都很熟悉了）&lt;/p&gt;
 &lt;p&gt;這邊就借朋友的 Project 示範一下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/lHYIpqd.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/lHYIpqd.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;除了直接看線圖以外，&lt;code&gt;git log&lt;/code&gt; 也提供了相當多的參數可以運用，例如說可以用 &lt;code&gt;--committer&lt;/code&gt; 來找某個人的 Commit、用 &lt;code&gt;-S&lt;/code&gt; 尋找主旨等等、用 &lt;code&gt;-2&lt;/code&gt; 來限制只看兩筆等等，其他像是搜尋某個時間區段、某個特定檔案的變更紀錄也可以做到，甚至可以用 &lt;code&gt;--pretty&lt;/code&gt; 來自訂 log 要顯示的格式，基本上該有的功能都有。&lt;/p&gt;
 &lt;p&gt;通常 &lt;code&gt;git log&lt;/code&gt; 最常見的場景大概就像這樣：&lt;/p&gt;
 &lt;ul&gt;
@@ -4980,41 +4980,41 @@ $env:LESSCHARSET=&amp;#39;utf-8&amp;#39;                         # Less 分頁�
 &lt;li&gt;&lt;a href=&#34;http://jamestw.logdown.com/posts/238719-advanced-git-log&#34;&gt;Git log 進階應用 - Jame&amp;rsquo;s Blog&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;掌握 &lt;code&gt;git log&lt;/code&gt;，每天都可以更刺激有趣！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9BYAkeV.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/9BYAkeV.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;查詢兩個-commit-之間的差異git-diff&#34;&gt;查詢兩個 Commit 之間的差異（Git Diff）&lt;/h2&gt;
 &lt;p&gt;有些朋友可能會問：「我知道每一次 Commit 了，但我還是不知道每個 Commit 到底動了哪些地方呀？」&lt;/p&gt;
 &lt;p&gt;或是更進一步的：「我知道可以用 &lt;code&gt;git log -p&lt;/code&gt; 來看每次 Commit 的內容啦，也知道變動了哪些地方應該要直接能從 Commit Message 大致看出來啦。但 log 的雜訊太多了，我只想要確切知道兩個 Commit 間到底變動了哪些，該怎麼做？」&lt;/p&gt;
 &lt;p&gt;這時候我們就可以&lt;strong&gt;使用 &lt;code&gt;git diff&lt;/code&gt; 來看兩個 Commit 之間的差異&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;現在讓我們回到 &lt;code&gt;git log&lt;/code&gt; 示範時的狀況：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/hD1c1h1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/hD1c1h1.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到我們有三個 Commit，分別是 a657, 6fbe, 2b33&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;小提示：在告訴 git 某個 Commit 的 SHA1 值的時候，並不需要完整打完，只要到可區分的程度就可以了，畢竟這東西真的超級難重複嘛。如果 Git 分不出來，就會請你再打一次，不用擔心。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;接著讓我們輸入 &lt;code&gt;git diff a657 6fbe&lt;/code&gt; （請根據你的 Commit SHA1 值輸入）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/HLjl7aj.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/HLjl7aj.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;就可以看到這兩個 Commit 間差異的內容囉！像是從上面的圖中，我們就可以知道 A.txt 有被修改過，其中被移除了 Hello 這一行，同時新增了 Hello World! 這一行。&lt;/p&gt;
 &lt;p&gt;除了兩個 Commit 之間以外，&lt;code&gt;git diff&lt;/code&gt; 也可以查看兩個分支間的差異。&lt;/p&gt;
 &lt;p&gt;我們前面有提到過每次 Commit 的流程是 工作區＞暫存區＞儲存庫，那如果我們現在要看工作區和儲存庫之間的差異，也就是「我們現在變更了什麼」該怎麼做呢？&lt;/p&gt;
 &lt;p&gt;現在讓我們把 A.txt 的 Hello World! 的驚嘆號改成句號（可能我們不想那麼激動，想冷靜一點），但先不要 Commit：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/8WlJXkE.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/8WlJXkE.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著讓我們用 &lt;code&gt;git status&lt;/code&gt; 確認一下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/zOf9MDZ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/zOf9MDZ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到工作區已經有變更了，但我們尚未 &lt;code&gt;add&lt;/code&gt; 到暫存區裡。&lt;/p&gt;
 &lt;p&gt;現在讓我們&lt;strong&gt;使用 &lt;code&gt;git diff&lt;/code&gt; 指令來看工作區和儲存庫間的差異&lt;/strong&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/T2ajGae.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/T2ajGae.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;能看到 Hello World! 和 Hello World. 的差異有確實出現。平時就可以用 &lt;code&gt;git diff&lt;/code&gt; 來看這次到底都改了些什麼。&lt;/p&gt;
 &lt;p&gt;現在我們試試看先用 &lt;code&gt;git -add A.txt&lt;/code&gt;，把 A.txt 加入到
 暫存中，再呼叫 &lt;code&gt;git diff&lt;/code&gt; 試試：
-&lt;img src=&#34;https://i.imgur.com/g97cuY9.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/g97cuY9.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;卻發現沒有找到任何差異了！這是因為 A.txt 已經被收入到暫存區中，不在工作區了。如果我們要&lt;strong&gt;確認暫存區和儲存庫之間的差異，要加上 &lt;code&gt;--cached&lt;/code&gt; 參數&lt;/strong&gt;，現在再用 &lt;code&gt;git diff --cached&lt;/code&gt; 試試：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/POr2E1J.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/POr2E1J.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;就可以看到暫存區和儲存庫之間的差異囉。&lt;/p&gt;
 &lt;p&gt;最後，示範完了就養成好習慣，順便 Commit 來結束這一小節吧：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/UdDzOOZ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/UdDzOOZ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;git diff&lt;/code&gt; 的使用場景相當簡單，最常用來確認版本間的差異，或是檢查當前變更的內容。雖然 Diff 常常跑出來落落長一大串，不過現在的 GUI 都做得相當一目了然了：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/dpdLhZo.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/dpdLhZo.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;如果手癢要自製 diff 介面的朋友也可以參考黑大的這篇 &lt;a href=&#34;https://blog.darkthread.net/blog/diff2html-webpage/&#34;&gt;Git 筆記 - 產生程式異動對照表(Compare List)&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;另外，如果一次 Commit 包含的檔案太多，也可以像 &lt;code&gt;got log&lt;/code&gt; 一樣加上檔名來比較單一檔案的差異，或是使用 &lt;code&gt;--stat&lt;/code&gt; 來檢視簡單的變動檔案列表等等。&lt;/p&gt;
 &lt;p&gt;diff 相關的文章也可以參照這幾篇，也是本節的主要參考資料：&lt;/p&gt;
@@ -5053,15 +5053,15 @@ $env:LESSCHARSET=&amp;#39;utf-8&amp;#39;                         # Less 分頁�
 &lt;p&gt;這個部份直接試看看會比較好了解，讓我們把 A.txt 打開，並且把內容改成&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Hello world. HAHAHA.
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;緊接著直接 &lt;code&gt;Commit -a -m &amp;quot;HAHA&amp;quot;&lt;/code&gt;，現在的 Git Log 應該會長得像這樣：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/WWGzQQh.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/WWGzQQh.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;然後可能我們去吃個飯，越想越不對勁，回來決定不要這次 Commit 了。&lt;/p&gt;
 &lt;p&gt;現在讓我們試試 Revert：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git revert HEAD  --no-edit
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/P7kJY5C.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/P7kJY5C.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著再確認一次 Log：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/lqLNNYX.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/lqLNNYX.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到又多了一個 Commit，這個 Commit 用來撤回前一個 Commit。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/PhPCFqm.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/PhPCFqm.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;並且 A.txt 也變回沒有 HAHA 的版本囉。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：我們在前面 Revert 的時候，加上了 &amp;ndash;no-edit 的參數，讓 Git 自動使用預設的 Revert 訊息去 Commit。&lt;/p&gt;
@@ -5083,17 +5083,17 @@ Revert 所 Revert 掉的 Commit，夠直覺吧！&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;Reset&lt;/code&gt; 的意思是 &lt;strong&gt;把當前的位置 &lt;code&gt;Reset&lt;/code&gt; 到新的位置&lt;/strong&gt;，就像時光機一樣，直接前往目標 Commit。&lt;/p&gt;
 &lt;p&gt;用起來有點像 Git 界的 &lt;code&gt;goto&lt;/code&gt; 的感覺，現在就讓我們直接試試吧。&lt;/p&gt;
 &lt;p&gt;首先掌握一下狀況，現在我們的 Log 是這個樣子：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/lqLNNYX.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/lqLNNYX.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;然後 A.txt 裡面則是：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/PhPCFqm.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/PhPCFqm.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;現在假設我們想要取消前面對 A.txt 中 Hello 的所有操作，也就是回到還沒有做 &lt;code&gt;a657 fix: 修正 hello 為 hello world&lt;/code&gt; 這個 Commit 之前。&lt;/p&gt;
 &lt;p&gt;我們可以從 &lt;code&gt;git log&lt;/code&gt; 中看見還沒做 &lt;code&gt;a657&lt;/code&gt; 的前一個 Commit 是 &lt;code&gt;6fbe Add gitignore&lt;/code&gt;，或是我們也可以直接用 &lt;code&gt;a657^&lt;/code&gt; 來直接指定 &lt;code&gt;a657&lt;/code&gt; 的前一個 Commit。先讓我們用 &lt;code&gt;diff&lt;/code&gt; 偷看一下目的地和當前的差異。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ltpNAm7.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ltpNAm7.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到 A.txt 的在當時的內容是 &lt;code&gt;Hello!&lt;/code&gt;，這就是我們要的。這時候我們就可以使用 &lt;code&gt;reset&lt;/code&gt;&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git reset --hard a657^
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TdP0vZf.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/TdP0vZf.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Git 跟我們說「你已經回到了 &lt;code&gt;6fbe&lt;/code&gt; 這個 Commit 囉」接著讓我們確認看看 A.txt：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ijZA2K2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ijZA2K2.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;的確也變回去了，大功告成。&lt;/p&gt;
 &lt;p&gt;眼尖的朋友應該已經發現了，我們在 &lt;code&gt;reset&lt;/code&gt; 的時候，加上了 &lt;code&gt;--hard&lt;/code&gt; 的參數，這是什麼意思呢？其實 &lt;code&gt;reset&lt;/code&gt; 有分為三種模式：&lt;/p&gt;
 &lt;ul&gt;
@@ -5151,9 +5151,9 @@ Revert 所 Revert 掉的 Commit，夠直覺吧！&lt;/p&gt;
 &lt;hr&gt;
 &lt;h3 id=&#34;新建分支branch與切換分支checkout&#34;&gt;新建分支（branch）與切換分支（checkout）&lt;/h3&gt;
 &lt;p&gt;我們在預設狀況下，就會位於 Master（有些地方是 Main）分支上，首先讓我們從新建分支與切換分支開始嘗試。在 &lt;code&gt;hello-git&lt;/code&gt; 中，新增兩個檔案：&lt;code&gt;B.txt&lt;/code&gt; 和 &lt;code&gt;C.txt&lt;/code&gt;，現在資料夾應該會是這個樣子：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/gEWbVkJ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/gEWbVkJ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著將這兩個新檔案 Add 進來並且 Commit：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/qXwq3WC.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/qXwq3WC.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到我們的 master 分支位於最新的 Commit 07672f4 上了，接著我們要從這裡&lt;br/&gt; &lt;strong&gt;用 &lt;code&gt;git branch&lt;/code&gt; 拉出一條新的分支&lt;/strong&gt;：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git branch Branch-B
 &lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
@@ -5165,21 +5165,21 @@ Revert 所 Revert 掉的 Commit，夠直覺吧！&lt;/p&gt;
 &lt;p&gt;建立分支後，我們再&lt;strong&gt;使用 &lt;code&gt;git checkout&lt;/code&gt; 簽出分支&lt;/strong&gt;：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git checkout Branch-B
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;應該可以看到 Git 告訴你已經切換到 Branch-B 了，我們也可以用 &lt;code&gt;git status&lt;/code&gt; 來進行確認：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/mrektkG.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/mrektkG.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;題外話：用 &lt;code&gt;branch&lt;/code&gt; 來建立新分支應該相當直覺，但為什麼是用 &lt;code&gt;checkout&lt;/code&gt; 來切換分支呢？&lt;/p&gt;
 &lt;p&gt;這是因為在 Git 的觀念中，比較像是「&lt;strong&gt;在圖書館的櫃台，我們去借出某一本指定的書，完事後再歸還回去&lt;/strong&gt;」這樣的概念，因此我們才會使用 &lt;code&gt;checkout&lt;/code&gt; 簽出的方式來取出我們要的分支。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;確認我們現在是在 Branch-B 分支之後，現在請把 B.txt 刪除，並且 Commit：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/2cxGS7c.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/2cxGS7c.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著，讓我們切換回 Master 分支：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git checkout master
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;觀察一下，B.txt 是不是復活了？&lt;/p&gt;
 &lt;p&gt;現在我們可以再練習一次：新建一條 Branch-C 並簽出，並且刪除 C.txt 後 Commit。&lt;/p&gt;
 &lt;p&gt;如果覺得每次都要先新建分支，再跳過去做兩步很麻煩的朋友，可以試試 &lt;code&gt;git checkout -b Branch-C&lt;/code&gt;，就可以在簽出的同時建立分支囉。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/o68UUxJ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/o68UUxJ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著移除 C.txt 之後 Commit：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/r5eNNrE.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/r5eNNrE.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;現在，可以試著用 &lt;code&gt;checkout&lt;/code&gt; 在 Branch-B 和 Branch-C 之間來回切換並觀察一下，就能稍微體會到分支之力囉。&lt;/p&gt;
 &lt;p&gt;延伸閱讀：&lt;/p&gt;
 &lt;ul&gt;
@@ -5213,16 +5213,16 @@ Revert 所 Revert 掉的 Commit，夠直覺吧！&lt;/p&gt;
 &lt;p&gt;我們在前面一節有開出了兩個分支：Branch-B 和 Branch-C，現在讓我們把他們合而為一。首先，讓我們先簽出到 Branch-B：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git checkout Branch-B
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;接著&lt;strong&gt;使用 &lt;code&gt;git merge&lt;/code&gt; 指令來用 Branch-B 分支把 Branch-C 分支給吃進來&lt;/strong&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9G1qj6g.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/9G1qj6g.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這時候可以觀察看看 &lt;code&gt;hello-git&lt;/code&gt; 資料夾，B.txt 和 C.txt 應該都已經消失了。&lt;/p&gt;
 &lt;p&gt;我們可以用 &lt;code&gt;git log&lt;/code&gt; 來觀察一下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/XHzq9yk.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/XHzq9yk.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看見，我們在 Branch-C 所做的 &lt;code&gt;Delete C.txt&lt;/code&gt; 這個 Commit 也出現在 Branch-B 的記錄中的，並且 C.txt 也確實消失了。&lt;/p&gt;
 &lt;p&gt;這邊可以注意，當我們用 Branch-B 把 Branch-C 吃進來的時候，Branch-C 本身並沒有任何改變，仍然停留在 &lt;code&gt;Delete C.txt&lt;/code&gt; 這個 Commit 上，而用來吃掉對方的 Branch-B 則取得了所有 Branch-C 的變更。&lt;/p&gt;
 &lt;p&gt;所以合併的時候要注意一下當前的分支，是&lt;strong&gt;將目標分支匯入到當前所在的分支&lt;/strong&gt;，不要弄反了，不然把一堆測試用的東西合併上去正式環境就完蛋啦。&lt;/p&gt;
 &lt;p&gt;現在我們再把 Branch-B 的變更也合併進 master 吧。&lt;/p&gt;
 &lt;p&gt;同樣地，先簽出 master，再 &lt;code&gt;git merge Branch-B&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/pEySmri.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/pEySmri.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這樣就成功將兩個負責不同項目的分支裡的變更都合併回 master 囉！&lt;/p&gt;
 &lt;hr&gt;
 &lt;h3 id=&#34;什麼是衝突conflict&#34;&gt;什麼是衝突（Conflict）？&lt;/h3&gt;
@@ -5233,27 +5233,27 @@ Revert 所 Revert 掉的 Commit，夠直覺吧！&lt;/p&gt;
 &lt;p&gt;如果要同時做簽出並且新建分支的話，可以在 &lt;code&gt;checkout&lt;/code&gt; 的時候加上 &lt;code&gt;-b&lt;/code&gt; 試試：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git checkout -b Branch-X
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;然後，將 A.txt 的內容改成 &lt;code&gt;Hello X!&lt;/code&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/WeFQiSM.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/WeFQiSM.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;並且 Commit：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git commit -a -m &amp;#34;Hello X!&amp;#34;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;緊接著，讓我們回到 master，重新建立並簽出另一支分支 &lt;code&gt;Branch-Y&lt;/code&gt;：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git checkout master
 git checkout -b Branch-Y
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;這次我們把 A.txt 的內容改成 &lt;code&gt;Hello Y!&lt;/code&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/us5hqzk.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/us5hqzk.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;並且 Commit：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git commit -a -m &amp;#34;Hello Y!&amp;#34;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;現在，我們手頭上有 Branch-X 和 Branch-Y 兩條分支了，並且他們都變更過了 A.txt，現在我們直接用 Branch-Y 來合併 Branch-X：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git merge Branch-X
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/4j9GJmA.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/4j9GJmA.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到 Git 跳出訊息跟你說&lt;strong&gt;自動合併失敗（Automatic merge failed）&lt;/strong&gt;，要求你進行修復。&lt;/p&gt;
 &lt;p&gt;並且 &lt;code&gt;git status&lt;/code&gt; 也會告訴你，你有未處理的 merge 問題，A.txt 這個檔案都有被變更到：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/14o8dB9.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/14o8dB9.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這時候讓我們去看看 A.txt 的內容：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/etAf0gj.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/etAf0gj.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;會看到 Git 標示出發生衝突的部分，上半部是我們當前 HEAD 也就是 Branch-Y 的內容，下部分則是 Branch-X 的內容。&lt;/p&gt;
 &lt;p&gt;我們&lt;strong&gt;必須把這個衝突的部分處理好，並且把這些標示拿掉，再重新 Commit 一次&lt;/strong&gt;。假設Ｘ跟Ｙ兩位同事經過 &lt;del&gt;扭打&lt;/del&gt; 討論之後，決定改成兩個人的名字都要標在上面，變成 &lt;code&gt;Hello X &amp;amp; Y!&lt;/code&gt;，我們就可以進行 commit 來結束衝突囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/1HXkePJ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1HXkePJ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;通常來說，如果是使用 GUI 工具的朋友，應該會像 &lt;code&gt;Diff&lt;/code&gt; 那樣給一個對照的列表讓你選擇，例如說我平常用的 Visual Studio 就會並排讓你勾選要使用哪一邊的，或是自己修改（這邊借用一下官方文件的圖）：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://docs.microsoft.com/zh-tw/visualstudio/ide/media/git-merge-editor.png?view=vs-2019&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;又或是可以直接選擇「使用當前分支」、「使用對方分支」的這類方便選項。但要特別注意一點，就是衝突一定要好好解開再上傳，&lt;strong&gt;絕對不要沒解衝突就直接 Commit 掉推上來造成大家困擾&lt;/strong&gt;，這個一定要特別記得，弄不好可是會折壽的，物理上的折壽。&lt;/p&gt;
@@ -5269,7 +5269,7 @@ git checkout -b Branch-Y
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git checkout master
 git rebase Branch-Y
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;這樣就會將 master 的 base 重新設定到 Branch-Y 分支上囉，因為我們的狀況比較簡單，所以比較像是 master 推進到了  Branch-Y 的進度，讓我們用 &lt;code&gt;git log&lt;/code&gt; 確認一下當前的狀況吧：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/sBPfJRR.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/sBPfJRR.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到剛剛在 Branch-Y 上的操作，例如解衝突的 Commit 都已經進到 master 來了。&lt;/p&gt;
 &lt;p&gt;Rebase 跟 Merge 最明顯的差別在於 Rebase 是將這個分支 &lt;strong&gt;逐步移植&lt;/strong&gt; 到另一個分支上，而不是像 Merge 將兩條水流引流成一條，所以並不會有合併時的 Commit。&lt;/p&gt;
 &lt;p&gt;但也由於是從切出分支的基準點開始做移植和計算的動作，我個人是覺得相對比較危險的，例如說你的 Git 分支樹就會和別人的那一份產生差異等等，畢竟這是一個變更歷史的行為，因此還是小心使用比較好，我個人是盡量能用 Merge 就用 Merge 的流派啦。&lt;/p&gt;
@@ -5279,16 +5279,16 @@ git rebase Branch-Y
 &lt;hr&gt;
 &lt;h3 id=&#34;我們現在有哪些分支git-branch要怎麼刪除分支&#34;&gt;我們現在有哪些分支（Git Branch）？要怎麼刪除分支？&lt;/h3&gt;
 &lt;p&gt;現在我們針對分支的基本操作已經告一段落。可以用 &lt;code&gt;git branch&lt;/code&gt; 來稍微看一下本地端的儲存庫都開了哪些分支。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/QPcfALx.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/QPcfALx.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;前面加上 * 號的就是當前所在的分支，如果已經和遠端儲存庫連線的朋友，也可以使用 &lt;code&gt;-r&lt;/code&gt; 參數來看遠端儲存庫上的分支，用 &lt;code&gt;-a&lt;/code&gt; 來看本地和遠端的所有分支。另外，遠端儲存庫的分支將會用 &lt;code&gt;remotes/&lt;/code&gt; 開頭。&lt;/p&gt;
 &lt;p&gt;由於前面示範合併和衝突的分支們的工作都已經告一段落了，我們現在就要稍微清理一下它們。要刪除分支，只需要加上 &lt;code&gt;-d&lt;/code&gt; 參數就可以了，像現在這個例子就是：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git branch -d Branch-B
 git branch -d Branch-C
 git branch -d Branch-X
 git branch -d Branch-Y
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/CaYIfDt.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/CaYIfDt.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著再讓我們用 &lt;code&gt;git branch&lt;/code&gt; 確認一下吧：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/2aslDOI.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/2aslDOI.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;h3 id=&#34;認識-git-的斷頭detached-head&#34;&gt;認識 Git 的斷頭（detached HEAD）&lt;/h3&gt;
 &lt;p&gt;我們在前面切換分支的時候，主要是使用 &lt;code&gt;checkout&lt;/code&gt; 來進行。但如果我們並不是針對某個 branch 去做 &lt;code&gt;checkout&lt;/code&gt;，而是對某個 commit 去做的時候，就會變成斷頭狀態。&lt;/p&gt;
@@ -5331,30 +5331,30 @@ git branch -d Branch-Y
 &amp;ldquo;It&amp;rsquo;s the difference between porn and pornhub.&amp;rdquo;  (&lt;a href=&#34;https://www.reddit.com/r/github/comments/g5030w/&#34;&gt;Reddit&lt;/a&gt;)&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;首先讓我們在 Github 上新建一個儲存庫，從 My Repositories 或是首頁進去都可以：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/RXL3p7f.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/RXL3p7f.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著讓我們填寫一些基本訊息，像是專案名稱和專案敘述：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/6b4sjKx.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/6b4sjKx.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;底下會有一些選項，像是是否加入 .gitignore 啦、是否加入 readme（說明文檔）等等，這邊暫時還不會用到。&lt;/p&gt;
 &lt;p&gt;完成後就可以按下 &lt;code&gt;Create Repository&lt;/code&gt;，接著就會來到專案啟動畫面：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ykHLsko.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ykHLsko.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這個畫面已經說明了不同狀況下的操作，像我們已經在本機已經存在儲存庫了，所以我們可以參考「…or push an existing repository from the command line」這個部分進行操作。&lt;/p&gt;
 &lt;p&gt;其中最重要的是上面那串 &lt;code&gt;.git&lt;/code&gt; 結尾的網址，我們接著就要使用這個網址來將剛剛的 &lt;code&gt;hello-git&lt;/code&gt; 資料夾推送到這個儲存庫。&lt;/p&gt;
 &lt;p&gt;現在讓我們鏡頭回到棚內的 git 指令，首先 &lt;code&gt;git status&lt;/code&gt; 確保 Commit 等動作都已經完成：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Nci6Yvd.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Nci6Yvd.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著讓我們&lt;strong&gt;用 &lt;code&gt;git remote add&lt;/code&gt; 來增加叫做 &lt;code&gt;origin&lt;/code&gt; 的遠端儲存庫到這個儲存庫中&lt;/strong&gt;，完成了之後再用 &lt;code&gt;git remote&lt;/code&gt; 確認遠端儲存庫列表是不是已經有 &lt;code&gt;origin&lt;/code&gt; 了：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git remote add origin https://github.com/yourGithubName/yourGithubRepository.git
 git remote
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/WFqrEAu.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/WFqrEAu.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;因為 Github 的主要分支已經改成使用 &lt;code&gt;Main&lt;/code&gt; 了，因此我們順應一下，也用 &lt;code&gt;git branch -M&lt;/code&gt; 把 master 分支改名成 Main 吧&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git branch -M main
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/vNFIUiQ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/vNFIUiQ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;完成之後，就可以開始上傳囉。在 Git 中，&lt;strong&gt;推送到遠端儲存庫只要使用 &lt;code&gt;push&lt;/code&gt; 指令就可以了，語法是 &lt;code&gt;git push {遠端儲存庫名稱} {要推送的分支}&lt;/code&gt;&lt;/strong&gt;，例如我們現在的推送就是：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git push origin main
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Ubdt85H.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Ubdt85H.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;推送完成後，讓我們再回到 Github 上查看：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/SNLyXDy.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/SNLyXDy.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看見東西都已經推送上去了。這時候按下旁邊的 Commit，也能夠查看這個儲存庫的 Commit Log 囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/DY9AStm.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/DY9AStm.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;到這邊就成功把存檔弄上雲端啦！&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：如果儲存庫曾經有用 &lt;code&gt;reset&lt;/code&gt; 之類的往後跳，並且遠端儲存庫的版本又相對較新，例如遠端是第五版，抓下來之後 &lt;code&gt;reset&lt;/code&gt; 回到第三版，這時候的 &lt;code&gt;push&lt;/code&gt; 就會被擋下來，要求取得遠端最新的版本。&lt;/p&gt;
@@ -5365,39 +5365,39 @@ git remote
 &lt;h2 id=&#34;要怎麼從-git-的遠端儲存庫拿到變更認識擷取fatch提取pull&#34;&gt;要怎麼從 Git 的遠端儲存庫拿到變更？認識擷取（Fatch）、提取（Pull）&lt;/h2&gt;
 &lt;p&gt;上傳到雲端已經沒問題了，那從雲端下載到本機呢？這時候我們就需要用到 &lt;code&gt;fetch&lt;/code&gt; 和 &lt;code&gt;pull&lt;/code&gt; 這兩個指令。&lt;/p&gt;
 &lt;p&gt;現在讓我們回到 Github 的畫面，並且進入 A.txt&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/cVtjDCx.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/cVtjDCx.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;然後按下編輯：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9SU7PR1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/9SU7PR1.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;把內文稍微修改一下，例如改成 &lt;code&gt;Hello X &amp;amp; Y &amp;amp; Z!&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TRv8i93.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/TRv8i93.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;拉到最下面，加上 Commit Message，並且按下 Commit Changes&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/GRpH0el.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/GRpH0el.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;現在遠端儲存庫已經有了一個變更，但是我們本機還不知道呢！接著就讓我們實際操作一下，首先我們需要取得遠端的資訊，這時候就可以&lt;strong&gt;用 &lt;code&gt;fetch&lt;/code&gt; 來擷取遠端儲存庫的資訊&lt;/strong&gt;回來：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git fetch
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/InviqZr.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/InviqZr.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看見 Git 從遠端儲存庫抓了資訊回來，這時候我們如果查看 &lt;code&gt;git log&lt;/code&gt;，並加上 &lt;code&gt;--all&lt;/code&gt; 來顯示全部分支的話：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/JBEalid.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/JBEalid.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看見有一個 &lt;code&gt;origin/main&lt;/code&gt; 的分支超越了我們的 &lt;code&gt;main&lt;/code&gt; 分支了，這也就是在 &lt;code&gt;origin&lt;/code&gt; 遠端儲存庫的 &lt;code&gt;main&lt;/code&gt; 分支的意思。這時候我們就可以知道，遠端儲存庫的進度比起我們本機的還要更新。&lt;/p&gt;
 &lt;p&gt;那麼要怎麼讓本機的進度追上呢？其實 &lt;code&gt;main&lt;/code&gt; 和 &lt;code&gt;origin/main&lt;/code&gt; 也就是兩條分支，所以只要使用 &lt;code&gt;merge&lt;/code&gt; 就可以把進度往前推。&lt;/p&gt;
 &lt;p&gt;當然我們也可以不用這麼麻煩，可以直接&lt;strong&gt;使用 &lt;code&gt;pull&lt;/code&gt; 指令來提取遠端儲存庫對應的分支直接和本機現在的分支進行合併，也就是 &lt;code&gt;fetch&lt;/code&gt; + &lt;code&gt;merge&lt;/code&gt;&lt;/strong&gt;。這樣就是從雲端下載最新檔囉！現在就讓我們試試吧：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git pull origin main
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;code&gt;pull&lt;/code&gt; 語法的邏輯和 &lt;code&gt;push&lt;/code&gt; 是一樣的。當我們 &lt;code&gt;pull&lt;/code&gt; 下來後，就可以 &lt;code&gt;git log&lt;/code&gt; 來確認一下記錄囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/945NY8u.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/945NY8u.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到我們的 &lt;code&gt;main&lt;/code&gt; 分支已經跟上 &lt;code&gt;origin/main&lt;/code&gt; 的進度囉！&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;使用-git-clone-直接把遠端儲存庫的-repo-抓下來&#34;&gt;使用 Git Clone 直接把遠端儲存庫的 Repo 抓下來&lt;/h2&gt;
 &lt;p&gt;上面我們已經嘗試過「本機有儲存庫，上傳到遠端儲存庫」的場景了。但是大多數時候，像是我們在公司會需要接手開發專案啦、使用人家已經寫好的工具啦等等，都是「&lt;strong&gt;本機沒有任何東西，要從遠端進行下載&lt;/strong&gt;」的場景。&lt;/p&gt;
 &lt;p&gt;這個時候就是 Github 大家最常做的 &lt;code&gt;Clone&lt;/code&gt; 出場的時候啦！&lt;/p&gt;
 &lt;p&gt;現在就讓我們再新增一個 &lt;code&gt;GitRepos&lt;/code&gt; 資料夾，我們的目標就是把儲存庫拉下來這裡：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ryaEGB2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ryaEGB2.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著讓我們回到 Github 上的 Repository，畫面中間靠右會有一個綠色的 &lt;code&gt;↓ Code&lt;/code&gt; 按鈕（這應該是整個 Github 大家按最多次的按鈕）點開就會出現下載選項：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/WY6HnKT.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/WY6HnKT.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;分別是各個命令列下載方式對應的連結、Github Desktop 專用的開啟方式，還有最常用到的 ZIP 下載方式。&lt;/p&gt;
 &lt;p&gt;我個人是比較常下載壓縮檔來解壓縮啦，不過都已經用指令到這裡了，就讓我們來試試 &lt;strong&gt;&lt;code&gt;git clone&lt;/code&gt;&lt;/strong&gt; 吧：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;git clone https://github.com/yourGithubName/yourGithubRepository.git
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TmPSidi.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/TmPSidi.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著在 &lt;code&gt;GitRepos&lt;/code&gt; 裡面就生出來一個 &lt;code&gt;hello-git&lt;/code&gt; 啦，進入後檔案也都在呢：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/qJ9RVQN.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/qJ9RVQN.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這樣就成功把儲存庫 Clone 下來囉！&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Clone 下來的儲存庫會自動建立和遠端儲存庫的繫結&lt;/strong&gt;，也就是已經是 &lt;code&gt;git remote add &lt;/code&gt; 好的狀態，相當方便。接著後續就和基本的 Git 操作一樣囉。&lt;/p&gt;
 &lt;hr&gt;
@@ -5475,7 +5475,7 @@ git remote
       <pubDate>Mon, 05 Apr 2021 22:39:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2021/04/newbie-0-menu/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/uobV40z.png&#34; alt=&#34;img&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/uobV40z.webp&#34; alt=&#34;img&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;長夜將至，我從今開始守望。&lt;br/&gt;
 　　　　　　　　　　　　　　　　　　　　　　　　　　　　——《冰與火之歌》守夜人誓詞&lt;/p&gt;
@@ -5504,7 +5504,7 @@ git remote
       <pubDate>Fri, 01 Jan 2021 23:50:49 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2021/01/oo-ex1-end2020/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/hycMTRZ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/hycMTRZ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;隨著 2020 進到了 2021，菜雞與物件導向也推進到了五大原則結束，可以暫時告一段落了。&lt;/p&gt;
 &lt;p&gt;最初和朋友約好了要把公司新訓學到的東西做個整理（廣告一下他的部落格：&lt;a href=&#34;https://sunnyday0932.github.io/&#34;&gt;Sian&lt;/a&gt;），只是沒想到因為太常發廢文偷懶，大半年才推進到物件導向的基礎而已，甚至占不到新訓內容的十分之一。希望 2021 能繼續推進，把這部份的坑給填一填，然後把前面的文章也重構一下，只是按照我的個性，可能又會忍不住開新的坑吧，哈哈。&lt;/p&gt;
 &lt;p&gt;至於物件導向相關的心得和紀錄，也就是這個系列，偶而有想到或是有所體悟的時候再發上來吧，暫時想先把前面隨手寫凌亂文章給整一整先。在這個十幾篇的短系列，記錄了從類別與物件開始，到耦合、內聚及五大原則，每個主題的心得。這邊稍微做個小整理：&lt;/p&gt;
@@ -5651,7 +5651,7 @@ git remote
       <pubDate>Sun, 20 Dec 2020 23:57:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/12/oo-15-least-knowledge-principle/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/FOWZ8zY.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/FOWZ8zY.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;在&lt;a href=&#34;https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle&#34;&gt;上一篇&lt;/a&gt;我們紀錄了依賴反轉原則，到此五大原則介紹完畢…是這樣嗎？太天真了！就像四天王總是五個人一樣，五大原則當然也有第六個！&lt;/p&gt;
 &lt;p&gt;今天的主角就是五大原則中Ｌ位的第一候補：&lt;strong&gt;最少知識原則&lt;/strong&gt;，也被稱作&lt;strong&gt;迪米特法則&lt;/strong&gt;。&lt;/p&gt;
 &lt;h2 id=&#34;最少知識原則-least-knowledge-principle&#34;&gt;最少知識原則 (Least Knowledge Principle)&lt;/h2&gt;
@@ -5735,7 +5735,7 @@ git remote
       <pubDate>Sun, 13 Dec 2020 21:53:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/12/oo-14-dependency-inversion-principle/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ywiHuis.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ywiHuis.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;在聊依賴反轉之前，先讓我們聊聊什麼是依賴，所謂的依賴就是一種「受到某個東西影響、牽制」的狀態。&lt;/p&gt;
 &lt;p&gt;例如說如果有個像我一樣的肥宅每天一定要來一片雞排才能療癒身心，那我就是依賴雞排；&lt;br/&gt;
 同樣的，如果有個大叔不抽菸就會全身不舒服，就是對香菸有所依賴。&lt;/p&gt;
@@ -5879,7 +5879,7 @@ git remote
       <pubDate>Sun, 15 Nov 2020 12:00:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/11/oo-13-interface-segregation-principle/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/itHN6VZ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/itHN6VZ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;今天要記錄的是介面隔離原則，顧名思義是和介面高度相關的原則。因此在閱讀本篇之前，可能需要先對 &lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-7-interface&#34;&gt;介面&lt;/a&gt; 有一點了解呦。&lt;/p&gt;
 &lt;p&gt;事情就從上一篇 &lt;a href=&#34;https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle&#34;&gt;里氏替換原則&lt;/a&gt; 的鳥類物流公司開始說起。老闆痛定思痛，決定先用&lt;strong&gt;介面&lt;/strong&gt;先規定好物流士們的應徵條件，例如裝貨、卸貨、飛行、必須有帥氣的喙等等。&lt;/p&gt;
 &lt;p&gt;這道命令下來後，倉庫們的企鵝都慌了，來檢查的編譯器瘋狂跳出 Error:「您未實作 IBird 的 Fly() 方法！」這下怎麼辦呢，為了要保住飯碗，企鵝們就必須實作出飛行才行，可是企鵝真的就不會飛呀！&lt;/p&gt;
@@ -5969,7 +5969,7 @@ git remote
       <pubDate>Sun, 01 Nov 2020 11:31:44 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/11/oo-12-liskov-substitution-principle/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ZAuxFRy.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ZAuxFRy.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;里氏替換原則-liskov-substitution-principle&#34;&gt;里氏替換原則 (Liskov Substitution Principle)&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;子類別必須能夠替換父類別&lt;/strong&gt;&lt;/p&gt;
@@ -6080,7 +6080,7 @@ git remote
       <pubDate>Sun, 25 Oct 2020 11:58:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/10/oo-11-open-closed-principle/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/6pQOti2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/6pQOti2.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;開放封閉原則-open-close-principle&#34;&gt;開放封閉原則 (Open-Close Principle)&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;軟體實體（類別、模組、函式等等）應該對擴展開放，而對修改封閉&lt;/strong&gt;&lt;/p&gt;
@@ -6160,7 +6160,7 @@ git remote
       <pubDate>Fri, 02 Oct 2020 11:03:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/VyyeaYz.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/VyyeaYz.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;我們在前面的 &lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;內聚和耦合&lt;/a&gt; 有提到過，內聚並不是無腦把相關的程式碼都封在一起就好了，也有分成健康的和不健康的。但我們要怎麼知道這個類別是否足夠健康呢？單一職責原則就是很好的檢驗方式，這篇就讓我們來紀錄一下。&lt;/p&gt;
 &lt;h2 id=&#34;單一職責原則-single-responsibility-principle&#34;&gt;單一職責原則 (Single Responsibility Principle)&lt;/h2&gt;
 &lt;p&gt;「單一職責」原則顧名思義，就是一個類別應該&lt;strong&gt;只負責一個職責&lt;/strong&gt;。&lt;/p&gt;
@@ -6325,7 +6325,7 @@ git remote
       <pubDate>Sun, 20 Sep 2020 13:51:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/09/oo-9-solid/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/U7iWMT9.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/U7iWMT9.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;終於進入了原則篇，接下來的幾篇我們會介紹幾個物件導向的原則（基本上就是指 SOLID 原則）。因此這篇就讓我 &lt;s&gt;水一下&lt;/s&gt; 當成後半段的目錄，方便之後可以把相關的部分整理進來。&lt;/p&gt;
 &lt;h2 id=&#34;為什麼我們需要這些原則&#34;&gt;為什麼我們需要這些原則？&lt;/h2&gt;
 &lt;p&gt;我們在前面的章節已經說明了一些物件導向的特性，例如繼承和多型等等。然而我們並沒有討論到怎麼運用、或是怎樣設計才能算是更好的、更優雅的、更符合物件導向精神的；我們並沒有提到一個評估的標準，或是指引一個更好的方向。&lt;/p&gt;
@@ -6414,7 +6414,7 @@ git remote
       <pubDate>Sun, 13 Sep 2020 23:56:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/cgxW9yZ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/cgxW9yZ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;做為前後段落的分水嶺，這篇文章我將紀錄一下 &lt;strong&gt;「內聚」(Cohesion)&lt;/strong&gt; 和 &lt;strong&gt;「耦合」(Coupling)&lt;/strong&gt;，這兩者是評估一個類別或元件的重要概念。&lt;/p&gt;
 &lt;p&gt;在實務上，為了提升擴展性，降低維護成本等因素，我們對於單個類別或元件，會有著 &lt;strong&gt;「低耦合」&lt;/strong&gt; 及 &lt;strong&gt;「高內聚」&lt;/strong&gt; 的期待。例如我們在 &lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-3-encapsulation&#34;&gt;菜雞與物件導向 (3): 封裝&lt;/a&gt; 中，我們就有提到封裝的好壞相當重要，其中也包含了「提高類別內的內聚性，降低對外的耦合性」。那麼，到底什麼是內聚，什麼又是耦合呢？&lt;/p&gt;
 &lt;h2 id=&#34;內聚&#34;&gt;內聚&lt;/h2&gt;
@@ -6509,7 +6509,7 @@ git remote
       <pubDate>Sun, 12 Jul 2020 23:53:07 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/07/oo-7-interface/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9eGbMlk.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/9eGbMlk.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;如果說&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-4-inheritance&#34;&gt;繼承&lt;/a&gt;是用來表明物件「屬於什麼」；那麼介面就是用來表明物件「能做什麼」。&lt;/p&gt;
 &lt;p&gt;如果說&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-3-encapsulation&#34;&gt;封裝&lt;/a&gt;是將物件視作一個整體，是隱藏複雜度；那麼介面就是封裝精神的體現。&lt;/p&gt;
 &lt;p&gt;如果說&lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-5-polymorphism&#34;&gt;多型&lt;/a&gt;是指藉著繼承後能實作不同的行為的可能性達到擴展的彈性；那麼介面就是在實作多型。&lt;/p&gt;
@@ -6640,7 +6640,7 @@ git remote
       <pubDate>Sun, 12 Jul 2020 23:53:06 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/07/oo-6-abstract-override/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Y2gHFsr.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Y2gHFsr.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;備註：這邊的抽象是指程式語言中的抽象類別，而非抽象化&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -6782,7 +6782,7 @@ git remote
       <pubDate>Sun, 12 Jul 2020 23:53:05 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/07/oo-5-polymorphism/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/65N5R3A.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/65N5R3A.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;多型算是比較三特性之中給人感覺比較溫和的了，不如說只要有了繼承，那麼多型的到來就是必然的。多型的定義是：不同的物件能夠做出一樣的行為，但必須由他們自己的程式碼來實作。&lt;/p&gt;
 &lt;p&gt;白話一點說就是：&lt;strong&gt;一樣的事，不同做法&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;多型相對是比較好理解的，畢竟每個人做同一件事的方法本來就不太一樣。例如一樣是泡奶茶，英國就正常地泡，&lt;a href=&#34;https://www.ettoday.net/news/20200707/1754177.htm&#34;&gt;美國就會用微波爐&lt;/a&gt;；一樣是肉粽，有些人就是比較愛吃油飯；到了程式的世界裡也是，即使繼承了同一個物件，實現這個行為的方式也可以不同。&lt;/p&gt;
@@ -6939,9 +6939,9 @@ git remote
       <pubDate>Sun, 12 Jul 2020 23:53:04 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/07/oo-4-inheritance/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/g9FZ3WN.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/g9FZ3WN.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著要介紹的是繼承 aka 物件導向三大特性之王 aka 濫用榜 Ko.1 ，繼承的強大幾乎和它的惡名一樣可怕，給一個從聊聊程式的這篇 &lt;a href=&#34;https://dotblogs.com.tw/initials/2016/06/10/171117&#34;&gt;[心得整理] c# 物件導向程式 - 2.封裝、繼承、多型的三大特性&lt;/a&gt; 摘過來的例子就可以略知一二了：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/IFV4xjr.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/IFV4xjr.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;什麼也不做，僅僅只是繼承而已，就取得了繼承對象（C# 中稱為基底類別）近乎全部的內容，真是太可怕了。在 C# 中，繼承可以取得基底類別除了 &lt;code&gt;Private&lt;/code&gt; 以外所有的內容，例如 &lt;code&gt;Protected&lt;/code&gt; 更是表明就是只給繼承使用的。&lt;/p&gt;
 &lt;p&gt;由此可見，在減少重複程式碼的路上，繼承無疑達到了全新的高度。&lt;/p&gt;
 &lt;p&gt;那麼繼承代表的是什麼意思呢？大多的網站都能直接說明：&lt;strong&gt;繼承是一種「is-a」的關係。當你能說出Ａ是一個Ｂ的時候，就代表你認為Ａ可以繼承自Ｂ&lt;/strong&gt;。&lt;/p&gt;
@@ -7063,7 +7063,7 @@ git remote
       <pubDate>Sun, 12 Jul 2020 23:53:03 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/07/oo-3-encapsulation/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/cc9DLDo.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/cc9DLDo.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;封裝包含了兩個重要的觀念：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;控制物件和外部進行互動的出入口&lt;/strong&gt;&lt;/li&gt;
@@ -7239,7 +7239,7 @@ git remote
       <pubDate>Sun, 12 Jul 2020 23:53:02 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/07/oo-2-constructor-overload/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/naCjLay.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/naCjLay.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;我就直接說了，有用前面的程式碼區塊的人，絕對執行不了。因為我們建立哥布林和戰士這兩張卡片的時候，根本就沒有給他們數值呀！&lt;/p&gt;
 &lt;p&gt;雖然可以先呼叫出來再賦值…&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; goblin = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Card();
@@ -7321,7 +7321,7 @@ git remote
 &lt;p&gt;例如說當你要記錄發生錯誤時的 Log ，就能允許只傳遞錯誤內容，或是傳遞錯誤內容和當時操作的參數，甚至是當下的環境資料等等。&lt;/p&gt;
 &lt;p&gt;又或者是查詢客戶資料（GetUser 之類的）的函式，提供使用 客戶代號，或是 訂單編號 等不同的方式進行查詢時，就可以考慮多載的應用。&lt;/p&gt;
 &lt;p&gt;例如說 .net 中協助類別對映的名套件 &lt;a href=&#34;https://igouist.github.io/post/2020/07/automapper&#34;&gt;AutoMapper&lt;/a&gt;，在轉換類別的 Map 方法就很漂亮地使用了多載：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/DAgNTwc.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/DAgNTwc.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：看不到圖片的可以直接看 &lt;a href=&#34;https://github.com/AutoMapper/AutoMapper/blob/master/src/AutoMapper/Mapper.cs&#34;&gt;Github&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -7379,7 +7379,7 @@ git remote
       <pubDate>Sun, 12 Jul 2020 23:53:01 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/07/oo-1-class-object/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TIEIXm5.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/TIEIXm5.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;直覺上你當然知道什麼是物件；物件就在你的身邊。&lt;/p&gt;
 &lt;p&gt;汽車、iPhone、收音機、吐司機、廚房用具等等，你說得出來的都是。&lt;/p&gt;
@@ -7525,7 +7525,7 @@ git remote
       <pubDate>Sun, 12 Jul 2020 23:53:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2020/07/oo-0-object-oriented/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9UtcyAf.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/9UtcyAf.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;在訂便當告一段落之後，其實就已經和同事約好要來整理公司新訓的筆記。但儘管已經到職快一年了，有些工具已經在專案碰過好幾次。但遇到需要跟朋友討論，或是聽前輩說明觀念的時候，還是不自主地會想「我真的懂嗎？」故一直是挺畏懼的。&lt;/p&gt;
 &lt;p&gt;但幸虧同事的鼓勵和以身作則，最終還是開啟了這個新系列，決定直接開坑把當初前輩新訓指導過的部分整理下來，也算是讓自己能趁著這機會好好複習一番，把自己的想法跟心得記錄下來。&lt;/p&gt;
 &lt;p&gt;另外，如果你是真心希望弄懂物件導向的朋友，這邊推薦&lt;a href=&#34;https://www.tenlong.com.tw/products/9789866761799&#34;&gt;《大話設計模式》&lt;/a&gt;的附錄，內容對物件導向的介紹清晰易懂且循序漸進，非常適合作為了解物件導向的起頭。&lt;/p&gt;
@@ -7567,16 +7567,16 @@ git remote
       <guid>https://igouist.github.io/post/2020/07/automapper/</guid>
       <description>&lt;p&gt;類別間的轉換幾乎是每個專案每個工程師都會碰到的動作，舉凡是分層架構每層之間的轉換，如 Dto 轉換成 ViewModel；或是接收到資料要塞進自定義的類別時也需要進行轉換。但&lt;strong&gt;在遠古時代，當我們要把一個類別的資料倒進另一個類別時，總免不了一番折騰&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;例如一個卡片對戰遊戲的資料庫，光是要先把卡片資料讀取出來就需要：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/c81Hx5I.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/c81Hx5I.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;有些時候也會看見用 Foreach 然後逐一傳值的場景，或是各種差不多的變種情況。同樣的是，光是將一個簡單的卡片資訊轉換成 ViewModel，就花了一大段在做對映的處理。這個過程本身枯燥乏味又占空間，更可怕的是，&lt;strong&gt;如果有個陳年資料表，動不動就上百個欄位，那這個轉換過程的恐怖程度可想而知&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;幸好！天無絕人之路，這種時候就是本日的主角 —— AutoMapper 出場的時候了。&lt;/p&gt;
 &lt;p&gt;當 AutoMapper 一出手，轉換的過程瞬間就變成：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/KxHAKpi.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/KxHAKpi.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;是不是精簡很多呢？接著就讓我們來看看怎麼開始使用吧！&lt;/p&gt;
 &lt;h2 id=&#34;安裝與使用&#34;&gt;安裝與使用&lt;/h2&gt;
 &lt;p&gt;首先，當然要先到 NuGet 把 AutoMapper 給裝下來。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TEAZwU7.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/3ADyJXv.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/TEAZwU7.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/3ADyJXv.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;確認安裝之後，就開始基本的使用吧。&lt;/p&gt;
 &lt;p&gt;只需要&lt;strong&gt;先註冊好 Mapper 的設定內容，也就是哪些類別之間可以互相對映；再實體化 Mapper 出來使用就可以了&lt;/strong&gt;。直接看程式碼應該就能理解：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;CardViewModel&amp;gt; GetCard()
@@ -7737,7 +7737,7 @@ git remote
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;走向注入&#34;&gt;走向注入&lt;/h3&gt;
 &lt;p&gt;由於本篇篇幅無法說明好依賴注入（DI）的概念，相關的部份就留待在&lt;a href=&#34;https://igouist.github.io/post/2021/11/newbie-6-dependency-injection&#34;&gt;之後的文章&lt;/a&gt;中說明，這邊就以 .net Core 為示範來記錄一下步驟，提供給已經會 DI 的朋友參考。&lt;/p&gt;
 &lt;p&gt;在開始之前，我們會需要再前往 NuGet 安裝 AutoMapper DI 用的套件：
-&lt;img src=&#34;https://i.imgur.com/hae1zfj.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/hae1zfj.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著在 &lt;code&gt;Startup.cs&lt;/code&gt; 裡的 &lt;code&gt;ConfigureServices&lt;/code&gt; 加上 &lt;code&gt;services.AddAutoMapper(typeof(Startup))&lt;/code&gt; 來註冊我們的 Mapper：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; ConfigureServices(IServiceCollection services)
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
@@ -7838,20 +7838,20 @@ git remote
 &lt;p&gt;2021.01.27 補充：字型也可以看 &lt;a href=&#34;https://devfonts.gafi.dev/&#34;&gt;devfonts&lt;/a&gt; 。裡面直接放了超多 Coding 常用字型，也可以貼上 Code 直接進行比較，相當貼心。想逛一下挑個順眼字型的朋友直接試試唄。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h3 id=&#34;consolas&#34;&gt;Consolas&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/az9u0B3.png&#34; alt=&#34;&#34;&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/az9u0B3.webp&#34; alt=&#34;&#34;&gt;
 內建就有的字體，個人認為在不想另外下載字體的時候是相當優質的選擇。&lt;/p&gt;
 &lt;p&gt;看起來粗粗圓圓的很放鬆。&lt;/p&gt;
 &lt;h3 id=&#34;firacode&#34;&gt;FiraCode&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9OJpMXL.png&#34; alt=&#34;&#34;&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/9OJpMXL.webp&#34; alt=&#34;&#34;&gt;
 &lt;a href=&#34;https://github.com/tonsky/FiraCode&#34;&gt;FiraCode&lt;/a&gt;，整體看起來就是乾淨優雅，尤其是連字能使得整個 Code 更有滑順的感覺，十分推薦。&lt;/p&gt;
 &lt;p&gt;然而，FiraCode 雖然陪伴我一段不短的時間，但還是有一個致命的缺陷：不支援中文！&lt;/p&gt;
 &lt;p&gt;於是後來我基本上都使用下面介紹的這款&lt;/p&gt;
 &lt;h3 id=&#34;更紗黑體&#34;&gt;更紗黑體&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/yVMe5wC.png&#34; alt=&#34;&#34;&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/yVMe5wC.webp&#34; alt=&#34;&#34;&gt;
 &lt;a href=&#34;https://github.com/be5invis/Sarasa-Gothic&#34;&gt;更紗黑體&lt;/a&gt; 除了同樣支援連字以外，更支援多國語系。例如繁中就是有標註 TC 的字形，看見中英文都套用上去就是一陣舒服。是現在我的主力。&lt;/p&gt;
 &lt;p&gt;至於不想用等寬字體的朋友，都看到這裡了，沒關係。下面這套推薦給你們&lt;/p&gt;
 &lt;h3 id=&#34;ink-free&#34;&gt;Ink Free&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/EShjvS5.png&#34; alt=&#34;&#34;&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/EShjvS5.webp&#34; alt=&#34;&#34;&gt;
 就是這麼直接！這麼舒服！如果你的同事要過來 Code Review，不要猶豫字體直接換下去！&lt;/p&gt;
 &lt;h2 id=&#34;變更環境字體&#34;&gt;變更環境字體&lt;/h2&gt;
 &lt;p&gt;前面介紹了一些好用的字體，以及 &lt;a href=&#34;https://devfonts.gafi.dev/&#34;&gt;devfonts&lt;/a&gt; 這個超讚網站。接著就讓我們來設定 Visual Studio 的字體吧。&lt;/p&gt;
@@ -7863,15 +7863,15 @@ git remote
 &lt;li&gt;編譯器工具提示&lt;/li&gt;
 &lt;li&gt;環境&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/m2zfp6K.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/m2zfp6K.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;影響到的範圍會有&lt;/p&gt;
 &lt;p&gt;環境相關的字體，例如上方的工具列&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/H5t6Jun.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9hYcnfn.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/H5t6Jun.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/9hYcnfn.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;按下 &lt;code&gt;Alt + Enter&lt;/code&gt; 的小提示、方法上方的 CodeLen 小提示（N 個參考那個）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/lHf3SHe.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/lHf3SHe.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;自動補完和註解說明等等&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/SaMzVkA.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/SaMzVkA.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;另外我個人還會把清單裡任何加上 &lt;code&gt;[]&lt;/code&gt; 的部份的字型也改掉：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;所有文具工具&lt;/li&gt;
@@ -7884,38 +7884,38 @@ git remote
 &lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=SteveCadwallader.CodeMaid&#34;&gt;CodeMaid&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;極實用，我平常主要用到的功能是看&lt;strong&gt;複雜度&lt;/strong&gt;和&lt;strong&gt;自動排版&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/pf897N7.png&#34; alt=&#34;&#34;&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/pf897N7.webp&#34; alt=&#34;&#34;&gt;
 安裝之後可以開啟 CodeMaid Spade，其中函式右側的就是該函式的複雜度，複雜度指得就是該函式中各種不同狀況的路徑數量，例如一個 IF 就會有兩條路徑。&lt;/p&gt;
 &lt;p&gt;而複雜度相當高的時候 CodeMaid Spade 的字體會變成紅色，屆時就應該思考這個函式是否做了太多事情，也就是有太多&lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle&#34;&gt;職責&lt;/a&gt;？是否應該把部分功能抽出來？平常可以迅速地提供參考。關於複雜度相關的工具也可以參閱：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://kevintsengtw.blogspot.com/2015/09/visual-studio-microsoft-codelens-code.html&#34;&gt;Visual Studio - Microsoft CodeLens Code Health Indicator&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://kevintsengtw.blogspot.com/2015/02/visual-studio-code-metrics-viewer-2013.html&#34;&gt;Visual Studio 計算程式碼度量 - Code Metrics Viewer 2013&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/sb2440G.png&#34; alt=&#34;&#34;&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/sb2440G.webp&#34; alt=&#34;&#34;&gt;
 除了看見複雜度以外，這個插件的主要功能就在於程式碼的排版和整理，甚至可以設定成每當儲存時自動排版一次。對我這種懶人來說可是一大福音。但要小心跟其他人協作的時候如果全部重新排版可能動到人家的 Code 而且推送時的變更會爆炸多，要稍微注意。平常就養成順手 &lt;code&gt;Ctrl + K&lt;/code&gt;、&lt;code&gt;Ctrl + D&lt;/code&gt; 的習慣會更好。&lt;/p&gt;
 &lt;h3 id=&#34;codemaintainibility&#34;&gt;CodeMaintainibility&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;市集頁面： &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=ognjen-babic.code-maintainibility&#34;&gt;Code Maintainibility&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;提到複雜度，也可以安裝這套 Code Maintainibility，在看複雜度的時候能夠更快更方便！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/90Ox0rF.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/90Ox0rF.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;一樣在「管理擴充功能」直接搜尋就可以了，但這個套件似乎有改版過。我更新了 Visual Studio 才搜尋得到，如果找不到的朋友可以先嘗試更新看看。&lt;/p&gt;
 &lt;p&gt;安裝之後就可以直接在各個 Function 上方的 CodeLens 直接看到複雜度指標囉！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/No3C6yH.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/No3C6yH.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;點開來也會顯示各項指標，包括可維護性、霍爾斯特德複雜度等等&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/aOCbIp1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/aOCbIp1.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;也可以在設定之中調整預設顯示的指標&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/amDpQtp.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/amDpQtp.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這樣在撰寫和重構程式碼的時候就可以迅速又清楚看見複雜度指標，&lt;s&gt;心裡也至少有個底&lt;/s&gt;，可以說是方便不少呢&lt;/p&gt;
 &lt;h3 id=&#34;editor-guidelines&#34;&gt;Editor Guidelines&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=PaulHarrington.EditorGuidelines&#34;&gt;Editor Guidelines&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;在指定字數位置&lt;strong&gt;劃出直的輔助線&lt;/strong&gt;，我都用來標示出 100 字元 和 120 字元的位置，用來提醒自己要換行，以保持程式碼可以直直地閱讀下去，而不會為了往右滾動或是因為自動斷行在奇怪地方而中斷。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/yBffyf3.png&#34; alt=&#34;&#34;&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/yBffyf3.webp&#34; alt=&#34;&#34;&gt;
 可以看見右側有輔助線，通常只要長到碰到該線我就會將該行程式碼做斷行的調整。&lt;/p&gt;
 &lt;p&gt;安裝之後可以在編輯器的任何位置按下右鍵，就可以增加和移除輔助線。
-&lt;img src=&#34;https://i.imgur.com/0YqkYFI.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/0YqkYFI.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;如果想要在確切字元位置（如 100 字元），則可以在 &lt;code&gt;檢視 → 其他視窗 → 命令視窗&lt;/code&gt; 裡面輸入指令來加入輔助線&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Edit.AddGuideline 100 // 添加輔助線
 Edit.RemoveAllGuidelines // 移除輔助線
@@ -7926,7 +7926,7 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;/blockquote&gt;
 &lt;p&gt;主要是在&lt;strong&gt;括弧的結束部分會顯示出這個括弧所屬的區塊&lt;/strong&gt;（如附圖）。我有看見許多同事都使用替括弧上色的作法，不過我個人不喜歡太過五彩繽紛的感覺，因此強烈推薦這款插件。&lt;/p&gt;
 &lt;p&gt;下載之後可以在 &lt;code&gt;工具 → 選項 → KC Extensions&lt;/code&gt; 裡面調整，有 當上括弧在畫面外時才顯示下括弧的文字，以及一律顯示（我個人都是使用一律顯示）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/sRCndm3.png&#34; alt=&#34;&#34;&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/sRCndm3.webp&#34; alt=&#34;&#34;&gt;
 可以看見 IF 跟函式結束的地方都有標示出括弧對應的區塊，在多層巢狀的時候相當有幫助。（雖然說更重要的是應該避免做出多層巢狀就是了）&lt;/p&gt;
 &lt;h3 id=&#34;smartpaster&#34;&gt;SmartPaster&lt;/h3&gt;
 &lt;blockquote&gt;
@@ -7944,14 +7944,14 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;/blockquote&gt;
 &lt;p&gt;這個跟效率就沒啥太大關係了，所以特別放在壓軸哈，這插件主要是用來&lt;strong&gt;修改編譯區塊的背景&lt;/strong&gt;使用的。&lt;/p&gt;
 &lt;p&gt;剛安裝下來之後打開 Visual Studio 就會看到一個妹子。
-&lt;img src=&#34;https://i.imgur.com/op0y1wf.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/op0y1wf.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;當然這個背景圖是可以自由變更的，打開 &lt;code&gt;工具 → 選項 → ClaudiaIDE&lt;/code&gt; 就會看到以下的設置畫面
-&lt;img src=&#34;https://i.imgur.com/O3KAm0N.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/O3KAm0N.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;主要會變動的地方會有 Opacity 透明度、File Path 圖片路徑 以及 Image Stretch 圖片填滿或是延展 這些設定，根據個人經驗，盡量用深色背景圖加上透明會比較順眼，主要還是要以不干擾閱讀程式碼為主&lt;/p&gt;
 &lt;p&gt;像我這麼低調的換個藍底的 VS Logo 就足夠竊喜好一陣子了
-&lt;img src=&#34;https://i.imgur.com/gjlxy52.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/gjlxy52.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;順帶一提我同事的背景圖是用這張，嗯……
-&lt;img src=&#34;https://i.imgur.com/YER0385.png&#34; alt=&#34;&#34;&gt;
+&lt;img src=&#34;https://image.igouist.net/YER0385.webp&#34; alt=&#34;&#34;&gt;
 （載下來示範截圖之後立馬換回來，實在過於微妙）&lt;/p&gt;
 &lt;h3 id=&#34;visual-studio-iconizer&#34;&gt;Visual Studio Iconizer&lt;/h3&gt;
 &lt;blockquote&gt;
@@ -7959,80 +7959,80 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;/blockquote&gt;
 &lt;p&gt;這個則是讓你的 Visual Studio 質感飛升的關鍵：它會替你的工具欄加上 icon！&lt;/p&gt;
 &lt;p&gt;先來看看原本的工具視窗釘選之後長怎樣：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/s0zVMsN.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/s0zVMsN.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;安裝後：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/004mjQq.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/004mjQq.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;當然如果怕找不到的話，也可以圖文並行（&lt;code&gt;工具 → 選項 → iconizer&lt;/code&gt;）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ScUCjeU.png&#34; alt=&#34;Image&#34;&gt;&lt;img src=&#34;https://i.imgur.com/WjLE5Tf.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ScUCjeU.webp&#34; alt=&#34;Image&#34;&gt;&lt;img src=&#34;https://image.igouist.net/WjLE5Tf.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;h3 id=&#34;output-enhancer--metaoutput&#34;&gt;Output enhancer &amp;amp; MetaOutput&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=NikolayBalakin.Outputenhancer&#34;&gt;Output enhancer&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;最後來介紹個實用的 Output enhancer：替你的輸出視窗上色&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/KGW1DrK.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/KGW1DrK.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;警告跟錯誤等等就會更顯眼囉！&lt;/p&gt;
 &lt;p&gt;如果想要更進一步也可以使用他們的另一款整合過的 &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=ViacheslavLozinskyi.MetaOutput-2019&#34;&gt;MetaOutput&lt;/a&gt;（&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=ViacheslavLozinskyi.MetaOutput-2022&#34;&gt;2022&lt;/a&gt;），輸出視窗就會變為條列式：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/IRBlGGv.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/IRBlGGv.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;除了會折疊輸出訊息以外，也能調整哪部分訊息可以省略：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/KQutBi1.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/KQutBi1.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;也可以進行搜尋：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/0lNna9g.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/0lNna9g.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;個人覺得挺方便的。雖然日常狀況還是等紅字跳出來再說 XD&lt;/p&gt;
 &lt;h2 id=&#34;設定&#34;&gt;設定&lt;/h2&gt;
 &lt;h3 id=&#34;變更-visual-studio-程式碼的配色為新版本-2019&#34;&gt;變更 Visual Studio 程式碼的配色為新版本 (2019)&lt;/h3&gt;
 &lt;p&gt;Visual Studio 2019 預設的程式碼配色會是 2017 版本的，因此可以先調整更改成 2019 版本。&lt;/p&gt;
 &lt;p&gt;更改的位置在 &lt;code&gt;工具 &amp;gt; 選項 &amp;gt; 文字編輯器 &amp;gt; C# (看個人使用語言) &amp;gt; 進階&lt;/code&gt; 接著拉至最底找到 &lt;code&gt;編輯器色彩配置&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/lbUP19r.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/lbUP19r.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;把它更改成 2019 版本的就可以囉&lt;/p&gt;
 &lt;p&gt;變更前：
-&lt;img src=&#34;https://i.imgur.com/IMr2ViF.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/IMr2ViF.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;變更後：
-&lt;img src=&#34;https://i.imgur.com/s0zYjmu.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/s0zYjmu.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到變數、方法都有上色了，在整排 Linq 連發的 Code 裡面可是相當實用呢&lt;/p&gt;
 &lt;h3 id=&#34;開啟內嵌提示&#34;&gt;開啟內嵌提示&lt;/h3&gt;
 &lt;p&gt;這邊推薦把「內嵌提示」這個實驗性功能打開，可以大大增加程式碼的可讀性。&lt;/p&gt;
 &lt;p&gt;首先讓我們先到 &lt;code&gt;選項 &amp;gt; 文字編輯器 &amp;gt; C# &amp;gt; 進階&lt;/code&gt;，並且往下拉就可以看到內嵌提示。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/FMERRDD.png&#34; alt=&#34;image-20210830065440439&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/FMERRDD.webp&#34; alt=&#34;image-20210830065440439&#34;&gt;&lt;/p&gt;
 &lt;p&gt;其中「&lt;strong&gt;顯示內嵌參數名稱&lt;/strong&gt;」勾選起來的話，就會在呼叫方法時顯示該參數的名稱，如下圖的 &lt;code&gt;startIndex&lt;/code&gt; 和 &lt;code&gt;length&lt;/code&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/7QCEEkY.png&#34; alt=&#34;image-20210830065736932&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/7QCEEkY.webp&#34; alt=&#34;image-20210830065736932&#34;&gt;&lt;/p&gt;
 &lt;p&gt;像這種呼叫方法時傳遞的常數，例如 &lt;code&gt;0&lt;/code&gt;、&lt;code&gt;false&lt;/code&gt; 等等，加上參數名稱就能大大提升可讀性。&lt;/p&gt;
 &lt;p&gt;但當我們是傳遞變數的時候，常常都已經針對該物件做好妥善的命名了，所以可以把子項的「當參數名稱符合方法的意圖時，不出現提示」也勾選起來，避免命名已經足夠描述內容時反而造成干擾。&lt;/p&gt;
 &lt;p&gt;接著「&lt;strong&gt;顯示內嵌類型提示&lt;/strong&gt;」也可以勾選起來，顧名思義就是會在洽當的時候提醒你「這東西是這個型別呦！」的小助手。&lt;/p&gt;
 &lt;p&gt;其中我會關閉第一項「顯示有推斷類型之變數的提示」，它的效果就是每當你使用 &lt;code&gt;var&lt;/code&gt; 的時候就會顯示推測的型別，例如：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/nGyRm6J.png&#34; alt=&#34;image-20210830071205401&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/nGyRm6J.webp&#34; alt=&#34;image-20210830071205401&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到 &lt;code&gt;var&lt;/code&gt; 的後面會補上型別。&lt;del&gt;不過這樣我排版就亂掉了，而且我就是打算把型別丟給 C# 處理才用 var 的所以掰掰&lt;/del&gt;&lt;/p&gt;
 &lt;p&gt;而第二項「&lt;strong&gt;顯示 Lambda 參數類型的提示&lt;/strong&gt;」這個就相當推薦打開了，作用的方式會像這樣：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/RVqvtcJ.png&#34; alt=&#34;image-20210830071404915&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/RVqvtcJ.webp&#34; alt=&#34;image-20210830071404915&#34;&gt;&lt;/p&gt;
 &lt;p&gt;當你在使用 Linq 的時候，就能更清楚知道現在自己在操作的是哪個型別、哪個部分。在 &lt;code&gt;Join&lt;/code&gt;、&lt;code&gt;Groupby&lt;/code&gt; 等等需要對串列連續地進行處理的時候，能夠發揮莫大的功效，特別強烈推薦要打開。&lt;/p&gt;
 &lt;h3 id=&#34;對目前所在行醒目提示&#34;&gt;對目前所在行醒目提示&lt;/h3&gt;
 &lt;p&gt;這段其實是發完文之後才補充的啦，這邊要推薦一個好用的設定：&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;工具 &amp;gt; 選項 &amp;gt; 環境 &amp;gt; 字型與色彩&lt;/code&gt; 然後在下拉式選單找到 &lt;code&gt;反白顯示目前的行&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;就可以對游標所在的那行做醒目提示囉！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/qvh8i8l.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/qvh8i8l.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;圖中的綠色就是醒目提示。&lt;/p&gt;
 &lt;p&gt;之前和大前輩聊到這個反白行，前輩表示他很討厭，因為他不太需要一條會干擾的色塊告訴他正在這&lt;/p&gt;
 &lt;p&gt;但像我這種菜雞，按著 Ctrl + G 就不知道自己飛哪裡去了，還是標記一下好哈哈。&lt;/p&gt;
 &lt;h3 id=&#34;調整索引標籤設定&#34;&gt;調整索引標籤設定&lt;/h3&gt;
 &lt;p&gt;個人習慣將索引標籤放在右側，如此一來就可以更清楚地看到檔案名稱，而且條列式地由上往下看還是比較符合平時看 Code 的習慣。&lt;/p&gt;
 &lt;p&gt;索引標籤的位置可以在 &lt;code&gt;工具 &amp;gt; 選項 &amp;gt; 環境 &amp;gt; 索引標籤和視窗&lt;/code&gt; 裡進行調整：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/sIRwNBz.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/sIRwNBz.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這邊也強烈建議將 專案/路徑 分組勾選開來，可以幫助我們更快找到開啟的索引：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/urbQnTd.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/urbQnTd.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;在 Visual Studio 2022 時，可以更進一步打開依專案著色索引的功能：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/4mmuJqs.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/5fVIZlL.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/4mmuJqs.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/5fVIZlL.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這樣開一堆索引要找的時候就更快了！&lt;/p&gt;
 &lt;p&gt;&lt;del&gt;如果從來不用索引標籤，就是無情的 &lt;code&gt;Ctrl T&lt;/code&gt; 或是 &lt;code&gt;Ctrl Tab&lt;/code&gt; 打全場的也可以不用上色沒關係就是了…&lt;/del&gt;&lt;/p&gt;
 &lt;h2 id=&#34;配色主題&#34;&gt;配色主題&lt;/h2&gt;
 &lt;h3 id=&#34;one-dark-pro&#34;&gt;One Dark Pro&lt;/h3&gt;
 &lt;p&gt;這邊推薦我在 Visual Studio Code 也很愛用的主題：&lt;strong&gt;One Dark Pro&lt;/strong&gt;，前陣子才發現居然在 Visual Studio 上也能看到熟悉的配色，馬上就安裝下來了。&lt;/p&gt;
 &lt;p&gt;因為它也是擴充套件之一，所以一樣讓我們打開 &lt;code&gt;延伸模組 &amp;gt; 管理延伸模組&lt;/code&gt;，並搜尋 &lt;code&gt;One Dark Pro&lt;/code&gt;，找到並安裝下來：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/pXGqoqd.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/pXGqoqd.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;下載好之後需要關閉 Visual Studio 安裝一下。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/CGuQ6ge.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/CGuQ6ge.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;安裝好了之後重新開啟 Visual Studio，並前往 &lt;code&gt;工具 &amp;gt; 選項&lt;/code&gt;，在左邊找到 &lt;code&gt;環境&lt;/code&gt;，就可以從色彩佈景主題裡選擇 One Dark Pro 囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ZrtztVV.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/4oBef8K.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ZrtztVV.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/4oBef8K.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;果然還是熟悉的配色最對味～大家也可以嘗試安裝看看配色主題呦！會有一番新滋味呢。&lt;/p&gt;
 &lt;h2 id=&#34;快捷鍵&#34;&gt;快捷鍵&lt;/h2&gt;
 &lt;p&gt;最後大概整理一下平常會按到的快捷鍵，方便上班在外可以直接回來偷看。（希望有朝一日能夠寫起來時雙手不離鍵盤 XD）&lt;/p&gt;

@@ -17,7 +17,7 @@
       <pubDate>Mon, 12 Sep 2022 23:51:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/WX17auT.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/WX17auT.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;在上週的 &lt;a href=&#34;https://igouist.github.io/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler&#34;&gt;使用 Powershell + 工作排程器 + Line Notify 來定時提醒公車到站時間&lt;/a&gt;，我們利用工作排程器來定時觸發腳本，藉此用 Line 提醒我下班的公車還有多久才來。&lt;/p&gt;
 &lt;p&gt;做完之後靈機一動，對呀！最近上班挺常接觸到 &lt;a href=&#34;https://azure.microsoft.com/zh-tw/services/functions/&#34;&gt;Azure Functions&lt;/a&gt; 這個方便東東，不如就把這個小提醒給架設到 Azure Functions 上吧！&lt;/p&gt;
 &lt;p&gt;這樣就省卻了特定主機要開著掛工作排程器的困擾，又可以用香香的 Azure 工具來控制監聽的開關，豈不美哉。&lt;/p&gt;
@@ -29,23 +29,23 @@
 &lt;p&gt;在這篇文章撰寫當下，Azure Functions 有提供每月免費執行一百萬次的授權，對我們每天一次的公車通知來說綽綽有餘了（我們應該不會搭這麼多趟吧…？）&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;首先讓我們到 &lt;a href=&#34;https://portal.azure.com/#home&#34;&gt;Azure&lt;/a&gt; 建立一個函數應用程式（如果用英文，請找 Azure Functions）：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9SJklpx.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/emG0G65.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/9SJklpx.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/emG0G65.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著進到建立 Functions 的頁面，讓我們先選好資源群組，並取個好名字&lt;/p&gt;
 &lt;p&gt;因為「MyFunctions」之類的都被取走了，這邊就直接取「林北ㄟ Functions」：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/pyi77OX.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/pyi77OX.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;執行階段堆疊請選擇自己開發用的語言，我這邊使用 .Net 6 進行開發，作業系統則按照建議的選擇。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;這邊要稍微注意方案的選擇！如同前面提到的&lt;a href=&#34;https://azure.microsoft.com/zh-tw/pricing/details/functions/&#34;&gt;定價&lt;/a&gt;，也可以參照 Microsoft Docs 的&lt;a href=&#34;https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-consumption-costs?tabs=portal&#34;&gt;預估 Azure Functions 中的取用方案成本&lt;/a&gt;說明，裡面會有使用量、進階等方案的說明。&lt;/p&gt;
 &lt;p&gt;這次我們要做的只是簡單的提醒通知，所以就選費用最低的使用量計價就好囉～&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;按下確認後就會開始部屬：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/HAk5hdD.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/HAk5hdD.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;部屬完成就可以前往我們建立的資源囉，可以在這裡確認記憶體、執行次數等資訊：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/xBbnNbB.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/pHteaUf.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/xBbnNbB.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/pHteaUf.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;從左側的「函式」可以確認我們現在有哪些 Functions，當然目前還是空的：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/WWLtsFG.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/WWLtsFG.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著就讓我們來撰寫第一個 Function 吧！&lt;/p&gt;
 &lt;h2 id=&#34;使用-azure-functions-開發公車到站提醒服務&#34;&gt;使用 Azure Functions 開發公車到站提醒服務&lt;/h2&gt;
 &lt;p&gt;因為這篇的功能完全是&lt;a href=&#34;https://igouist.github.io/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler&#34;&gt;使用 Powershell + 工作排程器 + Line Notify 來定時提醒公車到站時間&lt;/a&gt;的完美復刻版，因此我們要做的事情還是一樣：&lt;/p&gt;
@@ -57,11 +57,11 @@
 &lt;p&gt;只是這次的功能使用 .Net 6 撰寫，並且使用 Visual Studio 為範例來記錄，定時功能則從臭臭又綁電腦的工作排程器改用香香 Azure Functions 的定時觸發功能。&lt;/p&gt;
 &lt;h3 id=&#34;建立-azure-funtcions-專案&#34;&gt;建立 Azure Funtcions 專案&lt;/h3&gt;
 &lt;p&gt;首先讓我們新增專案，內建已經有 Azure Functions 的範例可以使用：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/gqnprvJ.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/gqnprvJ.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;取個好名字，這邊沿用剛剛開資源的命名：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/bJtncZx.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/bJtncZx.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著就要選擇版本，這邊&lt;strong&gt;要注意 Azure Function 目前還有分出隔離版（Isolated）&lt;/strong&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/6LpLjZX.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/6LpLjZX.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;簡單來說，原本的 Azure Functions 和主機環境太耦合了，如果用到同一個套件不同版本就有可能翻車。因此推出了隔離式的 Azure Functions 讓我們可以乾乾淨淨地用。&lt;/p&gt;
 &lt;p&gt;想更了解隔離式版本的差異，可以參見：&lt;/p&gt;
 &lt;ul&gt;
@@ -75,23 +75,23 @@
 &lt;p&gt;小提示：查詢 Azure Functions 相關資料時也要注意版本的差異！&lt;strong&gt;在 .Net 開發隔離式的 SDK 並不一樣&lt;/strong&gt;，連最基本標示 Function 的語法，原本是 &lt;code&gt;[FunctionName()]&lt;/code&gt;，隔離式也改成了更簡潔的 &lt;code&gt;[Function()]&lt;/code&gt;，&lt;strong&gt;因此查資料或開發時要特別注意版本差異&lt;/strong&gt;，避免被 IDE 畫了紅線卻搞不懂為什麼。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;接著我們就可以選擇 Function 的觸發條件，因為我們要定時提醒，因此這邊選擇 Timer Trigger 就可以了：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/eIzaYSc.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/eIzaYSc.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;同樣常用的還有當成 API 打的 Http Trigger，以及和我們上一次介紹過的 &lt;a href=&#34;https://igouist.github.io/post/2022/08/azure-service-bus/&#34;&gt;ServiceBus&lt;/a&gt; 一起使用的 Service Bus Queue/Topic Trigger 等等。&lt;/p&gt;
 &lt;p&gt;關於提供的觸發方式和程式碼範例，可以參照 Microsoft Docs 的 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-triggers-bindings?tabs=csharp#supported-bindings&#34;&gt;Azure Functions 中的觸發程序和繫結&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;最後因為我們選擇了 Timer Trigger，這邊提供我們直接設定時間。使用的是 NCrontab 格式，可以參考 &lt;a href=&#34;https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-timer?tabs=in-process&amp;amp;pivots=programming-language-csharp#cron-expressions&#34;&gt;NCRONTAB expressions&lt;/a&gt; 的說明，Visuat Studio 上也有簡短地介紹：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/6OB1Qrs.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/6OB1Qrs.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;按照需求，我們希望下班前，也就是每天的 17:45 左右能提醒公車預估到站的時間。&lt;/p&gt;
 &lt;p&gt;NCrontab 和常見的 Crontab 差在多了第一個欄位來控制秒，因此這邊果斷直接使用 &lt;a href=&#34;https://crontab.guru/#*_*_*_*_*&#34;&gt;Cronitor&lt;/a&gt; 查一下，再往前加上一欄當作秒數即可。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：另一個香香工具 &lt;a href=&#34;https://igouist.github.io/post/2022/08/devtoys/&#34;&gt;DevToys&lt;/a&gt; 也能迅速組裝和確認 Cron 語法呦！&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;每天的 17:45 在 Crontab 表示為「45 17 * * *」：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/o5k9Jvl.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/o5k9Jvl.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;我們希望在 0 秒的時候觸發，因此轉 NCrontab 時需要在秒的位置指定 0，也就是「0 45 17 * * *」&lt;/p&gt;
 &lt;p&gt;但在填到 Azure Functions 要注意，&lt;strong&gt;在伺服器的時間會是 UTC+0&lt;/strong&gt;。為了在台灣，也就是 UTC+8 的 17:45 觸發，因此將時間更改為「0 45 9 * * *」，否則 Line 就會在半夜通知你起來搭公車&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/bDNvzhE.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/bDNvzhE.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這樣其他資訊的頁面就填寫完了，可以按下建立囉！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/STp7otF.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/STp7otF.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;建立後會看到 Visual Studio 已經使用我們剛剛的設置建立了一個 Function 及 Timer Trigger，時間也填好了（如果後續還要調整時間，就修改 &lt;code&gt;TimerTrigger&lt;/code&gt; 的值就好）：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Function1&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
@@ -130,7 +130,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;並且為了測試方便，我們再增加一個 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-bindings-http-webhook-trigger?tabs=isolated-process%2Cfunctionsv2&amp;amp;pivots=programming-language-csharp&#34;&gt;HttpTrigger&lt;/a&gt;，這時候會需要先去 Nuget 安裝相關的套件&lt;/p&gt;
 &lt;p&gt;搜尋 &lt;code&gt;Microsoft.Azure.Functions.Worker.Extensions&lt;/code&gt; 就會看到各種 Trigger，這邊就安裝一下 Http 需要的套件吧：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/d4WDrue.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/d4WDrue.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;現在讓我們回到 Functions，增加一個 &lt;code&gt;HttpTrigger&lt;/code&gt;，調整一下非同步，並建立一個私有方法 &lt;code&gt;TrackBusAsync&lt;/code&gt;，讓 &lt;code&gt;HttpTrigger&lt;/code&gt; 和 &lt;code&gt;TimerTrigger&lt;/code&gt; 都去呼叫這個方法，這樣我們就可以定時觸發也可以手動觸發它，後續測試起來也比較方便：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[Function(&amp;#34;BusReminder-TimerTrigger&amp;#34;)]&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;async&lt;/span&gt; Task RunTimerTrigger([TimerTrigger(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0 45 9 * * *&amp;#34;&lt;/span&gt;)] MyInfo myTimer)
@@ -174,21 +174,21 @@
 &lt;p&gt;註：為了避免被查水表，以下就用台北的 307 號公車為例，並假設目標站點是「台北車站（忠孝）」&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;嘗試把縣市和公車路線名稱代入後，可以取得公車行經的站牌資訊，其中就有我們最想要的估計到站時間（秒）：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/GQ9wdqG.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/GQ9wdqG.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;在這個步驟我們還會需要調整 &lt;code&gt;$top&lt;/code&gt; 參數的筆數，順便取得我們要監聽公車到站的站牌 ID（StopId）以及行進方向（Direction） 在這個例子中「台北車站（忠孝）」的站牌 ID 會是 15250&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/mixE42V.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/mixE42V.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;確保了資料來源之後，讓我們回到專案裡。&lt;/p&gt;
 &lt;p&gt;這次為了之後方便擴展，決定將公車名稱、站牌 ID 等查詢資訊放到組態裡。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：接下來會使用到 &lt;a href=&#34;https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/&#34;&gt;依賴注入&lt;/a&gt; 以及讀取 Config 的 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/aspnet/core/fundamentals/configuration/options?view=aspnetcore-6.0&#34;&gt;IOptions&lt;/a&gt;；對這兩項不太熟悉的朋友可以先看過去，並且在後續 BusReminderFunctions 的建構式裡把公車資訊寫死就好，並不會影響功能。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;一般的 .Net 6 API 專案我們會把組態設定放到 &lt;code&gt;appsettings.json&lt;/code&gt; 中，而在開發 Azure Functions 的時候，則會需要用到 &lt;code&gt;host.json&lt;/code&gt; 和 &lt;code&gt;local.settings.json&lt;/code&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/oeWBtKj.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/oeWBtKj.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;其中 &lt;code&gt;host.json&lt;/code&gt; 用來設定站台相關的組態，例如在先前&lt;a href=&#34;https://igouist.github.io/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/&#34;&gt;調整 ServiceBus Trigger 的時候&lt;/a&gt;，我們就是在 &lt;code&gt;host.json&lt;/code&gt; 修改重新傳遞訊息到 Azure Functions 的時間。&lt;/p&gt;
 &lt;p&gt;而 &lt;code&gt;local.settings.json&lt;/code&gt; 則是讓我們在本機開發時使用，對應到線上的組態設定：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/LOjCKc3.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/LOjCKc3.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;可以看到 Azure 上的組態有「應用程式設定」和「連接字串」兩個區塊，而在本機開發時會對應到「Values」以及「ConnectionStrings」&lt;/strong&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/c4y1dQy.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/c4y1dQy.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;有個大概的認識之後，現在讓我們填入一些值吧。&lt;/p&gt;
 &lt;p&gt;現在我希望能從組態中，使用 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/aspnet/core/fundamentals/configuration/options?view=aspnetcore-6.0&#34;&gt;IOptions&lt;/a&gt; 取得查詢公車估計時間相關的設定，因此我先建立了一個 Class &lt;code&gt;BusTrackerOption&lt;/code&gt;：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
@@ -236,7 +236,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;services.Configure&amp;lt;BusTrackerOption&amp;gt;(hostContext.Configuration.GetSection(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;BusTracker&amp;#34;&lt;/span&gt;));
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
 &lt;p&gt;註：如果像我一樣開 .Net 6，只看到 &lt;code&gt;HostBuilder&lt;/code&gt; 的朋友，可以自行加入 &lt;code&gt;ConfigureServices((hostContext, services) =&amp;gt; {})&lt;/code&gt; 的部份來註冊，如下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/I6DFiRl.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/I6DFiRl.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;接著就可以回到我們的 &lt;code&gt;BusReminderFunctions&lt;/code&gt; 來把 &lt;code&gt;IOptions&amp;lt;BusTrackerOption&amp;gt;&lt;/code&gt; 注入進來：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;BusReminderFunctions&lt;/span&gt;
@@ -258,10 +258,10 @@
 &lt;p&gt;對依賴注入還不太熟悉的朋友，可以在這邊的建構式裡宣告出 &lt;code&gt;BusTrackerOption&lt;/code&gt; 並賦值即可。但還是推薦閱讀&lt;a href=&#34;https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/&#34;&gt;依賴注入&lt;/a&gt;的筆記來了解一下呦&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;現在公車路線等組態都準備得差不多了，只剩下回傳時候要用來接收資料的 Model 還沒開。這時候就直接偷懶，拿 &lt;a href=&#34;https://ptx.transportdata.tw/MOTC?t=Bus&amp;amp;v=2#&#34;&gt;MOTC Transport API&lt;/a&gt; 的 Swagger 打回來的 Json，直接到 &lt;a href=&#34;https://json2csharp.com/&#34;&gt;Json2Cshrp&lt;/a&gt; 之類的轉換網站直接產生 C# Class 就好了：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/NJ6HTbA.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/RXzItDb.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/NJ6HTbA.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/RXzItDb.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;記得轉換結果的 &lt;code&gt;Class Root&lt;/code&gt; 要改個名稱，這邊就直接取名叫做 &lt;code&gt;BusEstimateInfo&lt;/code&gt; 吧：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9SoUyu9.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/9SoUyu9.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;現在我們有傳過去的參數，也有接回來的 Model 了，讓我們來開一個私有方法，從 MOTC API 取回資料吧：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 查詢公車估計到站時間&lt;/span&gt;
@@ -380,9 +380,9 @@
 &lt;p&gt;這邊為了過程完整一點，就重播一下上次衝刺去申請 Line Notify Token 的過程吧：&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;當下一個直衝 &lt;a href=&#34;https://notify-bot.line.me/zh_TW/&#34;&gt;Line Notify&lt;/a&gt; 高速申請權杖：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/StPJo9W.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/W43nwLq.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Ahl9FoN.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/StPJo9W.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/W43nwLq.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Ahl9FoN.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;好的回想完畢，現在讓我們把拿到的 Line Notify Token 也丟到 &lt;code&gt;local.settings.json&lt;/code&gt; 的 &lt;code&gt;Values&lt;/code&gt; 裡方便管理：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-json&#34; data-lang=&#34;json&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
@@ -400,9 +400,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著到 &lt;code&gt;Program.cs&lt;/code&gt; 來將 json 的設定值繫結到 &lt;code&gt;LineNotifyOptions&lt;/code&gt;，Section 名稱要記得和 json 中的名稱對上：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;services.Configure&amp;lt;LineNotifyOption&amp;gt;(hostContext.Configuration.GetSection(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;LineNotify&amp;#34;&lt;/span&gt;));
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/61Fs36d.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/61Fs36d.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著就可以回到我們的 &lt;code&gt;BusReminderFunctions&lt;/code&gt; 來把 &lt;code&gt;IOptions&amp;lt;LineNotifyOptions&amp;gt;&lt;/code&gt; 注入進來：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/aYwNOod.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/aYwNOod.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這樣從 Config 取得 Token 的準備就完成了，現在讓我們來撰寫傳送訊息的方法本體吧&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;發送 Line Notify 實際上就是傳送一個 Post 請求到 &lt;code&gt;/api/notify&lt;/code&gt;，並將 Token 放到 Header 的 &lt;code&gt;Authorization&lt;/code&gt;、訊息丟到 Body 就行了&lt;/strong&gt;，因此我們可以直接把這方法包裝成接收到訊息就傳遞給 API：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
@@ -480,56 +480,56 @@
 &lt;p&gt;現在我們已經將前面撰寫的兩個小方法組裝起來，是時候來測試看看了！&lt;/p&gt;
 &lt;h3 id=&#34;本機測試-functions&#34;&gt;本機測試 Functions&lt;/h3&gt;
 &lt;p&gt;總之，啟動鍵先用力給它按下去：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/1U9G9IP.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1U9G9IP.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著就會看到小黑窗跑起來，告訴你已經啟動了哪些 Functions：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/DCiEz7z.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/DCiEz7z.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到我們的 Http Trigger 以及 Timer Trigger&lt;/p&gt;
 &lt;p&gt;因為我們的 Http Trigger 有支援 GET，所以這邊直接複製 Api 網址丟到瀏覽器打看看就可以試囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/oJjtbAg.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/mcji7B5.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/oJjtbAg.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/mcji7B5.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這時候小黑窗也會記錄到這次呼叫：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/yENwGQm.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/yENwGQm.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;看起來運行良好，該放上 Azure 上啦！&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：在 Azure 上要看小黑窗的話，可以從左邊選單找到「監視 &amp;gt; 紀錄資料流」：
-&lt;img src=&#34;https://i.imgur.com/PPonKeW.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/PPonKeW.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h2 id=&#34;使用-visual-studio-發佈到-azure-functions&#34;&gt;使用 Visual Studio 發佈到 Azure Functions&lt;/h2&gt;
 &lt;p&gt;現在讓我們把寫好的 Functions 佈到前面申請的 Azure Functions 服務上運行。為了方便這邊就使用 Visual Studio 來示範，首先讓我們對專案點選發佈：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/I99j6Ul.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/I99j6Ul.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著選取發佈目標，我們想要發到 Azure 雲端上：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/1Kh4BNi.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1Kh4BNi.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著會讓我們選擇目標，因為我們前面建立時的作業系統是選用建議的 Windows，因此選擇 Azure Functions (Windows)：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/2uslDph.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/2uslDph.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著就可以選取符合條件的 Azure Functions，這邊當然是選擇我們前面建立好的「林北ㄟ Functions」&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/7bMyFxY.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/7bMyFxY.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：如果先前沒有建立過 Azure Functions 服務，發佈的時候也可以從 Visual Studio 中建立，可以說是相當貼心：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/PWQvV8K.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/PWQvV8K.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;按下完成之後，我們的發佈檔就建立完囉！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/eOyR58Z.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/eOyR58Z.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這邊要特別注意的是，我們先前有在 &lt;code&gt;local.settings.json&lt;/code&gt; 加入一些設定值，例如 BusTracker 的公車路線等設定。因此我們這邊可以順手同步到目標服務上，在裝載的右上角點開「管理 Azure App Service 設定」：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ojWSenU.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ojWSenU.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;就可以看到我們目前在 Local 的組態設定值，以及 Azure 服務裡的組態設定值。這邊為了將 Local 的設定值同步上去，就直接按下「插入本機的值」：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/zxCxX9z.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/zxCxX9z.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：按下「插入本機的值」並確定後，設定值就會同步到 Azure Functions 服務的組態中：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/750ONx8.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/750ONx8.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;反過來說，如果沒有從本機同步上去，而是在 Azure 上設定組態也是完全 OK 的&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;現在一切就緒，讓我們按下發佈吧！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/KMZYA70.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/KMZYA70.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著就可以看到我們撰寫的 Functions 被發佈上去，並且幫我們重啟了 Azure Functions 服務：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/OImQVyw.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/OImQVyw.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;現在讓我們回到 Azure Functions 服務的函式看看：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ux7MrMs.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ux7MrMs.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以確認我們撰寫的 Functions 已經出現囉！&lt;/p&gt;
 &lt;p&gt;回到概觀來複製一下我們 Azure Functions 的 Url：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/FsFomcm.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/FsFomcm.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;並且加上我們的 HttpTrigger 路由 &lt;code&gt;api/BusReminder&lt;/code&gt; 呼叫看看：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/HQQVi1t.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/3O0rAbZ.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/HQQVi1t.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/3O0rAbZ.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;大功告成！&lt;/p&gt;
 &lt;h2 id=&#34;小結&#34;&gt;小結&lt;/h2&gt;
 &lt;p&gt;終於把這個小提醒給上雲啦！唉呀不得不說 Azure Functions 真是香。&lt;/p&gt;
@@ -552,7 +552,7 @@
       <pubDate>Sat, 03 Sep 2022 14:40:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/BLYVPi7.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/BLYVPi7.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;事情發生在一個風和日麗的平凡下午：&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;我：（把手上的事情弄到一個段落再下班吧）&lt;br/&gt;
@@ -583,14 +583,14 @@
 &lt;p&gt;註：為了避免被查水表，以下就用台北的 307 號公車為例，並假設目標站點是「台北車站（忠孝）」&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;嘗試把縣市和公車路線名稱代入後，可以取得公車行經的站牌資訊，其中就有我們最想要的估計到站時間（秒）：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/GQ9wdqG.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/GQ9wdqG.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著讓我們調整一下參數，把取前幾筆的 &lt;code&gt;$top&lt;/code&gt; 調大一點，來取得我們目標站點台北車站的站牌 ID：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/mixE42V.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/mixE42V.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;有了站牌 ID，我們就可以根據 &lt;a href=&#34;https://motc-ptx-api-documentation.gitbook.io/motc-ptx-api-documentation/api-te-se/odata&#34;&gt;官方提供的查詢語法&lt;/a&gt; 來篩選出目標站牌：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Njwg0fh.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Njwg0fh.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;如果有需要指定回程，也可以再加上 &lt;code&gt;and direction eq 1&lt;/code&gt; 的條件。&lt;/p&gt;
 &lt;p&gt;如此一來我們就可以呼叫 MOTC API 來取得目標站牌＋指定公車的到站估計時間囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/fkwZZpB.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/fkwZZpB.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：沒有申請&lt;a href=&#34;https://motc-ptx-api-documentation.gitbook.io/motc-ptx-api-documentation/hui-yuan-shen-qing/membertype&#34;&gt;會員&lt;/a&gt;的話有每日 50 次的使用上限，不過這次的目標也就下班打那一次，十分足夠了 XD&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -612,7 +612,7 @@
 &lt;p&gt;小提醒：原本我們下的 &lt;code&gt;$filter = StopId eq &#39;15250&#39;&lt;/code&gt; 的參數，其中 &lt;code&gt;$&lt;/code&gt; 和空白符在 Uri 會轉換成 HTML 編碼的 &lt;code&gt;%24($)&lt;/code&gt; 和 &lt;code&gt;%20(空白)&lt;/code&gt;，並不是亂碼，請不要緊張&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;另存成 &lt;code&gt;.ps1&lt;/code&gt; 檔案來測試一下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/nVZb7aV.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/nVZb7aV.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;看來查詢資料已經沒有問題了，接下來就是通知快要下班的我了&lt;/p&gt;
 &lt;h2 id=&#34;使用-powershell-彈出通知視窗初版&#34;&gt;使用 Powershell 彈出通知視窗（初版）&lt;/h2&gt;
 &lt;p&gt;第一次嘗試採用了彈跳視窗，想了一想還是順手記錄下來好了&lt;/p&gt;
@@ -629,7 +629,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$wshell &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; New-Object -ComObject Wscript.Shell
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$wshell.Popup&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;$message&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;雖然運作順利，但是……&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/psyAP4Y.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/psyAP4Y.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;總覺得有點不是很好看啊，而且工作到一半在畫面正中間跳出這個會煩死吧囧&lt;/p&gt;
 &lt;h2 id=&#34;使用-powershell-傳送-line-notify&#34;&gt;使用 Powershell 傳送 Line Notify&lt;/h2&gt;
 &lt;blockquote&gt;
@@ -637,9 +637,9 @@
 &lt;/blockquote&gt;
 &lt;p&gt;就在此時一個靈光乍現，對呀我&lt;a href=&#34;https://igouist.github.io/post/2020/04/bandon-3-line-notify/&#34;&gt;之前爬訂便當的時候&lt;/a&gt;不是用過 &lt;strong&gt;Line Notify&lt;/strong&gt; 嗎！&lt;/p&gt;
 &lt;p&gt;當下一個直衝 &lt;a href=&#34;https://notify-bot.line.me/zh_TW/&#34;&gt;Line Notify&lt;/a&gt; 高速申請權杖：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/StPJo9W.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/W43nwLq.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Ahl9FoN.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/StPJo9W.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/W43nwLq.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Ahl9FoN.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;複製權杖之後，衝回 Powershell，&lt;a href=&#34;http://chienleebug.blogspot.com/2017/10/powersehllline-notify.html&#34;&gt;前人教學抄起來&lt;/a&gt;，Invoke-RestMethod 就直接打下去：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 使用 Line Notify 傳送通知&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$lineUri &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;https://notify-api.line.me/api/notify&amp;#39;&lt;/span&gt;
@@ -648,15 +648,15 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$body &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; @&lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt; message &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; $message &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Invoke-RestMethod -Uri $lineUri -Method Post -Headers $header -Body $body
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Line 也不負期望地彈出來：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/BVGpNzg.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/BVGpNzg.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;大功告成！搞定拿資料和通知的部分啦～&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：如果訊息內容有使用&lt;strong&gt;中文&lt;/strong&gt;的朋友，請注意編碼問題。必須存成 &lt;strong&gt;Utf-8 with BOM&lt;/strong&gt;，否則會出現亂碼：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/5n7a7ht.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/5n7a7ht.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這時候就需要更改編碼為 Utf-8 with BOM；&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/S5S5Pgu.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/S5S5Pgu.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;再重新嘗試一次就會正常了：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/mMuRRTT.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/mMuRRTT.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;原本卡在這步搞不定，正好黑暗執行緒大大發了篇 &lt;a href=&#34;https://blog.darkthread.net/blog/ps1-encoding-issue/&#34;&gt;PowerShell .ps1 檔 UTF-8 編碼問題之變形錯誤&lt;/a&gt;，才知道 PowerShell 5.x 有編碼解析的問題，改成 Utf-8 with BOM 順利完工。這邊補充給各位朋朋，望周知&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;到這邊 Powershell 的部份就處理好了，目前會長這樣：&lt;/p&gt;
@@ -681,17 +681,17 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Invoke-RestMethod -Uri $lineUri -Method Post -Headers $header -Body $body
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;使用-工作排程器-定時執行-powershell-腳本&#34;&gt;使用 工作排程器 定時執行 Powershell 腳本&lt;/h2&gt;
 &lt;p&gt;秉持著前面選擇 Powershell 的 &lt;del&gt;偷懶&lt;/del&gt; 簡單精神，這邊的定時執行就直接使用 Windows 內建的工作排程器來處理：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/R7o2WFS.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/R7o2WFS.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;因為我們的場景相對簡單，只有要在特定時間幫我們呼叫 Powershell 腳本，因此直接選擇「建立基本動作」&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/gQU0yt3.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/SUlz1VH.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/gQU0yt3.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/SUlz1VH.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著讓我們選擇每週，並指定平日的時候再執行：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/v2qCs5B.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/jlEruE3.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/v2qCs5B.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/jlEruE3.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;最後選擇啟動程式，讓工作排程器開啟 Powershell 並呼叫我們的腳本：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/SapHUwE.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/SapHUwE.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這邊的「程式或指令碼」輸入 &lt;code&gt;powershell&lt;/code&gt;，接著在「新增引數」的部份告訴 Powershell 我們要執行的腳本 &lt;code&gt;-File &amp;quot;C:\Scripts\BusReminder.ps1&amp;quot;&lt;/code&gt;（記得換成你的腳本路徑呦）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/7KV6Q6o.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/7KV6Q6o.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：沒有調整過&lt;a href=&#34;https://igouist.github.io/post/2020/08/powershell-beauty/#%E5%9F%B7%E8%A1%8C%E5%8E%9F%E5%89%87&#34;&gt;執行原則&lt;/a&gt;的朋友們，可以在引數上加入 &lt;code&gt;-ExecutionPolicy Bypass&lt;/code&gt; 來關閉警告，也就是 &lt;code&gt; -ExecutionPolicy Bypass -File &amp;quot;C:\Scripts\BusReminder.ps1&amp;quot;&lt;/code&gt; 這樣子的感覺&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -699,9 +699,9 @@
 &lt;p&gt;註：如果跟我一樣會把腳本做成 Function 並存成 psm1 檔案的朋朋，這邊的引數會需要變成跟 Profile 一樣的處理方式，先 Import 進來再呼叫方法（這邊假設為 &lt;code&gt;Run-BusNotify()&lt;/code&gt;）例如，：&lt;code&gt;Import-Module &amp;quot;C:\Scripts\BusReminder.psm1&amp;quot;;Run-BusNotify;&lt;/code&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;接著只需要完成就可以在排程中找到囉，馬上就來執行看看是不是正常運作吧：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/1MLM21I.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Pu8YilJ.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/R8Ls97x.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1MLM21I.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Pu8YilJ.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/R8Ls97x.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;大功告成！&lt;/p&gt;
 &lt;h2 id=&#34;後日談&#34;&gt;後日談&lt;/h2&gt;
 &lt;p&gt;自從有了公車到站提醒後，下班再也沒有煩惱了呢&lt;/p&gt;
@@ -742,20 +742,20 @@
 &lt;p&gt;如果需要更多 Line Notify 的說明，保哥的這篇 &lt;a href=&#34;https://blog.miniasp.com/post/2020/02/17/Go-Through-LINE-Notify-Without-Any-Code&#34;&gt;上手 LINE Notify 不求人：一行代碼都不用寫的推播通知方法&lt;/a&gt; 介紹的更為完整，推薦參閱。當然，也可以閱讀 &lt;a href=&#34;https://notify-bot.line.me/doc/en/&#34;&gt;Line Notify 官方文件&lt;/a&gt;。那麼，我們開始吧～&lt;/p&gt;
 &lt;h2 id=&#34;申請-line-notify&#34;&gt;申請 Line Notify&lt;/h2&gt;
 &lt;p&gt;首先先到 &lt;a href=&#34;https://notify-bot.line.me/zh_TW/&#34;&gt;Line Notify&lt;/a&gt; 的頁面右上角登入&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/VAJV0X1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/VAJV0X1.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;登入之後，從右上角選擇 個人頁面&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Rizyl5e.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Rizyl5e.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著可以看到下面這個畫面：如果已經有申請過權杖或服務，就會顯示在上半部分的「已連動的服務」
 而我們現在需要的是下方的發行權杖
-&lt;img src=&#34;https://i.imgur.com/zNivpLD.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/zNivpLD.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著進到選擇通知視窗的畫面，在這邊可以選擇是直接通知你自己 或是將通知傳送到某個群組
-&lt;img src=&#34;https://i.imgur.com/zt2JUrI.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/zt2JUrI.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;選擇通知對象之後，就會顯示存取用的 Token。由於&lt;strong&gt;這組 Token 只會顯示一次，請自己複製下來存好！&lt;/strong&gt;
-&lt;img src=&#34;https://i.imgur.com/Mob0tR6.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/Mob0tR6.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;存取完畢後就可以看到這次申請的服務已經加到已連動的服務囉
-&lt;img src=&#34;https://i.imgur.com/cT5omou.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/cT5omou.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;並且 Line 也會跳出已連動的通知
-&lt;img src=&#34;https://i.imgur.com/NegLeh6.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/NegLeh6.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;到這邊就算是申請完畢了，接下來就要來測試一下是否能發送。&lt;/p&gt;
 &lt;h2 id=&#34;發送-line-notify&#34;&gt;發送 Line Notify&lt;/h2&gt;
 &lt;p&gt;這邊測試的 Code 主要參考 &lt;a href=&#34;https://bustlec.github.io/note/2018/07/10/line-notify-using-python/&#34;&gt;使用 Python 實作發送 LINE Notify 訊息 - Bustle C.&lt;/a&gt;，感謝前人的足跡。&lt;/p&gt;
@@ -781,7 +781,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; lineNotifyMessage(token, message)
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;print(result) &lt;span style=&#34;color:#75715e&#34;&gt;# 印一下回傳代碼&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;執行 py 檔之後就可以收到訊息囉！
-&lt;img src=&#34;https://i.imgur.com/v32rItf.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/v32rItf.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;如果回傳成功，&lt;code&gt;r.status_code&lt;/code&gt; 就會顯示 &lt;code&gt;200&lt;/code&gt;；而如果像是 Token 已經被撤銷等，則會得到 &lt;code&gt;401&lt;/code&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;關於 200, 401.. 這些回傳的狀態碼，可以參閱 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi/#%E9%97%9C%E6%96%BC-http-status-code&#34;&gt;HTTP Status&lt;/a&gt;&lt;/p&gt;
@@ -796,7 +796,7 @@ message = &amp;#34;訂單已變動，請到 https://dinbendon.net/ 確認！&amp
 result = lineNotifyMessage(token, message)
 print_order(order)
 # ...
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/j6bkIHg.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/j6bkIHg.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;打完收工！接著不管是要 比對新舊訂單並發送這次新的訂單資訊；或者是要順便發送目前的訂單數量等等，都是只差在訊息內容的修改而已（我是直接發送 &lt;code&gt;&amp;quot;,&amp;quot;.join(orderList)&lt;/code&gt; 來看目前有哪些訂單）屆此已經可以宣告收工囉。&lt;/p&gt;
 &lt;h2 id=&#34;心得&#34;&gt;心得&lt;/h2&gt;
 &lt;p&gt;在像這種單純通知的場合中，Line Notify 有架設簡單、即時方便的特性。並且也已經提供了和 Github 等連接的服務，因此像是伺服器斷線或是有新的提取要求、甚至是爬蟲去看手遊有沒有新活動時，都可以考慮建立一個群組並用 Line Notify 來達到低成本推播的要求，可謂相當方便！希望將來能再回來抄自己這篇把各種推播提醒都拉到 Line Notify 集中管理，&lt;del&gt;不然除了機器人也不會有人 Line 我…&lt;/del&gt;&lt;/p&gt;

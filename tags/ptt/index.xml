@@ -32,7 +32,7 @@
 &lt;p&gt;這部分，我是參考這篇 &lt;a href=&#34;https://github.com/leVirve/CrawlerTutorial&#34;&gt;爬蟲極簡教學&lt;/a&gt; 來寫的，主要是使用 &lt;strong&gt;requests&lt;/strong&gt; 來取得 HTML，再使用 &lt;strong&gt;requests_html&lt;/strong&gt; 解析，裡面的說明非常詳盡。&lt;/p&gt;
 &lt;p&gt;除了這兩個，其他常用到的工具還有：解析 HTML 架構的 &lt;strong&gt;Beautiful Soup&lt;/strong&gt;（&lt;a href=&#34;https://blog.gtwang.org/programming/python-beautiful-soup-module-scrape-web-pages-tutorial/&#34;&gt;教學&lt;/a&gt;）、模擬瀏覽器的 &lt;strong&gt;Selenium&lt;/strong&gt; 等。一些常用的工具可以參考這篇 &lt;a href=&#34;https://blog.v123582.tw/2018/09/03/%E5%AD%B8%E7%BF%92-Python-%E7%88%AC%E8%9F%B2%E7%9A%84%E6%9C%80%E4%BD%B3%E8%B7%AF%E5%BE%91/&#34;&gt;爬蟲的工具鍊&lt;/a&gt; 的介紹。&lt;/p&gt;
 &lt;p&gt;接著開始跟隨教學走吧。首先確認目標網站的 HTML，可以發現在 PTT 上每一篇文章都是放在 r-ent 的 div 裡的。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/DAbF4NX.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/DAbF4NX.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;首先就是要先到目標網頁將 HTML 打包回來。此外，PTT 再初次進入時，會跳出視窗詢問是否已經滿十八歲，因此這邊也必須要先處理。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; requests
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
@@ -129,10 +129,10 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;except&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Exception&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; e:
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;] 執行期間錯誤：&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;%s&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt;(t&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;now(), e))
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;嘗試搜尋看看：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/K2h43ZZ.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/K2h43ZZ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;稍微改個關鍵字來測試找到的狀況：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/xfGkMFo.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/nkvRBnj.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/xfGkMFo.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/nkvRBnj.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;大功告成！&lt;/p&gt;
 &lt;p&gt;雖然還有一些可以拿來玩的地方，例如說呼叫時能輸入關鍵字，或是連接 Line 機器人做通知等等，但算是大致完工了。下面附上完整程式碼：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 爬蟲相關套件&lt;/span&gt;

@@ -17,7 +17,7 @@
       <pubDate>Mon, 04 Oct 2021 22:00:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/EMdGkwr.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/EMdGkwr.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;事發緣由&#34;&gt;事發緣由&lt;/h2&gt;
 &lt;p&gt;咱們內部套件中有個方法，會將各個參數組合為 QueryString 去打指定的 Api。就是這麼稀鬆平常的場景，神奇的事情就發生了。&lt;/p&gt;
 &lt;p&gt;同樣的套件、同樣的語法，在團隊中兩個人的電腦上安裝執行，卻是一個成功一個失敗。&lt;/p&gt;
@@ -57,12 +57,12 @@
 &lt;/ul&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;接著讓我們來看看裡面包了哪些重要東西吧：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/UFOiAjM.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/UFOiAjM.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;h3 id=&#34;datetimeformat&#34;&gt;DateTimeFormat&lt;/h3&gt;
 &lt;p&gt;&lt;code&gt;DateTimeFormat&lt;/code&gt; 是用來放跟 &lt;code&gt;DateTime&lt;/code&gt; 相關的設定值的，其中包含了該文化的日期時間的顯示格式。&lt;/p&gt;
 &lt;p&gt;我們同樣用 Linqpad 看一下裡面有些什麼：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;CultureInfo.CurrentCulture.DateTimeFormat.Dump();
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/P843qZ0.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/P843qZ0.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到裡面包含了一年有哪些月份和名稱、一週有哪些日子和名稱，以及一堆時間格式。&lt;/p&gt;
 &lt;p&gt;那一堆時間格式主要是對照 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/standard/base-types/standard-date-and-time-format-strings&#34;&gt;標準日期和時間格式字串&lt;/a&gt; 的。&lt;/p&gt;
 &lt;p&gt;例如 ShortDatePattern 就是對應到文件中的簡短日期模式（&lt;code&gt;&amp;quot;d&amp;quot;&lt;/code&gt;），也就是說，當我們 &lt;code&gt;ToString&lt;/code&gt; 的時候，如果使用 &amp;ldquo;d&amp;rdquo; 的話，就會根據文化特性顯示該文化的「簡短日期」以此類推。&lt;/p&gt;
@@ -124,7 +124,7 @@
 &lt;p&gt;除了日期格式以外，數值也是各個文化常常不同的部份。在 &lt;code&gt;CultureInfo&lt;/code&gt; 中的 &lt;code&gt;NumberFormat&lt;/code&gt; 就是用來處理數值相關的格式。&lt;/p&gt;
 &lt;p&gt;我們同樣用 Linqpad 看一下裡面有些什麼：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;CultureInfo.CurrentCulture.NumberFormat.Dump();
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/yqswJrJ.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/yqswJrJ.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看見裡面包含了 &lt;code&gt;CurrencySymbol&lt;/code&gt; 貨幣符號、&lt;code&gt;PercentSymbol&lt;/code&gt; 百分比符號、&lt;code&gt;CurrencyNegativePattern&lt;/code&gt; 貨幣負數格式 等等數值相關的設定。&lt;/p&gt;
 &lt;p&gt;現在讓我們使用 &lt;code&gt;ToString(&amp;quot;C&amp;quot;)&lt;/code&gt; 來指定轉換為貨幣格式，並且丟不同的文化特性進去看看吧：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; price = -&lt;span style=&#34;color:#ae81ff&#34;&gt;49.99&lt;/span&gt;;
@@ -190,7 +190,7 @@
       <pubDate>Thu, 19 Aug 2021 22:20:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2021/08/set-default-value-with-model-when-fromuri/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TuGp6Lk.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/TuGp6Lk.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;事發緣由&#34;&gt;事發緣由&lt;/h2&gt;
 &lt;p&gt;在 .net Framework 4.6.2 MVC 的 ApiController 中，某個查詢資料列表的方法除了提供查詢條件的參數以外，還有提供選擇性的分頁參數。也就是像這樣子：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
@@ -385,7 +385,7 @@
       <pubDate>Sat, 26 Jun 2021 21:53:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2021/06/zero-width-space/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/bS6EGIL.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/bS6EGIL.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這週遇到個想不到的坑，特別來記錄一下。故事是這樣的－－&lt;/p&gt;
 &lt;p&gt;在需要呼叫其他 API 服務時，發生了以下怪事：&lt;/p&gt;
 &lt;ul&gt;
@@ -413,7 +413,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;讓我們打印出來看看：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;a:{a}&amp;#34;&lt;/span&gt;.Dump();
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;b:{b}&amp;#34;&lt;/span&gt;.Dump();
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Z9VihgB.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Z9VihgB.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;看起來完全一模一樣，連反白都分辨不出來！&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;a.Length.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 4&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;b.Length.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 3&lt;/span&gt;

@@ -17,7 +17,7 @@
       <pubDate>Sun, 18 Aug 2024 13:00:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2024/08/dotnet-feature-flag-and-feature-management/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/926KRip.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/926KRip.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;在做上一篇 &lt;a href=&#34;https://igouist.github.io/post/2024/08/dotnet-ioptions&#34;&gt;IOptions&lt;/a&gt; 的筆記時，剛好看到 FeatureManagement 這香東西。&lt;br/&gt;馬上來收錄一篇。順便也簡單整理一下 Feature Flag (≒Feature Toggle) 的介紹。&lt;/p&gt;
 &lt;div class=&#34;toc&#34;&gt;
     &lt;nav id=&#34;TableOfContents&#34;&gt;
@@ -152,7 +152,7 @@ PM 朋朋們又是怎麼運用 Feature Flag 的……&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;FeatureManagement&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt; {
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;&amp;#34;NewLogicEnabled&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/FzIALd8.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/FzIALd8.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;為了後面方便使用，我習慣先建一組簡單的 Const 來管理這些 Feature Flag：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Flags/FeatureFlags.cs&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
@@ -176,11 +176,11 @@ PM 朋朋們又是怎麼運用 Feature Flag 的……&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        ? &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;香香的新版邏輯已啟用。&amp;#34;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        : &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;新版邏輯尚未啟用，繼續使用臭臭的舊版邏輯。&amp;#34;&lt;/span&gt;;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/O1uxn9W.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/O1uxn9W.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;現在讓我們直接把 appsettings.json 裡的 &lt;code&gt;NewLogicEnabled&lt;/code&gt; 改成 false（只要存檔就好了，不需要重啟服務），並且再呼叫一次 API：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/WTgcapM.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/WTgcapM.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;來張動圖看看成果：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9elZfT7.gif&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/9elZfT7.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;搞定，收工下班。&lt;/p&gt;
 &lt;h2 id=&#34;實作使用-featuregate-來啟用和停用-api&#34;&gt;實作：使用 FeatureGate 來啟用和停用 API&lt;/h2&gt;
 &lt;p&gt;除了根據開關決定要執行哪條路線的邏輯以外，我們也常常根據開關決定某些功能是不是要開放&lt;/p&gt;
@@ -213,9 +213,9 @@ PM 朋朋們又是怎麼運用 Feature Flag 的……&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;這是一個很棒的 API，只有你看得到。&amp;#34;&lt;/span&gt;;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;NiceApiEnabled&lt;/code&gt; 是 true 的時候，可以正常呼叫到 API：
-&lt;img src=&#34;https://i.imgur.com/2el7jVT.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/2el7jVT.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;而當 &lt;code&gt;NiceApiEnabled&lt;/code&gt; 是 false 的時候，這支 API 就 不存在了…
-&lt;img src=&#34;https://i.imgur.com/BV3aomM.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;img src=&#34;https://image.igouist.net/BV3aomM.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;實作使用-featurefilter-自訂篩選條件隨機抽取使用者&#34;&gt;實作：使用 FeatureFilter 自訂篩選條件、隨機抽取使用者&lt;/h2&gt;
 &lt;p&gt;前面我們示範了怎麼看開關狀態，以及根據開關把 API 給 Ban 了。接著來點場景應用吧。&lt;/p&gt;
 &lt;p&gt;之前遇過需要隨機抽樣去分流的狀況（把 50% 使用者引導去翻寫好的新站台觀察狀況之類的）&lt;/p&gt;
@@ -305,7 +305,7 @@ PM 朋朋們又是怎麼運用 Feature Flag 的……&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;恭喜你！你抽中了很棒 API 的試用機會！&amp;#34;&lt;/span&gt;;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;來張動圖看看成果：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9l8N7EE.gif&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/9l8N7EE.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;實作使用-featurefilter-來根據白名單啟用-api&#34;&gt;實作：使用 FeatureFilter 來根據白名單啟用 API&lt;/h2&gt;
 &lt;p&gt;接下來試試另一組場景，假設我們打算先讓十位合作客戶試用新功能，&lt;br/&gt;這時候也可以靠自製 FeatureFilter 來處理。&lt;/p&gt;
 &lt;blockquote&gt;
@@ -432,7 +432,7 @@ PM 朋朋們又是怎麼運用 Feature Flag 的……&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        : &lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;{user} 先生/小姐，你好。很抱歉，本服務尚未開放給您使用。請加入我們的 VIP 會員，取得優先體驗資格！&amp;#34;&lt;/span&gt;;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;來張動圖看看成果：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/r2gIrLw.gif&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/r2gIrLw.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;搞定，收工。又是美好的一天，準時下班囉&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：由於 FeatureManager 是 Singleton 的，而 AddFeatureFilter 會根據 FeatureManager 的生命週期來註冊 FeatureFilter，因此如果依賴對象的生命週期是 Scope，注入的時候就會發生錯誤。&lt;/p&gt;
@@ -469,7 +469,7 @@ PM 朋朋們又是怎麼運用 Feature Flag 的……&lt;/p&gt;
       <pubDate>Sat, 03 Aug 2024 08:30:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2024/08/dotnet-ioptions/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/dh0Jo4t.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/dh0Jo4t.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;因為手邊的 .Net Core API 專案越來越多，蠻常會需要讀 appsetting.json 的 Config，每次都要重找文章有點麻煩，這邊就來筆記一篇。&lt;/p&gt;
 &lt;div class=&#34;toc&#34;&gt;
     &lt;nav id=&#34;TableOfContents&#34;&gt;
@@ -580,7 +580,7 @@ PM 朋朋們又是怎麼運用 Feature Flag 的……&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; _info;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/mcQSwu0.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/mcQSwu0.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;收工，搞定。就是這麼簡單。&lt;/p&gt;
 &lt;h2 id=&#34;補充addoptions--對-ioptions-加入驗證&#34;&gt;補充：AddOptions &amp;amp; 對 IOptions 加入驗證&lt;/h2&gt;
 &lt;p&gt;前面我們在註冊時，是使用 &lt;code&gt;Configure&lt;/code&gt;：&lt;/p&gt;

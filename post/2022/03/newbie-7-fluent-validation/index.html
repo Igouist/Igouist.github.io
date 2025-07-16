@@ -130,7 +130,7 @@
                         
 
                         <div class="post-content">
-                            <p><img src="https://i.imgur.com/p6aSDH9.png" alt="Image"></p>
+                            <p><img src="https://image.igouist.net/p6aSDH9.webp" alt="Image"></p>
 <p>這是俺整理公司新訓內容的第七篇文章，目標是紀錄 Fluent Validation 這個好用套件。</p>
 <p><strong>FluentValidation 可以幫我們將 Api 傳入的參數的檢查用更口語、更乾淨的方式去處理</strong>，除了可以將檢查邏輯拆分成單獨的 Validator 類別，更提供了許多內建的檢查規則和自訂的彈性，相當方便。</p>
 <p>並且因為將參數的檢查邏輯整理出去，就可以和 Controller 本身的工作做簡單的拆分，達到關注點分離的目標。</p>
@@ -206,7 +206,7 @@
 <p>這時候，<strong>只要有了 Fluent Validation，我們就可以在參數檢查上做得更好！</strong></p>
 <h2 id="安裝-fluent-validation">安裝 Fluent Validation</h2>
 <p>因為我們的示範專案是 .net Core 的 Api，所以讓我們安裝 FluentValidation.AspNetCore</p>
-<p><img src="https://i.imgur.com/5ubV1VG.png" alt=""></p>
+<p><img src="https://image.igouist.net/5ubV1VG.webp" alt=""></p>
 <blockquote>
 <p>註：這包裡面包含了 Fluent Validation 本體和支援 Dotnet Core 的 DI（DependencyInjection）工具。如果習慣將驗證部分拆成其他類別庫，或是不需要 DI 的朋友可以嘗試安裝 Fluent Validation 就好。</p>
 </blockquote>
@@ -214,7 +214,7 @@
 <p>要使用 Fluent Validation 來驗證參數，<strong>首先我們必須建立一個針對該參數的驗證器（Validator），並繼承 <code>AbstractValidator&lt;T&gt;</code></strong>。</p>
 <p>其中 <code>&lt;T&gt;</code> 的泛型選擇驗證對象的類別即可，接著就可以在 Validator 的建構式來註冊我們要的驗證邏輯。</p>
 <p>現在就讓我們針對前面例子的 <code>CardParameter</code> 來建立 <code>CardParameterValidator</code> 吧：</p>
-<p><img src="https://i.imgur.com/BWDZX6R.png" alt=""></p>
+<p><img src="https://image.igouist.net/BWDZX6R.webp" alt=""></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/// Card Parameter 的驗證器</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
@@ -313,7 +313,7 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h3 id="使用-withname-和-withmessage-來自訂驗證訊息">使用 WithName 和 WithMessage 來自訂驗證訊息</h3>
 <p>雖然內建的驗證規則都有提供制式的回傳訊息，例如對 Attack 做 <code>.GreaterThanOrEqualTo(0)</code> 驗證失敗時，會得到「&lsquo;Attack&rsquo; 必須大於或等於 &lsquo;0&rsquo;」的訊息</p>
-<p><img src="https://i.imgur.com/KIEDyhI.png" alt="Image"></p>
+<p><img src="https://image.igouist.net/KIEDyhI.webp" alt="Image"></p>
 <p>但我們也可以使用 <code>WithMessage</code> 來針對驗證規則指定失敗時的自訂訊息：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則</span>
@@ -387,9 +387,9 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>CascadeMode 原先預設會是 <code>Continue</code>，也就是即使驗證失敗也會繼續執行</p>
 <p>例如說它可能一口氣犯了好幾條，就會全部驗證完再一併列出所有驗證失敗的項目：</p>
-<p><img src="https://i.imgur.com/ngLOMaE.png" alt="Image"></p>
+<p><img src="https://image.igouist.net/ngLOMaE.webp" alt="Image"></p>
 <p>當我們把驗證器的 CascadeMode 指定為 <code>Stop</code> 之後，犯第一條就會直接原地遣返：</p>
-<p><img src="https://i.imgur.com/deSUlPf.png" alt="Image"></p>
+<p><img src="https://image.igouist.net/deSUlPf.webp" alt="Image"></p>
 <p>除了指定整個驗證器以外，我們也可以單獨指定某一條規則為天條：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/// 驗證器建構式: 在這裡註冊我們要驗證的規則</span>
@@ -549,7 +549,7 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>接著我們就可以使用 <code>Validate</code> 回傳的 <code>ValidationResult</code> 來看驗證結果。</p>
 <p>先讓我們用 Linqpad 的小範例把 <code>ValidationResult</code> 的內容印出來看看：</p>
-<p><img src="https://i.imgur.com/UcBHhci.png" alt="Image"></p>
+<p><img src="https://image.igouist.net/UcBHhci.webp" alt="Image"></p>
 <p>可以看到，<code>IsValid</code> 會告訴我們是不是有通過驗證。如果沒有通過驗證的話，<code>Errors</code> 就會有驗證失敗的內容。</p>
 <p>現在讓我們加上驗證結果的檢查吧：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
@@ -586,8 +586,8 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>現在讓我們來呼叫 API 試試吧！</p>
 <p>這邊直接使用先前建置好的 <a href="/post/2021/05/newbie-4-swagger/">Swagger</a> 頁面來測試，並且故意把攻擊力打成負數：</p>
-<p><img src="https://i.imgur.com/dL34bdN.png" alt="Image"></p>
-<p><img src="https://i.imgur.com/omN0dax.png" alt="Image"></p>
+<p><img src="https://image.igouist.net/dL34bdN.webp" alt="Image"></p>
+<p><img src="https://image.igouist.net/omN0dax.webp" alt="Image"></p>
 <p>可以看到回傳的確變成了我們驗證失敗的訊息。</p>
 <h2 id="註冊-validator-來自動進行驗證">註冊 Validator 來自動進行驗證</h2>
 <p>不過都已經到了 .net Core 時代，<a href="/post/2021/11/newbie-6-dependency-injection/">依賴注入</a> 已經是內建的功能下，還要用 <code>new</code> 一個驗證器這種直接依賴的方式還是有點不太舒服……所以 Fluent Validation 也有提供自動驗證的作法！</p>
@@ -620,7 +620,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> StatusCode(<span style="color:#ae81ff">500</span>);
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>然後讓我們用 Swagger 再試一次看看：</p>
-<p><img src="https://i.imgur.com/YLRkBg0.png" alt="Image"></p>
+<p><img src="https://image.igouist.net/YLRkBg0.webp" alt="Image"></p>
 <p>可以看到 Fluent Validation 自動幫我們擋了下來！</p>
 <h2 id="小結">小結</h2>
 <p>當檢查參數的過程越來越冗長，為了做到關注點分離、讓方法本體更專注在流程上的處理，我們會選擇將檢查參數的邏輯拆分出去，例如拆成一個私有的 Function 等等。</p>

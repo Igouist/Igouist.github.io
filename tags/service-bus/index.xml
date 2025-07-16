@@ -17,7 +17,7 @@
       <pubDate>Sat, 27 Aug 2022 10:09:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/00WQGqR.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/00WQGqR.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;tldr&#34;&gt;TL;DR&lt;/h2&gt;
 &lt;p&gt;當發現&lt;strong&gt;需要執行很久的 ServiceBus Trigger Function 有重複執行的情況&lt;/strong&gt;出現時，可以嘗試到&lt;a href=&#34;https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-bindings-service-bus?tabs=in-process%2Cextensionv5%2Cextensionv3&amp;amp;pivots=programming-language-csharp#hostjson-settings&#34;&gt;官方的 Host.json 設定指引&lt;/a&gt;，按照 SDK 版本找到對應的「&lt;strong&gt;訊息鎖定最大持續時間&lt;/strong&gt;」設定，例如 maxAutoLockRenewalDuration（延伸模組 5.x+）或 maxAutoRenewDuration（Functions 2.x），並加入專案的 Host.json&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;因為 ServiceBus 在傳遞訊息之後，如果超過一段時間（MaxAutoRenewDuration）內沒有得到回應，就會解除信件的鎖並嘗試重新傳遞&lt;/strong&gt;，這時候如果原先的 Function 仍在執行，就會一前一後重複執行 Function 並發生許多光怪陸離的事，例如寫入兩筆資訊、重複複製資料之類的。&lt;/p&gt;
@@ -54,20 +54,20 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;await&lt;/span&gt; sender.SendMessageAsync(message);
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在 Function 接收到訊息後，讓我們觀察 Console：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/dBFWz2p.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/dBFWz2p.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;可以發現第一次執行尚未結束的時候，大概經過五分鐘就又執行了第二次！&lt;/strong&gt;&lt;/p&gt;
 &lt;h2 id=&#34;調整訊息鎖定最大持續時間&#34;&gt;調整訊息鎖定最大持續時間&lt;/h2&gt;
 &lt;p&gt;原先以為是 Function 執行失敗導致 ServiceBus 重新傳遞之類的狀況，但找了老半天沒有頭緒，嘗試了調整一些設定也沒有起色，陷入了深深的混亂&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/UY3EhoA.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/UY3EhoA.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;幸好天無絕人之路，最終在 &lt;a href=&#34;https://stackoverflow.com/questions/62752905/azure-function-service-bus-trigger-running-multiple-times&#34;&gt;Stackoverflow&lt;/a&gt; 海巡的時候了發現一線生機！&lt;/p&gt;
 &lt;p&gt;原來 Azure Functions 的 Service Bus Trigger 有個「&lt;strong&gt;訊息鎖定最大持續時間&lt;/strong&gt;」設定！&lt;/p&gt;
 &lt;p&gt;當 Service Bus 傳遞訊息到 Function 的時候，Function 會根據執行結果告訴 Service Bus 該訊息要標記成功或是失敗；但如果訊息就這麼一去不回時，Service Bus 會先觀望一下，&lt;strong&gt;直到超過了「訊息鎖定最大持續時間」就會下令解除訊息的鎖定，嘗試重新傳遞&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;這次的事件就是因為我們即使調長了 Timeout 時間，但當該 Function 執行超過預設的鎖定時間（五分鐘）時，Service Bus 再度傳遞了訊息，才導致 Function 重複被執行而造成各種奇怪的資料錯誤&lt;/p&gt;
 &lt;p&gt;那麼這個「訊息鎖定最大持續時間」怎麼設定呢？我們可以參照&lt;a href=&#34;https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-bindings-service-bus?tabs=in-process%2Cextensionv5%2Cextensionv3&amp;amp;pivots=programming-language-csharp#hostjson-settings&#34;&gt;官方的 Host.json 設定指引&lt;/a&gt;，按照 SDK 版本找到對應的「訊息鎖定最大持續時間」設定，例如 maxAutoLockRenewalDuration（延伸模組 5.x+）或 maxAutoRenewDuration（Functions 2.x），並加入專案的 Host.json。&lt;/p&gt;
 &lt;p&gt;現在讓我們在範例專案加入 maxAutoRenewDuration 的設定，這邊就改成比前面的執行時間八分鐘更長的十分鐘：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/TTpXELd.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/TTpXELd.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著再重新傳遞一次訊息：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/2epGiF9.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/2epGiF9.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到過程中沒有重新傳遞訊息了，大功告成！&lt;/p&gt;
 &lt;p&gt;總之，學到了調整 ServiceBus Trigger Function 的 Azure Functions Timeout 設定時，或是發現某支 ServiceBus Trigger 的 Functions 執行時間過長，就要一併注意 MaxAutoRenewDuration 的設定，避免重複執行。&lt;/p&gt;
 &lt;p&gt;如此如此，這般這般，一天又平安的過去了，感謝 Stackoverflow 大大們的努力。&lt;/p&gt;
@@ -84,13 +84,13 @@
       <pubDate>Sat, 13 Aug 2022 16:50:00 +0800</pubDate>
       
       <guid>https://igouist.github.io/post/2022/08/azure-service-bus/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/5Vube9E.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/5Vube9E.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;在工作上遇到在兩個 Azure 工具間建立訊息佇列（Message Queue）的需求，因此接觸到了 Azure Service Bus（中文：服務匯流排 &lt;del&gt;燴牛排？&lt;/del&gt;），在前輩的協助下建立了一組簡單的 Demo，這就來筆記一下。&lt;/p&gt;
 &lt;h2 id=&#34;什麼是訊息佇列message-queue-mq&#34;&gt;什麼是訊息佇列（Message Queue, MQ）&lt;/h2&gt;
 &lt;p&gt;首先讓我們簡單認識一下訊息佇列。假設我們有生產者和消費者兩個服務，其中&lt;strong&gt;生產者負責產生資料，而消費者負責消費這些資料&lt;/strong&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/mg4lXJk.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/mg4lXJk.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;各位也可以這樣理解：生產者就像是壽司師傅，他會不斷的捏壽司出來；而這時候來了一位大胃王顧客，他就是消費者，會不斷地把壽司吃掉&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Sk16WdC.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Sk16WdC.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;大概對這兩個角色有點認識就行了。那麼，假設我們有兩組 API 服務：其中一個是負責寫入 Log 的服務，而另一個是產品服務。&lt;/p&gt;
 &lt;p&gt;產品服務會將 Log 內容丟給 Log 服務去紀錄 Log，這時候產生了這些日誌資料的產品服務就是生產者，而消費這些日誌資料去寫 Log 的服務就是消費者。&lt;/p&gt;
 &lt;p&gt;也就是：&lt;strong&gt;&lt;code&gt;產品服務（生產者） —— 資料 —&amp;gt; Log 服務（消費者）&lt;/code&gt;&lt;/strong&gt; 這樣的狀況。&lt;/p&gt;
@@ -99,9 +99,9 @@
 &lt;p&gt;但當 Log 服務的站台或方法有變動，我們就被迫要修改產品服務對應的程式碼；而如果我們今天想要擴展 Log 服務的站台，就會需要修改產品服務裡關於 Log 服務的資訊。&lt;/p&gt;
 &lt;p&gt;而今天如果 Log 服務短暫掛掉了，可能就會連帶讓我們的產品服務一起掛掉，就算有進行簡單的錯誤處理，當時該記的 Log 內容也就遺失了。&lt;/p&gt;
 &lt;p&gt;那面對這些問題的時候怎麼辦呢？這時候我們就可以&lt;strong&gt;在中間加一條佇列&lt;/strong&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/zrgm8JC.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/zrgm8JC.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;用前面的壽司店來說就是這樣（很堅持要用壽司舉例）：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/J6aksgo.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/J6aksgo.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;我們加入訊息佇列之後得到的好處有：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;解除耦合&lt;/strong&gt;
@@ -143,27 +143,27 @@
 &lt;p&gt;小提示：Azure Service Bus 是一項收費服務，你可能會想先了解&lt;a href=&#34;https://azure.microsoft.com/zh-tw/pricing/details/service-bus/&#34;&gt;定價&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;首先讓我們先到 &lt;a href=&#34;https://portal.azure.com/#home&#34;&gt;Azure&lt;/a&gt;，建立一個新的資源：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/s0klgGc.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/s0klgGc.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;找到 Service Bus 並新建它：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ngSiiJm.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/2TepYi8.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ngSiiJm.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/2TepYi8.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著選擇要掛資源的帳戶和群組後，替我們的 Service Bus 取個好記的名字。&lt;/p&gt;
 &lt;p&gt;這邊示範的方案當然就直接選最便宜的 XD&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/6N744Nr.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/6N744Nr.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;除了基本設定以外，這邊還能變更最低 TLS 版本（維護老舊專案者注意，或是準備&lt;a href=&#34;https://blog.darkthread.net/blog/net35-tls12-issue/&#34;&gt;踩雷&lt;/a&gt;）等等，可以頁籤都戳一戳。&lt;/p&gt;
 &lt;p&gt;確認之後就可以勇敢按下「審核 + 建立」囉！&lt;/p&gt;
 &lt;p&gt;按下後會部署個幾分鐘，部屬完畢之後就可以直接前往資源：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/oPmqwpi.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/oPmqwpi.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;抵達我們的 Service Bus 資源頁面：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/CvH4MgL.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/CvH4MgL.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這樣我們就成功建立 Service Bus 啦！&lt;/p&gt;
 &lt;h2 id=&#34;建立佇列queue&#34;&gt;建立佇列（Queue）&lt;/h2&gt;
 &lt;p&gt;接著就讓我們來建立一條佇列吧，首先讓我們再看一眼微軟把拔提供的佇列概念圖：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Oi1GOqz.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Oi1GOqz.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;回到 Azure 的 Service Bus 資源頁面，讓我們在畫面上點選建立佇列：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/lwNmNQR.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/lwNmNQR.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;並且取個好名字，等等發訊息的時候會用到：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/6ONWYWT.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/6ONWYWT.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;這邊會需要注意一下「最大傳遞計數」（Maximum Delivery Count），簡單來說就是這封訊息會嘗試傳遞幾次，如果超過次數都沒有傳遞成功就會被丟到無效信件。可以參閱&lt;a href=&#34;https://docs.microsoft.com/zh-tw/azure/service-bus-messaging/service-bus-dead-letter-queues#maximum-delivery-count&#34;&gt;服務匯流排寄不出的信件佇列的概觀&lt;/a&gt;中的「最大傳遞計數」小節&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -171,16 +171,16 @@
 &lt;p&gt;這篇我們不會用到下面選項的&lt;a href=&#34;https://docs.microsoft.com/zh-tw/azure/service-bus-messaging/service-bus-partitioning&#34;&gt;資料分割&lt;/a&gt;、到期自動轉&lt;a href=&#34;https://docs.microsoft.com/zh-tw/azure/service-bus-messaging/service-bus-dead-letter-queues&#34;&gt;無效信件&lt;/a&gt;等功能，有興趣的朋友可以再自己研究一下呦～&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;建立完就會出現在我們 Service Bus 的頁面下方囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Jbzbei8.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Jbzbei8.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;取得-servicebus-的連線字串&#34;&gt;取得 ServiceBus 的連線字串&lt;/h2&gt;
 &lt;p&gt;接著為了讓我們後續可以順利連線，先到左邊的 &lt;strong&gt;「設定 &amp;gt; 共用存取原則」拿到我們的連線字串&lt;/strong&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/zYkN3cQ.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/zYkN3cQ.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這邊直接使用預設的原則，如果有需要控管不同使用者的權限，例如說某組連線字串只能接收或讀取等等，也可以在這邊新增原則來管理。&lt;/p&gt;
 &lt;h2 id=&#34;將訊息放入佇列&#34;&gt;將訊息放入佇列&lt;/h2&gt;
 &lt;p&gt;現在 Queue 已經建立起來了，接著就是要嘗試把訊息丟到 Queue 裡面囉！&lt;/p&gt;
 &lt;p&gt;為了方便測試，這邊就採用 Visual Studio 內建的 API 樣板，直接在 Controller 簡單建立一個範例，要實際應用在專案中的朋友請再依據專案架構自行調整。&lt;/p&gt;
 &lt;p&gt;那麼就讓我們開始吧，首先我們會需要安裝 &lt;strong&gt;Azure.Messaging.ServiceBus&lt;/strong&gt; 這個套件包：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/zXuFLdw.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/zXuFLdw.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著是我們本次的範例用 Controller，以及尚未實作傳送訊息的 Function：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// Service Bus Queue 示範用 Controller&lt;/span&gt;
@@ -231,9 +231,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;提醒一下將來會跑回來複製貼上的我和各位朋朋：記得把連線字串跟佇列名稱改成你的！&lt;/p&gt;
 &lt;p&gt;現在讓我們來呼叫ＡＰＩ，丟個 &lt;code&gt;&amp;quot;Hello&amp;quot;&lt;/code&gt; 進去試試：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/ioXGear.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ioXGear.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著到 Azure Service Bus 的 Queue 介面瞧瞧：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/1zTEnWt.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1zTEnWt.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;Queue 也確實收到一則訊息了，看來我們成功把 Hello 丟進去啦！&lt;/p&gt;
 &lt;h3 id=&#34;傳送一批訊息到佇列&#34;&gt;傳送一批訊息到佇列&lt;/h3&gt;
 &lt;p&gt;當然在實務上，我們有時候會想要傳一卡車的訊息；例如我們剛處理完一批客戶，想把它們丟到佇列去讓另一個服務做點事，這時候如果還得一封一封塞訊息就有點怪怪的。&lt;/p&gt;
@@ -275,7 +275,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;await&lt;/span&gt; sender.SendMessagesAsync(messageBatch);
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;直接多十條訊息，看起來沒問題：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/iZxuUqu.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/iZxuUqu.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;h3 id=&#34;傳送物件到佇列&#34;&gt;傳送物件到佇列&lt;/h3&gt;
 &lt;p&gt;Ｑ：我要傳的東西不是 string 而是物件怎麼辦？&lt;/p&gt;
 &lt;p&gt;Ａ：山不轉路轉，就用 &lt;code&gt;JsonSerializer.Serialize&lt;/code&gt; 轉成 Json 再傳。&lt;/p&gt;
@@ -310,7 +310,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; body;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;過程相當的簡單，只需要叫 &lt;code&gt;ServiceBusReceiver&lt;/code&gt; 幫忙拿出來就好。現在讓我們呼叫試試：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/H9v2PdJ.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/H9v2PdJ.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;成功取得我們前面放進去的訊息囉！&lt;/p&gt;
 &lt;h3 id=&#34;從佇列中持續讀取訊息&#34;&gt;從佇列中持續讀取訊息&lt;/h3&gt;
 &lt;p&gt;前面提到的 &lt;code&gt;ServiceBusReceiver&lt;/code&gt; 可以從佇列中取出一則訊息，但大多時候訊息的接收方是被動的，也就說接收方其實並不知道發送方傳訊息了沒、現在有沒有訊息，更不用說主動去取出訊息了。&lt;/p&gt;
@@ -386,36 +386,36 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Console.WriteLine(exception);
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著就讓我們呼叫看看：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/hKoP1bD.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/hKoP1bD.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看見我們確實收到了前面發送的「Hello」，接收大成功！&lt;/p&gt;
 &lt;h3 id=&#34;補充在-servicebus-explorer-確認訊息&#34;&gt;補充：在 ServiceBus Explorer 確認訊息&lt;/h3&gt;
 &lt;p&gt;除了直接在程式中接收訊息以外，我們在 Azure 的頁面上其實也能確認傳遞中的訊息內容。&lt;/p&gt;
 &lt;p&gt;首先到佇列左側的列表找到「&lt;strong&gt;Service Bus Explorer&lt;/strong&gt;」，就可以確認目前佇列和無效信件中的訊息數量。&lt;/p&gt;
 &lt;p&gt;點下從頭查看後，就可以看見訊息列表的內容，並點擊訊息查看本文和屬性：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Uy6MDui.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Uy6MDui.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;在找問題的時候還蠻好用，想確認訊息內容的時候可以試試。&lt;/p&gt;
 &lt;h2 id=&#34;建立主題topic&#34;&gt;建立主題（Topic）&lt;/h2&gt;
 &lt;p&gt;除了佇列（Queue）以外，Service Bus 還提供了另一種傳輸模式：主題（Topic）&lt;/p&gt;
 &lt;p&gt;讓我們看一下微軟把拔提供的主題概念圖，可以和前面佇列的圖做一下比較：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/9DwGFgL.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/9DwGFgL.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;簡單來說就是傳送出去之後，會有&lt;strong&gt;多個接收者&lt;/strong&gt;等著收訊息。&lt;/p&gt;
 &lt;p&gt;現在就讓我們回到 Azure Service Bus 的頁面，點選上方的「＋主題」來建立新主題吧：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/pHdPOvz.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/pHdPOvz.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;小提示：主題（Topic）是標準定價層才提供的功能。如果是使用最便宜的基本定價層的朋友，「＋主題」的按鈕應該會反灰的，這時候就要需要從 Service Bus 概觀頁面的「定價層」變更到標準（Standard）才能建立主題。&lt;/p&gt;
 &lt;p&gt;當然不同定價層的價格也會不一樣，要記得確認一下價格呦！&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;接著就和前面的佇列一樣取個好名字：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/r51t3f8.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/r51t3f8.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;建立完就會出現在我們的 ServiceBus 服務中囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/kF998IO.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/kF998IO.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;和單純一對一的佇列不一樣，我們還會需要替主題建立訂用帳戶（Subscriptions）&lt;/strong&gt;，這樣主題才知道它到底要把訊息送給哪些對象。&lt;/p&gt;
 &lt;p&gt;現在讓我們進入主題的頁面，並找到訂用帳戶：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/vNJpXfl.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/vNJpXfl.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;進去之後讓我們來新增訂用帳戶：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/wRUeMO2.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/wRUeMO2.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;首先當然是要取個好名字，這邊就先用 Sub1 來當作一號訂閱者的暱稱吧：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/rQvOrlM.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/rQvOrlM.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;這邊和佇列的時候一樣，要注意「最大傳遞計數」（Maximum Delivery Count），簡單來說就是這封訊息會嘗試傳遞幾次，如果超過次數都沒有傳遞成功就會被丟到無效信件。可以參閱 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/azure/service-bus-messaging/service-bus-dead-letter-queues#maximum-delivery-count&#34;&gt;服務匯流排寄不出的信件佇列的概觀&lt;/a&gt;。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -425,7 +425,7 @@
 &lt;p&gt;詳細可以參閱 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/azure/service-bus-messaging/message-sessions#session-features&#34;&gt;Azure 服務匯流排訊息工作階段&lt;/a&gt;，圖片說明會比較好理解。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;建立完畢之後回到訂用帳戶就會看到囉，這邊為了等等能夠示範傳遞訊息給多個訂用者，所以也順便開了 Sub2：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/q3xkzdQ.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/q3xkzdQ.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這樣就完成了主題的建立啦！接著讓我們回到程式中來撰寫訊息吧～&lt;/p&gt;
 &lt;h3 id=&#34;將訊息放入主題&#34;&gt;將訊息放入主題&lt;/h3&gt;
 &lt;p&gt;基本上來說，訊息放入主題的方式就和放入佇列的方式一樣：&lt;/p&gt;
@@ -454,13 +454,13 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;await&lt;/span&gt; sender.SendMessageAsync(message);
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;不用當成大家來找碴，因為真的就是一樣的放法。畢竟 &lt;code&gt;CreateSender&lt;/code&gt; 的參數名稱是這樣的：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/nvj36PO.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/nvj36PO.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;事不宜遲，我們馬上就來傳一封訊息試試：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/oiL6TD9.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/oiL6TD9.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這時候再到我們的主題下的訂用帳戶，可以看見訂用帳戶中已經有訊息囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/quyH7n9.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/quyH7n9.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;因為主題會傳送給所有訂用帳戶，所以兩個訂用帳戶都會分別收到這則訊息，讓我們也確認一眼吧：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/uoy84gu.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/uoy84gu.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;看來我們很順利地把訊息傳送出去啦！那因為整批放入的方式也和佇列一樣，這邊就不再贅述。接下來就讓我們把訊息取出來試試吧～&lt;/p&gt;
 &lt;h3 id=&#34;從主題中讀取訊息&#34;&gt;從主題中讀取訊息&lt;/h3&gt;
 &lt;p&gt;就像前面寫入訊息到主題和寫入佇列長得九成像一樣，讀取也是差不多的。最大的差別是在&lt;strong&gt;建立 Processor 時，需要多給訂用帳戶名稱&lt;/strong&gt;：&lt;/p&gt;
@@ -469,11 +469,11 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; subscriptionName = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Sub1&amp;#34;&lt;/span&gt;;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;await&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;using&lt;/span&gt; var processor = client.CreateProcessor(topicName, subscriptionName);
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;讓我們修改成 Topic 名稱以及剛剛的訂用帳戶 Sub1 之後執行看看：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/udHkpxn.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/udHkpxn.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看見訂用帳戶 Sub1 的訊息也消耗掉了：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/lpLy4Rd.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/lpLy4Rd.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;而訂用帳戶 Sub2 的訊息還在，當我們使用 Sub2 來建立 Processor 並接收訊息之後才會消失：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/MvOgIL5.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/MvOgIL5.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;其餘的部份都和處理佇列的時候一樣。但為了版面一致 &lt;del&gt;我之後回來複製的時候方便&lt;/del&gt; 這邊還是附上程式碼：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 取出主題中的訊息&lt;/span&gt;
@@ -547,7 +547,7 @@
 &lt;p&gt;在範例中我們總是直接 &lt;code&gt;new ServiceBusClient&lt;/code&gt;。但根據&lt;a href=&#34;https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-performance-improvements?tabs=net-standard-sdk-2#reusing-factories-and-clients&#34;&gt;官方建議&lt;/a&gt;，ServiceBusClient 應該只建立一份並重複使用，以避免重新連線之類的效能損失。&lt;/p&gt;
 &lt;p&gt;針對 &lt;code&gt;ServiceBusClient&lt;/code&gt; 的建立和管理，我們可以使用 &lt;code&gt;IAzureClientFactory&lt;/code&gt; 來讓它自動控制，替我們管理 Client 的實例和連線，用起來就像 &lt;code&gt;HttpClientFactory&lt;/code&gt; 一樣。&lt;/p&gt;
 &lt;p&gt;要使用 &lt;code&gt;IAzureClientFactory&lt;/code&gt;，我們需要先安裝 &lt;code&gt;Microsoft.Extensions.Azure&lt;/code&gt; 套件：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/vvFZGCE.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/vvFZGCE.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;現在讓我們移動到 &lt;code&gt;Program.cs&lt;/code&gt; 並加上 ServiceBusClient 的註冊：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;builder.Services.AddAzureClients(clientsBuilder =&amp;gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
@@ -558,7 +558,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .WithName(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ServiceBusClient&amp;#34;&lt;/span&gt;);
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;});
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;看起來應該會像這樣：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://i.imgur.com/Uo0IR1g.png&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Uo0IR1g.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：示範專案是使用 .Net 6。如果是使用其他版本或其他 DI 工具的朋友，請再按照自己的狀況調整吧！&lt;/p&gt;
 &lt;p&gt;例如在 &lt;code&gt;HostBuilder&lt;/code&gt; 的場合，可能就要在 &lt;code&gt;ConfigureServices&lt;/code&gt; 中進行配置等等，只能祝各位好運。&lt;/p&gt;

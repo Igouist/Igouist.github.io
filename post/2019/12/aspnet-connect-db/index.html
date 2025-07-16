@@ -148,22 +148,22 @@
 <p>在小組報告的時候，Model 通常是默默做事的那個，View 則是專門上台報告的，Controller 負責指揮大家做事和組員間的溝通以及講幹話。</p>
 </blockquote>
 <p>首先我們從建立專案開始操作。</p>
-<p><img src="https://i.imgur.com/eRyGBTb.png" alt=""></p>
+<p><img src="https://image.igouist.net/eRyGBTb.webp" alt=""></p>
 <p>選擇 .NET 的框架，並且在下面替專案取個名字。</p>
-<p><img src="https://i.imgur.com/fdIYiCe.png" alt=""></p>
+<p><img src="https://image.igouist.net/fdIYiCe.webp" alt=""></p>
 <p>確認選擇的框架是 MVC。</p>
-<p><img src="https://i.imgur.com/otUKDR0.png" alt=""></p>
+<p><img src="https://image.igouist.net/otUKDR0.webp" alt=""></p>
 <h2 id="建立連線資料庫用的-model">建立連線資料庫用的 Model</h2>
 <p>首先先在方案總管的 Models 資料夾裡新增一個類別。</p>
-<p><img src="https://i.imgur.com/3L0gFuu.png" alt=""></p>
+<p><img src="https://image.igouist.net/3L0gFuu.webp" alt=""></p>
 <p>由於我們是從平地起家，手工連線，因此我們這邊選擇空白類別就可以了，取個淺顯易懂的名字並按下新增。</p>
-<p><img src="https://i.imgur.com/JCnwaMU.png" alt=""></p>
+<p><img src="https://image.igouist.net/JCnwaMU.webp" alt=""></p>
 <p>新增之後應該能看見我們的類別。</p>
-<p><img src="https://i.imgur.com/hQn75wu.png" alt=""></p>
+<p><img src="https://image.igouist.net/hQn75wu.webp" alt=""></p>
 <p>在連線到資料庫的部分，最首先的就是<strong>連線字串</strong>。連線字串就像是地址加上鑰匙，可以想成你請人幫你到倉庫拿東西，必須先告訴他倉庫在哪再給他鑰匙進去拿一樣，程式必須藉由連線字串才能得知<strong>資料庫的位置和連線資料</strong>，而不同的資料庫軟體的連線字串格式也有可能不同，例如說 MySQL 的連線字串格式就可以參考<a href="https://www.itread01.com/p/1192499.html">這篇</a>。在本筆記之中，不同資料庫類型在實作上最大的差異大概就是連線字串了吧。</p>
 <p>而在連線至 MSSQL 的部分，我個人習慣用 Visual studio 內建的功能做產生再按照需求作修改。首先讓我們打開畫面左上方的伺服器總管，並在資料連接上加入一個新的連接。</p>
-<p><img src="https://i.imgur.com/VC0CfPE.png" alt=""></p>
-<p><img src="https://i.imgur.com/G33iM6J.png" alt=""></p>
+<p><img src="https://image.igouist.net/VC0CfPE.webp" alt=""></p>
+<p><img src="https://image.igouist.net/G33iM6J.webp" alt=""></p>
 <p>接著就可以看到加入連接的頁面，我們從上往下進行解說：</p>
 <p><strong>資料來源</strong>：用來更改資料庫來源的類型，例如 Access 或是其他類型資料庫的時候就可以更改這一項。我們這邊使用 SQL Server 進行示範。</p>
 <p><strong>伺服器名稱</strong>：SQL Server 的名稱，通常會在 SQL Server 安裝的時候做設定，預設是和電腦一樣。當遠端連線的時候，這邊可以改成輸入 IP。</p>
@@ -171,12 +171,12 @@
 <p>至於這兩項的選擇需要看使用時的需求以及資料庫本身的設定進行選擇。本篇是直接在 SQL Server 所在的本機上進行架站，同時也沒有特別設定權限，因此直接使用 Windoes 驗證登入就可以了。</p>
 <p><strong>資料庫名稱</strong>：從 Server 裡面選擇要使用的 Database。在此處選擇了示範用的 Test 資料庫。</p>
 <p>以上部分設定完之後，點選左下角的測試連接。若是測試連接沒有問題後，在進階的部分就可以看見已經產生好連線字串了。同時在這個頁面按下確定的話，將會在伺服器總管中連線至資料庫，也能從資料連接的部分對資料庫進行操作。</p>
-<p><img src="https://i.imgur.com/eNiiXtj.png" alt=""></p>
+<p><img src="https://image.igouist.net/eNiiXtj.webp" alt=""></p>
 <p>↑ 可以從進階的部分看見連線字串。可以稍微看得出來連線字串的格式，其中 Data Source 放伺服器主機、Initial Catalog 放資料庫名稱、Integrated Security 放集成驗證（即 Windows 驗證），此外還有可能會有 UserID 放帳號、Password 放密碼等等。</p>
-<p><img src="https://i.imgur.com/ZssVFCq.png" alt=""></p>
+<p><img src="https://image.igouist.net/ZssVFCq.webp" alt=""></p>
 <p>↑ 如果選擇確定的話，就會建立連接。可以直接在這邊右鍵選擇各種功能以操作資料庫。</p>
 <p>現在我們已經有了連線字串，先在我們的類別中將其宣告為一個私有且唯獨的字串常數。</p>
-<p><img src="https://i.imgur.com/bVnef6n.png" alt=""></p>
+<p><img src="https://image.igouist.net/bVnef6n.webp" alt=""></p>
 <blockquote>
 <p>註：在實務上的部份，連線字串通常會放置在網頁設定檔 Web.config 裡，因為網頁設定檔在使用者端是看不見的，所以這樣的做法比較安全，再利用 ConfigurationManager 的函式取得連線字串以使用。關於詳細的操作方式請參考<a href="https://dotblogs.com.tw/sky5012357/2013/03/19/98161">這篇</a>或搜尋「連線字串 Web.config」。本篇為了教學及操作上的方便，才直接放置於程式碼內。</p>
 </blockquote>
@@ -195,7 +195,7 @@
 </span></span></code></pre></div><p>新建完成之後就回到我們的 資料庫連線類別 開始工作。</p>
 <h2 id="取得所有資料">取得所有資料</h2>
 <p>第一個目標是能夠取得 Card 資料表的所有資料，因此我們先將方法的部分建立出來，也就是一個會回傳 Card 的 List 的方法。</p>
-<p><img src="https://i.imgur.com/utEyL3C.png" alt=""></p>
+<p><img src="https://image.igouist.net/utEyL3C.webp" alt=""></p>
 <p>我們將會使用 SqlConnection 這個資料庫連線用的工具來操作資料庫，因此需要先在上面 <code>using System.Data.SqlClient</code>。</p>
 <p>接著我們想要 GetCards 方法做的事有：</p>
 <ol>
@@ -231,7 +231,7 @@
 </span></span><span style="display:flex;"><span>    sqlConnection.Close();
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> cards;
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p><img src="https://i.imgur.com/KoB6QZU.png" alt=""></p>
+</span></span></code></pre></div><p><img src="https://image.igouist.net/KoB6QZU.webp" alt=""></p>
 <p>首先，我們宣告了一個 Card 的 List 叫做 Cards 用來保存我們等等取得的資料。</p>
 <p>接著我們利用連線字串 ConnStr 來建立了一個 <strong>SQL 連線物件 SqlConnection</strong>。並宣告了一個 <strong>SQL 命令物件 SqlCommand</strong> 來放置我們要執行的 SQL 指令。</p>
 <p>這邊使用的是「由 card 資料表選取全部資料(*)」的指令。不論使用的是何種語言，後端連線到資料庫最重要的就是傳送指令至資料庫執行。關於 SQL 指令的使用方式，可以參照 <a href="https://www.1keydata.com/tw/sql/sql.html">1keyData 的 SQL 語法</a> 或是 <a href="http://www.w3school.com.cn/sql/index.asp">w3school</a>。</p>
@@ -245,11 +245,11 @@
 <p>另外，在處理回傳的資料時，會根據習慣和需求而有不同的做法，大多數的作法並不會一樣。例如說也有將回傳資料封裝成 Json 就丟給前端讓前端自己拆包自己頭痛的狀況存在，這部份在看其他人的連線教學或相關文章後就會比較了解。若是需要查詢相關的命令，例如說只執行命令時不回傳值，或單純只傳一個值，可以查詢微軟文件的 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.data.sqlclient.sqlcommand?view=netframework-4.7.2#%E5%82%99%E8%A8%BB">SqlCommand 頁面</a> 和 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.data.sqlclient.sqlconnection?view=netframework-4.7.2">SqlConnection 頁面</a>。</p>
 <p>將資料做成一個 card 後，我們將其放入我們的 List 也就是 cards。當全部的資料都讀完之後，絕對不能忘記關閉連線。最後回傳我們的 cards，到這邊 GetCards 就告一段落了。</p>
 <p>為了測試，我們先到 HomeControlls 的 Index 做一點小修改。using 我們的 model 並且試試看用 GetCards 來取得資料。</p>
-<p><img src="https://i.imgur.com/BzylqF3.png" alt=""></p>
+<p><img src="https://image.igouist.net/BzylqF3.webp" alt=""></p>
 <p>接著把 Home/Index.cshtml 也進行修改。將原本的全部砍掉，為了示範方便，直接 using models 並且用 Viewbag 拿出來看。（註：這邊熟練之後若想了解實務上較建議使用的傳值方式，可以搜尋 &ldquo;ViewModel&rdquo;）</p>
-<p><img src="https://i.imgur.com/k7ZIPF6.png" alt=""></p>
+<p><img src="https://image.igouist.net/k7ZIPF6.webp" alt=""></p>
 <p>可以看見資料有正常地取得了</p>
-<p><img src="https://i.imgur.com/gGzrAxl.png" alt=""></p>
+<p><img src="https://image.igouist.net/gGzrAxl.webp" alt=""></p>
 <p>接著就可以開始處理前端顯示的部份，例如使用 <a href="https://bootstrap.hexschool.com/docs/4.0/content/tables/">Bootstrap 的表格</a> 進行排版，或是其他 css 啦模板啦，都是沒問題的囉！</p>
 <h2 id="新增資料">新增資料</h2>
 <p>既然能夠取得資料了，接下來就來做一些基本的操作吧。首先從新增資料開始。</p>
@@ -278,18 +278,18 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    &lt;/<span style="color:#f92672">tbody</span>&gt;
 </span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">table</span>&gt;
-</span></span></code></pre></div><p><img src="https://i.imgur.com/6z2UNud.png" alt=""></p>
+</span></span></code></pre></div><p><img src="https://image.igouist.net/6z2UNud.webp" alt=""></p>
 <p>比剛剛好多了：</p>
-<p><img src="https://i.imgur.com/EO3xE9b.png" alt=""></p>
+<p><img src="https://image.igouist.net/EO3xE9b.webp" alt=""></p>
 <p>既然要新增資料，那一定要有個頁面能夠輸入新增的資料內容。因此我們回到 HomeController 來準備新增一個頁面。首先先把預設的 About 和 Contact 刪掉，也將 Views 裡的這兩頁給刪掉，我們不會用到它們了。</p>
 <p>接著就來建立 CreateCard ：</p>
-<p><img src="https://i.imgur.com/T7lxFzj.png" alt=""></p>
+<p><img src="https://image.igouist.net/T7lxFzj.webp" alt=""></p>
 <p>之後也必須建立 View 才可以。在 CreatrCard 上點右鍵，選擇新增檢視。</p>
-<p><img src="https://i.imgur.com/fS17EpU.png" alt=""></p>
-<p><img src="https://i.imgur.com/Nl7yqjA.png" alt=""></p>
+<p><img src="https://image.igouist.net/fS17EpU.webp" alt=""></p>
+<p><img src="https://image.igouist.net/Nl7yqjA.webp" alt=""></p>
 <p>在這一步直接按下 Add 就會新增一個空白的 View 可以使用了。如果想讓系統自己幫你產生，Template 指得就是樣板，裡面已經包含新增刪除等操作會使用到的介面，選擇後再於 Model class 選取要操作的 Model 物件的話，就會自動產生好一個功能頁面讓你修改。不過開頭已經說過這次要純手工，因此我們就直接按下 Add 吧。</p>
 <p>要把資料從 View 丟到 Controller 的方法很多，例如 form 表單或是 ajax 傳值都是可行的。我們這邊用 form 表單做回傳，另外使用 bootstarp 簡單排個版，程式碼如下</p>
-<p><img src="https://i.imgur.com/IGumNlE.png" alt=""></p>
+<p><img src="https://image.igouist.net/IGumNlE.webp" alt=""></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">h2</span>&gt;新增 Card&lt;/<span style="color:#f92672">h2</span>&gt;
 </span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">br</span> /&gt;
 </span></span><span style="display:flex;"><span>
@@ -318,29 +318,29 @@
 <p>在<strong>表單中最重要的就是各個 input 的 name 屬性</strong>，當資料傳送的時候，會使用 name 做為資料的欄位名稱。因此這邊的 name 一定要能和我們的 card 物件的資料對應上，才能讓它自動轉換。</p>
 <p>接著用 <a href="https://v3.bootcss.com/css/#forms">bootstrap 的格式</a>做了三組輸入框，以及一個提交按鈕。運行後頁面正常就可以進行下一步了。</p>
 <p>首先我們再度回到 HomeController，做一個 POST 才能進來的 CreateCard 方法來接取表單，並且讓它將傳入的表單資料做成我們建立的 Card 物件。</p>
-<p><img src="https://i.imgur.com/yi7ZMvq.png" alt=""></p>
+<p><img src="https://image.igouist.net/yi7ZMvq.webp" alt=""></p>
 <p>這個方法中應該要能將 card 的資料傳入資料庫，但我們還沒有實做傳入資料庫的方法，因此我們要回到當初建立的<strong>資料庫連線用的 model</strong>（本範例中為 DBconn）去實作一個新增用的函式。</p>
-<p><img src="https://i.imgur.com/mrVWpCe.png" alt=""></p>
+<p><img src="https://image.igouist.net/mrVWpCe.webp" alt=""></p>
 <p>新增的函式跟前面做過的查詢相差無幾，最大的差別在於新增的 SQL 語法是 <a href="https://www.1keydata.com/tw/sql/sqlinsert.html">INSERT INTO</a> 。必須再提醒一次，最注意的一點是，<u><strong>在@字串中放置的參數，需要用 SqlParameter 的方式讓系統檢查後放入，不應該偷懶直接將字串和參數用 + 接起來就傳送，否則很容易遭遇 <a href="https://ithelp.ithome.com.tw/articles/10189201">SQL injection</a> 的攻擊</strong></u>，被亂下 SQL 指令。</p>
 <p>處理好 model 中控制資料庫的部分之後，我們再回到 Controller 把這段添加上去。</p>
-<p><img src="https://i.imgur.com/adCSxgq.png" alt=""></p>
+<p><img src="https://image.igouist.net/adCSxgq.webp" alt=""></p>
 <p>可以看到當我們收到表單後，就會嘗試呼叫資料庫物件調用新增的函式做新增，如果新增時出了錯就會把錯誤訊息列印在輸出欄，最後回到首頁。</p>
 <p>最後只要在首頁把新增的按鈕放上去就大功告成囉！</p>
-<p><img src="https://i.imgur.com/mJBPdDA.png" alt=""></p>
+<p><img src="https://image.igouist.net/mJBPdDA.webp" alt=""></p>
 <p>試跑幾次流程，可以看到有成功新增資料囉：</p>
-<p><img src="https://i.imgur.com/3ylj9P6.png" alt=""></p>
+<p><img src="https://image.igouist.net/3ylj9P6.webp" alt=""></p>
 <h2 id="修改資料">修改資料</h2>
 <p>接著要嘗試修改資料，修改資料和新增最大的不同是會多一步先將原本的該筆資料取出。首先先將首頁修改一下，在每一行的結尾放上修改資料的連結。由於做成連結的 ActionLink 並不能放進像 model 這麼複雜的資料，所以在實務上都是以傳遞 id 為主。（ ActionLink 會把我們的資料做成連結、用 get 變成網址。所以 editCard.html?ID=2 這個它還看得懂，editCard.html?card=&amp;$%* 這種它就不知道怎麼表達了）</p>
-<p><img src="https://i.imgur.com/MVj0OKY.png" alt=""></p>
+<p><img src="https://image.igouist.net/MVj0OKY.webp" alt=""></p>
 <p>我們一樣回到 Controller 新增一個方法，只是這次我們要求先把要修改的資料也傳到頁面做處理。</p>
-<p><img src="https://i.imgur.com/PLW4abi.png" alt=""></p>
+<p><img src="https://image.igouist.net/PLW4abi.webp" alt=""></p>
 <p>現在我們遇到的問題是：我們需要把 id 變成實際的卡片資料，必須利用這個 id 去取得資料。所以我們到 model 新增一個用 id 搜尋卡片資料的方法。</p>
-<p><img src="https://i.imgur.com/r80dGT6.png" alt=""></p>
+<p><img src="https://image.igouist.net/r80dGT6.webp" alt=""></p>
 <p>可以看見單筆查詢的做法基本上和前面做過的拿全部資料所差無幾，只是一個搜全部一個搜條件而已。最大的差異在於我們傳遞了一個 ID 進去，並且在 SQL 指令的地方利用 <a href="https://www.1keydata.com/tw/sql/sqlwhere.html">WHERE 下了搜尋條件</a>，並且只回傳一項資料。</p>
 <p>現在我們回到 Controller 將我們的 ID 搜尋方法放進去，並將回傳的 card 用傳遞 model 的方式傳到 View，期待它能聽話。</p>
-<p><img src="https://i.imgur.com/gtNloFh.png" alt=""></p>
+<p><img src="https://image.igouist.net/gtNloFh.webp" alt=""></p>
 <p>接著我們要新增編輯的頁面（View）了，一樣右鍵新增檢視，並複製新增頁面的程式碼修改如下。</p>
-<p><img src="https://i.imgur.com/k9ZyG7o.png" alt=""></p>
+<p><img src="https://image.igouist.net/k9ZyG7o.webp" alt=""></p>
 <p>特別標示紅色的部分要多加注意。</p>
 <ul>
 <li>首先我們傳入了 model，因此要先用 @model 告訴它我們傳遞的是哪個 model</li>
@@ -350,32 +350,32 @@
 </ul>
 <p>做完這一步的時候可以先從首頁執行是不是可以順利取得單筆資料。</p>
 <p>修改完的資料必須回傳然後告訴資料庫修改的結果，因此我們和新增一樣要做一個 Post 的編輯方法來接收上面的表單。</p>
-<p><img src="https://i.imgur.com/8flx7rK.png" alt=""></p>
+<p><img src="https://image.igouist.net/8flx7rK.webp" alt=""></p>
 <p>現在我們該再度前往 資料庫控制的 model 加上修改資料庫內容的方法了。</p>
-<p><img src="https://i.imgur.com/dkBbur8.png" alt=""></p>
+<p><img src="https://image.igouist.net/dkBbur8.webp" alt=""></p>
 <p>一樣是和前面的新增資料很像，但這邊使用的 SQL 語法是更新資料用的 <a href="https://www.1keydata.com/tw/sql/sqlupdate.html">UPDATE 語法</a>並且結合了前面的 WHERE 來指定要更改的項目。完成之後我們就可以把它加到 Controller 的方法上囉：</p>
-<p><img src="https://i.imgur.com/ZdyuZub.png" alt=""></p>
+<p><img src="https://image.igouist.net/ZdyuZub.webp" alt=""></p>
 <p>這樣就宣告完工了！實際上來編輯一次吧</p>
-<p><img src="https://i.imgur.com/Qtvhalt.png" alt=""></p>
+<p><img src="https://image.igouist.net/Qtvhalt.webp" alt=""></p>
 <p>將寫程式修改成打呼看看</p>
-<p><img src="https://i.imgur.com/E9dGERa.png" alt=""></p>
+<p><img src="https://image.igouist.net/E9dGERa.webp" alt=""></p>
 <p>可以看到成功變更囉！</p>
-<p><img src="https://i.imgur.com/KAq6XkV.png" alt=""></p>
+<p><img src="https://image.igouist.net/KAq6XkV.webp" alt=""></p>
 <h2 id="刪除資料">刪除資料</h2>
 <p>如果前面都大致上了解的話，刪除就是小菜一碟。</p>
 <p>首先我們先回到首頁列表，在編輯後面加上刪除的連結（我是用｜隔開而已，也可以另外新增一格甚至做成按鈕沒關係）</p>
-<p><img src="https://i.imgur.com/WTn9MXw.png" alt=""></p>
+<p><img src="https://image.igouist.net/WTn9MXw.webp" alt=""></p>
 <p>接著我們到 Controller 增加一個刪除的方法，因為我們並沒有要做一個「確認刪除嗎？」的頁面，所以最後直接回到首頁列表就可以了。</p>
-<p><img src="https://i.imgur.com/ZScM56X.png" alt=""></p>
+<p><img src="https://image.igouist.net/ZScM56X.webp" alt=""></p>
 <p>接著就到資料庫互動的物件來實作刪除的部分。</p>
-<p><img src="https://i.imgur.com/cJe4pic.png" alt=""></p>
+<p><img src="https://image.igouist.net/cJe4pic.webp" alt=""></p>
 <p>非常簡單，只有 SQL 語法的部分有更動，使用的是<a href="https://www.1keydata.com/tw/sql/sqldelete.html"> DELETE 指令</a>，由於只是刪除，因此我們果斷地打開連線，砍下去，關閉連線走人。</p>
 <p>回到 Controller 把這個函式添加上去</p>
-<p><img src="https://i.imgur.com/xFyaY8s.png" alt=""></p>
+<p><img src="https://image.igouist.net/xFyaY8s.webp" alt=""></p>
 <p>然後就可以試試看能不能刪除資料囉！</p>
-<p><img src="https://i.imgur.com/GzrN6Ca.png" alt=""></p>
+<p><img src="https://image.igouist.net/GzrN6Ca.webp" alt=""></p>
 <p>點下刪除了之後－－</p>
-<p><img src="https://i.imgur.com/6O9vyNA.png" alt=""></p>
+<p><img src="https://image.igouist.net/6O9vyNA.webp" alt=""></p>
 <p>資料就不見了！（其實蠻危險的？）</p>
 <h2 id="結語">結語</h2>
 <p>已經實作了顯示列表、新增、修改、查詢和刪除。所謂萬變不離其宗，基本的資料庫操作都離不開這些方法，熟悉了這些做法的概念之後就沒有問題了，剩下大多是顯示的時候做美化、排序等等的剩餘工作。Good Job！</p>
