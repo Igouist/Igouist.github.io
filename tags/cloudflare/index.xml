@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>cloudflare on 伊果的沒人看筆記本</title>
+    <link>https://igouist.github.io/tags/cloudflare/</link>
+    <description>Recent content in cloudflare on 伊果的沒人看筆記本</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hant-TW</language>
+    <follow_challenge>
+      <feedId>56200764111934464</feedId>
+      <userId>41821085092905984</userId>
+    </follow_challenge>
+    <lastBuildDate>Thu, 31 Jul 2025 23:00:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/tags/cloudflare/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>記一次把部落格圖片從 Imgur 搬到 Cloudflare R2 的過程</title>
+      <link>https://igouist.github.io/post/draft/migrate-blog-images-to-cloudflare-r2/</link>
+      <pubDate>Thu, 31 Jul 2025 23:00:00 +0800</pubDate>
+      
+      <guid>https://igouist.github.io/post/draft/migrate-blog-images-to-cloudflare-r2/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753973577696.webp&#34; alt=&#34;1753973862036&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在上個月的 &lt;a href=&#34;https://igouist.github.io/post/2025/06/imgur-temporarily-over-capacity-maybe-your-ip-banned/&#34;&gt;Imgur 一直 temporarily over capacity 嗎？先檢查網路看看吧&lt;/a&gt; 提到，因為 Imgur 不給上傳圖片了，現在寫個文章還得開 VPN 才能貼圖片。&lt;/p&gt;
+&lt;p&gt;拖著拖著七月也要過了，決定趁休假的時候來把圖床搬一搬。&lt;/p&gt;
+&lt;p&gt;比起實作上的拖延，搬家目標則早早決定好要嘗試這篇「&lt;a href=&#34;https://blog.kyomind.tw/weekly-review-43/&#34;&gt;Imgur 封鎖台灣 IP，我把圖床搬到 Cloudflare R2 - Code and Me&lt;/a&gt;」提到的 &lt;a href=&#34;https://www.cloudflare.com/zh-tw/developer-platform/products/r2/&#34;&gt;Cloudflare R2&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;畢竟&lt;strong&gt;出口流量免費&lt;/strong&gt;實在太香了，不愧是賽博菩薩。這就馬上前來皈依。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;考慮到每位朋朋的部落格選型不同，先說明一下我家的狀況：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用 Hugo 建置，直接丟在 Github Pages&lt;/li&gt;
+&lt;li&gt;圖片目前放在 Imgur&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;這代表有些較為暴力的操作可能只適用於我目前的狀況，例如直接在檔案裡搜尋 &lt;code&gt;imgur&lt;/code&gt; 來抓圖等等（所以如果你是從關鍵字搜尋進來這篇文章的，請從右手邊的文章目錄直接前往你需要的小節）&lt;/p&gt;
+&lt;p&gt;這次圖床搬家主要進行了以下步驟：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;建立 Cloudflare R2 資源&lt;/li&gt;
+&lt;li&gt;寫個 Powershell 腳本把目前部落格放在 Imgur 的圖片都抓下來&lt;/li&gt;
+&lt;li&gt;順便用 WebP 壓縮一下圖片&lt;/li&gt;
+&lt;li&gt;把圖片丟到 Cloudflare R2&lt;/li&gt;
+&lt;li&gt;回來取代文章內的圖片連結&lt;/li&gt;
+&lt;li&gt;使用 VSCode 的 Markdown-image 套件直接上傳圖片到 Cloudflare R2&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如此如此，說搬就搬，這篇就紀錄一下這次的圖床搬家過程。&lt;/p&gt;
+&lt;h2 id=&#34;建立-cloudflare-r2-資源&#34;&gt;建立 Cloudflare R2 資源&lt;/h2&gt;
+&lt;p&gt;既然都決定要搬家到 Cloudflare R2 了，首先當然是要建立一個 Cloudflare R2 資源。&lt;/p&gt;
+&lt;p&gt;建立 R2 的操作可以參考這篇「&lt;a href=&#34;https://ivonblog.com/posts/cloudflare-r2-image-hosting/&#34;&gt;架設 Cloudflare R2 免費圖床，給 Hugo 靜態網站託管圖片 - Ivon 的部落格&lt;/a&gt;」的「新增 Cloudflare R2 bucket」小節，流程詳細還附圖，基本可以照著把 R2 儲存空間給建出來。&lt;/p&gt;
+&lt;p&gt;總之先到 &lt;a href=&#34;https://dash.cloudflare.com/&#34;&gt;Cloudflare 儀表板&lt;/a&gt;，把 R2 儲存體建出來，然後順手掛個自訂網域：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970440386.webp&#34; alt=&#34;1753970440386&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970454069.webp&#34; alt=&#34;1753970454758&#34;&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;備註：如果想要自訂 R2 資源對外的網址，需要先讓 R2 和 Cloudflare 上存在的網域做綁定，也就是要在 Cloudflare 買網域或是其他地方買來掛在 Cloudflare 上（參考 &lt;a href=&#34;https://developers.cloudflare.com/r2/buckets/public-buckets/#add-your-domain-to-cloudflare&#34;&gt;Public buckets&lt;/a&gt;）&lt;/p&gt;
+&lt;p&gt;因為我（之前為了&lt;a href=&#34;https://tedliou.com/software/bluesky-handle-domain-customize/&#34;&gt;改 Bluesky 的帳號名稱&lt;/a&gt;）已經在 Cloudflare 購買過網域了，所以可以直接用自定義網域來把圖片網址改成我要的網址。&lt;/p&gt;
+&lt;p&gt;如果你也想要自訂圖片網址，但在 Cloudflare 還沒有任何網域，可以先多找幾篇網域購買和託管到 Cloudflare 的文章（例如 &lt;a href=&#34;https://geekaz.net/cloudflare-domain-tutorial/&#34;&gt;Cloudflare 網域購買教學&lt;/a&gt;）參考參考，再決定要不要投入 $$ 買一個自己喜歡的名字。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;建立完畢之後，可以先進貯體隨便上傳一張圖片，確認一下 URL 有沒有連到圖片：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970484783.webp&#34; alt=&#34;1753970485658&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;弄個-powershell-腳本把部落格的圖片先抓下來&#34;&gt;弄個 Powershell 腳本把部落格的圖片先抓下來&lt;/h2&gt;
+&lt;p&gt;建好 R2 空間之後，就要開始著手搬遷啦～&lt;/p&gt;
+&lt;p&gt;我的部落格採用 Hugo + Github Pages，所以文章內容也就是一堆 Markdown 檔案而已。這種狀況下，最快的方式就是直接搜出文章中的圖片連結就行。&lt;/p&gt;
+&lt;p&gt;幸好 2025 年的懶人是有福的，直接請 GPT 幫我產一組 Powershell 腳本，把 &lt;code&gt;.md&lt;/code&gt; 檔拖出來，掃到圖片就抓下來存著，迅速搞定這一階段：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# see: https://gist.github.com/mufidu/f7b795f844f1ee4dc78e55123d5a398b&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 1. 指定資料夾&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$folder    &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;C:\Blog\content&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$outputDir &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;C:\Users\xxx\Pictures\Blog-Image-Backup&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 2. 建立目標資料夾（若不存在）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;-not &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;Test-Path $outputDir&lt;span style=&#34;color:#f92672&#34;&gt;))&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    New-Item -Path $outputDir -ItemType Directory | Out-Null
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 3. 逐一掃描 .md 檔案&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Get-ChildItem -Path $folder -Filter *.md -Recurse | ForEach-Object &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    $mdFile  &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; $_.FullName
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    $content &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Get-Content -Path $mdFile
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    foreach &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;$line in $content&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;# 4. 正則擷取 Markdown 圖片 URL&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;$line -match &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;!\[[^\]]*\]\((?&amp;lt;url&amp;gt;https?://[^\)]+)\)&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            $url      &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; $Matches&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;url&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;# 5. 以 URL 最後一節當作檔名&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            $fileName &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Split-Path -Path $url -Leaf
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            $destPath &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Join-Path $outputDir $fileName
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            try &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#75715e&#34;&gt;# 6. 下載圖片&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                Invoke-WebRequest -Uri $url -OutFile $destPath -UseBasicParsing
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                Write-Host &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;已下載： &lt;/span&gt;$url&lt;span style=&#34;color:#e6db74&#34;&gt; → &lt;/span&gt;$destPath&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            catch &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                Write-Warning &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;下載失敗： &lt;/span&gt;$url&lt;span style=&#34;color:#e6db74&#34;&gt; (`&lt;/span&gt;$_&lt;span style=&#34;color:#e6db74&#34;&gt;`)&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;插件順便用-webp-把圖片做一下壓縮&#34;&gt;插件：順便用 WebP 把圖片做一下壓縮&lt;/h2&gt;
+&lt;p&gt;圖片下載完後，突然想起之前跑 &lt;a href=&#34;https://pagespeed.web.dev/?hl=zh-tw&#34;&gt;PageSpeed Insights&lt;/a&gt; 時有被提示過圖檔太大的問題，決定趁這機會順便把圖壓成 WebP。&lt;/p&gt;
+&lt;p&gt;WebP 是 Google 推的圖片格式，從 &lt;a href=&#34;https://developers.google.com/speed/webp?hl=zh-tw&#34;&gt;developers.google 對 WebP 的介紹&lt;/a&gt; 來看，WebP 無損壓縮後的檔案大小能比 PNG 小 26%，而有損壓縮在同樣壓縮品下也能比 JPEG 小 25-34%。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;補充：有些情況下跑完 WebP 反而會讓檔案大小變大，例如 JPG 轉 WebP（參見 &lt;a href=&#34;https://stackoverflow.com/questions/30641057/image-size-is-increased-when-converted-from-jpg-to-webp-with-quality-value-100&#34;&gt;Image size is increased when converted from jpg to webp with quality value 100&lt;/a&gt;）&lt;/p&gt;
+&lt;p&gt;而在 &lt;a href=&#34;https://developers.google.com/speed/webp/faq#can_a_webp_image_grow_larger_than_its_source_image&#34;&gt;WebP 常見問題文檔&lt;/a&gt;的「Can a WebP image grow larger than its source image?」這一小節有說明可能會導致檔案變大的場景，有遇到的朋友可以先確認看看。&lt;/p&gt;
+&lt;p&gt;因為我的部落格大多是 PNG 圖檔，文檔提到「Note that converting a JPEG source to lossy WebP, or a PNG source to lossless WebP are not prone to such file size surprises.」所以我仍然可以無腦轉 WebP，如果是跟我一樣都是 PNG 的朋友就別擔心了。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在開始動手之前，需要先確保環境中有 WebP 的工具。沒有的朋朋們請先到 &lt;a href=&#34;https://developers.google.com/speed/webp/download?hl=zh-tw&#34;&gt;Google for Developers&lt;/a&gt; 下載回來（為了方便後續使用，可以把 &lt;code&gt;bin&lt;/code&gt; 的路徑丟進環境變數）&lt;/p&gt;
+&lt;p&gt;接著同樣產個小腳本來逐個把圖片壓成 WebP，這段除了好朋友 GPT 以外，還參考了這兩篇：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.markkulab.net/2021/08/06/powershell-webp-conveter/&#34;&gt;透過 PowerShell 製作 JPG/ PNG 轉 webp 小工具 (使用 Google webp converter lib) | Mark Ku&amp;rsquo;s Blog&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://medium.com/@wendyhsinyun/%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B8%80%E6%AC%A1%E5%A3%93%E7%B8%AE%E5%A4%9A%E5%BC%B5-webp-%E7%85%A7%E7%89%87-8da81540f93e&#34;&gt;用命令行一次壓縮多張 WebP 照片 - HY - Medium&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 記得先下載 WebP 工具: https://developers.google.com/speed/webp/download&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 1. 設定來源與輸出資料夾&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$inputFolder  &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;C:\Users\xxx\Pictures\Blog-Image-Backup&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$outputFolder &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Join-Path $inputFolder &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;WebP&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 2. 建立輸出資料夾（若不存在）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;-not &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;Test-Path $outputFolder&lt;span style=&#34;color:#f92672&#34;&gt;))&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    New-Item -Path $outputFolder -ItemType Directory | Out-Null
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 3. 定義可轉檔副檔名清單&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$convertExts &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; @&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;.jpg&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;.jpeg&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;.png&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 4. 遞迴取得所有檔案，並排除輸出資料夾本身&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Get-ChildItem -Path $inputFolder -File -Recurse |
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Where-Object &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt; $_.FullName -notlike &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;$outputFolder&lt;span style=&#34;color:#e6db74&#34;&gt;*&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt; |
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ForEach-Object &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        $src &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; $_.FullName
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        $ext &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; $_.Extension.ToLower&lt;span style=&#34;color:#f92672&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;$convertExts -contains $ext&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;# 5a. 轉檔：jpg/jpeg/png → webp&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            $dest &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Join-Path $outputFolder &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;$_.BaseName + &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;.webp&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;# 使用 -q 指定壓縮品質（0-100, ex: -q 80）&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;# 如果需要無損壓縮，可以使用 -lossless 參數&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;# 但注意有損的 JPG 之類轉無損 WebP 反而會讓檔案變大哦&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &amp;amp; cwebp -lossless $src -o $dest &amp;gt; $null
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Write-Host &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Converted: &lt;/span&gt;$src&lt;span style=&#34;color:#e6db74&#34;&gt; → &lt;/span&gt;$dest&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;# 5b. 其餘格式（例如 gif）直接複製&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;# 畢竟後續還是都要上傳到新的圖床，不能轉的就直接過去吧&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            $dest &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Join-Path $outputFolder $_.Name
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Copy-Item -Path $src -Destination $dest -Force
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Write-Host &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Copied:    &lt;/span&gt;$src&lt;span style=&#34;color:#e6db74&#34;&gt; → &lt;/span&gt;$dest&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;上傳圖片到-cloudflare-r2&#34;&gt;上傳圖片到 Cloudflare R2&lt;/h2&gt;
+&lt;p&gt;現在我們有一卡車圖檔準備要大舉進攻 Cloudflare R2，按照上面的節奏。聰明的朋朋也許會想：&lt;br/&gt;這傢伙又要叫 GPT 幫我們產腳本來上傳了吧？&lt;/p&gt;
+&lt;p&gt;但很可惜，我請 GPT 產腳本是因為我很懶，所以有更懶的方法存在時，我是連腳本都不考慮的。&lt;/p&gt;
+&lt;p&gt;這個步驟最懶的方法就是直接滑鼠點一點，畢竟 Cloudflare R2 在瀏覽器就可以拖檔案上傳了：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970509149.webp&#34; alt=&#34;1753970510004&#34;&gt;&lt;/p&gt;
+&lt;p&gt;雖然瀏覽器上傳有每次一百個檔案的限制，但考慮到我部落格 &lt;del&gt;拖稿嚴重&lt;/del&gt; 圖片不多，因此手動上傳也是分分鐘的事情，這個步驟就手動傳一傳收工。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;補充：如果檔案太多，或是好想用下指令的方式上傳呢？請參考 R2 文檔的 &lt;a href=&#34;https://developers.cloudflare.com/r2/objects/upload-objects/&#34;&gt;Upload objects&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;因為前面的步驟只是下載檔案又上傳檔案，連檔名都沒更動，接著只要回去文章內文把原本有 &lt;code&gt;i.imgur.com&lt;/code&gt; 的連結都替代成新的圖片網址就搞定囉～&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;補充：如果像我一樣，有些 JS 的操作會去呼叫圖片網址的話，可能會看到 CORS 的錯誤訊息，例如：&lt;code&gt;Access to image at &#39;https://xxxx/xxxxxx.webp&#39; from origin &#39;https://xxxxxx.github.io&#39; has been blocked by CORS policy: No &#39;Access-Control-Allow-Origin&#39; header is present on the requested resource.&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;這時候只要去 R2 儲存體的「設定」 找到 CORS 原則，把站台加上去就可以了。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970523569.webp&#34; alt=&#34;1753970524223&#34;&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;使用-vscode-的-markdown-image-延伸模組直接上傳圖片到-cloudflare-r2&#34;&gt;使用 VSCode 的 Markdown-image 延伸模組直接上傳圖片到 Cloudflare R2&lt;/h2&gt;
+&lt;p&gt;到這邊其實部落格的圖床遷移已經完成了，但因為我習慣用 VSCode 撰寫文章，之前都用 vscode-imgur 這款延伸模組，實現貼上圖片自動上傳 Imgur 的舒適體驗。&lt;/p&gt;
+&lt;p&gt;但現在圖床搬家到 Cloudflare R2 了，當然也要調整一下 VSCode 的上傳圖片工具。果斷採用開頭這篇「&lt;a href=&#34;https://blog.kyomind.tw/weekly-review-43/&#34;&gt;Imgur 封鎖台灣 IP，我把圖床搬到 Cloudflare R2&lt;/a&gt;」提到的 &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=hancel.markdown-image&#34;&gt;Markdown-image&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;另外在設定的過程中還參考了以下兩篇：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://cunoe.com/blog/markdown-image-extension&#34;&gt;使用 Markdown Image 扩展实现上传图片到 Cloudflare R2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.hao.kim/archives/hugo-vscode-auto-upload-file-to-oss-r2&#34;&gt;Hugo vscode 自动上传图片到cloudflare | Hao DevSecOps&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;首先我們得申請一組權杖，可以參考 Cloudflare 官方文檔的 &lt;a href=&#34;https://developers.cloudflare.com/r2/api/tokens/&#34;&gt;Authentication&lt;/a&gt; 操作，或是從 R2 頁面的右側進入 API 權杖的頁面：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970536536.webp&#34; alt=&#34;1753970536936&#34;&gt;&lt;/p&gt;
+&lt;p&gt;新增一組能夠「物件讀取和寫入」的權杖後，會來到金鑰畫面。注意這組金鑰跟識別碼只會出現一次，請務必記下來，等等設定延伸模組的時候會用到：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970546278.webp&#34; alt=&#34;1753970546886&#34;&gt;&lt;/p&gt;
+&lt;p&gt;建立完之後，進到我們要上傳圖片的貯體，進到設定頁面，這邊的名稱跟 S3 API 資訊等等也會用到：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970557979.webp&#34; alt=&#34;1753970560756&#34;&gt;&lt;/p&gt;
+&lt;p&gt;接著讓我們回到 VSCode，到設定裡面找到 Markdown Image 的相關設定，把上傳圖片的方式改為「S3」（不是 Cloudflare 哦！）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970570066.webp&#34; alt=&#34;1753970570818&#34;&gt;&lt;/p&gt;
+&lt;p&gt;最後就是把剛剛拿到的資訊一個一個填進去設定裡啦～&lt;/p&gt;
+&lt;p&gt;這邊提供我填的內容給需要的朋朋參考：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;S3: Endpoint =&amp;gt; R2 設定頁面的 S3 API
+&lt;ul&gt;
+&lt;li&gt;ps: 可以不用放最後面的儲存體名稱，反正等等 Bucket Name 要放&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;S3: Region =&amp;gt; 直接填 auto 就好&lt;/li&gt;
+&lt;li&gt;S3: Bucket Name =&amp;gt; 儲存體（貯體）名稱，抄 R2 設定頁面的名稱就好
+&lt;ul&gt;
+&lt;li&gt;ps: 如果 Endpoint 有包含儲存體名稱了，這邊會開成資料夾&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;S3: Access Key ID =&amp;gt; 發金鑰時拿到的 存取金鑰識別碼&lt;/li&gt;
+&lt;li&gt;S3: Secret Access Key =&amp;gt; 發金鑰時拿到的 秘密存取金鑰&lt;/li&gt;
+&lt;li&gt;S3: Cdn =&amp;gt; 我們自定義的 CDN 路徑 + {filepath}&amp;quot;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970359747.webp&#34; alt=&#34;1753970361767&#34;&gt;&lt;/p&gt;
+&lt;p&gt;都搞定之後就可以開個 &lt;code&gt;.md&lt;/code&gt; 檔、複製個圖片，試試看 &lt;code&gt;Shift + Alt + V&lt;/code&gt; 有沒有自動上傳囉～&lt;/p&gt;
+&lt;h2 id=&#34;小結&#34;&gt;小結&lt;/h2&gt;
+&lt;p&gt;從 Imgur 爆炸到搬完圖片也拖了快兩個月，但幸好有蠻多前人遺跡和好夥伴 GPT 的協助，還算搬得順利。秉持著一個「做都做了」的理念，乾脆把圖床搬家過程也拿出來水一篇，喜得部落格文章數 +1&lt;/p&gt;
+&lt;p&gt;搬完之後想說圖片也壓縮了、R2 也有快取之類的，是不是再來跑一次 PageSpeed Insights，分數意外地比之前高不少，也算是一個意外撿到的驚喜了&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753971346630.webp&#34; alt=&#34;1753971347624&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.kyomind.tw/weekly-review-43/&#34;&gt;Imgur 封鎖台灣 IP，我把圖床搬到 Cloudflare R2 - Code and Me&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://eyewithouts.com/r2&#34;&gt;使用 Cloudflare R2 當作遠端圖床 - Eyewithouts 韋觀&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://ivonblog.com/posts/cloudflare-r2-image-hosting/&#34;&gt;架設 Cloudflare R2 免費圖床，給 Hugo 靜態網站託管圖片 · Ivon的部落格&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.markkulab.net/2021/08/06/powershell-webp-conveter/&#34;&gt;透過 PowerShell 製作 JPG/ PNG 轉 webp 小工具 (使用 Google webp converter lib) | Mark Ku&amp;rsquo;s Blog&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://medium.com/@wendyhsinyun/%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B8%80%E6%AC%A1%E5%A3%93%E7%B8%AE%E5%A4%9A%E5%BC%B5-webp-%E7%85%A7%E7%89%87-8da81540f93e&#34;&gt;用命令行一次壓縮多張 WebP 照片 - HY - Medium&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.shopify.com/blog/what-is-webp-file?utm_source=chatgpt.com&#34;&gt;What Is a WebP File? How WebP Compares To JPEG and PNG (2025) - Shopify&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://cunoe.com/blog/markdown-image-extension&#34;&gt;使用 Markdown Image 扩展实现上传图片到 Cloudflare R2&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.hao.kim/archives/hugo-vscode-auto-upload-file-to-oss-r2&#34;&gt;Hugo vscode 自动上传图片到cloudflare | Hao DevSecOps&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://developers.cloudflare.com/r2/api/tokens/&#34;&gt;Authentication · Cloudflare R2 docs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://developers.cloudflare.com/r2/objects/upload-objects/&#34;&gt;Upload objects · Cloudflare R2 docs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://community.cloudflare.com/t/custom-domain-for-r2-bucket-not-hosted-on-cloudflare/608734?utm_source=chatgpt.com&#34;&gt;Custom domain for R2 bucket not hosted on Cloudflare - Developers / Images - Cloudflare Community&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
