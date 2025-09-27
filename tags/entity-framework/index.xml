@@ -6,6 +6,8 @@
     <description>Recent content in Entity Framework on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
+    <managingEditor>Igouist (Igouist)</managingEditor>
+    <webMaster>Igouist (Igouist)</webMaster>
     <follow_challenge>
       <feedId>56200764111934464</feedId>
       <userId>41821085092905984</userId>
@@ -15,12 +17,11 @@
       <title>Asp.net MVC: 連線資料庫、簡單實作 CRUD</title>
       <link>https://igouist.github.io/post/2019/12/aspnet-connect-db/</link>
       <pubDate>Mon, 09 Dec 2019 00:09:09 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2019/12/aspnet-connect-db/</guid>
       <description>&lt;p&gt;在教學時直接使用 EF 對資料庫跑繫結的方式產生各頁面，但得到了「點一點東西就跑出來了搞不懂呀」的回饋，心想有道理。因此從頭開始實作一遍，並記錄下來。&lt;s&gt;（雖然做完還是覺得，直接用 EF 跑的話果然比較安全方便啊）&lt;/s&gt;&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;目標：&lt;strong&gt;實作一個 MVC 架構，具資料庫基本操作功能的網站&lt;/strong&gt;，其中包含連線至資料庫的 model、對其進行調用的 controller 以及顯示的 view。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;目標：&lt;strong&gt;實作一個 MVC 架構，具資料庫基本操作功能的網站&lt;/strong&gt;，其中包含連線至資料庫的 model、對其進行調用的 controller 以及顯示的 view。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;註：本文預設已在本地電腦上安裝了 &lt;a href=&#34;https://www.microsoft.com/zh-tw/sql-server/sql-server-editions-express&#34;&gt;SQL Server&lt;/a&gt;，並且建立了測試用的資料庫 Test 及表 card，詳情會在文章內述。另外，由於在寫這邊的時候是為了練習手動從編碼開始嘗試連線，故將不使用 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/aspnet/mvc/overview/getting-started/getting-started-with-ef-using-mvc/creating-an-entity-framework-data-model-for-an-asp-net-mvc-application&#34;&gt;EF 連線產生 Edmx&lt;/a&gt; 的方式，而是直接手工編寫程式碼進行操作。&lt;/p&gt;
 &lt;p&gt;另外，關於直接從資料表自動產生可操作的頁面，亦即使用 Entity Framework 做資料繫結的方式，請見 &lt;a href=&#34;https://igouist.github.io/post/2019/12/aspnet-connect-db-ef/&#34;&gt;Asp.net MVC 筆記：Entity Framework 連線資料庫&lt;/a&gt;&lt;/p&gt;
 &lt;blockquote&gt;
@@ -32,8 +33,7 @@
 &lt;li&gt;&lt;code&gt;View&lt;/code&gt;：使用者會看到的部份，網頁的外觀。Html、Css 就是在這區工作。&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;Controller&lt;/code&gt;：流程控制和資料傳輸。也就是取得使用者傳送來的資料，決定讓哪支程式和哪個頁面出來做事，以及把 Model 送來的資料做處理後丟往 View 等等。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;在小組報告的時候，Model 通常是默默做事的那個，View 則是專門上台報告的，Controller 負責指揮大家做事和組員間的溝通以及講幹話。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;在小組報告的時候，Model 通常是默默做事的那個，View 則是專門上台報告的，Controller 負責指揮大家做事和組員間的溝通以及講幹話。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;首先我們從建立專案開始操作。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/eRyGBTb.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;選擇 .NET 的框架，並且在下面替專案取個名字。&lt;/p&gt;
@@ -65,8 +65,7 @@
 &lt;p&gt;現在我們已經有了連線字串，先在我們的類別中將其宣告為一個私有且唯獨的字串常數。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/bVnef6n.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;註：在實務上的部份，連線字串通常會放置在網頁設定檔 Web.config 裡，因為網頁設定檔在使用者端是看不見的，所以這樣的做法比較安全，再利用 ConfigurationManager 的函式取得連線字串以使用。關於詳細的操作方式請參考&lt;a href=&#34;https://dotblogs.com.tw/sky5012357/2013/03/19/98161&#34;&gt;這篇&lt;/a&gt;或搜尋「連線字串 Web.config」。本篇為了教學及操作上的方便，才直接放置於程式碼內。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;註：在實務上的部份，連線字串通常會放置在網頁設定檔 Web.config 裡，因為網頁設定檔在使用者端是看不見的，所以這樣的做法比較安全，再利用 ConfigurationManager 的函式取得連線字串以使用。關於詳細的操作方式請參考&lt;a href=&#34;https://dotblogs.com.tw/sky5012357/2013/03/19/98161&#34;&gt;這篇&lt;/a&gt;或搜尋「連線字串 Web.config」。本篇為了教學及操作上的方便，才直接放置於程式碼內。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;解決連線字串的問題，接著我們來做一個 model 放我們的資料。可以從上面伺服器總管的圖看見我的資料表 card 有 id、 char_name、 card_name、card_level 四個欄位。&lt;/p&gt;
 &lt;p&gt;因此我們新建一個 card 類別如下：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;namespace&lt;/span&gt; DBconnTest.Models
@@ -272,16 +271,14 @@
       <title>Asp.net MVC: Entity Framework 連線資料庫</title>
       <link>https://igouist.github.io/post/2019/12/aspnet-connect-db-ef/</link>
       <pubDate>Mon, 09 Dec 2019 00:09:08 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2019/12/aspnet-connect-db-ef/</guid>
       <description>&lt;blockquote&gt;
-&lt;p&gt;目標：將 &lt;a href=&#34;https://igouist.github.io/post/2019/12/aspnet-connect-db/&#34;&gt;上一篇的 Asp.net MVC：連線資料庫、簡單實作 CRUD&lt;/a&gt; 的資料庫基礎功能改成以 &lt;strong&gt;Entity Framework&lt;/strong&gt; 產生的方式跑一遍&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;目標：將 &lt;a href=&#34;https://igouist.github.io/post/2019/12/aspnet-connect-db/&#34;&gt;上一篇的 Asp.net MVC：連線資料庫、簡單實作 CRUD&lt;/a&gt; 的資料庫基礎功能改成以 &lt;strong&gt;Entity Framework&lt;/strong&gt; 產生的方式跑一遍&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;既然上一篇介紹了土法煉鋼動手做的資料庫取值方式，就覺得不順手把從 EF 建立出基本功能介面的方式記錄下來似乎是有點奇怪。實際上開始寫成筆記之後才發現對內容尚不是很了解，例如一直用 Data First 產生頁面但對 Code First 以程式碼產生架構的方式很不熟。儘管如此仍稍微紀錄一下，之後有更深的了解（例如 ASP.NET Identity 或 Code First 等部分）再進一步做成筆記。另外也可參考較詳細的&lt;a href=&#34;https://docs.microsoft.com/zh-tw/aspnet/mvc/overview/getting-started/getting-started-with-ef-using-mvc/creating-an-entity-framework-data-model-for-an-asp-net-mvc-application&#34;&gt;官方文檔&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;開一個新的專案來示範。前面新增專案的部分都和前一篇一樣，檔案 → 新增專案 → .NET Framework → MVC 這樣&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;備註：旁邊有個變更驗證的部分是 ASP.NET Identity，在做會員系統的時候有用過，但這篇不會用到，為怕忘記故於此紀錄，另可參照 2013 年的&lt;a href=&#34;http://2or3.blogspot.com/2013/12/mvc5-aspnet-identity.html&#34;&gt;這篇&lt;/a&gt;及官方文檔。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;備註：旁邊有個變更驗證的部分是 ASP.NET Identity，在做會員系統的時候有用過，但這篇不會用到，為怕忘記故於此紀錄，另可參照 2013 年的&lt;a href=&#34;http://2or3.blogspot.com/2013/12/mvc5-aspnet-identity.html&#34;&gt;這篇&lt;/a&gt;及官方文檔。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;專案開啟後，我們在 Model 新增 ADO.net 實體資料模型&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/oSsVE3o.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/WKo3Sd5.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
@@ -299,8 +296,7 @@
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/FsiSn3w.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著這邊選擇要進行操作的那個類，以及資料連接的字串，就能看到它開始從模型產生囉！&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;註：如果在這步驟發生錯誤，先嘗試重建方案看看。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;註：如果在這步驟發生錯誤，先嘗試重建方案看看。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;如果一切順利，應該能看見它已經幫你建立好具有 列表、新增、修改、刪除和查詢的 Action 和 View&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/GEodVlL.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;測試時基本功能也能順利地使用&lt;/p&gt;

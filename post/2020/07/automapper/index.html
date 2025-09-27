@@ -22,7 +22,7 @@
         })(window, document, "clarity", "script", "lpnoqxbhhj");
     </script>
 
-    <meta name="generator" content="Hugo 0.117.0">
+    <meta name="generator" content="Hugo 0.150.1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -147,8 +147,7 @@
 </span></span></code></pre></div><p>沒錯，只需要簡簡單單幾步， <strong>AutoMapper 會自動將指定類別間同樣名稱的屬性內容做轉換</strong> ，因此能夠省下相當多的功夫，也能夠隱藏類別本身的內容，專心在處理功能本身。</p>
 <blockquote>
 <p>註：網路上挺多 AutoMapper 的文章會直接使用 <code>Mapper.CreateMap()</code> 這類靜態方法，然而這些方法已經在 AutoMapper 5 的時候被廢除，改成現在由 <code>MapperConfiguration</code> 產生 Mapper 的方法。</p>
-<p>然而整體的使用方式仍然大同小異，這些文章仍能稍微調整並使用，惟使用過程中需自己注意語法的差異和多加測試。</p>
-</blockquote>
+<p>然而整體的使用方式仍然大同小異，這些文章仍能稍微調整並使用，惟使用過程中需自己注意語法的差異和多加測試。</p></blockquote>
 <h3 id="客製化轉換">客製化轉換</h3>
 <p>但當然實際上我們並不一定每個欄位的名稱都是一模一樣的，總是會有遇到同個資料在不同層的 Model 裡名稱不一樣的時候，又或者是某個欄位是由兩三個欄位組成的時候。對於這種需要客製化的轉換，這時候我們就可以在註冊對映時對欄位內容的對映方式做指定：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
@@ -159,14 +158,12 @@
 </span></span></code></pre></div><p>可以看到 <strong>我們能用 <code>ForMember</code> 去對類別成員做操作，並傳入目標的類別成員，以及該成員對應的操作，像這邊就使用 <code>MapFrom</code> 來指定目標類別成員的轉換來源</strong>，這樣就可以達到轉換時的客製化了。</p>
 <blockquote>
 <p>註：對於欄位之間有使用 <code>ForMember</code> 來處理過內容再轉換的型別，建議在轉換型別時，也就是實際 mapper.Map() 的時候，稍做註解提醒一下。</p>
-<p>尤其是會將 Mapper 的 Config 集中整理的架構裡更應該要對額外的操作做揭露，這樣對彼此都好。真的。</p>
-</blockquote>
+<p>尤其是會將 Mapper 的 Config 集中整理的架構裡更應該要對額外的操作做揭露，這樣對彼此都好。真的。</p></blockquote>
 <blockquote>
 <p>補充：AutoMapper 在轉換像是 <code>IEnumerable&lt;T&gt;</code> 這類的集合時，預設會將來源為 Null 的成員轉換成空集合（而非 Null）</p>
 <p>如果希望 Null 就好好轉換成 Null 的朋友，可以在建立設定檔時用 <code>cfg.AllowNullCollections = true;</code> 來讓所有為 Null 的空集合轉換對象都乖乖保持 Null</p>
 <p>也能夠在 ForMember 的時候使用 AllowNull 來針對欄位指定規則。例如 <code>ForMember(x =&gt; x.Members, y =&gt; y.AllowNull())</code></p>
-<p>需要更詳細說明的朋友，也可以參照官方文檔的 <a href="https://docs.automapper.org/en/stable/Lists-and-arrays.html#handling-null-collections">Handling null collections</a> 一節</p>
-</blockquote>
+<p>需要更詳細說明的朋友，也可以參照官方文檔的 <a href="https://docs.automapper.org/en/stable/Lists-and-arrays.html#handling-null-collections">Handling null collections</a> 一節</p></blockquote>
 <h3 id="忽略指定的欄位">忽略指定的欄位</h3>
 <p>除了會有欄位名稱和來源的不同以外，最常遇到的應該就是兩個類別之間大多數欄位雖然對映，但某幾個欄位是沒有對映的。例如傳送給前端使用時一併送出其他來源的資料，但資料由資料表取出時並沒有這個欄位，必須轉換以後再呼叫別的方法去補上資料。<strong>如果直接使用 Map 來進行轉換，就會發生找不到對映欄位的錯誤。這時候就可以使用 <code>Ignore</code> 來忽略掉指定的欄位</strong>。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
@@ -176,14 +173,11 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>如上述程式碼，可能卡片的圖像位置必須由別的方式取得，這種情況我們在 <code>ForMember</code> 的時候就可以將其指定為 <code>Ignore</code> 讓 AutoMapper 不要去嘗試轉換它。除了 <code>Ignore</code> 以外，AutoMapper 還有配備像是 <code>IgnoreAllPropertiesWithAnInaccessibleSetter</code> 這種光方法名稱長度就有點強的大殺器，也還有像是 <code>AllowNull</code> 等更多對欄位操作的方法，這部份請各位在使用時按照需求自行摸索。</p>
 <blockquote>
-<p>註(1)：上述舉的例子中有需要從多個來源轉換為一個類別的場合，可以參照 <a href="https://kevintsengtw.blogspot.com/2014/03/automapper.html">AutoMapper 兩個物件對映到一個類別 - mrkt 的程式學習筆記</a></p>
-</blockquote>
+<p>註(1)：上述舉的例子中有需要從多個來源轉換為一個類別的場合，可以參照 <a href="https://kevintsengtw.blogspot.com/2014/03/automapper.html">AutoMapper 兩個物件對映到一個類別 - mrkt 的程式學習筆記</a></p></blockquote>
 <blockquote>
-<p>註(2)：上面使用到的 Ignore 方法還是有些眉角需要注意，可以參照 <a href="https://dotblogs.com.tw/supershowwei/2016/07/17/162815">[料理佳餚] AutoMapper 中不容忽視的 Ignore() Mapping 的順序 - 軟體主廚的程式料理廚房</a></p>
-</blockquote>
+<p>註(2)：上面使用到的 Ignore 方法還是有些眉角需要注意，可以參照 <a href="https://dotblogs.com.tw/supershowwei/2016/07/17/162815">[料理佳餚] AutoMapper 中不容忽視的 Ignore() Mapping 的順序 - 軟體主廚的程式料理廚房</a></p></blockquote>
 <blockquote>
-<p>註(3)：面對一些比較複雜的轉換時，也可以考慮使用 <a href="/post/2021/12/automapper-convert-using/">ConvertUsing</a></p>
-</blockquote>
+<p>註(3)：面對一些比較複雜的轉換時，也可以考慮使用 <a href="/post/2021/12/automapper-convert-using/">ConvertUsing</a></p></blockquote>
 <p>最後還要補充的一個方法是 <code>ReverseMap</code> ，它能夠反轉對映，建立一個反方向的對映表。當你的類別之間可能需要往回轉型，又或是想要忽略來源類別的欄位時，<code>ReverseMap</code> 就會顯得相當有用。通常為了避免轉來轉去轉出意外，建議註冊時還是補上一個 <code>ReverseMap</code> 為佳。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt;
 </span></span><span style="display:flex;"><span>    cfg.CreateMap&lt;Card, CardViewModel&gt;()
@@ -237,8 +231,7 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>可以看到上面這個例子中，我們可以把 <code>double</code> 的欄位直接 Mapping 到 <code>int</code> 的欄位上，因為 AutoMapper 的貼心，所以不會出錯，但過程中還是可能發生喪失精度的問題。</p>
 <p>像是例子中的 2.65 就直接變成了 3，如果符合我們的需求（例如本來就打算轉型）倒是沒關係，但如果是因為不小心轉到的話，在找問題上可能就會比較麻煩。</p>
-<p>因此在轉換的時候，還請特別留意一下轉換雙方的型別，測試一下轉換結果是不是自己要的結果會比較好呦。</p>
-</blockquote>
+<p>因此在轉換的時候，還請特別留意一下轉換雙方的型別，測試一下轉換結果是不是自己要的結果會比較好呦。</p></blockquote>
 <h2 id="簡化整理">簡化整理</h2>
 <p>可能看到這裡有些讀者就開始疑惑了：這好像跟一開始簡介不太一樣啊，詐欺？又或者是：我每個方法裡面都要重新建一個 Mapper？這不太對吧？</p>
 <p>的確是這樣沒錯，AutoMapper 要達到更簡潔，還需要再做一些整理。例如使用 Profile 將對映關係集中起來，以及把 Mapper 的建構抽取出來。可能是在建構式建立共用的 Mapper ，或是以依賴注入 (Dependency Injection) 的方式來注入 Mapper 等等。以下就逐步進行介紹。</p>
@@ -314,15 +307,13 @@
 </span></span><span style="display:flex;"><span>    config.AddProfile&lt;ControllerProfile&gt;();
 </span></span><span style="display:flex;"><span>    config.AddProfile&lt;ServiceProfile&gt;();
 </span></span><span style="display:flex;"><span>});
-</span></span></code></pre></div><p>這樣的可讀性更好，也能讓維護的人迅速掌握當前的 Profile，有需要的朋友可以嘗試看看。</p>
-</blockquote>
+</span></span></code></pre></div><p>這樣的可讀性更好，也能讓維護的人迅速掌握當前的 Profile，有需要的朋友可以嘗試看看。</p></blockquote>
 <blockquote>
 <p>2021.08.27 補充：</p>
 <p>感謝 <a href="https://raychiutw.github.io/">Ray</a> 大大提供的方法，這邊也補充給大家參考一下</p>
 <p>我們前面有提到 <code>AddAutoMapper</code> 會對該型別所在的 Assembly 進行反射找出所有的 <code>Profile</code>，那麼我們也可以轉換一下思路：只要把全部的組件都丟到 <code>AddAutoMapper</code> 裡就好了！這種時候我們就可以利用反射來達到我們的目的：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-</span></span></code></pre></div><p>相較於 <code>AddProfile</code> 這種逐一新增 <code>Profile</code> 的作法，利用反射會讓註冊顯得更乾淨，並且也更不容易有所遺漏。各位可以按照開發的場景選擇一下註冊的方式，有需要的朋友也可以都嘗試看看。</p>
-</blockquote>
+</span></span></code></pre></div><p>相較於 <code>AddProfile</code> 這種逐一新增 <code>Profile</code> 的作法，利用反射會讓註冊顯得更乾淨，並且也更不容易有所遺漏。各位可以按照開發的場景選擇一下註冊的方式，有需要的朋友也可以都嘗試看看。</p></blockquote>
 <p>註冊好之後，我們就能將剛剛的示範部分更改為使用注入的方式來取得 Mapper：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> IMapper _mapper;
 </span></span><span style="display:flex;"><span>
@@ -616,7 +607,7 @@
     }
     var key = "2024-08-01";
     var value = dataMap.get(key);
-    var wordCount =  1680 ;
+    var wordCount =  1679 ;
     var link = "/post/2024/08/nine-sols/";
     var title = "《九日》白金心得";
     
@@ -3360,7 +3351,7 @@
     
     <a href="https://igouist.github.io/tags/electron/">electron</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity framework</a>
     
     <a href="https://igouist.github.io/tags/enum/">enum</a>
     

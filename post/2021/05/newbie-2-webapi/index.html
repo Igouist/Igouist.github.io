@@ -22,7 +22,7 @@
         })(window, document, "clarity", "script", "lpnoqxbhhj");
     </script>
 
-    <meta name="generator" content="Hugo 0.117.0">
+    <meta name="generator" content="Hugo 0.150.1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -239,38 +239,38 @@
 GET /api/product/1
 </code></pre><p>很明確就能夠看出<strong>意圖</strong>。這邊就讓我們來看看微軟的 <a href="https://docs.microsoft.com/zh-tw/azure/architecture/best-practices/api-design#define-operations-in-terms-of-http-methods">Web Api 設計</a> 文中的範例表格：</p>
 <table>
-<thead>
-<tr>
-<th>Resource</th>
-<th>POST</th>
-<th>GET</th>
-<th>PUT</th>
-<th>DELETE</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>/customers</td>
-<td>建立新客戶</td>
-<td>擷取所有客戶</td>
-<td>大量更新客戶</td>
-<td>移除所有客戶</td>
-</tr>
-<tr>
-<td>/customers/1</td>
-<td>錯誤</td>
-<td>擷取客戶 1 的詳細資料</td>
-<td>更新客戶 1 的詳細資料 (若有的話)</td>
-<td>移除客戶 1</td>
-</tr>
-<tr>
-<td>/customers/1/orders</td>
-<td>為客戶 1 建立新訂單</td>
-<td>擷取客戶 1 的所有訂單</td>
-<td>大量更新客戶 1 的訂單</td>
-<td>移除客戶 1 的所有訂單</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th>Resource</th>
+          <th>POST</th>
+          <th>GET</th>
+          <th>PUT</th>
+          <th>DELETE</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>/customers</td>
+          <td>建立新客戶</td>
+          <td>擷取所有客戶</td>
+          <td>大量更新客戶</td>
+          <td>移除所有客戶</td>
+      </tr>
+      <tr>
+          <td>/customers/1</td>
+          <td>錯誤</td>
+          <td>擷取客戶 1 的詳細資料</td>
+          <td>更新客戶 1 的詳細資料 (若有的話)</td>
+          <td>移除客戶 1</td>
+      </tr>
+      <tr>
+          <td>/customers/1/orders</td>
+          <td>為客戶 1 建立新訂單</td>
+          <td>擷取客戶 1 的所有訂單</td>
+          <td>大量更新客戶 1 的訂單</td>
+          <td>移除客戶 1 的所有訂單</td>
+      </tr>
+  </tbody>
 </table>
 <br/>
 <p>這邊大致上有個感覺就行了，畢竟 Restful 是一種風格，並沒有強烈的規定，只要符合共識和約束，就可以算是 Restful 了。</p>
@@ -304,8 +304,7 @@ GET /api/product/1
 <p>這個送出請求、取得回應的動作，就是網路運作的原理。例如當你打開瀏覽器到某個網站，就是對該網站發出一個取得網站內容的請求，網站再給你網站內容的回應。</p>
 <blockquote>
 <p>補充一下，聰明的朋友可能發現了，我們前面介紹的 Api 也就是這組動作：當我們呼叫某個服務，例如 Google Map 的 Api，也就是對目標的 Api 發出了一個想要使用服務的請求，服務再針對請求給予回應。因此，要想了解 Api 的各個知識點，接觸 HTTP 是必不可免的。</p>
-<p>但 HTTP 這水挺深的哪，所以我們這篇的紀錄先以「打 Api 服務的時候不至於都看不懂」為目標進行，稍微介紹一下 Request 和 Response 的內容吧。來日方長嘛。</p>
-</blockquote>
+<p>但 HTTP 這水挺深的哪，所以我們這篇的紀錄先以「打 Api 服務的時候不至於都看不懂」為目標進行，稍微介紹一下 Request 和 Response 的內容吧。來日方長嘛。</p></blockquote>
 <p>Request 和 Response 的內容，有興趣的朋友可以直接在瀏覽器進入開發人員工具就能看到了，以 Edge 和 Chrome 為例：首先按下 F12 ，並找到網路（Network）的部分，就可以看到進入網頁的各個請求和回應，隨便點開一個就會有 Request 和 Response 的內容囉：</p>
 <p><img src="https://image.igouist.net/kdK0xo1.webp" alt=""></p>
 <p>或者是可以直接參考 NotFalse 技術客的這篇 <a href="https://notfalse.net/39/http-message-format">HTTP/1.1 — 訊息格式 (Message Format)</a>，裡面對 HTTP 請求格式的各個部分上色並逐步講解的方式讓我蠻喜歡的，相當清楚。</p>
@@ -338,8 +337,7 @@ GET /api/product/1
 <p>例如說用 Content-Type 來說明這次訊息傳輸的格式，可能是表示 HTML 的 <code>text/html</code>，或者是表示 JSON 的 <code>application/json</code> 等等；也有可能用 <code>cookie</code> 來表示瀏覽器當前紀錄的資訊等等。</p>
 <p>Header 可以放的資訊有挺多種的，有興趣的朋友可以看看這篇 <a href="https://medium.com/ttyy2985/http%E5%89%8D%E5%BE%8C%E7%AB%AF%E5%82%B3%E8%BC%B8%E6%B5%81%E7%A8%8B-8ee40ffca1bd">HTTP 前後端傳輸流程</a>，列出了常見的 HTTP Header 欄位；如果好奇上面提到的 Content-Type 有那些常用的種類，也可以參照這篇 <a href="https://medium.com/hobo-engineer/ricky%E7%AD%86%E8%A8%98-postman-%E5%B8%B8%E8%A6%8B%E7%9A%84-content-type-b17a75396668">Postman 常見的 Content-type</a>，這邊就先按下不表。</p>
 <blockquote>
-<p>補充：除了規範的 Header 欄位以外，我們有時也會在 Header 裡放一些自訂的欄位。以前的慣例是用 <code>X-</code> 開頭來標示，例如 <code>X-Custom-Header</code>，但 <a href="https://datatracker.ietf.org/doc/html/rfc6648">RFC 6648</a> 建議停止繼續用 <code>X-</code>，而是直接用好讀好懂的名稱來定 Header 就好了。</p>
-</blockquote>
+<p>補充：除了規範的 Header 欄位以外，我們有時也會在 Header 裡放一些自訂的欄位。以前的慣例是用 <code>X-</code> 開頭來標示，例如 <code>X-Custom-Header</code>，但 <a href="https://datatracker.ietf.org/doc/html/rfc6648">RFC 6648</a> 建議停止繼續用 <code>X-</code>，而是直接用好讀好懂的名稱來定 Header 就好了。</p></blockquote>
 <hr>
 <p>Header 結束之後，按照訊息的種類和內容，可以再加上 Body，兩者之間會空一行隔開：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Json" data-lang="Json"><span style="display:flex;"><span><span style="color:#75715e">// Body
@@ -372,8 +370,7 @@ GET /api/product/1
 </span></span></code></pre></div><p>當然也有可能是用其他的格式，只要服務願意接受，兩邊能夠通訊其實也就沒什麼關係，說到底網頁最基本的部分也還是一個回傳 HTML 格式的 Response。所以各位如果遇見了沒看過的格式也不用驚慌，因為放在這裡都一樣是用來表示資料的格式，只是表達的方式不一樣而已。</p>
 <p>不過我平常開發和使用 API 都是用 JSON 的場合居多（個人覺得體感上 JSON 已經快一統 API 的天下了），強烈建議至少還是要能看懂 JSON。</p>
 <blockquote>
-<p>備註：關於 JSON 如果不太了解的朋友，可以參閱 <a href="http://miniaspreading.github.io/guide-to-json/1-what-is-json.html">JSON精要讀書紀錄</a></p>
-</blockquote>
+<p>備註：關於 JSON 如果不太了解的朋友，可以參閱 <a href="http://miniaspreading.github.io/guide-to-json/1-what-is-json.html">JSON精要讀書紀錄</a></p></blockquote>
 <hr>
 <p>最後再複習一次，當我們呼叫一個 API 的時候，我們可能會送出一個 HTTP Request（請求）</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-JSON" data-lang="JSON"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">GET</span> <span style="color:#960050;background-color:#1e0010">/product/</span><span style="color:#ae81ff">1</span> <span style="color:#960050;background-color:#1e0010">HTTP/</span><span style="color:#ae81ff">1.1</span> <span style="color:#75715e">// Start Line
@@ -455,8 +452,7 @@ GET /api/product/1
 <hr>
 <h3 id="什麼是-stateless">什麼是 Stateless</h3>
 <blockquote>
-<p>2021.05.04: 發文之後發現忘記提到無狀態了，所以這邊回來補充一下。</p>
-</blockquote>
+<p>2021.05.04: 發文之後發現忘記提到無狀態了，所以這邊回來補充一下。</p></blockquote>
 <p>接續前面提到的 Restful 風格，在 API 的制定上，Restful 還有另一個要求，就是必須是 <strong>無狀態的（Stateless）</strong>。</p>
 <p>無狀態是指：伺服器不會儲存使用者的狀態，當使用者呼叫 API 的時候，應該給予所有 API 需要的內容。</p>
 <p>用比較的方式來說：原本的 API 設計可能會保存使用者的動作狀態，然後留到下一次呼叫的時候再接著使用，那這樣的 API 設計的時候就像是制定食譜，必須要求使用者照順序才可以正常運作。</p>
@@ -468,8 +464,7 @@ GET /api/product/1
 <p>如此一來，就能提升彈性、自由度。同時，因為伺服器不用紀錄狀態，讓每一次呼叫都是獨立的呼叫，不只可以重複使用，聚焦在資源上也能讓操作變得簡潔。進一步來說，因為狀態不會被綁死在特定的機器上，那就可以開始搞擴大加機器做分散式啦。</p>
 <blockquote>
 <p>補充一下：當然，要做到完全沒有狀態是很難的，但我們可以做到讓伺服器不要綁死、每個呼叫都是盡量獨立的，來盡可能使得服務乾淨、有彈性、可分散處理。</p>
-<p>同時也因為這樣，為了讓使用者的狀態不會遺失（例如登入狀態），就得做到使用者的每個呼叫都要能夠證明自己的身份，所以才有了壓成 Token、把身分驗證的伺服器分離等等的驗證做法，這個部份我們有空再來填坑吧。</p>
-</blockquote>
+<p>同時也因為這樣，為了讓使用者的狀態不會遺失（例如登入狀態），就得做到使用者的每個呼叫都要能夠證明自己的身份，所以才有了壓成 Token、把身分驗證的伺服器分離等等的驗證做法，這個部份我們有空再來填坑吧。</p></blockquote>
 <h2 id="正式開工">正式開工</h2>
 <p>現在，我們已經大概了解 API 以及 Restful API 的一些相關知識了，接著就讓我們來實際建立一個簡單的 API 服務吧！</p>
 <h3 id="新建-net-core-web-api-專案">新建 .net Core Web API 專案</h3>
@@ -478,8 +473,7 @@ GET /api/product/1
 <p>我們這次用 .net Core 來進行示範，並且用官方內建的 Web API 框架直接開場，所以這邊選擇 Asp.net Core Web API。</p>
 <p><img src="https://image.igouist.net/lyjhWFS.webp" alt=""></p>
 <blockquote>
-<p>註：這些<strong>建立專案的畫面和選項隨著版本可能會有點不一樣</strong>，例如說可能會先選擇 .net Core 的 Web 服務之後，後續再勾選 API 的選項等等。例如之前的 <a href="/post/2019/12/aspnet-connect-db">Asp.net MVC</a> 文章中，就需要在選擇範本的時候選擇是 MVC 或 Web API 的範本。就麻煩各位再稍微見機行事一下。</p>
-</blockquote>
+<p>註：這些<strong>建立專案的畫面和選項隨著版本可能會有點不一樣</strong>，例如說可能會先選擇 .net Core 的 Web 服務之後，後續再勾選 API 的選項等等。例如之前的 <a href="/post/2019/12/aspnet-connect-db">Asp.net MVC</a> 文章中，就需要在選擇範本的時候選擇是 MVC 或 Web API 的範本。就麻煩各位再稍微見機行事一下。</p></blockquote>
 <p><img src="https://image.igouist.net/NCQj9Wf.webp" alt=""></p>
 <p>接著輸入專案名稱和選擇專案路徑，我在這邊採用 Newbie/Noob 的 N（而且 Project N 感覺很潮？），各位嘗試的時候可以自由取名，但要注意後續用到 <code>ProjectN</code> 這個名字的部分必須和你取的名字一致呦。</p>
 <p><img src="https://image.igouist.net/Lbr3qkw.webp" alt=""></p>
@@ -520,8 +514,7 @@ GET /api/product/1
 <blockquote>
 <p>補充一下，如果之前已經對 MVC 架構有點熟悉度的朋友，應該對 <code>Controller</code> 這個詞不陌生了。</p>
 <p>Web API 的範本其實也是同樣的概念，只是 <code>View</code> 的部分已經交給呼叫 Api 服務的使用者去處理了，而這邊的 <code>WeatherForecast.cs</code> 打開可以發現只是純粹的天氣資料，也就是個 <code>Model</code> 或 <code>ViewModel</code> 之類的東西。</p>
-<p>至於 <code>Controller</code> 的職責仍然沒有什麼變化，就是個第一線的交通警察。所以先前做過 MVC 的朋友大概會覺得比較親近一些吧。大概。</p>
-</blockquote>
+<p>至於 <code>Controller</code> 的職責仍然沒有什麼變化，就是個第一線的交通警察。所以先前做過 MVC 的朋友大概會覺得比較親近一些吧。大概。</p></blockquote>
 <p>這邊可以看到 <code>WeatherForecast.cs</code> 只是個用在 <code>WeatherForecastController</code> 的天氣資料類別。所以我們直接打開 <code>WeatherForecastController</code> 來觀察一下：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
@@ -561,20 +554,17 @@ GET /api/product/1
 <p>在建構式之後，我們會看到 <code>Get()</code> 方法，方法名稱並沒有什麼太大的關係，這邊要注意的重點在於：<strong>上面也掛了 <code>HttpGet</code> 的屬性，這個部份用來制定我們該方法所對應的 HTTP Method，也就是我們前面 <a href="#%E9%97%9C%E6%96%BC-restful-%E8%88%87-http-method">Restful 小節</a> 提過的「符合 HTTP 語意」所要處理的部分，例如 <code>GET</code>, <code>POST</code> 等等，就可以用 <code>[HttpGet]</code>, <code>[HttpPost]</code> 等屬性來標示</strong>。</p>
 <p>最後這個 <code>Get()</code> 方法會隨機丟回天氣跟氣溫。現在就讓我們實際來呼叫看看吧！</p>
 <blockquote>
-<p>備註：由於本系列還沒教到使用 Postman 或 Thunder client 這類直接呼叫 API 的方便小工具，所以呼叫的部分會使用瀏覽器或命令列進行示範，已經會使用這類工具的朋友可以用自己順手的工具嘗試就好囉。</p>
-</blockquote>
+<p>備註：由於本系列還沒教到使用 Postman 或 Thunder client 這類直接呼叫 API 的方便小工具，所以呼叫的部分會使用瀏覽器或命令列進行示範，已經會使用這類工具的朋友可以用自己順手的工具嘗試就好囉。</p></blockquote>
 <p>現在讓我們直接執行看看：</p>
 <p><img src="https://image.igouist.net/61SgLPf.webp" alt=""></p>
 <p>由於 <code>Properties/launchSettings.json</code> 裡有設定了 <code>launchUrl</code> 就是 <code>weatherforecast</code>，所以我們應該會直接看到它幫忙打開瀏覽器，並取得（<code>GET</code>）了 <code>https://localhost:{yourIISPort}/weatherforecast</code> 的結果：</p>
 <p><img src="https://image.igouist.net/4jl7qvd.webp" alt=""></p>
 <blockquote>
-<p>小提示：如果瀏覽器打開沒有自動排版而是一整陀的朋友，可以先去裝個 <a href="https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc">JsonView</a> 來保護眼睛。安裝前後差異可以參見 <a href="/post/2020/05/jsonview">Json View —— 用 Chrome 打開 Json 的正確方式</a></p>
-</blockquote>
+<p>小提示：如果瀏覽器打開沒有自動排版而是一整陀的朋友，可以先去裝個 <a href="https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc">JsonView</a> 來保護眼睛。安裝前後差異可以參見 <a href="/post/2020/05/jsonview">Json View —— 用 Chrome 打開 Json 的正確方式</a></p></blockquote>
 <p>那如果是要用 Powershell 呼叫 API 的朋友，可以使用 <code>Invoke-RestMethod</code> 來進行呼叫，再用 <code>ConvertTo-Json</code> 轉換成比較好讀的格式，例如：<code>Invoke-RestMethod https://localhost:{yourIISPort}/weatherforecast | ConvertTo-Json</code>。注意 yourIISPort 這兒是你啟動後的 port 號，像是 <code>https://localhost:44304/weatherforecast</code>。</p>
 <p><img src="https://image.igouist.net/QSp7VRr.webp" alt=""></p>
 <blockquote>
-<p>備註：Linux 的朋友就直接使用 Curl 來打就行了唄。另外，上面的 Powershell 語法特別感謝這篇 <a href="https://blog.poychang.net/using-powershell-call-http-request/">使用 PowerShell 呼叫 Web API 請求</a></p>
-</blockquote>
+<p>備註：Linux 的朋友就直接使用 Curl 來打就行了唄。另外，上面的 Powershell 語法特別感謝這篇 <a href="https://blog.poychang.net/using-powershell-call-http-request/">使用 PowerShell 呼叫 Web API 請求</a></p></blockquote>
 <p>到這邊我們就做完了簡單的認識，也確認我們新建的專案確實好好活著囉。</p>
 <hr>
 <h3 id="動手實作-crud">動手實作 CRUD</h3>
@@ -631,8 +621,7 @@ GET /api/product/1
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>這邊就讓我們先建立一個 <code>static</code> 並且為空的 <code>IEnumerable&lt;Card&gt;</code> 的私有成員，用來驗證我們後續開的功能是否可以正常運作</p>
 <blockquote>
-<p>備註：我們會在下一個章節把這部分更改為連線資料庫去變更真正的資料，這邊就先用私有成員假裝一下唄。</p>
-</blockquote>
+<p>備註：我們會在下一個章節把這部分更改為連線資料庫去變更真正的資料，這邊就先用私有成員假裝一下唄。</p></blockquote>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
 </span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardController</span> : ControllerBase
@@ -670,8 +659,7 @@ GET /api/product/1
 <p>另一個可以注意到的地方是<strong>我們在 Function 的參數上加上了 <code>[FromRoute]</code> 的屬性來告訴 API 說 <code>int id</code> 這個參數是來自於 Route 上的</strong>。</p>
 <p>除了 <code>FromRoute</code> 以外，還有 <code>GET</code> 時很常用到的 <code>[FromQuery]</code> 或舊版本的 <code>[FromUri]</code>（指這個參數從 QueryString 也就是 ?a=1&amp;b=2 那串裡面接收）、<code>POST</code> 和其他狀況常用到的 <code>[FromBody]</code>（指這個參數要從 Body 接收）等等，可以讓我們標明參數的來源。</p>
 <blockquote>
-<p>補充說明一下，雖然也有簡單型別預設從 Uri，複雜型別預設從 Body 等等貼心的設定，但個人認為還是盡量都標明出來，對自己和後續維護的人都會比較好一點…。</p>
-</blockquote>
+<p>補充說明一下，雖然也有簡單型別預設從 Uri，複雜型別預設從 Body 等等貼心的設定，但個人認為還是盡量都標明出來，對自己和後續維護的人都會比較好一點…。</p></blockquote>
 <p>接著讓我們加入新增卡片，還有編輯卡片的方法吧，在這之前我們先建立一個 <code>Parameter</code> 資料夾，用來放一些傳入的參數，並且新增一個 <code>CardParameter</code> 來當作我們新增和修改卡片的參數類別：</p>
 <p><img src="https://image.igouist.net/fiqBwZM.webp" alt=""></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
@@ -692,8 +680,7 @@ GET /api/product/1
 </span></span></code></pre></div><blockquote>
 <p>補充：雖然也有建立一個對應的類別，接著就只使用這個類別的作法，像是先前的 <a href="https://igouist.github.io/post/2019/12/aspnet-connect-db/">Asp.net MVC</a>，我們就只使用一個對應資料表欄位的類別來完成 CRUD 全部的操作。放到這裡來說的話，也就是只用 <code>Card</code> 類別，查詢也是用這個類別顯示，更新也是用這個類別當作參數。</p>
 <p>但有些情況的時候，我們會希望傳進來新增或修改的參數跟類別並不一致，例如當我們新增 <code>Card</code> 的時候，並不需要 <code>Id</code> 這個欄位；又或是有些資料表中有 <code>CreateTime</code>、<code>UpdateTime</code> 這類程式自動填入、顯示的時候才有意義的欄位，就不會在新增或更新的時候對外開放；又或者是分層架構這類每一層要求的欄位並不一樣的情況等等。這些時候，我們就會採取將參數，也就是 <code>Parameter</code> 切分成一個單獨的類別進行管控。</p>
-<p>基本上就像即使是同一張表，我們也會根據顯示的狀況來製作成不同的 <code>ViewModel</code> 一樣，我們也會根據傳入的狀況來決定 <code>Parameter</code> 的範圍。這個部份我們會在分層架構的時候再介紹一次，現在只要大致有<strong>可以把「顯示用類別」和「參數用類別」拆成不同的類別來進行出入口管制</strong>的概念就可以。</p>
-</blockquote>
+<p>基本上就像即使是同一張表，我們也會根據顯示的狀況來製作成不同的 <code>ViewModel</code> 一樣，我們也會根據傳入的狀況來決定 <code>Parameter</code> 的範圍。這個部份我們會在分層架構的時候再介紹一次，現在只要大致有<strong>可以把「顯示用類別」和「參數用類別」拆成不同的類別來進行出入口管制</strong>的概念就可以。</p></blockquote>
 <p>建立完參數之後，我們就可以回到 <code>CardController</code> 來加上新增和更新的方法：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/// 新增卡片</span>
@@ -846,8 +833,7 @@ GET /api/product/1
 </span></span></code></pre></div><p>最後讓我們啟動來測試一下吧！</p>
 <hr>
 <blockquote>
-<p>備註：和上面同樣地，因為這邊還沒說明到 Postman 等測試軟體，所以直接使用 Powershell 進行示範，已經有慣用軟體，或是直接寫一個腳本出來接的朋友，請用自己方便順手的測試方法去呼叫就好囉。</p>
-</blockquote>
+<p>備註：和上面同樣地，因為這邊還沒說明到 Postman 等測試軟體，所以直接使用 Powershell 進行示範，已經有慣用軟體，或是直接寫一個腳本出來接的朋友，請用自己方便順手的測試方法去呼叫就好囉。</p></blockquote>
 <p>讓我們打開 Powershell，繼續使用 <code>Invoke-RestMethod</code> 來呼叫 API 試試看，別忘了 Port 要換成你啟動專案時 IIS 掛上去的 Port</p>
 <p>首先讓我們新增一張卡片：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>Invoke-RestMethod https<span style="color:#960050;background-color:#1e0010">:</span>//localhost<span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">44304</span>/card `
@@ -883,11 +869,9 @@ GET /api/product/1
 <blockquote>
 <p>2021.05.08 補充：</p>
 <p>範本預設的 <code>WeatherForecast.cs</code> 和 <code>WeatherForecastController</code> 在將來的文章將不會再用到，繼續下一篇實作之前可以先刪除囉～</p>
-<p>有刪除的朋友記得要去 <code>launchSettings.json</code> 把 <code>launchUrl</code> 改成 card，下次啟動才會直接到我們這次新加的 CardController 呦！</p>
-</blockquote>
+<p>有刪除的朋友記得要去 <code>launchSettings.json</code> 把 <code>launchUrl</code> 改成 card，下次啟動才會直接到我們這次新加的 CardController 呦！</p></blockquote>
 <blockquote>
-<p>本系列下一篇：<a href="/post/2021/05/newbie-3-dapper">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a></p>
-</blockquote>
+<p>本系列下一篇：<a href="/post/2021/05/newbie-3-dapper">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a></p></blockquote>
 <h2 id="本系列文章">本系列文章</h2>
 <ul>
 <li><a href="/post/2021/04/newbie-0-menu">菜雞新訓記 (0): 目錄</a></li>
@@ -1167,7 +1151,7 @@ GET /api/product/1
     }
     var key = "2024-08-01";
     var value = dataMap.get(key);
-    var wordCount =  1680 ;
+    var wordCount =  1679 ;
     var link = "/post/2024/08/nine-sols/";
     var title = "《九日》白金心得";
     
@@ -3914,7 +3898,7 @@ GET /api/product/1
     
     <a href="https://igouist.github.io/tags/electron/">electron</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity framework</a>
     
     <a href="https://igouist.github.io/tags/enum/">enum</a>
     

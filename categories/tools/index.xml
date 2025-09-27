@@ -6,6 +6,8 @@
     <description>Recent content in Tools on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
+    <managingEditor>Igouist (Igouist)</managingEditor>
+    <webMaster>Igouist (Igouist)</webMaster>
     <follow_challenge>
       <feedId>56200764111934464</feedId>
       <userId>41821085092905984</userId>
@@ -15,7 +17,7 @@
       <title>記一次把部落格圖片從 Imgur 搬到 Cloudflare R2 的過程</title>
       <link>https://igouist.github.io/post/2025/07/migrate-blog-images-to-cloudflare-r2/</link>
       <pubDate>Thu, 31 Jul 2025 23:00:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2025/07/migrate-blog-images-to-cloudflare-r2/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753973577696.webp&#34; alt=&#34;1753973862036&#34;&gt;&lt;/p&gt;
 &lt;p&gt;在上個月的 &lt;a href=&#34;https://igouist.github.io/post/2025/06/imgur-temporarily-over-capacity-maybe-your-ip-banned/&#34;&gt;Imgur 一直 temporarily over capacity 嗎？先檢查網路看看吧&lt;/a&gt; 提到，因為 Imgur 不給上傳圖片了，現在寫個文章還得開 VPN 才能貼圖片。&lt;/p&gt;
@@ -48,8 +50,7 @@
 &lt;blockquote&gt;
 &lt;p&gt;備註：如果想要自訂 R2 資源對外的網址，需要先讓 R2 和 Cloudflare 上存在的網域做綁定，也就是要在 Cloudflare 買網域或是其他地方買來掛在 Cloudflare 上（參考 &lt;a href=&#34;https://developers.cloudflare.com/r2/buckets/public-buckets/#add-your-domain-to-cloudflare&#34;&gt;Public buckets&lt;/a&gt;）&lt;/p&gt;
 &lt;p&gt;因為我（之前為了&lt;a href=&#34;https://tedliou.com/software/bluesky-handle-domain-customize/&#34;&gt;改 Bluesky 的帳號名稱&lt;/a&gt;）已經在 Cloudflare 購買過網域了，所以可以直接用自定義網域來把圖片網址改成我要的網址。&lt;/p&gt;
-&lt;p&gt;如果你也想要自訂圖片網址，但在 Cloudflare 還沒有任何網域，可以先多找幾篇網域購買和託管到 Cloudflare 的文章（例如 &lt;a href=&#34;https://geekaz.net/cloudflare-domain-tutorial/&#34;&gt;Cloudflare 網域購買教學&lt;/a&gt;）參考參考，再決定要不要投入 $$ 買一個自己喜歡的名字。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;如果你也想要自訂圖片網址，但在 Cloudflare 還沒有任何網域，可以先多找幾篇網域購買和託管到 Cloudflare 的文章（例如 &lt;a href=&#34;https://geekaz.net/cloudflare-domain-tutorial/&#34;&gt;Cloudflare 網域購買教學&lt;/a&gt;）參考參考，再決定要不要投入 $$ 買一個自己喜歡的名字。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;建立完畢之後，可以先進貯體隨便上傳一張圖片，確認一下 URL 有沒有連到圖片：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970484783.webp&#34; alt=&#34;1753970485658&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;弄個-powershell-腳本把部落格的圖片先抓下來&#34;&gt;弄個 Powershell 腳本把部落格的圖片先抓下來&lt;/h2&gt;
@@ -97,8 +98,7 @@
 &lt;blockquote&gt;
 &lt;p&gt;補充：有些情況下跑完 WebP 反而會讓檔案大小變大，例如 JPG 轉 WebP（參見 &lt;a href=&#34;https://stackoverflow.com/questions/30641057/image-size-is-increased-when-converted-from-jpg-to-webp-with-quality-value-100&#34;&gt;Image size is increased when converted from jpg to webp with quality value 100&lt;/a&gt;）&lt;/p&gt;
 &lt;p&gt;而在 &lt;a href=&#34;https://developers.google.com/speed/webp/faq#can_a_webp_image_grow_larger_than_its_source_image&#34;&gt;WebP 常見問題文檔&lt;/a&gt;的「Can a WebP image grow larger than its source image?」這一小節有說明可能會導致檔案變大的場景，有遇到的朋友可以先確認看看。&lt;/p&gt;
-&lt;p&gt;因為我的部落格大多是 PNG 圖檔，文檔提到「Note that converting a JPEG source to lossy WebP, or a PNG source to lossless WebP are not prone to such file size surprises.」所以我仍然可以無腦轉 WebP，如果是跟我一樣都是 PNG 的朋友就別擔心了。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;因為我的部落格大多是 PNG 圖檔，文檔提到「Note that converting a JPEG source to lossy WebP, or a PNG source to lossless WebP are not prone to such file size surprises.」所以我仍然可以無腦轉 WebP，如果是跟我一樣都是 PNG 的朋友就別擔心了。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;在開始動手之前，需要先確保環境中有 WebP 的工具。沒有的朋朋們請先到 &lt;a href=&#34;https://developers.google.com/speed/webp/download?hl=zh-tw&#34;&gt;Google for Developers&lt;/a&gt; 下載回來（為了方便後續使用，可以把 &lt;code&gt;bin&lt;/code&gt; 的路徑丟進環境變數）&lt;/p&gt;
 &lt;p&gt;接著同樣產個小腳本來逐個把圖片壓成 WebP，這段除了好朋友 GPT 以外，還參考了這兩篇：&lt;/p&gt;
 &lt;ul&gt;
@@ -151,14 +151,12 @@
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970509149.webp&#34; alt=&#34;1753970510004&#34;&gt;&lt;/p&gt;
 &lt;p&gt;雖然瀏覽器上傳有每次一百個檔案的限制，但考慮到我部落格 &lt;del&gt;拖稿嚴重&lt;/del&gt; 圖片不多，因此手動上傳也是分分鐘的事情，這個步驟就手動傳一傳收工。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;補充：如果檔案太多，或是好想用下指令的方式上傳呢？請參考 R2 文檔的 &lt;a href=&#34;https://developers.cloudflare.com/r2/objects/upload-objects/&#34;&gt;Upload objects&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;補充：如果檔案太多，或是好想用下指令的方式上傳呢？請參考 R2 文檔的 &lt;a href=&#34;https://developers.cloudflare.com/r2/objects/upload-objects/&#34;&gt;Upload objects&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;因為前面的步驟只是下載檔案又上傳檔案，連檔名都沒更動，接著只要回去文章內文把原本有 &lt;code&gt;i.imgur.com&lt;/code&gt; 的連結都替代成新的圖片網址就搞定囉～&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：如果像我一樣，有些 JS 的操作會去呼叫圖片網址的話，可能會看到 CORS 的錯誤訊息，例如：&lt;code&gt;Access to image at &#39;https://xxxx/xxxxxx.webp&#39; from origin &#39;https://xxxxxx.github.io&#39; has been blocked by CORS policy: No &#39;Access-Control-Allow-Origin&#39; header is present on the requested resource.&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;這時候只要去 R2 儲存體的「設定」 找到 CORS 原則，把站台加上去就可以了。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970523569.webp&#34; alt=&#34;1753970524223&#34;&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970523569.webp&#34; alt=&#34;1753970524223&#34;&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;使用-vscode-的-markdown-image-延伸模組直接上傳圖片到-cloudflare-r2&#34;&gt;使用 VSCode 的 Markdown-image 延伸模組直接上傳圖片到 Cloudflare R2&lt;/h2&gt;
 &lt;p&gt;到這邊其實部落格的圖床遷移已經完成了，但因為我習慣用 VSCode 撰寫文章，之前都用 vscode-imgur 這款延伸模組，實現貼上圖片自動上傳 Imgur 的舒適體驗。&lt;/p&gt;
 &lt;p&gt;但現在圖床搬家到 Cloudflare R2 了，當然也要調整一下 VSCode 的上傳圖片工具。果斷採用開頭這篇「&lt;a href=&#34;https://blog.kyomind.tw/weekly-review-43/&#34;&gt;Imgur 封鎖台灣 IP，我把圖床搬到 Cloudflare R2&lt;/a&gt;」提到的 &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=hancel.markdown-image&#34;&gt;Markdown-image&lt;/a&gt;&lt;/p&gt;
@@ -220,7 +218,7 @@
       <title>Imgur 一直 temporarily over capacity 嗎？先檢查網路看看吧</title>
       <link>https://igouist.github.io/post/2025/06/imgur-temporarily-over-capacity-maybe-your-ip-banned/</link>
       <pubDate>Sat, 14 Jun 2025 13:30:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2025/06/imgur-temporarily-over-capacity-maybe-your-ip-banned/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;直接先講結論，給正在查這條錯誤訊息而來到這邊的朋朋參考：&lt;/p&gt;
@@ -230,8 +228,7 @@
 &lt;li&gt;如果開著 VPN，關掉再試試看； 反之如果沒開 VPN，找一組跳去外國試看看&lt;/li&gt;
 &lt;li&gt;到這邊還是不行的話，代表你遇到的狀況跟我不一樣，就，祝你好運&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&amp;ldquo;Imgur is temporarily over capacity&amp;rdquo; 這組錯誤訊息除了服務異常，也有可能是 IP 或地區被阻擋。目前（2025/06/14）在 &lt;a href=&#34;https://www.ptt.cc/bbs/Gossiping/M.1747406974.A.003.html&#34;&gt;PTT&lt;/a&gt; 和&lt;a href=&#34;https://home.gamer.com.tw/creationDetail.php?sn=6146343&#34;&gt;巴哈&lt;/a&gt;也有台灣 IP 被擋（官方未證實）的討論。&lt;br/&gt;因此有遇到並且找到這篇文的朋友，請先從網路問題開始檢查，最好能用 VPN 之類的跳到國外驗證試試，祝順利。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;&amp;ldquo;Imgur is temporarily over capacity&amp;rdquo; 這組錯誤訊息除了服務異常，也有可能是 IP 或地區被阻擋。目前（2025/06/14）在 &lt;a href=&#34;https://www.ptt.cc/bbs/Gossiping/M.1747406974.A.003.html&#34;&gt;PTT&lt;/a&gt; 和&lt;a href=&#34;https://home.gamer.com.tw/creationDetail.php?sn=6146343&#34;&gt;巴哈&lt;/a&gt;也有台灣 IP 被擋（官方未證實）的討論。&lt;br/&gt;因此有遇到並且找到這篇文的朋友，請先從網路問題開始檢查，最好能用 VPN 之類的跳到國外驗證試試，祝順利。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;前陣子寫文章要上傳圖片的時候一直無法上傳，覺得奇怪就去 Imgur 看了一下，結果登入按了啥反應也沒有，忘記密碼也沒反應。&lt;/p&gt;
 &lt;p&gt;開 F12 只看到 &amp;ldquo;Imgur is temporarily over capacity. Please try again later.&amp;quot;，例如忘記密碼的回應：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-json&#34; data-lang=&#34;json&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
@@ -258,8 +255,7 @@
 &lt;p&gt;下個問題就來了：俺尋思俺也沒開著 VPN 啊，更何況我 &lt;s&gt;偷懶這麼久&lt;/s&gt; 近期也沒使用 Imgur，手機 APP 又登得進去，應該不是針對我的帳號做阻擋了。那到底是啥被擋了？&lt;/p&gt;
 &lt;p&gt;這時突然看到巴哈這篇 &lt;a href=&#34;https://home.gamer.com.tw/creationDetail.php?sn=6146343&#34;&gt;Imgur壞了? 無法上傳? 2025最佳替代圖床&lt;/a&gt; 提到：&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;全球最大圖床之一的 Imgur 是許多網友的最熟悉放圖工具之一，大約從 2025 年 5 月 16 日上午開始，Imgur 開始針對台灣地區的 ip 進行封鎖，使用國外 ip 可以，原因尚未對外公開說明，截至今日仍處於無法上傳的情況……&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;全球最大圖床之一的 Imgur 是許多網友的最熟悉放圖工具之一，大約從 2025 年 5 月 16 日上午開始，Imgur 開始針對台灣地區的 ip 進行封鎖，使用國外 ip 可以，原因尚未對外公開說明，截至今日仍處於無法上傳的情況……&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;看到這句決定開一下 VPN 跳外國試試看，結果&lt;/p&gt;
 &lt;p&gt;登入成功。&lt;/p&gt;
 &lt;hr&gt;
@@ -284,7 +280,7 @@
       <title>JMeter: 使用 Constant Throughput Timer 設置固定吞吐量</title>
       <link>https://igouist.github.io/post/2025/02/jmeter-constant-throughput-timer/</link>
       <pubDate>Sat, 01 Feb 2025 08:15:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2025/02/jmeter-constant-throughput-timer/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/XGOmHat.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;我們在之前 &lt;a href=&#34;https://igouist.github.io/post/2022/10/jmeter&#34;&gt;JMeter&lt;/a&gt; 的筆記時，介紹過直接對服務爆打一波的作法：簡單來說就是打好幾輪看看服務撐不撐得住，然後紀錄能吃的最大數量，可以說是非常暴力的做法。&lt;/p&gt;
@@ -292,14 +288,12 @@
 &lt;p&gt;這時候，&lt;strong&gt;我們就可以用 JMeter 提供的 Constant Throughput Timer（固定吞吐量計時器）來限制呼叫頻率&lt;/strong&gt;，馬上來筆記一篇。&lt;/p&gt;
 &lt;hr&gt;
 &lt;blockquote&gt;
-&lt;p&gt;以下範例會使用到 JMeter 的 HTTP Request 等功能，還不太瞭解的朋友推薦先閱讀上一篇筆記：&lt;a href=&#34;https://igouist.github.io/post/2022/10/jmeter&#34;&gt;使用 JMeter 來對 API 壓力測試吧&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;以下範例會使用到 JMeter 的 HTTP Request 等功能，還不太瞭解的朋友推薦先閱讀上一篇筆記：&lt;a href=&#34;https://igouist.github.io/post/2022/10/jmeter&#34;&gt;使用 JMeter 來對 API 壓力測試吧&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;先確認一下環境：我們有一組腳本，內容只是簡單地戳一下 API&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/O3yDOx1.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;現在我們希望可以模擬線上使用者在尖峰時段的使用頻率，並確認我們服務挺得過去，所以需要把這組腳本調整成：&lt;strong&gt;「每分鐘戳 20 次，持續五分鐘」&lt;/strong&gt;&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;補充：有時候我們收到的需求會是「持續五分鐘，然後總量為 100」這種，意思是差不多的，反正先確認好 &lt;strong&gt;「每分鐘的數量 x 持續幾分鐘 = 總量」&lt;/strong&gt; 這幾個關鍵數字再說嚕。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;補充：有時候我們收到的需求會是「持續五分鐘，然後總量為 100」這種，意思是差不多的，反正先確認好 &lt;strong&gt;「每分鐘的數量 x 持續幾分鐘 = 總量」&lt;/strong&gt; 這幾個關鍵數字再說嚕。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;首先讓我們加入一組 Constant Throughput Timer：
 &lt;img src=&#34;https://image.igouist.net/ymK5ZCq.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;並且找到 Constant Throughput Timer 裡面的 &lt;strong&gt;Target Throughput（每分鐘呼叫次數）&lt;/strong&gt;，我們這次的需求是每分鐘要戳他個 20 次，這邊就直接放 20.0：
@@ -335,7 +329,7 @@
       <title>WakaTime: 隱藏敏感資訊、開啟離線暫存、卡在 Initialized 時的參考解法</title>
       <link>https://igouist.github.io/post/2025/01/wakatime-hide-project-name-and-offline-and-initialized/</link>
       <pubDate>Sun, 12 Jan 2025 00:00:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2025/01/wakatime-hide-project-name-and-offline-and-initialized/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/5UBS6ab.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;WakaTime 是一款紀錄 Coding 時間的好用工具，只要安裝 IDE 的擴充套件，就可以輕鬆地記錄各個語言、編輯器、專案所用的時間。我從 2020 年寫了篇 &lt;a href=&#34;https://igouist.github.io/post/2020/06/wakatime/&#34;&gt;WakaTime 介紹文章&lt;/a&gt; 開始，也一路用到現在 2025 了，已經習慣動不動上去看兩眼的生活。&lt;/p&gt;
@@ -367,8 +361,7 @@
 &lt;p&gt;在 WakaTime 看見的會是 HIDDEN：
 &lt;img src=&#34;https://image.igouist.net/xbKTWlCm.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;補充：因為檔案名稱變成 HIDDEN 了，所以如果原本有用自訂規則來偵測副檔名之類的做法（像 &lt;code&gt;.linq&lt;/code&gt; =&amp;gt; C#）就會吃不到囉。如果有使用 Custom rules 的朋友請再注意一下。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;補充：因為檔案名稱變成 HIDDEN 了，所以如果原本有用自訂規則來偵測副檔名之類的做法（像 &lt;code&gt;.linq&lt;/code&gt; =&amp;gt; C#）就會吃不到囉。如果有使用 Custom rules 的朋友請再注意一下。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;hr&gt;
 &lt;p&gt;開啟 &lt;code&gt;hide_project_names&lt;/code&gt;（隱藏專案名稱）之後，則會幫你的專案取一個新名字。這個名字會在專案資料夾底下建一個 &lt;code&gt;.wakatime-project&lt;/code&gt; 的檔案並存放在裡面。&lt;/p&gt;
 &lt;p&gt;在 WakaTime 看見的就會是這組專案名稱囉：&lt;/p&gt;
@@ -412,8 +405,7 @@
 &lt;p&gt;解壓縮之後會得到 &lt;code&gt;wakatime-cli-{os}-{version}.exe&lt;/code&gt;，以我在 Windows 64 位元的工作機為例，就會是 &lt;code&gt;wakatime-cli-windows-amd64.exe&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;把這個 &lt;code&gt;exe&lt;/code&gt; 手動丟到 &lt;code&gt;.wakatime&lt;/code&gt; 資料夾裡，就可以重開 IDE 觀察看看有沒有疏通囉～&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;備註：因為初始化的步驟不僅這項，也可能還有其他原因導致卡住&lt;br/&gt;如果有用其他解法成功打通的朋友也歡迎分享～&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;備註：因為初始化的步驟不僅這項，也可能還有其他原因導致卡住&lt;br/&gt;如果有用其他解法成功打通的朋友也歡迎分享～&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://github.com/wakatime/wakatime-cli/blob/develop/USAGE.md&#34;&gt;USAGE.md - wakatime/wakatime-cli&lt;/a&gt;&lt;/li&gt;
@@ -425,7 +417,7 @@
       <title>VSCode: 使用 LiveShare 來即時線上協作吧</title>
       <link>https://igouist.github.io/post/2024/09/vscode-live-share/</link>
       <pubDate>Sun, 01 Sep 2024 15:00:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2024/09/vscode-live-share/</guid>
       <description>&lt;p&gt;在 VSCode 躺了一段時間的 LiveShare 終於派上了用場，這邊就簡單記錄一篇，方便以後推坑的時候用。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/8qQxzrk.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
@@ -437,8 +429,7 @@
 &lt;p&gt;當我們正在 WFH，或是像這種懶得走過去(?)，但又想要和朋朋們來場 Pair 的時候，LiveShare 就可以派上用場了！&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;備註：Visual Studio 應該已經內建 LiveShare，&lt;br/&gt;可以從「檔案 &amp;gt; 開始 Live Share 工作階段」來開啟&lt;/p&gt;
-&lt;p&gt;而 Jetbrains 的朋朋，&lt;br/&gt;請左轉使用 &lt;a href=&#34;https://www.jetbrains.com/code-with-me/&#34;&gt;Code with me&lt;/a&gt;，同樣也能線上開嚕&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;而 Jetbrains 的朋朋，&lt;br/&gt;請左轉使用 &lt;a href=&#34;https://www.jetbrains.com/code-with-me/&#34;&gt;Code with me&lt;/a&gt;，同樣也能線上開嚕&lt;/p&gt;&lt;/blockquote&gt;
 &lt;hr&gt;
 &lt;p&gt;馬上來介紹一下安裝和基本的使用方式吧。&lt;/p&gt;
 &lt;p&gt;首先第一步當然是先安裝擴充套件：&lt;/p&gt;
@@ -465,7 +456,7 @@
       <title>使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗</title>
       <link>https://igouist.github.io/post/2023/01/banner-2-midjourney-and-canva/</link>
       <pubDate>Sun, 29 Jan 2023 10:01:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2023/01/banner-2-midjourney-and-canva/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/MqLSU3f.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;我們在&lt;a href=&#34;https://igouist.github.io/post/2023/01/banner-1-system-drawing/&#34;&gt;前一篇&lt;/a&gt;嘗試自行產生簡單的文字 Banner，我也用了好一陣子（畢竟三年前的新訓文章還是沒整理完嘛）。&lt;/p&gt;
@@ -501,8 +492,7 @@
 &lt;p&gt;或是到 Midjourney 提供的二次元繪圖版本 &lt;a href=&#34;https://nijijourney.com/zh/&#34;&gt;Nijijourney&lt;/a&gt;，註冊流程都一樣，但有支援中文頻道。像我這樣的英文渣去個中文頻道比較有機會看懂其他人詠唱咒文的邏輯啦，不然就認命 Google 翻譯了 xD&lt;/p&gt;
 &lt;p&gt;如果沒有什麼方向，可以先隨便下咒嘗試一下，但要注意免費試用有產圖的次數限制哦&lt;br/&gt;
 我個人大概產出 40 張圖的時候就用光免費額度了 xD&lt;/p&gt;
-&lt;p&gt;（玩不夠的可以參見&lt;a href=&#34;https://www.midjourney.com/account/&#34;&gt;定價&lt;/a&gt;以及&lt;a href=&#34;https://home.gamer.com.tw/artwork.php?sn=5527646&#34;&gt;這篇巴哈的介紹&lt;/a&gt;，付費版還有比較慢但可以依直玩的 relax 模式，真香）。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;（玩不夠的可以參見&lt;a href=&#34;https://www.midjourney.com/account/&#34;&gt;定價&lt;/a&gt;以及&lt;a href=&#34;https://home.gamer.com.tw/artwork.php?sn=5527646&#34;&gt;這篇巴哈的介紹&lt;/a&gt;，付費版還有比較慢但可以依直玩的 relax 模式，真香）。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;咒文輸入完之後 Midjourney 會運算一下，過陣子機器人就會 Tag 你跟你說搞定啦：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/HiCtIZr.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看到下面有兩排按鈕：&lt;/p&gt;
@@ -530,8 +520,7 @@
 &lt;p&gt;更新：最新的 v5 已經可以支援自動比例囉！&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/wvsnRgc.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;有了 v5 之後，我只需要 &lt;code&gt;--v 5 --ar 3:1&lt;/code&gt; 就可以得到我想要的橫幅圖啦！&lt;/p&gt;
-&lt;p&gt;不過以下還是 v4 版的血淚經驗，留著當紀念吧 xD&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;不過以下還是 v4 版的血淚經驗，留著當紀念吧 xD&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;雖然可以用 &lt;code&gt;--v 3&lt;/code&gt; 來指定比較舊的 v3 版本，這樣比例就能支援到更長的 &lt;code&gt;7:4&lt;/code&gt;，但畢竟是舊版，連雞的形狀都高機率崩壞掉&lt;/p&gt;
 &lt;p&gt;甚至給我炸雞：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/2VmgckB.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
@@ -574,7 +563,7 @@
       <title>Polyglot Notebooks －－ 在 VSCode 簡單迅速地撰寫 C# 腳本吧</title>
       <link>https://igouist.github.io/post/2023/01/polyglot-notebooks/</link>
       <pubDate>Sat, 28 Jan 2023 18:00:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2023/01/polyglot-notebooks/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/vZzccvm.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;像我這樣的菜鳥工程師，&lt;strong&gt;在 Coding 的時候時常會需要簡單試一些想法&lt;/strong&gt;。像是「我這邊下了這串 Linq 出來的資料，到底是不是我想要的內容啊 = =？」&lt;/p&gt;
@@ -612,8 +601,7 @@
 &lt;li&gt;使用 Polyglot Notebooks 的指令或快捷鍵，直接建立 dib 或 ipynb 檔案&lt;/li&gt;
 &lt;/ul&gt;
 &lt;blockquote&gt;
-&lt;p&gt;補充：ipynb 檔案是用於撰寫 IPython Notebook 的檔案，也就是 Jupyter Notebook 在使用的檔案。而微軟把拔藉由 .NET Interactive 引擎讓 Jupyter Notebook 可以支援 C#, F#, SQL 等語言，讓 Notebook 可以支援多語言的撰寫，因此我們建立 ipynb 檔案也是可以撰寫 C# 的，感謝微軟把拔&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;補充：ipynb 檔案是用於撰寫 IPython Notebook 的檔案，也就是 Jupyter Notebook 在使用的檔案。而微軟把拔藉由 .NET Interactive 引擎讓 Jupyter Notebook 可以支援 C#, F#, SQL 等語言，讓 Notebook 可以支援多語言的撰寫，因此我們建立 ipynb 檔案也是可以撰寫 C# 的，感謝微軟把拔&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;由於我之前已經有在使用 Jupyter Notebook 撰寫 Python，因此這邊就以新增一個 ipynb 檔案進行示範：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/kjSzEzo.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Z6gdYDa.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
@@ -622,8 +610,7 @@
 &lt;p&gt;現在我們已經可以看到讓我們 Coding 的儲存格了，這樣就完成準備工作啦！&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：也可以使用 &lt;code&gt;Ctrl+Shift+Alt+N&lt;/code&gt; 快捷鍵，或是 &lt;code&gt;Ctrl+Shift+P&lt;/code&gt; 叫出 VSCode 的指令窗來下 &lt;code&gt;Polyglot Notebook: Create new blank notebook&lt;/code&gt; 來直接建立檔案&lt;/p&gt;
-&lt;p&gt;這時候 VSCode 會詢問你要建立 &lt;code&gt;.dib&lt;/code&gt; 或是 &lt;code&gt;.ipynb&lt;/code&gt;，其中 &lt;code&gt;.dib&lt;/code&gt; 進去就直接是 .NET Interactive 引擎，但目前還在實驗階段，並且 &lt;code&gt;ipynb&lt;/code&gt; 還是以較常見的格式，因此我都還是選擇慣用的 &lt;code&gt;.ipynb&lt;/code&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;這時候 VSCode 會詢問你要建立 &lt;code&gt;.dib&lt;/code&gt; 或是 &lt;code&gt;.ipynb&lt;/code&gt;，其中 &lt;code&gt;.dib&lt;/code&gt; 進去就直接是 .NET Interactive 引擎，但目前還在實驗階段，並且 &lt;code&gt;ipynb&lt;/code&gt; 還是以較常見的格式，因此我都還是選擇慣用的 &lt;code&gt;.ipynb&lt;/code&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;開始撰寫腳本&#34;&gt;開始撰寫腳本&lt;/h2&gt;
 &lt;p&gt;首先當然要從 Hello world 開始啦，讓我們直接在儲存格裡面開寫：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/g4T1oHZ.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
@@ -666,8 +653,7 @@
 &lt;p&gt;搞定！現在我有信心使用這段 Code 了。還可以順便存成一個「分組取第一筆.ipynb」來讓以後的我可以抄，又是美好的一天。&lt;/p&gt;
 &lt;h3 id=&#34;安裝-nuget-套件--簡單的呼叫-api-範例&#34;&gt;安裝 Nuget 套件 &amp;amp; 簡單的呼叫 API 範例&lt;/h3&gt;
 &lt;blockquote&gt;
-&lt;p&gt;2024.4.20 更新：後來時常連公司自家的 Nuget 抓內部套件，決定回來補一下指定 Nuget 的範例&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;2024.4.20 更新：後來時常連公司自家的 Nuget 抓內部套件，決定回來補一下指定 Nuget 的範例&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;平常開發的時候，我們還會運用各種套件來完成目標。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;在 Polyglot Notebooks 裡可以使用 &lt;code&gt;#r &amp;quot;nuget:{套件名稱}&amp;quot;&lt;/code&gt; 來安裝 Nuget 套件&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;此外，如果有需要指定 Nuget 套件來源，也可以使用 &lt;code&gt;#i&lt;/code&gt; 來處理&lt;/p&gt;
@@ -707,8 +693,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    C--&amp;gt;D;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;使用-set-來跨語言傳遞變數&#34;&gt;使用 &lt;code&gt;#!set&lt;/code&gt; 來跨語言傳遞變數&lt;/h3&gt;
 &lt;blockquote&gt;
-&lt;p&gt;2024.4.20 更新：用了一段時間之後，發現這東西的其中一個香點就在跨語言。趕緊回來補一下這段&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;2024.4.20 更新：用了一段時間之後，發現這東西的其中一個香點就在跨語言。趕緊回來補一下這段&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;當我們需要在兩個不同的程式語言之間傳遞變數，就可以使用 &lt;code&gt;#!set&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;可參考：&lt;a href=&#34;https://github.com/dotnet/interactive/blob/main/docs/variable-sharing.md&#34;&gt;Variable sharing 變量共享&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;ps. &lt;code&gt;#!share&lt;/code&gt; 誕生的比較早，但後來推出了更香的 &lt;code&gt;#!set&lt;/code&gt;，所以這邊就只記 set 嚕 XD&lt;/p&gt;
@@ -746,8 +731,7 @@
 &lt;p&gt;甚至－－&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/IxaPE1U.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;原來 Polyglot Notebooks 搭配 Github Copilot 才是完全體啊！&lt;/p&gt;
-&lt;p&gt;&lt;del&gt;果然還是該拿來刷&amp;hellip;&lt;/del&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;&lt;del&gt;果然還是該拿來刷&amp;hellip;&lt;/del&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://andrewlock.net/exploring-dotnet-interactive-notebooks/&#34;&gt;Exploring .NET interactive notebooks with VS Code (andrewlock.net)&lt;/a&gt;&lt;/li&gt;
@@ -759,7 +743,7 @@
       <title>使用 JMeter 來對 API 壓力測試吧</title>
       <link>https://igouist.github.io/post/2022/10/jmeter/</link>
       <pubDate>Mon, 10 Oct 2022 18:50:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2022/10/jmeter/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/sMw5vbw.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;前陣子協助某支 API 的壓力測試，趁機請 QA 朋朋指導指導一下，因此接觸了這款簡單好用的壓測工具 JMeter，趁現在記憶還在的時候記錄起來。&lt;/p&gt;
@@ -767,8 +751,7 @@
 &lt;p&gt;&lt;a href=&#34;https://jmeter.apache.org/&#34;&gt;JMeter&lt;/a&gt; 是款充滿暴力的壓力測試工具，只要告訴他：你要揍哪支 API？要揍幾拳？揍他個幾輪？它就會忠實地對你指定的 API 爆打一頓。&lt;/p&gt;
 &lt;h2 id=&#34;下載與開啟-jmeter&#34;&gt;下載與開啟 JMeter&lt;/h2&gt;
 &lt;blockquote&gt;
-&lt;p&gt;JMeter 會需要 Java，如果還沒有 Java 的朋友可以先安裝一下：&lt;a href=&#34;https://www.java.com/zh-TW/download/ie_manual.jsp?locale=zh_TW&#34;&gt;下載 Windows 適用的 Java&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;JMeter 會需要 Java，如果還沒有 Java 的朋友可以先安裝一下：&lt;a href=&#34;https://www.java.com/zh-TW/download/ie_manual.jsp?locale=zh_TW&#34;&gt;下載 Windows 適用的 Java&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;首先讓我們到 JMeter 官網的 &lt;a href=&#34;https://jmeter.apache.org/download_jmeter.cgi&#34;&gt;Download 頁面&lt;/a&gt; 來下載，這邊我選擇 zip：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/mBnMtJj.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;下載並解壓縮後，可以在 &lt;code&gt;/bin&lt;/code&gt; 找到 &lt;code&gt;jmeter.bat&lt;/code&gt;：&lt;/p&gt;
@@ -884,7 +867,7 @@
       <title>在 Chrome 使用翻譯套件 ImTranslator 的嵌入式翻譯來逐行中英對照吧</title>
       <link>https://igouist.github.io/post/2022/09/imtranslator/</link>
       <pubDate>Sun, 18 Sep 2022 10:55:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2022/09/imtranslator/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/0XXKTrd.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;嗨各位朋朋，又到了替文章數灌水的好用工具時間！&lt;/p&gt;
@@ -919,7 +902,7 @@
       <title>DevToys —— 開發人員的瑞士刀工具箱</title>
       <link>https://igouist.github.io/post/2022/08/devtoys/</link>
       <pubDate>Sat, 20 Aug 2022 08:00:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2022/08/devtoys/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://github.com/veler/DevToys/raw/main/assets/logo/300x300.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;嗨各位朋朋，又双叒叕到了「同事推薦的好用工具」時間！&lt;/p&gt;
@@ -940,15 +923,14 @@
 &lt;p&gt;那麼這次的小工具分享就到這邊，&lt;del&gt;再度成功一個工具水一篇文&lt;/del&gt;，推薦大家下載試試！&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Ｑ：這類小工具箱還蠻多的吧？為什麼挑這款呢&lt;/p&gt;
-&lt;p&gt;Ａ：因為它好看啊，好看就完事了&lt;/p&gt;
-&lt;/blockquote&gt;</description>
+&lt;p&gt;Ａ：因為它好看啊，好看就完事了&lt;/p&gt;&lt;/blockquote&gt;</description>
     </item>
     
     <item>
       <title>Snispate —— 方便的截圖小幫手，放下剪取工具和小畫家吧</title>
       <link>https://igouist.github.io/post/2022/08/snispate/</link>
       <pubDate>Sun, 07 Aug 2022 11:44:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2022/08/snispate/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/w0SORqB.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;嗨各位朋朋，又到了「同事推薦的好用工具」時間！&lt;/p&gt;
@@ -982,7 +964,7 @@
       <title>使用 Wox &amp; Everything 在 Windows 上得到良好的搜尋體驗</title>
       <link>https://igouist.github.io/post/2022/06/wox-and-everything/</link>
       <pubDate>Sat, 18 Jun 2022 20:11:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2022/06/wox-and-everything/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Qw6TXg6.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;介紹一下同事推薦的 Windows 好用工具：方便的快速啟動工具 Wox 以及能快速搜尋檔案的 Everything。&lt;/p&gt;
@@ -1023,7 +1005,7 @@
       <title>C#: 使用 AngleSharp 爬蟲工具來抓取網頁內容吧</title>
       <link>https://igouist.github.io/post/2022/06/angle-sharp/</link>
       <pubDate>Sun, 05 Jun 2022 00:21:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2022/06/angle-sharp/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/DHoF8Yw.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;前一次用到 AngleSharp 已經是去年抓網路小說的時候，想不到最近又用上了，乾脆就來筆記一下。&lt;/p&gt;
@@ -1034,8 +1016,7 @@
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/JeS3P2J.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;確認安裝完畢後就可以開始撰寫囉～&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;本篇接下來會使用 Linqpad 來進行簡單的範例，使用 VisualStudio 的朋友遇到 &lt;code&gt;Dump()&lt;/code&gt; 之類的語法就請再自己調整一下呦&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;本篇接下來會使用 Linqpad 來進行簡單的範例，使用 VisualStudio 的朋友遇到 &lt;code&gt;Dump()&lt;/code&gt; 之類的語法就請再自己調整一下呦&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;建立-browser-抓取網頁內容&#34;&gt;建立 Browser 抓取網頁內容&lt;/h2&gt;
 &lt;p&gt;首先我們需要先建立一個 Browser 來代替我們做事：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Main()
@@ -1107,12 +1088,10 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        IsResourceLoadingEnabled = &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt; 
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    })
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    .WithCss();
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;不過這些場景（需要掛 Cookie 啦、要先等 CSS 啦）通常都是遇到之後才去 Google 的，這邊就不再贅述。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;不過這些場景（需要掛 Cookie 啦、要先等 CSS 啦）通常都是遇到之後才去 Google 的，這邊就不再贅述。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：&lt;code&gt;browser.OpenAsync&lt;/code&gt; 除了提供網址讓他直接抓回來以外，有時候我們也會遇到本機已經有 Html 檔案要處理，或是已經用 HttpClient 等方法把網頁內容拿回來了的狀況&lt;/p&gt;
-&lt;p&gt;這種時候也可以用 &lt;code&gt;OpenAsync&lt;/code&gt; 提供的委派方法來把 HTML 字串讀取成 AngleSharp 的物件。例如：&lt;code&gt;OpenAsync(res =&amp;gt; res.Content(html))&lt;/code&gt;，同時委派中的 &lt;code&gt;VirtualResponse&lt;/code&gt; 也提供了對這物件設定 Cookie 等資訊的方法，有這個需求的朋友可以再動手試試。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;這種時候也可以用 &lt;code&gt;OpenAsync&lt;/code&gt; 提供的委派方法來把 HTML 字串讀取成 AngleSharp 的物件。例如：&lt;code&gt;OpenAsync(res =&amp;gt; res.Content(html))&lt;/code&gt;，同時委派中的 &lt;code&gt;VirtualResponse&lt;/code&gt; 也提供了對這物件設定 Cookie 等資訊的方法，有這個需求的朋友可以再動手試試。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;使用篩選器來抓指定的內容&#34;&gt;使用篩選器來抓指定的內容&lt;/h2&gt;
 &lt;p&gt;現在我們已經成功把網頁內容抓回來了，接著就是要&lt;strong&gt;使用&lt;a href=&#34;https://www.runoob.com/cssref/css-selectors.html&#34;&gt;選擇器&lt;/a&gt;來抓出我們想要的內容囉&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;如果有用過 JQuery 或是整天寫 CSS 的朋友應該不會陌生，大致上是這樣的：&lt;/p&gt;
@@ -1137,8 +1116,7 @@
 &lt;p&gt;這邊以 Edge 為例，讓我們到目標網頁按下Ｆ１２打開開發人員工具，直接選取目標：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/F2XyfEX.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;選取目標後就會告訴我們這是哪個元素，我們只需要對該元素右鍵，然後複製它的 Selector 就行啦&lt;/p&gt;
-&lt;p&gt;不過這樣抓到的 Selector 語法通常會比較囉嗦一點，例如這個頁面就是 &lt;code&gt;#main-container &amp;gt; div.r-list-container.action-bar-margin.bbs-screen&lt;/code&gt;，這部份就再自己調整一下囉&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;不過這樣抓到的 Selector 語法通常會比較囉嗦一點，例如這個頁面就是 &lt;code&gt;#main-container &amp;gt; div.r-list-container.action-bar-margin.bbs-screen&lt;/code&gt;，這部份就再自己調整一下囉&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;整理抓取到的內容&#34;&gt;整理抓取到的內容&lt;/h2&gt;
 &lt;p&gt;現在讓我們建立一個類別用來處理標題資訊吧，這邊我只需要名稱、推噓數和文章連結，其他像是作者什麼的不太需要：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Post&lt;/span&gt;
@@ -1190,8 +1168,7 @@
 &lt;p&gt;到這邊我們就成功把網頁的內容抓下來、篩選出我們要的內容囉！&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：除了我們前面使用的 QuerySelector、GetAttribute 以外，AngleSharp 還提供了 &lt;code&gt;GetElementsByTagName&lt;/code&gt;、&lt;code&gt;Children&lt;/code&gt; 等屬性和方法讓我們能方便地在 DOM 中到處抓取元素。&lt;/p&gt;
-&lt;p&gt;有興趣的朋友再自己摸索一下吧，我自己是比較習慣無腦 &lt;code&gt;QuerySelector&lt;/code&gt; 了啦哈哈。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;有興趣的朋友再自己摸索一下吧，我自己是比較習慣無腦 &lt;code&gt;QuerySelector&lt;/code&gt; 了啦哈哈。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;搭配遞迴來多撈幾頁&#34;&gt;搭配遞迴來多撈幾頁&lt;/h2&gt;
 &lt;p&gt;其實我們前面已經把 AngleSharp 的基本操作跑完一輪了，基本上不外乎是「&lt;strong&gt;打開目標網頁 → 找到目標元素 → 用篩選器抓出來&lt;/strong&gt;」這樣的 Loop，這節只是單純讓這個腳本完善一點而已。&lt;/p&gt;
 &lt;p&gt;因此不感興趣的朋友也可以直接跳過這一段，直接前往&lt;a href=&#34;#%E5%B0%8F%E7%B5%90&#34;&gt;小結&lt;/a&gt;，準備出發去動手抓自己想要的網頁囉。&lt;/p&gt;
@@ -1321,7 +1298,7 @@
       <title>Omni —— 實用的 Chrome 分頁書籤搜尋欄</title>
       <link>https://igouist.github.io/post/2022/03/omni/</link>
       <pubDate>Sun, 13 Mar 2022 20:00:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2022/03/omni/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/D29Htug.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://chrome.google.com/webstore/detail/omni-bookmark-history-tab/mapjgeachilmcbbokkgcbgpbakaaeehi&#34;&gt;Omni&lt;/a&gt; 是一款 Chrome 的擴充功能。它能夠讓你用快捷鍵叫出搜尋框，並直接&lt;strong&gt;搜尋當前開啟的分頁、書籤、歷史紀錄&lt;/strong&gt;等等。&lt;/p&gt;
@@ -1345,8 +1322,7 @@
 &lt;ul&gt;
 &lt;li&gt;Chrome: 右上角擴充功能按鈕 → 管理擴充功能 → 左上工具列 → 鍵盤快捷鍵&lt;/li&gt;
 &lt;li&gt;Edge: 右上角延伸模組按鈕 → 管理延伸模組 → 左側工具列 → 鍵盤快捷鍵&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
+&lt;/ul&gt;&lt;/blockquote&gt;
 &lt;p&gt;叫出搜尋欄時，除了當前開著的分頁以外，也會顯示一些 Chrome 內建常用的快捷鍵。&lt;/p&gt;
 &lt;p&gt;除此之外，Omni 也有提供 Google 日曆的新增、Notion 的新增筆記等等頁面快捷鍵（不過這部分的場景蠻特定的，應該沒有搜尋分頁等功能常用）&lt;/p&gt;
 &lt;p&gt;而在搜尋窗輸入文字後，就可以在分頁、書籤搜尋有該關鍵字的頁面。也可以使用關鍵字來指定搜尋範圍：&lt;/p&gt;
@@ -1368,7 +1344,7 @@
       <title>Visual Studio: 在同一個檔案分割視窗</title>
       <link>https://igouist.github.io/post/2021/05/visual-studio-split-window-in-one-file/</link>
       <pubDate>Sun, 02 May 2021 10:00:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2021/05/visual-studio-split-window-in-one-file/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/LEB9mUy.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;當我們遇到比阿嬤的裹腳布還臭還長的類別時，常常會發生「需要一邊確認 Public 的 Function，但它用到的 Private Function 卻遠在天邊」，或是「SQL 字串／字串常數等等另外宣告在檔案最上端，導致瀏覽邏輯到一半的時候還要來回跳」的狀況。&lt;/p&gt;
@@ -1386,7 +1362,7 @@
       <title>Visual Studio: 書籤 (bookmarks)</title>
       <link>https://igouist.github.io/post/2021/03/visual-studio-bookmark/</link>
       <pubDate>Sat, 13 Mar 2021 00:38:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2021/03/visual-studio-bookmark/</guid>
       <description>&lt;p&gt;今天從同事們那邊學到了書籤這個方便功能，趁還記得的時候來做個紀錄。&lt;/p&gt;
 &lt;p&gt;那麼馬上就來操作一次：&lt;/p&gt;
@@ -1414,7 +1390,7 @@
       <title>7&#43; Taskbar Tweaker —— 簡單方便的 Windows 工作列調整工具</title>
       <link>https://igouist.github.io/post/2020/12/7_taskbar/</link>
       <pubDate>Sun, 06 Dec 2020 23:49:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/12/7_taskbar/</guid>
       <description>&lt;p&gt;故事是這樣的——&lt;/p&gt;
 &lt;p&gt;Win10 工作列的合併設定有這些選項：&lt;/p&gt;
@@ -1446,13 +1422,12 @@
       <title>Dark Reader —— 暗黑模式愛好者的 Chrome 必備套件</title>
       <link>https://igouist.github.io/post/2020/11/dark-reader/</link>
       <pubDate>Sun, 08 Nov 2020 23:39:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/11/dark-reader/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/G4OjUzE.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;不能信任那些 Terminal 或編輯器用白底的人。&lt;/br&gt;
-—— &lt;a href=&#34;https://github.com/CodeTengu/JokeKappa/blob/master/jokekappa/jokes/codetengu_weekly.json&#34;&gt;JokeKappa&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+—— &lt;a href=&#34;https://github.com/CodeTengu/JokeKappa/blob/master/jokekappa/jokes/codetengu_weekly.json&#34;&gt;JokeKappa&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;這禮拜推薦了個常用的 chrome 套件給同樣喜歡黑色背景的同事，這邊也推薦給大家。&lt;/p&gt;
 &lt;p&gt;&lt;s&gt;絕對不是因為隻狼更新了不小心砍太爽，結果來不及寫介面隔離只能介紹套件水一下，Heiya～&lt;/s&gt;&lt;/p&gt;
 &lt;p&gt;今天要介紹的就是這款 &lt;a href=&#34;https://chrome.google.com/webstore/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh&#34;&gt;Dark Reader&lt;/a&gt;，這是我用 chrome 時首選的暗黑模式擴充套件，在俺寫文的這時候已經超過了三百萬次的下載次數，現在就讓我來記錄一下這款擴充套件的一些特色唄。&lt;/p&gt;
@@ -1493,13 +1468,12 @@
       <title>菜雞的 Markdown 筆記</title>
       <link>https://igouist.github.io/post/2020/10/markdown/</link>
       <pubDate>Sun, 18 Oct 2020 22:00:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/10/markdown/</guid>
       <description>&lt;p&gt;Markdown 是一種寫作用語言，特色是只要用簡單的符號就可以替文章進行排版，例如 &lt;code&gt;#&lt;/code&gt; 就代表了標題，因此能相當簡潔迅速地應用 Markdown 語法來撰寫出文件，目前已經被廣泛使用在各個撰寫文章或是文檔的場景中。&lt;/p&gt;
 &lt;p&gt;例如 Github 用來說明專案的 Readme.md，從副檔名 md 就已經告訴你這是一篇 Markdown；又像是這個部落格的文章，也都是使用 markdown 來寫的。除此之外，像是 Facebook 和 Line 都開始支援簡單的 Markdown 語法了 —— 因為它實在是太方便好用了。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;使用Markdown格式撰寫的文件應該可以直接以純文字發佈，並且看起來不會像是由許多標籤或是格式指令所構成 —— markdown.tw&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;使用Markdown格式撰寫的文件應該可以直接以純文字發佈，並且看起來不會像是由許多標籤或是格式指令所構成 —— markdown.tw&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;既然用簡單的符號就能完成這些簡潔的排版，我們自然就能把專注的重心挪回到撰寫文章本身，這也就是 Markdown 最大的魅力：&lt;strong&gt;專注於內容&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;也因為 Markdown 的特色就是非常的簡潔乾淨，文檔本身的可讀性就相當的高，撰寫起來也很直覺容易。就如同其說明文件所說的：「Markdown 的目標就是實現『&lt;strong&gt;易讀易寫&lt;/strong&gt;』」&lt;/p&gt;
 &lt;p&gt;這篇就來稍微紀錄一下 Markdown 的常用語法和好用的編輯環境吧！&lt;/p&gt;
@@ -1589,15 +1563,12 @@
 &lt;h3 id=&#34;引用&#34;&gt;引用&lt;/h3&gt;
 &lt;p&gt;需要引用某個片段或特別標示的時候，可以用 &lt;code&gt;&amp;gt;&lt;/code&gt;，例如：&lt;code&gt;&amp;gt; 我是一句名言&lt;/code&gt;&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;紙上得來終覺淺，絕知此事要躬行&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;紙上得來終覺淺，絕知此事要躬行&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;大多數平台也會支援巢狀的用法，例如：&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;子非魚，安知魚之樂？&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;子非我，安知我不知魚之樂？&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;子非我，安知我不知魚之樂？&lt;/p&gt;&lt;/blockquote&gt;&lt;/blockquote&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/AdMF7DC.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;h3 id=&#34;連結&#34;&gt;連結&lt;/h3&gt;
 &lt;p&gt;需要加入連結的時候，可以使用 &lt;code&gt;[連結文字](網址)&lt;/code&gt;，例如當我要插入 Markdown.tw 的說明時就可以：&lt;/p&gt;
@@ -1667,23 +1638,20 @@
 &lt;blockquote&gt;
 &lt;p&gt;更新: Typera 也有主題下載頁囉！可以從 &lt;code&gt;設定 → 偏好設定&lt;/code&gt; 前往&lt;/p&gt;
 &lt;p&gt;或是直接到 &lt;a href=&#34;https://theme.typora.io/&#34;&gt;https://theme.typora.io/&lt;/a&gt; 下載主題&lt;/p&gt;
-&lt;p&gt;這邊也推薦一組很棒的主題：&lt;a href=&#34;https://github.com/liangjingkanji/DrakeTyporaTheme&#34;&gt;DrakeTyporaTheme&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;這邊也推薦一組很棒的主題：&lt;a href=&#34;https://github.com/liangjingkanji/DrakeTyporaTheme&#34;&gt;DrakeTyporaTheme&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充: 想要跟 HackMD 一樣能夠直接貼上圖片上傳的朋友，也可以參考這兩篇：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://pjchender.blogspot.com/2020/08/app-typora-imgur-for-mac.html&#34;&gt;Typora 自動上傳圖片到 imgur (for Mac)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://zhuanlan.zhihu.com/p/130878433&#34;&gt;Windows 下采用 Typora + PicGo 搭建 Markdown 图床&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
+&lt;/ul&gt;&lt;/blockquote&gt;
 &lt;h3 id=&#34;visual-studio-code&#34;&gt;Visual Studio Code&lt;/h3&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/EDccuCQ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;del&gt;那真是太諷刺了紹安&lt;/del&gt;，繞了一圈最後最常用的還是 Visual Studio Code 直接開寫，畢竟 Hugo 寫部落格的時候也是在本機寫好推上去，過一陣子就懶得開東開西，只想直接開工。所以還是直接用 VSCode 最快了。&lt;/p&gt;
 &lt;p&gt;安裝一下 Markdown 的套件之後就能直接開工了，我個人是安裝 &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one&#34;&gt;Markdown All in One&lt;/a&gt;，該有的都有了。&lt;/p&gt;
 &lt;p&gt;不過上面的 Hackmd 也有推出 VScode 用的 &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=HackMD.vscode-hackmd&#34;&gt;Hackmd&lt;/a&gt; 套件包，像上面提到的繪製流程圖、數學式等功能也包含在內，有這類需求的朋友也可以使用看看。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;補充: 想要跟 HackMD 一樣能夠直接貼上圖片上傳的朋友，也可以試試 vscode-imgur 這套插件呦&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;補充: 想要跟 HackMD 一樣能夠直接貼上圖片上傳的朋友，也可以試試 vscode-imgur 這套插件呦&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;總結&#34;&gt;總結&lt;/h2&gt;
 &lt;p&gt;這篇記錄了一些常用的 Markdown 語法，並且推薦了三款 Markdown 編輯器，有興趣的朋友可以嘗試用 Markdown 打打文章或是規範文檔，相信一定能感受到 Markdown 的魅力。那麼，我們下周見～&lt;/p&gt;
 &lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
@@ -1700,7 +1668,7 @@
       <title>Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh</title>
       <link>https://igouist.github.io/post/2020/08/powershell-beauty/</link>
       <pubDate>Sat, 15 Aug 2020 18:00:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/08/powershell-beauty/</guid>
       <description>&lt;p&gt;最近在兩天內經歷了記憶體死去、系統毀損、機殼碎裂等等，終於電腦重灌。一堆設定都要重弄，正好也是個機會，這篇順手記一下常用好幫手 Powershell 的美化步驟。&lt;/p&gt;
 &lt;p&gt;先放一張施工後的圖鎮樓：&lt;/p&gt;
@@ -1716,8 +1684,7 @@
 &lt;p&gt;首先就讓我們修改&lt;strong&gt;字型&lt;/strong&gt;，我這邊還是採用習慣的 &lt;a href=&#34;https://github.com/be5invis/Sarasa-Gothic&#34;&gt;更紗黑體&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;另外還有一些推薦的字體，可以參閱前陣子整理的 &lt;a href=&#34;https://igouist.github.io/post/2020/03/visualstudio&#34;&gt;Visual studio 環境設定 —— 字型、套件、快捷鍵&lt;/a&gt;。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;補充：還有擴充了 &lt;a href=&#34;https://www.nerdfonts.com/cheat-sheet&#34;&gt;Nerd Fonts&lt;/a&gt; 的等距更紗黑體：&lt;a href=&#34;https://github.com/jonz94/Sarasa-Gothic-Nerd-Fonts&#34;&gt;Sarasa-Gothic-Nerd-Fonts&lt;/a&gt; 可以選擇，Nerd Fonts 能提供許多精美的 icon 讓我們後續改主題的時候大大加分！&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;補充：還有擴充了 &lt;a href=&#34;https://www.nerdfonts.com/cheat-sheet&#34;&gt;Nerd Fonts&lt;/a&gt; 的等距更紗黑體：&lt;a href=&#34;https://github.com/jonz94/Sarasa-Gothic-Nerd-Fonts&#34;&gt;Sarasa-Gothic-Nerd-Fonts&lt;/a&gt; 可以選擇，Nerd Fonts 能提供許多精美的 icon 讓我們後續改主題的時候大大加分！&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/93httvP.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;除了字型以外，我個人還推薦可以修改一個設定，保證質感 UPUP，那就是&lt;strong&gt;透明度&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/OGR98I8.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
@@ -1765,21 +1732,18 @@
 &lt;p&gt;安裝完畢後就可以來試試看囉！&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;更新：Oh-my-posh 也可以從 Microsoft 搜尋並安裝囉！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/3WoVsvL.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/3WoVsvL.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;設定主題&#34;&gt;設定主題&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;更新：由於 Oh-my-posh 設定主題的語法已經改變，因此移除 2020 時的內容，改為 2023 重灌電腦時找到的指令。&lt;/p&gt;
-&lt;p&gt;因為 Oh-my-posh 還蠻頻繁更新的，建議後續的操作可以開著 &lt;a href=&#34;https://ohmyposh.dev/docs/installation/customize&#34;&gt;Oh My Posh&lt;/a&gt; 的官方文檔來排查一下&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;因為 Oh-my-posh 還蠻頻繁更新的，建議後續的操作可以開著 &lt;a href=&#34;https://ohmyposh.dev/docs/installation/customize&#34;&gt;Oh My Posh&lt;/a&gt; 的官方文檔來排查一下&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;&lt;strong&gt;要更改主題的話，我們會需要使用 &lt;code&gt;oh-my-posh init pwsh&lt;/code&gt; 這個指令，並且將該主題的 Json 檔案傳遞給 &lt;code&gt;--config&lt;/code&gt;&lt;/strong&gt;，例如：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;oh-my-posh init pwsh --config &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;$env&lt;span style=&#34;color:#e6db74&#34;&gt;:POSH_THEMES_PATH/powerlevel10k_rainbow.omp.json&amp;#34;&lt;/span&gt; | Invoke-Expression
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;我們丟了一個 powerlevel10k_rainbow 這個主題的 Json 檔案路徑給 oh-my-posh，然後呼叫 &lt;code&gt;Invoke-Expression&lt;/code&gt; 執行它，這時候主題就會變啦～&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：這邊用到一組環境變數 &lt;code&gt;$env:POSH_THEMES_PATH&lt;/code&gt; 實際上是一個資料夾路徑，Oh-my-posh 安裝的主題都會放在這個資料夾裡：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/lWBHJc3.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;如果你有自己下載的主題，可以也丟到 &lt;code&gt;POSH_THEMES_PATH&lt;/code&gt; 的位置，或是直接更改 &lt;code&gt;--config&lt;/code&gt; 的路徑就可以了。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;如果你有自己下載的主題，可以也丟到 &lt;code&gt;POSH_THEMES_PATH&lt;/code&gt; 的位置，或是直接更改 &lt;code&gt;--config&lt;/code&gt; 的路徑就可以了。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;每個主題的樣式都不大一樣，可以翻一下 Oh-my-posh 的 &lt;a href=&#34;https://ohmyposh.dev/docs/themes&#34;&gt;Themes&lt;/a&gt; 頁面挑個喜歡的。&lt;/p&gt;
 &lt;h2 id=&#34;撰寫腳本&#34;&gt;撰寫腳本&lt;/h2&gt;
 &lt;p&gt;聰明的你一定發現了，每次重開都要重輸入一次 &lt;code&gt;init&lt;/code&gt; 實在是很麻煩。因此我們接著要設定讓它能一打開就載入主題。&lt;/p&gt;
@@ -1804,15 +1768,13 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://blog.miniasp.com/post/2013/01/02/How-to-auto-load-ps1-script-using-Windows-PowerShell-Profiles&#34;&gt;如何在 Powershell 開啟時自動引入常用的 ps1 指令檔腳本 | The Will Will Web&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://docs.microsoft.com/zh-tw/powershell/module/microsoft.powershell.core/about/about_profiles?view=powershell-7.2&#34;&gt;關於設定檔 - PowerShell | Microsoft Docs&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
+&lt;/ul&gt;&lt;/blockquote&gt;
 &lt;p&gt;接著我們就前往此處去修改 Powershell 的腳本，如果發現並沒有這個檔案，那還請自己建立一個，檔名和路徑請和 &lt;code&gt;$PROFILE&lt;/code&gt; 一致，像我就取 &lt;code&gt;Microsoft.PowerShell_profile.ps1&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/eJ8A5iY.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;之後開啟檔案，貼上我們引入套件和設定主題的指令：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ps1&#34; data-lang=&#34;ps1&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;oh-my-posh init pwsh --config &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;$env:POSH_THEMES_PATH&lt;span style=&#34;color:#e6db74&#34;&gt;/powerlevel10k_rainbow.omp.json&amp;#34;&lt;/span&gt; | Invoke-Expression
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
-&lt;p&gt;再次補充：oh-my-posh 改版之後一些語法有改變，如果有在 &lt;code&gt;Set-Theme&lt;/code&gt; 這步的時候遇到「無法辨識…」問題的朋友，可以嘗試改成用 &lt;code&gt;Set-PoshPrompt -Theme Paradox&lt;/code&gt; 試試看。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;再次補充：oh-my-posh 改版之後一些語法有改變，如果有在 &lt;code&gt;Set-Theme&lt;/code&gt; 這步的時候遇到「無法辨識…」問題的朋友，可以嘗試改成用 &lt;code&gt;Set-PoshPrompt -Theme Paradox&lt;/code&gt; 試試看。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;接著讓我們重開 Powershell&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1kYjQSO.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看見它已經順利載入主題囉！&lt;/p&gt;
@@ -1820,13 +1782,11 @@
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ps1&#34; data-lang=&#34;ps1&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;oh-my-posh init pwsh --config &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;$env:POSH_THEMES_PATH&lt;span style=&#34;color:#e6db74&#34;&gt;/powerlevel10k_rainbow.omp.json&amp;#34;&lt;/span&gt; | Invoke-Expression
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;clear
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
-&lt;p&gt;也可以在這裡寫一些 function 來使用，像我個人之前做 &lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-1-selenium&#34;&gt;我要訂便當&lt;/a&gt; 因為懶得每次都 cd 到腳本所在的位置還要 Pyhton 執行，所以就直接包成 &lt;code&gt;Get-Bandon&lt;/code&gt; 的方法直接叫，真的舒服，推薦嘗試&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;也可以在這裡寫一些 function 來使用，像我個人之前做 &lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-1-selenium&#34;&gt;我要訂便當&lt;/a&gt; 因為懶得每次都 cd 到腳本所在的位置還要 Pyhton 執行，所以就直接包成 &lt;code&gt;Get-Bandon&lt;/code&gt; 的方法直接叫，真的舒服，推薦嘗試&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;如果有想要自己試試新增主題，或是想像我一樣做小修改的，可以到 &lt;code&gt;$env:POSH_THEMES_PATH&lt;/code&gt; 這個路徑的資料夾，找到 &lt;code&gt;.omp.json&lt;/code&gt; 檔案來動手&lt;/p&gt;
 &lt;p&gt;例如說把 &lt;code&gt;powerlevel10k_rainbow.omp.json&lt;/code&gt; 開啟後，就可以看見組出那一串資訊的過程，也就可以隨意更改囉。我就特愛把一些 icon 都改成 &lt;code&gt;°д°&lt;/code&gt;，感覺活潑多了（？）&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;補充：該路徑會根據安裝 &lt;code&gt;oh-my-posh&lt;/code&gt; 的位置而變動，基本上開 Powershell 直接從環境變數的路徑下去找比較快。真的找不到的話也可以下載別人的主題改一改，再修改 `&amp;ndash;config`` 的路徑指到自己改好的 json 就好囉&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;補充：該路徑會根據安裝 &lt;code&gt;oh-my-posh&lt;/code&gt; 的位置而變動，基本上開 Powershell 直接從環境變數的路徑下去找比較快。真的找不到的話也可以下載別人的主題改一改，再修改 `&amp;ndash;config`` 的路徑指到自己改好的 json 就好囉&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;順便提一下，載入使用者設定對用到 Powershell 的地方都有效喲！&lt;/p&gt;
 &lt;p&gt;例如 Visual Studio Code 的 Powershell&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/fqtRmwR.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
@@ -1856,11 +1816,10 @@
       <title>Pocket —— 稍後閱讀，想看再看</title>
       <link>https://igouist.github.io/post/2020/07/pocket/</link>
       <pubDate>Sat, 18 Jul 2020 10:17:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/07/pocket/</guid>
       <description>&lt;blockquote&gt;
-&lt;p&gt;備註： Pocket 將在 2025/07/08 下線（&lt;a href=&#34;https://x.com/Pocket/status/1925587573638144196&#34;&gt;官方推文&lt;/a&gt;），我個人現在也已經改用 Readwise Reader，有興趣的朋友可以參考 =&amp;gt; &lt;a href=&#34;https://readwise.io/read&#34;&gt;Readwise io&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;備註： Pocket 將在 2025/07/08 下線（&lt;a href=&#34;https://x.com/Pocket/status/1925587573638144196&#34;&gt;官方推文&lt;/a&gt;），我個人現在也已經改用 Readwise Reader，有興趣的朋友可以參考 =&amp;gt; &lt;a href=&#34;https://readwise.io/read&#34;&gt;Readwise io&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;在兩個多月前，我們介紹過將文章用 RSS 訂閱集中起來的工具 &lt;a href=&#34;https://igouist.github.io/post/2020/04/feedly/&#34;&gt;Feedly&lt;/a&gt;。但是，有些時候雖然對文章挺有興趣的，但並&lt;strong&gt;不適合馬上看&lt;/strong&gt;（例如在公司或學校的時候，看到社論、科技新聞等等）；或是像我個人平常休息時逛逛一些論壇或是文檔，這時候如果遇到一些&lt;strong&gt;比較長的、主題式的文章&lt;/strong&gt;，就會想要把文章存放起來，等晚些時候再看。&lt;/p&gt;
 &lt;p&gt;雖然 Feedly 也有提供 Read Later 的功能，只要勾個標籤就可以之後再到 Read Later 的頁面去觀看。但懶惰如我，就會想要把所有稍後再看的文章集中在一塊，因此必須尋找一個前述場景都共用的做法，這時我就遇上了 Pocket。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://getpocket.com/&#34;&gt;Pocket&lt;/a&gt; 是一個簡單直接的「稍後閱讀」服務，操作方便，只需要擴充套件或分享，和一段能靜下來好好閱讀的時間即可服用&lt;/strong&gt;。在開始介紹之前，有幾件事必須報告：&lt;/p&gt;
@@ -1897,8 +1856,7 @@
 &lt;p&gt;（當然，如果像我這種有在使用 &lt;a href=&#34;https://chrome.google.com/webstore/detail/simpread-reader-view/ijllcpnolfcooahcekpamkbidhejabll/related&#34;&gt;簡閱&lt;/a&gt; 這類閱讀擴充套件的話，這部分就不會有什麼問題了XD）&lt;/p&gt;
 &lt;p&gt;Pocket 作為稍後閱讀的暫存站，我個人是免費就用得很開心。如果有需要無限期存放文章或是無限標籤等需求，請再前往 &lt;a href=&#34;https://getpocket.com/premium?ep=10&#34;&gt;升級頁面&lt;/a&gt; 參考。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;註：Pocket 也有提供朗讀文章的功能，需要的時候可以用聽的，不過我個人沒有試過，因為遇到需要用聽的情景的話，我會跑去聽 Podcast。如果有聽文章習慣或是有興趣的朋友，可以參考&lt;a href=&#34;https://www.playpcesor.com/2016/02/pocket-reade-later.html&#34;&gt;[生活駭客3] 開始「聽」文章，日常時間加一倍的魔法&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;註：Pocket 也有提供朗讀文章的功能，需要的時候可以用聽的，不過我個人沒有試過，因為遇到需要用聽的情景的話，我會跑去聽 Podcast。如果有聽文章習慣或是有興趣的朋友，可以參考&lt;a href=&#34;https://www.playpcesor.com/2016/02/pocket-reade-later.html&#34;&gt;[生活駭客3] 開始「聽」文章，日常時間加一倍的魔法&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;稍後閱讀功能的服務還挺多的，我之所以最後選定使用 Pocket，有一大半原因是因為我發現它&lt;strong&gt;能和我的 Kobo 電子書閱讀器同步&lt;/strong&gt;。作為一個通勤搭車每天動輒一兩小時的上班族，搭車時間拿來看看書看看文章真是再愜意不過了。但由於我真的很懶，捷運又常常站著，書還是挺重的不方便帶來帶去，所以後來我還是毅然決然踏入閱讀器的世界，這時候我才發現了 Pocket。&lt;/p&gt;
 &lt;p&gt;利用 Pocket 我就能把早上從 Feedly 看見的部分文章，挪到上下班搭車的時候再用輕便的電子書閱讀，豈不妙哉。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/cIkoRR1.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
@@ -1934,7 +1892,7 @@
       <title>Electron.net —— 把網頁包成桌面應用吧</title>
       <link>https://igouist.github.io/post/2020/06/electron-net/</link>
       <pubDate>Sun, 28 Jun 2020 19:41:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/06/electron-net/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://github.com/ElectronNET/Electron.NET/raw/master/assets/images/electron.net-logo.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;因緣際會下想要弄出一些單機小工具來跑，這時候正巧接觸到 &lt;a href=&#34;https://github.com/ElectronNET/Electron.NET&#34;&gt;Electron.net&lt;/a&gt; 這個神器，特別紀錄一下以免忘記。這是 &lt;a href=&#34;https://www.electronjs.org/&#34;&gt;Electron&lt;/a&gt; 搭配 .net Core 的框架， &lt;strong&gt;Electron 是用 Chromium 和 Node.js 將網頁封裝成桌面應用程式&lt;/strong&gt;，像是 Visual Studio Code、Slack 也都有使用到 Electron。而 &lt;a href=&#34;https://github.com/ElectronNET/Electron.NET&#34;&gt;Electron.net&lt;/a&gt; 顧名思義就是 .net 用的 Electron 框架囉。&lt;/p&gt;
@@ -1964,8 +1922,7 @@
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/q6RdjDm.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：如果 &lt;code&gt;electronize init&lt;/code&gt; 的時候跳出 &amp;ldquo;Path cannot be null on init&amp;rdquo; 的錯誤，請移動到 &lt;code&gt;Startup.cs&lt;/code&gt; 或是 &lt;code&gt;Program.cs&lt;/code&gt; 所在的目錄再試一次。&lt;/p&gt;
-&lt;p&gt;參考來源：&lt;a href=&#34;https://github.com/ElectronNET/Electron.NET/issues/245&#34;&gt;Electron.NET&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;參考來源：&lt;a href=&#34;https://github.com/ElectronNET/Electron.NET/issues/245&#34;&gt;Electron.NET&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;最後輸入 &lt;code&gt;electronize start&lt;/code&gt; 就可以準備看專案 On 起來囉！&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/HoSdpvU.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;另外除了 &lt;code&gt;electronize start&lt;/code&gt;，環境設置完畢後也可以直接從 Visual Studio 偵錯囉～&lt;/p&gt;
@@ -2037,7 +1994,7 @@
       <title>WakaTime —— 我 Coding 了多久？</title>
       <link>https://igouist.github.io/post/2020/06/wakatime/</link>
       <pubDate>Sun, 07 Jun 2020 22:10:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/06/wakatime/</guid>
       <description>&lt;p&gt;這一周又是 &lt;del&gt;偷懶週&lt;/del&gt; 繁忙週，因此就跟大家分享一個有趣的網站：&lt;a href=&#34;https://wakatime.com/&#34;&gt;WakaTime&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;WakaTime 能夠幫你自動記錄寫程式的時間、常用語言及專案，只要簡單地在常用的 IDE 設定好擴充套件就可以達成。 WakaTime 支援的 IDE 可以參閱 &lt;a href=&#34;https://wakatime.com/plugins&#34;&gt;WakaTime - Plugin&lt;/a&gt;&lt;/p&gt;
@@ -2085,13 +2042,12 @@
       <title>Json View —— 用 Chrome 打開 Json 的正確方式</title>
       <link>https://igouist.github.io/post/2020/05/jsonview/</link>
       <pubDate>Sun, 17 May 2020 15:39:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/05/jsonview/</guid>
       <description>&lt;p&gt;本來這週已經沒梗了，不過同學來問了個接 API 的問題還附了照片，頓時決定順手推一下好用的瀏覽器插件：&lt;a href=&#34;https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc&#34;&gt;Json View&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;Json View 是一款 Chrome 的擴充套件，能幫忙把 Json 格式的資料重新排版，保護妳我的眼睛。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;備註：關於 JSON 可以參閱 &lt;a href=&#34;http://miniaspreading.github.io/guide-to-json/1-what-is-json.html&#34;&gt;JSON精要讀書紀錄&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;備註：關於 JSON 可以參閱 &lt;a href=&#34;http://miniaspreading.github.io/guide-to-json/1-what-is-json.html&#34;&gt;JSON精要讀書紀錄&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;照慣例來張效果圖鎮樓
 &lt;img src=&#34;https://image.igouist.net/VYg1Siy.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;該同學傳來的圖片是長這樣的（示意圖，非當事 API，用 UBike 開放資源臨演）
@@ -2109,7 +2065,7 @@
       <title>Carbon —— 把程式碼片段截成有質感的圖片吧</title>
       <link>https://igouist.github.io/post/2020/05/carbon/</link>
       <pubDate>Sun, 10 May 2020 23:57:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/05/carbon/</guid>
       <description>&lt;p&gt;開始挑戰每週寫文之後，發現最大的敵人根本不是寫文這件事，而是自己的惰性啊。像這次母親節假期過太爽，差點兒就忘記發文…… 所以這週就還是 &lt;del&gt;偷懶&lt;/del&gt; 工具介紹囉。&lt;/p&gt;
 &lt;p&gt;今天要分享的是 &lt;a href=&#34;https://carbon.now.sh/&#34;&gt;Carbon&lt;/a&gt; 這個工具，它能夠&lt;strong&gt;將貼上的程式碼輸出成圖片，並且支援程式碼上色&lt;/strong&gt;，還可以自選字型、背景色等等，產出的圖可以說相當有質感。&lt;/p&gt;
@@ -2145,12 +2101,11 @@
       <title>Feedly —— 用 RSS 訂閱來主動篩選資訊吧</title>
       <link>https://igouist.github.io/post/2020/04/feedly/</link>
       <pubDate>Sun, 19 Apr 2020 23:56:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/04/feedly/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;「你看，我認為人的腦子本來就像一間空空的小閣樓，應該有選擇地把傢俱放進去，傻瓜才會把他見到的所有破爛一古腦兒的裝進去。這樣一來，那些對他有用的知識反而被擠了出來；或者，最多不過是和許多其他的東西摻雜在一起，在取用的時候也會很困難。所以一個會工作的人，在要把一些東西裝進他那間小閣樓似的頭腦中的時候，確實是非常小心謹慎的。」&lt;/p&gt;
-&lt;p&gt;　　——《福爾摩斯探案記：血字的研究》&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;　　——《福爾摩斯探案記：血字的研究》&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;在咱們寫程式這行中，幾乎所有人都必須要在網路上找尋資料；而就算非這一行的朋友們，也會在網路上多方攝取資源。隨著時間的累積，都會開始有一份列表，諸如一些崇拜的大神或是固定追蹤的部落格，又或是文風比較喜歡、素質感覺比較高的新聞或評論等等。&lt;/p&gt;
 &lt;p&gt;然而列表越來越長，就算加到書籤也總不能沒事就逛一大圈，也常常逛到不知道到底在幹嘛囧。因此把多個資訊來源集中起來整理就成了面對資訊爆炸的關鍵一步。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://feedly.com/&#34;&gt;Feedly&lt;/a&gt; 就是一個協助資訊來源管理的工具，可以很方便地把不同訂閱來源整理在一起&lt;/strong&gt;，例如你可能追隨了五六個大神的部落格，只要這些大神都有提供 RSS 訂閱，Feedly 就會將大神更新的文章收集到平台上。&lt;/p&gt;
@@ -2198,8 +2153,7 @@
 &lt;p&gt;我曾聽過一句話：資訊不等於知識。我相信資訊的來源是需要主動去選擇的，這也就是開頭引用福爾摩斯的這句名言的原因。若是&lt;strong&gt;不管什麼東西都直接吃下肚，甚至不管多少都堅持吃完，那只會得到無邊的痛苦&lt;/strong&gt;。經過有系統的整理和篩選，最終才能建立方便又有效的流程。&lt;/p&gt;
 &lt;p&gt;然而各大社群平台的演算法實在太謎，大多部落格也不會有月刊或信箱發送，因此還是要主動出擊去做篩選，不斷檢視過程和品質，留下自己想看並且素質值得期待的資訊來源，才能建立高品質的資訊閱讀，看得健康又有用。就像電腦玩物在 Feedly 的介紹文中說的：&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;「只有在自己為自己訂閱、整理資訊管道的過程中，你才能逐漸建立起自己的知識世界觀，開始思考自己需要什麼資訊，而這時候的資訊閱讀才是有效的。」&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;「只有在自己為自己訂閱、整理資訊管道的過程中，你才能逐漸建立起自己的知識世界觀，開始思考自己需要什麼資訊，而這時候的資訊閱讀才是有效的。」&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;共勉之。&lt;/p&gt;
 &lt;h2 id=&#34;延伸閱讀參考資料&#34;&gt;延伸閱讀、參考資料&lt;/h2&gt;
 &lt;ul&gt;
@@ -2216,11 +2170,10 @@
       <title>Visual studio 環境設定 —— 字型、套件、快捷鍵</title>
       <link>https://igouist.github.io/post/2020/03/visualstudio/</link>
       <pubDate>Sat, 28 Mar 2020 00:11:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/03/visualstudio/</guid>
       <description>&lt;blockquote&gt;
-&lt;p&gt;目標：整理一下自己用的&lt;strong&gt;字型、插件和快捷鍵&lt;/strong&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;目標：整理一下自己用的&lt;strong&gt;字型、插件和快捷鍵&lt;/strong&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;今天在工作時寫到一半突然藍屏，重開機之後俺的地表最強編譯器 Visual Studio 整個就開始鬧脾氣，打開專案整排都是 Error，連 System.Object 都找不到，差點往生。還好用了修復功能之後一切恢復正常，但是載入的插件和一些個人設定就這樣重置了……&lt;/p&gt;
 &lt;p&gt;為了之後可能還會遇到相同的事情，這邊就先將平常的 Visual Studio 環境用到的設定做一份紀錄，之後遇到新插件或是什麼功能也可以回來更新這篇文，如此一來下次又被洗白的時候就可以回來參考了。&lt;/p&gt;
 &lt;p&gt;這邊主要會記錄三個部分，並隨時可能更新。主要是字型、使用的插件以及常用的快捷鍵。&lt;/p&gt;
@@ -2229,8 +2182,7 @@
 &lt;p&gt;字型部分必定、絕對要使用&lt;strong&gt;等寬字型&lt;/strong&gt;，這是必要的前提也是絕對的共識，畢竟你不會希望有什麼神秘空白，或是推個版就排版大炸裂之類的。&lt;/p&gt;
 &lt;p&gt;推薦先參閱 &lt;a href=&#34;https://kevintsengtw.blogspot.com/2014/08/blog-post.html&#34;&gt;換個好字型讓程式開發有效率&lt;/a&gt;&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;2021.01.27 補充：字型也可以看 &lt;a href=&#34;https://devfonts.gafi.dev/&#34;&gt;devfonts&lt;/a&gt; 。裡面直接放了超多 Coding 常用字型，也可以貼上 Code 直接進行比較，相當貼心。想逛一下挑個順眼字型的朋友直接試試唄。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;2021.01.27 補充：字型也可以看 &lt;a href=&#34;https://devfonts.gafi.dev/&#34;&gt;devfonts&lt;/a&gt; 。裡面直接放了超多 Coding 常用字型，也可以貼上 Code 直接進行比較，相當貼心。想逛一下挑個順眼字型的朋友直接試試唄。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h3 id=&#34;consolas&#34;&gt;Consolas&lt;/h3&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/az9u0B3.webp&#34; alt=&#34;&#34;&gt;
 內建就有的字體，個人認為在不想另外下載字體的時候是相當優質的選擇。&lt;/p&gt;
@@ -2275,8 +2227,7 @@
 &lt;h2 id=&#34;擴充套件&#34;&gt;擴充套件&lt;/h2&gt;
 &lt;h3 id=&#34;codemaid&#34;&gt;CodeMaid&lt;/h3&gt;
 &lt;blockquote&gt;
-&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=SteveCadwallader.CodeMaid&#34;&gt;CodeMaid&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=SteveCadwallader.CodeMaid&#34;&gt;CodeMaid&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;極實用，我平常主要用到的功能是看&lt;strong&gt;複雜度&lt;/strong&gt;和&lt;strong&gt;自動排版&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/pf897N7.webp&#34; alt=&#34;&#34;&gt;
 安裝之後可以開啟 CodeMaid Spade，其中函式右側的就是該函式的複雜度，複雜度指得就是該函式中各種不同狀況的路徑數量，例如一個 IF 就會有兩條路徑。&lt;/p&gt;
@@ -2289,8 +2240,7 @@
 除了看見複雜度以外，這個插件的主要功能就在於程式碼的排版和整理，甚至可以設定成每當儲存時自動排版一次。對我這種懶人來說可是一大福音。但要小心跟其他人協作的時候如果全部重新排版可能動到人家的 Code 而且推送時的變更會爆炸多，要稍微注意。平常就養成順手 &lt;code&gt;Ctrl + K&lt;/code&gt;、&lt;code&gt;Ctrl + D&lt;/code&gt; 的習慣會更好。&lt;/p&gt;
 &lt;h3 id=&#34;codemaintainibility&#34;&gt;CodeMaintainibility&lt;/h3&gt;
 &lt;blockquote&gt;
-&lt;p&gt;市集頁面： &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=ognjen-babic.code-maintainibility&#34;&gt;Code Maintainibility&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;市集頁面： &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=ognjen-babic.code-maintainibility&#34;&gt;Code Maintainibility&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;提到複雜度，也可以安裝這套 Code Maintainibility，在看複雜度的時候能夠更快更方便！&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/90Ox0rF.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;一樣在「管理擴充功能」直接搜尋就可以了，但這個套件似乎有改版過。我更新了 Visual Studio 才搜尋得到，如果找不到的朋友可以先嘗試更新看看。&lt;/p&gt;
@@ -2303,8 +2253,7 @@
 &lt;p&gt;這樣在撰寫和重構程式碼的時候就可以迅速又清楚看見複雜度指標，&lt;s&gt;心裡也至少有個底&lt;/s&gt;，可以說是方便不少呢&lt;/p&gt;
 &lt;h3 id=&#34;editor-guidelines&#34;&gt;Editor Guidelines&lt;/h3&gt;
 &lt;blockquote&gt;
-&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=PaulHarrington.EditorGuidelines&#34;&gt;Editor Guidelines&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=PaulHarrington.EditorGuidelines&#34;&gt;Editor Guidelines&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;在指定字數位置&lt;strong&gt;劃出直的輔助線&lt;/strong&gt;，我都用來標示出 100 字元 和 120 字元的位置，用來提醒自己要換行，以保持程式碼可以直直地閱讀下去，而不會為了往右滾動或是因為自動斷行在奇怪地方而中斷。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/yBffyf3.webp&#34; alt=&#34;&#34;&gt;
 可以看見右側有輔助線，通常只要長到碰到該線我就會將該行程式碼做斷行的調整。&lt;/p&gt;
@@ -2316,26 +2265,22 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;關於換行的重要性，這篇 &lt;a href=&#34;https://kevintsengtw.blogspot.com/2015/02/visual-studio-part1.html&#34;&gt;調整你的 Visual Studio - Part.1&lt;/a&gt; 說明得很仔細，並且也有上面 CodeMaid 的介紹，我之所以打算紀錄我的套件等也是基於這幾篇，推薦閱讀。&lt;/p&gt;
 &lt;h3 id=&#34;codeblockendtag&#34;&gt;CodeBlockEndTag&lt;/h3&gt;
 &lt;blockquote&gt;
-&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=KhaosPrinz.CodeBlockEndTag&#34;&gt;CodeBlockEndTag&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=KhaosPrinz.CodeBlockEndTag&#34;&gt;CodeBlockEndTag&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;主要是在&lt;strong&gt;括弧的結束部分會顯示出這個括弧所屬的區塊&lt;/strong&gt;（如附圖）。我有看見許多同事都使用替括弧上色的作法，不過我個人不喜歡太過五彩繽紛的感覺，因此強烈推薦這款插件。&lt;/p&gt;
 &lt;p&gt;下載之後可以在 &lt;code&gt;工具 → 選項 → KC Extensions&lt;/code&gt; 裡面調整，有 當上括弧在畫面外時才顯示下括弧的文字，以及一律顯示（我個人都是使用一律顯示）&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/sRCndm3.webp&#34; alt=&#34;&#34;&gt;
 可以看見 IF 跟函式結束的地方都有標示出括弧對應的區塊，在多層巢狀的時候相當有幫助。（雖然說更重要的是應該避免做出多層巢狀就是了）&lt;/p&gt;
 &lt;h3 id=&#34;smartpaster&#34;&gt;SmartPaster&lt;/h3&gt;
 &lt;blockquote&gt;
-&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=martinw.SmartPaster2013&#34;&gt;SmartPaster2019&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=martinw.SmartPaster2013&#34;&gt;SmartPaster2019&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;貼上的時候可以&lt;strong&gt;選擇貼上的格式&lt;/strong&gt;，在插件介紹頁的示意圖就能夠一目瞭然。&lt;/p&gt;
 &lt;h3 id=&#34;time-savers&#34;&gt;Time Savers&lt;/h3&gt;
 &lt;blockquote&gt;
-&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=YannDuran.VisualStudioTimeSavers&#34;&gt;Time Savers&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=YannDuran.VisualStudioTimeSavers&#34;&gt;Time Savers&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;單純的省時小工具，可以&lt;strong&gt;在上方的工具列幫你長出一些 建置、以管理員重開等按鍵&lt;/strong&gt;。畢竟和建置那些可以直接快捷鍵的動作不一樣，有時候沒有以系統管理員身分開 Visual Studio 的時候會遇到一些神秘錯誤，重開又挺麻煩，因此直接放顆按鈕在上面是真的省了不少時間，要記得遵守工程師的美德：懶惰。能省時就省時！&lt;/p&gt;
 &lt;h3 id=&#34;claudiaide&#34;&gt;ClaudiaIDE&lt;/h3&gt;
 &lt;blockquote&gt;
-&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=kbuchi.ClaudiaIDE&#34;&gt;ClaudiaIDE&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=kbuchi.ClaudiaIDE&#34;&gt;ClaudiaIDE&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;這個跟效率就沒啥太大關係了，所以特別放在壓軸哈，這插件主要是用來&lt;strong&gt;修改編譯區塊的背景&lt;/strong&gt;使用的。&lt;/p&gt;
 &lt;p&gt;剛安裝下來之後打開 Visual Studio 就會看到一個妹子。
 &lt;img src=&#34;https://image.igouist.net/op0y1wf.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
@@ -2349,8 +2294,7 @@ Edit.RemoveAllGuidelines // 移除輔助線
 （載下來示範截圖之後立馬換回來，實在過於微妙）&lt;/p&gt;
 &lt;h3 id=&#34;visual-studio-iconizer&#34;&gt;Visual Studio Iconizer&lt;/h3&gt;
 &lt;blockquote&gt;
-&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=OlegTarasov.VisualStudioIconizerforVisualStudio15&#34;&gt;Visual Studio Iconizer&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=OlegTarasov.VisualStudioIconizerforVisualStudio15&#34;&gt;Visual Studio Iconizer&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;這個則是讓你的 Visual Studio 質感飛升的關鍵：它會替你的工具欄加上 icon！&lt;/p&gt;
 &lt;p&gt;先來看看原本的工具視窗釘選之後長怎樣：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/s0zVMsN.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
@@ -2360,8 +2304,7 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ScUCjeU.webp&#34; alt=&#34;Image&#34;&gt;&lt;img src=&#34;https://image.igouist.net/WjLE5Tf.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;h3 id=&#34;output-enhancer--metaoutput&#34;&gt;Output enhancer &amp;amp; MetaOutput&lt;/h3&gt;
 &lt;blockquote&gt;
-&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=NikolayBalakin.Outputenhancer&#34;&gt;Output enhancer&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;市集頁面：&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=NikolayBalakin.Outputenhancer&#34;&gt;Output enhancer&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;最後來介紹個實用的 Output enhancer：替你的輸出視窗上色&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/KGW1DrK.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;警告跟錯誤等等就會更顯眼囉！&lt;/p&gt;

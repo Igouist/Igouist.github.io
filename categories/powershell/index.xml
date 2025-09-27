@@ -6,6 +6,8 @@
     <description>Recent content in Powershell on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
+    <managingEditor>Igouist (Igouist)</managingEditor>
+    <webMaster>Igouist (Igouist)</webMaster>
     <follow_challenge>
       <feedId>56200764111934464</feedId>
       <userId>41821085092905984</userId>
@@ -15,7 +17,7 @@
       <title>使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間</title>
       <link>https://igouist.github.io/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/</link>
       <pubDate>Sat, 03 Sep 2022 14:40:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/BLYVPi7.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;事情發生在一個風和日麗的平凡下午：&lt;/p&gt;
@@ -26,8 +28,7 @@
 &lt;br/&gt;
 我：差不多可以走了，公車也差不多要來了叭？&lt;br/&gt;
 公車：（一分鐘前離站）&lt;br/&gt;
-我：(ﾟдﾟ)&lt;/p&gt;
-&lt;/blockquote&gt;
+我：(ﾟдﾟ)&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;這時候才明白愛恨情仇，最傷最痛是後悔。如果我早知道公車快到站了，也許我就不會錯過。&lt;/p&gt;
 &lt;p&gt;抱著這股傷痛，決定乾脆寫個小腳本，每天下班提醒我一下，避免重蹈覆轍。&lt;/p&gt;
 &lt;p&gt;綜上所述！目標是：&lt;strong&gt;每天下班前十分鐘，告訴我下一班到達的公車時間&lt;/strong&gt;&lt;/p&gt;
@@ -41,12 +42,10 @@
 &lt;h2 id=&#34;使用-motc-api-服務取得公車資訊&#34;&gt;使用 MOTC API 服務取得公車資訊&lt;/h2&gt;
 &lt;p&gt;首先，最重要的是要有資料來源。幸好我們先前在 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi&#34;&gt;Api 筆記&lt;/a&gt;的時候，就有介紹過公共運輸動態服務 MOTC Transport API，我們只需要使用這組 API 就能輕鬆拿到公車資訊了，感謝開發該服務的朋朋。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;2024.11.25 更新：發現 MOTC 的 API 已經下架了，現在公車資訊已經被整合到運輸資料服務 &lt;a href=&#34;https://tdx.transportdata.tw/api-service/swagger/basic/2998e851-81d0-40f5-b26d-77e2f5ac4118#/&#34;&gt;TDX (Transport Data eXchange)&lt;/a&gt;，有要動手串公車資訊的朋友可能得觀察新版 API 再進行調整了 QQ&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;2024.11.25 更新：發現 MOTC 的 API 已經下架了，現在公車資訊已經被整合到運輸資料服務 &lt;a href=&#34;https://tdx.transportdata.tw/api-service/swagger/basic/2998e851-81d0-40f5-b26d-77e2f5ac4118#/&#34;&gt;TDX (Transport Data eXchange)&lt;/a&gt;，有要動手串公車資訊的朋友可能得觀察新版 API 再進行調整了 QQ&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;我們的場景是在辦公室查詢下一班目標公車到站時間，比對了 Swagger 上提供的中文敘述後，決定嘗試看看「市區公車之預估到站資料」（&lt;code&gt;EstimatedTimeOfArrival/City/{City}/{RouteName}&lt;/code&gt;） 這支 API&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;註：為了避免被查水表，以下就用台北的 307 號公車為例，並假設目標站點是「台北車站（忠孝）」&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;註：為了避免被查水表，以下就用台北的 307 號公車為例，並假設目標站點是「台北車站（忠孝）」&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;嘗試把縣市和公車路線名稱代入後，可以取得公車行經的站牌資訊，其中就有我們最想要的估計到站時間（秒）：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/GQ9wdqG.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;接著讓我們調整一下參數，把取前幾筆的 &lt;code&gt;$top&lt;/code&gt; 調大一點，來取得我們目標站點台北車站的站牌 ID：&lt;/p&gt;
@@ -57,8 +56,7 @@
 &lt;p&gt;如此一來我們就可以呼叫 MOTC API 來取得目標站牌＋指定公車的到站估計時間囉：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/fkwZZpB.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;註：沒有申請&lt;a href=&#34;https://motc-ptx-api-documentation.gitbook.io/motc-ptx-api-documentation/hui-yuan-shen-qing/membertype&#34;&gt;會員&lt;/a&gt;的話有每日 50 次的使用上限，不過這次的目標也就下班打那一次，十分足夠了 XD&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;註：沒有申請&lt;a href=&#34;https://motc-ptx-api-documentation.gitbook.io/motc-ptx-api-documentation/hui-yuan-shen-qing/membertype&#34;&gt;會員&lt;/a&gt;的話有每日 50 次的使用上限，不過這次的目標也就下班打那一次，十分足夠了 XD&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;使用-powershell-呼叫-api-取得資料&#34;&gt;使用 Powershell 呼叫 API 取得資料&lt;/h2&gt;
 &lt;p&gt;現在已經保障了資料來源，接下來就是要有個腳本來去打 API 拿資料回來囉！&lt;/p&gt;
 &lt;p&gt;基於 &lt;del&gt;懶惰&lt;/del&gt; 方便的原則，決定用 Powershell 寫個小東西直接打資料回來就好。&lt;/p&gt;
@@ -74,8 +72,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 把結果轉成 Json 確認一下&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$response | ConvertTo-Json
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
-&lt;p&gt;小提醒：原本我們下的 &lt;code&gt;$filter = StopId eq &#39;15250&#39;&lt;/code&gt; 的參數，其中 &lt;code&gt;$&lt;/code&gt; 和空白符在 Uri 會轉換成 HTML 編碼的 &lt;code&gt;%24($)&lt;/code&gt; 和 &lt;code&gt;%20(空白)&lt;/code&gt;，並不是亂碼，請不要緊張&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;小提醒：原本我們下的 &lt;code&gt;$filter = StopId eq &#39;15250&#39;&lt;/code&gt; 的參數，其中 &lt;code&gt;$&lt;/code&gt; 和空白符在 Uri 會轉換成 HTML 編碼的 &lt;code&gt;%24($)&lt;/code&gt; 和 &lt;code&gt;%20(空白)&lt;/code&gt;，並不是亂碼，請不要緊張&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;另存成 &lt;code&gt;.ps1&lt;/code&gt; 檔案來測試一下：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/nVZb7aV.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;看來查詢資料已經沒有問題了，接下來就是通知快要下班的我了&lt;/p&gt;
@@ -98,8 +95,7 @@
 &lt;p&gt;總覺得有點不是很好看啊，而且工作到一半在畫面正中間跳出這個會煩死吧囧&lt;/p&gt;
 &lt;h2 id=&#34;使用-powershell-傳送-line-notify&#34;&gt;使用 Powershell 傳送 Line Notify&lt;/h2&gt;
 &lt;blockquote&gt;
-&lt;p&gt;2024.10 更新: Line Notify 將於 2025 年 3 月停止服務（&lt;a href=&#34;https://notify-bot.line.me/closing-announce&#34;&gt;LINE Notify 結束服務公告&lt;/a&gt;），有看到這篇的朋朋請選擇一組新的通知服務來串吧 QQ&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;2024.10 更新: Line Notify 將於 2025 年 3 月停止服務（&lt;a href=&#34;https://notify-bot.line.me/closing-announce&#34;&gt;LINE Notify 結束服務公告&lt;/a&gt;），有看到這篇的朋朋請選擇一組新的通知服務來串吧 QQ&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;就在此時一個靈光乍現，對呀我&lt;a href=&#34;https://igouist.github.io/post/2020/04/bandon-3-line-notify/&#34;&gt;之前爬訂便當的時候&lt;/a&gt;不是用過 &lt;strong&gt;Line Notify&lt;/strong&gt; 嗎！&lt;/p&gt;
 &lt;p&gt;當下一個直衝 &lt;a href=&#34;https://notify-bot.line.me/zh_TW/&#34;&gt;Line Notify&lt;/a&gt; 高速申請權杖：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/StPJo9W.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
@@ -122,8 +118,7 @@
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/S5S5Pgu.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;再重新嘗試一次就會正常了：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/mMuRRTT.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;原本卡在這步搞不定，正好黑暗執行緒大大發了篇 &lt;a href=&#34;https://blog.darkthread.net/blog/ps1-encoding-issue/&#34;&gt;PowerShell .ps1 檔 UTF-8 編碼問題之變形錯誤&lt;/a&gt;，才知道 PowerShell 5.x 有編碼解析的問題，改成 Utf-8 with BOM 順利完工。這邊補充給各位朋朋，望周知&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;原本卡在這步搞不定，正好黑暗執行緒大大發了篇 &lt;a href=&#34;https://blog.darkthread.net/blog/ps1-encoding-issue/&#34;&gt;PowerShell .ps1 檔 UTF-8 編碼問題之變形錯誤&lt;/a&gt;，才知道 PowerShell 5.x 有編碼解析的問題，改成 Utf-8 with BOM 順利完工。這邊補充給各位朋朋，望周知&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;到這邊 Powershell 的部份就處理好了，目前會長這樣：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$busName &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;307&amp;#39;&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# 公車路線名稱&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$stopId &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;15250&lt;/span&gt;  &lt;span style=&#34;color:#75715e&#34;&gt;# 站台 ID&lt;/span&gt;
@@ -158,11 +153,9 @@
 &lt;p&gt;這邊的「程式或指令碼」輸入 &lt;code&gt;powershell&lt;/code&gt;，接著在「新增引數」的部份告訴 Powershell 我們要執行的腳本 &lt;code&gt;-File &amp;quot;C:\Scripts\BusReminder.ps1&amp;quot;&lt;/code&gt;（記得換成你的腳本路徑呦）&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/7KV6Q6o.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;註：沒有調整過&lt;a href=&#34;https://igouist.github.io/post/2020/08/powershell-beauty/#%E5%9F%B7%E8%A1%8C%E5%8E%9F%E5%89%87&#34;&gt;執行原則&lt;/a&gt;的朋友們，可以在引數上加入 &lt;code&gt;-ExecutionPolicy Bypass&lt;/code&gt; 來關閉警告，也就是 &lt;code&gt; -ExecutionPolicy Bypass -File &amp;quot;C:\Scripts\BusReminder.ps1&amp;quot;&lt;/code&gt; 這樣子的感覺&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;註：沒有調整過&lt;a href=&#34;https://igouist.github.io/post/2020/08/powershell-beauty/#%E5%9F%B7%E8%A1%8C%E5%8E%9F%E5%89%87&#34;&gt;執行原則&lt;/a&gt;的朋友們，可以在引數上加入 &lt;code&gt;-ExecutionPolicy Bypass&lt;/code&gt; 來關閉警告，也就是 &lt;code&gt; -ExecutionPolicy Bypass -File &amp;quot;C:\Scripts\BusReminder.ps1&amp;quot;&lt;/code&gt; 這樣子的感覺&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
-&lt;p&gt;註：如果跟我一樣會把腳本做成 Function 並存成 psm1 檔案的朋朋，這邊的引數會需要變成跟 Profile 一樣的處理方式，先 Import 進來再呼叫方法（這邊假設為 &lt;code&gt;Run-BusNotify()&lt;/code&gt;）例如，：&lt;code&gt;Import-Module &amp;quot;C:\Scripts\BusReminder.psm1&amp;quot;;Run-BusNotify;&lt;/code&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;註：如果跟我一樣會把腳本做成 Function 並存成 psm1 檔案的朋朋，這邊的引數會需要變成跟 Profile 一樣的處理方式，先 Import 進來再呼叫方法（這邊假設為 &lt;code&gt;Run-BusNotify()&lt;/code&gt;）例如，：&lt;code&gt;Import-Module &amp;quot;C:\Scripts\BusReminder.psm1&amp;quot;;Run-BusNotify;&lt;/code&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;接著只需要完成就可以在排程中找到囉，馬上就來執行看看是不是正常運作吧：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1MLM21I.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Pu8YilJ.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
@@ -175,8 +168,7 @@
 我：（還有十分鐘耶，把手上的事情弄到一個段落再下班吧）&lt;br/&gt;
 ～～弄了十五分鐘～～&lt;br/&gt;
 公車：（離站）&lt;br/&gt;
-我：(ﾟдﾟ)&lt;/p&gt;
-&lt;/blockquote&gt;
+我：(ﾟдﾟ)&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;這時候才明白科技終究是有極限的。&lt;/p&gt;
 &lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
 &lt;ul&gt;
@@ -192,7 +184,7 @@
       <title>Powershell 美化作戰 —— 字型、執行原則和 oh-my-posh</title>
       <link>https://igouist.github.io/post/2020/08/powershell-beauty/</link>
       <pubDate>Sat, 15 Aug 2020 18:00:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/08/powershell-beauty/</guid>
       <description>&lt;p&gt;最近在兩天內經歷了記憶體死去、系統毀損、機殼碎裂等等，終於電腦重灌。一堆設定都要重弄，正好也是個機會，這篇順手記一下常用好幫手 Powershell 的美化步驟。&lt;/p&gt;
 &lt;p&gt;先放一張施工後的圖鎮樓：&lt;/p&gt;
@@ -208,8 +200,7 @@
 &lt;p&gt;首先就讓我們修改&lt;strong&gt;字型&lt;/strong&gt;，我這邊還是採用習慣的 &lt;a href=&#34;https://github.com/be5invis/Sarasa-Gothic&#34;&gt;更紗黑體&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;另外還有一些推薦的字體，可以參閱前陣子整理的 &lt;a href=&#34;https://igouist.github.io/post/2020/03/visualstudio&#34;&gt;Visual studio 環境設定 —— 字型、套件、快捷鍵&lt;/a&gt;。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;補充：還有擴充了 &lt;a href=&#34;https://www.nerdfonts.com/cheat-sheet&#34;&gt;Nerd Fonts&lt;/a&gt; 的等距更紗黑體：&lt;a href=&#34;https://github.com/jonz94/Sarasa-Gothic-Nerd-Fonts&#34;&gt;Sarasa-Gothic-Nerd-Fonts&lt;/a&gt; 可以選擇，Nerd Fonts 能提供許多精美的 icon 讓我們後續改主題的時候大大加分！&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;補充：還有擴充了 &lt;a href=&#34;https://www.nerdfonts.com/cheat-sheet&#34;&gt;Nerd Fonts&lt;/a&gt; 的等距更紗黑體：&lt;a href=&#34;https://github.com/jonz94/Sarasa-Gothic-Nerd-Fonts&#34;&gt;Sarasa-Gothic-Nerd-Fonts&lt;/a&gt; 可以選擇，Nerd Fonts 能提供許多精美的 icon 讓我們後續改主題的時候大大加分！&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/93httvP.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;除了字型以外，我個人還推薦可以修改一個設定，保證質感 UPUP，那就是&lt;strong&gt;透明度&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/OGR98I8.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
@@ -257,21 +248,18 @@
 &lt;p&gt;安裝完畢後就可以來試試看囉！&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;更新：Oh-my-posh 也可以從 Microsoft 搜尋並安裝囉！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/3WoVsvL.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/3WoVsvL.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;設定主題&#34;&gt;設定主題&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;更新：由於 Oh-my-posh 設定主題的語法已經改變，因此移除 2020 時的內容，改為 2023 重灌電腦時找到的指令。&lt;/p&gt;
-&lt;p&gt;因為 Oh-my-posh 還蠻頻繁更新的，建議後續的操作可以開著 &lt;a href=&#34;https://ohmyposh.dev/docs/installation/customize&#34;&gt;Oh My Posh&lt;/a&gt; 的官方文檔來排查一下&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;因為 Oh-my-posh 還蠻頻繁更新的，建議後續的操作可以開著 &lt;a href=&#34;https://ohmyposh.dev/docs/installation/customize&#34;&gt;Oh My Posh&lt;/a&gt; 的官方文檔來排查一下&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;&lt;strong&gt;要更改主題的話，我們會需要使用 &lt;code&gt;oh-my-posh init pwsh&lt;/code&gt; 這個指令，並且將該主題的 Json 檔案傳遞給 &lt;code&gt;--config&lt;/code&gt;&lt;/strong&gt;，例如：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;oh-my-posh init pwsh --config &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;$env&lt;span style=&#34;color:#e6db74&#34;&gt;:POSH_THEMES_PATH/powerlevel10k_rainbow.omp.json&amp;#34;&lt;/span&gt; | Invoke-Expression
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;我們丟了一個 powerlevel10k_rainbow 這個主題的 Json 檔案路徑給 oh-my-posh，然後呼叫 &lt;code&gt;Invoke-Expression&lt;/code&gt; 執行它，這時候主題就會變啦～&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：這邊用到一組環境變數 &lt;code&gt;$env:POSH_THEMES_PATH&lt;/code&gt; 實際上是一個資料夾路徑，Oh-my-posh 安裝的主題都會放在這個資料夾裡：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/lWBHJc3.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;如果你有自己下載的主題，可以也丟到 &lt;code&gt;POSH_THEMES_PATH&lt;/code&gt; 的位置，或是直接更改 &lt;code&gt;--config&lt;/code&gt; 的路徑就可以了。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;如果你有自己下載的主題，可以也丟到 &lt;code&gt;POSH_THEMES_PATH&lt;/code&gt; 的位置，或是直接更改 &lt;code&gt;--config&lt;/code&gt; 的路徑就可以了。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;每個主題的樣式都不大一樣，可以翻一下 Oh-my-posh 的 &lt;a href=&#34;https://ohmyposh.dev/docs/themes&#34;&gt;Themes&lt;/a&gt; 頁面挑個喜歡的。&lt;/p&gt;
 &lt;h2 id=&#34;撰寫腳本&#34;&gt;撰寫腳本&lt;/h2&gt;
 &lt;p&gt;聰明的你一定發現了，每次重開都要重輸入一次 &lt;code&gt;init&lt;/code&gt; 實在是很麻煩。因此我們接著要設定讓它能一打開就載入主題。&lt;/p&gt;
@@ -296,15 +284,13 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://blog.miniasp.com/post/2013/01/02/How-to-auto-load-ps1-script-using-Windows-PowerShell-Profiles&#34;&gt;如何在 Powershell 開啟時自動引入常用的 ps1 指令檔腳本 | The Will Will Web&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://docs.microsoft.com/zh-tw/powershell/module/microsoft.powershell.core/about/about_profiles?view=powershell-7.2&#34;&gt;關於設定檔 - PowerShell | Microsoft Docs&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
+&lt;/ul&gt;&lt;/blockquote&gt;
 &lt;p&gt;接著我們就前往此處去修改 Powershell 的腳本，如果發現並沒有這個檔案，那還請自己建立一個，檔名和路徑請和 &lt;code&gt;$PROFILE&lt;/code&gt; 一致，像我就取 &lt;code&gt;Microsoft.PowerShell_profile.ps1&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/eJ8A5iY.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;之後開啟檔案，貼上我們引入套件和設定主題的指令：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ps1&#34; data-lang=&#34;ps1&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;oh-my-posh init pwsh --config &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;$env:POSH_THEMES_PATH&lt;span style=&#34;color:#e6db74&#34;&gt;/powerlevel10k_rainbow.omp.json&amp;#34;&lt;/span&gt; | Invoke-Expression
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
-&lt;p&gt;再次補充：oh-my-posh 改版之後一些語法有改變，如果有在 &lt;code&gt;Set-Theme&lt;/code&gt; 這步的時候遇到「無法辨識…」問題的朋友，可以嘗試改成用 &lt;code&gt;Set-PoshPrompt -Theme Paradox&lt;/code&gt; 試試看。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;再次補充：oh-my-posh 改版之後一些語法有改變，如果有在 &lt;code&gt;Set-Theme&lt;/code&gt; 這步的時候遇到「無法辨識…」問題的朋友，可以嘗試改成用 &lt;code&gt;Set-PoshPrompt -Theme Paradox&lt;/code&gt; 試試看。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;接著讓我們重開 Powershell&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1kYjQSO.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;可以看見它已經順利載入主題囉！&lt;/p&gt;
@@ -312,13 +298,11 @@
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ps1&#34; data-lang=&#34;ps1&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;oh-my-posh init pwsh --config &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;$env:POSH_THEMES_PATH&lt;span style=&#34;color:#e6db74&#34;&gt;/powerlevel10k_rainbow.omp.json&amp;#34;&lt;/span&gt; | Invoke-Expression
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;clear
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
-&lt;p&gt;也可以在這裡寫一些 function 來使用，像我個人之前做 &lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-1-selenium&#34;&gt;我要訂便當&lt;/a&gt; 因為懶得每次都 cd 到腳本所在的位置還要 Pyhton 執行，所以就直接包成 &lt;code&gt;Get-Bandon&lt;/code&gt; 的方法直接叫，真的舒服，推薦嘗試&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;也可以在這裡寫一些 function 來使用，像我個人之前做 &lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-1-selenium&#34;&gt;我要訂便當&lt;/a&gt; 因為懶得每次都 cd 到腳本所在的位置還要 Pyhton 執行，所以就直接包成 &lt;code&gt;Get-Bandon&lt;/code&gt; 的方法直接叫，真的舒服，推薦嘗試&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;如果有想要自己試試新增主題，或是想像我一樣做小修改的，可以到 &lt;code&gt;$env:POSH_THEMES_PATH&lt;/code&gt; 這個路徑的資料夾，找到 &lt;code&gt;.omp.json&lt;/code&gt; 檔案來動手&lt;/p&gt;
 &lt;p&gt;例如說把 &lt;code&gt;powerlevel10k_rainbow.omp.json&lt;/code&gt; 開啟後，就可以看見組出那一串資訊的過程，也就可以隨意更改囉。我就特愛把一些 icon 都改成 &lt;code&gt;°д°&lt;/code&gt;，感覺活潑多了（？）&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;補充：該路徑會根據安裝 &lt;code&gt;oh-my-posh&lt;/code&gt; 的位置而變動，基本上開 Powershell 直接從環境變數的路徑下去找比較快。真的找不到的話也可以下載別人的主題改一改，再修改 `&amp;ndash;config`` 的路徑指到自己改好的 json 就好囉&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;補充：該路徑會根據安裝 &lt;code&gt;oh-my-posh&lt;/code&gt; 的位置而變動，基本上開 Powershell 直接從環境變數的路徑下去找比較快。真的找不到的話也可以下載別人的主題改一改，再修改 `&amp;ndash;config`` 的路徑指到自己改好的 json 就好囉&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;順便提一下，載入使用者設定對用到 Powershell 的地方都有效喲！&lt;/p&gt;
 &lt;p&gt;例如 Visual Studio Code 的 Powershell&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/fqtRmwR.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;

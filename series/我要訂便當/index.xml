@@ -6,6 +6,8 @@
     <description>Recent content in 我要訂便當 on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
+    <managingEditor>Igouist (Igouist)</managingEditor>
+    <webMaster>Igouist (Igouist)</webMaster>
     <follow_challenge>
       <feedId>56200764111934464</feedId>
       <userId>41821085092905984</userId>
@@ -15,7 +17,7 @@
       <title>我要訂便當 (5): Heroku 填坑小記</title>
       <link>https://igouist.github.io/post/2020/05/bandon-5-heroku-debug/</link>
       <pubDate>Sun, 31 May 2020 23:24:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/05/bandon-5-heroku-debug/</guid>
       <description>&lt;p&gt;在上一集的 &lt;a href=&#34;https://igouist.github.io/post/2020/05/bandon-4-heroku/&#34;&gt;將 Python 腳本部署上 Heroku&lt;/a&gt; 中，記錄了將 Python 腳本放上 Heroku 的過程，但仍然沒有將我們的 &lt;a href=&#34;https://igouist.github.io/tags/bandon/&#34;&gt;訂便當小幫手&lt;/a&gt; 給放上去。之前有稍微提到是因為過程中遇到了一些問題，最後決定將這些問題和找到的前人解決文記錄在這一篇，將來再遇到的時候就可以參考。&lt;/p&gt;
 &lt;ol&gt;
@@ -77,20 +79,17 @@ heroku config:set CHROMEDRIVER_PATH=/app/.chromedriver/bin/chromedriver
       <title>我要訂便當 (4): 將 Python 腳本部署上 Heroku</title>
       <link>https://igouist.github.io/post/2020/05/bandon-4-heroku/</link>
       <pubDate>Sun, 03 May 2020 23:55:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/05/bandon-4-heroku/</guid>
       <description>&lt;blockquote&gt;
-&lt;p&gt;2024.10 更新: Line Notify 將於 2025 年 3 月停止服務（&lt;a href=&#34;https://notify-bot.line.me/closing-announce&#34;&gt;LINE Notify 結束服務公告&lt;/a&gt;），有看到這篇的朋朋請選擇一組新的通知服務來串吧 QQ&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;2024.10 更新: Line Notify 將於 2025 年 3 月停止服務（&lt;a href=&#34;https://notify-bot.line.me/closing-announce&#34;&gt;LINE Notify 結束服務公告&lt;/a&gt;），有看到這篇的朋朋請選擇一組新的通知服務來串吧 QQ&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
-&lt;p&gt;目標：紀錄一下如何將 Python 寫好的東西丟上 &lt;a href=&#34;https://www.heroku.com/home&#34;&gt;Heroku&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;目標：紀錄一下如何將 Python 寫好的東西丟上 &lt;a href=&#34;https://www.heroku.com/home&#34;&gt;Heroku&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;在先前的 &lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-1-selenium/&#34;&gt;訂便當系列&lt;/a&gt; 中已經建立了一個替我們去爬便當網並通知我們的小工具，但還存在一個相當大的問題：要在哪跑？總不能就只放在家裡電腦有開機就跑、沒開機就算了吧？因此我們必須找個主機把它放上去。而在上一篇做 Line Notify 的時候所參考的 &lt;a href=&#34;https://www.evanlin.com/go-line-notify/&#34;&gt;如何快速建置一個 LINE Notify 的服務&lt;/a&gt; 中提到了將服務放上 Heroku 的部分，因此馬上嘗試看看。&lt;/p&gt;
 &lt;p&gt;結果過程中碰了不少壁，因此特地紀錄下來。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Heroku 是一個雲端平台&lt;/strong&gt;，讓使用者可以把服務丟上去跑，&lt;del&gt;同時最讚的部分是，免費用戶就提供了每月 450 小時可以使用（但有每半小時會進入休眠的限制）&lt;/del&gt;，詳情可以參閱 &lt;a href=&#34;https://www.heroku.com/pricing&#34;&gt;Heroku 的計費頁面&lt;/a&gt;。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;更新：Heroku 已經改為收費方案了 QQ&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;更新：Heroku 已經改為收費方案了 QQ&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;本系列最後一階段的目標就是要將訂便當爬蟲整套丟上去雲端上運行，達到被動接收通知的效果。但由於訂便當爬蟲還牽涉到用 Selenium 開瀏覽器互動，以及使用 Sqlite 儲存的部分，轉移到 Heroku 的環境上還需要進行一些調整。因此&lt;strong&gt;這一階段將會分成兩篇（或以上）文章進行，上篇會先簡單地紀錄如何將服務放上 Heroku，下篇開始則著重於紀錄將訂便當系統放上 Heroku 時遇到的問題和解決過程&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;本篇主要的參考來源來自於 &lt;a href=&#34;https://medium.com/enjoy-life-enjoy-coding/heroku-%E6%90%AD%E9%85%8D-git-%E5%9C%A8-heroku-%E4%B8%8A%E9%83%A8%E7%BD%B2%E7%B6%B2%E7%AB%99%E7%9A%84%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E5%AD%B8-bf4fd6f998b8&#34;&gt;搭配 Git 在 Heroku 上部署網站的手把手教學&lt;/a&gt;、&lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10196129&#34;&gt;發布網站到 Heroku&lt;/a&gt; 以及 &lt;a href=&#34;https://railsbook.tw/chapters/32-deployment-with-heroku.html&#34;&gt;網站部署（使用 Heroku）&lt;/a&gt; 這幾篇，其餘參考將附於文末，感謝各位前人大大留下的優質文。&lt;/p&gt;
 &lt;h2 id=&#34;註冊及安裝&#34;&gt;註冊及安裝&lt;/h2&gt;
@@ -109,8 +108,7 @@ heroku config:set CHROMEDRIVER_PATH=/app/.chromedriver/bin/chromedriver
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/nGlmGiJ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;連接至-heroku&#34;&gt;連接至 Heroku&lt;/h2&gt;
 &lt;blockquote&gt;
-&lt;p&gt;備註：由於 Heroku 傳送檔案的方式是使用 Git 進行，因此在後續的操作之前，&lt;strong&gt;必須先確保電腦中已經安裝 Git&lt;/strong&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;備註：由於 Heroku 傳送檔案的方式是使用 Git 進行，因此在後續的操作之前，&lt;strong&gt;必須先確保電腦中已經安裝 Git&lt;/strong&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;接著我們就按照上面 Heroku CLI 說明頁面的步驟開始操作。&lt;/p&gt;
 &lt;p&gt;首先要先登入，輸入 &lt;code&gt;heroku login&lt;/code&gt; 之後，便會開啟瀏覽器進行登入驗證，如果成功會看見登入訊息&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/fOifmbs.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
@@ -227,14 +225,13 @@ $ git push heroku master
       <title>我要訂便當 (3): 用 Python &#43; Line Notify 傳送通知</title>
       <link>https://igouist.github.io/post/2020/04/bandon-3-line-notify/</link>
       <pubDate>Sun, 05 Apr 2020 19:36:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/04/bandon-3-line-notify/</guid>
       <description>&lt;p&gt;前情提要：&lt;/p&gt;
 &lt;p&gt;在 &lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-1-selenium/&#34;&gt;我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單&lt;/a&gt; 中，我們嘗試了用 Selenium 控制瀏覽器去取回訂便當團購網的訂單內容&lt;/p&gt;
 &lt;p&gt;而在 &lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-2-sqlite/&#34;&gt;我要訂便當(2) —— 用 Python + Sqlite 儲存訂單&lt;/a&gt; 中，我們使用 Sqlite 達到將訂單儲存起來以判斷是否有新的訂單，因此這邊的下一步就是需要進行通知。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;目標：&lt;strong&gt;使用 Line Notify，當有新訂單的時候就發送通知&lt;/strong&gt;。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;目標：&lt;strong&gt;使用 Line Notify，當有新訂單的時候就發送通知&lt;/strong&gt;。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://notify-bot.line.me/zh_TW/&#34;&gt;Line Notify&lt;/a&gt;&lt;/strong&gt; 是 Line 上面的通知服務，不像 Line@ 一樣可以有品牌有互動等等，Line Notify 純粹就是訊息通知；但同時對比 Line@ 最近吵得沸沸揚揚的收費和大量跳槽，Line Notify 則是免費的服務。&lt;/p&gt;
 &lt;p&gt;Line Notify 的運作上分為發送訊息和接受訊息。當我們使用 Line 帳號申請 Line Notify 的服務後就可以得到一個 Access Token，藉由這組 Access Token 就能夠讓我們的程式和服務去發送通知。這些通知會由一個叫做 LINE Notify 的官方帳號發送給有訂閱這個通知的人。&lt;/p&gt;
 &lt;p&gt;基於這個工作原理，像是需要經營品牌的服務就不太適合 Line Notify，反之像是&lt;strong&gt;伺服器斷線、設備超載等等這些個人通知性質比較高的服務就很適合使用 Line Notify&lt;/strong&gt;。這點從 &lt;a href=&#34;https://notify-bot.line.me/zh_TW/&#34;&gt;Line Notify 網頁&lt;/a&gt; 下方的示意圖也可以略知一二。&lt;/p&gt;
@@ -284,8 +281,7 @@ $ git push heroku master
 &lt;img src=&#34;https://image.igouist.net/v32rItf.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;如果回傳成功，&lt;code&gt;r.status_code&lt;/code&gt; 就會顯示 &lt;code&gt;200&lt;/code&gt;；而如果像是 Token 已經被撤銷等，則會得到 &lt;code&gt;401&lt;/code&gt;&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;關於 200, 401.. 這些回傳的狀態碼，可以參閱 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi/#%E9%97%9C%E6%96%BC-http-status-code&#34;&gt;HTTP Status&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;關於 200, 401.. 這些回傳的狀態碼，可以參閱 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi/#%E9%97%9C%E6%96%BC-http-status-code&#34;&gt;HTTP Status&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;另外當然也可以傳送圖片或貼圖，請參閱 &lt;a href=&#34;https://www.oxxostudio.tw/articles/201806/line-notify.html&#34;&gt;自建 LINE Notify 訊息通知 - Oxxo studio&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id=&#34;和訂便當腳本結合&#34;&gt;和訂便當腳本結合&lt;/h2&gt;
 &lt;p&gt;接著我們就將這個寄發 Line Notify 的 Function 給放回我們之前的訂便當腳本中。並在發現訂單異動的部分去呼叫 &lt;code&gt;lineNotifyMessage&lt;/code&gt; 來通知我們&lt;/p&gt;
@@ -323,12 +319,11 @@ print_order(order)
       <title>我要訂便當 (2): 用 Python &#43; Sqlite 儲存訂單</title>
       <link>https://igouist.github.io/post/2020/03/bandon-2-sqlite/</link>
       <pubDate>Sun, 15 Mar 2020 20:49:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/03/bandon-2-sqlite/</guid>
       <description>&lt;p&gt;前情回顧：上一集在 &lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-1-selenium/&#34;&gt;我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單&lt;/a&gt; 中，我們藉由自動化套件 Selenium 控制 Chrome 成功從訂便當網站裡取得訂單資訊了。但只能夠取得現在的訂單，和原本有新訂單的時候才通知的目標仍然有點差距，那麼，如何判斷有沒有新訂單呢？只要和上一次讀取時的訂單相比就能知道了。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;目標：將訂單儲存起來，判斷有沒有新訂單。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;目標：將訂單儲存起來，判斷有沒有新訂單。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;這一篇主要的做法主要參考自 &lt;a href=&#34;https://www.youtube.com/watch?v=pI3FDACJFAs&#34;&gt;大數軟體 - 如何透過 Line 發送最新一集的漫畫&lt;/a&gt; 中，關於如何判斷是否有最新一集漫畫的部分。這系列的影片步驟明瞭，說明直接，同時標題也很對我胃口（我就喜歡把工具拿來生活周遭玩的感覺），因此這邊也推薦一下，有興趣的可以去看看。&lt;/p&gt;
 &lt;p&gt;回歸正題，這篇的第一部分就是要使用 Sqlite 將抓到的訂單儲存起來。Sqlite 顧名思義就是 SQL + Lite 的感覺，主打小巧輕便。它會將資料儲存在一個檔案中，並且支援精簡的 SQL 指令，可以說是相當方便。&lt;/p&gt;
 &lt;p&gt;在 Python 要對 Sqlite 做操作主要是藉由 sqlite3 這個包，因此在接下來的步驟前，請先安裝這個包。關於 Sqlite3 的基本操作，可以參閱 &lt;a href=&#34;https://www.runoob.com/sqlite/sqlite-python.html&#34;&gt;菜鳥教程的 SQLite - Python&lt;/a&gt; 教學。&lt;/p&gt;
@@ -599,18 +594,16 @@ print_order(order)
       <title>我要訂便當 (1): 用 Python &#43; Selenium 控制瀏覽器取得訂單</title>
       <link>https://igouist.github.io/post/2020/03/bandon-1-selenium/</link>
       <pubDate>Sun, 08 Mar 2020 18:47:23 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/03/bandon-1-selenium/</guid>
       <description>&lt;blockquote&gt;
-&lt;p&gt;2024.10 更新: Line Notify 將於 2025 年 3 月停止服務（&lt;a href=&#34;https://notify-bot.line.me/closing-announce&#34;&gt;LINE Notify 結束服務公告&lt;/a&gt;），有看到這篇的朋朋請選擇一組新的通知服務來串吧 QQ&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;2024.10 更新: Line Notify 將於 2025 年 3 月停止服務（&lt;a href=&#34;https://notify-bot.line.me/closing-announce&#34;&gt;LINE Notify 結束服務公告&lt;/a&gt;），有看到這篇的朋朋請選擇一組新的通知服務來串吧 QQ&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
 &lt;p&gt;前言：&lt;/p&gt;
 &lt;p&gt;這是參加&lt;a href=&#34;https://www.hexschool.com/2019/11/14/2019-11-14-w3Hexschool-2020-challenge/&#34;&gt;六角鼠年全馬&lt;/a&gt;的第一篇，主要是希望能夠養成寫部落格的習慣。由於我本身並沒有主要技能，因此這次參賽文章會以我最近玩的玩具、使用的套件或是遇到的問題做紀錄。&lt;/p&gt;
 &lt;p&gt;希望能夠派上用場。&lt;/p&gt;
 &lt;p&gt;目標：使用 &lt;strong&gt;Python&lt;/strong&gt; 及 &lt;strong&gt;Selenium&lt;/strong&gt; 連線到訂便當網站，自動輸入帳號密碼登入後，取回網站上的訂單資訊&lt;/p&gt;
-&lt;p&gt;(2020/12/4) 更新: 由於訂便當網站改版，所以程式碼已經不能照抄了。但有興趣的朋友還是能自己摸索做點變動，也能夠照常進行喔，加油～&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;(2020/12/4) 更新: 由於訂便當網站改版，所以程式碼已經不能照抄了。但有興趣的朋友還是能自己摸索做點變動，也能夠照常進行喔，加油～&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;最近在公司的時候有個莫大的煩惱，就是關於辦公室團購這回事兒。現在待著的公司主要是從 &lt;a href=&#34;https://dinbendon.net/&#34;&gt;Dinbendon&lt;/a&gt; 這套系統來揪團購，舉凡品客、火鍋等都在上面訂過，據我觀察最受歡迎出現最多次的當屬雞排了。煩惱就在於，每次都會錯過雞排的團購，光在辦公室聞著四面八方傳來的雞排香味，就令人無法忍受！因此趁著這個機會，來嘗試能不能像之前的 &lt;a href=&#34;https://igouist.github.io/post/2019/12/ptt-crawler-and-listener/&#34;&gt;PTT&lt;/a&gt; 一樣來弄出一個通知，順便玩玩最近看到的工具。這系列的文章會分成多個部分，主要是以使用的工具來分集。&lt;/p&gt;
 &lt;p&gt;由於在從團購網取得訂單的過程中需要跟網頁進行互動，因此這次要使用的工具是 &lt;strong&gt;&lt;a href=&#34;https://www.selenium.dev/&#34;&gt;Selenium&lt;/a&gt;&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Selenium 是一個對網頁做自動化測試的工具&lt;/strong&gt;，但我個人比較常在爬蟲的時候用到XD。它能夠經由腳本或錄製的方式對瀏覽器進行操作，並且也支援相當多語言可以使用，例如我同事便使用 C# 和 Hangfire 來完成訂便當的目標（對，這麼無聊的人不只我一個），而我則用相對比較熟悉的 Python 來實作。&lt;/p&gt;
@@ -622,8 +615,7 @@ print_order(order)
 &lt;blockquote&gt;
 &lt;p&gt;2020.04.02 補充：關於&lt;strong&gt;其他瀏覽器的 Driver&lt;/strong&gt;，可以參考 iT 邦幫忙的 &lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10229959/&#34;&gt;鼠年全馬鐵人挑戰 WEEK 06：Selenium 自動化測試工具&lt;/a&gt; 這篇，裡面有詳細的介紹以及各瀏覽器的 Driver 下載整理。&lt;/p&gt;
 &lt;p&gt;此外除了用腳本控制 Driver 的用法以外，&lt;strong&gt;Selenium 也提供了 IDE&lt;/strong&gt; 可以直接使用，需要先安裝 Chrome 和 Firefox 的擴充套件，詳情可以參閱同系列的 &lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10230427&#34;&gt;鼠年全馬鐵人挑戰 WEEK 07：Selenium IDE&lt;/a&gt; 內有使用說明。&lt;/p&gt;
-&lt;p&gt;發完之後才看到這個系列，對測試的種類和 Selenium 的操作說明得清楚多了，值得推薦，故在此補上。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;發完之後才看到這個系列，對測試的種類和 Selenium 的操作說明得清楚多了，值得推薦，故在此補上。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;下載完解壓縮應該會有一個 chromedriver.exe 檔案，這個檔案的用法有兩種&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;放置於 Python.exe 所在的位置，即當初的安裝位置，如此所有的腳本都可以使用&lt;/li&gt;
@@ -670,8 +662,7 @@ print_order(order)
 &lt;p&gt;題外話：如果遇到麻煩點的驗證碼怎麼辦？&lt;/p&gt;
 &lt;p&gt;可以先用&lt;a href=&#34;https://www.youtube.com/watch?v=hF-dJj559ug&#34;&gt;大數軟體 - 如何使用 Selenium 抓取驗證碼?&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;再試試看&lt;a href=&#34;https://www.largitdata.com/course/37/&#34;&gt;大數學堂 - 如何透過 OpenCV 破解台灣證券交易所買賣日報表的驗證碼(Captcha)&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;也許能有效，先記錄下來。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;也許能有效，先記錄下來。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;接著就可以測試是否能夠登入了，將帳號密碼設定為測試用的訪客帳號 guest，並在指令最後添加按下按鈕的動作&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 提交表單&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;driver&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;find_element_by_name(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;submit&amp;#34;&lt;/span&gt;)&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;click() 

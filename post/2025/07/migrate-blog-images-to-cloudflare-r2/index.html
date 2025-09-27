@@ -22,7 +22,7 @@
         })(window, document, "clarity", "script", "lpnoqxbhhj");
     </script>
 
-    <meta name="generator" content="Hugo 0.117.0">
+    <meta name="generator" content="Hugo 0.150.1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -150,8 +150,7 @@
 <blockquote>
 <p>備註：如果想要自訂 R2 資源對外的網址，需要先讓 R2 和 Cloudflare 上存在的網域做綁定，也就是要在 Cloudflare 買網域或是其他地方買來掛在 Cloudflare 上（參考 <a href="https://developers.cloudflare.com/r2/buckets/public-buckets/#add-your-domain-to-cloudflare">Public buckets</a>）</p>
 <p>因為我（之前為了<a href="https://tedliou.com/software/bluesky-handle-domain-customize/">改 Bluesky 的帳號名稱</a>）已經在 Cloudflare 購買過網域了，所以可以直接用自定義網域來把圖片網址改成我要的網址。</p>
-<p>如果你也想要自訂圖片網址，但在 Cloudflare 還沒有任何網域，可以先多找幾篇網域購買和託管到 Cloudflare 的文章（例如 <a href="https://geekaz.net/cloudflare-domain-tutorial/">Cloudflare 網域購買教學</a>）參考參考，再決定要不要投入 $$ 買一個自己喜歡的名字。</p>
-</blockquote>
+<p>如果你也想要自訂圖片網址，但在 Cloudflare 還沒有任何網域，可以先多找幾篇網域購買和託管到 Cloudflare 的文章（例如 <a href="https://geekaz.net/cloudflare-domain-tutorial/">Cloudflare 網域購買教學</a>）參考參考，再決定要不要投入 $$ 買一個自己喜歡的名字。</p></blockquote>
 <p>建立完畢之後，可以先進貯體隨便上傳一張圖片，確認一下 URL 有沒有連到圖片：</p>
 <p><img src="https://image.igouist.net/1753970484783.webp" alt="1753970485658"></p>
 <h2 id="弄個-powershell-腳本把部落格的圖片先抓下來">弄個 Powershell 腳本把部落格的圖片先抓下來</h2>
@@ -199,8 +198,7 @@
 <blockquote>
 <p>補充：有些情況下跑完 WebP 反而會讓檔案大小變大，例如 JPG 轉 WebP（參見 <a href="https://stackoverflow.com/questions/30641057/image-size-is-increased-when-converted-from-jpg-to-webp-with-quality-value-100">Image size is increased when converted from jpg to webp with quality value 100</a>）</p>
 <p>而在 <a href="https://developers.google.com/speed/webp/faq#can_a_webp_image_grow_larger_than_its_source_image">WebP 常見問題文檔</a>的「Can a WebP image grow larger than its source image?」這一小節有說明可能會導致檔案變大的場景，有遇到的朋友可以先確認看看。</p>
-<p>因為我的部落格大多是 PNG 圖檔，文檔提到「Note that converting a JPEG source to lossy WebP, or a PNG source to lossless WebP are not prone to such file size surprises.」所以我仍然可以無腦轉 WebP，如果是跟我一樣都是 PNG 的朋友就別擔心了。</p>
-</blockquote>
+<p>因為我的部落格大多是 PNG 圖檔，文檔提到「Note that converting a JPEG source to lossy WebP, or a PNG source to lossless WebP are not prone to such file size surprises.」所以我仍然可以無腦轉 WebP，如果是跟我一樣都是 PNG 的朋友就別擔心了。</p></blockquote>
 <p>在開始動手之前，需要先確保環境中有 WebP 的工具。沒有的朋朋們請先到 <a href="https://developers.google.com/speed/webp/download?hl=zh-tw">Google for Developers</a> 下載回來（為了方便後續使用，可以把 <code>bin</code> 的路徑丟進環境變數）</p>
 <p>接著同樣產個小腳本來逐個把圖片壓成 WebP，這段除了好朋友 GPT 以外，還參考了這兩篇：</p>
 <ul>
@@ -253,14 +251,12 @@
 <p><img src="https://image.igouist.net/1753970509149.webp" alt="1753970510004"></p>
 <p>雖然瀏覽器上傳有每次一百個檔案的限制，但考慮到我部落格 <del>拖稿嚴重</del> 圖片不多，因此手動上傳也是分分鐘的事情，這個步驟就手動傳一傳收工。</p>
 <blockquote>
-<p>補充：如果檔案太多，或是好想用下指令的方式上傳呢？請參考 R2 文檔的 <a href="https://developers.cloudflare.com/r2/objects/upload-objects/">Upload objects</a></p>
-</blockquote>
+<p>補充：如果檔案太多，或是好想用下指令的方式上傳呢？請參考 R2 文檔的 <a href="https://developers.cloudflare.com/r2/objects/upload-objects/">Upload objects</a></p></blockquote>
 <p>因為前面的步驟只是下載檔案又上傳檔案，連檔名都沒更動，接著只要回去文章內文把原本有 <code>i.imgur.com</code> 的連結都替代成新的圖片網址就搞定囉～</p>
 <blockquote>
 <p>補充：如果像我一樣，有些 JS 的操作會去呼叫圖片網址的話，可能會看到 CORS 的錯誤訊息，例如：<code>Access to image at 'https://xxxx/xxxxxx.webp' from origin 'https://xxxxxx.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.</code></p>
 <p>這時候只要去 R2 儲存體的「設定」 找到 CORS 原則，把站台加上去就可以了。</p>
-<p><img src="https://image.igouist.net/1753970523569.webp" alt="1753970524223"></p>
-</blockquote>
+<p><img src="https://image.igouist.net/1753970523569.webp" alt="1753970524223"></p></blockquote>
 <h2 id="使用-vscode-的-markdown-image-延伸模組直接上傳圖片到-cloudflare-r2">使用 VSCode 的 Markdown-image 延伸模組直接上傳圖片到 Cloudflare R2</h2>
 <p>到這邊其實部落格的圖床遷移已經完成了，但因為我習慣用 VSCode 撰寫文章，之前都用 vscode-imgur 這款延伸模組，實現貼上圖片自動上傳 Imgur 的舒適體驗。</p>
 <p>但現在圖床搬家到 Cloudflare R2 了，當然也要調整一下 VSCode 的上傳圖片工具。果斷採用開頭這篇「<a href="https://blog.kyomind.tw/weekly-review-43/">Imgur 封鎖台灣 IP，我把圖床搬到 Cloudflare R2</a>」提到的 <a href="https://marketplace.visualstudio.com/items?itemName=hancel.markdown-image">Markdown-image</a></p>
@@ -550,7 +546,7 @@
     }
     var key = "2024-08-01";
     var value = dataMap.get(key);
-    var wordCount =  1680 ;
+    var wordCount =  1679 ;
     var link = "/post/2024/08/nine-sols/";
     var title = "《九日》白金心得";
     
@@ -3286,7 +3282,7 @@
     
     <a href="https://igouist.github.io/tags/electron/">electron</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity framework</a>
     
     <a href="https://igouist.github.io/tags/enum/">enum</a>
     

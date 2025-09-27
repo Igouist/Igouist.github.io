@@ -6,6 +6,8 @@
     <description>Recent content in AutoMapper on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
+    <managingEditor>Igouist (Igouist)</managingEditor>
+    <webMaster>Igouist (Igouist)</webMaster>
     <follow_challenge>
       <feedId>56200764111934464</feedId>
       <userId>41821085092905984</userId>
@@ -15,7 +17,7 @@
       <title>AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</title>
       <link>https://igouist.github.io/post/2021/12/automapper-convert-using/</link>
       <pubDate>Sun, 05 Dec 2021 11:20:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2021/12/automapper-convert-using/</guid>
       <description>&lt;p&gt;從朋友那兒聽到了用 &lt;a href=&#34;https://igouist.github.io/post/2020/07/automapper&#34;&gt;AutoMapper&lt;/a&gt; 把串列成員物件攤平成一組串列的問題，發現了 &lt;strong&gt;ConvertUsing&lt;/strong&gt; 的好用，這邊就紀錄一下。&lt;/p&gt;
 &lt;p&gt;事情是這樣的，首先有一個 &lt;code&gt;Parent&lt;/code&gt; 類別，其中包含著兩個成員：&lt;code&gt;Id&lt;/code&gt; 和串列的 &lt;code&gt;Child&lt;/code&gt; 類別，而 &lt;code&gt;Child&lt;/code&gt; 類別則只有一個成員 &lt;code&gt;Val&lt;/code&gt;，如下：&lt;/p&gt;
@@ -204,7 +206,7 @@
       <title>AutoMapper —— 類別轉換超省力</title>
       <link>https://igouist.github.io/post/2020/07/automapper/</link>
       <pubDate>Sun, 05 Jul 2020 23:40:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/07/automapper/</guid>
       <description>&lt;p&gt;類別間的轉換幾乎是每個專案每個工程師都會碰到的動作，舉凡是分層架構每層之間的轉換，如 Dto 轉換成 ViewModel；或是接收到資料要塞進自定義的類別時也需要進行轉換。但&lt;strong&gt;在遠古時代，當我們要把一個類別的資料倒進另一個類別時，總免不了一番折騰&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;例如一個卡片對戰遊戲的資料庫，光是要先把卡片資料讀取出來就需要：&lt;/p&gt;
@@ -234,8 +236,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;沒錯，只需要簡簡單單幾步， &lt;strong&gt;AutoMapper 會自動將指定類別間同樣名稱的屬性內容做轉換&lt;/strong&gt; ，因此能夠省下相當多的功夫，也能夠隱藏類別本身的內容，專心在處理功能本身。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：網路上挺多 AutoMapper 的文章會直接使用 &lt;code&gt;Mapper.CreateMap()&lt;/code&gt; 這類靜態方法，然而這些方法已經在 AutoMapper 5 的時候被廢除，改成現在由 &lt;code&gt;MapperConfiguration&lt;/code&gt; 產生 Mapper 的方法。&lt;/p&gt;
-&lt;p&gt;然而整體的使用方式仍然大同小異，這些文章仍能稍微調整並使用，惟使用過程中需自己注意語法的差異和多加測試。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;然而整體的使用方式仍然大同小異，這些文章仍能稍微調整並使用，惟使用過程中需自己注意語法的差異和多加測試。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h3 id=&#34;客製化轉換&#34;&gt;客製化轉換&lt;/h3&gt;
 &lt;p&gt;但當然實際上我們並不一定每個欄位的名稱都是一模一樣的，總是會有遇到同個資料在不同層的 Model 裡名稱不一樣的時候，又或者是某個欄位是由兩三個欄位組成的時候。對於這種需要客製化的轉換，這時候我們就可以在註冊對映時對欄位內容的對映方式做指定：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt;
@@ -246,14 +247,12 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以看到 &lt;strong&gt;我們能用 &lt;code&gt;ForMember&lt;/code&gt; 去對類別成員做操作，並傳入目標的類別成員，以及該成員對應的操作，像這邊就使用 &lt;code&gt;MapFrom&lt;/code&gt; 來指定目標類別成員的轉換來源&lt;/strong&gt;，這樣就可以達到轉換時的客製化了。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：對於欄位之間有使用 &lt;code&gt;ForMember&lt;/code&gt; 來處理過內容再轉換的型別，建議在轉換型別時，也就是實際 mapper.Map() 的時候，稍做註解提醒一下。&lt;/p&gt;
-&lt;p&gt;尤其是會將 Mapper 的 Config 集中整理的架構裡更應該要對額外的操作做揭露，這樣對彼此都好。真的。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;尤其是會將 Mapper 的 Config 集中整理的架構裡更應該要對額外的操作做揭露，這樣對彼此都好。真的。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：AutoMapper 在轉換像是 &lt;code&gt;IEnumerable&amp;lt;T&amp;gt;&lt;/code&gt; 這類的集合時，預設會將來源為 Null 的成員轉換成空集合（而非 Null）&lt;/p&gt;
 &lt;p&gt;如果希望 Null 就好好轉換成 Null 的朋友，可以在建立設定檔時用 &lt;code&gt;cfg.AllowNullCollections = true;&lt;/code&gt; 來讓所有為 Null 的空集合轉換對象都乖乖保持 Null&lt;/p&gt;
 &lt;p&gt;也能夠在 ForMember 的時候使用 AllowNull 來針對欄位指定規則。例如 &lt;code&gt;ForMember(x =&amp;gt; x.Members, y =&amp;gt; y.AllowNull())&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;需要更詳細說明的朋友，也可以參照官方文檔的 &lt;a href=&#34;https://docs.automapper.org/en/stable/Lists-and-arrays.html#handling-null-collections&#34;&gt;Handling null collections&lt;/a&gt; 一節&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;需要更詳細說明的朋友，也可以參照官方文檔的 &lt;a href=&#34;https://docs.automapper.org/en/stable/Lists-and-arrays.html#handling-null-collections&#34;&gt;Handling null collections&lt;/a&gt; 一節&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h3 id=&#34;忽略指定的欄位&#34;&gt;忽略指定的欄位&lt;/h3&gt;
 &lt;p&gt;除了會有欄位名稱和來源的不同以外，最常遇到的應該就是兩個類別之間大多數欄位雖然對映，但某幾個欄位是沒有對映的。例如傳送給前端使用時一併送出其他來源的資料，但資料由資料表取出時並沒有這個欄位，必須轉換以後再呼叫別的方法去補上資料。&lt;strong&gt;如果直接使用 Map 來進行轉換，就會發生找不到對映欄位的錯誤。這時候就可以使用 &lt;code&gt;Ignore&lt;/code&gt; 來忽略掉指定的欄位&lt;/strong&gt;。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt;
@@ -263,14 +262,11 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如上述程式碼，可能卡片的圖像位置必須由別的方式取得，這種情況我們在 &lt;code&gt;ForMember&lt;/code&gt; 的時候就可以將其指定為 &lt;code&gt;Ignore&lt;/code&gt; 讓 AutoMapper 不要去嘗試轉換它。除了 &lt;code&gt;Ignore&lt;/code&gt; 以外，AutoMapper 還有配備像是 &lt;code&gt;IgnoreAllPropertiesWithAnInaccessibleSetter&lt;/code&gt; 這種光方法名稱長度就有點強的大殺器，也還有像是 &lt;code&gt;AllowNull&lt;/code&gt; 等更多對欄位操作的方法，這部份請各位在使用時按照需求自行摸索。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;註(1)：上述舉的例子中有需要從多個來源轉換為一個類別的場合，可以參照 &lt;a href=&#34;https://kevintsengtw.blogspot.com/2014/03/automapper.html&#34;&gt;AutoMapper 兩個物件對映到一個類別 - mrkt 的程式學習筆記&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;註(1)：上述舉的例子中有需要從多個來源轉換為一個類別的場合，可以參照 &lt;a href=&#34;https://kevintsengtw.blogspot.com/2014/03/automapper.html&#34;&gt;AutoMapper 兩個物件對映到一個類別 - mrkt 的程式學習筆記&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
-&lt;p&gt;註(2)：上面使用到的 Ignore 方法還是有些眉角需要注意，可以參照 &lt;a href=&#34;https://dotblogs.com.tw/supershowwei/2016/07/17/162815&#34;&gt;[料理佳餚] AutoMapper 中不容忽視的 Ignore() Mapping 的順序 - 軟體主廚的程式料理廚房&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;註(2)：上面使用到的 Ignore 方法還是有些眉角需要注意，可以參照 &lt;a href=&#34;https://dotblogs.com.tw/supershowwei/2016/07/17/162815&#34;&gt;[料理佳餚] AutoMapper 中不容忽視的 Ignore() Mapping 的順序 - 軟體主廚的程式料理廚房&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
-&lt;p&gt;註(3)：面對一些比較複雜的轉換時，也可以考慮使用 &lt;a href=&#34;https://igouist.github.io/post/2021/12/automapper-convert-using/&#34;&gt;ConvertUsing&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;註(3)：面對一些比較複雜的轉換時，也可以考慮使用 &lt;a href=&#34;https://igouist.github.io/post/2021/12/automapper-convert-using/&#34;&gt;ConvertUsing&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;最後還要補充的一個方法是 &lt;code&gt;ReverseMap&lt;/code&gt; ，它能夠反轉對映，建立一個反方向的對映表。當你的類別之間可能需要往回轉型，又或是想要忽略來源類別的欄位時，&lt;code&gt;ReverseMap&lt;/code&gt; 就會顯得相當有用。通常為了避免轉來轉去轉出意外，建議註冊時還是補上一個 &lt;code&gt;ReverseMap&lt;/code&gt; 為佳。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    cfg.CreateMap&amp;lt;Card, CardViewModel&amp;gt;()
@@ -324,8 +320,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以看到上面這個例子中，我們可以把 &lt;code&gt;double&lt;/code&gt; 的欄位直接 Mapping 到 &lt;code&gt;int&lt;/code&gt; 的欄位上，因為 AutoMapper 的貼心，所以不會出錯，但過程中還是可能發生喪失精度的問題。&lt;/p&gt;
 &lt;p&gt;像是例子中的 2.65 就直接變成了 3，如果符合我們的需求（例如本來就打算轉型）倒是沒關係，但如果是因為不小心轉到的話，在找問題上可能就會比較麻煩。&lt;/p&gt;
-&lt;p&gt;因此在轉換的時候，還請特別留意一下轉換雙方的型別，測試一下轉換結果是不是自己要的結果會比較好呦。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;因此在轉換的時候，還請特別留意一下轉換雙方的型別，測試一下轉換結果是不是自己要的結果會比較好呦。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;簡化整理&#34;&gt;簡化整理&lt;/h2&gt;
 &lt;p&gt;可能看到這裡有些讀者就開始疑惑了：這好像跟一開始簡介不太一樣啊，詐欺？又或者是：我每個方法裡面都要重新建一個 Mapper？這不太對吧？&lt;/p&gt;
 &lt;p&gt;的確是這樣沒錯，AutoMapper 要達到更簡潔，還需要再做一些整理。例如使用 Profile 將對映關係集中起來，以及把 Mapper 的建構抽取出來。可能是在建構式建立共用的 Mapper ，或是以依賴注入 (Dependency Injection) 的方式來注入 Mapper 等等。以下就逐步進行介紹。&lt;/p&gt;
@@ -401,15 +396,13 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    config.AddProfile&amp;lt;ControllerProfile&amp;gt;();
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    config.AddProfile&amp;lt;ServiceProfile&amp;gt;();
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;});
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這樣的可讀性更好，也能讓維護的人迅速掌握當前的 Profile，有需要的朋友可以嘗試看看。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這樣的可讀性更好，也能讓維護的人迅速掌握當前的 Profile，有需要的朋友可以嘗試看看。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
 &lt;p&gt;2021.08.27 補充：&lt;/p&gt;
 &lt;p&gt;感謝 &lt;a href=&#34;https://raychiutw.github.io/&#34;&gt;Ray&lt;/a&gt; 大大提供的方法，這邊也補充給大家參考一下&lt;/p&gt;
 &lt;p&gt;我們前面有提到 &lt;code&gt;AddAutoMapper&lt;/code&gt; 會對該型別所在的 Assembly 進行反射找出所有的 &lt;code&gt;Profile&lt;/code&gt;，那麼我們也可以轉換一下思路：只要把全部的組件都丟到 &lt;code&gt;AddAutoMapper&lt;/code&gt; 裡就好了！這種時候我們就可以利用反射來達到我們的目的：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;相較於 &lt;code&gt;AddProfile&lt;/code&gt; 這種逐一新增 &lt;code&gt;Profile&lt;/code&gt; 的作法，利用反射會讓註冊顯得更乾淨，並且也更不容易有所遺漏。各位可以按照開發的場景選擇一下註冊的方式，有需要的朋友也可以都嘗試看看。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;相較於 &lt;code&gt;AddProfile&lt;/code&gt; 這種逐一新增 &lt;code&gt;Profile&lt;/code&gt; 的作法，利用反射會讓註冊顯得更乾淨，並且也更不容易有所遺漏。各位可以按照開發的場景選擇一下註冊的方式，有需要的朋友也可以都嘗試看看。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;註冊好之後，我們就能將剛剛的示範部分更改為使用注入的方式來取得 Mapper：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; IMapper _mapper;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;

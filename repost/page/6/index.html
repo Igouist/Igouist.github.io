@@ -22,7 +22,7 @@
         })(window, document, "clarity", "script", "lpnoqxbhhj");
     </script>
 
-    <meta name="generator" content="Hugo 0.117.0">
+    <meta name="generator" content="Hugo 0.150.1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -136,12 +136,10 @@
 <p>這篇介紹了一種量化風險的方法：使用九宮格。<strong>縱軸跟橫軸分別會是機率（Probability）和影響程度（Impact）</strong></p>
 <blockquote>
 <p>Probability: How likely is it that the risk will happen? <br/>
-機率：風險發生的可能性有多高？</p>
-</blockquote>
+機率：風險發生的可能性有多高？</p></blockquote>
 <blockquote>
 <p>Impact: What is the negative impact if the risk does occur? <br/>
-影響：如果風險發生，會有什麼負面影響？</p>
-</blockquote>
+影響：如果風險發生，會有什麼負面影響？</p></blockquote>
 <p>兩者都分成三個程度：Low, Medium 和 High。這樣就可以看見風險位於哪個位置</p>
 <p><img src="https://riskstorming.com/img/quantifying-risk-1.png" alt=""></p>
 <p>例如說我們可能有一個風險是某個共用服務死掉的話會連帶產品一起死掉，那我們就可以從機率和影響下去評估：他發生的機率很 Low、但影響是 High，那我們就可以把他貼在圖上（可以參考附圖，比較直覺一點 QQ）</p>
@@ -175,10 +173,9 @@
                             <div class="post-content">
                                 <p>今天真的是太睏了，睏到突然想起來可以分享這部影片：<br/>
 <a href="https://www.youtube.com/watch?v=s73WwmWVqBg">最容易被忽視的習慣，比爾蓋茲都臣服的一本書｜《為什麼要睡覺？》｜文森說書</a></p>
-
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-  <iframe src="https://www.youtube.com/embed/s73WwmWVqBg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen title="YouTube Video"></iframe>
-</div>
+      <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" loading="eager" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/s73WwmWVqBg?autoplay=0&amp;controls=1&amp;end=0&amp;loop=0&amp;mute=0&amp;start=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="YouTube video"></iframe>
+    </div>
 
 <hr>
 <p>人類的睡眠階段分為前四小時的「非快速動眼時期」和後四小時的「快速動眼時期」，清醒的時候，我們的大腦會像海綿一樣吸收資訊，然後在深層睡眠整理資訊和長期記憶，並在快速動眼時期試圖串聯這些資訊。</p>
@@ -235,23 +232,19 @@
 <p>這篇文章提出了兩個常見的做法：</p>
 <blockquote>
 <p>Ensuring data consistency through repeated processing: this requires business components to process the same event input and produce the same result.</p>
-<p><strong>通過重複處理確保數據一致性</strong>：這要求業務組件處理相同的事件輸入並產生相同的結果。</p>
-</blockquote>
+<p><strong>通過重複處理確保數據一致性</strong>：這要求業務組件處理相同的事件輸入並產生相同的結果。</p></blockquote>
 <blockquote>
 <p>Discarding processed events: after each event is recorded by the system and assigned a unique ID, duplicate events are discarded.</p>
-<p><strong>丟棄處理過的事件</strong>：系統在每個事件被記錄並分配一個唯一的ID後，會丟棄重複的事件。</p>
-</blockquote>
+<p><strong>丟棄處理過的事件</strong>：系統在每個事件被記錄並分配一個唯一的ID後，會丟棄重複的事件。</p></blockquote>
 <p>印象中<a href="/post/2022/08/azure-service-bus">之前</a>使用 Azure Service Bus 的時候，就是使用一組 MessageId 來辨別事件</p>
 <h3 id="事件處理順序">事件處理順序</h3>
 <p>假設有些事件之間是有順序性的，雖然通常我們會按照時間發送然後接收，但同樣也可能因為網路問題導致順序亂掉。這篇文章則採取以下措施來應對：</p>
 <blockquote>
 <p>In event schema design, we determine the order by designing a version number or ID for the previous order event for the same user&rsquo;s event.</p>
-<p>在事件模式設計中，<strong>我們通過為同一使用者的事件設計一個先前訂單事件的版本號或 ID 來確定順序</strong></p>
-</blockquote>
+<p>在事件模式設計中，<strong>我們通過為同一使用者的事件設計一個先前訂單事件的版本號或 ID 來確定順序</strong></p></blockquote>
 <blockquote>
 <p>Ensure events always follow the order of consumption, discard disordered events and wait for the arrival of events that match the order.</p>
-<p>確保事件始終按照消費的順序進行，丟棄無序的事件並等待符合順序的事件的到來</p>
-</blockquote>
+<p>確保事件始終按照消費的順序進行，丟棄無序的事件並等待符合順序的事件的到來</p></blockquote>
 <h3 id="處理延遲事件">處理延遲事件</h3>
 <p>這項感覺和業務需求比較有關係。主要是 Queue 的延遲性，我們可能在 23:55 發送某個事件，然後 00:05 才被訂閱者收出來處理掉，像這篇需要計算金額的服務就會出問題</p>
 <p>這篇的做法就是<strong>直接往後抓緩衝</strong>，例如在凌晨三點的時候去把前一天的做掉，這三個小時其實就足夠讓前一天的事件內容送達了</p>
@@ -260,8 +253,7 @@
 <p>簡單來說就是如果接收者掛掉了沒有正確處理事件，發送者要可以重新把事件噴過去。他們除了在重新發送的時候使用 Lambda service 並且控制並發數量來確保性能不要炸裂以外，這邊還額外替事件做了個標記：</p>
 <blockquote>
 <p>Because not all consumers need to consume republished events we can leverage the attribute feature of AWS SNS to add a replay attribute to republished events. Consumers can choose whether or not to subscribe to consume these events based on their needs.</p>
-<p>因為並非所有消費者都需要消費重新發布的事件，我們可以利用 AWS SNS 的屬性功能，<strong>將重新發布的事件添加一個重播屬性</strong>。消費者可以根據自己的需求選擇是否訂閱並消費這些事件。</p>
-</blockquote>
+<p>因為並非所有消費者都需要消費重新發布的事件，我們可以利用 AWS SNS 的屬性功能，<strong>將重新發布的事件添加一個重播屬性</strong>。消費者可以根據自己的需求選擇是否訂閱並消費這些事件。</p></blockquote>
 <hr>
 <p>文章最後還列了一些他們應用 Event-Driven Architecture 的優缺點，例如可以根據時間段和事件抓出相關的資訊，但也提升了複雜度等等</p>
 <p>有興趣的朋友可以再點進去閱讀～</p>……
@@ -286,14 +278,12 @@
 <a href="https://readingoutpost.com/free-writing/">《自由書寫術》透過寫作大幅提升創造力的4個訣竅</a></p>
 <p>自由書寫指的是使用紙筆或鍵盤，在某段時間之內不斷地書寫，<strong>直接把腦袋的東西一股腦地傾倒出來</strong>，任由自己隨意發散書寫的意思</p>
 <blockquote>
-<p>基本的要點是，輕鬆寫，不要停地一直寫（或用電腦鍵盤打字），以思考的方式想到什麼寫什麼，設定一個20到30分鐘的時限，即使遇到阻礙或難題，馬上轉移焦點展開新的對話</p>
-</blockquote>
+<p>基本的要點是，輕鬆寫，不要停地一直寫（或用電腦鍵盤打字），以思考的方式想到什麼寫什麼，設定一個20到30分鐘的時限，即使遇到阻礙或難題，馬上轉移焦點展開新的對話</p></blockquote>
 <p>在這個過程中要注意盡可能地專注在寫作上，而不要修改，否則容易讓腦子卡住當機</p>
 <p>像這樣放手去寫的好處在於：集中思緒並且捕捉想法</p>
 <blockquote>
 <p>作者提到自由書寫的兩大好處：寫字或敲鍵盤的動作可以有效集中思緒，它也可以給你回溯思考路徑的線索。</p>
-<p><strong>書寫的本身就會觸發思考還可以捕捉當下的想法</strong>，當你沒有明確頭緒時，更該持續書寫，讓文字和思考觸發你挖掘更深層的思緒。</p>
-</blockquote>
+<p><strong>書寫的本身就會觸發思考還可以捕捉當下的想法</strong>，當你沒有明確頭緒時，更該持續書寫，讓文字和思考觸發你挖掘更深層的思緒。</p></blockquote>
 <p>我個人則是覺得在白紙上隨意地發散，有一種專注的抒壓感（像是心流那樣），並且也可以抓出許多自己的想法和思路</p>
 <p>如果不知道怎麼開始，這篇文章也提供了一些作法。例如說，我們可以假裝自己在跟某個人對話，又或者是從「我覺得…」開場</p>
 <p>有興趣的朋友也可以玩玩看這項腦力體操～</p>……
@@ -364,8 +354,7 @@
 <ul>
 <li>一組參與者會先拿到一個杯子，問他要多少錢才願意出售這一個杯子</li>
 <li>另外一組參與者不會拿到杯子，而是問願意花多少錢買這一個杯子</li>
-</ul>
-</blockquote>
+</ul></blockquote>
 <p>而光是「有沒有拿到杯子」、有沒有覺得曾經擁有的這個差別，就可以在價格上產生 2 倍的差距</p>
 <p>稟賦效應指的就是「厭惡剝奪」的現象，<strong>當我們擁有某項東西的時候，我們會覺得這個東西的價值更高</strong></p>
 <p>也因為這個現象，IKEA 等廠商開始利用體驗區、試用期等等方式，讓客人產生一種「已經擁有」的錯覺，藉此提高銷售率</p>
@@ -775,7 +764,7 @@
     
     <a href="https://igouist.github.io/tags/electron/">electron</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity framework</a>
     
     <a href="https://igouist.github.io/tags/enum/">enum</a>
     

@@ -22,7 +22,7 @@
         })(window, document, "clarity", "script", "lpnoqxbhhj");
     </script>
 
-    <meta name="generator" content="Hugo 0.117.0">
+    <meta name="generator" content="Hugo 0.150.1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -122,8 +122,7 @@
                             <p><img src="https://image.igouist.net/6pQOti2.webp" alt=""></p>
 <h2 id="開放封閉原則-open-close-principle">開放封閉原則 (Open-Close Principle)</h2>
 <blockquote>
-<p><strong>軟體實體（類別、模組、函式等等）應該對擴展開放，而對修改封閉</strong></p>
-</blockquote>
+<p><strong>軟體實體（類別、模組、函式等等）應該對擴展開放，而對修改封閉</strong></p></blockquote>
 <p>在我們了解什麼是「對擴展開放」和「對修改封閉」之前，先讓我們談談：什麼是擴展，什麼又是修改呢？</p>
 <p>用白話一點的方式來形容，修改就是把東西拆開來改，像是手術；而擴展就是對東西額外加裝模組，像是添購設備。我們用飛行來舉例，像是鳥類直接用翅膀飛行，如果有需要修改飛行方法的話就得對鳥直接進行手術；但如果今天是一個裝備了噴射背包的人，我們只需要把噴射背包換成噴射鞋子、甚至噴射翅膀就可以了，不需要去修改人這個本體。</p>
 <p>這邊可以發現開放封閉原則是針對「改變的時候」去做一個行動的建議，例如需求追加和變更等等。<strong>凡是變化都有成本</strong>，例如變動的難易度、變動造成的影響範圍等等都會影響到成本，若是程式碼冗長、內部邏輯複雜，類別之間互相耦合、影響範圍很廣，導致綁手綁腳或壞東壞西等等狀況，使得修改很困難，成本就會變高，進而使得開發效率變低。</p>
@@ -131,8 +130,7 @@
 <p>那麼讓我們回到前面：動手術跟換道具，哪個的成本比較高呢？</p>
 <blockquote>
 <p><strong>面對需求，對程式碼的改動是透過增加新程式碼進行的，而不是更改現有的程式碼</strong>　　
-<br/>（《大話設計模式》）</p>
-</blockquote>
+<br/>（《大話設計模式》）</p></blockquote>
 <p>所以，我們希望能夠用擴充的方式去完成變化，而不是用針對內部進行修改的方式來做；希望藉由良好的設計，能迴避上面那串修改困難導致成本高昂的問題。</p>
 <p>而這個思路，其實你我都已經很習以為常了，就是<strong>模組化</strong>。</p>
 <h2 id="模組化">模組化</h2>
@@ -146,23 +144,20 @@
 <p>而我們辨認出主要邏輯跟附加邏輯之後，該怎麼實行開放封閉原則呢？</p>
 <h2 id="實行">實行</h2>
 <blockquote>
-<p>答案就是抽象。（《無瑕的程式碼：敏捷完整篇》）</p>
-</blockquote>
+<p>答案就是抽象。（《無瑕的程式碼：敏捷完整篇》）</p></blockquote>
 <p>這邊舉幾個方向：我們可以<strong>在主要邏輯和附加邏輯之間，加入抽象層來解耦合</strong>，也就是我們 <a href="/post/2020/07/oo-7-interface">介面</a> 大哥該出場的時候了。當我們的類別不再堅持依賴某個物件，例如說我就是要噴射背包，然後把背包黏死在背後；而是接受我只需要能飛的東西，不論傳遞進來的是噴射背包還是噴射鞋子，如此一來就夠用介面表達出需求，使得功能<strong>可以被任何符合需求的方式擴展</strong>。</p>
 <p>另外還有，使用外部注入來處理附加邏輯。除了不將附加邏輯寫在類別中，降低修改的機會以外，和介面的邏輯一致：你給什麼工具我就用什麼工具。當我們的附加邏輯是從外部丟給類別，使得類別預先留好擴充點，並且能由外部決定擴充方式，要擴展也就相當容易了。順便一提，我進公司學習以來，注入跟介面通常都是一起出現的 Combo 技。</p>
 <p>當我們在設置我們的擴充點（上個世紀稱作「放置鉤子」）時，有時會預測失敗，變成<strong>不必要的複雜性</strong>。也很容易走火入魔，就變成<strong>過度設計</strong>。因此，我們最終會等到足夠確信將會變化時，才進行重構的動作。</p>
 <p>在無瑕的程式碼中，建議可以接受「<strong>被愚弄一次</strong>」，先假設不會變化，而當真的變化到來時，就將該變化相關的部份重構抽象起來，得了一次病，從此就免疫，還可以少走冤枉路。又或許，也可以嘗試看看 <a href="https://shawnlin0201.github.io/Methodology/Methodology-004-Rule-Of-Three-principle/">三次原則</a>。</p>
 <blockquote>
 <p>2024.09 補充：<br/>看見 Huanlin 大大寫了這篇 <a href="https://www.huanlintalk.com/2024/09/avoid-premature-abstraction.html">避免過早的抽象設計</a>，覺得和「被愚弄一次」的精神相似。最近也在體會過早抽象帶來的痛苦，決定把這篇補充回來，給正在認識 OCP 的朋朋們參考。</p>
-<p>OCP 能幫助我們思考並寫出乾淨彈性的程式碼，但切記不要走火入魔，否則反而會帶來更多維護的成本。謹記三次重構原則，保一世平安，阿彌陀佛。</p>
-</blockquote>
+<p>OCP 能幫助我們思考並寫出乾淨彈性的程式碼，但切記不要走火入魔，否則反而會帶來更多維護的成本。謹記三次重構原則，保一世平安，阿彌陀佛。</p></blockquote>
 <h2 id="結語">結語</h2>
 <p>最後，開放封閉原則的範圍實在是太大了。事實上，其他設計原則，例如單一職責、依賴反轉等等，都是為了達到開放封閉這個終極的目標而產生的。但是，我們不可能預測到所有變化，也沒有任何做法能夠適用於所有狀況，因此要達到完全的封閉是不可能的。然而，這是我們應當嘗試精進的目標，只要謹記開放封閉原則，就能不斷改善架構，也就離良好的設計更進一步了。</p>
 <p>而對我而言，開放封閉的好處在於<strong>強迫像我這樣的工程師去思考：哪些地方是附加邏輯，哪些地方可以留作擴充，又該怎麼做才能方便擴充</strong>，這個過程和嘗試對我輩菜鳥才是真正最有價值的地方吧。</p>
 <p>最後感謝一下 Ray 大大的路過指點。我當時問了不知道怎麼形容開放封閉原則，大大就說了個例子：咱們人哪，學新東西可是比改個性來得簡單多了。也基於這個例子讓我想到了手術和洛克人，還有變動的難易度、本性（核心邏輯）和新技能（附加邏輯）的差別可以這樣咻咻地串起來，這邊就謝過啦。順便也貼下大大的 <a href="https://raychiutw.github.io/">Blog</a>，加減蹭一下。</p>
 <blockquote>
-<p>本系列下一篇：<a href="/post/2020/11/oo-12-liskov-substitution-principle">菜雞與物件導向 (12): 里氏替換原則</a></p>
-</blockquote>
+<p>本系列下一篇：<a href="/post/2020/11/oo-12-liskov-substitution-principle">菜雞與物件導向 (12): 里氏替換原則</a></p></blockquote>
 <h2 id="參考資料">參考資料</h2>
 <ul>
 <li><a href="https://www.jyt0532.com/2020/03/19/ocp/">深入淺出開放封閉原則 Open-Closed Principle - jyt0532&rsquo;s Blog</a></li>
@@ -435,7 +430,7 @@
     }
     var key = "2024-08-01";
     var value = dataMap.get(key);
-    var wordCount =  1680 ;
+    var wordCount =  1679 ;
     var link = "/post/2024/08/nine-sols/";
     var title = "《九日》白金心得";
     
@@ -3170,7 +3165,7 @@
     
     <a href="https://igouist.github.io/tags/electron/">electron</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity framework</a>
     
     <a href="https://igouist.github.io/tags/enum/">enum</a>
     

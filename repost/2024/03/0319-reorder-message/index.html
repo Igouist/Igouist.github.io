@@ -22,7 +22,7 @@
         })(window, document, "clarity", "script", "lpnoqxbhhj");
     </script>
 
-    <meta name="generator" content="Hugo 0.117.0">
+    <meta name="generator" content="Hugo 0.150.1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -116,15 +116,13 @@
                             <p>一開臉書就被推送了德魯大大的文章，當然是馬上看：<br/>
 <a href="https://columns.chicken-house.net/2023/10/01/reorder/">架構面試題 #5: Re-Order Messages - 安德魯的部落格</a></p>
 <blockquote>
-<p>如果我透過 API 短時間收到大量的 Request, 我如何保證訊息必須按照順序處理?</p>
-</blockquote>
+<p>如果我透過 API 短時間收到大量的 Request, 我如何保證訊息必須按照順序處理?</p></blockquote>
 <p>這篇文章裡德魯大大示範處理訊息順序問題，從基本觀念開始、抓出要處理的問題，動手搭建環境模擬，然後實作出 IReOrderBuffer 以及最後的監控及總結</p>
 <p>內容非常的長，推薦可以慢慢閱讀並消化思路。這邊按照慣例截一些我要收進筆記本的點。</p>
 <p>首先在「訊息排序的基本觀念」這段，其實就已經說明了這篇文章的核心：</p>
 <blockquote>
 <p>如果收到的訊息是對的，就馬上處理；如果不對，那就放在手上 (時間越短越好)，看是要等缺的訊息補上，或是放棄某個訊息繼續往下。</p>
-<p>其中你要抉擇的是，<strong>到底是要等待的時間越短越好? 還是放棄的訊息數量越少越好? 兩者通常必須取捨</strong> ..</p>
-</blockquote>
+<p>其中你要抉擇的是，<strong>到底是要等待的時間越短越好? 還是放棄的訊息數量越少越好? 兩者通常必須取捨</strong> ..</p></blockquote>
 <p>接著德魯大大列了幾個需要注意的問題：</p>
 <ol>
 <li>你的訊息必須要能標示順序</li>
@@ -134,46 +132,25 @@
 <p>在一連串的環境模擬之後，開始實作時又會提到這個決策點：</p>
 <blockquote>
 <p>掉訊息困難的地方在於: 在當下你不會知道這訊息是已經掉了，還是只是晚一點才會拿到。已經掉了的話你越早放棄他 (SKIP) 越好，反正你等再久也等不到，早點放棄可以用更低的 Buffer，也能讓後面的訊息更早發出去；</p>
-<p>晚一點到的話你等他越久越好，你的訊息完整性會更好 (都不用放棄任何一個訊息)，但是你需要更大的 Buffer, 暫存更多 Command 在 Buffer 內，也會讓更多 Command 的延遲提高，有可能違背你對整個系統的 SLO 期待。</p>
-</blockquote>
+<p>晚一點到的話你等他越久越好，你的訊息完整性會更好 (都不用放棄任何一個訊息)，但是你需要更大的 Buffer, 暫存更多 Command 在 Buffer 內，也會讓更多 Command 的延遲提高，有可能違背你對整個系統的 SLO 期待。</p></blockquote>
 <p><strong>「對整個系統的 SLO 期待」</strong> 對我來說算是比較新的概念。</p>
 <p>之前的目光都只放在「讓系統不要爆炸= =」，倒是沒有正面地想「對系統的 SLO 有所要求」這個方向。但其實就像文末提的：</p>
 <blockquote>
-<p>這類服務應該以 SLO 為主要目標，實做或是演算法都應該是支撐目標才對，而非目標來遷就設計</p>
-</blockquote>
+<p>這類服務應該以 SLO 為主要目標，實做或是演算法都應該是支撐目標才對，而非目標來遷就設計</p></blockquote>
 <hr>
 <p>另一個我覺得「哇啊」的部分是整個文章架構：先說明核心概念、把解題的框架建立起來，設計好介面、做出第一個測試案例，接著搭建用來模擬的環境，然後抓好處理範圍、動手實作，再進行測試來觀察不同狀況的表現。感覺<strong>就像是一步一步地跟著走開發過程，意外地舒服(?)</strong></p>
 <p>尤其是模擬並且測試的部份，我覺得總結的這一小段就能表達其意義：</p>
 <blockquote>
 <p>這個例子，最終是要上戰場的服務啊。你無法控制網路品質，你也無法用 “計算” 的方式預估你要多大的 Buffer Size, 因此如果你沒有用模型來模擬，你也無從 “猜測” 你的做法是否能真的上線解決問題。</p>
-<p>架構師難為的地方就在於，只有困難 (大家搞不定，也想不通怎麼解決) 的問題才會來找你。在這前提之下你從有了想法，到真的能上線驗證，通常需要花很長的時間才走得到這一步。因此，<strong>想盡一切辦法，讓問題還在很早期的階段就能被驗證，對架構師這角色而言是非常重要的</strong>。如果你提出一個錯誤的方式，其他人要等半年後才能告訴你行不通，那架構師的存在意義就不見了不是嗎?</p>
-</blockquote>
+<p>架構師難為的地方就在於，只有困難 (大家搞不定，也想不通怎麼解決) 的問題才會來找你。在這前提之下你從有了想法，到真的能上線驗證，通常需要花很長的時間才走得到這一步。因此，<strong>想盡一切辦法，讓問題還在很早期的階段就能被驗證，對架構師這角色而言是非常重要的</strong>。如果你提出一個錯誤的方式，其他人要等半年後才能告訴你行不通，那架構師的存在意義就不見了不是嗎?</p></blockquote>
 <p>最後引用文章開頭的這句給自己，共勉之：</p>
 <blockquote>
-<p><strong>別再糾結 “是否有必要重新發明輪子” 的問題了，你不需要重新發明每個輪子，但是要不要讓自己有能力重新建立 “必要” 的輪子，就是你的選擇了。</strong></p>
-</blockquote>
+<p><strong>別再糾結 “是否有必要重新發明輪子” 的問題了，你不需要重新發明每個輪子，但是要不要讓自己有能力重新建立 “必要” 的輪子，就是你的選擇了。</strong></p></blockquote>
 <p>那麼，今天的轉貼就到這邊。我們明天見～</p>
                             <hr/>
                         </div>
 
                         
-
-<div class="post-archive">
-    <h2>其他文章</h2>
-    <ul class="listing">
-        
-        <li><a href="/repost/2024/03/0318-encoding/">【每天推薦一篇文章】編碼是什麼？從傳紙條學習編碼</a></li>
-        
-        <li><a href="/repost/2024/03/0317-suggestions-for-unit-testing/">【每天推薦一篇文章】有關單元測試的建議</a></li>
-        
-        <li><a href="/repost/2024/03/0316-geohash/">【每天推薦一篇文章】Geohash</a></li>
-        
-        <li><a href="/repost/2024/03/0313-minimum-viable-product/">【每天推薦一篇文章】最小可行性產品 (MVP)</a></li>
-        
-        <li><a href="/repost/2024/03/0312-six-steps-to-tackle-ambiguous-requirements/">【每天推薦一篇文章】面對模糊需求的六個步驟</a></li>
-        
-    </ul>
-</div>
 
 
                         <div class="post-meta meta-tags">
@@ -387,7 +364,7 @@
     }
     var key = "2024-08-01";
     var value = dataMap.get(key);
-    var wordCount =  1680 ;
+    var wordCount =  1679 ;
     var link = "/post/2024/08/nine-sols/";
     var title = "《九日》白金心得";
     
@@ -3106,7 +3083,7 @@
     
     <a href="https://igouist.github.io/tags/electron/">electron</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity framework</a>
     
     <a href="https://igouist.github.io/tags/enum/">enum</a>
     

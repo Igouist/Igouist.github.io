@@ -22,7 +22,7 @@
         })(window, document, "clarity", "script", "lpnoqxbhhj");
     </script>
 
-    <meta name="generator" content="Hugo 0.117.0">
+    <meta name="generator" content="Hugo 0.150.1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -130,8 +130,7 @@
 <p><img src="https://image.igouist.net/JeS3P2J.webp" alt="Image"></p>
 <p>確認安裝完畢後就可以開始撰寫囉～</p>
 <blockquote>
-<p>本篇接下來會使用 Linqpad 來進行簡單的範例，使用 VisualStudio 的朋友遇到 <code>Dump()</code> 之類的語法就請再自己調整一下呦</p>
-</blockquote>
+<p>本篇接下來會使用 Linqpad 來進行簡單的範例，使用 VisualStudio 的朋友遇到 <code>Dump()</code> 之類的語法就請再自己調整一下呦</p></blockquote>
 <h2 id="建立-browser-抓取網頁內容">建立 Browser 抓取網頁內容</h2>
 <p>首先我們需要先建立一個 Browser 來代替我們做事：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
@@ -203,12 +202,10 @@
 </span></span><span style="display:flex;"><span>        IsResourceLoadingEnabled = <span style="color:#66d9ef">true</span> 
 </span></span><span style="display:flex;"><span>    })
 </span></span><span style="display:flex;"><span>    .WithCss();
-</span></span></code></pre></div><p>不過這些場景（需要掛 Cookie 啦、要先等 CSS 啦）通常都是遇到之後才去 Google 的，這邊就不再贅述。</p>
-</blockquote>
+</span></span></code></pre></div><p>不過這些場景（需要掛 Cookie 啦、要先等 CSS 啦）通常都是遇到之後才去 Google 的，這邊就不再贅述。</p></blockquote>
 <blockquote>
 <p>註：<code>browser.OpenAsync</code> 除了提供網址讓他直接抓回來以外，有時候我們也會遇到本機已經有 Html 檔案要處理，或是已經用 HttpClient 等方法把網頁內容拿回來了的狀況</p>
-<p>這種時候也可以用 <code>OpenAsync</code> 提供的委派方法來把 HTML 字串讀取成 AngleSharp 的物件。例如：<code>OpenAsync(res =&gt; res.Content(html))</code>，同時委派中的 <code>VirtualResponse</code> 也提供了對這物件設定 Cookie 等資訊的方法，有這個需求的朋友可以再動手試試。</p>
-</blockquote>
+<p>這種時候也可以用 <code>OpenAsync</code> 提供的委派方法來把 HTML 字串讀取成 AngleSharp 的物件。例如：<code>OpenAsync(res =&gt; res.Content(html))</code>，同時委派中的 <code>VirtualResponse</code> 也提供了對這物件設定 Cookie 等資訊的方法，有這個需求的朋友可以再動手試試。</p></blockquote>
 <h2 id="使用篩選器來抓指定的內容">使用篩選器來抓指定的內容</h2>
 <p>現在我們已經成功把網頁內容抓回來了，接著就是要<strong>使用<a href="https://www.runoob.com/cssref/css-selectors.html">選擇器</a>來抓出我們想要的內容囉</strong>。</p>
 <p>如果有用過 JQuery 或是整天寫 CSS 的朋友應該不會陌生，大致上是這樣的：</p>
@@ -233,8 +230,7 @@
 <p>這邊以 Edge 為例，讓我們到目標網頁按下Ｆ１２打開開發人員工具，直接選取目標：</p>
 <p><img src="https://image.igouist.net/F2XyfEX.webp" alt="Image"></p>
 <p>選取目標後就會告訴我們這是哪個元素，我們只需要對該元素右鍵，然後複製它的 Selector 就行啦</p>
-<p>不過這樣抓到的 Selector 語法通常會比較囉嗦一點，例如這個頁面就是 <code>#main-container &gt; div.r-list-container.action-bar-margin.bbs-screen</code>，這部份就再自己調整一下囉</p>
-</blockquote>
+<p>不過這樣抓到的 Selector 語法通常會比較囉嗦一點，例如這個頁面就是 <code>#main-container &gt; div.r-list-container.action-bar-margin.bbs-screen</code>，這部份就再自己調整一下囉</p></blockquote>
 <h2 id="整理抓取到的內容">整理抓取到的內容</h2>
 <p>現在讓我們建立一個類別用來處理標題資訊吧，這邊我只需要名稱、推噓數和文章連結，其他像是作者什麼的不太需要：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Post</span>
@@ -286,8 +282,7 @@
 <p>到這邊我們就成功把網頁的內容抓下來、篩選出我們要的內容囉！</p>
 <blockquote>
 <p>註：除了我們前面使用的 QuerySelector、GetAttribute 以外，AngleSharp 還提供了 <code>GetElementsByTagName</code>、<code>Children</code> 等屬性和方法讓我們能方便地在 DOM 中到處抓取元素。</p>
-<p>有興趣的朋友再自己摸索一下吧，我自己是比較習慣無腦 <code>QuerySelector</code> 了啦哈哈。</p>
-</blockquote>
+<p>有興趣的朋友再自己摸索一下吧，我自己是比較習慣無腦 <code>QuerySelector</code> 了啦哈哈。</p></blockquote>
 <h2 id="搭配遞迴來多撈幾頁">搭配遞迴來多撈幾頁</h2>
 <p>其實我們前面已經把 AngleSharp 的基本操作跑完一輪了，基本上不外乎是「<strong>打開目標網頁 → 找到目標元素 → 用篩選器抓出來</strong>」這樣的 Loop，這節只是單純讓這個腳本完善一點而已。</p>
 <p>因此不感興趣的朋友也可以直接跳過這一段，直接前往<a href="#%E5%B0%8F%E7%B5%90">小結</a>，準備出發去動手抓自己想要的網頁囉。</p>
@@ -653,7 +648,7 @@
     }
     var key = "2024-08-01";
     var value = dataMap.get(key);
-    var wordCount =  1680 ;
+    var wordCount =  1679 ;
     var link = "/post/2024/08/nine-sols/";
     var title = "《九日》白金心得";
     
@@ -3390,7 +3385,7 @@
     
     <a href="https://igouist.github.io/tags/electron/">electron</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity framework</a>
     
     <a href="https://igouist.github.io/tags/enum/">enum</a>
     

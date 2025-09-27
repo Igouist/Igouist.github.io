@@ -22,7 +22,7 @@
         })(window, document, "clarity", "script", "lpnoqxbhhj");
     </script>
 
-    <meta name="generator" content="Hugo 0.117.0">
+    <meta name="generator" content="Hugo 0.150.1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -128,8 +128,7 @@
 <br/>
 我：差不多可以走了，公車也差不多要來了叭？<br/>
 公車：（一分鐘前離站）<br/>
-我：(ﾟдﾟ)</p>
-</blockquote>
+我：(ﾟдﾟ)</p></blockquote>
 <p>這時候才明白愛恨情仇，最傷最痛是後悔。如果我早知道公車快到站了，也許我就不會錯過。</p>
 <p>抱著這股傷痛，決定乾脆寫個小腳本，每天下班提醒我一下，避免重蹈覆轍。</p>
 <p>綜上所述！目標是：<strong>每天下班前十分鐘，告訴我下一班到達的公車時間</strong></p>
@@ -143,12 +142,10 @@
 <h2 id="使用-motc-api-服務取得公車資訊">使用 MOTC API 服務取得公車資訊</h2>
 <p>首先，最重要的是要有資料來源。幸好我們先前在 <a href="/post/2021/05/newbie-2-webapi">Api 筆記</a>的時候，就有介紹過公共運輸動態服務 MOTC Transport API，我們只需要使用這組 API 就能輕鬆拿到公車資訊了，感謝開發該服務的朋朋。</p>
 <blockquote>
-<p>2024.11.25 更新：發現 MOTC 的 API 已經下架了，現在公車資訊已經被整合到運輸資料服務 <a href="https://tdx.transportdata.tw/api-service/swagger/basic/2998e851-81d0-40f5-b26d-77e2f5ac4118#/">TDX (Transport Data eXchange)</a>，有要動手串公車資訊的朋友可能得觀察新版 API 再進行調整了 QQ</p>
-</blockquote>
+<p>2024.11.25 更新：發現 MOTC 的 API 已經下架了，現在公車資訊已經被整合到運輸資料服務 <a href="https://tdx.transportdata.tw/api-service/swagger/basic/2998e851-81d0-40f5-b26d-77e2f5ac4118#/">TDX (Transport Data eXchange)</a>，有要動手串公車資訊的朋友可能得觀察新版 API 再進行調整了 QQ</p></blockquote>
 <p>我們的場景是在辦公室查詢下一班目標公車到站時間，比對了 Swagger 上提供的中文敘述後，決定嘗試看看「市區公車之預估到站資料」（<code>EstimatedTimeOfArrival/City/{City}/{RouteName}</code>） 這支 API</p>
 <blockquote>
-<p>註：為了避免被查水表，以下就用台北的 307 號公車為例，並假設目標站點是「台北車站（忠孝）」</p>
-</blockquote>
+<p>註：為了避免被查水表，以下就用台北的 307 號公車為例，並假設目標站點是「台北車站（忠孝）」</p></blockquote>
 <p>嘗試把縣市和公車路線名稱代入後，可以取得公車行經的站牌資訊，其中就有我們最想要的估計到站時間（秒）：</p>
 <p><img src="https://image.igouist.net/GQ9wdqG.webp" alt="Image"></p>
 <p>接著讓我們調整一下參數，把取前幾筆的 <code>$top</code> 調大一點，來取得我們目標站點台北車站的站牌 ID：</p>
@@ -159,8 +156,7 @@
 <p>如此一來我們就可以呼叫 MOTC API 來取得目標站牌＋指定公車的到站估計時間囉：</p>
 <p><img src="https://image.igouist.net/fkwZZpB.webp" alt="Image"></p>
 <blockquote>
-<p>註：沒有申請<a href="https://motc-ptx-api-documentation.gitbook.io/motc-ptx-api-documentation/hui-yuan-shen-qing/membertype">會員</a>的話有每日 50 次的使用上限，不過這次的目標也就下班打那一次，十分足夠了 XD</p>
-</blockquote>
+<p>註：沒有申請<a href="https://motc-ptx-api-documentation.gitbook.io/motc-ptx-api-documentation/hui-yuan-shen-qing/membertype">會員</a>的話有每日 50 次的使用上限，不過這次的目標也就下班打那一次，十分足夠了 XD</p></blockquote>
 <h2 id="使用-powershell-呼叫-api-取得資料">使用 Powershell 呼叫 API 取得資料</h2>
 <p>現在已經保障了資料來源，接下來就是要有個腳本來去打 API 拿資料回來囉！</p>
 <p>基於 <del>懶惰</del> 方便的原則，決定用 Powershell 寫個小東西直接打資料回來就好。</p>
@@ -176,8 +172,7 @@
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># 把結果轉成 Json 確認一下</span>
 </span></span><span style="display:flex;"><span>$response | ConvertTo-Json
 </span></span></code></pre></div><blockquote>
-<p>小提醒：原本我們下的 <code>$filter = StopId eq '15250'</code> 的參數，其中 <code>$</code> 和空白符在 Uri 會轉換成 HTML 編碼的 <code>%24($)</code> 和 <code>%20(空白)</code>，並不是亂碼，請不要緊張</p>
-</blockquote>
+<p>小提醒：原本我們下的 <code>$filter = StopId eq '15250'</code> 的參數，其中 <code>$</code> 和空白符在 Uri 會轉換成 HTML 編碼的 <code>%24($)</code> 和 <code>%20(空白)</code>，並不是亂碼，請不要緊張</p></blockquote>
 <p>另存成 <code>.ps1</code> 檔案來測試一下：</p>
 <p><img src="https://image.igouist.net/nVZb7aV.webp" alt="Image"></p>
 <p>看來查詢資料已經沒有問題了，接下來就是通知快要下班的我了</p>
@@ -200,8 +195,7 @@
 <p>總覺得有點不是很好看啊，而且工作到一半在畫面正中間跳出這個會煩死吧囧</p>
 <h2 id="使用-powershell-傳送-line-notify">使用 Powershell 傳送 Line Notify</h2>
 <blockquote>
-<p>2024.10 更新: Line Notify 將於 2025 年 3 月停止服務（<a href="https://notify-bot.line.me/closing-announce">LINE Notify 結束服務公告</a>），有看到這篇的朋朋請選擇一組新的通知服務來串吧 QQ</p>
-</blockquote>
+<p>2024.10 更新: Line Notify 將於 2025 年 3 月停止服務（<a href="https://notify-bot.line.me/closing-announce">LINE Notify 結束服務公告</a>），有看到這篇的朋朋請選擇一組新的通知服務來串吧 QQ</p></blockquote>
 <p>就在此時一個靈光乍現，對呀我<a href="/post/2020/04/bandon-3-line-notify/">之前爬訂便當的時候</a>不是用過 <strong>Line Notify</strong> 嗎！</p>
 <p>當下一個直衝 <a href="https://notify-bot.line.me/zh_TW/">Line Notify</a> 高速申請權杖：</p>
 <p><img src="https://image.igouist.net/StPJo9W.webp" alt="Image"></p>
@@ -224,8 +218,7 @@
 <p><img src="https://image.igouist.net/S5S5Pgu.webp" alt="Image"></p>
 <p>再重新嘗試一次就會正常了：</p>
 <p><img src="https://image.igouist.net/mMuRRTT.webp" alt="Image"></p>
-<p>原本卡在這步搞不定，正好黑暗執行緒大大發了篇 <a href="https://blog.darkthread.net/blog/ps1-encoding-issue/">PowerShell .ps1 檔 UTF-8 編碼問題之變形錯誤</a>，才知道 PowerShell 5.x 有編碼解析的問題，改成 Utf-8 with BOM 順利完工。這邊補充給各位朋朋，望周知</p>
-</blockquote>
+<p>原本卡在這步搞不定，正好黑暗執行緒大大發了篇 <a href="https://blog.darkthread.net/blog/ps1-encoding-issue/">PowerShell .ps1 檔 UTF-8 編碼問題之變形錯誤</a>，才知道 PowerShell 5.x 有編碼解析的問題，改成 Utf-8 with BOM 順利完工。這邊補充給各位朋朋，望周知</p></blockquote>
 <p>到這邊 Powershell 的部份就處理好了，目前會長這樣：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$busName <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;307&#39;</span> <span style="color:#75715e"># 公車路線名稱</span>
 </span></span><span style="display:flex;"><span>$stopId <span style="color:#f92672">=</span> <span style="color:#ae81ff">15250</span>  <span style="color:#75715e"># 站台 ID</span>
@@ -260,11 +253,9 @@
 <p>這邊的「程式或指令碼」輸入 <code>powershell</code>，接著在「新增引數」的部份告訴 Powershell 我們要執行的腳本 <code>-File &quot;C:\Scripts\BusReminder.ps1&quot;</code>（記得換成你的腳本路徑呦）</p>
 <p><img src="https://image.igouist.net/7KV6Q6o.webp" alt="Image"></p>
 <blockquote>
-<p>註：沒有調整過<a href="/post/2020/08/powershell-beauty/#%E5%9F%B7%E8%A1%8C%E5%8E%9F%E5%89%87">執行原則</a>的朋友們，可以在引數上加入 <code>-ExecutionPolicy Bypass</code> 來關閉警告，也就是 <code> -ExecutionPolicy Bypass -File &quot;C:\Scripts\BusReminder.ps1&quot;</code> 這樣子的感覺</p>
-</blockquote>
+<p>註：沒有調整過<a href="/post/2020/08/powershell-beauty/#%E5%9F%B7%E8%A1%8C%E5%8E%9F%E5%89%87">執行原則</a>的朋友們，可以在引數上加入 <code>-ExecutionPolicy Bypass</code> 來關閉警告，也就是 <code> -ExecutionPolicy Bypass -File &quot;C:\Scripts\BusReminder.ps1&quot;</code> 這樣子的感覺</p></blockquote>
 <blockquote>
-<p>註：如果跟我一樣會把腳本做成 Function 並存成 psm1 檔案的朋朋，這邊的引數會需要變成跟 Profile 一樣的處理方式，先 Import 進來再呼叫方法（這邊假設為 <code>Run-BusNotify()</code>）例如，：<code>Import-Module &quot;C:\Scripts\BusReminder.psm1&quot;;Run-BusNotify;</code></p>
-</blockquote>
+<p>註：如果跟我一樣會把腳本做成 Function 並存成 psm1 檔案的朋朋，這邊的引數會需要變成跟 Profile 一樣的處理方式，先 Import 進來再呼叫方法（這邊假設為 <code>Run-BusNotify()</code>）例如，：<code>Import-Module &quot;C:\Scripts\BusReminder.psm1&quot;;Run-BusNotify;</code></p></blockquote>
 <p>接著只需要完成就可以在排程中找到囉，馬上就來執行看看是不是正常運作吧：</p>
 <p><img src="https://image.igouist.net/1MLM21I.webp" alt="Image"></p>
 <p><img src="https://image.igouist.net/Pu8YilJ.webp" alt="Image"></p>
@@ -277,8 +268,7 @@
 我：（還有十分鐘耶，把手上的事情弄到一個段落再下班吧）<br/>
 ～～弄了十五分鐘～～<br/>
 公車：（離站）<br/>
-我：(ﾟдﾟ)</p>
-</blockquote>
+我：(ﾟдﾟ)</p></blockquote>
 <p>這時候才明白科技終究是有極限的。</p>
 <h2 id="參考資料">參考資料</h2>
 <ul>
@@ -524,7 +514,7 @@
     }
     var key = "2024-08-01";
     var value = dataMap.get(key);
-    var wordCount =  1680 ;
+    var wordCount =  1679 ;
     var link = "/post/2024/08/nine-sols/";
     var title = "《九日》白金心得";
     
@@ -3260,7 +3250,7 @@
     
     <a href="https://igouist.github.io/tags/electron/">electron</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity framework</a>
     
     <a href="https://igouist.github.io/tags/enum/">enum</a>
     

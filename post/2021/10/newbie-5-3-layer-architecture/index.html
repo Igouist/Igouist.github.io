@@ -22,7 +22,7 @@
         })(window, document, "clarity", "script", "lpnoqxbhhj");
     </script>
 
-    <meta name="generator" content="Hugo 0.117.0">
+    <meta name="generator" content="Hugo 0.150.1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -125,15 +125,13 @@
 <blockquote>
 <p>天地混沌如雞子，商業邏輯生其中。</p>
 <p>萬八千歲，天地開闢。表現層為天。資料層為地。商業邏輯層在其中……</p>
-<p>　　　　－－民明書坊《盤古與他的CRUD之旅》</p>
-</blockquote>
+<p>　　　　－－民明書坊《盤古與他的CRUD之旅》</p></blockquote>
 <p>根據民明書坊的文獻記載，我們常聽到的「天地玄黃，宇宙洪荒」云云，其實指的就是上古時期的開發狀況。當時世界還是一片混沌，所有的程式碼都混雜成一坨，不是所有東西寫在一起你儂我儂，一言不合就三千行；就是依賴關係交錯複雜，改了北極壞南極。</p>
 <p>要說有多亂呢，大概就算前人嘗試引入了 MVC，也只是改成把所有程式都塞在 Controller 而已，其絕望程度可見一斑。</p>
 <p>這時候隔壁課的老盤調過來接刀，一看不得了，便決定先對這屎山整頓一番。他大喝一聲，那些靠近使用者的便上浮起來化作了天，親近資料庫的便沉澱下去變成了地，而所有的商業邏輯就連接著兩者，支撐起了整個專案。這也就是分層架構的由來。</p>
 <h3 id="三層式架構">三層式架構</h3>
 <blockquote>
-<p>分層架構是運用最為廣泛的架構模式，幾乎每個軟體系統都需要通過層（Layer）來隔離不同的關注點（Concern Point），以此應對不同需求的變化，使得這種變化可以獨立進行；此外，分層架構模式還是隔離業務複雜度與技術複雜度的利器。 －－ <a href="https://raychiutw.github.io/2019/%E9%9A%A8%E6%89%8B-Design-Pattern-2-%E8%BB%9F%E9%AB%94%E5%88%86%E5%B1%A4%E8%A8%AD%E8%A8%88%E6%A8%A1%E5%BC%8F-Software-Layered-Architecture-Pattern/">Ray&rsquo;s Notes</a></p>
-</blockquote>
+<p>分層架構是運用最為廣泛的架構模式，幾乎每個軟體系統都需要通過層（Layer）來隔離不同的關注點（Concern Point），以此應對不同需求的變化，使得這種變化可以獨立進行；此外，分層架構模式還是隔離業務複雜度與技術複雜度的利器。 －－ <a href="https://raychiutw.github.io/2019/%E9%9A%A8%E6%89%8B-Design-Pattern-2-%E8%BB%9F%E9%AB%94%E5%88%86%E5%B1%A4%E8%A8%AD%E8%A8%88%E6%A8%A1%E5%BC%8F-Software-Layered-Architecture-Pattern/">Ray&rsquo;s Notes</a></p></blockquote>
 <p>一般來說，最常見的分層架構就是<strong>三層式架構</strong>了。</p>
 <p>三層式架構顧名思義就是把應用程式分成三層，通常會分成「<strong>展示層、商業邏輯層、資料存取層</strong>」。</p>
 <p><img src="https://image.igouist.net/RxSrWJm.webp" alt="分層架構01"></p>
@@ -231,14 +229,12 @@
 <p>關於上面這段重複建立 DTO 的問題，我們在最後的 <a href="#%E9%97%9C%E6%96%BC%E9%87%8D%E8%A4%87%E5%BB%BA%E7%AB%8B-dto-%E7%9A%84%E5%95%8F%E9%A1%8C">QA 階段</a> 再稍微聊一下吧，先讓我們把鏡頭轉回分層架構。</p>
 <h3 id="為什麼我們需要分層架構">為什麼我們需要分層架構？</h3>
 <blockquote>
-<p>專案分層架構其目的就是為了要職責確立、關注點分離，讓不同的方法或類別去做該做的事情而且只專注於這些方法、類別的職責上 －－ <a href="https://kevintsengtw.blogspot.com/2012/10/aspnet-mvc-part1.html">mrkt</a></p>
-</blockquote>
+<p>專案分層架構其目的就是為了要職責確立、關注點分離，讓不同的方法或類別去做該做的事情而且只專注於這些方法、類別的職責上 －－ <a href="https://kevintsengtw.blogspot.com/2012/10/aspnet-mvc-part1.html">mrkt</a></p></blockquote>
 <p>當我們想知道為什麼要使用分層架構，最快的方式就是了解一下採用分層架構的諸多好處。且讓我數給你聽：</p>
 <h4 id="更符合單一職責關注點分離">更符合單一職責、關注點分離</h4>
 <p>也就是我們在單一職責原則篇曾提到的：「把工作交給負責該職責的類別去做，自己只需要關注在自己正在處理的職責即可」。如果一來就可以封裝出邊界、減少彼此耦合影響的機會，也可以減少閱讀大量不相關的程式碼。</p>
 <blockquote>
-<p>關於單一職責的介紹，和我們著重職責所帶來的好處等等，<br/>可以參閱之前的：<a href="https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle/">菜雞與物件導向 (10): 單一職責原則</a>。</p>
-</blockquote>
+<p>關於單一職責的介紹，和我們著重職責所帶來的好處等等，<br/>可以參閱之前的：<a href="https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle/">菜雞與物件導向 (10): 單一職責原則</a>。</p></blockquote>
 <h4 id="快速鎖定目標縮小範圍">快速鎖定目標、縮小範圍</h4>
 <p>因為關注點分離成多個層（Layer）了，當物件的設計有符合職責的話，在開發或除錯時，甚至能像查詢表格一樣迅速！</p>
 <p><img src="https://image.igouist.net/CZ0S51s.webp" alt="分層架構04"></p>
@@ -562,8 +558,7 @@
 <p><img src="https://image.igouist.net/OwXJY9F.webp" alt="image-20210921154728674"></p>
 <blockquote>
 <p>補充：如果想要把專案做排序或整理的朋友，可以對解決方案右鍵，選擇 加入 → 新增方案資料夾，用資料夾去做排序和整理</p>
-<p><del>有的時候我都懷疑其他人的分層用 Business 和 Data 命名，該不會是為了排序起來比較好看……？！</del></p>
-</blockquote>
+<p><del>有的時候我都懷疑其他人的分層用 Business 和 Data 命名，該不會是為了排序起來比較好看……？！</del></p></blockquote>
 <h3 id="加入參考">加入參考</h3>
 <p>建立完類別庫之後，接著我們就要來<strong>加入參考</strong>，也就是設定這些庫之間的依賴方向。</p>
 <p>一般的分層架構的依賴關係會是從上到下，也就是 展示層 → 商業邏輯層 → 資料存取層，然後他們三個都參考共用層。</p>
@@ -579,15 +574,12 @@
 <li>Repository: Common</li>
 </ul>
 <blockquote>
-<p>小提示：如果想確認目前專案的相依性，可以在方案總管的解決方案上按下右鍵 → 專案相依性</p>
-</blockquote>
+<p>小提示：如果想確認目前專案的相依性，可以在方案總管的解決方案上按下右鍵 → 專案相依性</p></blockquote>
 <h3 id="建立介面與-dto">建立介面與 DTO</h3>
 <blockquote>
-<p>在這個小節，你可能會需要對介面有些了解。還不太了解的朋友，可以參照上個系列的<a href="/post/2020/07/oo-7-interface/">介面篇</a>。</p>
-</blockquote>
+<p>在這個小節，你可能會需要對介面有些了解。還不太了解的朋友，可以參照上個系列的<a href="/post/2020/07/oo-7-interface/">介面篇</a>。</p></blockquote>
 <blockquote>
-<p>對於分層是否要使用介面有疑惑的朋友，可以參考 mrkt 大大的這篇 <a href="https://kevintsengtw.blogspot.com/2013/07/aspnet-mvc.html">專案分層架構建議</a> 中的「問題三、一定要用介面嗎？」的段落。</p>
-</blockquote>
+<p>對於分層是否要使用介面有疑惑的朋友，可以參考 mrkt 大大的這篇 <a href="https://kevintsengtw.blogspot.com/2013/07/aspnet-mvc.html">專案分層架構建議</a> 中的「問題三、一定要用介面嗎？」的段落。</p></blockquote>
 <p>接著，讓我們開始著手處理介面的部分吧，先讓我們在 <code>Service</code> 中新增一個叫做 <code>Interface</code> 的資料夾來放我們的介面。</p>
 <p><img src="https://image.igouist.net/FATU0lt.webp" alt="image-20210921182347662"></p>
 <p>接著因為是做卡片管理的 CRUD，當然要用 Card 當前綴。並且由於習慣的關係，只要是 Interface 我會在最前面加上一個 <code>I</code> 來標示，所以讓我們在該資料夾下建立一個 <code>ICardService</code>：</p>
@@ -779,8 +771,7 @@
 <blockquote>
 <p>註：本篇範例還不會用到依賴注入，因此會將需要用到的依賴對象，例如 Controller 中的 IService 實體直接在建構式裡面建立出來。也因為必須建立實體的關係，故必須從最底的 Repository 開始實作。</p>
 <p>如果是已經有在使用依賴注入的朋友，還請自行在腦內調整一下。不過我個人是覺得實作的順序沒有什麼關係啦，各位朋友有習慣的就按自己習慣的就好溜。</p>
-<p>而還不太知道依賴注入的朋友們，我們<a href="/post/2021/11/newbie-6-dependency-injection/">下一篇</a>再來說明。或是也可以先參照<a href="/post/2020/12/oo-14-dependency-inversion-principle/">依賴反轉原則</a>的範例自己改看看，此處就先按下不表。</p>
-</blockquote>
+<p>而還不太知道依賴注入的朋友們，我們<a href="/post/2021/11/newbie-6-dependency-injection/">下一篇</a>再來說明。或是也可以先參照<a href="/post/2020/12/oo-14-dependency-inversion-principle/">依賴反轉原則</a>的範例自己改看看，此處就先按下不表。</p></blockquote>
 <p>首先讓我們從 Repository 開始實作吧！</p>
 <p>第一步就是建立實作的資料夾，方便和 <code>Interface</code> 做個區隔，所以這邊在 Repository 建立一個 <code>Implement</code> 資料夾，並在裡面建立 <code>CardRepository</code> ：</p>
 <p><img src="https://image.igouist.net/mxPAvRb.webp" alt="image-20210926181827673"></p>
@@ -822,8 +813,7 @@
 <p>從資料庫裏面操作資料的 CRUD 相關部份我們在上一篇的 <a href="/post/2021/05/newbie-3-dapper/">Dapper</a> 章節已經做得差不多了，這邊就不再贅述，稍微補上這次新增的查詢列表就行。</p>
 <blockquote>
 <p>補充：為了避免我之後回來抄的時候想不起來，這邊也放一下資料表目前狀況好了：
-<img src="https://image.igouist.net/8qhFQBb.webp" alt="image-20211002135411755"></p>
-</blockquote>
+<img src="https://image.igouist.net/8qhFQBb.webp" alt="image-20211002135411755"></p></blockquote>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/// 卡片管理</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/// &lt;/summary&gt;</span>
@@ -1017,8 +1007,7 @@
 <p>接著是我們 Service 層的實作。要注意的是，<strong>在 DTO 的轉換上，推薦使用 <a href="/post/2020/07/automapper/">AutoMapper</a> 來處理</strong>，讓方法關注在商業邏輯本身，而不用被 DTO 的賦值過程洗版。</p>
 <blockquote>
 <p>補充：對 AutoMapper 不太熟悉的朋友，可以先閱讀 <a href="https://igouist.github.io/post/2020/07/automapper/">AutoMapper —— 類別轉換超省力</a></p>
-<p>如果是在本篇流程不打算使用 AutoMapper 的朋友，請在使用到 AutoMapper 的場合自行 new 出目標物件並賦值即可。</p>
-</blockquote>
+<p>如果是在本篇流程不打算使用 AutoMapper 的朋友，請在使用到 AutoMapper 的場合自行 new 出目標物件並賦值即可。</p></blockquote>
 <p>首先一樣先建立實作用的資料夾，並建立 <code>CardService</code>：</p>
 <p><img src="https://image.igouist.net/rJ4rMgs.webp" alt="image-20211003091808904"></p>
 <p>並且讓 IDE 幫忙把要實作的介面都先列出來：</p>
@@ -1070,8 +1059,7 @@
 <p><img src="https://image.igouist.net/wwEi2pW.webp" alt="image-20211003094809104"></p>
 <blockquote>
 <p>補充：當專案還有 Mappings, Enum（列舉）和其他設定檔等等，資料夾就會變得挺多的。</p>
-<p>這種時候，也可以把這類基礎建設相關的都放到 <code>Infrastructure</code> 資料夾做個整理，閱讀和操作上會比較舒服。</p>
-</blockquote>
+<p>這種時候，也可以把這類基礎建設相關的都放到 <code>Infrastructure</code> 資料夾做個整理，閱讀和操作上會比較舒服。</p></blockquote>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ServiceMappings</span> : Profile
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> ServiceMappings()
@@ -1124,8 +1112,7 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>當然實際上還會根據需求，在這邊做一些商業邏輯的處理，例如說呼叫多個 Repository 方法、參數內容換成內部商業邏輯定義好的代號等等。</p>
 <blockquote>
-<p>叮嚀一下：如果感覺公開方法裡面做的事情太多的話，還請考慮是不是職責太複雜、並嘗試適當地拆出私有方法或其他類別呦。</p>
-</blockquote>
+<p>叮嚀一下：如果感覺公開方法裡面做的事情太多的話，還請考慮是不是職責太複雜、並嘗試適當地拆出私有方法或其他類別呦。</p></blockquote>
 <p>那麼這邊就直接補上剩下的方法，貼上整個 <code>CardService</code> 吧：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/// 卡片管理</span>
@@ -1469,8 +1456,7 @@
 <p>內文的範例也延續了單純的 CRUD，並沒有完整展現商業邏輯分工出來的魅力，算是一些小遺憾。最後補充一些本篇的參考資料。如果有想要補充或討論的朋友，也歡迎分享您的看法，感謝感謝。</p>
 <p>那麼，我們下篇再見囉～</p>
 <blockquote>
-<p>本系列下一篇：<a href="/post/2021/11/newbie-6-dependency-injection">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a></p>
-</blockquote>
+<p>本系列下一篇：<a href="/post/2021/11/newbie-6-dependency-injection">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a></p></blockquote>
 <h2 id="參考資料">參考資料</h2>
 <ul>
 <li><a href="https://kevintsengtw.blogspot.com/2012/10/aspnet-mvc-part1.html">mrkt 的程式學習筆記: ASP.NET MVC 專案分層架構 Part.1 初學者的起手式 (kevintsengtw.blogspot.com)</a></li>
@@ -1740,7 +1726,7 @@
     }
     var key = "2024-08-01";
     var value = dataMap.get(key);
-    var wordCount =  1680 ;
+    var wordCount =  1679 ;
     var link = "/post/2024/08/nine-sols/";
     var title = "《九日》白金心得";
     
@@ -4500,7 +4486,7 @@
     
     <a href="https://igouist.github.io/tags/electron/">electron</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity framework</a>
     
     <a href="https://igouist.github.io/tags/enum/">enum</a>
     

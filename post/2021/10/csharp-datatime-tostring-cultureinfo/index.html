@@ -22,7 +22,7 @@
         })(window, document, "clarity", "script", "lpnoqxbhhj");
     </script>
 
-    <meta name="generator" content="Hugo 0.117.0">
+    <meta name="generator" content="Hugo 0.150.1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -149,8 +149,7 @@
 </span></span></code></pre></div><p>可以看到我們目前的文化特性是 <code>zh-TW</code>，這個格式叫做 <a href="https://zh.wikipedia.org/wiki/IETF%E8%AA%9E%E8%A8%80%E6%A8%99%E7%B1%A4">IETF 語言標籤</a>，其中 <code>zh</code> 是指語言，<code>TW</code> 則是地區。例如說 <code>en-US</code> 就是「英語，美國」。</p>
 <blockquote>
 <p>補充：關於語言標籤，有需要查詢的朋友可以翻看看 <a href="http://www.i18nguy.com/unicode/language-identifiers.html">i18n 的 RFC 3066 表</a>。
-<br/>此外，我們平常用的語言標籤還會有一些子標籤之類的，例如 <code>zh-Hant-HK</code>，可以參見 <a href="https://www.w3.org/International/articles/language-tags/">Language tags in HTML and XML (w3.org)</a></p>
-</blockquote>
+<br/>此外，我們平常用的語言標籤還會有一些子標籤之類的，例如 <code>zh-Hant-HK</code>，可以參見 <a href="https://www.w3.org/International/articles/language-tags/">Language tags in HTML and XML (w3.org)</a></p></blockquote>
 <blockquote>
 <p>補充：除了 <code>CurrentCulture</code> 以外，CultureInfo 還有另一組文化特性的設定：<code>CurrentUICulture</code>。從名稱上可以看得出來，前者是用來預設系統的文化設定，例如數值、排序等等；而加上 <code>UI</code> 的後者，則是用來預設使用者介面要顯示什麼語言。</p>
 <p>當然，大多數時候這兩個文化特性會是一樣的，不過如果想要國際化，弄個使用者介面的多國語言版本，就需要特別注意一下囉！</p>
@@ -158,8 +157,7 @@
 <li><a href="https://stackoverflow.com/questions/329033/what-is-the-difference-between-currentculture-and-currentuiculture-properties-of">What is the difference between CurrentCulture and CurrentUICulture properties of CultureInfo in .NET? - Stack Overflow</a></li>
 <li><a href="https://dotblogs.com.tw/yc421206/2015/11/26/multiple_language_culture">ASP.NET 多國語系 - 了解文化特性 | 余小章 @ 大內殿堂 - 點部落 (dotblogs.com.tw)</a></li>
 <li><a href="https://dotblogs.azurewebsites.net/shadow/2018/09/03/172157">ASP.net Core 多國語系 Part 1 初探篇 | 高級打字員的技術雲 - 點部落 (dotblogs.azurewebsites.net)</a></li>
-</ul>
-</blockquote>
+</ul></blockquote>
 <p>接著讓我們來看看裡面包了哪些重要東西吧：</p>
 <p><img src="https://image.igouist.net/UFOiAjM.webp" alt="Image"></p>
 <h3 id="datetimeformat">DateTimeFormat</h3>
@@ -171,14 +169,12 @@
 <p>那一堆時間格式主要是對照 <a href="https://docs.microsoft.com/zh-tw/dotnet/standard/base-types/standard-date-and-time-format-strings">標準日期和時間格式字串</a> 的。</p>
 <p>例如 ShortDatePattern 就是對應到文件中的簡短日期模式（<code>&quot;d&quot;</code>），也就是說，當我們 <code>ToString</code> 的時候，如果使用 &ldquo;d&rdquo; 的話，就會根據文化特性顯示該文化的「簡短日期」以此類推。</p>
 <blockquote>
-<p>關於這部分的欄位內容，可以參照 Vito 大大的 <a href="http://vito-note.blogspot.com/2012/03/blog-post_28.html#%E9%A1%AF%E7%A4%BA%E8%88%87%E6%96%87%E5%8C%96%E7%89%B9%E6%80%A7%E7%9B%B8%E9%97%9C%E7%9A%84%E8%B3%87%E8%A8%8A">使用文化特性</a> 這篇文章，裡面的整理已經相當詳細，供各位參考。</p>
-</blockquote>
+<p>關於這部分的欄位內容，可以參照 Vito 大大的 <a href="http://vito-note.blogspot.com/2012/03/blog-post_28.html#%E9%A1%AF%E7%A4%BA%E8%88%87%E6%96%87%E5%8C%96%E7%89%B9%E6%80%A7%E7%9B%B8%E9%97%9C%E7%9A%84%E8%B3%87%E8%A8%8A">使用文化特性</a> 這篇文章，裡面的整理已經相當詳細，供各位參考。</p></blockquote>
 <blockquote>
 <p>補充：我們常常會看到 <code>ToString(&quot;yyyy-MM-dd HH:mm:ss&quot;)</code> 這種用法，但要小心這邊的 <strong><code>-</code> 和 <code>:</code> 其實是用來標示日期和時間的分隔符號</strong>，並不是真正的 <code>-</code> 和 <code>:</code>。</p>
 <p>所以 <code>:</code> 在 format 的時候，會被替換為 <code>TimeSeparator</code>；<br/>而 <code>/</code> 同樣也會使用 <code>DateSeparator</code></p>
 <p>也就是說，如果你使用的文化特性 <code>TimeSeparator</code> 是 <code>#</code> 的話，<code>HH:mm:ss</code> 在 <code>21:07:00</code> 出來的結果將會是 <code>21#07#00</code>。如果發現 ToString 出來的結果怪怪的，可以優先檢查文化特性的這兩個分隔符號有沒有問題。</p>
-<p>相關的說明請參見 <a href="https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings#date-and-time-separator-specifiers">Date and time separator specifiers</a> 這一小節。</p>
-</blockquote>
+<p>相關的說明請參見 <a href="https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings#date-and-time-separator-specifiers">Date and time separator specifiers</a> 這一小節。</p></blockquote>
 <p>現在讓我們用 <code>Thread.CurrentThread.CurrentCulture</code> 來更改當前執行緒的時間，並用完整日期時間模式（<code>&quot;F&quot;</code>）來測試看看：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> date = <span style="color:#66d9ef">new</span> DateTime(<span style="color:#ae81ff">2006</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>);
 </span></span><span style="display:flex;"><span>
@@ -213,12 +209,10 @@
 </span></span></code></pre></div><p>可以明確看到格式的變更，兇手就在我們之中！</p>
 <blockquote>
 <p>其實文檔已經明確地說了：使用者可以透過主控台的『地區及語言選項』部分，選擇覆寫與 Windows 目前文化特性相關聯的一些值。
-（<a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.globalization.cultureinfo.calendar">CultureInfo.Calendar 屬性 (System.Globalization) | Microsoft Docs</a>）</p>
-</blockquote>
+（<a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.globalization.cultureinfo.calendar">CultureInfo.Calendar 屬性 (System.Globalization) | Microsoft Docs</a>）</p></blockquote>
 <p>當然，我們也可以調整 Calendar 來把曆法換掉。例如說當我們要做西元年轉民國年的時候，就可以把 Calendar 指定為 TaiwanCalendar 來處理。</p>
 <blockquote>
-<p>這部分請參照：<a href="https://kevintsengtw.blogspot.com/2014/06/c.html">mrkt 的程式學習筆記: 基本題 - C# 西元年轉換取得民國年格式字串</a></p>
-</blockquote>
+<p>這部分請參照：<a href="https://kevintsengtw.blogspot.com/2014/06/c.html">mrkt 的程式學習筆記: 基本題 - C# 西元年轉換取得民國年格式字串</a></p></blockquote>
 <p>有了這些日期時間的格式，我們就可以用它們來處理一些日常的時間處理囉～例如：</p>
 <ul>
 <li><a href="https://dotblogs.com.tw/supershowwei/2016/10/17/141620">食譜好菜 DateTime 具有文化特性的格式化及時區的轉換 | 軟體主廚的程式料理廚房 - 點部落 (dotblogs.com.tw)</a></li>
@@ -239,8 +233,7 @@
 </span></span></code></pre></div><p>可以看見整個格式都不一樣了呢。</p>
 <blockquote>
 <p>備註：<code>CurrencyNegativePattern</code> 這類的格式只會存數字編號，例如 0 對應到 ($n) 之類的。
-各編號對應的格式可以參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.globalization.numberformatinfo.currencynegativepattern">NumberFormatInfo.CurrencyNegativePattern 屬性 (System.Globalization) | Microsoft Docs</a></p>
-</blockquote>
+各編號對應的格式可以參見 <a href="https://docs.microsoft.com/zh-tw/dotnet/api/system.globalization.numberformatinfo.currencynegativepattern">NumberFormatInfo.CurrencyNegativePattern 屬性 (System.Globalization) | Microsoft Docs</a></p></blockquote>
 <h3 id="invariantculture">InvariantCulture</h3>
 <p>那麼，當我們想要<strong>統一格式</strong>的時候呢？例如說我們在世界各地都有服務，這些客戶端的資訊會集中傳回主伺服器。要是直接 <code>ToString</code> 那鐵定是每個地方回來的時間、貨幣和數值格式都不一樣的。該怎麼辦呢？總不能發個字串下去叫大家寫死吧囧？</p>
 <p>這時候就可以使用 <code>InvariantCulture</code> 啦！</p>
@@ -271,8 +264,7 @@
 </ul>
 </li>
 <li><a href="https://docs.microsoft.com/zh-tw/troubleshoot/developer/webapps/aspnet/development/set-current-culture">在 ASP.NET 中以程式設計方式設定目前的文化環境 | Microsoft Docs</a></li>
-</ul>
-</blockquote>
+</ul></blockquote>
 <h2 id="參考資料">參考資料</h2>
 <ul>
 <li><a href="http://vito-note.blogspot.com/2012/03/blog-post_28.html">VITO の 學習筆記: 使用文化特性 (vito-note.blogspot.com)</a></li>
@@ -528,7 +520,7 @@
     }
     var key = "2024-08-01";
     var value = dataMap.get(key);
-    var wordCount =  1680 ;
+    var wordCount =  1679 ;
     var link = "/post/2024/08/nine-sols/";
     var title = "《九日》白金心得";
     
@@ -3267,7 +3259,7 @@
     
     <a href="https://igouist.github.io/tags/electron/">electron</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity framework</a>
     
     <a href="https://igouist.github.io/tags/enum/">enum</a>
     

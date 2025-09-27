@@ -22,7 +22,7 @@
         })(window, document, "clarity", "script", "lpnoqxbhhj");
     </script>
 
-    <meta name="generator" content="Hugo 0.117.0">
+    <meta name="generator" content="Hugo 0.150.1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -128,8 +128,7 @@
 <p><strong>Azure Functions 是 Azure 推出的一款無伺服器（Serverless）服務，簡單來說就是伺服器之類的麻煩事就交給 Azure 去處理，我們只要專心寫功能就好</strong>。對我這種愛寫小腳本的偷懶工程師來說，可以說是香到爆的服務。</p>
 <blockquote>
 <p>小提醒：Azure Functions 是一款收費服務，使用前請務必確認<a href="https://azure.microsoft.com/zh-tw/pricing/details/functions/">定價</a>。</p>
-<p>在這篇文章撰寫當下，Azure Functions 有提供每月免費執行一百萬次的授權，對我們每天一次的公車通知來說綽綽有餘了（我們應該不會搭這麼多趟吧…？）</p>
-</blockquote>
+<p>在這篇文章撰寫當下，Azure Functions 有提供每月免費執行一百萬次的授權，對我們每天一次的公車通知來說綽綽有餘了（我們應該不會搭這麼多趟吧…？）</p></blockquote>
 <p>首先讓我們到 <a href="https://portal.azure.com/#home">Azure</a> 建立一個函數應用程式（如果用英文，請找 Azure Functions）：</p>
 <p><img src="https://image.igouist.net/9SJklpx.webp" alt="Image"></p>
 <p><img src="https://image.igouist.net/emG0G65.webp" alt="Image"></p>
@@ -139,8 +138,7 @@
 <p>執行階段堆疊請選擇自己開發用的語言，我這邊使用 .Net 6 進行開發，作業系統則按照建議的選擇。</p>
 <blockquote>
 <p>這邊要稍微注意方案的選擇！如同前面提到的<a href="https://azure.microsoft.com/zh-tw/pricing/details/functions/">定價</a>，也可以參照 Microsoft Docs 的<a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-consumption-costs?tabs=portal">預估 Azure Functions 中的取用方案成本</a>說明，裡面會有使用量、進階等方案的說明。</p>
-<p>這次我們要做的只是簡單的提醒通知，所以就選費用最低的使用量計價就好囉～</p>
-</blockquote>
+<p>這次我們要做的只是簡單的提醒通知，所以就選費用最低的使用量計價就好囉～</p></blockquote>
 <p>按下確認後就會開始部屬：</p>
 <p><img src="https://image.igouist.net/HAk5hdD.webp" alt="Image"></p>
 <p>部屬完成就可以前往我們建立的資源囉，可以在這裡確認記憶體、執行次數等資訊：</p>
@@ -174,8 +172,7 @@
 <p><img src="https://techcommunity.microsoft.com/t5/image/serverpage/image-id/262318i4234B132C742509C/image-size/large?v=v2&amp;px=999" alt=""></p>
 <p>明確指出將來的主軸會是隔離式（Isolated），因此我們這邊專案也選擇 .Net 6 已隔離的版本。<del>這樣我往後抄起來比較方便</del></p>
 <blockquote>
-<p>小提示：查詢 Azure Functions 相關資料時也要注意版本的差異！<strong>在 .Net 開發隔離式的 SDK 並不一樣</strong>，連最基本標示 Function 的語法，原本是 <code>[FunctionName()]</code>，隔離式也改成了更簡潔的 <code>[Function()]</code>，<strong>因此查資料或開發時要特別注意版本差異</strong>，避免被 IDE 畫了紅線卻搞不懂為什麼。</p>
-</blockquote>
+<p>小提示：查詢 Azure Functions 相關資料時也要注意版本的差異！<strong>在 .Net 開發隔離式的 SDK 並不一樣</strong>，連最基本標示 Function 的語法，原本是 <code>[FunctionName()]</code>，隔離式也改成了更簡潔的 <code>[Function()]</code>，<strong>因此查資料或開發時要特別注意版本差異</strong>，避免被 IDE 畫了紅線卻搞不懂為什麼。</p></blockquote>
 <p>接著我們就可以選擇 Function 的觸發條件，因為我們要定時提醒，因此這邊選擇 Timer Trigger 就可以了：</p>
 <p><img src="https://image.igouist.net/eIzaYSc.webp" alt="Image"></p>
 <p>同樣常用的還有當成 API 打的 Http Trigger，以及和我們上一次介紹過的 <a href="/post/2022/08/azure-service-bus/">ServiceBus</a> 一起使用的 Service Bus Queue/Topic Trigger 等等。</p>
@@ -185,8 +182,7 @@
 <p>按照需求，我們希望下班前，也就是每天的 17:45 左右能提醒公車預估到站的時間。</p>
 <p>NCrontab 和常見的 Crontab 差在多了第一個欄位來控制秒，因此這邊果斷直接使用 <a href="https://crontab.guru/#*_*_*_*_*">Cronitor</a> 查一下，再往前加上一欄當作秒數即可。</p>
 <blockquote>
-<p>補充：另一個香香工具 <a href="/post/2022/08/devtoys/">DevToys</a> 也能迅速組裝和確認 Cron 語法呦！</p>
-</blockquote>
+<p>補充：另一個香香工具 <a href="/post/2022/08/devtoys/">DevToys</a> 也能迅速組裝和確認 Cron 語法呦！</p></blockquote>
 <p>每天的 17:45 在 Crontab 表示為「45 17 * * *」：</p>
 <p><img src="https://image.igouist.net/o5k9Jvl.webp" alt="Image"></p>
 <p>我們希望在 0 秒的時候觸發，因此轉 NCrontab 時需要在秒的位置指定 0，也就是「0 45 17 * * *」</p>
@@ -264,17 +260,14 @@
 <li>方法：Get, Post 之類的，沒指定就會是不限方法</li>
 <li>路由：用來定義 API 路由，預設會拿 FunctionName，在這例子就是 <code>BusReminder</code></li>
 </ul>
-<p>都有指定的樣子會像這樣：<br/><code>[HttpTrigger(AuthorizationLevel.Anonymous, &quot;get&quot;, &quot;post&quot;, Route = null)]</code></p>
-</blockquote>
+<p>都有指定的樣子會像這樣：<br/><code>[HttpTrigger(AuthorizationLevel.Anonymous, &quot;get&quot;, &quot;post&quot;, Route = null)]</code></p></blockquote>
 <p>這樣事前準備就差不多了，讓我們開始撰寫邏輯部分吧！</p>
 <h3 id="呼叫-motc-api-查詢公車到站預估時間">呼叫 MOTC Api 查詢公車到站預估時間</h3>
 <p>首先我們需要取得公車到站預估時間，這部分跟上一期一樣就直接從公共運輸動態服務 MOTC Transport API 的「市區公車之預估到站資料」（<code>EstimatedTimeOfArrival/City/{City}/{RouteName}</code>） 這支 API 取得就行了。</p>
 <blockquote>
-<p>2024.11.25 更新：發現 MOTC 的 API 已經下架了，現在公車資訊已經被整合到運輸資料服務 <a href="https://tdx.transportdata.tw/api-service/swagger/basic/2998e851-81d0-40f5-b26d-77e2f5ac4118#/">TDX (Transport Data eXchange)</a>，有要動手串公車資訊的朋友可能得觀察新版 API 再進行調整了 QQ</p>
-</blockquote>
+<p>2024.11.25 更新：發現 MOTC 的 API 已經下架了，現在公車資訊已經被整合到運輸資料服務 <a href="https://tdx.transportdata.tw/api-service/swagger/basic/2998e851-81d0-40f5-b26d-77e2f5ac4118#/">TDX (Transport Data eXchange)</a>，有要動手串公車資訊的朋友可能得觀察新版 API 再進行調整了 QQ</p></blockquote>
 <blockquote>
-<p>註：為了避免被查水表，以下就用台北的 307 號公車為例，並假設目標站點是「台北車站（忠孝）」</p>
-</blockquote>
+<p>註：為了避免被查水表，以下就用台北的 307 號公車為例，並假設目標站點是「台北車站（忠孝）」</p></blockquote>
 <p>嘗試把縣市和公車路線名稱代入後，可以取得公車行經的站牌資訊，其中就有我們最想要的估計到站時間（秒）：</p>
 <p><img src="https://image.igouist.net/GQ9wdqG.webp" alt="Image"></p>
 <p>在這個步驟我們還會需要調整 <code>$top</code> 參數的筆數，順便取得我們要監聽公車到站的站牌 ID（StopId）以及行進方向（Direction） 在這個例子中「台北車站（忠孝）」的站牌 ID 會是 15250</p>
@@ -282,8 +275,7 @@
 <p>確保了資料來源之後，讓我們回到專案裡。</p>
 <p>這次為了之後方便擴展，決定將公車名稱、站牌 ID 等查詢資訊放到組態裡。</p>
 <blockquote>
-<p>註：接下來會使用到 <a href="/post/2021/11/newbie-6-dependency-injection/">依賴注入</a> 以及讀取 Config 的 <a href="https://docs.microsoft.com/zh-tw/aspnet/core/fundamentals/configuration/options?view=aspnetcore-6.0">IOptions</a>；對這兩項不太熟悉的朋友可以先看過去，並且在後續 BusReminderFunctions 的建構式裡把公車資訊寫死就好，並不會影響功能。</p>
-</blockquote>
+<p>註：接下來會使用到 <a href="/post/2021/11/newbie-6-dependency-injection/">依賴注入</a> 以及讀取 Config 的 <a href="https://docs.microsoft.com/zh-tw/aspnet/core/fundamentals/configuration/options?view=aspnetcore-6.0">IOptions</a>；對這兩項不太熟悉的朋友可以先看過去，並且在後續 BusReminderFunctions 的建構式裡把公車資訊寫死就好，並不會影響功能。</p></blockquote>
 <p>一般的 .Net 6 API 專案我們會把組態設定放到 <code>appsettings.json</code> 中，而在開發 Azure Functions 的時候，則會需要用到 <code>host.json</code> 和 <code>local.settings.json</code>：</p>
 <p><img src="https://image.igouist.net/oeWBtKj.webp" alt="Image"></p>
 <p>其中 <code>host.json</code> 用來設定站台相關的組態，例如在先前<a href="/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/">調整 ServiceBus Trigger 的時候</a>，我們就是在 <code>host.json</code> 修改重新傳遞訊息到 Azure Functions 的時間。</p>
@@ -338,8 +330,7 @@
 </span></span><span style="display:flex;"><span>services.Configure&lt;BusTrackerOption&gt;(hostContext.Configuration.GetSection(<span style="color:#e6db74">&#34;BusTracker&#34;</span>));
 </span></span></code></pre></div><blockquote>
 <p>註：如果像我一樣開 .Net 6，只看到 <code>HostBuilder</code> 的朋友，可以自行加入 <code>ConfigureServices((hostContext, services) =&gt; {})</code> 的部份來註冊，如下：</p>
-<p><img src="https://image.igouist.net/I6DFiRl.webp" alt="Image"></p>
-</blockquote>
+<p><img src="https://image.igouist.net/I6DFiRl.webp" alt="Image"></p></blockquote>
 <p>接著就可以回到我們的 <code>BusReminderFunctions</code> 來把 <code>IOptions&lt;BusTrackerOption&gt;</code> 注入進來：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BusReminderFunctions</span>
 </span></span><span style="display:flex;"><span>{
@@ -357,8 +348,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ...略</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
-<p>對依賴注入還不太熟悉的朋友，可以在這邊的建構式裡宣告出 <code>BusTrackerOption</code> 並賦值即可。但還是推薦閱讀<a href="/post/2021/11/newbie-6-dependency-injection/">依賴注入</a>的筆記來了解一下呦</p>
-</blockquote>
+<p>對依賴注入還不太熟悉的朋友，可以在這邊的建構式裡宣告出 <code>BusTrackerOption</code> 並賦值即可。但還是推薦閱讀<a href="/post/2021/11/newbie-6-dependency-injection/">依賴注入</a>的筆記來了解一下呦</p></blockquote>
 <p>現在公車路線等組態都準備得差不多了，只剩下回傳時候要用來接收資料的 Model 還沒開。這時候就直接偷懶，拿 <a href="https://ptx.transportdata.tw/MOTC?t=Bus&amp;v=2#">MOTC Transport API</a> 的 Swagger 打回來的 Json，直接到 <a href="https://json2csharp.com/">Json2Cshrp</a> 之類的轉換網站直接產生 C# Class 就好了：</p>
 <p><img src="https://image.igouist.net/NJ6HTbA.webp" alt="Image"></p>
 <p><img src="https://image.igouist.net/RXzItDb.webp" alt="Image"></p>
@@ -420,11 +410,9 @@
 </span></span></code></pre></div><p>這支呼叫 API 的 Method 步驟相當簡單：組出參數，呼叫 API，取回資料。</p>
 <p>這邊有偷懶不想組字串，直接使用 <code>Microsoft.AspNetCore.WebUtilities</code> 的 <code>QueryHelpers.AddQueryString</code> 來把 GET 的 QueryString 參數組到 Url 裡，不想多安裝一個套件的朋友也可以自己手動組。</p>
 <blockquote>
-<p>註：<a href="https://motc-ptx-api-documentation.gitbook.io/motc-ptx-api-documentation/hui-yuan-shen-qing/membertype">MOTC 的 文件</a> 有提到非會員一天有 50 次的免費 Swagger 呼叫次數，實測如果是從程式呼叫時會需要吃驗證，要掛 Header 假裝成瀏覽器才能取得資料，不確定是不是還有其他限制。如果是要給自己開發的工具或產品使用的話，還是可以考慮了解一下 MOTC 的會員制度。</p>
-</blockquote>
+<p>註：<a href="https://motc-ptx-api-documentation.gitbook.io/motc-ptx-api-documentation/hui-yuan-shen-qing/membertype">MOTC 的 文件</a> 有提到非會員一天有 50 次的免費 Swagger 呼叫次數，實測如果是從程式呼叫時會需要吃驗證，要掛 Header 假裝成瀏覽器才能取得資料，不確定是不是還有其他限制。如果是要給自己開發的工具或產品使用的話，還是可以考慮了解一下 MOTC 的會員制度。</p></blockquote>
 <blockquote>
-<p>註：這邊的 HttpClient 也可以直接改用注入 <a href="https://docs.microsoft.com/zh-tw/dotnet/architecture/microservices/implement-resilient-applications/use-httpclientfactory-to-implement-resilient-http-requests">HttpClientFactory</a> 的方式來製作。可以參照 Yowko&rsquo;s Notes 的這篇：<a href="https://blog.yowko.com/httpclient/">在 .NET Core 與 .NET Framework 上使用 HttpClientFactory</a></p>
-</blockquote>
+<p>註：這邊的 HttpClient 也可以直接改用注入 <a href="https://docs.microsoft.com/zh-tw/dotnet/architecture/microservices/implement-resilient-applications/use-httpclientfactory-to-implement-resilient-http-requests">HttpClientFactory</a> 的方式來製作。可以參照 Yowko&rsquo;s Notes 的這篇：<a href="https://blog.yowko.com/httpclient/">在 .NET Core 與 .NET Framework 上使用 HttpClientFactory</a></p></blockquote>
 <p>現在取得公車資料的 <code>FetchBusEstimateTime</code> 已經建好了，讓我們調整一下外面的 Trigger 和共通的私有方法，來把 <code>BusTrackerOption</code> 的資訊帶到參數裡吧：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> BusReminderFunctions(
 </span></span><span style="display:flex;"><span>    IOptions&lt;BusTrackerOption&gt; busTrackerOption,
@@ -472,20 +460,17 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>就像前面提到的，我們在這邊讓 <code>TimerTrigger</code> 和 <code>HttpTrigger</code> 取出 <code>BusTrackerOption</code> 的公車相關參數，例如公車路線名稱後，再傳遞到共用的 <code>TrackBusAsync</code>，現在第一部份的查詢公車資訊已經完工，就讓我們先添加上去。</p>
 <blockquote>
-<p>註：這邊之所以要讓查詢參數交由外面決定，就是以後如果我想把 <code>HttpTrigger</code> 改成可以從外部呼叫 API 時可以指定公車路線之類的參數，又或者是將來要註冊多組公車路線到資料庫之類的改動時，可以不用再動「查詢公車到站資訊」之類的邏輯。<del>畢竟懶惰的訣竅在於提早準備</del></p>
-</blockquote>
+<p>註：這邊之所以要讓查詢參數交由外面決定，就是以後如果我想把 <code>HttpTrigger</code> 改成可以從外部呼叫 API 時可以指定公車路線之類的參數，又或者是將來要註冊多組公車路線到資料庫之類的改動時，可以不用再動「查詢公車到站資訊」之類的邏輯。<del>畢竟懶惰的訣竅在於提早準備</del></p></blockquote>
 <h3 id="發送-line-notify">發送 Line Notify</h3>
 <blockquote>
-<p>2024.10 更新: Line Notify 將於 2025 年 3 月停止服務（<a href="https://notify-bot.line.me/closing-announce">LINE Notify 結束服務公告</a>），有看到這篇的朋朋請選擇一組新的通知服務來串吧 QQ</p>
-</blockquote>
+<p>2024.10 更新: Line Notify 將於 2025 年 3 月停止服務（<a href="https://notify-bot.line.me/closing-announce">LINE Notify 結束服務公告</a>），有看到這篇的朋朋請選擇一組新的通知服務來串吧 QQ</p></blockquote>
 <p>現在搞定取得公車資訊的段落了，接著就讓我們來撰寫發送 Line Notify 的部份吧。</p>
 <p>這邊為了過程完整一點，就重播一下上次衝刺去申請 Line Notify Token 的過程吧：</p>
 <blockquote>
 <p>當下一個直衝 <a href="https://notify-bot.line.me/zh_TW/">Line Notify</a> 高速申請權杖：</p>
 <p><img src="https://image.igouist.net/StPJo9W.webp" alt="Image"></p>
 <p><img src="https://image.igouist.net/W43nwLq.webp" alt="Image"></p>
-<p><img src="https://image.igouist.net/Ahl9FoN.webp" alt="Image"></p>
-</blockquote>
+<p><img src="https://image.igouist.net/Ahl9FoN.webp" alt="Image"></p></blockquote>
 <p>好的回想完畢，現在讓我們把拿到的 Line Notify Token 也丟到 <code>local.settings.json</code> 的 <code>Values</code> 裡方便管理：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;Values&#34;</span>: {
@@ -577,8 +562,7 @@
 </span></span></code></pre></div><p>這邊要特別注意取得時間的部份，因為在伺服器的時間會是 UTC+0，因此我們這邊使用 <code>TimeZoneInfo.ConvertTime</code> 轉換成台北時區的時間。</p>
 <blockquote>
 <p>註：像這種丟到雲端平台的服務，會時常遇到時區時間的轉換。單純的時間轉換可以參照之前筆記的 <a href="https://igouist.github.io/post/2020/08/csharp-timezone/">C#: 時區轉換、民國西元、國曆農曆、中文月份週期</a></p>
-<p>或是可以嘗試更優雅的 DateTimeOffset，請參考 <a href="https://demo.tc/post/%E9%82%84%E5%9C%A8%E7%94%A8%20DateTime%20%E5%97%8E%EF%BC%9F%E8%A9%A6%E8%A9%A6%20DateTimeOffset%20%E5%90%A7">還在用 DateTime 嗎？試試 DateTimeOffset 吧 - demo小鋪</a></p>
-</blockquote>
+<p>或是可以嘗試更優雅的 DateTimeOffset，請參考 <a href="https://demo.tc/post/%E9%82%84%E5%9C%A8%E7%94%A8%20DateTime%20%E5%97%8E%EF%BC%9F%E8%A9%A6%E8%A9%A6%20DateTimeOffset%20%E5%90%A7">還在用 DateTime 嗎？試試 DateTimeOffset 吧 - demo小鋪</a></p></blockquote>
 <p>現在我們已經將前面撰寫的兩個小方法組裝起來，是時候來測試看看了！</p>
 <h3 id="本機測試-functions">本機測試 Functions</h3>
 <p>總之，啟動鍵先用力給它按下去：</p>
@@ -594,8 +578,7 @@
 <p>看起來運行良好，該放上 Azure 上啦！</p>
 <blockquote>
 <p>補充：在 Azure 上要看小黑窗的話，可以從左邊選單找到「監視 &gt; 紀錄資料流」：
-<img src="https://image.igouist.net/PPonKeW.webp" alt="Image"></p>
-</blockquote>
+<img src="https://image.igouist.net/PPonKeW.webp" alt="Image"></p></blockquote>
 <h2 id="使用-visual-studio-發佈到-azure-functions">使用 Visual Studio 發佈到 Azure Functions</h2>
 <p>現在讓我們把寫好的 Functions 佈到前面申請的 Azure Functions 服務上運行。為了方便這邊就使用 Visual Studio 來示範，首先讓我們對專案點選發佈：</p>
 <p><img src="https://image.igouist.net/I99j6Ul.webp" alt="Image"></p>
@@ -607,8 +590,7 @@
 <p><img src="https://image.igouist.net/7bMyFxY.webp" alt="Image"></p>
 <blockquote>
 <p>註：如果先前沒有建立過 Azure Functions 服務，發佈的時候也可以從 Visual Studio 中建立，可以說是相當貼心：</p>
-<p><img src="https://image.igouist.net/PWQvV8K.webp" alt="Image"></p>
-</blockquote>
+<p><img src="https://image.igouist.net/PWQvV8K.webp" alt="Image"></p></blockquote>
 <p>按下完成之後，我們的發佈檔就建立完囉！</p>
 <p><img src="https://image.igouist.net/eOyR58Z.webp" alt="Image"></p>
 <p>這邊要特別注意的是，我們先前有在 <code>local.settings.json</code> 加入一些設定值，例如 BusTracker 的公車路線等設定。因此我們這邊可以順手同步到目標服務上，在裝載的右上角點開「管理 Azure App Service 設定」：</p>
@@ -618,8 +600,7 @@
 <blockquote>
 <p>註：按下「插入本機的值」並確定後，設定值就會同步到 Azure Functions 服務的組態中：</p>
 <p><img src="https://image.igouist.net/750ONx8.webp" alt="Image"></p>
-<p>反過來說，如果沒有從本機同步上去，而是在 Azure 上設定組態也是完全 OK 的</p>
-</blockquote>
+<p>反過來說，如果沒有從本機同步上去，而是在 Azure 上設定組態也是完全 OK 的</p></blockquote>
 <p>現在一切就緒，讓我們按下發佈吧！</p>
 <p><img src="https://image.igouist.net/KMZYA70.webp" alt="Image"></p>
 <p>接著就可以看到我們撰寫的 Functions 被發佈上去，並且幫我們重啟了 Azure Functions 服務：</p>
@@ -890,7 +871,7 @@
     }
     var key = "2024-08-01";
     var value = dataMap.get(key);
-    var wordCount =  1680 ;
+    var wordCount =  1679 ;
     var link = "/post/2024/08/nine-sols/";
     var title = "《九日》白金心得";
     
@@ -3632,7 +3613,7 @@
     
     <a href="https://igouist.github.io/tags/electron/">electron</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity framework</a>
     
     <a href="https://igouist.github.io/tags/enum/">enum</a>
     

@@ -6,6 +6,8 @@
     <description>Recent content in Heroku on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
+    <managingEditor>Igouist (Igouist)</managingEditor>
+    <webMaster>Igouist (Igouist)</webMaster>
     <follow_challenge>
       <feedId>56200764111934464</feedId>
       <userId>41821085092905984</userId>
@@ -15,7 +17,7 @@
       <title>我要訂便當 (5): Heroku 填坑小記</title>
       <link>https://igouist.github.io/post/2020/05/bandon-5-heroku-debug/</link>
       <pubDate>Sun, 31 May 2020 23:24:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/05/bandon-5-heroku-debug/</guid>
       <description>&lt;p&gt;在上一集的 &lt;a href=&#34;https://igouist.github.io/post/2020/05/bandon-4-heroku/&#34;&gt;將 Python 腳本部署上 Heroku&lt;/a&gt; 中，記錄了將 Python 腳本放上 Heroku 的過程，但仍然沒有將我們的 &lt;a href=&#34;https://igouist.github.io/tags/bandon/&#34;&gt;訂便當小幫手&lt;/a&gt; 給放上去。之前有稍微提到是因為過程中遇到了一些問題，最後決定將這些問題和找到的前人解決文記錄在這一篇，將來再遇到的時候就可以參考。&lt;/p&gt;
 &lt;ol&gt;
@@ -77,20 +79,17 @@ heroku config:set CHROMEDRIVER_PATH=/app/.chromedriver/bin/chromedriver
       <title>我要訂便當 (4): 將 Python 腳本部署上 Heroku</title>
       <link>https://igouist.github.io/post/2020/05/bandon-4-heroku/</link>
       <pubDate>Sun, 03 May 2020 23:55:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/05/bandon-4-heroku/</guid>
       <description>&lt;blockquote&gt;
-&lt;p&gt;2024.10 更新: Line Notify 將於 2025 年 3 月停止服務（&lt;a href=&#34;https://notify-bot.line.me/closing-announce&#34;&gt;LINE Notify 結束服務公告&lt;/a&gt;），有看到這篇的朋朋請選擇一組新的通知服務來串吧 QQ&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;2024.10 更新: Line Notify 將於 2025 年 3 月停止服務（&lt;a href=&#34;https://notify-bot.line.me/closing-announce&#34;&gt;LINE Notify 結束服務公告&lt;/a&gt;），有看到這篇的朋朋請選擇一組新的通知服務來串吧 QQ&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
-&lt;p&gt;目標：紀錄一下如何將 Python 寫好的東西丟上 &lt;a href=&#34;https://www.heroku.com/home&#34;&gt;Heroku&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;目標：紀錄一下如何將 Python 寫好的東西丟上 &lt;a href=&#34;https://www.heroku.com/home&#34;&gt;Heroku&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;在先前的 &lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-1-selenium/&#34;&gt;訂便當系列&lt;/a&gt; 中已經建立了一個替我們去爬便當網並通知我們的小工具，但還存在一個相當大的問題：要在哪跑？總不能就只放在家裡電腦有開機就跑、沒開機就算了吧？因此我們必須找個主機把它放上去。而在上一篇做 Line Notify 的時候所參考的 &lt;a href=&#34;https://www.evanlin.com/go-line-notify/&#34;&gt;如何快速建置一個 LINE Notify 的服務&lt;/a&gt; 中提到了將服務放上 Heroku 的部分，因此馬上嘗試看看。&lt;/p&gt;
 &lt;p&gt;結果過程中碰了不少壁，因此特地紀錄下來。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Heroku 是一個雲端平台&lt;/strong&gt;，讓使用者可以把服務丟上去跑，&lt;del&gt;同時最讚的部分是，免費用戶就提供了每月 450 小時可以使用（但有每半小時會進入休眠的限制）&lt;/del&gt;，詳情可以參閱 &lt;a href=&#34;https://www.heroku.com/pricing&#34;&gt;Heroku 的計費頁面&lt;/a&gt;。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;更新：Heroku 已經改為收費方案了 QQ&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;更新：Heroku 已經改為收費方案了 QQ&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;本系列最後一階段的目標就是要將訂便當爬蟲整套丟上去雲端上運行，達到被動接收通知的效果。但由於訂便當爬蟲還牽涉到用 Selenium 開瀏覽器互動，以及使用 Sqlite 儲存的部分，轉移到 Heroku 的環境上還需要進行一些調整。因此&lt;strong&gt;這一階段將會分成兩篇（或以上）文章進行，上篇會先簡單地紀錄如何將服務放上 Heroku，下篇開始則著重於紀錄將訂便當系統放上 Heroku 時遇到的問題和解決過程&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;本篇主要的參考來源來自於 &lt;a href=&#34;https://medium.com/enjoy-life-enjoy-coding/heroku-%E6%90%AD%E9%85%8D-git-%E5%9C%A8-heroku-%E4%B8%8A%E9%83%A8%E7%BD%B2%E7%B6%B2%E7%AB%99%E7%9A%84%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E5%AD%B8-bf4fd6f998b8&#34;&gt;搭配 Git 在 Heroku 上部署網站的手把手教學&lt;/a&gt;、&lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10196129&#34;&gt;發布網站到 Heroku&lt;/a&gt; 以及 &lt;a href=&#34;https://railsbook.tw/chapters/32-deployment-with-heroku.html&#34;&gt;網站部署（使用 Heroku）&lt;/a&gt; 這幾篇，其餘參考將附於文末，感謝各位前人大大留下的優質文。&lt;/p&gt;
 &lt;h2 id=&#34;註冊及安裝&#34;&gt;註冊及安裝&lt;/h2&gt;
@@ -109,8 +108,7 @@ heroku config:set CHROMEDRIVER_PATH=/app/.chromedriver/bin/chromedriver
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/nGlmGiJ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;連接至-heroku&#34;&gt;連接至 Heroku&lt;/h2&gt;
 &lt;blockquote&gt;
-&lt;p&gt;備註：由於 Heroku 傳送檔案的方式是使用 Git 進行，因此在後續的操作之前，&lt;strong&gt;必須先確保電腦中已經安裝 Git&lt;/strong&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;備註：由於 Heroku 傳送檔案的方式是使用 Git 進行，因此在後續的操作之前，&lt;strong&gt;必須先確保電腦中已經安裝 Git&lt;/strong&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;接著我們就按照上面 Heroku CLI 說明頁面的步驟開始操作。&lt;/p&gt;
 &lt;p&gt;首先要先登入，輸入 &lt;code&gt;heroku login&lt;/code&gt; 之後，便會開啟瀏覽器進行登入驗證，如果成功會看見登入訊息&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/fOifmbs.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;

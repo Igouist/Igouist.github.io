@@ -22,7 +22,7 @@
         })(window, document, "clarity", "script", "lpnoqxbhhj");
     </script>
 
-    <meta name="generator" content="Hugo 0.117.0">
+    <meta name="generator" content="Hugo 0.150.1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -148,8 +148,7 @@
 <p>No database interactions in the RPC phases
 在 RPC 階段中沒有數據庫交互</p>
 </li>
-</ol>
-</blockquote>
+</ol></blockquote>
 <hr>
 <h3 id="把錯誤分類為可重試和不可重試">把錯誤分類為可重試和不可重試</h3>
 <p>為了確認能不能夠重試，所有的錯誤都要被分類（當然也會遇到一些比較模糊的）：</p>
@@ -159,12 +158,10 @@
 </ul>
 <blockquote>
 <p>In general, we believe unexpected runtime exceptions due to network and infrastructure issues (5XX HTTP statuses) are retryable. We expect these errors to be transient, and we expect that a later retry of the same request may eventually be successful.</p>
-<p>一般而言，我們認為由於網路和基礎設施問題而引起的意外運行時異常（5XX HTTP狀態）是可重試的。我們預期這些錯誤是暫時性的，並且我們期望稍後重新嘗試相同的請求可能最終會成功。</p>
-</blockquote>
+<p>一般而言，我們認為由於網路和基礎設施問題而引起的意外運行時異常（5XX HTTP狀態）是可重試的。我們預期這些錯誤是暫時性的，並且我們期望稍後重新嘗試相同的請求可能最終會成功。</p></blockquote>
 <blockquote>
 <p>We categorize validation errors, such as invalid input and states (for example, you can’t refund a refund), as non-retryable (4XX HTTP statuses) — we expect all subsequent retries of the same request to fail in the same manner. We created a custom, generic exception class that handled these cases, defaulting to “non-retryable”, and for certain other cases, categorized as “retryable”.</p>
-<p>我們將驗證錯誤分類為不可重試的錯誤，例如無效的輸入和狀態（例如，無法對退款進行退款），這些錯誤屬於非可重試的類型（4XX HTTP狀態碼）- 我們預期同一請求的所有後續重試都會以相同的方式失敗。我們創建了一個自定義的通用異常類，用於處理這些情況，默認為“不可重試”，對於某些其他情況，則歸類為“可重試”。</p>
-</blockquote>
+<p>我們將驗證錯誤分類為不可重試的錯誤，例如無效的輸入和狀態（例如，無法對退款進行退款），這些錯誤屬於非可重試的類型（4XX HTTP狀態碼）- 我們預期同一請求的所有後續重試都會以相同的方式失敗。我們創建了一個自定義的通用異常類，用於處理這些情況，默認為“不可重試”，對於某些其他情況，則歸類為“可重試”。</p></blockquote>
 <hr>
 <h3 id="冪等鍵的選擇">冪等鍵的選擇</h3>
 <p>為了保持冪等性，Client 端操作的時候需要建立一組 Key 並存到 DB，後續重試的時候也必須同樣使用這組 Key。這組 Key 會拿來當鎖，避免使用者或多個客戶端正在重試導致重複執行（這個鎖的持續時間通常會比 RPC 的 Timeout 時間還長）</p>
@@ -175,8 +172,7 @@
 </ul>
 <p>除此之外，他們還使用冪等鍵來對資料庫進行分片解決擴展性的問題：</p>
 <blockquote>
-<p>The idempotency keys we use have high cardinality and even distribution, making them effective shard keys.</p>
-</blockquote>
+<p>The idempotency keys we use have high cardinality and even distribution, making them effective shard keys.</p></blockquote>
 <hr>
 <h3 id="紀錄回應">紀錄回應</h3>
 <p>前面提到的 Post-RPC 會把 Response 內容都存下來，後續重試的時候就可以更快回應(?)，但資料表會長太快，所以可以考慮定期刪除太久的資料。</p>
@@ -192,23 +188,6 @@
                         </div>
 
                         
-
-<div class="post-archive">
-    <h2>其他文章</h2>
-    <ul class="listing">
-        
-        <li><a href="/repost/2024/02/0203-hype-driven-development/">【每天推薦一篇文章】一窩蜂驅動開發</a></li>
-        
-        <li><a href="/repost/2024/02/0202-can-software-architecture-apply-to-game-development/">【每天推薦一篇文章】軟體架構適用於遊戲開發嗎？</a></li>
-        
-        <li><a href="/repost/2024/02/0201-development-slowness-in-big-and-legacy-applications/">【每天推薦一篇文章】大規模專案變慢的原因</a></li>
-        
-        <li><a href="/repost/2024/01/0131-recaptcha-enterprise/">【每天推薦一篇文章】reCAPTCHA 強制升級</a></li>
-        
-        <li><a href="/repost/2024/01/0130-chinese-copywriting-guidelines/">【每天推薦一篇文章】中英文之間要加空格</a></li>
-        
-    </ul>
-</div>
 
 
                         <div class="post-meta meta-tags">
@@ -422,7 +401,7 @@
     }
     var key = "2024-08-01";
     var value = dataMap.get(key);
-    var wordCount =  1680 ;
+    var wordCount =  1679 ;
     var link = "/post/2024/08/nine-sols/";
     var title = "《九日》白金心得";
     
@@ -3141,7 +3120,7 @@
     
     <a href="https://igouist.github.io/tags/electron/">electron</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity framework</a>
     
     <a href="https://igouist.github.io/tags/enum/">enum</a>
     

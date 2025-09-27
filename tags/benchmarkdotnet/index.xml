@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>benchmarkDotnet on 伊果的沒人看筆記本</title>
+    <title>BenchmarkDotnet on 伊果的沒人看筆記本</title>
     <link>https://igouist.github.io/tags/benchmarkdotnet/</link>
-    <description>Recent content in benchmarkDotnet on 伊果的沒人看筆記本</description>
+    <description>Recent content in BenchmarkDotnet on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
+    <managingEditor>Igouist (Igouist)</managingEditor>
+    <webMaster>Igouist (Igouist)</webMaster>
     <follow_challenge>
       <feedId>56200764111934464</feedId>
       <userId>41821085092905984</userId>
@@ -15,7 +17,7 @@
       <title>C#: BenchmarkDotnet —— 效能測試好簡單</title>
       <link>https://igouist.github.io/post/2021/06/benchmarkdotnet/</link>
       <pubDate>Sun, 13 Jun 2021 22:25:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2021/06/benchmarkdotnet/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/rhmeAUi.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;p&gt;「你寫那什麼鬼東西？這個ＯＯＯ寫法比較好啦！」&lt;br/&gt;
@@ -44,15 +46,13 @@
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/aqv4KvE.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：本篇的專案範本是「主控台應用程式」，不過平常都是直接使用簡單好用的 &lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10193063&#34;&gt;Linqpad&lt;/a&gt; 快速測一下比較多。&lt;/p&gt;
-&lt;p&gt;不過反正 BenchmarkDotnet 已經夠太簡潔方便了，各位朋友用順手的方式試試看就好囉。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;不過反正 BenchmarkDotnet 已經夠太簡潔方便了，各位朋友用順手的方式試試看就好囉。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;安裝完畢之後，就可以開始準備一下參賽選手的擂台啦～&lt;/p&gt;
 &lt;h2 id=&#34;使用-benchmark-來指定參賽選手&#34;&gt;使用 Benchmark 來指定參賽選手&lt;/h2&gt;
 &lt;p&gt;既然都說要比較效能了，今天就挑個前陣子同事提到過的主題來比較吧：&lt;/p&gt;
 &lt;p&gt;「&lt;strong&gt;在需要回傳空串列的場合，使用 &lt;code&gt;Enumerable.Empty&lt;/code&gt; 會比 &lt;code&gt;new List&amp;lt;&amp;gt;&lt;/code&gt; 更好一些&lt;/strong&gt;」&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;針對這個問題，附上補充資訊：&lt;a href=&#34;https://stackoverflow.com/questions/1894038/is-it-better-to-use-enumerable-emptyt-as-opposed-to-new-listt-to-initial&#34;&gt;Is it better to use Enumerable.Empty&lt;T&gt;() as opposed to new List&lt;T&gt;() to initialize an IEnumerable&lt;T&gt;? - Stackoverflow&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;針對這個問題，附上補充資訊：&lt;a href=&#34;https://stackoverflow.com/questions/1894038/is-it-better-to-use-enumerable-emptyt-as-opposed-to-new-listt-to-initial&#34;&gt;Is it better to use Enumerable.Empty&lt;T&gt;() as opposed to new List&lt;T&gt;() to initialize an IEnumerable&lt;T&gt;? - Stackoverflow&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;現在讓我們用這個主題來測試吧，假定：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;紅方選手：用 &lt;code&gt;Enumerable.Empty&lt;/code&gt; 來建立空串列&lt;/li&gt;
@@ -96,8 +96,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
 &lt;p&gt;補充：要直接 &lt;code&gt;Empty() =&amp;gt; Enumerable.Empty&amp;lt;Foo&amp;gt;();&lt;/code&gt; 也是可以的。&lt;/p&gt;
 &lt;p&gt;我個人習慣都用同一個準備好的 BenchmarkDotnet 擂台，複製改改裡面的內容就拿來測試了，所以乖乖寫出整個 Function 改起來比較方便 XD&lt;/p&gt;
-&lt;p&gt;但為了閱讀方便，本篇後續會整理成比較簡單的 lambda 寫法，請不要太在意。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;但為了閱讀方便，本篇後續會整理成比較簡單的 lambda 寫法，請不要太在意。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;選手們就定位之後，&lt;strong&gt;替他們加上 &lt;code&gt;[Benchmark]&lt;/code&gt; 的屬性，作為參賽的證明&lt;/strong&gt;。現在擂台上應該是長這樣的：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 測試用擂台&lt;/span&gt;
@@ -169,8 +168,7 @@
 &lt;p&gt;BenchmarkDotnet 必須在 release 環境下啟動，先讓我們切換一下組態：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/iKmHI8C.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;小提示：如果跟我一樣，喜歡使用 Linqpad 的朋友，右下角切換成 &lt;code&gt;/o+&lt;/code&gt; 才是 Release 組態呦。還有記得要用系統管理員開啟嘿。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;小提示：如果跟我一樣，喜歡使用 Linqpad 的朋友，右下角切換成 &lt;code&gt;/o+&lt;/code&gt; 才是 Release 組態呦。還有記得要用系統管理員開啟嘿。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;現在雙方站定，讓我們開始比試吧！&lt;/p&gt;
 &lt;p&gt;開始執行之後，會先列一下這次測試的環境資訊，接著就會看到很多輪的比試階段（對，你不用自己寫迴圈來重複測試）：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/UN7wXuS.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
@@ -232,8 +230,7 @@
 &lt;p&gt;這邊補一下前面提到的 StackOverflow 回答：&lt;br/&gt;
 &amp;ldquo;Even if you use an empty array or empty list, those are objects and they are stored in memory. The Garbage Collector has to take care of them.&amp;rdquo; &lt;br/&gt;
 &amp;ldquo;Enumerable.Empty does not create an object per call thus putting less load on the GC.&amp;rdquo;&lt;/p&gt;
-&lt;p&gt;因此如果當你的查詢有需要返回空串列的時候（例如說搜尋條件沒有結果），試試看用 &lt;code&gt;Enumerable.Empty&lt;/code&gt; 吧！&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;因此如果當你的查詢有需要返回空串列的時候（例如說搜尋條件沒有結果），試試看用 &lt;code&gt;Enumerable.Empty&lt;/code&gt; 吧！&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;使用-jobs-來指定測試環境&#34;&gt;使用 Jobs 來指定測試環境&lt;/h2&gt;
 &lt;p&gt;現在我們已經考量了執行時間和記憶體，接下來要問的就是：&lt;strong&gt;那在不同的啟動環境之下會有差別嗎？&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;例如說同樣的比較，在 .NET Core 跟 .NET framework 都成立嗎？不需要開好幾個專案來測，在 BenchmarkDotnet，我們可以用 &lt;code&gt;Jobs&lt;/code&gt; 來搞定。&lt;/p&gt;
@@ -254,8 +251,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;PlatformTarget&amp;gt;&lt;/span&gt;AnyCPU&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;/PlatformTarget&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
 &lt;p&gt;小提示：專案檔就是 .csproj，除了直接開啟編輯外，也可以從 &lt;code&gt;方案總管 -&amp;gt; (對專案右鍵) -&amp;gt; 編輯專案檔&lt;/code&gt; 來開啟呦。&lt;/p&gt;
-&lt;p&gt;此外，多目標的說明和加入方式，也可以參照 Gelis 技術隨筆 的這篇 &lt;a href=&#34;http://gelis-dotnet.blogspot.com/2019/12/targetframeworks-net72-netstandard21.html&#34;&gt;使用多目標 TargetFrameworks 來讓 net72 可參考 .netstandard2.1 通過編譯並可使用&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;此外，多目標的說明和加入方式，也可以參照 Gelis 技術隨筆 的這篇 &lt;a href=&#34;http://gelis-dotnet.blogspot.com/2019/12/targetframeworks-net72-netstandard21.html&#34;&gt;使用多目標 TargetFrameworks 來讓 net72 可參考 .netstandard2.1 通過編譯並可使用&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;以示範專案為例，加入後的 &lt;code&gt;csproj&lt;/code&gt; 檔案的 &lt;code&gt;&amp;lt;PropertyGroup&amp;gt;&lt;/code&gt; 可能會長得這樣：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-xml&#34; data-lang=&#34;xml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;PropertyGroup&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;OutputType&amp;gt;&lt;/span&gt;Exe&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;/OutputType&amp;gt;&lt;/span&gt;
@@ -263,8 +259,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;PlatformTarget&amp;gt;&lt;/span&gt;AnyCPU&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;/PlatformTarget&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;/PropertyGroup&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
-&lt;p&gt;小提示：更改版本之後，如果編譯有發生遺失資源檔的錯誤，可以先卸載專案再重新載入試試呦。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;小提示：更改版本之後，如果編譯有發生遺失資源檔的錯誤，可以先卸載專案再重新載入試試呦。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;現在讓我們來執行一次試試吧：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/UqhTEPp.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;// * Summary *

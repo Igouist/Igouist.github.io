@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>cloudflare on 伊果的沒人看筆記本</title>
+    <title>Cloudflare on 伊果的沒人看筆記本</title>
     <link>https://igouist.github.io/tags/cloudflare/</link>
-    <description>Recent content in cloudflare on 伊果的沒人看筆記本</description>
+    <description>Recent content in Cloudflare on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
+    <managingEditor>Igouist (Igouist)</managingEditor>
+    <webMaster>Igouist (Igouist)</webMaster>
     <follow_challenge>
       <feedId>56200764111934464</feedId>
       <userId>41821085092905984</userId>
@@ -15,7 +17,7 @@
       <title>記一次把部落格圖片從 Imgur 搬到 Cloudflare R2 的過程</title>
       <link>https://igouist.github.io/post/2025/07/migrate-blog-images-to-cloudflare-r2/</link>
       <pubDate>Thu, 31 Jul 2025 23:00:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2025/07/migrate-blog-images-to-cloudflare-r2/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753973577696.webp&#34; alt=&#34;1753973862036&#34;&gt;&lt;/p&gt;
 &lt;p&gt;在上個月的 &lt;a href=&#34;https://igouist.github.io/post/2025/06/imgur-temporarily-over-capacity-maybe-your-ip-banned/&#34;&gt;Imgur 一直 temporarily over capacity 嗎？先檢查網路看看吧&lt;/a&gt; 提到，因為 Imgur 不給上傳圖片了，現在寫個文章還得開 VPN 才能貼圖片。&lt;/p&gt;
@@ -48,8 +50,7 @@
 &lt;blockquote&gt;
 &lt;p&gt;備註：如果想要自訂 R2 資源對外的網址，需要先讓 R2 和 Cloudflare 上存在的網域做綁定，也就是要在 Cloudflare 買網域或是其他地方買來掛在 Cloudflare 上（參考 &lt;a href=&#34;https://developers.cloudflare.com/r2/buckets/public-buckets/#add-your-domain-to-cloudflare&#34;&gt;Public buckets&lt;/a&gt;）&lt;/p&gt;
 &lt;p&gt;因為我（之前為了&lt;a href=&#34;https://tedliou.com/software/bluesky-handle-domain-customize/&#34;&gt;改 Bluesky 的帳號名稱&lt;/a&gt;）已經在 Cloudflare 購買過網域了，所以可以直接用自定義網域來把圖片網址改成我要的網址。&lt;/p&gt;
-&lt;p&gt;如果你也想要自訂圖片網址，但在 Cloudflare 還沒有任何網域，可以先多找幾篇網域購買和託管到 Cloudflare 的文章（例如 &lt;a href=&#34;https://geekaz.net/cloudflare-domain-tutorial/&#34;&gt;Cloudflare 網域購買教學&lt;/a&gt;）參考參考，再決定要不要投入 $$ 買一個自己喜歡的名字。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;如果你也想要自訂圖片網址，但在 Cloudflare 還沒有任何網域，可以先多找幾篇網域購買和託管到 Cloudflare 的文章（例如 &lt;a href=&#34;https://geekaz.net/cloudflare-domain-tutorial/&#34;&gt;Cloudflare 網域購買教學&lt;/a&gt;）參考參考，再決定要不要投入 $$ 買一個自己喜歡的名字。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;建立完畢之後，可以先進貯體隨便上傳一張圖片，確認一下 URL 有沒有連到圖片：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970484783.webp&#34; alt=&#34;1753970485658&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;弄個-powershell-腳本把部落格的圖片先抓下來&#34;&gt;弄個 Powershell 腳本把部落格的圖片先抓下來&lt;/h2&gt;
@@ -97,8 +98,7 @@
 &lt;blockquote&gt;
 &lt;p&gt;補充：有些情況下跑完 WebP 反而會讓檔案大小變大，例如 JPG 轉 WebP（參見 &lt;a href=&#34;https://stackoverflow.com/questions/30641057/image-size-is-increased-when-converted-from-jpg-to-webp-with-quality-value-100&#34;&gt;Image size is increased when converted from jpg to webp with quality value 100&lt;/a&gt;）&lt;/p&gt;
 &lt;p&gt;而在 &lt;a href=&#34;https://developers.google.com/speed/webp/faq#can_a_webp_image_grow_larger_than_its_source_image&#34;&gt;WebP 常見問題文檔&lt;/a&gt;的「Can a WebP image grow larger than its source image?」這一小節有說明可能會導致檔案變大的場景，有遇到的朋友可以先確認看看。&lt;/p&gt;
-&lt;p&gt;因為我的部落格大多是 PNG 圖檔，文檔提到「Note that converting a JPEG source to lossy WebP, or a PNG source to lossless WebP are not prone to such file size surprises.」所以我仍然可以無腦轉 WebP，如果是跟我一樣都是 PNG 的朋友就別擔心了。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;因為我的部落格大多是 PNG 圖檔，文檔提到「Note that converting a JPEG source to lossy WebP, or a PNG source to lossless WebP are not prone to such file size surprises.」所以我仍然可以無腦轉 WebP，如果是跟我一樣都是 PNG 的朋友就別擔心了。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;在開始動手之前，需要先確保環境中有 WebP 的工具。沒有的朋朋們請先到 &lt;a href=&#34;https://developers.google.com/speed/webp/download?hl=zh-tw&#34;&gt;Google for Developers&lt;/a&gt; 下載回來（為了方便後續使用，可以把 &lt;code&gt;bin&lt;/code&gt; 的路徑丟進環境變數）&lt;/p&gt;
 &lt;p&gt;接著同樣產個小腳本來逐個把圖片壓成 WebP，這段除了好朋友 GPT 以外，還參考了這兩篇：&lt;/p&gt;
 &lt;ul&gt;
@@ -151,14 +151,12 @@
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970509149.webp&#34; alt=&#34;1753970510004&#34;&gt;&lt;/p&gt;
 &lt;p&gt;雖然瀏覽器上傳有每次一百個檔案的限制，但考慮到我部落格 &lt;del&gt;拖稿嚴重&lt;/del&gt; 圖片不多，因此手動上傳也是分分鐘的事情，這個步驟就手動傳一傳收工。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;補充：如果檔案太多，或是好想用下指令的方式上傳呢？請參考 R2 文檔的 &lt;a href=&#34;https://developers.cloudflare.com/r2/objects/upload-objects/&#34;&gt;Upload objects&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;補充：如果檔案太多，或是好想用下指令的方式上傳呢？請參考 R2 文檔的 &lt;a href=&#34;https://developers.cloudflare.com/r2/objects/upload-objects/&#34;&gt;Upload objects&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;因為前面的步驟只是下載檔案又上傳檔案，連檔名都沒更動，接著只要回去文章內文把原本有 &lt;code&gt;i.imgur.com&lt;/code&gt; 的連結都替代成新的圖片網址就搞定囉～&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：如果像我一樣，有些 JS 的操作會去呼叫圖片網址的話，可能會看到 CORS 的錯誤訊息，例如：&lt;code&gt;Access to image at &#39;https://xxxx/xxxxxx.webp&#39; from origin &#39;https://xxxxxx.github.io&#39; has been blocked by CORS policy: No &#39;Access-Control-Allow-Origin&#39; header is present on the requested resource.&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;這時候只要去 R2 儲存體的「設定」 找到 CORS 原則，把站台加上去就可以了。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970523569.webp&#34; alt=&#34;1753970524223&#34;&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1753970523569.webp&#34; alt=&#34;1753970524223&#34;&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;使用-vscode-的-markdown-image-延伸模組直接上傳圖片到-cloudflare-r2&#34;&gt;使用 VSCode 的 Markdown-image 延伸模組直接上傳圖片到 Cloudflare R2&lt;/h2&gt;
 &lt;p&gt;到這邊其實部落格的圖床遷移已經完成了，但因為我習慣用 VSCode 撰寫文章，之前都用 vscode-imgur 這款延伸模組，實現貼上圖片自動上傳 Imgur 的舒適體驗。&lt;/p&gt;
 &lt;p&gt;但現在圖床搬家到 Cloudflare R2 了，當然也要調整一下 VSCode 的上傳圖片工具。果斷採用開頭這篇「&lt;a href=&#34;https://blog.kyomind.tw/weekly-review-43/&#34;&gt;Imgur 封鎖台灣 IP，我把圖床搬到 Cloudflare R2&lt;/a&gt;」提到的 &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=hancel.markdown-image&#34;&gt;Markdown-image&lt;/a&gt;&lt;/p&gt;

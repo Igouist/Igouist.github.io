@@ -22,7 +22,7 @@
         })(window, document, "clarity", "script", "lpnoqxbhhj");
     </script>
 
-    <meta name="generator" content="Hugo 0.117.0">
+    <meta name="generator" content="Hugo 0.150.1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -146,15 +146,13 @@
 <p><img src="https://image.igouist.net/aqv4KvE.webp" alt=""></p>
 <blockquote>
 <p>補充：本篇的專案範本是「主控台應用程式」，不過平常都是直接使用簡單好用的 <a href="https://ithelp.ithome.com.tw/articles/10193063">Linqpad</a> 快速測一下比較多。</p>
-<p>不過反正 BenchmarkDotnet 已經夠太簡潔方便了，各位朋友用順手的方式試試看就好囉。</p>
-</blockquote>
+<p>不過反正 BenchmarkDotnet 已經夠太簡潔方便了，各位朋友用順手的方式試試看就好囉。</p></blockquote>
 <p>安裝完畢之後，就可以開始準備一下參賽選手的擂台啦～</p>
 <h2 id="使用-benchmark-來指定參賽選手">使用 Benchmark 來指定參賽選手</h2>
 <p>既然都說要比較效能了，今天就挑個前陣子同事提到過的主題來比較吧：</p>
 <p>「<strong>在需要回傳空串列的場合，使用 <code>Enumerable.Empty</code> 會比 <code>new List&lt;&gt;</code> 更好一些</strong>」</p>
 <blockquote>
-<p>針對這個問題，附上補充資訊：<a href="https://stackoverflow.com/questions/1894038/is-it-better-to-use-enumerable-emptyt-as-opposed-to-new-listt-to-initial">Is it better to use Enumerable.Empty<T>() as opposed to new List<T>() to initialize an IEnumerable<T>? - Stackoverflow</a></p>
-</blockquote>
+<p>針對這個問題，附上補充資訊：<a href="https://stackoverflow.com/questions/1894038/is-it-better-to-use-enumerable-emptyt-as-opposed-to-new-listt-to-initial">Is it better to use Enumerable.Empty<T>() as opposed to new List<T>() to initialize an IEnumerable<T>? - Stackoverflow</a></p></blockquote>
 <p>現在讓我們用這個主題來測試吧，假定：</p>
 <ul>
 <li>紅方選手：用 <code>Enumerable.Empty</code> 來建立空串列</li>
@@ -198,8 +196,7 @@
 </span></span></code></pre></div><blockquote>
 <p>補充：要直接 <code>Empty() =&gt; Enumerable.Empty&lt;Foo&gt;();</code> 也是可以的。</p>
 <p>我個人習慣都用同一個準備好的 BenchmarkDotnet 擂台，複製改改裡面的內容就拿來測試了，所以乖乖寫出整個 Function 改起來比較方便 XD</p>
-<p>但為了閱讀方便，本篇後續會整理成比較簡單的 lambda 寫法，請不要太在意。</p>
-</blockquote>
+<p>但為了閱讀方便，本篇後續會整理成比較簡單的 lambda 寫法，請不要太在意。</p></blockquote>
 <p>選手們就定位之後，<strong>替他們加上 <code>[Benchmark]</code> 的屬性，作為參賽的證明</strong>。現在擂台上應該是長這樣的：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/// 測試用擂台</span>
@@ -271,8 +268,7 @@
 <p>BenchmarkDotnet 必須在 release 環境下啟動，先讓我們切換一下組態：</p>
 <p><img src="https://image.igouist.net/iKmHI8C.webp" alt=""></p>
 <blockquote>
-<p>小提示：如果跟我一樣，喜歡使用 Linqpad 的朋友，右下角切換成 <code>/o+</code> 才是 Release 組態呦。還有記得要用系統管理員開啟嘿。</p>
-</blockquote>
+<p>小提示：如果跟我一樣，喜歡使用 Linqpad 的朋友，右下角切換成 <code>/o+</code> 才是 Release 組態呦。還有記得要用系統管理員開啟嘿。</p></blockquote>
 <p>現在雙方站定，讓我們開始比試吧！</p>
 <p>開始執行之後，會先列一下這次測試的環境資訊，接著就會看到很多輪的比試階段（對，你不用自己寫迴圈來重複測試）：</p>
 <p><img src="https://image.igouist.net/UN7wXuS.webp" alt=""></p>
@@ -334,8 +330,7 @@
 <p>這邊補一下前面提到的 StackOverflow 回答：<br/>
 &ldquo;Even if you use an empty array or empty list, those are objects and they are stored in memory. The Garbage Collector has to take care of them.&rdquo; <br/>
 &ldquo;Enumerable.Empty does not create an object per call thus putting less load on the GC.&rdquo;</p>
-<p>因此如果當你的查詢有需要返回空串列的時候（例如說搜尋條件沒有結果），試試看用 <code>Enumerable.Empty</code> 吧！</p>
-</blockquote>
+<p>因此如果當你的查詢有需要返回空串列的時候（例如說搜尋條件沒有結果），試試看用 <code>Enumerable.Empty</code> 吧！</p></blockquote>
 <h2 id="使用-jobs-來指定測試環境">使用 Jobs 來指定測試環境</h2>
 <p>現在我們已經考量了執行時間和記憶體，接下來要問的就是：<strong>那在不同的啟動環境之下會有差別嗎？</strong></p>
 <p>例如說同樣的比較，在 .NET Core 跟 .NET framework 都成立嗎？不需要開好幾個專案來測，在 BenchmarkDotnet，我們可以用 <code>Jobs</code> 來搞定。</p>
@@ -356,8 +351,7 @@
 </span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;PlatformTarget&gt;</span>AnyCPU<span style="color:#f92672">&lt;/PlatformTarget&gt;</span>
 </span></span></code></pre></div><blockquote>
 <p>小提示：專案檔就是 .csproj，除了直接開啟編輯外，也可以從 <code>方案總管 -&gt; (對專案右鍵) -&gt; 編輯專案檔</code> 來開啟呦。</p>
-<p>此外，多目標的說明和加入方式，也可以參照 Gelis 技術隨筆 的這篇 <a href="http://gelis-dotnet.blogspot.com/2019/12/targetframeworks-net72-netstandard21.html">使用多目標 TargetFrameworks 來讓 net72 可參考 .netstandard2.1 通過編譯並可使用</a></p>
-</blockquote>
+<p>此外，多目標的說明和加入方式，也可以參照 Gelis 技術隨筆 的這篇 <a href="http://gelis-dotnet.blogspot.com/2019/12/targetframeworks-net72-netstandard21.html">使用多目標 TargetFrameworks 來讓 net72 可參考 .netstandard2.1 通過編譯並可使用</a></p></blockquote>
 <p>以示範專案為例，加入後的 <code>csproj</code> 檔案的 <code>&lt;PropertyGroup&gt;</code> 可能會長得這樣：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;PropertyGroup&gt;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;OutputType&gt;</span>Exe<span style="color:#f92672">&lt;/OutputType&gt;</span>
@@ -365,8 +359,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;PlatformTarget&gt;</span>AnyCPU<span style="color:#f92672">&lt;/PlatformTarget&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/PropertyGroup&gt;</span>
 </span></span></code></pre></div><blockquote>
-<p>小提示：更改版本之後，如果編譯有發生遺失資源檔的錯誤，可以先卸載專案再重新載入試試呦。</p>
-</blockquote>
+<p>小提示：更改版本之後，如果編譯有發生遺失資源檔的錯誤，可以先卸載專案再重新載入試試呦。</p></blockquote>
 <p>現在讓我們來執行一次試試吧：</p>
 <p><img src="https://image.igouist.net/UqhTEPp.webp" alt=""></p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-powershell" data-lang="powershell"><span style="display:flex;"><span>// * Summary *
@@ -714,7 +707,7 @@
     }
     var key = "2024-08-01";
     var value = dataMap.get(key);
-    var wordCount =  1680 ;
+    var wordCount =  1679 ;
     var link = "/post/2024/08/nine-sols/";
     var title = "《九日》白金心得";
     
@@ -3450,7 +3443,7 @@
     
     <a href="https://igouist.github.io/tags/electron/">electron</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity framework</a>
     
     <a href="https://igouist.github.io/tags/enum/">enum</a>
     

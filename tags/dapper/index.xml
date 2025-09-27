@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>dapper on 伊果的沒人看筆記本</title>
+    <title>Dapper on 伊果的沒人看筆記本</title>
     <link>https://igouist.github.io/tags/dapper/</link>
-    <description>Recent content in dapper on 伊果的沒人看筆記本</description>
+    <description>Recent content in Dapper on 伊果的沒人看筆記本</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hant-TW</language>
+    <managingEditor>Igouist (Igouist)</managingEditor>
+    <webMaster>Igouist (Igouist)</webMaster>
     <follow_challenge>
       <feedId>56200764111934464</feedId>
       <userId>41821085092905984</userId>
@@ -15,15 +17,14 @@
       <title>使用 AddTypeMap 調整型別映射，讓 Dapper 乖乖寫入 0001-01-01 到 datetime2</title>
       <link>https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/</link>
       <pubDate>Sun, 25 Aug 2024 15:20:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/YLnFkUH.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這週忙著打黑悟空，簡單記一下前陣子同事遇到的一個場景：&lt;/p&gt;
 &lt;p&gt;由於曆法的關係，SQL Server 的 datetime 範圍只能從 1753-01-01 開始。&lt;br/&gt;如果我們要寫入 0001-01-01 進去的話就會報錯&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;SqlDateTime overflow. Must be between 1/1/1753 12:00:00 AM and 12/31/9999 11:59:59 PM.
 &lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
-&lt;p&gt;補充：關於曆法的部份，有興趣的朋友可以參考這篇：&lt;br/&gt;&lt;a href=&#34;https://sharedderrick.blogspot.com/2009/09/blog-post.html&#34;&gt;淺談：消失的日期，以關聯式資料庫的日期資料類型為例 - 德瑞克：SQL Server 學習筆記&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;補充：關於曆法的部份，有興趣的朋友可以參考這篇：&lt;br/&gt;&lt;a href=&#34;https://sharedderrick.blogspot.com/2009/09/blog-post.html&#34;&gt;淺談：消失的日期，以關聯式資料庫的日期資料類型為例 - 德瑞克：SQL Server 學習筆記&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;這時候通常去把資料表欄位改成香香的 datetime2 就可以搞定，爽爽寫入 0001-01-01。&lt;/p&gt;
 &lt;p&gt;但如果我們正在使用 Dapper，預設會把 C# 的 DateTime 映射到 SQL Server 的 datetime，所以還是會寫入失敗。&lt;/p&gt;
 &lt;p&gt;這時候我們就需要明確地請 Dapper 幫我們使用 datetime2 來進行處理。&lt;/p&gt;
@@ -76,8 +77,7 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://www.tutorialsteacher.com/articles/datetime-vs-datetime2-in-sqlserver&#34;&gt;DateTime vs DateTime2 in Sql Server&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://medium.com/ricos-note/datetime-vs-datetime2-55d0e403509c&#34;&gt;Datetime VS Datetime2 | by RiCo 技術農場 | RiCosNote | Medium&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
+&lt;/ul&gt;&lt;/blockquote&gt;
 &lt;p&gt;大多數時候，我們不太需要寫入 0001-01-01，甚至 1753 年之前的日期&lt;br/&gt;（像是日期尚未決定之類的場合，用 Null 表示會貼切）&lt;/p&gt;
 &lt;p&gt;但夜路走多了，總會遇到 0001-01-01。像是處理古老的遺留代碼、業務邏輯必須區分「還沒設定」和「沒有資料」的狀況，又或是像上面的例子，西元的開始真的就在那一天，這種時候就沒辦法了。&lt;/p&gt;
 &lt;p&gt;因此順手筆記下來，以後再回來抄，阿彌陀佛。&lt;/p&gt;
@@ -98,7 +98,7 @@
       <title>菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</title>
       <link>https://igouist.github.io/post/2021/05/newbie-3-dapper/</link>
       <pubDate>Sun, 09 May 2021 11:15:00 +0800</pubDate>
-      
+      <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2021/05/newbie-3-dapper/</guid>
       <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/aIHQL5Z.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
 &lt;p&gt;這是俺整理公司新訓內容的第三篇文章，目標是&lt;strong&gt;在 .NET Core 簡單地使用 Dapper 連線到資料庫並完成 CRUD 的功能&lt;/strong&gt;。&lt;/p&gt;
@@ -124,8 +124,7 @@
 &lt;p&gt;說到底，想要編譯時期就發現錯誤？或是不想耗費心力在轉型過程？本來就會有相對應的代價。&lt;/p&gt;
 &lt;p&gt;不過就我個人認為，既然都在 C# 這個環境了，又是嘗試向已知的資料表取值，取出來的值通常都還會進行進一步的操作，最後還是要指定型別做轉型囧…&lt;/p&gt;
 &lt;p&gt;既然你遲早要用強型別的，為什麼不一開始就用強型別呢？還能少一堆坑。&lt;/p&gt;
-&lt;p&gt;順便感謝微軟拔拔讓我有 &lt;code&gt;var&lt;/code&gt; 可以用，自動幫我檢查型別又讓我可以爽寫，還不耗效能，讚啦。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;順便感謝微軟拔拔讓我有 &lt;code&gt;var&lt;/code&gt; 可以用，自動幫我檢查型別又讓我可以爽寫，還不耗效能，讚啦。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;hr&gt;
 &lt;h3 id=&#34;物件關係對映orm&#34;&gt;物件關係對映（ORM）&lt;/h3&gt;
 &lt;p&gt;因為前述的型別問題，大多數人就投向了 ORM 的懷抱。&lt;/p&gt;
@@ -136,8 +135,7 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10207752&#34;&gt;資料庫設計概念 - ORM - johnliutw&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;http://www.ruanyifeng.com/blog/2019/02/orm-tutorial.html&#34;&gt;ORM 实例教程 - 阮一峰&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
+&lt;/ul&gt;&lt;/blockquote&gt;
 &lt;p&gt;雖然 ORM 帶來了很多方便的好處，例如說：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;可以自動產生 SQL 語法不用自己寫&lt;/li&gt;
@@ -155,8 +153,7 @@
 &lt;p&gt;因此，在使用上需要根據狀況，再決定是否要用 ORM 來進行開發。像是如果對資料表的操作語句單純（例如經典傳統百年不變的 CRUD），或是不需要對 SQL 有太深的認識也要能夠開發，那使用 ORM 就是上上之選。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;關於各個狀況的比較，這邊推薦黑大的 &lt;a href=&#34;https://blog.darkthread.net/blog/linq-or-direct-sql/&#34;&gt;閒聊：用 LINQ 還是自己寫 SQL？&lt;/a&gt;，整理了在 Dotnet 執行 SQL 邏輯的策略和優缺點，建議可以先看過會比較有概念。&lt;/p&gt;
-&lt;p&gt;另外，關於一些 ORM 的問題點，除了上面 ORM 介紹文章中提到的缺點以外，也可以閱讀這篇 &lt;a href=&#34;https://gordon.hk/blog/2019/10/22/You-Dont-need-ORM/&#34;&gt;你不需要 ORM&lt;/a&gt; 有實際的程式碼例子可能會比較有感覺。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;另外，關於一些 ORM 的問題點，除了上面 ORM 介紹文章中提到的缺點以外，也可以閱讀這篇 &lt;a href=&#34;https://gordon.hk/blog/2019/10/22/You-Dont-need-ORM/&#34;&gt;你不需要 ORM&lt;/a&gt; 有實際的程式碼例子可能會比較有感覺。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;hr&gt;
 &lt;h3 id=&#34;dapper&#34;&gt;Dapper&lt;/h3&gt;
 &lt;p&gt;那既然這樣，我們能不能在上面兩者之間取得一個平衡呢？&lt;/p&gt;
@@ -168,8 +165,7 @@
 &lt;p&gt;它的特色就是&lt;strong&gt;快速、輕便、效能好&lt;/strong&gt;，使用方式也相當簡單，因為它只&lt;strong&gt;幫你處理資料轉物件&lt;/strong&gt;的部份，剩下的像是 SQL 語法和連線，你還是要自己負責。&lt;/p&gt;
 &lt;p&gt;不過，我們有讚讚的物件就行了唄，畢竟是物件導向嘛，能當成物件使用最重要了。而且換個方向想，至少我們奪回了 SQL 語法的自主權（？）&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;補充一下：如果你用了 Dapper 但還是很不想寫 SQL，場景又是簡單的 CRUD。呃，&lt;del&gt;為什麼不去用隔壁棚的 EF&lt;/del&gt;，你可以試試加裝 &lt;a href=&#34;https://github.com/tmsmith/Dapper-Extensions&#34;&gt;DapperExtensions&lt;/a&gt; 或 &lt;a href=&#34;https://dotblogs.com.tw/yc421206/2019/03/07/dapper_contrib_insert_update_get&#34;&gt;Dapper.Contrib&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;補充一下：如果你用了 Dapper 但還是很不想寫 SQL，場景又是簡單的 CRUD。呃，&lt;del&gt;為什麼不去用隔壁棚的 EF&lt;/del&gt;，你可以試試加裝 &lt;a href=&#34;https://github.com/tmsmith/Dapper-Extensions&#34;&gt;DapperExtensions&lt;/a&gt; 或 &lt;a href=&#34;https://dotblogs.com.tw/yc421206/2019/03/07/dapper_contrib_insert_update_get&#34;&gt;Dapper.Contrib&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;當我們有了 Dapper 之後…&lt;/p&gt;
 &lt;p&gt;把 Dapper 交給那些 認真到會去 SSMS 跑一次 SQL 語法看執行效能的那些朋友，你們可以盡量發揮你們的 SQL 能力取得更好的效能。&lt;/p&gt;
 &lt;p&gt;把 Dapper 交給那些 覺得 Entity Framework 效能地雷太多（或只是像我一樣不太熟）的朋友，神秘的事故發生率會少很多。&lt;/p&gt;
@@ -194,8 +190,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;GO&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;該表用來存放基本的卡牌資訊，包含該卡牌的 ID（主鍵）、卡牌名稱、卡牌描述、攻擊力、血量、花費值。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;小提示：使用其他結構的資料表，例如用自己建立的資料表，或是經典的北風資料表，甚至是公司內的資料表來練習開發的朋友，要記得後續的處理都要改成你使用的資料表的內容呦！&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;小提示：使用其他結構的資料表，例如用自己建立的資料表，或是經典的北風資料表，甚至是公司內的資料表來練習開發的朋友，要記得後續的處理都要改成你使用的資料表的內容呦！&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;現在我們有了一張資料表，鏡頭轉回到我們的 .net Core Web API 服務。&lt;/p&gt;
 &lt;p&gt;既然今天的主角是 Dapper，當然要&lt;strong&gt;先打開 NuGet 把 Dapper 給安裝下來&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://image.igouist.net/rT0Nop6.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
@@ -243,22 +238,18 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
 &lt;p&gt;小提示：如果資料表的欄位數量很多很龐大，手刻會刻到死的朋友，可以試試用 Linqpad 去產生對應的類別。請參閱 mrkt 的這篇 &lt;a href=&#34;https://dotblogs.com.tw/mrkt/2016/06/14/190618&#34;&gt;Dapper - 使用 LINQPad 快速產生相對映 SQL Command 查詢結果的類別&lt;/a&gt;。&lt;/p&gt;
-&lt;p&gt;用 Linqpad 直接從資料表產生類別，和 Dapper 搭配起來，開發上那可真是一個快啊！這邊推薦給大家。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;用 Linqpad 直接從資料表產生類別，和 Dapper 搭配起來，開發上那可真是一個快啊！這邊推薦給大家。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
-&lt;p&gt;補充：如果建立類別的時候，對於把 SQL Server 裡面的型別對應到 C# 裡有困難的話，可以參閱 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/framework/data/adonet/sql-server-data-type-mappings&#34;&gt;SQL Server 資料類型對應&lt;/a&gt;（感謝 &lt;a href=&#34;https://sunnyday0932.github.io/2020/dotnet-core-webapi%E5%AF%A6%E4%BD%9C%E4%BD%BF%E7%94%A8dapper-1/&#34;&gt;Sian&lt;/a&gt; 的補充）。至於其他家的 DB，呃，還請大家自己查一下囉。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;補充：如果建立類別的時候，對於把 SQL Server 裡面的型別對應到 C# 裡有困難的話，可以參閱 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/framework/data/adonet/sql-server-data-type-mappings&#34;&gt;SQL Server 資料類型對應&lt;/a&gt;（感謝 &lt;a href=&#34;https://sunnyday0932.github.io/2020/dotnet-core-webapi%E5%AF%A6%E4%BD%9C%E4%BD%BF%E7%94%A8dapper-1/&#34;&gt;Sian&lt;/a&gt; 的補充）。至於其他家的 DB，呃，還請大家自己查一下囉。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;建立類別的時候要注意，這個類別是用來接收你最後拉回來的資料的。要是你最後打算 Join 兩張表然後各取兩個欄位，這裡的類別就是那兩個欄位；要是你查詢之後只打算返回其中的幾個欄位，這裡的類別就是那幾個欄位。&lt;/p&gt;
 &lt;p&gt;在工作上就見識過同事在查詢一張數百欄位的大型表時，針對該表建立了少數欄位、一半欄位、全部欄位三種情況的類別，搭配了泛型和 Dapper 的轉換來接收不同數量的值，藉此控制不同查詢場景時的傳輸成本。因此，建立類別的時候還是要&lt;strong&gt;依照你想要拿到哪些資料下去調整&lt;/strong&gt;比較好。&lt;/p&gt;
 &lt;p&gt;刻好要用來接資料的類別之後，接著就讓我們來實作 CRUD 的銜接部分吧！&lt;/p&gt;
 &lt;hr&gt;
 &lt;h3 id=&#34;使用-dapper-實作-crud&#34;&gt;使用 Dapper 實作 CRUD&lt;/h3&gt;
 &lt;blockquote&gt;
-&lt;p&gt;小提示：你可能需要對 SQL 有基本的認識，至少需要知道對應 CRUD 的 SELECT, INSERT, UPDATE 和 DELETE。不太熟悉的朋友可以參考  &lt;a href=&#34;https://www.1keydata.com/tw/sql/sql.html&#34;&gt;SQL語法教學&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;小提示：你可能需要對 SQL 有基本的認識，至少需要知道對應 CRUD 的 SELECT, INSERT, UPDATE 和 DELETE。不太熟悉的朋友可以參考  &lt;a href=&#34;https://www.1keydata.com/tw/sql/sql.html&#34;&gt;SQL語法教學&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
-&lt;p&gt;小提示：這個章節會實際操作 Dapper 去資料表取得資料，如果過程中對 Dapper 的各個 Function 使用上有疑惑的話，可以參閱尼克人生的這篇 &lt;a href=&#34;https://dotblogs.com.tw/OldNick/2018/01/15/Dapper#Dapper%20-%20Query&#34;&gt;輕量級ORM - Dapper 使用&lt;/a&gt;，對各方法都有範例，相當好懂，推薦給大家。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;小提示：這個章節會實際操作 Dapper 去資料表取得資料，如果過程中對 Dapper 的各個 Function 使用上有疑惑的話，可以參閱尼克人生的這篇 &lt;a href=&#34;https://dotblogs.com.tw/OldNick/2018/01/15/Dapper#Dapper%20-%20Query&#34;&gt;輕量級ORM - Dapper 使用&lt;/a&gt;，對各方法都有範例，相當好懂，推薦給大家。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;在這個步驟，我打算在方案中新增一個 &lt;code&gt;Repository&lt;/code&gt; 資料夾，並在裡面新增 &lt;code&gt;CardRepository.cs&lt;/code&gt; 檔案，用來放我們接下來對資料表的操作。&lt;/p&gt;
 &lt;p&gt;這邊的資料夾和檔案命名是因為在公司分層習慣了，所以原本使用 MVC 的朋友，可以把檔案或是以下實作的部分新增在代表資料處理的 &lt;code&gt;Models&lt;/code&gt; 裡就好了，例如加到 &lt;code&gt;Models/Card.cs&lt;/code&gt;，或是放在任何你用來放資料庫連線處理的位置即可，位置並不是本篇記錄的重點。&lt;/p&gt;
 &lt;p&gt;現在我們應該會有個空的 Class：&lt;/p&gt;
@@ -293,11 +284,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;就是這麼簡單！&lt;/p&gt;
 &lt;p&gt;Dapper 會替實作 IDbConnection 的類別們，也就是我們平常用的連線小幫手們加上擴充方法，讓我們可以方便簡單地使用。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;小提示：過程中看到紅線請不要慌，如果有需要 using 的就請順手 using 一下，例如 &lt;code&gt;Card&lt;/code&gt; 的類別、等等會用到的 &lt;code&gt;Dapper&lt;/code&gt; 等等。或是像 &lt;code&gt;SqlConnection&lt;/code&gt; 沒抓到套件，就 Alt Enter 安裝一下即可。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;小提示：過程中看到紅線請不要慌，如果有需要 using 的就請順手 using 一下，例如 &lt;code&gt;Card&lt;/code&gt; 的類別、等等會用到的 &lt;code&gt;Dapper&lt;/code&gt; 等等。或是像 &lt;code&gt;SqlConnection&lt;/code&gt; 沒抓到套件，就 Alt Enter 安裝一下即可。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
-&lt;p&gt;補充：因為 Dapper 對每個資料庫系統所產生的語法會不一樣，所以假如你是使用 MySql 的朋友，這邊的連線請改成使用 &lt;code&gt;MySqlConnection&lt;/code&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;補充：因為 Dapper 對每個資料庫系統所產生的語法會不一樣，所以假如你是使用 MySql 的朋友，這邊的連線請改成使用 &lt;code&gt;MySqlConnection&lt;/code&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;如果你的 C# 版本大於 8.0 ，using 語句甚至不需要大括弧，如果又不像我喜歡把每一小段都宣告成變數來加減表達意圖的話，整體就更簡潔了：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 查詢卡片列表&lt;/span&gt;
@@ -311,11 +300,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這邊也能看到 Dapper 最常見的使用方式：&lt;strong&gt;當我們查詢的時候，可以使用 &lt;code&gt;Query&amp;lt;T&amp;gt;&lt;/code&gt; 方法，並將我們要接收資料的類別放入泛型，再將我們的 SQL 語法做為參數傳入。Dapper 會執行 SQL 並嘗試把查詢結果轉換成我們指定的類別。&lt;/strong&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：Dapper 會去對照資料表的欄位名稱和類別中的欄位名稱，名稱一樣且型別能對應的就會把資料放進去。&lt;/p&gt;
-&lt;p&gt;如果遇到兩者有不一樣的，例如資料表欄位開成 &lt;code&gt;card_name&lt;/code&gt; 但是類別中的欄位是 &lt;code&gt;Name&lt;/code&gt; 這種時候，比較簡單暴力的做法是在 &lt;code&gt;SELECT&lt;/code&gt; 的時候用 &lt;code&gt;AS&lt;/code&gt; 替欄位命名，或是告訴 Dapper 指定的欄位對照，有這個需求的朋友請參照軟體主廚的這篇 &lt;a href=&#34;https://dotblogs.com.tw/supershowwei/2016/08/16/175753&#34;&gt;料理佳餚 - Dapper 自定義欄位對應的三種方式&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;如果遇到兩者有不一樣的，例如資料表欄位開成 &lt;code&gt;card_name&lt;/code&gt; 但是類別中的欄位是 &lt;code&gt;Name&lt;/code&gt; 這種時候，比較簡單暴力的做法是在 &lt;code&gt;SELECT&lt;/code&gt; 的時候用 &lt;code&gt;AS&lt;/code&gt; 替欄位命名，或是告訴 Dapper 指定的欄位對照，有這個需求的朋友請參照軟體主廚的這篇 &lt;a href=&#34;https://dotblogs.com.tw/supershowwei/2016/08/16/175753&#34;&gt;料理佳餚 - Dapper 自定義欄位對應的三種方式&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
-&lt;p&gt;補充：如果有好奇的朋友也可以嘗試不給 &lt;code&gt;Query&amp;lt;T&amp;gt;&lt;/code&gt; 指定型別，這樣回來的就會是 &lt;code&gt;dynamic&lt;/code&gt;，但是不太建議這樣用啦，畢竟我們就是打算要享受強型別的好處才這樣做的嘛！何必又回到方法不能用、執行才報錯的時代呢？乖乖建立類別還比較實在。這部分請參見 &lt;a href=&#34;https://dotblogs.com.tw/mrkt/2016/06/12/170411&#34;&gt;每個查詢的結果都要定義並對映一個類別嗎？（使用 dynamic）&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;補充：如果有好奇的朋友也可以嘗試不給 &lt;code&gt;Query&amp;lt;T&amp;gt;&lt;/code&gt; 指定型別，這樣回來的就會是 &lt;code&gt;dynamic&lt;/code&gt;，但是不太建議這樣用啦，畢竟我們就是打算要享受強型別的好處才這樣做的嘛！何必又回到方法不能用、執行才報錯的時代呢？乖乖建立類別還比較實在。這部分請參見 &lt;a href=&#34;https://dotblogs.com.tw/mrkt/2016/06/12/170411&#34;&gt;每個查詢的結果都要定義並對映一個類別嗎？（使用 dynamic）&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;hr&gt;
 &lt;p&gt;事不宜遲，我們接著建立查詢單筆的方法吧：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
@@ -355,8 +342,7 @@
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://medium.com/%E7%A8%8B%E5%BC%8F%E7%8C%BF%E5%90%83%E9%A6%99%E8%95%89/%E6%B7%BA%E8%AB%87%E9%A7%AD%E5%AE%A2%E6%94%BB%E6%93%8A-%E7%B6%B2%E7%AB%99%E5%AE%89%E5%85%A8-%E4%B8%80%E6%AC%A1%E7%9C%8B%E6%87%82-sql-injection-%E7%9A%84%E6%94%BB%E6%93%8A%E5%8E%9F%E7%90%86-b1994fd2392a&#34;&gt;網站安全🔒 一次看懂 SQL Injection 的攻擊原理 — 「雍正繼位之謎」&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10189201&#34;&gt;攻擊行為－SQL 資料隱碼攻擊 SQL injection&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
+&lt;/ul&gt;&lt;/blockquote&gt;
 &lt;p&gt;簡單來說，為了防範不良分子在 SQL 上「自由發揮」，通常都不會允許直接把傳進來的參數等等直接丟到 SQL 裡面去串起來。&lt;/p&gt;
 &lt;p&gt;所以現在比較常見也被認為是最有效的作法是，把參數另外宣告成 SQL 提供的變數，例如 Sql Server 的 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/sql/t-sql/language-elements/variables-transact-sql?view=sql-server-ver15&#34;&gt;變數&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;如此一來，資料庫就會先解析完 SQL 語法，才嘗試把變數「作為字串」塞進去指定的位置。藉此來防範 SQL Injection 的問題。&lt;/p&gt;
@@ -520,8 +506,7 @@
 &lt;p&gt;如果我們是直接改成丟一整串的新卡片進來，也就是 &lt;code&gt;Create(IEnumerable&amp;lt;CardParameter&amp;gt; parameters)&lt;/code&gt; 然後呼叫 Dapper 來跑 &lt;code&gt;conn.Execute(sql, parameters)&lt;/code&gt; 是可以新增多筆卡片的，更新也是同樣的道理。&lt;/p&gt;
 &lt;p&gt;同時也因為可以執行多個 SQL 語句、新增多筆資料，&lt;strong&gt;Dapper 也提供了交易（Transaction）&lt;/strong&gt;，只需要 &lt;code&gt;using(var transaction = conn.BeginTransaction())&lt;/code&gt;，完成後 &lt;code&gt;transaction.Commit()&lt;/code&gt; 就可以囉。不過這些部份我們暫時不會用到，有興趣的朋友可以再自己嘗試看看。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;補充：由於我個人習慣新增資料之後，用 &lt;code&gt;@@IDENTITY&lt;/code&gt; 或 &lt;code&gt;LAST_INSERT_ID()&lt;/code&gt; 這類語法把該筆資料的 ID 拉回來方便後續檢查和使用，所以在 &lt;code&gt;Create()&lt;/code&gt; 是使用 &lt;code&gt;Query&amp;lt;int&amp;gt;&lt;/code&gt; 的方式來取得 ID。沒有這類需求的朋友，也可以像 &lt;code&gt;Update()&lt;/code&gt; 的部分一樣用 &lt;code&gt;Execute&lt;/code&gt; 就可以了。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;補充：由於我個人習慣新增資料之後，用 &lt;code&gt;@@IDENTITY&lt;/code&gt; 或 &lt;code&gt;LAST_INSERT_ID()&lt;/code&gt; 這類語法把該筆資料的 ID 拉回來方便後續檢查和使用，所以在 &lt;code&gt;Create()&lt;/code&gt; 是使用 &lt;code&gt;Query&amp;lt;int&amp;gt;&lt;/code&gt; 的方式來取得 ID。沒有這類需求的朋友，也可以像 &lt;code&gt;Update()&lt;/code&gt; 的部分一樣用 &lt;code&gt;Execute&lt;/code&gt; 就可以了。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;到這邊大家應該已經大致了解 Dapper 的使用方式了，讓我們把最後的刪除卡片補上去吧：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 刪除卡片&lt;/span&gt;
@@ -800,8 +785,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著就和上一篇一樣，讓我們按照 新增 → 查詢列表 → 修改 → 查詢單筆 → 刪除 的順序來跑一次看看吧！&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;備註：因為這邊還沒說明到 Postman 等測試軟體，所以直接使用 Powershell 呼叫 API 進行示範。已經有慣用軟體的朋友，請用自己方便順手的測試方法去呼叫就好囉。&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;備註：因為這邊還沒說明到 Postman 等測試軟體，所以直接使用 Powershell 呼叫 API 進行示範。已經有慣用軟體的朋友，請用自己方便順手的測試方法去呼叫就好囉。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;首先讓我們新增一張卡片（記得 URL 和 Port 要改成你啟動的版本呦）：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Invoke-RestMethod https://localhost:44304/card `
  -Method &amp;#39;POST&amp;#39; `
@@ -869,8 +853,7 @@
 &lt;p&gt;今天就到這邊告一段落。現在這組 Web API 已經是常見的「連接到資料庫進行基本操作」的範本了，接下來我們會針對這組 Web API 服務進行各式各樣的 &lt;del&gt;擺弄&lt;/del&gt; 改造。&lt;/p&gt;
 &lt;p&gt;那麼，我們下次見～&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;本系列下一篇：&lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-4-swagger&#34;&gt;菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;本系列下一篇：&lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-4-swagger&#34;&gt;菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;本系列文章&#34;&gt;本系列文章&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/04/newbie-0-menu&#34;&gt;菜雞新訓記 (0): 目錄&lt;/a&gt;&lt;/li&gt;

@@ -22,7 +22,7 @@
         })(window, document, "clarity", "script", "lpnoqxbhhj");
     </script>
 
-    <meta name="generator" content="Hugo 0.117.0">
+    <meta name="generator" content="Hugo 0.150.1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -148,8 +148,7 @@
 <li><a href="/post/2020/07/oo-5-polymorphism">多型</a></li>
 <li><a href="/post/2020/07/oo-7-interface">介面</a></li>
 <li><a href="/post/2020/12/oo-14-dependency-inversion-principle">依賴反轉原則</a></li>
-</ul>
-</blockquote>
+</ul></blockquote>
 <p>讓我們從之前依賴反轉的範例開始吧：假設現在有間小小公司，老闆請來了小明當工程師，並請他開工撰寫產品程式碼。</p>
 <p>當「撰寫產品程式」對「工程師」直接依賴的時候，狀況可能是這樣的：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Product Work() <span style="color:#75715e">// 撰寫產品程式</span>
@@ -243,8 +242,7 @@
 </span></span></code></pre></div><p>由於建構式注入比較符合封裝的「管控邊界」精神、能明確地讓維護者一看就知道哪些東西會被注入，因此<strong>絕大部分的時候都應該使用建構式注入</strong>，只有特殊情況可以使用方法注入和屬性注入。而到了 .net Core 的時代，預設的 DI 容器更是只提供建構式注入。所以理想的情況下，建構式注入應該要是最熟悉的注入方式。</p>
 <blockquote>
 <p>補充：要注意，對建構式做多載可能會造成 DI 容器混淆，不知道要選哪個建構式才好。因此設計類別時盡量以一個建構式為主，或是先了解一下使用的 DI 容器有沒有特別的處理方式再決定。</p>
-<p>關於在 .net Core 裡面對多個建構式的對象註冊 DI 的作法，可以參閱黑大的這篇 <a href="https://blog.darkthread.net/blog/aspnet-core-di-multi-constructors/">ASP.NET Core DI 之多建構式問題</a></p>
-</blockquote>
+<p>關於在 .net Core 裡面對多個建構式的對象註冊 DI 的作法，可以參閱黑大的這篇 <a href="https://blog.darkthread.net/blog/aspnet-core-di-multi-constructors/">ASP.NET Core DI 之多建構式問題</a></p></blockquote>
 <h3 id="方法注入">方法注入</h3>
 <p><strong>方法注入適用於「呼叫方法時需要注入不同的依賴對象」時</strong>。例如說該方法在不同地方被呼叫的依賴對象不一樣，又或者是第一次呼叫和第二次呼叫時的依賴對象不一樣。</p>
 <p>這時候我們就可以<strong>在呼叫方法的時候才把依賴對象一起丟進去</strong>，讓使用端來決定要注入什麼。</p>
@@ -282,8 +280,7 @@
 <p>我個人比較常在一些輔助工具，例如擴充方法或是 Helper 看到方法注入，像這類單純操作邏輯的場合，就可以考慮採用方法注入的方式去處理。</p>
 <blockquote>
 <p>註：絕對不要把方法注入的依賴對象留在物件內部給其他方法使用，例如Ａ方法注入了某個物件，保留給之後呼叫Ｂ方法的時候用，這樣容易造成時序耦合（Temporal Coupling）的問題，也就是使用者（通常是後續的維護人員）不照你想好的順序呼叫的話，方法就會直接死去。</p>
-<p>如果使用者不清楚這些方法之間的關係，就很容易踩到地雷，而這樣挖坑的行為很明顯違反了封裝精神，並且也容易產生預期外的副作用。如果真的有需要針對依賴對象做初始化，還是考慮用建構式注入吧。</p>
-</blockquote>
+<p>如果使用者不清楚這些方法之間的關係，就很容易踩到地雷，而這樣挖坑的行為很明顯違反了封裝精神，並且也容易產生預期外的副作用。如果真的有需要針對依賴對象做初始化，還是考慮用建構式注入吧。</p></blockquote>
 <h3 id="屬性注入">屬性注入</h3>
 <p>接著讓我們來看看屬性注入，顧名思義就是<strong>從公開的屬性丟進去</strong>，因此有時候也會被叫做設值注入。</p>
 <p>通常我們會在 <strong>「外部使用者要能夠隨時切換依賴對象」或是「類別已經有預設值了，但希望提供使用者可以覆寫掉預設值的彈性」時用到屬性注入</strong>，例如說我們的法師同時只能裝備／記得一個法術，預設是火球術，但同時我們又想要可以從外部來替換裝備中的法術：</p>
@@ -331,20 +328,17 @@
 <p>由於每一個類別會將依賴的對象交給外部，也就是呼叫者去決定。而呼叫者又會再往上拋給它的呼叫者，如此不斷往外推之後，就會集中到整個應用程式的啟動點，如此一來我們也就必須在啟動點進行依賴關係的處理。</p>
 <p>因此這個組合根的位置通常會盡可能地靠近程式的啟動點，例如整個應用程式 Startup 的地方，或是各個 DI 容器最終註冊的部分。在我們的實作例子中，也就是 API 的專案部份。</p>
 <blockquote>
-<p>補充：請注意，組合根並不一定是在展示層，並且從「為了管理依賴關係而產生組合根」和「為了切分職責而產生展示層」是不同的觀點，不能混為一談。退一步說，我們也可能會把啟動點、組合根之類的切分出去，減少展示層的耦合。所以還是要看專案架構怎麼設計的才能確定組合根的位置。</p>
-</blockquote>
+<p>補充：請注意，組合根並不一定是在展示層，並且從「為了管理依賴關係而產生組合根」和「為了切分職責而產生展示層」是不同的觀點，不能混為一談。退一步說，我們也可能會把啟動點、組合根之類的切分出去，減少展示層的耦合。所以還是要看專案架構怎麼設計的才能確定組合根的位置。</p></blockquote>
 <p>同時，由於組合根必須分配各個類別前往自己負責的崗位，因此它可以說是<strong>和所有模組都有直接依賴的關係</strong>（並且也應該只有組合根可以知道整體的物件關聯）。因此，我們應該要在應用程式啟動的部份，找個風水寶地去統一管理我們的組合根和依賴關係，而不能讓注入的部分散亂在各地。</p>
 <p>不過這個部份現在的 DI 容器都已經處理好了，例如 Unity 的 UnityConfig、.net Core 的 ConfigureServices 等等，所以只要注意別在其他地方偷偷搞注入、挖坑給別人跳就好囉。</p>
 <blockquote>
-<p>註：不要以為真的遇不到……同事維護的專案就有遇到前同事直接在單元測試案例裡把 DI 容器叫出來註冊依賴注入的，都不知道從哪裡開始吐槽囧</p>
-</blockquote>
+<p>註：不要以為真的遇不到……同事維護的專案就有遇到前同事直接在單元測試案例裡把 DI 容器叫出來註冊依賴注入的，都不知道從哪裡開始吐槽囧</p></blockquote>
 <p>如果在別的地方去亂對依賴關係動手動腳，很可能就會踩到一些坑。總之，盡量別在組合根以外的地方使用 DI 容器。</p>
 <h2 id="net-core-中的依賴注入">.Net Core 中的依賴注入</h2>
 <p>接著讓我們回到本系列的專案吧。可喜可賀的是：<strong>在 .net Core 的時代，依賴注入已經是內建提供的功能了！</strong></p>
 <blockquote>
 <p>補充：使用 .net Framework 的朋友也不用擔心，可以使用 Unity, AutoFac 這幾個猛猛的 IoC 容器。教學文章也是網路一抓一大把那種。</p>
-<p>甚至到了預設使用建構式注入的 .net Core 時代，還是不少人會為了要用動態代理之類的花式注入手段而把 Autofac 裝回來呢。</p>
-</blockquote>
+<p>甚至到了預設使用建構式注入的 .net Core 時代，還是不少人會為了要用動態代理之類的花式注入手段而把 Autofac 裝回來呢。</p></blockquote>
 <p>我們得有一個地方來做我們的組合根，註冊介面和實體的關係，並讓它可以將實體注入進來。也就是要告訴應用程式：「某某介面 對應的就是 某某實作，請幫我在需要到的時候丟進來。」</p>
 <p>在 .net Core 中，<strong>我們可以在 <code>Startup.cs</code> 的 <code>ConfigureServices</code> 註冊我們需要的服務</strong>：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
@@ -405,15 +399,13 @@
 <ul>
 <li><a href="https://blog.darkthread.net/blog/httpclient-sigleton/">HttpClient，該 using 還是 static? - 黑暗執行緒</a></li>
 <li><a href="https://docs.microsoft.com/zh-tw/aspnet/core/fundamentals/http-requests?view=aspnetcore-6.0">在 ASP.NET Core 中使用 IHttpClientFactory 發出 HTTP 要求 | Microsoft Docs</a></li>
-</ul>
-</blockquote>
+</ul></blockquote>
 <blockquote>
 <p>關於 Singleton 的部份，有興趣的朋友可以了解看看。</p>
 <ul>
 <li><a href="https://linziyou.info/2020/11/10/%E5%96%AE%E4%BE%8B%E6%A8%A1%E5%BC%8F-singleton-pattern/">單例模式 Singleton Pattern – LinZiyou Dev Blog</a></li>
 <li><a href="https://medium.com/%E5%93%88%E5%98%8D-%E4%B8%96%E7%95%8C/singleton-pattern-%E4%BB%8B%E7%B4%B9-%E6%98%AF%E5%90%A6%E7%82%BA-anti-pattern-1c685a1d7134">Singleton Pattern 介紹，是否為 Anti-pattern？ | by Camel | 嗨，世界</a></li>
-</ul>
-</blockquote>
+</ul></blockquote>
 <h3 id="延伸閱讀">延伸閱讀</h3>
 <ul>
 <li><a href="https://blog.johnwu.cc/article/ironman-day04-asp-net-core-dependency-injection.html">ASP.NET Core 2 系列 - 依賴注入 (Dependency Injection) | John Wu&rsquo;s Blog</a></li>
@@ -450,12 +442,10 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>可以注意到我們在 <code>CardService</code> 裡面直接 new 了 <code>CardRepository</code> 來使用，這就是直接依賴。</p>
 <blockquote>
-<p>註：前篇分層時用到的 AutoMapper 套件的注入方式，請參見 <a href="/post/2020/07/automapper#%E8%B5%B0%E5%90%91%E6%B3%A8%E5%85%A5">AutoMapper#走向注入</a>，此處暫且忽略。</p>
-</blockquote>
+<p>註：前篇分層時用到的 AutoMapper 套件的注入方式，請參見 <a href="/post/2020/07/automapper#%E8%B5%B0%E5%90%91%E6%B3%A8%E5%85%A5">AutoMapper#走向注入</a>，此處暫且忽略。</p></blockquote>
 <p>基於依賴反轉原則，我們會希望達成「CardService 依賴的是 ICardRepository 這個介面，並由 CardRepository 實作該介面，藉由介面隔離實作來解除耦合」的目標。</p>
 <blockquote>
-<p>對這個概念不太熟悉的朋友，可以參照 <a href="/post/2020/07/oo-7-interface">介面</a> 與 <a href="/post/2020/12/oo-14-dependency-inversion-principle">依賴反轉原則</a> 的說明</p>
-</blockquote>
+<p>對這個概念不太熟悉的朋友，可以參照 <a href="/post/2020/07/oo-7-interface">介面</a> 與 <a href="/post/2020/12/oo-14-dependency-inversion-principle">依賴反轉原則</a> 的說明</p></blockquote>
 <h3 id="開始重構為建構式注入">開始重構為建構式注入</h3>
 <p>現在讓我們改成使用建構式注入吧：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
@@ -482,8 +472,7 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <p>補充：請注意前面提到過的「組合根會直接依賴所有註冊的模組」因此這邊有需要的話記得把參考 using 補上呦。</p>
-<p>並且由於這個範例的組合根在展示層，因此和<a href="/post/2021/10/newbie-5-3-layer-architecture">上篇</a>的三層式架構圖略有不同，展示層也會依賴到資料存取層，還請注意。</p>
-</blockquote>
+<p>並且由於這個範例的組合根在展示層，因此和<a href="/post/2021/10/newbie-5-3-layer-architecture">上篇</a>的三層式架構圖略有不同，展示層也會依賴到資料存取層，還請注意。</p></blockquote>
 <p>接著讓我們如法炮製，把 Controller 裡直接依賴的 Service 也拆開吧：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
@@ -557,8 +546,7 @@
 <li><a href="https://dotblogs.com.tw/yc421206/2020/06/28/how_to_read_config_appsettings_json_via_net_core_31">如何讀取 AppSettings.json 組態設定檔 | 余小章 @ 大內殿堂</a></li>
 <li><a href="https://blog.darkthread.net/blog/aspnet-core-practice-appsetting/">ASP.NET Core 練習 - 使用 appSetting - 黑暗執行緒</a></li>
 <li><a href="https://marcus116.blogspot.com/2019/03/how-to-get-value-appsettingsjson-in-netcore.html">如何取得 appsettings.json 組態設定 ~ m@rcus 學習筆記</a></li>
-</ul>
-</blockquote>
+</ul></blockquote>
 <p>因此這邊就把連線字串丟到 <code>appsettings.json</code>，增加一欄 <code>ConnectionString</code>：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;Logging&#34;</span>: {
@@ -595,8 +583,7 @@
 </span></span><span style="display:flex;"><span>});
 </span></span></code></pre></div><p>再請根據狀況靈活地運用 <code>Configuration.GetValue</code> 吧！</p>
 <blockquote>
-<p>補充，也可以使用 <a href="/post/2024/08/dotnet-ioptions/">IOption</a> 的方式處理，或是包裝成一個專門提供的物件，像是 <code>IConnectionProvider</code> 之類的，可以彈性地選擇做法。</p>
-</blockquote>
+<p>補充，也可以使用 <a href="/post/2024/08/dotnet-ioptions/">IOption</a> 的方式處理，或是包裝成一個專門提供的物件，像是 <code>IConnectionProvider</code> 之類的，可以彈性地選擇做法。</p></blockquote>
 <h3 id="補充組合根請稍作分類">補充：組合根請稍作分類</h3>
 <p>這邊補充一下，在實務上由於一個應用程式的注入可能有數十個，因此我們會稍微用註解或可摺疊的 <code>#Region</code> 來分段一下，例如：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
@@ -614,18 +601,18 @@
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// 或是使用 region，數量很多的時候就可以收攏</span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> ConfigureServices(IServiceCollection services)
 </span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#region -- Service --</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#region</span> -- Service --
 </span></span><span style="display:flex;"><span>	
 </span></span><span style="display:flex;"><span>	services.AddScoped&lt;ICardService, CardService&gt;();
 </span></span><span style="display:flex;"><span>	
-</span></span><span style="display:flex;"><span>	<span style="color:#960050;background-color:#1e0010">#</span>endregion
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">#endregion</span>
 </span></span><span style="display:flex;"><span>	
-</span></span><span style="display:flex;"><span>	<span style="color:#75715e">#region -- Repository --</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">#region</span> -- Repository --
 </span></span><span style="display:flex;"><span>	
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Repository</span>
 </span></span><span style="display:flex;"><span>	services.AddScoped&lt;ICardRepository, CardRepository&gt;();
 </span></span><span style="display:flex;"><span>	
-</span></span><span style="display:flex;"><span>	<span style="color:#960050;background-color:#1e0010">#</span>endregion
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">#endregion</span>
 </span></span><span style="display:flex;"><span>		
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Others</span>
 </span></span><span style="display:flex;"><span>	services.AddControllers();
@@ -981,7 +968,7 @@
     }
     var key = "2024-08-01";
     var value = dataMap.get(key);
-    var wordCount =  1680 ;
+    var wordCount =  1679 ;
     var link = "/post/2024/08/nine-sols/";
     var title = "《九日》白金心得";
     
@@ -3743,7 +3730,7 @@
     
     <a href="https://igouist.github.io/tags/electron/">electron</a>
     
-    <a href="https://igouist.github.io/tags/entity-framework/">entity-framework</a>
+    <a href="https://igouist.github.io/tags/entity-framework/">entity framework</a>
     
     <a href="https://igouist.github.io/tags/enum/">enum</a>
     
