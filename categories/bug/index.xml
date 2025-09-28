@@ -23,7 +23,7 @@
 
 
 &lt;img
-  src=&#34;https://image.igouist.net/00WQGqR.webp&#34; alt=&#34;Image&#34;width=&#34;600&#34; height=&#34;337&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+  src=&#34;https://image.igouist.net/00WQGqR.webp&#34; alt=&#34;Image&#34;width=&#34;600&#34; height=&#34;337&#34; style=&#34;width: 100%; height: auto;&#34;fetchpriority=&#34;high&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;h2 id=&#34;tldr&#34;&gt;TL;DR&lt;/h2&gt;
 &lt;p&gt;當發現&lt;strong&gt;需要執行很久的 ServiceBus Trigger Function 有重複執行的情況&lt;/strong&gt;出現時，可以嘗試到&lt;a href=&#34;https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-bindings-service-bus?tabs=in-process%2Cextensionv5%2Cextensionv3&amp;amp;pivots=programming-language-csharp#hostjson-settings&#34;&gt;官方的 Host.json 設定指引&lt;/a&gt;，按照 SDK 版本找到對應的「&lt;strong&gt;訊息鎖定最大持續時間&lt;/strong&gt;」設定，例如 maxAutoLockRenewalDuration（延伸模組 5.x+）或 maxAutoRenewDuration（Functions 2.x），並加入專案的 Host.json&lt;/p&gt;
@@ -65,7 +65,7 @@
 
 
 &lt;img
-  src=&#34;https://image.igouist.net/dBFWz2p.webp&#34; alt=&#34;Image&#34;width=&#34;1033&#34; height=&#34;261&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+  src=&#34;https://image.igouist.net/dBFWz2p.webp&#34; alt=&#34;Image&#34;width=&#34;1033&#34; height=&#34;261&#34; style=&#34;width: 100%; height: auto;&#34;fetchpriority=&#34;high&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;可以發現第一次執行尚未結束的時候，大概經過五分鐘就又執行了第二次！&lt;/strong&gt;&lt;/p&gt;
 &lt;h2 id=&#34;調整訊息鎖定最大持續時間&#34;&gt;調整訊息鎖定最大持續時間&lt;/h2&gt;
@@ -74,7 +74,7 @@
 
 
 &lt;img
-  src=&#34;https://image.igouist.net/UY3EhoA.webp&#34; alt=&#34;Image&#34;width=&#34;586&#34; height=&#34;483&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+  src=&#34;https://image.igouist.net/UY3EhoA.webp&#34; alt=&#34;Image&#34;width=&#34;586&#34; height=&#34;483&#34; style=&#34;width: 100%; height: auto;&#34;fetchpriority=&#34;high&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;幸好天無絕人之路，最終在 &lt;a href=&#34;https://stackoverflow.com/questions/62752905/azure-function-service-bus-trigger-running-multiple-times&#34;&gt;Stackoverflow&lt;/a&gt; 海巡的時候了發現一線生機！&lt;/p&gt;
 &lt;p&gt;原來 Azure Functions 的 Service Bus Trigger 有個「&lt;strong&gt;訊息鎖定最大持續時間&lt;/strong&gt;」設定！&lt;/p&gt;
@@ -86,14 +86,14 @@
 
 
 &lt;img
-  src=&#34;https://image.igouist.net/TTpXELd.webp&#34; alt=&#34;Image&#34;width=&#34;550&#34; height=&#34;298&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+  src=&#34;https://image.igouist.net/TTpXELd.webp&#34; alt=&#34;Image&#34;width=&#34;550&#34; height=&#34;298&#34; style=&#34;width: 100%; height: auto;&#34;fetchpriority=&#34;high&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;接著再重新傳遞一次訊息：&lt;/p&gt;
 &lt;p&gt;
 
 
 &lt;img
-  src=&#34;https://image.igouist.net/2epGiF9.webp&#34; alt=&#34;Image&#34;width=&#34;1043&#34; height=&#34;257&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+  src=&#34;https://image.igouist.net/2epGiF9.webp&#34; alt=&#34;Image&#34;width=&#34;1043&#34; height=&#34;257&#34; style=&#34;width: 100%; height: auto;&#34;fetchpriority=&#34;high&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;可以看到過程中沒有重新傳遞訊息了，大功告成！&lt;/p&gt;
 &lt;p&gt;總之，學到了調整 ServiceBus Trigger Function 的 Azure Functions Timeout 設定時，或是發現某支 ServiceBus Trigger 的 Functions 執行時間過長，就要一併注意 MaxAutoRenewDuration 的設定，避免重複執行。&lt;/p&gt;
@@ -115,7 +115,7 @@
 
 
 &lt;img
-  src=&#34;https://image.igouist.net/EMdGkwr.webp&#34; alt=&#34;Image&#34;width=&#34;600&#34; height=&#34;337&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+  src=&#34;https://image.igouist.net/EMdGkwr.webp&#34; alt=&#34;Image&#34;width=&#34;600&#34; height=&#34;337&#34; style=&#34;width: 100%; height: auto;&#34;fetchpriority=&#34;high&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;h2 id=&#34;事發緣由&#34;&gt;事發緣由&lt;/h2&gt;
 &lt;p&gt;咱們內部套件中有個方法，會將各個參數組合為 QueryString 去打指定的 Api。就是這麼稀鬆平常的場景，神奇的事情就發生了。&lt;/p&gt;
@@ -158,7 +158,7 @@
 
 
 &lt;img
-  src=&#34;https://image.igouist.net/UFOiAjM.webp&#34; alt=&#34;Image&#34;width=&#34;664&#34; height=&#34;399&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+  src=&#34;https://image.igouist.net/UFOiAjM.webp&#34; alt=&#34;Image&#34;width=&#34;664&#34; height=&#34;399&#34; style=&#34;width: 100%; height: auto;&#34;fetchpriority=&#34;high&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;h3 id=&#34;datetimeformat&#34;&gt;DateTimeFormat&lt;/h3&gt;
 &lt;p&gt;&lt;code&gt;DateTimeFormat&lt;/code&gt; 是用來放跟 &lt;code&gt;DateTime&lt;/code&gt; 相關的設定值的，其中包含了該文化的日期時間的顯示格式。&lt;/p&gt;
@@ -168,7 +168,7 @@
 
 
 &lt;img
-  src=&#34;https://image.igouist.net/P843qZ0.webp&#34; alt=&#34;Image&#34;width=&#34;528&#34; height=&#34;981&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+  src=&#34;https://image.igouist.net/P843qZ0.webp&#34; alt=&#34;Image&#34;width=&#34;528&#34; height=&#34;981&#34; style=&#34;width: 100%; height: auto;&#34;fetchpriority=&#34;high&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;可以看到裡面包含了一年有哪些月份和名稱、一週有哪些日子和名稱，以及一堆時間格式。&lt;/p&gt;
 &lt;p&gt;那一堆時間格式主要是對照 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/standard/base-types/standard-date-and-time-format-strings&#34;&gt;標準日期和時間格式字串&lt;/a&gt; 的。&lt;/p&gt;
@@ -231,7 +231,7 @@
 
 
 &lt;img
-  src=&#34;https://image.igouist.net/yqswJrJ.webp&#34; alt=&#34;Image&#34;width=&#34;333&#34; height=&#34;976&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+  src=&#34;https://image.igouist.net/yqswJrJ.webp&#34; alt=&#34;Image&#34;width=&#34;333&#34; height=&#34;976&#34; style=&#34;width: 100%; height: auto;&#34;fetchpriority=&#34;high&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;可以看見裡面包含了 &lt;code&gt;CurrencySymbol&lt;/code&gt; 貨幣符號、&lt;code&gt;PercentSymbol&lt;/code&gt; 百分比符號、&lt;code&gt;CurrencyNegativePattern&lt;/code&gt; 貨幣負數格式 等等數值相關的設定。&lt;/p&gt;
 &lt;p&gt;現在讓我們使用 &lt;code&gt;ToString(&amp;quot;C&amp;quot;)&lt;/code&gt; 來指定轉換為貨幣格式，並且丟不同的文化特性進去看看吧：&lt;/p&gt;
@@ -300,7 +300,7 @@
 
 
 &lt;img
-  src=&#34;https://image.igouist.net/bS6EGIL.webp&#34;width=&#34;600&#34; height=&#34;600&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+  src=&#34;https://image.igouist.net/bS6EGIL.webp&#34;width=&#34;600&#34; height=&#34;600&#34; style=&#34;width: 100%; height: auto;&#34;fetchpriority=&#34;high&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;這週遇到個想不到的坑，特別來記錄一下。故事是這樣的－－&lt;/p&gt;
 &lt;p&gt;在需要呼叫其他 API 服務時，發生了以下怪事：&lt;/p&gt;
@@ -333,7 +333,7 @@
 
 
 &lt;img
-  src=&#34;https://image.igouist.net/Z9VihgB.webp&#34; alt=&#34;Image&#34;width=&#34;164&#34; height=&#34;75&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+  src=&#34;https://image.igouist.net/Z9VihgB.webp&#34; alt=&#34;Image&#34;width=&#34;164&#34; height=&#34;75&#34; style=&#34;width: 100%; height: auto;&#34;fetchpriority=&#34;high&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;看起來完全一模一樣，連反白都分辨不出來！&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;a.Length.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 4&lt;/span&gt;
