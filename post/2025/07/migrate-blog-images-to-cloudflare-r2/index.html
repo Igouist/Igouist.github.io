@@ -119,7 +119,11 @@
                         
 
                         <div class="post-content">
-                            <p><img src="https://image.igouist.net/1753973577696.webp" alt="1753973862036"></p>
+                            <p>
+
+<img
+  src="https://image.igouist.net/1753973577696.webp" alt="1753973862036"loading="lazy" decoding="async">
+</p>
 <p>在上個月的 <a href="/post/2025/06/imgur-temporarily-over-capacity-maybe-your-ip-banned/">Imgur 一直 temporarily over capacity 嗎？先檢查網路看看吧</a> 提到，因為 Imgur 不給上傳圖片了，現在寫個文章還得開 VPN 才能貼圖片。</p>
 <p>拖著拖著七月也要過了，決定趁休假的時候來把圖床搬一搬。</p>
 <p>比起實作上的拖延，搬家目標則早早決定好要嘗試這篇「<a href="https://blog.kyomind.tw/weekly-review-43/">Imgur 封鎖台灣 IP，我把圖床搬到 Cloudflare R2 - Code and Me</a>」提到的 <a href="https://www.cloudflare.com/zh-tw/developer-platform/products/r2/">Cloudflare R2</a>。</p>
@@ -145,14 +149,26 @@
 <p>既然都決定要搬家到 Cloudflare R2 了，首先當然是要建立一個 Cloudflare R2 資源。</p>
 <p>建立 R2 的操作可以參考這篇「<a href="https://ivonblog.com/posts/cloudflare-r2-image-hosting/">架設 Cloudflare R2 免費圖床，給 Hugo 靜態網站託管圖片 - Ivon 的部落格</a>」的「新增 Cloudflare R2 bucket」小節，流程詳細還附圖，基本可以照著把 R2 儲存空間給建出來。</p>
 <p>總之先到 <a href="https://dash.cloudflare.com/">Cloudflare 儀表板</a>，把 R2 儲存體建出來，然後順手掛個自訂網域：</p>
-<p><img src="https://image.igouist.net/1753970440386.webp" alt="1753970440386"></p>
-<p><img src="https://image.igouist.net/1753970454069.webp" alt="1753970454758"></p>
+<p>
+
+<img
+  src="https://image.igouist.net/1753970440386.webp" alt="1753970440386"loading="lazy" decoding="async">
+</p>
+<p>
+
+<img
+  src="https://image.igouist.net/1753970454069.webp" alt="1753970454758"loading="lazy" decoding="async">
+</p>
 <blockquote>
 <p>備註：如果想要自訂 R2 資源對外的網址，需要先讓 R2 和 Cloudflare 上存在的網域做綁定，也就是要在 Cloudflare 買網域或是其他地方買來掛在 Cloudflare 上（參考 <a href="https://developers.cloudflare.com/r2/buckets/public-buckets/#add-your-domain-to-cloudflare">Public buckets</a>）</p>
 <p>因為我（之前為了<a href="https://tedliou.com/software/bluesky-handle-domain-customize/">改 Bluesky 的帳號名稱</a>）已經在 Cloudflare 購買過網域了，所以可以直接用自定義網域來把圖片網址改成我要的網址。</p>
 <p>如果你也想要自訂圖片網址，但在 Cloudflare 還沒有任何網域，可以先多找幾篇網域購買和託管到 Cloudflare 的文章（例如 <a href="https://geekaz.net/cloudflare-domain-tutorial/">Cloudflare 網域購買教學</a>）參考參考，再決定要不要投入 $$ 買一個自己喜歡的名字。</p></blockquote>
 <p>建立完畢之後，可以先進貯體隨便上傳一張圖片，確認一下 URL 有沒有連到圖片：</p>
-<p><img src="https://image.igouist.net/1753970484783.webp" alt="1753970485658"></p>
+<p>
+
+<img
+  src="https://image.igouist.net/1753970484783.webp" alt="1753970485658"loading="lazy" decoding="async">
+</p>
 <h2 id="弄個-powershell-腳本把部落格的圖片先抓下來">弄個 Powershell 腳本把部落格的圖片先抓下來</h2>
 <p>建好 R2 空間之後，就要開始著手搬遷啦～</p>
 <p>我的部落格採用 Hugo + Github Pages，所以文章內容也就是一堆 Markdown 檔案而已。這種狀況下，最快的方式就是直接搜出文章中的圖片連結就行。</p>
@@ -248,7 +264,11 @@
 <p>現在我們有一卡車圖檔準備要大舉進攻 Cloudflare R2，按照上面的節奏。聰明的朋朋也許會想：<br/>這傢伙又要叫 GPT 幫我們產腳本來上傳了吧？</p>
 <p>但很可惜，我請 GPT 產腳本是因為我很懶，所以有更懶的方法存在時，我是連腳本都不考慮的。</p>
 <p>這個步驟最懶的方法就是直接滑鼠點一點，畢竟 Cloudflare R2 在瀏覽器就可以拖檔案上傳了：</p>
-<p><img src="https://image.igouist.net/1753970509149.webp" alt="1753970510004"></p>
+<p>
+
+<img
+  src="https://image.igouist.net/1753970509149.webp" alt="1753970510004"loading="lazy" decoding="async">
+</p>
 <p>雖然瀏覽器上傳有每次一百個檔案的限制，但考慮到我部落格 <del>拖稿嚴重</del> 圖片不多，因此手動上傳也是分分鐘的事情，這個步驟就手動傳一傳收工。</p>
 <blockquote>
 <p>補充：如果檔案太多，或是好想用下指令的方式上傳呢？請參考 R2 文檔的 <a href="https://developers.cloudflare.com/r2/objects/upload-objects/">Upload objects</a></p></blockquote>
@@ -256,7 +276,11 @@
 <blockquote>
 <p>補充：如果像我一樣，有些 JS 的操作會去呼叫圖片網址的話，可能會看到 CORS 的錯誤訊息，例如：<code>Access to image at 'https://xxxx/xxxxxx.webp' from origin 'https://xxxxxx.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.</code></p>
 <p>這時候只要去 R2 儲存體的「設定」 找到 CORS 原則，把站台加上去就可以了。</p>
-<p><img src="https://image.igouist.net/1753970523569.webp" alt="1753970524223"></p></blockquote>
+<p>
+
+<img
+  src="https://image.igouist.net/1753970523569.webp" alt="1753970524223"loading="lazy" decoding="async">
+</p></blockquote>
 <h2 id="使用-vscode-的-markdown-image-延伸模組直接上傳圖片到-cloudflare-r2">使用 VSCode 的 Markdown-image 延伸模組直接上傳圖片到 Cloudflare R2</h2>
 <p>到這邊其實部落格的圖床遷移已經完成了，但因為我習慣用 VSCode 撰寫文章，之前都用 vscode-imgur 這款延伸模組，實現貼上圖片自動上傳 Imgur 的舒適體驗。</p>
 <p>但現在圖床搬家到 Cloudflare R2 了，當然也要調整一下 VSCode 的上傳圖片工具。果斷採用開頭這篇「<a href="https://blog.kyomind.tw/weekly-review-43/">Imgur 封鎖台灣 IP，我把圖床搬到 Cloudflare R2</a>」提到的 <a href="https://marketplace.visualstudio.com/items?itemName=hancel.markdown-image">Markdown-image</a></p>
@@ -267,13 +291,29 @@
 </ul>
 <hr>
 <p>首先我們得申請一組權杖，可以參考 Cloudflare 官方文檔的 <a href="https://developers.cloudflare.com/r2/api/tokens/">Authentication</a> 操作，或是從 R2 頁面的右側進入 API 權杖的頁面：</p>
-<p><img src="https://image.igouist.net/1753970536536.webp" alt="1753970536936"></p>
+<p>
+
+<img
+  src="https://image.igouist.net/1753970536536.webp" alt="1753970536936"loading="lazy" decoding="async">
+</p>
 <p>新增一組能夠「物件讀取和寫入」的權杖後，會來到金鑰畫面。注意這組金鑰跟識別碼只會出現一次，請務必記下來，等等設定延伸模組的時候會用到：</p>
-<p><img src="https://image.igouist.net/1753970546278.webp" alt="1753970546886"></p>
+<p>
+
+<img
+  src="https://image.igouist.net/1753970546278.webp" alt="1753970546886"loading="lazy" decoding="async">
+</p>
 <p>建立完之後，進到我們要上傳圖片的貯體，進到設定頁面，這邊的名稱跟 S3 API 資訊等等也會用到：</p>
-<p><img src="https://image.igouist.net/1753970557979.webp" alt="1753970560756"></p>
+<p>
+
+<img
+  src="https://image.igouist.net/1753970557979.webp" alt="1753970560756"loading="lazy" decoding="async">
+</p>
 <p>接著讓我們回到 VSCode，到設定裡面找到 Markdown Image 的相關設定，把上傳圖片的方式改為「S3」（不是 Cloudflare 哦！）</p>
-<p><img src="https://image.igouist.net/1753970570066.webp" alt="1753970570818"></p>
+<p>
+
+<img
+  src="https://image.igouist.net/1753970570066.webp" alt="1753970570818"loading="lazy" decoding="async">
+</p>
 <p>最後就是把剛剛拿到的資訊一個一個填進去設定裡啦～</p>
 <p>這邊提供我填的內容給需要的朋朋參考：</p>
 <ul>
@@ -292,12 +332,20 @@
 <li>S3: Secret Access Key =&gt; 發金鑰時拿到的 秘密存取金鑰</li>
 <li>S3: Cdn =&gt; 我們自定義的 CDN 路徑 + {filepath}&quot;</li>
 </ul>
-<p><img src="https://image.igouist.net/1753970359747.webp" alt="1753970361767"></p>
+<p>
+
+<img
+  src="https://image.igouist.net/1753970359747.webp" alt="1753970361767"loading="lazy" decoding="async">
+</p>
 <p>都搞定之後就可以開個 <code>.md</code> 檔、複製個圖片，試試看 <code>Shift + Alt + V</code> 有沒有自動上傳囉～</p>
 <h2 id="小結">小結</h2>
 <p>從 Imgur 爆炸到搬完圖片也拖了快兩個月，但幸好有蠻多前人遺跡和好夥伴 GPT 的協助，還算搬得順利。秉持著一個「做都做了」的理念，乾脆把圖床搬家過程也拿出來水一篇，喜得部落格文章數 +1</p>
 <p>搬完之後想說圖片也壓縮了、R2 也有快取之類的，是不是再來跑一次 PageSpeed Insights，分數意外地比之前高不少，也算是一個意外撿到的驚喜了</p>
-<p><img src="https://image.igouist.net/1753971346630.webp" alt="1753971347624"></p>
+<p>
+
+<img
+  src="https://image.igouist.net/1753971346630.webp" alt="1753971347624"loading="lazy" decoding="async">
+</p>
 <h2 id="參考資料">參考資料</h2>
 <ul>
 <li><a href="https://blog.kyomind.tw/weekly-review-43/">Imgur 封鎖台灣 IP，我把圖床搬到 Cloudflare R2 - Code and Me</a></li>

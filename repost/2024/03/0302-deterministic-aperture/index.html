@@ -126,12 +126,20 @@
 <strong>After the deployment: pandemonium!</strong></p></blockquote>
 <p>接著他們重新想了一下他們需要的東西：輕量、而且盡量不要被 Client 和 Backend 的數量變動干擾。</p>
 <p>於是他們嘗試了<strong>環狀座標系統（Ring coordinates）</strong></p>
-<p><img src="https://cdn.cms-twdigitalassets.com/content/dam/blog-twitter/engineering/en_us/infrastructure/2019/dapeture-load-balancer/coord-transform.png.img.fullhd.medium.png" alt="">
+<p>
+
+<img
+  src="https://cdn.cms-twdigitalassets.com/content/dam/blog-twitter/engineering/en_us/infrastructure/2019/dapeture-load-balancer/coord-transform.png.img.fullhd.medium.png"loading="lazy" decoding="async">
+
 圖片來源：今天轉貼的這篇</p>
 <p>從圖片上來看，每個 Client 和 Backend 都是圓圈上的一個點，假設有 3 個 Client，他們就會被各自畫在圓圈上 1/3 的位置；同時如果有 6 個 Backend，這些 Backend 的實例也會被各自畫在圓圈上 1/6 的位置，然後 Client 在圓圈上找到最近的 Backend 就打下去。</p>
 <p>這次嘗試雖然已經比前面的隨機好很多，但仍然發現分配不均的狀況</p>
 <p>最後他們延伸出了<strong>連續環狀座標</strong></p>
-<p><img src="https://cdn.cms-twdigitalassets.com/content/dam/blog-twitter/engineering/en_us/infrastructure/2019/dapeture-load-balancer/p2c-fractional-continued.png.img.fullhd.medium.png" alt="Image">
+<p>
+
+<img
+  src="https://cdn.cms-twdigitalassets.com/content/dam/blog-twitter/engineering/en_us/infrastructure/2019/dapeture-load-balancer/p2c-fractional-continued.png.img.fullhd.medium.png" alt="Image"loading="lazy" decoding="async">
+
 圖片來源：同樣是今天轉貼的這篇</p>
 <p>連續環狀座標不是畫在圓圈的點上，而是圓圈的一段。假設有 3 個 Client，他們就會各占 1/3 圈</p>
 <p>如此一來 Client 和 Backend 就會形成兩個圈。而外圈的 Client 就會按照比例對應到內圈的 Backend，達到非常舒服的平衡(?)</p>

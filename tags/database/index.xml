@@ -19,7 +19,11 @@
       <pubDate>Sun, 25 Aug 2024 15:20:00 +0800</pubDate>
       <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2024/08/dapper-datetime-0001-01-01/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/YLnFkUH.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/YLnFkUH.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這週忙著打黑悟空，簡單記一下前陣子同事遇到的一個場景：&lt;/p&gt;
 &lt;p&gt;由於曆法的關係，SQL Server 的 datetime 範圍只能從 1753-01-01 開始。&lt;br/&gt;如果我們要寫入 0001-01-01 進去的話就會報錯&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;SqlDateTime overflow. Must be between 1/1/1753 12:00:00 AM and 12/31/9999 11:59:59 PM.
@@ -187,17 +191,41 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;尚未實作任何通知，程式即將終止…&amp;#34;&lt;/span&gt;)
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print_order(order)
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;完成之後，接著進行測試，首先用顧客帳號登入便當網，確認一下目前的訂單內容&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/R1KEk0P.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/R1KEk0P.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著先執行過一次&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/NvyBzsF.webp&#34; alt=&#34;&#34;&gt;
-&lt;img src=&#34;https://image.igouist.net/d9CS1eH.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/NvyBzsF.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/d9CS1eH.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以看見有確實抓到訂單部分，並且在 py 檔所在的位置也多出了一個 sqlite 檔案存放我們的資料。&lt;/p&gt;
 &lt;p&gt;那麼接著直接再執行一次，確認是不是會確認資料一致&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/phs8YTv.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/phs8YTv.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著登入便當網，自己發起一個團購試試&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/VIvjywx.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/VIvjywx.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著我們再執行試試能不能告訴我們有差異&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/GpQkhyv.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/GpQkhyv.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以看見確實有抓到差異了！&lt;/p&gt;
 &lt;p&gt;接著要實作任何通知都相當簡單了，只要將和之前不一樣的部分取出就可以取得新增的訂單，或是可以記錄每個訂單的開始和結束時間做管理，可以說能做的事相當多。&lt;/p&gt;
 &lt;p&gt;屆此已經完成了預定將訂單做儲存和偵測有沒有變動的部分，故這篇就先到這裡打住。原本考慮到這部分相較之下篇幅比較短，是不是該跟下一段落合併成一篇，但考量之後還是作罷。&lt;/p&gt;
@@ -208,9 +236,17 @@
 &lt;p&gt;由於 Sqlite 主打輕便可攜，因此平常的需求大多也是看資料而已。使用 &lt;a href=&#34;https://sqlitebrowser.org/&#34;&gt;DB Browser for SQLite&lt;/a&gt; 就足夠了&lt;/p&gt;
 &lt;p&gt;不過我個人是比較偏好直接從 VS Code 裡就打開看，這時候就需要安裝擴充套件。&lt;/p&gt;
 &lt;p&gt;我是採用 &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=alexcvzz.vscode-sqlite&#34;&gt;Sqlite 這個套件&lt;/a&gt;，該頁面就已經有操作示範了，使用相當簡單。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/qjHRK9z.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/qjHRK9z.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;只要先用 Ctrl + Shift + P 叫出命令提示區，輸入 Sqlite 之後，開啟資料庫就可以用簡單的操作來看內容或執行 SQL 指令，這邊強烈推薦。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Ces9nxj.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/Ces9nxj.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h2 id=&#34;我要訂便當系列&#34;&gt;我要訂便當系列&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-1-selenium/&#34;&gt;我要訂便當(1) —— 用 Python + Selenium 控制瀏覽器取得訂單&lt;/a&gt;&lt;/li&gt;
@@ -389,9 +425,17 @@
 &lt;/ul&gt;
 &lt;p&gt;此外還包含了一些信件軟體、伺服器紀錄軟體等等，遇見的時候會再解釋。&lt;/p&gt;
 &lt;p&gt;首先請到 &lt;a href=&#34;https://www.apachefriends.org/zh_tw/index.html&#34;&gt;XAMPP 官方網站&lt;/a&gt;下載最新版本的 XAMPP，下載完畢後開啟安裝。允許安裝之後什麼都還沒做，就會先送你一個警告視窗：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ttMHySF.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/ttMHySF.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;簡單來說提醒你就是因為 UAC（使用者帳戶控制）的關係，請不要安裝到 &lt;code&gt;C:\&lt;/code&gt; 啦、&lt;code&gt;C:\Program Files(x86)&lt;/code&gt; 這些 XAMPP 可能會無法取得權限的地方。按下 OK 之後就可以正式進入安裝程序了。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/PVNIstP.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/PVNIstP.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著就是勾選要安裝的軟體，預設是全選，稍微說明一下：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;FileZila FTP Server：檔案傳輸用的，要讓使用者上傳下載檔案就需要這個&lt;/li&gt;
@@ -403,12 +447,24 @@
 &lt;/ul&gt;
 &lt;p&gt;&lt;del&gt;說這麼多但其實我都直接按Next&lt;/del&gt;&lt;/p&gt;
 &lt;p&gt;下一頁會要求選擇安裝路徑，預設是 C:\xampp，不用更改（如果非得要改位置的話，記得前面有警告過要先確認安裝位置資料夾的權限）。之後就是一些免費聲明、看看我們官網之類的，一直下一步就會開始安裝了。安裝完畢後會直接開啟 XAMPP 的主控台。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/PQLHjN1.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/PQLHjN1.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;選擇完語言進入主控台後，先試著把 Apache 和 MySQL 開起來試試。等下面的訊息視窗跑完，Apache 和 MySQL 顯示綠色後就代表開啟成功了。（紅色的話就代表要去 Google 了）&lt;/p&gt;
 &lt;p&gt;打開瀏覽器，在網址列輸入 Localhost 或 127.0.0.1 或是直接在主控台 Apache 的部分按下 Admin 來看本機預設網頁是否連得上，如果能看見下面這個畫面就代表 XAMPP 有開啟了 80 Port 並註冊防火牆，伺服器軟體有正常運作。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ZLn2hpc.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/ZLn2hpc.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著檢查 MySQL 有沒有正常運作，我們有下載 phpMyAdmin，所以直接到 &lt;code&gt;http://localhost/phpmyadmin/&lt;/code&gt; 或在主控台 MySQL 的部分按下 Admin 看能不能看見 MySQL 的主控台。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/BEGogla.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/BEGogla.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;都確定開得起來之後，伺服器環境就架設完畢了，接著要開始進行設定。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;備註：由於 MySQL 和 XAMPP 就是一個綁定的關係，且有簡單安裝使用的特性，因此本篇的資料庫都以 MySQL 做說明。當然在實際應用的時候還有很多不同的資料庫可以選擇，例如&lt;a href=&#34;https://docs.microsoft.com/zh-tw/sql/relational-databases/lesson-1-connecting-to-the-database-engine?view=sql-server-2017&#34;&gt;微軟的 SQL Server&lt;/a&gt;(申請 &lt;a href=&#34;https://imagine.microsoft.com/zh-tw&#34;&gt;microsoft imagine&lt;/a&gt; 可以免費取得)、 Azure 的雲端 SQL Database，甚至是&lt;a href=&#34;https://aws.amazon.com/tw/nosql/&#34;&gt;最近比較潮的 NoSQL&lt;/a&gt;，例如 MongoDB、Cassandra 等等。&lt;/p&gt;&lt;/blockquote&gt;
@@ -416,40 +472,84 @@
 &lt;h3 id=&#34;一更改預設開啟文件的方式&#34;&gt;（一）更改預設開啟文件的方式&lt;/h3&gt;
 &lt;p&gt;先宣導一下，在這個步驟你&lt;strong&gt;應該&lt;/strong&gt;先去下載一個編譯器，這邊推薦 &lt;a href=&#34;https://notepad-plus-plus.org&#34;&gt;Notepad++ &lt;/a&gt;。當然如果你已經有慣用的編譯器，像是 &lt;a href=&#34;https://code.visualstudio.com&#34;&gt;VS Code&lt;/a&gt;、&lt;a href=&#34;https://atom.io&#34;&gt;Atom&lt;/a&gt; 甚至 &lt;a href=&#34;https://www.vim.org&#34;&gt;Vim&lt;/a&gt; ，都可以！就是拜託&lt;strong&gt;不要用記事本&lt;/strong&gt;直接開，程式碼會全部擠在一起。當然如果你天生神力就當我沒說過。&lt;/p&gt;
 &lt;p&gt;因此第一步就是更改預設的開啟檔案，如下（路徑請選擇你要用的編譯器）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/N8RqnPh.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/N8RqnPh.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;選好了之後按 Save 就行。&lt;/p&gt;
 &lt;h3 id=&#34;二設定-mysql-的登入驗證方式&#34;&gt;（二）設定 MySQL 的登入驗證方式&lt;/h3&gt;
 &lt;p&gt;前面測試的時候直接就可以進入資料庫的控制頁面是非常危險的，任何人使用你的電腦都可以自由進出資料庫，過於羞恥，因此我們首先要先更改進入資料庫時的驗證方式。&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://image.igouist.net/ykdGwAs.webp&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;在 Apache 的 config 裡面找到 phpMyAdmin，會打開設定檔，接著找到以下這段&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/q4zxpaF.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/q4zxpaF.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;auth_type 是指連線方式。&lt;strong&gt;預設是 config，我們需要把它改成 cookie&lt;/strong&gt;。它們間的差別在於 config 是將帳號及密碼存在 &lt;code&gt;config.inc.php&lt;/code&gt;，之後自動登入；而 cookie：用資料庫驗證帳號密碼登入，比較安全。更改完記得按存檔，存檔之後回到主控台把 Apache 和 MySQL 都關掉重開，重啟後就可以到 MySQL 的控制頁面。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ONA96MP.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/ONA96MP.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;再度進入 MySQL 的控制頁面後應該就會有要求登入的視窗出現了。預設的帳號是root，密碼是空白。當然建議登入後先點選修改密碼把預設的空白密碼改掉。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/jJh5I9X.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/jJh5I9X.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h3 id=&#34;三建立資料庫與資料表&#34;&gt;（三）建立資料庫與資料表&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;有基礎的 SQL 和資料庫的概念會更好，你可能會需要 &lt;a href=&#34;https://www.1keydata.com/tw/sql/sql.html&#34;&gt;SQL語法教學&lt;/a&gt; 或  &lt;a href=&#34;http://www.sqlzoo.net/&#34;&gt;A Gentle Introduction to SQL&lt;/a&gt; 以及一些關於資料庫用語的知識&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;修改密碼後，我們來練習實際建一個資料庫。點選上方進入資料庫列表&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/WyoqSoU.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/WyoqSoU.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著可以看見預設的系統資料庫，我們直接建立一個新的。第一個欄位是輸入資料庫名稱，請只輸入小寫字母和底線，不要有大寫字母。&lt;/p&gt;
 &lt;p&gt;第二個欄位則是資料庫的編碼，我們屬於中文語系，utf8_unicode_ci 和 utf8_general_ci 是最常用的，雖然 utf8_general_ci 對某些語言的支援有一些小問題，但是速度較快。而 utf8_unicode_ci 則比較精確，不過速度會慢一些&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/TfCvdU0.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/TfCvdU0.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;建立資料庫之後，我們還必須先建立一個資料表。這兩者之間的關係就像是 Excel 檔案和其中的一個分頁一樣。輸入名稱（一樣只用小寫字母）和欄位的數量之後就可以按下執行了。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/w1Yuypd.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/w1Yuypd.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著就是資料表詳細設計的部分，最左邊是該欄位的&lt;strong&gt;名稱&lt;/strong&gt;，名稱一樣請不要包含大寫字母，會產生一些錯誤。&lt;/p&gt;
 &lt;p&gt;接著是&lt;strong&gt;資料型別&lt;/strong&gt;（關於SQL 的資料型別部分，可以參見&lt;a href=&#34;https://docs.microsoft.com/zh-tw/sql/t-sql/data-types/data-types-transact-sql?view=sql-server-2017&#34;&gt;微軟技術中心&lt;/a&gt;或&lt;a href=&#34;https://www.tad0616.net/modules/tad_book3/html.php?tbdsn=455&#34;&gt;SQL常用資料類型&lt;/a&gt;）較常用的有 int 整數、float 浮點數、varcher 變動長度字串、date 日期與 time 時間等等。接著需要定義長度。通常名稱、型態、長度會是最重要的。&lt;/p&gt;
 &lt;p&gt;接著可以注意到右邊有個 A_I，是 &lt;strong&gt;Auto Increment&lt;/strong&gt;，通常用於 ID 、表單編號這類資料上面，是指該欄位是由系統自動填寫，每次新增資料的時候自動給值，如此就能讓第一筆是 1、第二筆是 2 這樣子自動 +1，不用人工輸入。預設會由 1 開始，每次增加 1 ，按下 A_I 之後，會確認前綴字元的數量，像我們使用 INT 的場合可以不用填入直接按確認。另一個常用的是&lt;strong&gt;空值&lt;/strong&gt;，如果勾選就代表該欄位可以接受 Null，反之則不可。&lt;/p&gt;
 &lt;p&gt;下部分會要求給資料表&lt;strong&gt;註解&lt;/strong&gt;，以及該&lt;strong&gt;資料表的資料類型&lt;/strong&gt;，沒有填寫的話預設是參照資料庫的編碼，這部分如前所述。最後右下角部分有預覽 SQL 以及儲存的功能。預覽 SQL 可以產生這一頁操作的 SQL 指令。（即使用了圖形化控制台，還是有很多地方可以使用指令進行操作比較方便）&lt;/p&gt;
 &lt;p&gt;完成基本資料之後就可以試著執行，能看到資料表的表格就算是成功建立了&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/O8JDdqu.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/O8JDdqu.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;警告：如果在建立之後跳出了 illegal string offset 錯誤，極有可能是資料庫或資料表等名稱使用了大寫字母或特殊字元，導致 MySQL 建立資料庫的 PHP 檔案發生錯誤。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;現在我們已經建立個一個新的資料庫，也建立了新的資料表，現在讓我們更改該資料庫的權限，增加一個能連線到此資料庫的帳戶。請在左側點選剛剛建立的資料庫，並點擊上方工具列的權限。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/OeI1Xwv.webp&#34; alt=&#34;&#34;&gt;
-&lt;img src=&#34;https://image.igouist.net/X3bLMTK.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/OeI1Xwv.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/X3bLMTK.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著可以看到能存取該資料庫的帳戶，現在當然只有預設的 root。現在嘗試建立一個新的使用者帳號。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/nwQqRtY.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/nwQqRtY.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;輸入帳號和密碼，主機通常是選擇限制本機登入，之後再遠端操作。下部分是權限相關的部分，可以直接全選。確認完之後就可以按下執行，如此就可以新增新的使用者了。&lt;/p&gt;
 &lt;p&gt;最後我們得在剛剛新建立的資料表中，利用上面工具列的 新增 或 SQL 頁面替資料表加入幾筆資料，後續比較方便測試。&lt;/p&gt;
 &lt;blockquote&gt;
@@ -458,7 +558,11 @@
 &lt;blockquote&gt;
 &lt;p&gt;如果你需要了解 PHP 相關語法，可以參閱 &lt;a href=&#34;http://www.w3school.com.cn/php/&#34;&gt;w3school：PHP&lt;/a&gt; 和 &lt;a href=&#34;http://www.runoob.com/php/php-tutorial.html&#34;&gt;菜鳥教程：PHP&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;一般來說，我們會在伺服器上預先寫好一個腳本檔案，主要負責去和資料庫連線、執行我們寫好的 SQL 取得資料並回傳；之後我們像是手機、網頁需要資料的時候，只需要去呼叫這個腳本檔案就行了。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/hiSn00p.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/hiSn00p.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這樣做可以只執行我們預先準備好的 SQL 語法和語法的限制，提高安全性（你不會希望可以由手機或網頁端等等&lt;a href=&#34;https://www.puritys.me/docs-blog/article-11-SQL-Injection-%E5%B8%B8%E8%A6%8B%E7%9A%84%E9%A7%AD%E5%AE%A2%E6%94%BB%E6%93%8A%E6%96%B9%E5%BC%8F.html&#34;&gt;自由地撰寫或更改SQL語法給資料庫&lt;/a&gt;的，當然你膽子夠大&lt;del&gt;或是專題快來不及了&lt;/del&gt;的話再考慮嘗試從手機端下 SQL 指令給吧)，也可以將同樣的工作腳本重複使用，不同的工作加以區別。總之，我們需要在伺服器端的電腦上先編寫一個腳本檔案來取得資料庫的資料。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;備註：本篇以 PHP 為範例，其他可在伺服器運行的語言如 Asp.net C#、Python 等等也都可以做出回傳資料的網頁接口，應考量選用的資料庫加以選擇。&lt;/p&gt;&lt;/blockquote&gt;
@@ -481,18 +585,30 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    $link &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;close&lt;/span&gt;(); &lt;span style=&#34;color:#75715e&#34;&gt;// 關閉資料庫連線
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/TDwalqp.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/TDwalqp.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;完成連線至資料庫的程式後，請實際開啟瀏覽器輸入 localhost/GetData.php 測試看看能不能抓到資料。（如果是一片空白，請先確認資料表是否已經有新增資料，接著確認是否有成功連線）&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;備註：搜尋 MySQL 相關的 PHP 語法時，可能會有 mysql 和 mysqli 兩種不同的方法。然而 mysql 已經在 PHP 7.0 被廢除，因此 GOOGLE 時請不要找太久遠的資料。&lt;/p&gt;&lt;/blockquote&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/VbC4Sgz.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/VbC4Sgz.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;成功的話應該能看見網頁輸出了資料表中資料的 JSON，之後我們就是要用 Android 連線到這個網頁並取得資料。此外，若是要搜尋不同資料表的資料或是特定條件的資料，只需要更改 SQL 語法即可。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;備註：關於 JSON 可以參閱 &lt;a href=&#34;http://miniaspreading.github.io/guide-to-json/1-what-is-json.html&#34;&gt;JSON精要讀書紀錄&lt;/a&gt;，另外常用的 SQL 操作還有新增、修改、刪除等，有興趣的同學可以嘗試自己實作。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;警告&lt;/strong&gt;：本篇僅教學如何連線取值，實際應用時請對取得資料的網頁進行&lt;strong&gt;資料驗證或加密&lt;/strong&gt;。你可能需要了解 &lt;a href=&#34;https://blog.toright.com/posts/1203/%E6%B7%BA%E8%AB%87-http-method%EF%BC%9A%E8%A1%A8%E5%96%AE%E4%B8%AD%E7%9A%84-get-%E8%88%87-post-%E6%9C%89%E4%BB%80%E9%BA%BC%E5%B7%AE%E5%88%A5%EF%BC%9F.html&#34;&gt;GET 和 POST 的差異&lt;/a&gt; 、於 PHP 端要求傳入特定的參數進行驗證後才能取得資料等等。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;在-android-連線取得資料&#34;&gt;在 Android 連線取得資料&lt;/h2&gt;
 &lt;p&gt;打開 Android studio，建立新專案，然後簡單開個版面如下就好，目標是按下按鈕之後把資料顯示在 Textview 裡面。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/M5GJLzV.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/M5GJLzV.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著我們開啟 MainActivity.java，先宣告按鈕並寫上監聽事件，這次教直接在程式碼內做事件宣告的寫法，請在 onCreate 的部分撰寫以下程式碼，讓 Android 在一開始執行的時候就連接好按鈕事件。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;protected&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;onCreate&lt;/span&gt;(Bundle savedInstanceState) {
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;super&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;onCreate&lt;/span&gt;(savedInstanceState);
@@ -512,9 +628,17 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    });
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著我們要建立一個函式處理連線的部分，由於我們會用到 Apache 的 HTTP 套件，我們得先引用套件包。請先打開 Build.gradle 在 android 的部分加入 &lt;code&gt;useLibrary &#39;org.apache.http.legacy&#39;&lt;/code&gt; 進行引用。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/t895n3N.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/t895n3N.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;引用完畢之後上面會顯示通知要求你重新同步這個專案，按下 sync now 之後等待它專案同步完畢。接著我們還得要上網的權限才能取得資料，因此要到 AndroidManifest.xml 這地方加上網路權限的許可 &lt;code&gt;&amp;lt;uses-permission android:name=&amp;quot;android.permission.INTERNET&amp;quot; /&amp;gt;&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/pIRps1G.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/pIRps1G.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;引用了工具也取得權限之後，我們就可以回到 Java 程式碼的部分了。這邊先按每一段進行解說，&lt;strong&gt;最後會貼上整頁的程式碼&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;整體程式的思路是這樣的：由於 Android 本身的限制，和網路連線的部分必須要用另一個執行緒，不能干涉到主流程，因此我們需要先宣告一個執行緒。而它執行的事件部分，我們需要先宣告和 HTTP 有關的函式庫和物件，接著利用這些物件連線到我們伺服器上的網頁，最後把網頁上的資料拉回來。&lt;/p&gt;
 &lt;blockquote&gt;
@@ -538,13 +662,29 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    };
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著在裡面撰寫處理 HTTP 相關的部分：&lt;/p&gt;
 &lt;p&gt;（註：先用圖片說明，程式碼將放於最後）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/gN7AxTX.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/gN7AxTX.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;用上面宣告的物件開始進行連線並處理取得的資料：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/LpURZmA.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/LpURZmA.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;在執行緒完成的時候放到 textview 裡面：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/JzLk5he.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/JzLk5he.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;最後在程式建立時把執行緒放到按鈕的事件裡面，讓按鈕可以觸發這一套流程&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/qG2NQPN.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/qG2NQPN.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;完成的整個程式碼如下：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;MainActivity&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;extends&lt;/span&gt; AppCompatActivity {
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    TextView textView; &lt;span style=&#34;color:#75715e&#34;&gt;// 把視圖的元件宣告成全域變數&lt;/span&gt;
@@ -633,7 +773,11 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    };
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;而執行結果會像這樣：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/YpuFWMd.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/YpuFWMd.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;現在你可以使用 Android 取得資料庫的資料了，快嘗試應用這個技術做一個 APP 來玩吧！&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;本篇完成後，有興趣或希望&lt;strong&gt;進階&lt;/strong&gt;學習的同學可以嘗試挑戰以下的部分：&lt;/p&gt;
@@ -669,22 +813,54 @@
 &lt;/ul&gt;
 &lt;p&gt;在小組報告的時候，Model 通常是默默做事的那個，View 則是專門上台報告的，Controller 負責指揮大家做事和組員間的溝通以及講幹話。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;首先我們從建立專案開始操作。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/eRyGBTb.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/eRyGBTb.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;選擇 .NET 的框架，並且在下面替專案取個名字。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/fdIYiCe.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/fdIYiCe.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;確認選擇的框架是 MVC。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/otUKDR0.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/otUKDR0.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h2 id=&#34;建立連線資料庫用的-model&#34;&gt;建立連線資料庫用的 Model&lt;/h2&gt;
 &lt;p&gt;首先先在方案總管的 Models 資料夾裡新增一個類別。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/3L0gFuu.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/3L0gFuu.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;由於我們是從平地起家，手工連線，因此我們這邊選擇空白類別就可以了，取個淺顯易懂的名字並按下新增。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/JCnwaMU.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/JCnwaMU.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;新增之後應該能看見我們的類別。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/hQn75wu.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/hQn75wu.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;在連線到資料庫的部分，最首先的就是&lt;strong&gt;連線字串&lt;/strong&gt;。連線字串就像是地址加上鑰匙，可以想成你請人幫你到倉庫拿東西，必須先告訴他倉庫在哪再給他鑰匙進去拿一樣，程式必須藉由連線字串才能得知&lt;strong&gt;資料庫的位置和連線資料&lt;/strong&gt;，而不同的資料庫軟體的連線字串格式也有可能不同，例如說 MySQL 的連線字串格式就可以參考&lt;a href=&#34;https://www.itread01.com/p/1192499.html&#34;&gt;這篇&lt;/a&gt;。在本筆記之中，不同資料庫類型在實作上最大的差異大概就是連線字串了吧。&lt;/p&gt;
 &lt;p&gt;而在連線至 MSSQL 的部分，我個人習慣用 Visual studio 內建的功能做產生再按照需求作修改。首先讓我們打開畫面左上方的伺服器總管，並在資料連接上加入一個新的連接。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/VC0CfPE.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/G33iM6J.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/VC0CfPE.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/G33iM6J.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著就可以看到加入連接的頁面，我們從上往下進行解說：&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;資料來源&lt;/strong&gt;：用來更改資料庫來源的類型，例如 Access 或是其他類型資料庫的時候就可以更改這一項。我們這邊使用 SQL Server 進行示範。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;伺服器名稱&lt;/strong&gt;：SQL Server 的名稱，通常會在 SQL Server 安裝的時候做設定，預設是和電腦一樣。當遠端連線的時候，這邊可以改成輸入 IP。&lt;/p&gt;
@@ -692,12 +868,24 @@
 &lt;p&gt;至於這兩項的選擇需要看使用時的需求以及資料庫本身的設定進行選擇。本篇是直接在 SQL Server 所在的本機上進行架站，同時也沒有特別設定權限，因此直接使用 Windoes 驗證登入就可以了。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;資料庫名稱&lt;/strong&gt;：從 Server 裡面選擇要使用的 Database。在此處選擇了示範用的 Test 資料庫。&lt;/p&gt;
 &lt;p&gt;以上部分設定完之後，點選左下角的測試連接。若是測試連接沒有問題後，在進階的部分就可以看見已經產生好連線字串了。同時在這個頁面按下確定的話，將會在伺服器總管中連線至資料庫，也能從資料連接的部分對資料庫進行操作。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/eNiiXtj.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/eNiiXtj.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;↑ 可以從進階的部分看見連線字串。可以稍微看得出來連線字串的格式，其中 Data Source 放伺服器主機、Initial Catalog 放資料庫名稱、Integrated Security 放集成驗證（即 Windows 驗證），此外還有可能會有 UserID 放帳號、Password 放密碼等等。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ZssVFCq.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/ZssVFCq.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;↑ 如果選擇確定的話，就會建立連接。可以直接在這邊右鍵選擇各種功能以操作資料庫。&lt;/p&gt;
 &lt;p&gt;現在我們已經有了連線字串，先在我們的類別中將其宣告為一個私有且唯獨的字串常數。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/bVnef6n.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/bVnef6n.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：在實務上的部份，連線字串通常會放置在網頁設定檔 Web.config 裡，因為網頁設定檔在使用者端是看不見的，所以這樣的做法比較安全，再利用 ConfigurationManager 的函式取得連線字串以使用。關於詳細的操作方式請參考&lt;a href=&#34;https://dotblogs.com.tw/sky5012357/2013/03/19/98161&#34;&gt;這篇&lt;/a&gt;或搜尋「連線字串 Web.config」。本篇為了教學及操作上的方便，才直接放置於程式碼內。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;解決連線字串的問題，接著我們來做一個 model 放我們的資料。可以從上面伺服器總管的圖看見我的資料表 card 有 id、 char_name、 card_name、card_level 四個欄位。&lt;/p&gt;
@@ -715,7 +903,11 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;新建完成之後就回到我們的 資料庫連線類別 開始工作。&lt;/p&gt;
 &lt;h2 id=&#34;取得所有資料&#34;&gt;取得所有資料&lt;/h2&gt;
 &lt;p&gt;第一個目標是能夠取得 Card 資料表的所有資料，因此我們先將方法的部分建立出來，也就是一個會回傳 Card 的 List 的方法。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/utEyL3C.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/utEyL3C.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;我們將會使用 SqlConnection 這個資料庫連線用的工具來操作資料庫，因此需要先在上面 &lt;code&gt;using System.Data.SqlClient&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;接著我們想要 GetCards 方法做的事有：&lt;/p&gt;
 &lt;ol&gt;
@@ -751,7 +943,11 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    sqlConnection.Close();
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; cards;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/KoB6QZU.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/KoB6QZU.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;首先，我們宣告了一個 Card 的 List 叫做 Cards 用來保存我們等等取得的資料。&lt;/p&gt;
 &lt;p&gt;接著我們利用連線字串 ConnStr 來建立了一個 &lt;strong&gt;SQL 連線物件 SqlConnection&lt;/strong&gt;。並宣告了一個 &lt;strong&gt;SQL 命令物件 SqlCommand&lt;/strong&gt; 來放置我們要執行的 SQL 指令。&lt;/p&gt;
 &lt;p&gt;這邊使用的是「由 card 資料表選取全部資料(*)」的指令。不論使用的是何種語言，後端連線到資料庫最重要的就是傳送指令至資料庫執行。關於 SQL 指令的使用方式，可以參照 &lt;a href=&#34;https://www.1keydata.com/tw/sql/sql.html&#34;&gt;1keyData 的 SQL 語法&lt;/a&gt; 或是 &lt;a href=&#34;http://www.w3school.com.cn/sql/index.asp&#34;&gt;w3school&lt;/a&gt;。&lt;/p&gt;
@@ -765,11 +961,23 @@
 &lt;p&gt;另外，在處理回傳的資料時，會根據習慣和需求而有不同的做法，大多數的作法並不會一樣。例如說也有將回傳資料封裝成 Json 就丟給前端讓前端自己拆包自己頭痛的狀況存在，這部份在看其他人的連線教學或相關文章後就會比較了解。若是需要查詢相關的命令，例如說只執行命令時不回傳值，或單純只傳一個值，可以查詢微軟文件的 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/api/system.data.sqlclient.sqlcommand?view=netframework-4.7.2#%E5%82%99%E8%A8%BB&#34;&gt;SqlCommand 頁面&lt;/a&gt; 和 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/dotnet/api/system.data.sqlclient.sqlconnection?view=netframework-4.7.2&#34;&gt;SqlConnection 頁面&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;將資料做成一個 card 後，我們將其放入我們的 List 也就是 cards。當全部的資料都讀完之後，絕對不能忘記關閉連線。最後回傳我們的 cards，到這邊 GetCards 就告一段落了。&lt;/p&gt;
 &lt;p&gt;為了測試，我們先到 HomeControlls 的 Index 做一點小修改。using 我們的 model 並且試試看用 GetCards 來取得資料。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/BzylqF3.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/BzylqF3.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著把 Home/Index.cshtml 也進行修改。將原本的全部砍掉，為了示範方便，直接 using models 並且用 Viewbag 拿出來看。（註：這邊熟練之後若想了解實務上較建議使用的傳值方式，可以搜尋 &amp;ldquo;ViewModel&amp;rdquo;）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/k7ZIPF6.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/k7ZIPF6.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以看見資料有正常地取得了&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/gGzrAxl.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/gGzrAxl.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著就可以開始處理前端顯示的部份，例如使用 &lt;a href=&#34;https://bootstrap.hexschool.com/docs/4.0/content/tables/&#34;&gt;Bootstrap 的表格&lt;/a&gt; 進行排版，或是其他 css 啦模板啦，都是沒問題的囉！&lt;/p&gt;
 &lt;h2 id=&#34;新增資料&#34;&gt;新增資料&lt;/h2&gt;
 &lt;p&gt;既然能夠取得資料了，接下來就來做一些基本的操作吧。首先從新增資料開始。&lt;/p&gt;
@@ -798,18 +1006,42 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;tbody&lt;/span&gt;&amp;gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;table&lt;/span&gt;&amp;gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/6z2UNud.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/6z2UNud.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;比剛剛好多了：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/EO3xE9b.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/EO3xE9b.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;既然要新增資料，那一定要有個頁面能夠輸入新增的資料內容。因此我們回到 HomeController 來準備新增一個頁面。首先先把預設的 About 和 Contact 刪掉，也將 Views 裡的這兩頁給刪掉，我們不會用到它們了。&lt;/p&gt;
 &lt;p&gt;接著就來建立 CreateCard ：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/T7lxFzj.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/T7lxFzj.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;之後也必須建立 View 才可以。在 CreatrCard 上點右鍵，選擇新增檢視。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/fS17EpU.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Nl7yqjA.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/fS17EpU.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/Nl7yqjA.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;在這一步直接按下 Add 就會新增一個空白的 View 可以使用了。如果想讓系統自己幫你產生，Template 指得就是樣板，裡面已經包含新增刪除等操作會使用到的介面，選擇後再於 Model class 選取要操作的 Model 物件的話，就會自動產生好一個功能頁面讓你修改。不過開頭已經說過這次要純手工，因此我們就直接按下 Add 吧。&lt;/p&gt;
 &lt;p&gt;要把資料從 View 丟到 Controller 的方法很多，例如 form 表單或是 ajax 傳值都是可行的。我們這邊用 form 表單做回傳，另外使用 bootstarp 簡單排個版，程式碼如下&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/IGumNlE.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/IGumNlE.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-html&#34; data-lang=&#34;html&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;h2&lt;/span&gt;&amp;gt;新增 Card&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;h2&lt;/span&gt;&amp;gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;br&lt;/span&gt; /&amp;gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
@@ -838,29 +1070,69 @@
 &lt;p&gt;在&lt;strong&gt;表單中最重要的就是各個 input 的 name 屬性&lt;/strong&gt;，當資料傳送的時候，會使用 name 做為資料的欄位名稱。因此這邊的 name 一定要能和我們的 card 物件的資料對應上，才能讓它自動轉換。&lt;/p&gt;
 &lt;p&gt;接著用 &lt;a href=&#34;https://v3.bootcss.com/css/#forms&#34;&gt;bootstrap 的格式&lt;/a&gt;做了三組輸入框，以及一個提交按鈕。運行後頁面正常就可以進行下一步了。&lt;/p&gt;
 &lt;p&gt;首先我們再度回到 HomeController，做一個 POST 才能進來的 CreateCard 方法來接取表單，並且讓它將傳入的表單資料做成我們建立的 Card 物件。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/yi7ZMvq.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/yi7ZMvq.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這個方法中應該要能將 card 的資料傳入資料庫，但我們還沒有實做傳入資料庫的方法，因此我們要回到當初建立的&lt;strong&gt;資料庫連線用的 model&lt;/strong&gt;（本範例中為 DBconn）去實作一個新增用的函式。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/mrVWpCe.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/mrVWpCe.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;新增的函式跟前面做過的查詢相差無幾，最大的差別在於新增的 SQL 語法是 &lt;a href=&#34;https://www.1keydata.com/tw/sql/sqlinsert.html&#34;&gt;INSERT INTO&lt;/a&gt; 。必須再提醒一次，最注意的一點是，&lt;u&gt;&lt;strong&gt;在@字串中放置的參數，需要用 SqlParameter 的方式讓系統檢查後放入，不應該偷懶直接將字串和參數用 + 接起來就傳送，否則很容易遭遇 &lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10189201&#34;&gt;SQL injection&lt;/a&gt; 的攻擊&lt;/strong&gt;&lt;/u&gt;，被亂下 SQL 指令。&lt;/p&gt;
 &lt;p&gt;處理好 model 中控制資料庫的部分之後，我們再回到 Controller 把這段添加上去。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/adCSxgq.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/adCSxgq.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以看到當我們收到表單後，就會嘗試呼叫資料庫物件調用新增的函式做新增，如果新增時出了錯就會把錯誤訊息列印在輸出欄，最後回到首頁。&lt;/p&gt;
 &lt;p&gt;最後只要在首頁把新增的按鈕放上去就大功告成囉！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/mJBPdDA.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/mJBPdDA.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;試跑幾次流程，可以看到有成功新增資料囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/3ylj9P6.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/3ylj9P6.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h2 id=&#34;修改資料&#34;&gt;修改資料&lt;/h2&gt;
 &lt;p&gt;接著要嘗試修改資料，修改資料和新增最大的不同是會多一步先將原本的該筆資料取出。首先先將首頁修改一下，在每一行的結尾放上修改資料的連結。由於做成連結的 ActionLink 並不能放進像 model 這麼複雜的資料，所以在實務上都是以傳遞 id 為主。（ ActionLink 會把我們的資料做成連結、用 get 變成網址。所以 editCard.html?ID=2 這個它還看得懂，editCard.html?card=&amp;amp;$%* 這種它就不知道怎麼表達了）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/MVj0OKY.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/MVj0OKY.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;我們一樣回到 Controller 新增一個方法，只是這次我們要求先把要修改的資料也傳到頁面做處理。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/PLW4abi.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/PLW4abi.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;現在我們遇到的問題是：我們需要把 id 變成實際的卡片資料，必須利用這個 id 去取得資料。所以我們到 model 新增一個用 id 搜尋卡片資料的方法。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/r80dGT6.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/r80dGT6.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以看見單筆查詢的做法基本上和前面做過的拿全部資料所差無幾，只是一個搜全部一個搜條件而已。最大的差異在於我們傳遞了一個 ID 進去，並且在 SQL 指令的地方利用 &lt;a href=&#34;https://www.1keydata.com/tw/sql/sqlwhere.html&#34;&gt;WHERE 下了搜尋條件&lt;/a&gt;，並且只回傳一項資料。&lt;/p&gt;
 &lt;p&gt;現在我們回到 Controller 將我們的 ID 搜尋方法放進去，並將回傳的 card 用傳遞 model 的方式傳到 View，期待它能聽話。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/gtNloFh.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/gtNloFh.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著我們要新增編輯的頁面（View）了，一樣右鍵新增檢視，並複製新增頁面的程式碼修改如下。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/k9ZyG7o.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/k9ZyG7o.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;特別標示紅色的部分要多加注意。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;首先我們傳入了 model，因此要先用 @model 告訴它我們傳遞的是哪個 model&lt;/li&gt;
@@ -870,32 +1142,80 @@
 &lt;/ul&gt;
 &lt;p&gt;做完這一步的時候可以先從首頁執行是不是可以順利取得單筆資料。&lt;/p&gt;
 &lt;p&gt;修改完的資料必須回傳然後告訴資料庫修改的結果，因此我們和新增一樣要做一個 Post 的編輯方法來接收上面的表單。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/8flx7rK.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/8flx7rK.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;現在我們該再度前往 資料庫控制的 model 加上修改資料庫內容的方法了。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/dkBbur8.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/dkBbur8.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;一樣是和前面的新增資料很像，但這邊使用的 SQL 語法是更新資料用的 &lt;a href=&#34;https://www.1keydata.com/tw/sql/sqlupdate.html&#34;&gt;UPDATE 語法&lt;/a&gt;並且結合了前面的 WHERE 來指定要更改的項目。完成之後我們就可以把它加到 Controller 的方法上囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ZdyuZub.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/ZdyuZub.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這樣就宣告完工了！實際上來編輯一次吧&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Qtvhalt.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/Qtvhalt.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;將寫程式修改成打呼看看&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/E9dGERa.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/E9dGERa.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以看到成功變更囉！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/KAq6XkV.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/KAq6XkV.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h2 id=&#34;刪除資料&#34;&gt;刪除資料&lt;/h2&gt;
 &lt;p&gt;如果前面都大致上了解的話，刪除就是小菜一碟。&lt;/p&gt;
 &lt;p&gt;首先我們先回到首頁列表，在編輯後面加上刪除的連結（我是用｜隔開而已，也可以另外新增一格甚至做成按鈕沒關係）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/WTn9MXw.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/WTn9MXw.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著我們到 Controller 增加一個刪除的方法，因為我們並沒有要做一個「確認刪除嗎？」的頁面，所以最後直接回到首頁列表就可以了。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ZScM56X.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/ZScM56X.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著就到資料庫互動的物件來實作刪除的部分。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/cJe4pic.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/cJe4pic.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;非常簡單，只有 SQL 語法的部分有更動，使用的是&lt;a href=&#34;https://www.1keydata.com/tw/sql/sqldelete.html&#34;&gt; DELETE 指令&lt;/a&gt;，由於只是刪除，因此我們果斷地打開連線，砍下去，關閉連線走人。&lt;/p&gt;
 &lt;p&gt;回到 Controller 把這個函式添加上去&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/xFyaY8s.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/xFyaY8s.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;然後就可以試試看能不能刪除資料囉！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/GzrN6Ca.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/GzrN6Ca.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;點下刪除了之後－－&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/6O9vyNA.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/6O9vyNA.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;資料就不見了！（其實蠻危險的？）&lt;/p&gt;
 &lt;h2 id=&#34;結語&#34;&gt;結語&lt;/h2&gt;
 &lt;p&gt;已經實作了顯示列表、新增、修改、查詢和刪除。所謂萬變不離其宗，基本的資料庫操作都離不開這些方法，熟悉了這些做法的概念之後就沒有問題了，剩下大多是顯示的時候做美化、排序等等的剩餘工作。Good Job！&lt;/p&gt;</description>
@@ -914,27 +1234,67 @@
 &lt;blockquote&gt;
 &lt;p&gt;備註：旁邊有個變更驗證的部分是 ASP.NET Identity，在做會員系統的時候有用過，但這篇不會用到，為怕忘記故於此紀錄，另可參照 2013 年的&lt;a href=&#34;http://2or3.blogspot.com/2013/12/mvc5-aspnet-identity.html&#34;&gt;這篇&lt;/a&gt;及官方文檔。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;專案開啟後，我們在 Model 新增 ADO.net 實體資料模型&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/oSsVE3o.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/WKo3Sd5.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/oSsVE3o.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/WKo3Sd5.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著有分為幾種方法，主要是從資料庫產生模型，和資料庫產生 Code First 的模型，可參見 &lt;a href=&#34;http://kevintsengtw.blogspot.com/2013/10/aspnet-mvc-entity-framework-code-first.html&#34;&gt;ASP.NET MVC 使用 Entity Framework Code First - 基礎入門&lt;/a&gt; 裡的說明。這篇會使用來自資料庫的 EF Designer 模型這個選項做建置。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/XkWWJzn.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/XkWWJzn.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;選擇了之後就會進到連線資料庫的部分，按照指示一步一步連線到資料庫。這邊也會幫你將連線字串儲存到 Web.config 裡。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/bU52Zv0.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/bU52Zv0.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著選取我們在這個模型中要包含的資料表。要注意下半部分的複數化或單數化建議是不要勾選，否則它會幫你把資料庫那些順手改個名，出事的機率會很高。&lt;/p&gt;
 &lt;p&gt;成功的話就可以看見資料表出現在 edmx 檔的視窗裡了：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/QTld12h.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/QTld12h.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著我們來建立 Controller ：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/d3s6lSO.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/n810bKz.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/d3s6lSO.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/n810bKz.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;上一篇我們為了從頭開始因此選擇空的 Controller，這邊則可以按照要求選擇自己需要的就可以了。我們選擇使用 EF 建立 Controller 和 View。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/FsiSn3w.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/FsiSn3w.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著這邊選擇要進行操作的那個類，以及資料連接的字串，就能看到它開始從模型產生囉！&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：如果在這步驟發生錯誤，先嘗試重建方案看看。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;如果一切順利，應該能看見它已經幫你建立好具有 列表、新增、修改、刪除和查詢的 Action 和 View&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/GEodVlL.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/GEodVlL.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;測試時基本功能也能順利地使用&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/5SGg5PJ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/5SGg5PJ.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;心得：利用這個方式可以快速地產生具有基本操作功能的網頁，以此為基礎進行修改的話就能省下非常多的時間，可以說是非常強大的。但實際上其細節有非常多的地方可以處理，還是要更深的理解才能完全發揮呢。&lt;/p&gt;</description>
     </item>
     

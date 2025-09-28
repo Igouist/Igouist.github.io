@@ -19,7 +19,11 @@
       <pubDate>Sat, 01 Feb 2025 08:15:00 +0800</pubDate>
       <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2025/02/jmeter-constant-throughput-timer/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/XGOmHat.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/XGOmHat.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;我們在之前 &lt;a href=&#34;https://igouist.github.io/post/2022/10/jmeter&#34;&gt;JMeter&lt;/a&gt; 的筆記時，介紹過直接對服務爆打一波的作法：簡單來說就是打好幾輪看看服務撐不撐得住，然後紀錄能吃的最大數量，可以說是非常暴力的做法。&lt;/p&gt;
 &lt;p&gt;但如果我們想要模擬某個固定數值的請求量（例如每分鐘 100 次請求）、又或是需要用固定速率打出去（例如每 5 秒得敲一下），就不能像上次一樣粗暴地全力出擊了。&lt;/p&gt;
 &lt;p&gt;這時候，&lt;strong&gt;我們就可以用 JMeter 提供的 Constant Throughput Timer（固定吞吐量計時器）來限制呼叫頻率&lt;/strong&gt;，馬上來筆記一篇。&lt;/p&gt;
@@ -27,23 +31,47 @@
 &lt;blockquote&gt;
 &lt;p&gt;以下範例會使用到 JMeter 的 HTTP Request 等功能，還不太瞭解的朋友推薦先閱讀上一篇筆記：&lt;a href=&#34;https://igouist.github.io/post/2022/10/jmeter&#34;&gt;使用 JMeter 來對 API 壓力測試吧&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;先確認一下環境：我們有一組腳本，內容只是簡單地戳一下 API&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/O3yDOx1.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/O3yDOx1.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;現在我們希望可以模擬線上使用者在尖峰時段的使用頻率，並確認我們服務挺得過去，所以需要把這組腳本調整成：&lt;strong&gt;「每分鐘戳 20 次，持續五分鐘」&lt;/strong&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：有時候我們收到的需求會是「持續五分鐘，然後總量為 100」這種，意思是差不多的，反正先確認好 &lt;strong&gt;「每分鐘的數量 x 持續幾分鐘 = 總量」&lt;/strong&gt; 這幾個關鍵數字再說嚕。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;首先讓我們加入一組 Constant Throughput Timer：
-&lt;img src=&#34;https://image.igouist.net/ymK5ZCq.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/ymK5ZCq.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;並且找到 Constant Throughput Timer 裡面的 &lt;strong&gt;Target Throughput（每分鐘呼叫次數）&lt;/strong&gt;，我們這次的需求是每分鐘要戳他個 20 次，這邊就直接放 20.0：
-&lt;img src=&#34;https://image.igouist.net/I29PVrK.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/I29PVrK.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著回到 Thread Group，因為我們這次的場景是用時間來計算的，所以需要&lt;strong&gt;把底下的 Specify Thread Lifetime 打開，並根據要執行的時間來填上秒數&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;因為我們的需求是跑 5 分鐘，所以先丟個 300 秒：
-&lt;img src=&#34;https://image.igouist.net/0eam5FB.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/0eam5FB.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;而且我們這次是用執行時間計算數量的，不希望 Loop Count 影響到我們，直接甩個 Infinite 給他（對，我們就是模擬有個使用者坐在那邊無聊一直按按鈕，而且他節奏感還很好）&lt;/p&gt;
 &lt;p&gt;執行之後就可以確認總量跟每分鐘的吞吐量有沒有符合我們的設置囉：
-&lt;img src=&#34;https://image.igouist.net/h98Pdvd.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/h98Pdvd.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;很好！現在我們已經會使用 Constant Throughput Timer 來控制壓力測試時的吞吐量了。&lt;/p&gt;
 &lt;p&gt;有興趣的朋友可以回去調整各個參數觀察看看，也可以改個 Thread Group 的 Thread 數量看看結果差異，例如當我把上面範例的 Thread 改成 2：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1iY0YdJ.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/1iY0YdJ.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以看見數量跟吞吐量都有影響（算總數寫報告的時候記得別算錯了 xD）&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;最後整理一下 Constant Throughput Timer 的適用場景，有以下狀況的時候就可以考慮使用：&lt;/p&gt;
@@ -59,7 +87,11 @@
 &lt;li&gt;&lt;a href=&#34;https://blog.csdn.net/m0_38039437/article/details/104115312&#34;&gt;Jmeter 吞吐量定时器 Constant Throughput Timer&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;還有最實際的：
-&lt;img src=&#34;https://image.igouist.net/UttrtAL.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;</description>
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/UttrtAL.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -68,7 +100,11 @@
       <pubDate>Sun, 12 Jan 2025 00:00:00 +0800</pubDate>
       <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2025/01/wakatime-hide-project-name-and-offline-and-initialized/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/5UBS6ab.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/5UBS6ab.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;WakaTime 是一款紀錄 Coding 時間的好用工具，只要安裝 IDE 的擴充套件，就可以輕鬆地記錄各個語言、編輯器、專案所用的時間。我從 2020 年寫了篇 &lt;a href=&#34;https://igouist.github.io/post/2020/06/wakatime/&#34;&gt;WakaTime 介紹文章&lt;/a&gt; 開始，也一路用到現在 2025 了，已經習慣動不動上去看兩眼的生活。&lt;/p&gt;
 &lt;p&gt;但在相對封閉的一些環境進行開發時，我們可能需要先對 WakaTime 調整一些設定才能用得安心，這篇筆記就分享一下最近遇到的三個場景，供有興趣的朋友參考參考。&lt;/p&gt;
 &lt;h2 id=&#34;在-wakatime-隱藏敏感資訊檔案名稱專案名稱&#34;&gt;在 WakaTime 隱藏敏感資訊（檔案名稱、專案名稱…）&lt;/h2&gt;
@@ -96,13 +132,21 @@
 &lt;hr&gt;
 &lt;p&gt;開啟 &lt;code&gt;hide_file_names&lt;/code&gt;（隱藏檔案名稱）之後，檔案名稱就不會傳送上去。&lt;/p&gt;
 &lt;p&gt;在 WakaTime 看見的會是 HIDDEN：
-&lt;img src=&#34;https://image.igouist.net/xbKTWlCm.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/xbKTWlCm.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：因為檔案名稱變成 HIDDEN 了，所以如果原本有用自訂規則來偵測副檔名之類的做法（像 &lt;code&gt;.linq&lt;/code&gt; =&amp;gt; C#）就會吃不到囉。如果有使用 Custom rules 的朋友請再注意一下。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;hr&gt;
 &lt;p&gt;開啟 &lt;code&gt;hide_project_names&lt;/code&gt;（隱藏專案名稱）之後，則會幫你的專案取一個新名字。這個名字會在專案資料夾底下建一個 &lt;code&gt;.wakatime-project&lt;/code&gt; 的檔案並存放在裡面。&lt;/p&gt;
 &lt;p&gt;在 WakaTime 看見的就會是這組專案名稱囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/vwtakngm.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/vwtakngm.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;最後這組 &lt;code&gt;hide_project_folder&lt;/code&gt; 則是會隱藏完整路徑。&lt;/p&gt;
 &lt;p&gt;原本的路徑像是這樣的話：&lt;code&gt;/User/me/projects/bar/src/file.ts&lt;/code&gt; &lt;br/&gt;
@@ -114,7 +158,11 @@
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-toml&#34; data-lang=&#34;toml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;[&lt;span style=&#34;color:#a6e22e&#34;&gt;settings&lt;/span&gt;]
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;hostname&lt;/span&gt; = &lt;span style=&#34;color:#a6e22e&#34;&gt;nice_machine&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在 WakaTime 就可以看見自訂的機器名稱囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/R9T4TfTm.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/R9T4TfTm.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h2 id=&#34;開啟-wakatime-離線暫存offline&#34;&gt;開啟 WakaTime 離線暫存（Offline）&lt;/h2&gt;
 &lt;p&gt;除了隱藏專案相關的敏感資訊以外，有時候我們也會到一些暫時無法聯網的地方工作。&lt;/p&gt;
 &lt;p&gt;這時候像 Git 這種可以離線工作、連線再上傳的工具就非常方便。&lt;/p&gt;
@@ -122,7 +170,11 @@
 &lt;p&gt;要開啟的話，同樣要先到上面提到的 &lt;code&gt;.wakatime.cfg&lt;/code&gt;，加上：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-toml&#34; data-lang=&#34;toml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;offline&lt;/span&gt; = &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這樣當我們沒有接上網路的時候，WakaTime 就會顯示離線模式：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/CfQU139.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/CfQU139.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;離線模式時，會將資料暫存在 &lt;code&gt;.wakatime/offline_heartbeats.bdb&lt;/code&gt;，等待重新連線後再上傳&lt;/p&gt;
 &lt;p&gt;這樣就可以安心繼續 Coding 囉～&lt;/p&gt;
 &lt;hr&gt;
@@ -134,7 +186,11 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 上傳離線資料&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;.\wakatime-cli-windows-amd64.exe --sync-offline-activity &lt;span style=&#34;color:#ae81ff&#34;&gt;9999&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/akMO4XA.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/akMO4XA.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h2 id=&#34;wakatime-卡在初始化initialized試試下載-wakatime-cli&#34;&gt;WakaTime 卡在初始化（initialized）？試試下載 WakaTime-CLI&lt;/h2&gt;
 &lt;p&gt;這次還有遇到一個怪怪的狀況：WakaTime 的狀態一直卡在初始化（initialized）&lt;/p&gt;
 &lt;p&gt;折磨半天之後，終於找到了問題：我的開發環境連不到 Github，而 &lt;strong&gt;WakaTime 會嘗試上去 Github 更新 WakaTime CLI&lt;/strong&gt;，於是就卡住了。&lt;/p&gt;
@@ -156,7 +212,11 @@
       <pubDate>Mon, 10 Oct 2022 18:50:00 +0800</pubDate>
       <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2022/10/jmeter/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/sMw5vbw.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/sMw5vbw.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;前陣子協助某支 API 的壓力測試，趁機請 QA 朋朋指導指導一下，因此接觸了這款簡單好用的壓測工具 JMeter，趁現在記憶還在的時候記錄起來。&lt;/p&gt;
 &lt;p&gt;&lt;del&gt;往後其他同事只要說 API 弄好了可以串了，就先幫他打個一萬次壓壓驚，真是貼心&lt;/del&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://jmeter.apache.org/&#34;&gt;JMeter&lt;/a&gt; 是款充滿暴力的壓力測試工具，只要告訴他：你要揍哪支 API？要揍幾拳？揍他個幾輪？它就會忠實地對你指定的 API 爆打一頓。&lt;/p&gt;
@@ -164,16 +224,36 @@
 &lt;blockquote&gt;
 &lt;p&gt;JMeter 會需要 Java，如果還沒有 Java 的朋友可以先安裝一下：&lt;a href=&#34;https://www.java.com/zh-TW/download/ie_manual.jsp?locale=zh_TW&#34;&gt;下載 Windows 適用的 Java&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;首先讓我們到 JMeter 官網的 &lt;a href=&#34;https://jmeter.apache.org/download_jmeter.cgi&#34;&gt;Download 頁面&lt;/a&gt; 來下載，這邊我選擇 zip：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/mBnMtJj.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/mBnMtJj.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;下載並解壓縮後，可以在 &lt;code&gt;/bin&lt;/code&gt; 找到 &lt;code&gt;jmeter.bat&lt;/code&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/N2WX2Ff.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/N2WX2Ff.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;點開之後就會開啟 JMeter 的介面囉！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/d38R9nN.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/d38R9nN.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h3 id=&#34;更改語言&#34;&gt;更改語言&lt;/h3&gt;
 &lt;p&gt;雖然 JMeter 的中文翻譯有些殘缺，但對英文弱弱的我來說，介面有太多英文會讓心理壓力變得太大，果然還是得先更改語言：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/gTPOjr5.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/gTPOjr5.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著就會看到介面的大部分都變成中文囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/qdtnfqJ.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/qdtnfqJ.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h2 id=&#34;批次呼叫指定的-api&#34;&gt;批次呼叫指定的 API&lt;/h2&gt;
 &lt;p&gt;雖然 JMeter 支援了一堆測試功能，例如 TCP 之類的，但身為一個 CRUD 工程師，我們當然要用呼叫 API 來當作範例囉！&lt;/p&gt;
 &lt;p&gt;在先前的 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi/&#34;&gt;API 筆記&lt;/a&gt;，我們已經建立過簡單的「查詢卡片」API：&lt;/p&gt;
@@ -181,13 +261,25 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;這次就用 Local 的這支 API 作為範例來操作 JMeter 吧。&lt;/p&gt;
 &lt;h3 id=&#34;建立-thread-group&#34;&gt;建立 Thread Group&lt;/h3&gt;
 &lt;p&gt;讓我們回到 JMeter，可以看到預設已經有一組測試計畫了：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/bvkLSBy.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/bvkLSBy.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;而我們將會在測試計畫中加入幾個元素，利用這些元素的組合來達到我們測試 API 的目標。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;首先我們會需要一個執行緒群組（Thread Group）&lt;/strong&gt;，用來告訴 JMeter 我們打算如何規劃這些 Thread 的行動。可以當作我們正在寫一個迴圈，現在才正要訂迴圈的內容而已。&lt;/p&gt;
 &lt;p&gt;讓我們在預設的測試計畫上按右鍵，新增一個執行緒群組：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/iheogno.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/iheogno.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著應該就會看到我們的測試計畫下多了一個群組，並且進入了該群組的設定畫面：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/MOvw1JB.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/MOvw1JB.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這邊要特別注意的是右側的「執行緒屬性」，我們白話一點來說明：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;執行緒數量：要打幾次&lt;/li&gt;
@@ -206,56 +298,132 @@
 &lt;p&gt;現在我們已經把執行緒群組建好了，讓我們指派任務給這個群組吧！&lt;/p&gt;
 &lt;h3 id=&#34;建立-http-request&#34;&gt;建立 Http Request&lt;/h3&gt;
 &lt;p&gt;在執行緒群組上右鍵 &amp;gt; 新增，可以看到一排能指派給這群組的任務，其中「取樣」就是指我們這次的目標。這邊讓我們選擇「取樣 &amp;gt; HTTP 要求」：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/a2Qsovz.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/a2Qsovz.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著可以看到 HTTP Request 的設定畫面，如同前面所說的，我們這次的目標是 &lt;code&gt;GET https://localhost:44304/card&lt;/code&gt;，因此將 API 的資訊填到對應的欄位中：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Vm2tW4M.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/Vm2tW4M.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;在 API 的路由等資訊填好後，下方可以設定呼叫時要帶的參數，例如 Body 或上傳檔案等等。&lt;/p&gt;
 &lt;h3 id=&#34;補充設定-http-request-header&#34;&gt;補充：設定 Http Request Header&lt;/h3&gt;
 &lt;p&gt;很多時候我們要測試的 API 會要求在 Header 帶著 Token 才能使用，這邊也記錄一下掛 Header 的做法。&lt;/p&gt;
 &lt;p&gt;對執行緒群組右鍵 &amp;gt; 新增，選擇「設定元素」，裡面就會有一票設定值可以選，這邊選擇「HTTP 標頭管理員」：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/HYbxiCs.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/HYbxiCs.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;例如我們要指定 Post 的 Body 為 Json，就可以掛一個 &lt;code&gt;content-type&lt;/code&gt; = &lt;code&gt;application/json&lt;/code&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/IAPpOCu.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/IAPpOCu.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這樣就會加到 Header 上囉：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/6Df2gvq.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/6Df2gvq.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;不過我們這次的範例只是一支簡單的查詢卡片，這邊就不用加上啦。讓我們進行下一步吧！&lt;/p&gt;
 &lt;h3 id=&#34;建立-listener&#34;&gt;建立 Listener&lt;/h3&gt;
 &lt;p&gt;當我們的小弟們去解決了目標之後，就必須要回來報告給我們知道。這邊讓我們一樣在執行緒群組上右鍵新增，並且選擇「接聽（Listener）」，先嘗試建立一個「檢視結果樹」：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/PsNUHkJ.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/PsNUHkJ.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;除了檢視結果樹以外也可以新增別的試試看，方便打完 API 之後確認，這邊再加上一個「Summary Report」，現在群組應該會長得像這樣：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/LVfx6r7.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/LVfx6r7.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;等等打完之後再來確認這兩頁的內容。現在讓我們戳戳看 API 吧！&lt;/p&gt;
 &lt;h3 id=&#34;開始執行測試&#34;&gt;開始執行測試&lt;/h3&gt;
 &lt;p&gt;在最上面找到大家都很熟悉的綠色三角，戳下去就會執行這次的測試計畫，也就是照著剛剛的計畫烙一群小弟去揍 API&lt;/p&gt;
 &lt;p&gt;它旁邊還有發現不對勁時使用的 STOP，更旁邊的神奇掃把是用來在結束之後滅證用的清除結果：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/UHKKu0W.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/UHKKu0W.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;總之，用力給他按下綠色三角！&lt;/p&gt;
 &lt;p&gt;這邊就先意思意思揍個一拳，執行之後就可以來看看我們的檢視結果樹：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/rNVpHQD.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/rNVpHQD.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以看到結果樹中會顯示剛剛執行的結果，假設你打了兩百次這邊就會有兩百筆；右側則是這次 API 回傳的結果，通常都是看有沒有好好回 200 OK 就是了 xD&lt;/p&gt;
 &lt;p&gt;此外也可以切換上面的頁籤，看這次 API 回傳的內容：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/OEkzdit.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/OEkzdit.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著切換到剛剛新增過的 Summary Report，可以看 API 回來的時間等資訊：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/BhUNjbc.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/BhUNjbc.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這樣就完成一次測試啦！&lt;/p&gt;
 &lt;p&gt;為了慶祝完成來打個一萬次 API 先（？）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/DX6uzQW.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/DX6uzQW.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h2 id=&#34;小結&#34;&gt;小結&lt;/h2&gt;
 &lt;p&gt;這次筆記了 JMeter 這套壓力測試工具的簡單使用方式，在大多數對 API 做測試的場合中，只需要新增幾個 JMeter 提供的元件就可以完成任務，可以說是相當方便。&lt;/p&gt;
 &lt;p&gt;同時 JMeter 也提供了更多進階場景時用到的工具，來幫助我們在 Request 發送前後進行處理：例如在這次工作上用到的場景來說，就需要從設定元素中新增 CSV Data Set Config 來從 CSV 讀出需要的資訊，利用 &lt;code&gt;${參數名稱}&lt;/code&gt; 的語法來把參數加到我們的 HTTP 請求：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/442wtcA.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/xwrJur8.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/6i8kVCO.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/442wtcA.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/xwrJur8.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/6i8kVCO.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;又或是新增前置處理器，如 JSR223 PreProcesser 來撰寫 JavaScript 腳本，先對參數進行處理等等：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Dv3eiya.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/UZFyHTf.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/Dv3eiya.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/UZFyHTf.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;當然除了從 CSV 設定參數以外，JMeter 也提供了簡單的邏輯控制，像是從一數到十這種是完全沒問題的：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Mdwio69.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/Mdwio69.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;有這些工具可以進行組合，可以說是相當方便。但大多時候我們只會需要用到基本的 Http Request。有興趣嘗試的朋友可以參考 Yuanchieh&amp;rsquo;s Blog 的這篇：&lt;a href=&#34;https://yuanchieh.page/posts/2021/2021-06-26-jmeter-%E4%BD%BF%E7%94%A8%E6%95%99%E5%AD%B8-+-%E8%87%AA%E5%AE%9A%E7%BE%A9%E8%AE%8A%E6%95%B8%E4%BD%BF%E7%94%A8/&#34;&gt;壓測工具：JMeter 使用教學 + 自定義變數使用&lt;/a&gt;，以及官方文件 &lt;a href=&#34;https://jmeter.apache.org/usermanual/index.html&#34;&gt;Apache JMeter - User&amp;rsquo;s Manual&lt;/a&gt; 來試試，這邊就不再贅述。&lt;/p&gt;
 &lt;p&gt;雖然 JMeter 還是有一點小問題，例如那個只有一半的翻譯，還有&lt;a href=&#34;https://stackoverflow.com/questions/53502142/apache-jmeter-showing-different-result-in-windows-and-linux-for-same-test&#34;&gt;跑在 Linux 的表現會比 Windows 好&lt;/a&gt;之類的現象&lt;/p&gt;
 &lt;p&gt;但這無損它是個功能完善又簡單使用的壓力測試工具。需要的時候還是可以打開 JMeter，簡單掛個執行緒群組就揍起來，同事 API 寫好就直接把它打爛，不亦樂乎。&lt;/p&gt;
 &lt;p&gt;&lt;del&gt;雖然我的後端前輩最後跑去用更新更潮的 &lt;a href=&#34;https://k6.io/&#34;&gt;K6&lt;/a&gt; 了，嘖。我筆記都寫完了欸，讓我看看是有多潮……&lt;/del&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/81n6ddE.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/81n6ddE.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;那麼今天的筆記就到這邊，我們下次見！&lt;/p&gt;
 &lt;h2 id=&#34;相關筆記&#34;&gt;相關筆記&lt;/h2&gt;
 &lt;ul&gt;
@@ -280,25 +448,57 @@
       <pubDate>Sun, 18 Sep 2022 10:55:00 +0800</pubDate>
       <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2022/09/imtranslator/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/0XXKTrd.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/0XXKTrd.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;嗨各位朋朋，又到了替文章數灌水的好用工具時間！&lt;/p&gt;
 &lt;p&gt;今天要介紹的是 &lt;a href=&#34;https://chrome.google.com/webstore/detail/imtranslator-translator-d/noaijdpnepcgjemiklgfkcfbkokogabh?hl=zh-TW&#34;&gt;ImTranslator&lt;/a&gt;，它是一款 Chrome 的翻譯套件。由於有&lt;strong&gt;嵌入式翻譯（Inline Translator）&lt;/strong&gt;，意外地在辦公室的詢問度還蠻高的，這就來寫一篇介紹來推廣給和我一樣英文苦手的朋朋們！&lt;/p&gt;
 &lt;p&gt;首先讓我們到 &lt;a href=&#34;https://chrome.google.com/webstore/detail/imtranslator-translator-d/noaijdpnepcgjemiklgfkcfbkokogabh?hl=zh-TW&#34;&gt;Chrome 線上應用程式商店的 ImTranslator 頁面&lt;/a&gt; 將套件安裝到瀏覽器中：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/v8ADxhi.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/v8ADxhi.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;安裝完之後預設會是翻譯成世界語，因此我們要先到擴充功能選項調整一下語言：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/UekSSix.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/UekSSix.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以看到左邊有四種翻譯模式，我們先把翻譯語言都調整一下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/6WJqXzZ.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/6WJqXzZ.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這邊也可以更改翻譯來源，我個人是都用預設的 Google 翻譯。此外像是嵌入式翻譯結果的文字顏色也可以在這邊修改。&lt;/p&gt;
 &lt;p&gt;接著我們來看看這四種翻譯模式吧：&lt;/p&gt;
 &lt;p&gt;首先是我個人最常用的嵌入式翻譯（Inline Translator），只要將翻譯目標的句子反白起來，按下 &lt;strong&gt;Alt + C&lt;/strong&gt;，就會在翻譯目標的句子後方插入翻譯結果：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/bE49bME.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/bE49bME.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;如果想清除翻譯結果可以按下 Alt + X：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ULRFWJd.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/ULRFWJd.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著是彈出視窗（Pop-up Bubble），顧名思義就是彈出式視窗。不過由於我不喜歡彈一塊視窗出來擋畫面，平常都是關閉的，只有嵌入式翻譯會讓版面跑版的時候才從右鍵選單使用：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/llDpDnC.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/llDpDnC.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著是窗口翻譯（ImTranslator），就是彈出視窗的獨立視窗版，好處是可以用滑鼠拖移：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/vNKPRY4.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/vNKPRY4.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;最後是網頁翻譯（Webpage Translation），不過這功能就和 Chrome 右鍵的「翻譯成 繁體（中文）」意思一樣，就不再贅述，我也沒用過。&lt;/p&gt;
 &lt;p&gt;看過一輪上面的翻譯模式後，應該可以發現這套件最香的還是嵌入式翻譯，可以中英對照對我這種不擅長英文又怕被機器翻譯幹掉術語的人來說真是一大救贖，善哉善哉。&lt;/p&gt;
 &lt;p&gt;&lt;del&gt;我相信真的有人用中英對照來練習英文閱讀啦，但我是真的看不懂= =a&lt;/del&gt;&lt;/p&gt;
@@ -315,19 +515,43 @@
       <pubDate>Sat, 20 Aug 2022 08:00:00 +0800</pubDate>
       <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2022/08/devtoys/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://github.com/veler/DevToys/raw/main/assets/logo/300x300.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;
+
+&lt;img
+  src=&#34;https://github.com/veler/DevToys/raw/main/assets/logo/300x300.png&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;嗨各位朋朋，又双叒叕到了「同事推薦的好用工具」時間！&lt;/p&gt;
 &lt;p&gt;今天要介紹的是 &lt;a href=&#34;https://devtoys.app/&#34;&gt;Devtoys&lt;/a&gt;：這是一套包含了許多貼心小工具的工具箱，例如 UUID 產生器、Base64 編碼解碼、JSON Format 都可以在這邊找到，省下 Google 這些小工具的時間。&lt;/p&gt;
 &lt;p&gt;進入&lt;a href=&#34;https://devtoys.app/&#34;&gt;官網&lt;/a&gt;或 &lt;a href=&#34;https://www.microsoft.com/store/apps/9pgcv4v3bk4w&#34;&gt;Store&lt;/a&gt; 下載之後，點開就能在畫面上看到一整堆小工具：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/C0fUpI2.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/C0fUpI2.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;左邊的工具列也有工具分類和搜尋可以使用，具體有哪些工具這邊就不再贅述。可以到 &lt;a href=&#34;https://github.com/veler/DevToys&#34;&gt;Github&lt;/a&gt; 上看一下工具列表，或是就直接下載下來看看更清楚：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/6TdYfDu.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/6TdYfDu.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;例如說當我原本複製了一坨 Json，為了保護眼睛和心靈，我就得上網先找個 Json Formatter 來轉一下；現在我知道 Devtoys 就有，直接打開來用就可以。&lt;/p&gt;
 &lt;p&gt;如果真的很常用到的工具，也可以加到最愛，就會直接出現在左上角的列表中：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/IA0GvHL.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/IA0GvHL.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;同時 DevToys 也支援釘選到 Windows 的「開始」功能表，如果真的很常用也可以直接釘起來：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/gcE827M.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/tpp49cH.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/gcE827M.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/tpp49cH.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;其他遇到的場景還有：複製了 JWT Token 想快速解開、想從 Unix 時間戳轉出時間等等&lt;/p&gt;
 &lt;p&gt;例如我個人最近常跟排程類的服務打交道，就會需要時常調整 Crontab 語法，而 DevToys 當然也有提供工具來幫助我們迅速確認 Cron 的執行時間。&lt;/p&gt;
 &lt;p&gt;像這種時候只要先確認一下 DevToys，也許就能找到對應的工具，下次再遇到就可以省下找工具的時間，可謂是方便方便。&lt;/p&gt;
@@ -343,23 +567,47 @@
       <pubDate>Sun, 07 Aug 2022 11:44:00 +0800</pubDate>
       <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2022/08/snispate/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/w0SORqB.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/w0SORqB.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;嗨各位朋朋，又到了「同事推薦的好用工具」時間！&lt;/p&gt;
 &lt;p&gt;今天要推薦的是 &lt;a href=&#34;https://apps.microsoft.com/store/detail/snipaste/9P1WXPKB68KX?hl=zh-tw&amp;amp;gl=TW&#34;&gt;Snipaste&lt;/a&gt; 這套香香的截圖工具。&lt;/p&gt;
 &lt;p&gt;在遠古時代的時候，我寫部落格或是測ＡＰＩ要貼圖附結果時，都是使用 Windows 內建的剪取工具（&lt;code&gt;Shift + Win + S&lt;/code&gt;）來螢幕截圖，之後貼到小畫家上再進行標記（例如畫底線、紅色框框等等）&lt;/p&gt;
 &lt;p&gt;但有了 Snispate，這個動作就可以一氣呵成！&lt;/p&gt;
 &lt;p&gt;Snipaste 可以直接按下 F1 進入截圖，這時候我們能用滑鼠拖曳來選取截圖範圍，也能夠用拖拉邊界、鍵盤慢慢移動一像素的方式來調整截圖範圍&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/kQN8yzR.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/kQN8yzR.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;其中最方便的部份，就是滑鼠點擊某個區塊時，Snipaste 會嘗試幫你偵測該區塊的範圍，例如直接選取某個視窗，在截圖某些網頁的時候相當方便。此外也還有重複選取上次截圖範圍等貼心功能：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/UJXahha.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/UJXahha.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;選取截圖範圍之後，就會跳出一排工具列：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/yrbv0HT.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/yrbv0HT.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這時候我們就可以直接對截圖內容做標記和加註，例如用框框把重點框選起來，直接加入文字方塊說明，甚至把一些機密資訊馬賽克一下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/51XAXWG.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/51XAXWG.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;而編輯好了之後，就可以選擇最右邊的複製到剪貼簿或存檔囉！&lt;/p&gt;
 &lt;p&gt;像我個人截圖時幾乎都是為了貼到別的地方，所以就時常使用 Snispate 直接 &lt;strong&gt;截圖 → 標記 → 複製 → 貼上&lt;/strong&gt;，一氣呵成！&lt;/p&gt;
 &lt;p&gt;此外要特別講一下的就是複製左邊的這個&lt;strong&gt;釘選圖片&lt;/strong&gt;，它可以讓你把現在的截圖釘選在螢幕上：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Z0JuAgk.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/Z0JuAgk.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;有些時候我們可能正在整理資料，這時候就可以先用釘選的方式把截圖都卡在螢幕上，方便我們快速整合。&lt;/p&gt;
 &lt;p&gt;這個釘選功能用起來，就會像一些警探／偵探片追查犯人時的牆壁和白板那樣，把照片和資料直接釘在上面看出關聯那樣 &lt;del&gt;用起來還蠻帥的&lt;/del&gt;&lt;/p&gt;
 &lt;p&gt;截圖軟體其實還蠻多套的，Snipaste 讓我用起來感覺相當順手，並且釘選貼圖功能也讓有多螢幕的我在整合資料的時候更加流暢。有興趣的朋友也可以試試看，這邊附上 Windows Store 載點：&lt;a href=&#34;https://apps.microsoft.com/store/detail/snipaste/9P1WXPKB68KX?hl=zh-tw&amp;amp;gl=TW&#34;&gt;Snipaste&lt;/a&gt;&lt;/p&gt;
@@ -379,26 +627,58 @@
       <guid>https://igouist.github.io/post/2020/12/7_taskbar/</guid>
       <description>&lt;p&gt;故事是這樣的——&lt;/p&gt;
 &lt;p&gt;Win10 工作列的合併設定有這些選項：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/yZypwQD.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/yZypwQD.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;當選擇「一律、隱藏標籤」時，工作列上同樣的程式就會摺疊起來：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/8JvOmkJ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/8JvOmkJ.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;而「永不」和「當工作列滿時」則會將工作列展開：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/BqA2ERo.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/BqA2ERo.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;好的，那麼像我個性這麼麻煩的人，如果覺得顯示名字很佔位置，可是又不想要摺疊之後按兩次才能打開我要的應用程式，偏偏又很愛開一整排 IDE 的話，有沒有什麼簡單的辦法&lt;strong&gt;不要讓圖示合併，但也不要顯示名字呢？&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;如果有個小工具，可以讓這些工作列的設定更彈性就好了，會有嗎？&lt;/p&gt;
 &lt;p&gt;有的！&lt;/p&gt;
 &lt;p&gt;今天要記錄的是 &lt;strong&gt;7+ Taskbar Tweaker&lt;/strong&gt; 這個小東東，他的畫面是長這樣的&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/bSDYzFO.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/bSDYzFO.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以調整的部分挺多的，可以隨個人喜好進行調整，從滑鼠操作工作列一路到時間要不要顯示秒都有。&lt;/p&gt;
 &lt;p&gt;例如我前面想要的需求，就可以把分組的部分改成「&lt;strong&gt;不分組&lt;/strong&gt;」&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/UePSYB9.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/UePSYB9.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這樣工作列的圖示就變成：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/XJHECgm.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/XJHECgm.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;就是這樣！&lt;/p&gt;
 &lt;p&gt;另外如果對這些選項仍然不滿足的朋友，也可以右鍵開啟&lt;strong&gt;進階選項&lt;/strong&gt;：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/TrJ7IhJ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/TrJ7IhJ.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;像我就有開啟大 icon，看了就是比較舒服&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/oTshGL4.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/oTshGL4.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;另外也能自訂一些滑鼠操作、鍵盤快速鍵等等，能微調的地方蠻多的，很適合有興趣的朋友可以自己研究看看。另外也要感謝巴哈的這篇 &lt;a href=&#34;https://forum.gamer.com.tw/C.php?bsn=60030&amp;amp;snA=525114&#34;&gt;徹底爆改&lt;/a&gt; 多挖了很多小玩具可以玩，哈。&lt;/p&gt;
 &lt;p&gt;那麼今天就介紹到這裡，絕對不是玩小工具和逛耶誕城結果就廢掉沒寫文囧，抱歉啦催稿的碰油，我們下次見～&lt;/p&gt;</description>
     </item>
@@ -409,7 +689,11 @@
       <pubDate>Sun, 08 Nov 2020 23:39:00 +0800</pubDate>
       <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/11/dark-reader/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/G4OjUzE.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/G4OjUzE.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;不能信任那些 Terminal 或編輯器用白底的人。&lt;/br&gt;
 —— &lt;a href=&#34;https://github.com/CodeTengu/JokeKappa/blob/master/jokekappa/jokes/codetengu_weekly.json&#34;&gt;JokeKappa&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
@@ -417,31 +701,59 @@
 &lt;p&gt;&lt;s&gt;絕對不是因為隻狼更新了不小心砍太爽，結果來不及寫介面隔離只能介紹套件水一下，Heiya～&lt;/s&gt;&lt;/p&gt;
 &lt;p&gt;今天要介紹的就是這款 &lt;a href=&#34;https://chrome.google.com/webstore/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh&#34;&gt;Dark Reader&lt;/a&gt;，這是我用 chrome 時首選的暗黑模式擴充套件，在俺寫文的這時候已經超過了三百萬次的下載次數，現在就讓我來記錄一下這款擴充套件的一些特色唄。&lt;/p&gt;
 &lt;p&gt;照慣例先上個預覽圖：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/OOEraiY.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/OOEraiY.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;當我們安裝完成之後，就可以從 Chrome 右上角的擴充套件區看到 DarkReader 的 icon。點開就可以看到它的選單：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/rveo4TK.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/rveo4TK.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;由上而下分別就是最常用的主要調整，左上角可以選擇是否套用，右上則是套件開啟關閉和快捷鍵。接著是一些對比度、亮度等等的調整，可以隨著個人喜好條找到舒適的程度。&lt;/p&gt;
 &lt;p&gt;其中我覺得最中意的就是最下面的「&lt;strong&gt;僅適用於ＯＯＯ&lt;/strong&gt;」的功能，這代表我們可以將上面的設定&lt;strong&gt;僅僅針對某個特定網站作變更&lt;/strong&gt;，而不會遇到在Ａ網站辛辛苦苦調整後覺得順眼了，結果到了Ｂ網站同樣的配置卻相當刺眼的狀況。&lt;/p&gt;
 &lt;p&gt;如此一來，對於某幾個常用的網站，我們完全可以自主微調再套用，甚至針對一些不太適合轉黑色的網站也能夠選擇關閉，這個彈性對我來說是相當實用的功能，幾乎是我最後愛用這款暗黑模式套件的主因。&lt;/p&gt;
 &lt;p&gt;這些紀錄是否要開啟黑色模式的網站，就會記錄在第二個「網站列表」的頁籤。雖然可以手動增加，但我個人是不常用到，在首頁設定即可。&lt;/p&gt;
 &lt;p&gt;而在第三個「更多」的頁籤，就有一些有趣的設定可以調整了：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/2IMcXW4.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/2IMcXW4.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;首先是文字描邊的部分。由於黑暗主題下的白色字會 &lt;a href=&#34;https://www.u-walker.com/news/2464.html&#34;&gt;讓人覺得字的筆劃較粗&lt;/a&gt;，因此大多時候字體就會經過調整。但如果覺得太超過了太細怎麼辦呢？這邊可以調整&lt;strong&gt;文字描邊&lt;/strong&gt;，讓字看起來不要看不見，也不要過眩過粗。&lt;/p&gt;
 &lt;p&gt;再往下則是有四種模式可以設定，預設是動態模式，這邊直接上圖給各位感受一下：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;過濾
-&lt;img src=&#34;https://image.igouist.net/6I58vhi.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/6I58vhi.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;過濾+
-&lt;img src=&#34;https://image.igouist.net/FvCr7iQ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/FvCr7iQ.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;-靜態
-&lt;img src=&#34;https://image.igouist.net/NISE8xa.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/NISE8xa.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;-動態
-&lt;img src=&#34;https://image.igouist.net/sQ6YreP.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/sQ6YreP.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;其中靜態會有一個編輯畫面，可以自己加入 CSS 達到完全客製。&lt;/p&gt;
 &lt;p&gt;而動態則是就交給 Dark Reader 幫你算，像我這種懶人仔就是一路動態到底；像我這種會喜歡 &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=zhuangtongfa.Material-theme&#34;&gt;One Dark Pro&lt;/a&gt; 主題，這類非純黑、漸層質感配色的人，動態的結果也比較符合我的口味
 。&lt;/p&gt;
@@ -457,27 +769,55 @@
       <guid>https://igouist.github.io/post/2020/08/powershell-beauty/</guid>
       <description>&lt;p&gt;最近在兩天內經歷了記憶體死去、系統毀損、機殼碎裂等等，終於電腦重灌。一堆設定都要重弄，正好也是個機會，這篇順手記一下常用好幫手 Powershell 的美化步驟。&lt;/p&gt;
 &lt;p&gt;先放一張施工後的圖鎮樓：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/417skJs.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/417skJs.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以在開始圖示上用右鍵打開選單，之後點選 Powershell；或是 Win + X 打開選單，然後按 I 或 A （後者會以系統管理員身分開啟）就能開啟了。&lt;/p&gt;
 &lt;p&gt;如果選單打開還是 CMD 而不是 Powershell 的，可以先去切換成 Powershell，真的是比較好用啦（&lt;a href=&#34;https://www.microsoft.com/zh-tw/p/windows-terminal/9n0dx20hk701?activetab=pivot:overviewtab&#34;&gt;Windows Terminal&lt;/a&gt; 笑而不語）&lt;/p&gt;
 &lt;p&gt;剛打開的畫面是這樣的：
-&lt;img src=&#34;https://image.igouist.net/JE6BTSU.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/JE6BTSU.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;抱歉，光細明體我就不太行了。所以接下來就從字型這些內建設定開始！&lt;/p&gt;
 &lt;h2 id=&#34;基本設定&#34;&gt;基本設定&lt;/h2&gt;
 &lt;p&gt;在上方的標題列按下右鍵，選擇內容&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/MkWyIv7.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/MkWyIv7.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;首先就讓我們修改&lt;strong&gt;字型&lt;/strong&gt;，我這邊還是採用習慣的 &lt;a href=&#34;https://github.com/be5invis/Sarasa-Gothic&#34;&gt;更紗黑體&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;另外還有一些推薦的字體，可以參閱前陣子整理的 &lt;a href=&#34;https://igouist.github.io/post/2020/03/visualstudio&#34;&gt;Visual studio 環境設定 —— 字型、套件、快捷鍵&lt;/a&gt;。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：還有擴充了 &lt;a href=&#34;https://www.nerdfonts.com/cheat-sheet&#34;&gt;Nerd Fonts&lt;/a&gt; 的等距更紗黑體：&lt;a href=&#34;https://github.com/jonz94/Sarasa-Gothic-Nerd-Fonts&#34;&gt;Sarasa-Gothic-Nerd-Fonts&lt;/a&gt; 可以選擇，Nerd Fonts 能提供許多精美的 icon 讓我們後續改主題的時候大大加分！&lt;/p&gt;&lt;/blockquote&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/93httvP.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/93httvP.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;除了字型以外，我個人還推薦可以修改一個設定，保證質感 UPUP，那就是&lt;strong&gt;透明度&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/OGR98I8.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/OGR98I8.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;我個人習慣採用 80~85% 左右的透明度，搭配黑色背景。在桌面使用的時候看起來就像這樣：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/XBFVEmU.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/XBFVEmU.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以拉回去和一開始的預設狀況做比較，透明感＝質感。&lt;/p&gt;
 &lt;p&gt;另外，背景透明還有意想不到的好處，那就是——&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/4Yh5SvJ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/4Yh5SvJ.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;打指令偷看可以不用切換視窗！&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;基於以上兩點，推薦可以調整透明度，找個適合自己的區間。但要注意，如果太透明的話會讓字跟背景糊在一起，很容易眼花，自己斟酌一下。&lt;/p&gt;
 &lt;p&gt;以上就做完了基本設定，沒意外要做兩次（一般身分和系統管理員）&lt;/p&gt;
@@ -509,15 +849,27 @@
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Set-ExecutionPolicy Unrestricted
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;調整完就可以繼續下載囉！&lt;/p&gt;
 &lt;p&gt;像我重灌的狀況，提示會如下圖，如果已經安裝過 Nuget 提供者，提示應該會更少。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/UoGkW7o.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/UoGkW7o.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h2 id=&#34;安裝-oh-my-posh&#34;&gt;安裝 oh-my-posh&lt;/h2&gt;
 &lt;p&gt;接著讓我們安裝 oh-my-posh：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Install-Module oh-my-posh
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/LQuE2hD.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/LQuE2hD.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;安裝完畢後就可以來試試看囉！&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;更新：Oh-my-posh 也可以從 Microsoft 搜尋並安裝囉！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/3WoVsvL.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/3WoVsvL.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;設定主題&#34;&gt;設定主題&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;更新：由於 Oh-my-posh 設定主題的語法已經改變，因此移除 2020 時的內容，改為 2023 重灌電腦時找到的指令。&lt;/p&gt;
@@ -527,14 +879,22 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;我們丟了一個 powerlevel10k_rainbow 這個主題的 Json 檔案路徑給 oh-my-posh，然後呼叫 &lt;code&gt;Invoke-Expression&lt;/code&gt; 執行它，這時候主題就會變啦～&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：這邊用到一組環境變數 &lt;code&gt;$env:POSH_THEMES_PATH&lt;/code&gt; 實際上是一個資料夾路徑，Oh-my-posh 安裝的主題都會放在這個資料夾裡：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/lWBHJc3.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/lWBHJc3.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;如果你有自己下載的主題，可以也丟到 &lt;code&gt;POSH_THEMES_PATH&lt;/code&gt; 的位置，或是直接更改 &lt;code&gt;--config&lt;/code&gt; 的路徑就可以了。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;每個主題的樣式都不大一樣，可以翻一下 Oh-my-posh 的 &lt;a href=&#34;https://ohmyposh.dev/docs/themes&#34;&gt;Themes&lt;/a&gt; 頁面挑個喜歡的。&lt;/p&gt;
 &lt;h2 id=&#34;撰寫腳本&#34;&gt;撰寫腳本&lt;/h2&gt;
 &lt;p&gt;聰明的你一定發現了，每次重開都要重輸入一次 &lt;code&gt;init&lt;/code&gt; 實在是很麻煩。因此我們接著要設定讓它能一打開就載入主題。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;當 Powershell 開啟時，預設會去讀取使用者的設定檔（Profile）&lt;/strong&gt;，我們就是要把這些指定加到設定檔裡，讓 Powershell 一打開就能美美的。&lt;/p&gt;
 &lt;p&gt;在 Powershell 裡輸入 &lt;code&gt;$PROFILE&lt;/code&gt; 就能取得當前的設定檔位置，通常來說會在 &lt;code&gt;我的文件\WindowsPowerShell&lt;/code&gt; 底下。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/kRKV112.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/kRKV112.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：Powershell 啟動時會依序檢查四個位置來載入設定檔，分別為&lt;/p&gt;
 &lt;ul&gt;
@@ -555,13 +915,21 @@
 &lt;li&gt;&lt;a href=&#34;https://docs.microsoft.com/zh-tw/powershell/module/microsoft.powershell.core/about/about_profiles?view=powershell-7.2&#34;&gt;關於設定檔 - PowerShell | Microsoft Docs&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/blockquote&gt;
 &lt;p&gt;接著我們就前往此處去修改 Powershell 的腳本，如果發現並沒有這個檔案，那還請自己建立一個，檔名和路徑請和 &lt;code&gt;$PROFILE&lt;/code&gt; 一致，像我就取 &lt;code&gt;Microsoft.PowerShell_profile.ps1&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/eJ8A5iY.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/eJ8A5iY.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;之後開啟檔案，貼上我們引入套件和設定主題的指令：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ps1&#34; data-lang=&#34;ps1&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;oh-my-posh init pwsh --config &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;$env:POSH_THEMES_PATH&lt;span style=&#34;color:#e6db74&#34;&gt;/powerlevel10k_rainbow.omp.json&amp;#34;&lt;/span&gt; | Invoke-Expression
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
 &lt;p&gt;再次補充：oh-my-posh 改版之後一些語法有改變，如果有在 &lt;code&gt;Set-Theme&lt;/code&gt; 這步的時候遇到「無法辨識…」問題的朋友，可以嘗試改成用 &lt;code&gt;Set-PoshPrompt -Theme Paradox&lt;/code&gt; 試試看。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;接著讓我們重開 Powershell&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/1kYjQSO.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/1kYjQSO.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以看見它已經順利載入主題囉！&lt;/p&gt;
 &lt;p&gt;因為我覺得切主題前跑那些 Powershell 提示之類的有點醜，所以我會回去 Profile 補一行 Clear：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-ps1&#34; data-lang=&#34;ps1&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;oh-my-posh init pwsh --config &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;$env:POSH_THEMES_PATH&lt;span style=&#34;color:#e6db74&#34;&gt;/powerlevel10k_rainbow.omp.json&amp;#34;&lt;/span&gt; | Invoke-Expression
@@ -574,15 +942,35 @@
 &lt;p&gt;補充：該路徑會根據安裝 &lt;code&gt;oh-my-posh&lt;/code&gt; 的位置而變動，基本上開 Powershell 直接從環境變數的路徑下去找比較快。真的找不到的話也可以下載別人的主題改一改，再修改 `&amp;ndash;config`` 的路徑指到自己改好的 json 就好囉&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;順便提一下，載入使用者設定對用到 Powershell 的地方都有效喲！&lt;/p&gt;
 &lt;p&gt;例如 Visual Studio Code 的 Powershell&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/fqtRmwR.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/fqtRmwR.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;或是 Visual Studio 的開發人員用 Powershell&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ulEehB0.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/ulEehB0.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;都是會吃到個人使用者的設定的。&lt;/p&gt;
 &lt;p&gt;那麼今天就到這裡，最後再把完成品跟預設狀況比對一次吧～&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/JE6BTSU.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/99DaSVP.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/JE6BTSU.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/99DaSVP.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;2023 回來更新文章，順便附個現況：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/JOVI7hg.webp&#34; alt=&#34;Image&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/JOVI7hg.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;同場加映：&lt;/p&gt;
 &lt;p&gt;跟朋友志得意滿地說明了 Powershell 美化作戰後，對方只說了淡淡的一句&lt;/p&gt;
 &lt;p&gt;「哦，我都直接 &lt;a href=&#34;https://cmder.app/&#34;&gt;Cmder&lt;/a&gt;」&lt;/p&gt;
@@ -624,19 +1012,39 @@
 &lt;/ul&gt;
 &lt;h2 id=&#34;介紹&#34;&gt;介紹&lt;/h2&gt;
 &lt;p&gt;首先，我們得先到 &lt;a href=&#34;https://getpocket.com/&#34;&gt;Pocket&lt;/a&gt; 申請一個帳號，我個人是直接使用 Google 帳號做登入。成功登入之後應該能到 Pocket 的大廳：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/JHo0YQh.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/JHo0YQh.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;我們之後儲存的文章就會出現在這裡。上方工具列還有探索的功能，但我個人試過之後大多都是英文文章，對我這種英文白癡派不上什麼用場。&lt;/p&gt;
 &lt;p&gt;接著讓我們安裝 Chrome 的 擴充套件：&lt;a href=&#34;https://chrome.google.com/webstore/detail/save-to-pocket/niloccemoadcdkdjlinkgdfekeahmflj&#34;&gt;Save to Pocket&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;之後我們直接找個一篇文章做示範，然後讓我們按下擴充套件的 Pocket 按鈕…&lt;/p&gt;
 &lt;p&gt;（如果是手機使用者，這邊就是把目標網頁分享給 Pocket App）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/tjRP5o2.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/tjRP5o2.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;再回到 Pocket …&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/SAlnwW4.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/SAlnwW4.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;就成功把文章存下來啦！&lt;/p&gt;
 &lt;p&gt;點進去之後可以發現，它和 Notion、Evernote 那些筆記軟體的擷取方式一樣，是&lt;strong&gt;將文章內容擷取出來&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/HwQbPRP.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/HwQbPRP.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;當然，作為一個閱讀服務，Pocket 服務該有的都有。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/nyAVhSd.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/nyAVhSd.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;畫面上方有一些基礎操作的工具列，例如替&lt;strong&gt;文章內容畫線、或是將文章加上分類標籤、進行封存和刪除等等&lt;/strong&gt;。此外，右上方也能調整閱讀版面的設定，但除了基本的&lt;strong&gt;主題色彩和字體大小&lt;/strong&gt;以外，更客製化的設定選項就必須付費才能取得了。&lt;/p&gt;
 &lt;p&gt;（當然，如果像我這種有在使用 &lt;a href=&#34;https://chrome.google.com/webstore/detail/simpread-reader-view/ijllcpnolfcooahcekpamkbidhejabll/related&#34;&gt;簡閱&lt;/a&gt; 這類閱讀擴充套件的話，這部分就不會有什麼問題了XD）&lt;/p&gt;
 &lt;p&gt;Pocket 作為稍後閱讀的暫存站，我個人是免費就用得很開心。如果有需要無限期存放文章或是無限標籤等需求，請再前往 &lt;a href=&#34;https://getpocket.com/premium?ep=10&#34;&gt;升級頁面&lt;/a&gt; 參考。&lt;/p&gt;
@@ -644,7 +1052,11 @@
 &lt;p&gt;註：Pocket 也有提供朗讀文章的功能，需要的時候可以用聽的，不過我個人沒有試過，因為遇到需要用聽的情景的話，我會跑去聽 Podcast。如果有聽文章習慣或是有興趣的朋友，可以參考&lt;a href=&#34;https://www.playpcesor.com/2016/02/pocket-reade-later.html&#34;&gt;[生活駭客3] 開始「聽」文章，日常時間加一倍的魔法&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;稍後閱讀功能的服務還挺多的，我之所以最後選定使用 Pocket，有一大半原因是因為我發現它&lt;strong&gt;能和我的 Kobo 電子書閱讀器同步&lt;/strong&gt;。作為一個通勤搭車每天動輒一兩小時的上班族，搭車時間拿來看看書看看文章真是再愜意不過了。但由於我真的很懶，捷運又常常站著，書還是挺重的不方便帶來帶去，所以後來我還是毅然決然踏入閱讀器的世界，這時候我才發現了 Pocket。&lt;/p&gt;
 &lt;p&gt;利用 Pocket 我就能把早上從 Feedly 看見的部分文章，挪到上下班搭車的時候再用輕便的電子書閱讀，豈不妙哉。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/cIkoRR1.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/cIkoRR1.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;示意圖（單純只是想秀一下閱讀器）&lt;/p&gt;
 &lt;p&gt;利用 Pocket 我就能把想讀的文章同步到網頁、APP 和閱讀器等各平台，並利用碎片時間來看個一兩篇，既分散了有時遇到太多篇想看的文章的那種壓迫，瑣碎時間也不用再煩惱要幹嘛就能順手看一下，對我這種懶得想當下要幹嘛的人，真的是挺有幫助啊。&lt;/p&gt;
 &lt;h2 id=&#34;結語&#34;&gt;結語&lt;/h2&gt;
@@ -679,7 +1091,11 @@
       <pubDate>Sun, 28 Jun 2020 19:41:00 +0800</pubDate>
       <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/06/electron-net/</guid>
-      <description>&lt;p&gt;&lt;img src=&#34;https://github.com/ElectronNET/Electron.NET/raw/master/assets/images/electron.net-logo.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+      <description>&lt;p&gt;
+
+&lt;img
+  src=&#34;https://github.com/ElectronNET/Electron.NET/raw/master/assets/images/electron.net-logo.png&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;因緣際會下想要弄出一些單機小工具來跑，這時候正巧接觸到 &lt;a href=&#34;https://github.com/ElectronNET/Electron.NET&#34;&gt;Electron.net&lt;/a&gt; 這個神器，特別紀錄一下以免忘記。這是 &lt;a href=&#34;https://www.electronjs.org/&#34;&gt;Electron&lt;/a&gt; 搭配 .net Core 的框架， &lt;strong&gt;Electron 是用 Chromium 和 Node.js 將網頁封裝成桌面應用程式&lt;/strong&gt;，像是 Visual Studio Code、Slack 也都有使用到 Electron。而 &lt;a href=&#34;https://github.com/ElectronNET/Electron.NET&#34;&gt;Electron.net&lt;/a&gt; 顧名思義就是 .net 用的 Electron 框架囉。&lt;/p&gt;
 &lt;p&gt;這邊記錄一下自己嘗試時載入套件和建置的流程，主要參考自黑大的 &lt;a href=&#34;https://blog.darkthread.net/blog/electron-net/&#34;&gt;用 ASP.NET Core 寫桌面 GUI 應用程式 - Electron.NET&lt;/a&gt; 和 &lt;a href=&#34;https://blog.darkthread.net/blog/electron-api-brief/&#34;&gt;Electron.NET API 快速巡覽&lt;/a&gt; 這兩篇文章，以及官方的 &lt;a href=&#34;https://github.com/ElectronNET/electron.net-api-demos&#34;&gt;API DEMO&lt;/a&gt;，特此感謝。&lt;/p&gt;
 &lt;p&gt;本篇小節：&lt;/p&gt;
@@ -691,34 +1107,78 @@
 &lt;li&gt;&lt;a href=&#34;#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99&#34;&gt;參考資料&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;那麼首先從建立新專案開始，這邊用 .net Core MVC 來測試&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/xf2fOwT.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/O0jwPZF.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/xf2fOwT.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/O0jwPZF.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h2 id=&#34;安裝套件及環境設置&#34;&gt;安裝套件及環境設置&lt;/h2&gt;
 &lt;p&gt;建立專案之後，前往 Nuget 先把 &lt;strong&gt;ElectronNET API&lt;/strong&gt; 安裝下來&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/hT5JZu0.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/hT5JZu0.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;安裝完畢之後，開始做一些前置動作，首先：&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;Program.cs&lt;/code&gt; 的部分，加上 &lt;code&gt;.UseElectron(args)&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Vm7P1ds.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/Vm7P1ds.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;Startup.cs&lt;/code&gt; 的部分，加上 &lt;code&gt;Task.Run(async () =&amp;gt; await Electron.WindowManager.CreateWindowAsync()&lt;/code&gt;，讓專案啟動時一併啟動 Electron&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/gvsXNx4.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/gvsXNx4.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著打開命令提示字元或 Powershell ，輸入 &lt;code&gt;dotnet tool install ElectronNET.CLI -g&lt;/code&gt; 安裝 ElectronNET 工具。如果有安裝成功應該會看到下圖的回傳。如果已經安裝，就可以直接進到下一步。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/hf4mg6u.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/hf4mg6u.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著移動到專案資料夾，並輸入 &lt;code&gt;electronize init&lt;/code&gt; 進行初始化，將會建立資料夾和必需檔案，這一步一定要確認成功並顯示 &lt;code&gt;Everything done&lt;/code&gt;，否則後面怎麼跑也起不來。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/q6RdjDm.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/q6RdjDm.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：如果 &lt;code&gt;electronize init&lt;/code&gt; 的時候跳出 &amp;ldquo;Path cannot be null on init&amp;rdquo; 的錯誤，請移動到 &lt;code&gt;Startup.cs&lt;/code&gt; 或是 &lt;code&gt;Program.cs&lt;/code&gt; 所在的目錄再試一次。&lt;/p&gt;
 &lt;p&gt;參考來源：&lt;a href=&#34;https://github.com/ElectronNET/Electron.NET/issues/245&#34;&gt;Electron.NET&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;最後輸入 &lt;code&gt;electronize start&lt;/code&gt; 就可以準備看專案 On 起來囉！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/HoSdpvU.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/HoSdpvU.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;另外除了 &lt;code&gt;electronize start&lt;/code&gt;，環境設置完畢後也可以直接從 Visual Studio 偵錯囉～&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/iFqkq6d.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/iFqkq6d.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;成功從桌面應用開起來了！&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Y89i3HK.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/Y89i3HK.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h2 id=&#34;前後端傳值-ipcmain-ipcrenderer&#34;&gt;前後端傳值 (IpcMain, IpcRenderer)&lt;/h2&gt;
 &lt;p&gt;在 Electron 中，會分成&lt;strong&gt;跑應用程式的主處理序 (main process)&lt;/strong&gt;、和&lt;strong&gt;處理網頁畫面的渲染處理序 (renderer process)&lt;/strong&gt;。而兩者之間的&lt;strong&gt;溝通則經由 &lt;code&gt;Ipc&lt;/code&gt; 開啟頻道傳遞訊息來實現&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;這邊簡單嘗試一次，首先，我們先在 &lt;code&gt;Views/Home/index.cshtml&lt;/code&gt; 加上一個簡單的按鈕&lt;/p&gt;
 &lt;p&gt;並且加上 JavaScript 發送訊息和接收訊息的方法&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/DaNlQgS.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/DaNlQgS.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;const&lt;/span&gt; { &lt;span style=&#34;color:#a6e22e&#34;&gt;ipcRenderer&lt;/span&gt; } &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;require&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;electron&amp;#34;&lt;/span&gt;);
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 發送訊息，這邊傳送一個 Hello
@@ -731,7 +1191,11 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    document.&lt;span style=&#34;color:#a6e22e&#34;&gt;getElementById&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Welcome&amp;#34;&lt;/span&gt;).&lt;span style=&#34;color:#a6e22e&#34;&gt;innerText&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;arg&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;});
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著到對應的 &lt;code&gt;Controllers/HomeController&lt;/code&gt; 的 &lt;code&gt;Index()&lt;/code&gt; 也加上接受到訊息之後加工並發出訊息的處理&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Xw3AX8r.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/Xw3AX8r.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IActionResult Index()
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// 接收訊息&lt;/span&gt;
@@ -745,20 +1209,40 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; View();
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著就讓我們執行看看，當我們按下按鈕&amp;hellip;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/qdkrpQ5.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/HYo0DUp.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/qdkrpQ5.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/HYo0DUp.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這樣就能成功在前後端之間傳值了！但要注意，它是建立一個 Channel 來傳遞訊息，所以&lt;strong&gt;兩邊的 channel 名稱可不能錯了&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;另外也有提供同步版本的 &lt;code&gt;ipcRendered.sendSync()&lt;/code&gt; 與 &lt;code&gt;Electron.IpcMain.OnSync()&lt;/code&gt; 等等方法，相關的操作可以參照官方的 &lt;a href=&#34;https://github.com/ElectronNET/electron.net-api-demos&#34;&gt;API DEMO&lt;/a&gt; 中的 &lt;code&gt;Controllers/IpcController.cs&lt;/code&gt; 及 &lt;code&gt;Views/Ipc/Index.cshtml&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;而關於 IPC 的說明，可以參考這篇 &lt;a href=&#34;https://medium.com/@terracotta_ko/electron-ipc-%E6%A9%9F%E5%88%B6-2a1b087c9ae5&#34;&gt;[Electron] IPC 機制&lt;/a&gt;，以及官方文件：&lt;a href=&#34;https://www.electronjs.org/docs/api/ipc-main&#34;&gt;ipcMain&lt;/a&gt;、&lt;a href=&#34;https://www.electronjs.org/docs/api/ipc-renderer&#34;&gt;ipcRenderer&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id=&#34;打包成執行檔exe&#34;&gt;打包成執行檔（.exe）&lt;/h2&gt;
 &lt;p&gt;既然是桌面軟體，當然是要包裝成 exe 直接執行囉。畢竟總不能做了個小工具分享給朋友，還要「欸你自己開專案建置一下」吧 XD&lt;/p&gt;
 &lt;p&gt;在專案資料夾下用命令列輸入指令 &lt;code&gt;electronize build /target win&lt;/code&gt; ，其中 &lt;code&gt;/target&lt;/code&gt; 除了 win 也可以指定 osx, liunx 等等&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/4iSSuCC.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/4iSSuCC.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;編譯需要一段時間，直到看見 &lt;code&gt;done&lt;/code&gt; 就可以了&lt;/p&gt;
 &lt;p&gt;編出來的安裝包和執行檔會在 &lt;code&gt;bin\Desktop&lt;/code&gt; 和 &lt;code&gt;bin\Desktop\win-unpacked&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/JKqNsVl.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/JKqNsVl.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;稍微打開看看&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Ywg2CoQ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/Ywg2CoQ.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以正常執行！&lt;/p&gt;
 &lt;h2 id=&#34;後記&#34;&gt;後記&lt;/h2&gt;
 &lt;p&gt;目前只做到專案成功跑起來和一些簡單的測試而已，幸虧黑大的文章跟網路上的一些教學相當完整，並沒有花費太多時間。但是畢竟約好了要玩玩看這個框架，且許多功能沒有試過，例如 &lt;a href=&#34;https://blog.darkthread.net/blog/electron-api-brief/&#34;&gt;Electron.NET API 快速巡覽&lt;/a&gt; 提到的大多功能，&lt;del&gt;因此還在煩惱後續的紀錄要集中在這一篇還是另外開成系列文，這部分等下週更新再說囉。&lt;/del&gt;&lt;/p&gt;
@@ -784,30 +1268,70 @@
       <description>&lt;p&gt;這一周又是 &lt;del&gt;偷懶週&lt;/del&gt; 繁忙週，因此就跟大家分享一個有趣的網站：&lt;a href=&#34;https://wakatime.com/&#34;&gt;WakaTime&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;WakaTime 能夠幫你自動記錄寫程式的時間、常用語言及專案，只要簡單地在常用的 IDE 設定好擴充套件就可以達成。 WakaTime 支援的 IDE 可以參閱 &lt;a href=&#34;https://wakatime.com/plugins&#34;&gt;WakaTime - Plugin&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;註冊相當簡單，此處就不贅述。稍微介紹一下儀表板的各區塊的功能：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/wd1LZLr.webp&#34; alt=&#34;&#34;&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/wd1LZLr.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+
 左上會有最近的專案及花費時間，每個色塊都是一個專案，滑鼠移上去就會顯示專案名稱。&lt;/p&gt;
 &lt;p&gt;點擊其中一天更會顯示當天的時間軸，可說是無所遁形。至於它判斷專案名稱的方法是看你編輯的檔案所在的資料夾名稱。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/2icNzlL.webp&#34; alt=&#34;&#34;&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/2icNzlL.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+
 右上是編寫和測試的所佔時間，不過我在使用的時候常常抓不到測試和建置的時間，因此沒在意過。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ic7NGAE.webp&#34; alt=&#34;&#34;&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/ic7NGAE.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+
 正左則是當天的時間軸和某幾段時間正在處理的專案，可以清楚看到大概哪個時段在認真 Coding（因為都是公司專案，這邊就先碼一下）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Qzu0ucB.webp&#34; alt=&#34;&#34;&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/Qzu0ucB.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+
 正右則是達到目標的比例，WakaTime 可以到左側選單的 &lt;code&gt;Goal&lt;/code&gt; 設定個人目標，例如每週幾個小時，就可以在這邊看自己當天的達成率如何。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/nu640EP.webp&#34; alt=&#34;&#34;&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/nu640EP.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+
 左下則是最近常使用的語言和比例，主要是抓取編輯中檔案的副檔名自動判定。另外也能到 &lt;code&gt;Settings -&amp;gt; Custom Rules&lt;/code&gt; 去設定個人化的規則，例如我個人就會將 .ipynb 計時到 Python 中。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Bu5df8N.webp&#34; alt=&#34;&#34;&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/Bu5df8N.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+
 右下就很直覺，就是紀錄常用的 IDE 的時間，像我個人挺偏食的，就不常看到這裡。不過一些用瀏覽器的 Coding 方式就不太適用，像我常用的 Jupyter notebook 基本上就是抓不到，許願希望之後的 Chrome 能支援。&lt;/p&gt;
 &lt;p&gt;除了上面這些區塊，往下拉也可以看到最近的專案耗費的時間，可以看看最近耗費比較多的專案有哪些。&lt;/p&gt;
 &lt;h2 id=&#34;環境設定&#34;&gt;環境設定&lt;/h2&gt;
 &lt;p&gt;WakaTime 主打的就是輕便、自動計時。因此設定步驟也相當簡單，各 IDE 的設定步驟可以從 &lt;a href=&#34;https://wakatime.com/plugins&#34;&gt;WakaTime - Plugin&lt;/a&gt; 裡點選自己用的 IDE 進去看安裝介紹。這邊就以我最常用的 Visual Studio 做示範。&lt;/p&gt;
 &lt;p&gt;首先點選 Wakatime 右上角的 個人頭像，進入 Settings，確認左側在 Account，這時應該能看到自己的 API Key，點選顯示之後先複製下來。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/pvbaKAT.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/pvbaKAT.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;之後打開你的 Visual Studio，上方工具列點選 &lt;code&gt;延伸模組 -&amp;gt; 管理延伸模組&lt;/code&gt;，開啟模組管理員之後選擇 線上，搜尋 Wakatime 並安裝。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Aj6q2XL.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/Aj6q2XL.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;重啟 Visual studio 並安裝完畢後，再度打開時應該會自動跳出設定畫面；如果沒有跳出來，也可以從上方工具列點選 &lt;code&gt;工具 -&amp;gt; WakaTime -&amp;gt; Settings&lt;/code&gt; 進入設定畫面&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/Agrd4QS.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/Agrd4QS.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;設定畫面如下，將剛剛複製的 API Key 貼上。如果是在公司或是有需要設定 Proxy 的地方記得也順便填一下&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/eFCfNv4.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/eFCfNv4.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這樣就設定完囉！是不是很簡單呢？之後當使用 Visual Studio 寫程式的時候，就會自動記下 時間、程式類型、資料夾名稱並傳到 Wakatime 做統計囉&lt;/p&gt;
 &lt;p&gt;當然，對於背景紀錄資料有疑慮的朋友，也可以直接翻 &lt;a href=&#34;https://github.com/wakatime&#34;&gt;WakaTime 的 Github&lt;/a&gt;。這個套件是完全開源的。如果嫌使用擴充太無聊或是想自己開發個比較好看的儀表板的朋友，也可以參閱 &lt;a href=&#34;https://wakatime.com/developers&#34;&gt;Wakatime 的開發者頁面&lt;/a&gt;呦。&lt;/p&gt;
 &lt;p&gt;最後關於紀錄的部分，之前有看到實測說單純掛網走人是不會算時數的。不過會這樣做的人，本來也就沒什麼動機去用這類時間記錄的工具吧！&lt;/p&gt;
@@ -834,13 +1358,25 @@
 &lt;blockquote&gt;
 &lt;p&gt;備註：關於 JSON 可以參閱 &lt;a href=&#34;http://miniaspreading.github.io/guide-to-json/1-what-is-json.html&#34;&gt;JSON精要讀書紀錄&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;照慣例來張效果圖鎮樓
-&lt;img src=&#34;https://image.igouist.net/VYg1Siy.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/VYg1Siy.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;該同學傳來的圖片是長這樣的（示意圖，非當事 API，用 UBike 開放資源臨演）
-&lt;img src=&#34;https://image.igouist.net/kaoOwTt.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/kaoOwTt.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;突然還以為咱們要玩威利在哪裡，這不是欺負我眼睛不好嘛。&lt;/p&gt;
 &lt;p&gt;但畢竟只是小問題，不能開口就要人家給 Swagger 或用個 Postman（API測試神器，之後也來推薦一篇），用圖片描述也是無可厚非，但還是必須顧眼睛。因此現場直接就推薦同學安裝這款 chrome 插件：&lt;a href=&#34;https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc&#34;&gt;Json View&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;安裝之後再度使用瀏覽器打開 API，就會是長這樣的：
-&lt;img src=&#34;https://image.igouist.net/TgKKIUK.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/TgKKIUK.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;經過自動排版之後，這不是好看多了！&lt;/p&gt;
 &lt;p&gt;這邊真心推薦用 Chrome 的朋友，就先裝下來吧；至於火狐似乎原本就會幫忙整理排版了；用 IE 的話，就當我沒說。另外也要感謝親愛的同學，&lt;del&gt;又讓我水了一篇&lt;/del&gt;&lt;/p&gt;
 &lt;p&gt;ps: 最後效果跟鎮樓圖有差別？因為我是黑色主題的愛好者，所以這就再推一個擴充套件囉：&lt;a href=&#34;https://chrome.google.com/webstore/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh&#34;&gt;Dark Reader&lt;/a&gt;。謝謝觀看，咱們下次見～&lt;/p&gt;</description>
@@ -856,17 +1392,33 @@
 &lt;p&gt;今天要分享的是 &lt;a href=&#34;https://carbon.now.sh/&#34;&gt;Carbon&lt;/a&gt; 這個工具，它能夠&lt;strong&gt;將貼上的程式碼輸出成圖片，並且支援程式碼上色&lt;/strong&gt;，還可以自選字型、背景色等等，產出的圖可以說相當有質感。&lt;/p&gt;
 &lt;p&gt;當傳送圖片比較快或排版比較好的場合（例如Line, Facebook..），或是在部落格和文件中想直接放漂亮圖片，以及&lt;strong&gt;需要示範給對方看可是又不想要對方直接複製貼上&lt;/strong&gt;的時候可謂是相當實用。&lt;/p&gt;
 &lt;p&gt;先來一張成果圖鎮樓
-&lt;img src=&#34;https://image.igouist.net/jM07HAC.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/jM07HAC.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;Carbon 的操作相當直覺且簡單，進入 &lt;a href=&#34;https://carbon.now.sh/&#34;&gt;Carbon 的頁面&lt;/a&gt; 後，中央的程式碼區塊可以自由編輯，通常會直接將要做成圖片的程式碼貼於此處。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/RT4XIqZ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/RT4XIqZ.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;而程式碼區塊的上方的兩個下拉選單分別是&lt;strong&gt;程式碼區塊的配色主題&lt;/strong&gt;和&lt;strong&gt;程式語言&lt;/strong&gt;，主要的樣式（例如程式碼上色）會以這兩個為主。&lt;/p&gt;
 &lt;p&gt;接著的調色盤則是&lt;strong&gt;背景色&lt;/strong&gt;，即程式碼區塊外的顏色，也支援透明度。像我要將圖片放在部落格時，就可以讓背景色和部落格一致，使中央的程式碼區塊更強烈。&lt;/p&gt;
 &lt;p&gt;最後的齒輪則是&lt;strong&gt;設定，字型和陰影等都可以從裡面做調整&lt;/strong&gt;。不過選項挺多的，建議可以自己都調看看，像我個人就固定會把上方的狀態列關閉。&lt;/p&gt;
 &lt;p&gt;而右側就是&lt;strong&gt;匯出&lt;/strong&gt;的部分了，有發推特（真的有人會這樣發？我很懷疑）以及下載的選項，下載可以直接點選，或是下拉式輸入檔名和變更圖片大小格式等等。&lt;/p&gt;
 &lt;p&gt;這邊就直接拿上一篇的 &lt;a href=&#34;https://igouist.github.io/post/2020/05/bandon-4-heroku/&#34;&gt;Line Notify 範例&lt;/a&gt; 的程式碼來試試吧。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/JvWVrjQ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/JvWVrjQ.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;而製作出來的效果就會像這樣子：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/jM07HAC.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/jM07HAC.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這工具對我個人來說挺喜歡的，有時候要傳程式碼給同學都會直接截圖，有了這個之後就可以傳得優雅一點（對我就是想叫你自己打）&lt;/p&gt;
 &lt;p&gt;但還沒有用在部落格的打算，畢竟我身邊問過的人都表示：如果他們找到的網頁不給複製就會直接關掉。這… 我選擇妥協，真香。&lt;/p&gt;
 &lt;p&gt;那麼今天的工具推薦就到這邊，歡迎立馬用你的同學 or 同事來試試看，保證能促進友誼、增加互動呦！&lt;/p&gt;
@@ -899,38 +1451,86 @@
 &lt;p&gt;而我們就可以用 Feedly 定期去取得我們列好的 RSS 資訊，省下我們在網站間奔波的時間。類似的服務還有 Inoreader 等等，本質上並沒有太大的差別，可以挑喜歡的試用看看。&lt;/p&gt;
 &lt;h2 id=&#34;開始使用如何訂閱&#34;&gt;開始使用＋如何訂閱&lt;/h2&gt;
 &lt;p&gt;到 &lt;a href=&#34;https://feedly.com/&#34;&gt;Feedly&lt;/a&gt; 的首頁進行註冊之後，會先導到添加資訊來源的頁面如下（我的頁面是黑色的，是因為左側選單有黑暗模式可以開，點一下月亮就可以囉）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/XbpJvdz.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/XbpJvdz.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;搜尋框裡面可以輸入 文字、網址和 RSS 網址 來進行搜尋，以本網站為例，貼上網址之後，Feedly 就會去找是否提供 RSS，有的話就會像這樣搜尋到，便可以按下 Follow；可以從圖片中看見現在只有我一個人追蹤我自己（泣）&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/S71J7dM.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/S71J7dM.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;按下追隨之後，可以按 + New Feed，&lt;strong&gt;這個 Feed 可以把它看作是一種分類&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/WUrdijS.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/WUrdijS.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;由於本站大多分享程式相關的部分，因此我們這邊建立程式設計的分類&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/qxPHVg0.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/qxPHVg0.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;加完之後，就可以在左側看見剛剛建好的分類已經來源囉，分類及來源旁邊的數字則是這個分類下的新文章的篇數&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/DIftHjN.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/DIftHjN.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;為了之後說明方便，再多加幾個來源。下面是我一個挺喜歡的部落格&lt;a href=&#34;https://www.playpcesor.com/&#34;&gt;電腦玩物&lt;/a&gt;，分享挺多時間管理和生活流程等等的工具和技巧。像這種大神級只需要輸入名字搜尋就可以追蹤囉&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/29VwdC6.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/29VwdC6.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;在這一步就可以把平常會看的技術部落格、週刊之類的都加進來，並且予以分類。&lt;/p&gt;
 &lt;p&gt;往後&lt;strong&gt;如果需要訂閱新的來源，在左側選單的 &lt;code&gt;＋&lt;/code&gt; 就可以再回到增加來源的頁面囉！&lt;/strong&gt;&lt;/p&gt;
 &lt;h2 id=&#34;基本操作&#34;&gt;基本操作&lt;/h2&gt;
 &lt;p&gt;訂閱了一些來源之後，就可以嘗試使用。我個人每天會來到 Feedly 從 Today 的部分挑選幾篇標題讓人感興趣的文章來看。可以從左上角點選 Today 就可以回到訂閱文的頁面。&lt;/p&gt;
 &lt;p&gt;右上角可以選擇文章排列的模式，例如很像信箱的顯示標題，和我較喜歡的標題內文，另外也還有像卡片格狀排列的模式可以選，建議先選個喜歡的版面會提高每天閱讀的意願。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/GBsnQU3.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/GBsnQU3.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;因此&lt;strong&gt;最主要的活動範圍就會在這個 Today 進行&lt;/strong&gt;，邊滑動邊選擇不同來源的文章來閱讀，也可以從左側選擇某個分類、甚至某個來源的文章來看。若是網站可以擷取的，&lt;strong&gt;點選文章之後就會從右側彈出文章的簡介，全文仍然要回到來源網頁閱讀&lt;/strong&gt;，為了排版舒適以及支持寫手的流量來看這是相當好的做法。故打開文章之後往下拉，可以看見 &lt;strong&gt;VISIT WEBSITE&lt;/strong&gt; 按下去就會到目標文章囉&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/ER63IbJ.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/ER63IbJ.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;此外也可以看見上面一排工具列，&lt;strong&gt;若是有購買付費服務，就可以和其他像是 Evernote 的工具連動，把文章傳送過去&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;而上方工具列最左側的&lt;strong&gt;書籤圖案則是稍後閱讀 Read Later&lt;/strong&gt;，在這邊選取之後或是在 Today 文章列表有選取的話，&lt;strong&gt;就會記錄到左側選單的 Read Later&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/7GVCm8l.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/7GVCm8l.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接下來最重要的就是已讀功能，除了閱讀完單篇文章標示為已讀，以及在列表對某邊文章打勾以外，當 Today 或某個分類捲動到底時，會有一個 全部標示為已讀 的按鈕可以使用。或是上圖的右側也可以看到一個標著數字的打勾，也是全部已讀的意思。已讀之後就會收到過往已讀的清單中。靠著分類和已讀就可以將每天的資訊整個流動過去。&lt;/p&gt;
 &lt;p&gt;此外，如果跟我一樣&lt;strong&gt;一開始就加上一堆來源的，文章的數量就會爆炸多，左邊的數字也會超級大&lt;/strong&gt;。但這並不用擔心，在資訊爆炸的年代，資訊本身就是看不完的，有些人會因此感到焦慮，但其實篩選比起暴飲暴食更為重要，因此我個人是建議&lt;strong&gt;排定文章分類的優先順序，並且懂得取捨&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;我個人現在是分成 程式設計、知識、科技新聞、一般新聞 等類別，這也代表我個人對這些資訊的優先順序；時間少的時候就從優先順序高的開始看，例如技術大神的新文章，並直接捨棄新聞等較不重要的部分；時間充裕的時候才考慮大致瀏覽過一次去挑想看的來看。&lt;strong&gt;知識類的東西，看了也許有賺，但如果沒有時間看了，不看也不虧，因此並不要太過執著，必要的時候直接全部已讀也是合適的做法&lt;/strong&gt;。&lt;/p&gt;
 &lt;h2 id=&#34;來源管理&#34;&gt;來源管理&lt;/h2&gt;
 &lt;p&gt;如果只是訂閱各網站集中起來，那麼和月刊和報紙等也沒什麼太大的差異。Feedly 最吸引我的一點就是對來源管理的方便度。在每個分類右上角的選單會有個管理來源&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/lXgrTi2.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/lXgrTi2.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;或是左下角的頭像中也可以進入&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/HKnJ8pH.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/HKnJ8pH.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;進入之後就會到資源管理的頁面&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://image.igouist.net/tB4w9J9.webp&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;
+
+&lt;img
+  src=&#34;https://image.igouist.net/tB4w9J9.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;上面會告訴你訂閱了幾個來源，有哪些來源已經有一段時間沒更新（有睡了跟死了兩個程度），&lt;strong&gt;每個來源也可以確認每個月的貼文數量，以及實際上每個月有點進去閱讀的數量&lt;/strong&gt;。藉此就可以掌握那些媒體可能過於嘈雜，或是哪些來源的文章其實並沒有興趣等等，可以按照自己的需求去管理資訊的來源。經過不斷的篩選和添加，就能夠讓整個頁面成為你的形狀。&lt;/p&gt;
 &lt;h2 id=&#34;心得&#34;&gt;心得&lt;/h2&gt;
 &lt;p&gt;這幾天和女友及同事聊到都逛哪些部落格之類的話題時，發現大多都還是有空的時候主動去巡查一遍，最多就到信箱訂閱或是 FB 按讚然後佛系看到這樣，讓我覺得應該推廣一下 Feedly 這股神器。雖然這篇和技術沒什麼直接關係，幸好六角的鼠年全馬有八篇心得文的扣打，就直接選擇用在這裡。&lt;/p&gt;
