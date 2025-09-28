@@ -21,6 +21,7 @@
       <guid>https://igouist.github.io/post/2025/07/migrate-blog-images-to-cloudflare-r2/</guid>
       <description>&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/1753973577696.webp&#34; alt=&#34;1753973862036&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -51,10 +52,12 @@
 &lt;p&gt;總之先到 &lt;a href=&#34;https://dash.cloudflare.com/&#34;&gt;Cloudflare 儀表板&lt;/a&gt;，把 R2 儲存體建出來，然後順手掛個自訂網域：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/1753970440386.webp&#34; alt=&#34;1753970440386&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/1753970454069.webp&#34; alt=&#34;1753970454758&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -65,6 +68,7 @@
 &lt;p&gt;如果你也想要自訂圖片網址，但在 Cloudflare 還沒有任何網域，可以先多找幾篇網域購買和託管到 Cloudflare 的文章（例如 &lt;a href=&#34;https://geekaz.net/cloudflare-domain-tutorial/&#34;&gt;Cloudflare 網域購買教學&lt;/a&gt;）參考參考，再決定要不要投入 $$ 買一個自己喜歡的名字。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;建立完畢之後，可以先進貯體隨便上傳一張圖片，確認一下 URL 有沒有連到圖片：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/1753970484783.webp&#34; alt=&#34;1753970485658&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -166,6 +170,7 @@
 &lt;p&gt;這個步驟最懶的方法就是直接滑鼠點一點，畢竟 Cloudflare R2 在瀏覽器就可以拖檔案上傳了：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/1753970509149.webp&#34; alt=&#34;1753970510004&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -177,6 +182,7 @@
 &lt;p&gt;補充：如果像我一樣，有些 JS 的操作會去呼叫圖片網址的話，可能會看到 CORS 的錯誤訊息，例如：&lt;code&gt;Access to image at &#39;https://xxxx/xxxxxx.webp&#39; from origin &#39;https://xxxxxx.github.io&#39; has been blocked by CORS policy: No &#39;Access-Control-Allow-Origin&#39; header is present on the requested resource.&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;這時候只要去 R2 儲存體的「設定」 找到 CORS 原則，把站台加上去就可以了。&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/1753970523569.webp&#34; alt=&#34;1753970524223&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -193,11 +199,13 @@
 &lt;p&gt;首先我們得申請一組權杖，可以參考 Cloudflare 官方文檔的 &lt;a href=&#34;https://developers.cloudflare.com/r2/api/tokens/&#34;&gt;Authentication&lt;/a&gt; 操作，或是從 R2 頁面的右側進入 API 權杖的頁面：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/1753970536536.webp&#34; alt=&#34;1753970536936&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;新增一組能夠「物件讀取和寫入」的權杖後，會來到金鑰畫面。注意這組金鑰跟識別碼只會出現一次，請務必記下來，等等設定延伸模組的時候會用到：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/1753970546278.webp&#34; alt=&#34;1753970546886&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -205,11 +213,13 @@
 &lt;p&gt;建立完之後，進到我們要上傳圖片的貯體，進到設定頁面，這邊的名稱跟 S3 API 資訊等等也會用到：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/1753970557979.webp&#34; alt=&#34;1753970560756&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;接著讓我們回到 VSCode，到設定裡面找到 Markdown Image 的相關設定，把上傳圖片的方式改為「S3」（不是 Cloudflare 哦！）&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/1753970570066.webp&#34; alt=&#34;1753970570818&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -234,6 +244,7 @@
 &lt;/ul&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/1753970359747.webp&#34; alt=&#34;1753970361767&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -242,6 +253,7 @@
 &lt;p&gt;從 Imgur 爆炸到搬完圖片也拖了快兩個月，但幸好有蠻多前人遺跡和好夥伴 GPT 的協助，還算搬得順利。秉持著一個「做都做了」的理念，乾脆把圖床搬家過程也拿出來水一篇，喜得部落格文章數 +1&lt;/p&gt;
 &lt;p&gt;搬完之後想說圖片也壓縮了、R2 也有快取之類的，是不是再來跑一次 PageSpeed Insights，分數意外地比之前高不少，也算是一個意外撿到的驚喜了&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/1753971346630.webp&#34; alt=&#34;1753971347624&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;

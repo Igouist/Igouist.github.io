@@ -21,6 +21,7 @@
       <guid>https://igouist.github.io/post/2025/07/migrate-blog-images-to-cloudflare-r2/</guid>
       <description>&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/1753973577696.webp&#34; alt=&#34;1753973862036&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -51,10 +52,12 @@
 &lt;p&gt;總之先到 &lt;a href=&#34;https://dash.cloudflare.com/&#34;&gt;Cloudflare 儀表板&lt;/a&gt;，把 R2 儲存體建出來，然後順手掛個自訂網域：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/1753970440386.webp&#34; alt=&#34;1753970440386&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/1753970454069.webp&#34; alt=&#34;1753970454758&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -65,6 +68,7 @@
 &lt;p&gt;如果你也想要自訂圖片網址，但在 Cloudflare 還沒有任何網域，可以先多找幾篇網域購買和託管到 Cloudflare 的文章（例如 &lt;a href=&#34;https://geekaz.net/cloudflare-domain-tutorial/&#34;&gt;Cloudflare 網域購買教學&lt;/a&gt;）參考參考，再決定要不要投入 $$ 買一個自己喜歡的名字。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;建立完畢之後，可以先進貯體隨便上傳一張圖片，確認一下 URL 有沒有連到圖片：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/1753970484783.webp&#34; alt=&#34;1753970485658&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -166,6 +170,7 @@
 &lt;p&gt;這個步驟最懶的方法就是直接滑鼠點一點，畢竟 Cloudflare R2 在瀏覽器就可以拖檔案上傳了：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/1753970509149.webp&#34; alt=&#34;1753970510004&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -177,6 +182,7 @@
 &lt;p&gt;補充：如果像我一樣，有些 JS 的操作會去呼叫圖片網址的話，可能會看到 CORS 的錯誤訊息，例如：&lt;code&gt;Access to image at &#39;https://xxxx/xxxxxx.webp&#39; from origin &#39;https://xxxxxx.github.io&#39; has been blocked by CORS policy: No &#39;Access-Control-Allow-Origin&#39; header is present on the requested resource.&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;這時候只要去 R2 儲存體的「設定」 找到 CORS 原則，把站台加上去就可以了。&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/1753970523569.webp&#34; alt=&#34;1753970524223&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -193,11 +199,13 @@
 &lt;p&gt;首先我們得申請一組權杖，可以參考 Cloudflare 官方文檔的 &lt;a href=&#34;https://developers.cloudflare.com/r2/api/tokens/&#34;&gt;Authentication&lt;/a&gt; 操作，或是從 R2 頁面的右側進入 API 權杖的頁面：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/1753970536536.webp&#34; alt=&#34;1753970536936&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;新增一組能夠「物件讀取和寫入」的權杖後，會來到金鑰畫面。注意這組金鑰跟識別碼只會出現一次，請務必記下來，等等設定延伸模組的時候會用到：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/1753970546278.webp&#34; alt=&#34;1753970546886&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -205,11 +213,13 @@
 &lt;p&gt;建立完之後，進到我們要上傳圖片的貯體，進到設定頁面，這邊的名稱跟 S3 API 資訊等等也會用到：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/1753970557979.webp&#34; alt=&#34;1753970560756&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;接著讓我們回到 VSCode，到設定裡面找到 Markdown Image 的相關設定，把上傳圖片的方式改為「S3」（不是 Cloudflare 哦！）&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/1753970570066.webp&#34; alt=&#34;1753970570818&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -234,6 +244,7 @@
 &lt;/ul&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/1753970359747.webp&#34; alt=&#34;1753970361767&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -242,6 +253,7 @@
 &lt;p&gt;從 Imgur 爆炸到搬完圖片也拖了快兩個月，但幸好有蠻多前人遺跡和好夥伴 GPT 的協助，還算搬得順利。秉持著一個「做都做了」的理念，乾脆把圖床搬家過程也拿出來水一篇，喜得部落格文章數 +1&lt;/p&gt;
 &lt;p&gt;搬完之後想說圖片也壓縮了、R2 也有快取之類的，是不是再來跑一次 PageSpeed Insights，分數意外地比之前高不少，也算是一個意外撿到的驚喜了&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/1753971346630.webp&#34; alt=&#34;1753971347624&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -332,6 +344,7 @@
       <guid>https://igouist.github.io/post/2025/02/jmeter-constant-throughput-timer/</guid>
       <description>&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/XGOmHat.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -344,6 +357,7 @@
 &lt;p&gt;先確認一下環境：我們有一組腳本，內容只是簡單地戳一下 API&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/O3yDOx1.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -353,10 +367,12 @@
 &lt;p&gt;首先讓我們加入一組 Constant Throughput Timer：
 
 
+
 &lt;img
   src=&#34;https://image.igouist.net/ymK5ZCq.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;並且找到 Constant Throughput Timer 裡面的 &lt;strong&gt;Target Throughput（每分鐘呼叫次數）&lt;/strong&gt;，我們這次的需求是每分鐘要戳他個 20 次，這邊就直接放 20.0：
+
 
 
 &lt;img
@@ -366,11 +382,13 @@
 &lt;p&gt;因為我們的需求是跑 5 分鐘，所以先丟個 300 秒：
 
 
+
 &lt;img
   src=&#34;https://image.igouist.net/0eam5FB.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;而且我們這次是用執行時間計算數量的，不希望 Loop Count 影響到我們，直接甩個 Infinite 給他（對，我們就是模擬有個使用者坐在那邊無聊一直按按鈕，而且他節奏感還很好）&lt;/p&gt;
 &lt;p&gt;執行之後就可以確認總量跟每分鐘的吞吐量有沒有符合我們的設置囉：
+
 
 
 &lt;img
@@ -379,6 +397,7 @@
 &lt;p&gt;很好！現在我們已經會使用 Constant Throughput Timer 來控制壓力測試時的吞吐量了。&lt;/p&gt;
 &lt;p&gt;有興趣的朋友可以回去調整各個參數觀察看看，也可以改個 Thread Group 的 Thread 數量看看結果差異，例如當我把上面範例的 Thread 改成 2：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/1iY0YdJ.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -400,6 +419,7 @@
 &lt;p&gt;還有最實際的：
 
 
+
 &lt;img
   src=&#34;https://image.igouist.net/UttrtAL.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;</description>
@@ -412,6 +432,7 @@
       <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2025/01/wakatime-hide-project-name-and-offline-and-initialized/</guid>
       <description>&lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/5UBS6ab.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -445,6 +466,7 @@
 &lt;p&gt;在 WakaTime 看見的會是 HIDDEN：
 
 
+
 &lt;img
   src=&#34;https://image.igouist.net/xbKTWlCm.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -454,6 +476,7 @@
 &lt;p&gt;開啟 &lt;code&gt;hide_project_names&lt;/code&gt;（隱藏專案名稱）之後，則會幫你的專案取一個新名字。這個名字會在專案資料夾底下建一個 &lt;code&gt;.wakatime-project&lt;/code&gt; 的檔案並存放在裡面。&lt;/p&gt;
 &lt;p&gt;在 WakaTime 看見的就會是這組專案名稱囉：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/vwtakngm.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -471,6 +494,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在 WakaTime 就可以看見自訂的機器名稱囉：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/R9T4TfTm.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -482,6 +506,7 @@
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-toml&#34; data-lang=&#34;toml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;offline&lt;/span&gt; = &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這樣當我們沒有接上網路的時候，WakaTime 就會顯示離線模式：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/CfQU139.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -498,6 +523,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 上傳離線資料&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;.\wakatime-cli-windows-amd64.exe --sync-offline-activity &lt;span style=&#34;color:#ae81ff&#34;&gt;9999&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/akMO4XA.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -526,6 +552,7 @@
       <description>&lt;p&gt;在 VSCode 躺了一段時間的 LiveShare 終於派上了用場，這邊就簡單記錄一篇，方便以後推坑的時候用。&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/8qQxzrk.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -543,11 +570,13 @@
 &lt;p&gt;首先第一步當然是先安裝擴充套件：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/zXoTEUA.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;安裝完畢之後，在左下角應該就能看到 Live Share 的圖示：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/tFVEzq6.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -555,11 +584,13 @@
 &lt;p&gt;點擊之後就會開始分享囉，也會很貼心地幫你複製邀請連結：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/2Q4WycJ.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;如果想再複製一次邀請連結，或是想要停止分享，就再戳一次左下角的 Live Share 圖示就可以了：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/DwxhLDP.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -568,22 +599,26 @@
 &lt;p&gt;過程中可以看見對方游標所在的位置：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/TPQAYSd.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;同時在右上角也會有一些功能可以使用，例如追隨對方的視角，還有直接把對方畫面拉過來的大聲公：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/2axqUwE.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/fxcwjFK.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;除此之外，如果不方便通話，也可以留言討論（但大多時候還是邊通話邊改比較方便啦）&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/NslgcUv.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -600,6 +635,7 @@
       <guid>https://igouist.github.io/post/2023/01/banner-2-midjourney-and-canva/</guid>
       <description>&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/MqLSU3f.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -614,11 +650,13 @@
 &lt;p&gt;這邊就稍微紀錄一下，總之先衝到 &lt;a href=&#34;https://www.midjourney.com/home/&#34;&gt;Midjourney&lt;/a&gt;，然後直接註他個冊、登他個入：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/L4aChGM.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;這時候會需要登入 Discord，然後同意一些授權之後，回來首頁選左邊的 &lt;strong&gt;Join the Beta&lt;/strong&gt;，就會被邀請到 Midjourney 的 Discord 伺服器囉：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/5jgjaTO.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -626,17 +664,20 @@
 &lt;p&gt;成功加入伺服器之後，可以看到左邊有一些 &lt;strong&gt;newbies 頻道&lt;/strong&gt;，新來的朋朋們會在這邊產圖玩：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/1fvY8Wi.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;進入頻道後應該會看到很多人已經在玩了。讓我們到下面的對話框，&lt;strong&gt;輸入 &lt;code&gt;/imagine&lt;/code&gt; 找到指令&lt;/strong&gt;（因為太多人用了，可能輸入 &lt;code&gt;/&lt;/code&gt; 就會跳出來了）：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/7EEe5wR.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;接著就可以開始輸入咒文囉！&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/J9xicE0.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -660,6 +701,7 @@
 &lt;p&gt;咒文輸入完之後 Midjourney 會運算一下，過陣子機器人就會 Tag 你跟你說搞定啦：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/HiCtIZr.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -675,10 +717,12 @@
 &lt;p&gt;如果按下Ｕ、選了圖之後就會開始幫你產生高清大圖：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/cxkIp7m.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/TlygHHt.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -696,6 +740,7 @@
 &lt;p&gt;更新：最新的 v5 已經可以支援自動比例囉！&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/wvsnRgc.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -705,6 +750,7 @@
 &lt;p&gt;甚至給我炸雞：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/2VmgckB.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -713,6 +759,7 @@
 &lt;p&gt;決定先在咒文加一些 &lt;code&gt;black background,no background,simple,icon&lt;/code&gt; 之類的關鍵字，讓圖和背景顏色變單調，我再自己把圖拉寬補文字&lt;/p&gt;
 &lt;p&gt;接著就是不斷的調整和重骰：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/1NnhZFP.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -725,11 +772,13 @@
 &lt;p&gt;這就註冊登入到首頁，可以看到已經有一排快速開始的選項可以選擇，看了一下 600x200 的電子郵件標題最符合我要的形狀：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/P2fOyos.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;進來之後就可以看到空白畫面和一排範本，這次我們有備而來，完全不會用到範本：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/3M2NHL2.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -737,11 +786,13 @@
 &lt;p&gt;總之先來上傳區，把剛剛ＡＩ的帥雞圖丟上來：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/QnVrYag.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;接著來調整背景顏色，上傳圖片之後 Canva 就會提供圖片內的一些顏色給你選，不過我試了一下，感覺上面選取顏色再指定圖片的顏色會比較好調整：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/TTwi7by.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -750,10 +801,12 @@
 &lt;p&gt;最後切換到文字頁面，加個標題、選個字型，完工&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/0isGXEL.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/5RzC6yg.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -770,6 +823,7 @@
 &lt;p&gt;最後用一張 OpenAI 家的 DALL.E 產生出來的圖來做結吧，感謝各位&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/8C23Q5n.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;</description>
@@ -782,6 +836,7 @@
       <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2023/01/polyglot-notebooks/</guid>
       <description>&lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/vZzccvm.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -816,6 +871,7 @@
 &lt;p&gt;首先我們需要先在 VSCode 找到「Polyglot Notebooks」這個擴充套件並安裝：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/RHsdh6J.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -829,16 +885,19 @@
 &lt;p&gt;由於我之前已經有在使用 Jupyter Notebook 撰寫 Python，因此這邊就以新增一個 ipynb 檔案進行示範：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/kjSzEzo.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/Z6gdYDa.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;建立了 ipynb 檔案之後，讓我們&lt;strong&gt;切換到 .NET Interactive 引擎&lt;/strong&gt;：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/wntas5a.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -851,11 +910,13 @@
 &lt;p&gt;首先當然要從 Hello world 開始啦，讓我們直接在儲存格裡面開寫：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/g4T1oHZ.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;撰寫，然後&lt;strong&gt;按下全部執行或是左邊的單格執行&lt;/strong&gt;：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/7Vj66zj.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -864,11 +925,13 @@
 &lt;p&gt;儲存格的右下角可以讓我們&lt;strong&gt;切換語言&lt;/strong&gt;：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/KNAYSfy.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;例如說我們可以來個 JavaScript：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/VZ3VmcX.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -877,17 +940,20 @@
 &lt;p&gt;可以&lt;strong&gt;按下左上角的「＋程式碼」來新增程式碼儲存格&lt;/strong&gt;，或是把滑鼠移到儲存格最底部，會出現執行之後幫你往下新增一格的按鈕：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/R5gie4R.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;現在我們可以同時放上兩個語言啦：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/aXXsoMa.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;我們也可以針對某一格來執行，或是用滑鼠選擇指定的儲存格，就可以選擇執行指定的儲存格以上或以下的部份，如果有修改某一格，然後要從修改的部分重跑一次的時候還挺方便的：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/1pSg3Op.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -900,11 +966,13 @@
 &lt;p&gt;除了在最底下新增儲存格的做法以外，我們也可以對指定的區塊上下來插入新儲存格：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/fXuBzU6.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;現在讓我們加入 Markdown 內容：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/x1sEIc6.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -912,11 +980,13 @@
 &lt;p&gt;執行之後就會變成文檔的一部分囉！&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/18uDSVw.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;如果 Markdown 有用到標題之類的，實測也可以進行摺疊：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/563QFBt.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -928,12 +998,14 @@
 &lt;p&gt;接著&lt;strong&gt;直接呼叫參數來印出內容確認&lt;/strong&gt;一下：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/r5zt5Dm.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;現在我想要每一個 code 的第一筆，也就是 True 的那一筆。現在我覺得「也許 GroupBy 之後 Select 第一筆就搞定了吧？」&lt;/p&gt;
 &lt;p&gt;這時候我就可以在下面新增一個儲存格來做測試：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/DeP1PMH.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1015,17 +1087,20 @@
 &lt;p&gt;例如說需要 using 的時候，Github Copilot 會幫忙補：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/mGmDW01.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;安裝 Nuget 套件的時候，也會幫忙補上：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/rI0bf5L.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;甚至－－&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/IxaPE1U.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1047,6 +1122,7 @@
       <guid>https://igouist.github.io/post/2022/10/jmeter/</guid>
       <description>&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/sMw5vbw.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -1059,17 +1135,20 @@
 &lt;p&gt;首先讓我們到 JMeter 官網的 &lt;a href=&#34;https://jmeter.apache.org/download_jmeter.cgi&#34;&gt;Download 頁面&lt;/a&gt; 來下載，這邊我選擇 zip：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/mBnMtJj.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;下載並解壓縮後，可以在 &lt;code&gt;/bin&lt;/code&gt; 找到 &lt;code&gt;jmeter.bat&lt;/code&gt;：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/N2WX2Ff.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;點開之後就會開啟 JMeter 的介面囉！&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/d38R9nN.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1078,11 +1157,13 @@
 &lt;p&gt;雖然 JMeter 的中文翻譯有些殘缺，但對英文弱弱的我來說，介面有太多英文會讓心理壓力變得太大，果然還是得先更改語言：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/gTPOjr5.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;接著就會看到介面的大部分都變成中文囉：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/qdtnfqJ.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1096,6 +1177,7 @@
 &lt;p&gt;讓我們回到 JMeter，可以看到預設已經有一組測試計畫了：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/bvkLSBy.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -1104,11 +1186,13 @@
 &lt;p&gt;讓我們在預設的測試計畫上按右鍵，新增一個執行緒群組：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/iheogno.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;接著應該就會看到我們的測試計畫下多了一個群組，並且進入了該群組的設定畫面：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/MOvw1JB.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1133,11 +1217,13 @@
 &lt;p&gt;在執行緒群組上右鍵 &amp;gt; 新增，可以看到一排能指派給這群組的任務，其中「取樣」就是指我們這次的目標。這邊讓我們選擇「取樣 &amp;gt; HTTP 要求」：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/a2Qsovz.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;接著可以看到 HTTP Request 的設定畫面，如同前面所說的，我們這次的目標是 &lt;code&gt;GET https://localhost:44304/card&lt;/code&gt;，因此將 API 的資訊填到對應的欄位中：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/Vm2tW4M.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1148,17 +1234,20 @@
 &lt;p&gt;對執行緒群組右鍵 &amp;gt; 新增，選擇「設定元素」，裡面就會有一票設定值可以選，這邊選擇「HTTP 標頭管理員」：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/HYbxiCs.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;例如我們要指定 Post 的 Body 為 Json，就可以掛一個 &lt;code&gt;content-type&lt;/code&gt; = &lt;code&gt;application/json&lt;/code&gt;：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/IAPpOCu.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;這樣就會加到 Header 上囉：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/6Df2gvq.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1168,11 +1257,13 @@
 &lt;p&gt;當我們的小弟們去解決了目標之後，就必須要回來報告給我們知道。這邊讓我們一樣在執行緒群組上右鍵新增，並且選擇「接聽（Listener）」，先嘗試建立一個「檢視結果樹」：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/PsNUHkJ.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;除了檢視結果樹以外也可以新增別的試試看，方便打完 API 之後確認，這邊再加上一個「Summary Report」，現在群組應該會長得像這樣：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/LVfx6r7.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1183,12 +1274,14 @@
 &lt;p&gt;它旁邊還有發現不對勁時使用的 STOP，更旁邊的神奇掃把是用來在結束之後滅證用的清除結果：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/UHKKu0W.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;總之，用力給他按下綠色三角！&lt;/p&gt;
 &lt;p&gt;這邊就先意思意思揍個一拳，執行之後就可以來看看我們的檢視結果樹：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/rNVpHQD.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1197,11 +1290,13 @@
 &lt;p&gt;此外也可以切換上面的頁籤，看這次 API 回傳的內容：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/OEkzdit.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;接著切換到剛剛新增過的 Summary Report，可以看 API 回來的時間等資訊：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/BhUNjbc.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1209,6 +1304,7 @@
 &lt;p&gt;這樣就完成一次測試啦！&lt;/p&gt;
 &lt;p&gt;為了慶祝完成來打個一萬次 API 先（？）&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/DX6uzQW.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1218,15 +1314,18 @@
 &lt;p&gt;同時 JMeter 也提供了更多進階場景時用到的工具，來幫助我們在 Request 發送前後進行處理：例如在這次工作上用到的場景來說，就需要從設定元素中新增 CSV Data Set Config 來從 CSV 讀出需要的資訊，利用 &lt;code&gt;${參數名稱}&lt;/code&gt; 的語法來把參數加到我們的 HTTP 請求：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/442wtcA.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/xwrJur8.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/6i8kVCO.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1234,16 +1333,19 @@
 &lt;p&gt;又或是新增前置處理器，如 JSR223 PreProcesser 來撰寫 JavaScript 腳本，先對參數進行處理等等：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/Dv3eiya.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/UZFyHTf.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;當然除了從 CSV 設定參數以外，JMeter 也提供了簡單的邏輯控制，像是從一數到十這種是完全沒問題的：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/Mdwio69.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1253,6 +1355,7 @@
 &lt;p&gt;但這無損它是個功能完善又簡單使用的壓力測試工具。需要的時候還是可以打開 JMeter，簡單掛個執行緒群組就揍起來，同事 API 寫好就直接把它打爛，不亦樂乎。&lt;/p&gt;
 &lt;p&gt;&lt;del&gt;雖然我的後端前輩最後跑去用更新更潮的 &lt;a href=&#34;https://k6.io/&#34;&gt;K6&lt;/a&gt; 了，嘖。我筆記都寫完了欸，讓我看看是有多潮……&lt;/del&gt;&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/81n6ddE.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1283,6 +1386,7 @@
       <guid>https://igouist.github.io/post/2022/09/imtranslator/</guid>
       <description>&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/0XXKTrd.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -1291,17 +1395,20 @@
 &lt;p&gt;首先讓我們到 &lt;a href=&#34;https://chrome.google.com/webstore/detail/imtranslator-translator-d/noaijdpnepcgjemiklgfkcfbkokogabh?hl=zh-TW&#34;&gt;Chrome 線上應用程式商店的 ImTranslator 頁面&lt;/a&gt; 將套件安裝到瀏覽器中：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/v8ADxhi.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;安裝完之後預設會是翻譯成世界語，因此我們要先到擴充功能選項調整一下語言：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/UekSSix.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;可以看到左邊有四種翻譯模式，我們先把翻譯語言都調整一下：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/6WJqXzZ.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1311,11 +1418,13 @@
 &lt;p&gt;首先是我個人最常用的嵌入式翻譯（Inline Translator），只要將翻譯目標的句子反白起來，按下 &lt;strong&gt;Alt + C&lt;/strong&gt;，就會在翻譯目標的句子後方插入翻譯結果：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/bE49bME.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;如果想清除翻譯結果可以按下 Alt + X：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/ULRFWJd.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1323,11 +1432,13 @@
 &lt;p&gt;接著是彈出視窗（Pop-up Bubble），顧名思義就是彈出式視窗。不過由於我不喜歡彈一塊視窗出來擋畫面，平常都是關閉的，只有嵌入式翻譯會讓版面跑版的時候才從右鍵選單使用：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/llDpDnC.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;接著是窗口翻譯（ImTranslator），就是彈出視窗的獨立視窗版，好處是可以用滑鼠拖移：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/vNKPRY4.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1350,6 +1461,7 @@
       <guid>https://igouist.github.io/post/2022/08/devtoys/</guid>
       <description>&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://github.com/veler/DevToys/raw/main/assets/logo/300x300.png&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -1358,11 +1470,13 @@
 &lt;p&gt;進入&lt;a href=&#34;https://devtoys.app/&#34;&gt;官網&lt;/a&gt;或 &lt;a href=&#34;https://www.microsoft.com/store/apps/9pgcv4v3bk4w&#34;&gt;Store&lt;/a&gt; 下載之後，點開就能在畫面上看到一整堆小工具：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/C0fUpI2.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;左邊的工具列也有工具分類和搜尋可以使用，具體有哪些工具這邊就不再贅述。可以到 &lt;a href=&#34;https://github.com/veler/DevToys&#34;&gt;Github&lt;/a&gt; 上看一下工具列表，或是就直接下載下來看看更清楚：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/6TdYfDu.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1371,16 +1485,19 @@
 &lt;p&gt;如果真的很常用到的工具，也可以加到最愛，就會直接出現在左上角的列表中：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/IA0GvHL.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;同時 DevToys 也支援釘選到 Windows 的「開始」功能表，如果真的很常用也可以直接釘起來：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/gcE827M.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/tpp49cH.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1402,6 +1519,7 @@
       <guid>https://igouist.github.io/post/2022/08/snispate/</guid>
       <description>&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/w0SORqB.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -1412,11 +1530,13 @@
 &lt;p&gt;Snipaste 可以直接按下 F1 進入截圖，這時候我們能用滑鼠拖曳來選取截圖範圍，也能夠用拖拉邊界、鍵盤慢慢移動一像素的方式來調整截圖範圍&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/kQN8yzR.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;其中最方便的部份，就是滑鼠點擊某個區塊時，Snipaste 會嘗試幫你偵測該區塊的範圍，例如直接選取某個視窗，在截圖某些網頁的時候相當方便。此外也還有重複選取上次截圖範圍等貼心功能：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/UJXahha.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1424,11 +1544,13 @@
 &lt;p&gt;選取截圖範圍之後，就會跳出一排工具列：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/yrbv0HT.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;這時候我們就可以直接對截圖內容做標記和加註，例如用框框把重點框選起來，直接加入文字方塊說明，甚至把一些機密資訊馬賽克一下：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/51XAXWG.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1437,6 +1559,7 @@
 &lt;p&gt;像我個人截圖時幾乎都是為了貼到別的地方，所以就時常使用 Snispate 直接 &lt;strong&gt;截圖 → 標記 → 複製 → 貼上&lt;/strong&gt;，一氣呵成！&lt;/p&gt;
 &lt;p&gt;此外要特別講一下的就是複製左邊的這個&lt;strong&gt;釘選圖片&lt;/strong&gt;，它可以讓你把現在的截圖釘選在螢幕上：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/Z0JuAgk.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1460,6 +1583,7 @@
       <guid>https://igouist.github.io/post/2022/06/wox-and-everything/</guid>
       <description>&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/Qw6TXg6.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -1472,6 +1596,7 @@
 &lt;p&gt;安裝完畢之後打開，應該就會看到一個相當簡潔的畫面：上面是搜尋欄，下面是搜尋結果，支援多關鍵字。就是這麼簡單！&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/VsD1rDG.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -1482,11 +1607,13 @@
 &lt;p&gt;安裝完畢之後，使用 &lt;code&gt;Alt + 空白鍵&lt;/code&gt; 的快捷鍵，就可以叫出 Wox：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/Q6geVPn.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;除了和 Everything 結合來搜尋檔案以外，已經安裝的應用程式也是沒問題的：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/gPFfxQ3.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1495,11 +1622,13 @@
 &lt;p&gt;讓我們對運行中的 Wox 右鍵進入設定選單：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/d8Nw70J.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;設定中可以調整主題等等：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/setgxZx.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1507,11 +1636,13 @@
 &lt;p&gt;接著我們來看看模組，可以看到已經安裝了一些模組，例如網頁搜尋和命令列指令：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/rzeEr0t.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;大多數的模組也可以自訂觸發關鍵字。例如網頁搜尋的觸發關鍵字 &lt;code&gt;g&lt;/code&gt;，就可以這樣使用：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/ghxyyPz.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1533,6 +1664,7 @@
       <guid>https://igouist.github.io/post/2022/06/angle-sharp/</guid>
       <description>&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/DHoF8Yw.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -1542,6 +1674,7 @@
 &lt;h2 id=&#34;安裝套件&#34;&gt;安裝套件&lt;/h2&gt;
 &lt;p&gt;首先要先從 &lt;a href=&#34;https://www.nuget.org/packages/AngleSharp&#34;&gt;Nuget&lt;/a&gt; 安裝 AngleSharp&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/JeS3P2J.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1576,12 +1709,14 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以看到抓了一堆東西回來，包含網頁的 Uri、Body 等等：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/EfJewBi.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;h2 id=&#34;調整配置準備-cookie&#34;&gt;調整配置、準備 Cookie&lt;/h2&gt;
 &lt;p&gt;在前一個步驟我們雖然把網頁抓回來了，但讓我們看一下 &lt;code&gt;context.Body.InnerHtml&lt;/code&gt; 的內容：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/VTbpoOU.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1620,6 +1755,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著讓我們來確認爬回來的 HTML：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/hRUlaz3.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -1653,6 +1789,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    .Dump();
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/GIaNgMI.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -1663,6 +1800,7 @@
 &lt;p&gt;註：現在都２０２２年了，瀏覽器當然也有提供直接抓 Selector 的功能了&lt;/p&gt;
 &lt;p&gt;這邊以 Edge 為例，讓我們到目標網頁按下Ｆ１２打開開發人員工具，直接選取目標：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/F2XyfEX.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1718,6 +1856,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;.Dump();
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/ZnjBF3U.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -1730,6 +1869,7 @@
 &lt;p&gt;因此不感興趣的朋友也可以直接跳過這一段，直接前往&lt;a href=&#34;#%E5%B0%8F%E7%B5%90&#34;&gt;小結&lt;/a&gt;，準備出發去動手抓自己想要的網頁囉。&lt;/p&gt;
 &lt;p&gt;現在讓我們回到文章列表來，只抓第一頁實在沒什麼搞頭。如果我們想要換頁，那麼首先就要先抓出這個換頁按鈕：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/ndkeqwG.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1862,6 +2002,7 @@
       <guid>https://igouist.github.io/post/2022/03/omni/</guid>
       <description>&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/D29Htug.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -1877,12 +2018,14 @@
 &lt;p&gt;首先讓我們到&lt;a href=&#34;https://chrome.google.com/webstore/detail/omni-bookmark-history-tab/mapjgeachilmcbbokkgcbgpbakaaeehi&#34;&gt;擴充功能商店&lt;/a&gt;把 Omni 安裝進來：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/4Q9b4Au.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;安裝完畢重開一下瀏覽器就可以開始使用囉！&lt;/p&gt;
 &lt;p&gt;接著只要按下快捷鍵（預設為 &lt;code&gt;Ctrl + Shift + K&lt;/code&gt;）就可以叫出搜尋視窗：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/PFwSJRW.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1920,6 +2063,7 @@
       <guid>https://igouist.github.io/post/2021/05/visual-studio-split-window-in-one-file/</guid>
       <description>&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/LEB9mUy.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -1928,6 +2072,7 @@
 &lt;p&gt;在 Visual Studio 用分割視窗的方式開啟不同的檔案，相信大家都已經駕輕就熟，尤其用過 Visual Studio 來進行 Merge 的朋友一定對這樣的排版不陌生。但是你知道就算&lt;strong&gt;對同一個檔案，也可以使用分割視窗來同時編輯兩個地方嗎&lt;/strong&gt;？只需要動動滑鼠就可以囉！&lt;/p&gt;
 &lt;p&gt;我們只需要將滑鼠移到卷軸上…&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/H8G3k1M.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1949,11 +2094,13 @@
 &lt;p&gt;使用 &lt;code&gt;Ctrl K&lt;/code&gt;, &lt;code&gt;Ctrl K&lt;/code&gt; 可以在指定的行號上加上一個「書籤」&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/uSBHhGt.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;接著我們就能在書籤視窗中看到這個書籤（檢視＞書籤視窗，或是 &lt;code&gt;Ctrl K&lt;/code&gt;, &lt;code&gt;Ctrl W&lt;/code&gt;）&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/zyouiFg.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1961,11 +2108,13 @@
 &lt;p&gt;在書籤視窗中，也可以對書籤重新命名，或是建立資料夾進行管理&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/MELQhKI.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;而當頁面中有多個書籤的時候，就可以利用 &lt;code&gt;Ctrl K&lt;/code&gt;, &lt;code&gt;Ctrl P&lt;/code&gt; 和 &lt;code&gt;Ctrl K&lt;/code&gt;, &lt;code&gt;Ctrl N&lt;/code&gt; 來在書籤中移動&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://i.makeagif.com/media/3-13-2021/6FC6nj.gif&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -1992,17 +2141,20 @@
 &lt;p&gt;Win10 工作列的合併設定有這些選項：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/yZypwQD.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;當選擇「一律、隱藏標籤」時，工作列上同樣的程式就會摺疊起來：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/8JvOmkJ.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;而「永不」和「當工作列滿時」則會將工作列展開：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/BqA2ERo.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2013,6 +2165,7 @@
 &lt;p&gt;今天要記錄的是 &lt;strong&gt;7+ Taskbar Tweaker&lt;/strong&gt; 這個小東東，他的畫面是長這樣的&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/bSDYzFO.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2020,11 +2173,13 @@
 &lt;p&gt;例如我前面想要的需求，就可以把分組的部分改成「&lt;strong&gt;不分組&lt;/strong&gt;」&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/UePSYB9.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;這樣工作列的圖示就變成：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/XJHECgm.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2033,11 +2188,13 @@
 &lt;p&gt;另外如果對這些選項仍然不滿足的朋友，也可以右鍵開啟&lt;strong&gt;進階選項&lt;/strong&gt;：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/TrJ7IhJ.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;像我就有開啟大 icon，看了就是比較舒服&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/oTshGL4.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2054,6 +2211,7 @@
       <guid>https://igouist.github.io/post/2020/11/dark-reader/</guid>
       <description>&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/G4OjUzE.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2066,11 +2224,13 @@
 &lt;p&gt;照慣例先上個預覽圖：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/OOEraiY.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;當我們安裝完成之後，就可以從 Chrome 右上角的擴充套件區看到 DarkReader 的 icon。點開就可以看到它的選單：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/rveo4TK.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2082,6 +2242,7 @@
 &lt;p&gt;而在第三個「更多」的頁籤，就有一些有趣的設定可以調整了：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/2IMcXW4.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2092,12 +2253,14 @@
 &lt;p&gt;過濾
 
 
+
 &lt;img
   src=&#34;https://image.igouist.net/6I58vhi.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;過濾+
+
 
 
 &lt;img
@@ -2108,10 +2271,12 @@
 &lt;p&gt;-靜態
 
 
+
 &lt;img
   src=&#34;https://image.igouist.net/NISE8xa.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;-動態
+
 
 
 &lt;img
@@ -2176,6 +2341,7 @@
 ##### 標題五 H5
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/W20kTy7.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2186,6 +2352,7 @@
 標題二 H2
 --------
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/q715Wbr.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2199,6 +2366,7 @@
 我是紅海
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/cxLiHqU.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2207,6 +2375,7 @@
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;我是 *斜體* 啦！會有一點 _斜斜的_
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/PPq8IzB.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2214,6 +2383,7 @@
 &lt;p&gt;當如果需要強調某個語句或段落，則可以用 &lt;code&gt;**&lt;/code&gt; 或是 &lt;code&gt;__&lt;/code&gt; 來將文字包起來，例如：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;我是 **粗體** 啦！這一段 __很重要__ 哦！
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/IZXInCx.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2227,6 +2397,7 @@
 3. 我是第三項
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/MZRCdPV.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2239,6 +2410,7 @@
 - 水蜜桃
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/O9kA2yG.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2248,6 +2420,7 @@
 - [ ] 買柳橙
 - [x] 買香蕉
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/Ita9Wko.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2263,6 +2436,7 @@
 &lt;p&gt;子非我，安知我不知魚之樂？&lt;/p&gt;&lt;/blockquote&gt;&lt;/blockquote&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/AdMF7DC.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2270,6 +2444,7 @@
 &lt;p&gt;需要加入連結的時候，可以使用 &lt;code&gt;[連結文字](網址)&lt;/code&gt;，例如當我要插入 Markdown.tw 的說明時就可以：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;請參見 [Markdown 語法說明](https://markdown.tw/)
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/e8D1yFX.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2279,6 +2454,7 @@
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;![](https://avatars2.githubusercontent.com/u/16403463?s=460&amp;amp;u=fccdf65b21cb2dc5c544c3b473f135f00c574030&amp;amp;v=4)
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;就會跑出我家的貓（插入圖片也太難擷取成示意圖了吧，各位意會就好）&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://avatars2.githubusercontent.com/u/16403463?s=460&amp;amp;u=fccdf65b21cb2dc5c544c3b473f135f00c574030&amp;amp;v=4&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2292,6 +2468,7 @@
 | 香蕉 | 中 | 低 | 無 |
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/yDwiiqK.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2301,6 +2478,7 @@
 | 芭樂 | 奇異果 | 蓮霧 |
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/EXSKe9T.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2309,16 +2487,19 @@
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;你可以使用 `Hello()` 這個語法來打招呼
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/HSlF7UZ.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;而如果用三個反引號為一組，就可以產生程式碼區塊，例如：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/fl5MDQs.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/MdtrbVx.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2326,6 +2507,7 @@
 &lt;p&gt;有些平台會支援程式碼上色，這時候只要在第一組反引號後面加上程式語言就可以上色，例如
 ：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/BfrNXyR.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2338,6 +2520,7 @@
 &lt;p&gt;由於 Markdown 力求簡潔，所以這些比較延伸的語法，通常需要看一下使用的編輯器是怎麼支援的。&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/Xi48nAm.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2347,6 +2530,7 @@
 &lt;p&gt;接著讓我們介紹一些撰寫 Markdown 時的方便工具，以下這些是我比較常接觸的 Markdown 編輯環境，如果有什麼也挺不錯的還請告訴我一聲呦&lt;/p&gt;
 &lt;h3 id=&#34;hackmd&#34;&gt;Hackmd&lt;/h3&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/goVhwKW.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2365,6 +2549,7 @@
 &lt;h3 id=&#34;typora&#34;&gt;Typora&lt;/h3&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/CNC48VZ.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2373,6 +2558,7 @@
 &lt;p&gt;Typora 也支援將文檔製作成 PDF 的功能，並且這個 PDF 是吃得到主題的 CSS 的！像我自己的履歷表就是用 Typora 寫完之後，調整 CSS 直接壓成 PDF 的，這邊也推薦給大家。&lt;/p&gt;
 &lt;p&gt;改得順眼之後只能用舒服優雅來形容，寫起來都賞心悅目了，推薦熟悉 Markdown 語法之後可以試試。&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/SChJiOf.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2391,6 +2577,7 @@
 &lt;/ul&gt;&lt;/blockquote&gt;
 &lt;h3 id=&#34;visual-studio-code&#34;&gt;Visual Studio Code&lt;/h3&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/EDccuCQ.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2422,12 +2609,14 @@
 &lt;p&gt;先放一張施工後的圖鎮樓：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/417skJs.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;可以在開始圖示上用右鍵打開選單，之後點選 Powershell；或是 Win + X 打開選單，然後按 I 或 A （後者會以系統管理員身分開啟）就能開啟了。&lt;/p&gt;
 &lt;p&gt;如果選單打開還是 CMD 而不是 Powershell 的，可以先去切換成 Powershell，真的是比較好用啦（&lt;a href=&#34;https://www.microsoft.com/zh-tw/p/windows-terminal/9n0dx20hk701?activetab=pivot:overviewtab&#34;&gt;Windows Terminal&lt;/a&gt; 笑而不語）&lt;/p&gt;
 &lt;p&gt;剛打開的畫面是這樣的：
+
 
 
 &lt;img
@@ -2438,6 +2627,7 @@
 &lt;p&gt;在上方的標題列按下右鍵，選擇內容&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/MkWyIv7.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2447,11 +2637,13 @@
 &lt;p&gt;補充：還有擴充了 &lt;a href=&#34;https://www.nerdfonts.com/cheat-sheet&#34;&gt;Nerd Fonts&lt;/a&gt; 的等距更紗黑體：&lt;a href=&#34;https://github.com/jonz94/Sarasa-Gothic-Nerd-Fonts&#34;&gt;Sarasa-Gothic-Nerd-Fonts&lt;/a&gt; 可以選擇，Nerd Fonts 能提供許多精美的 icon 讓我們後續改主題的時候大大加分！&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/93httvP.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;除了字型以外，我個人還推薦可以修改一個設定，保證質感 UPUP，那就是&lt;strong&gt;透明度&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/OGR98I8.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2459,12 +2651,14 @@
 &lt;p&gt;我個人習慣採用 80~85% 左右的透明度，搭配黑色背景。在桌面使用的時候看起來就像這樣：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/XBFVEmU.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;可以拉回去和一開始的預設狀況做比較，透明感＝質感。&lt;/p&gt;
 &lt;p&gt;另外，背景透明還有意想不到的好處，那就是——&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/4Yh5SvJ.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2502,6 +2696,7 @@
 &lt;p&gt;像我重灌的狀況，提示會如下圖，如果已經安裝過 Nuget 提供者，提示應該會更少。&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/UoGkW7o.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2510,6 +2705,7 @@
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Install-Module oh-my-posh
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/LQuE2hD.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2517,6 +2713,7 @@
 &lt;blockquote&gt;
 &lt;p&gt;更新：Oh-my-posh 也可以從 Microsoft 搜尋並安裝囉！&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/3WoVsvL.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2532,6 +2729,7 @@
 &lt;p&gt;補充：這邊用到一組環境變數 &lt;code&gt;$env:POSH_THEMES_PATH&lt;/code&gt; 實際上是一個資料夾路徑，Oh-my-posh 安裝的主題都會放在這個資料夾裡：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/lWBHJc3.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2542,6 +2740,7 @@
 &lt;p&gt;&lt;strong&gt;當 Powershell 開啟時，預設會去讀取使用者的設定檔（Profile）&lt;/strong&gt;，我們就是要把這些指定加到設定檔裡，讓 Powershell 一打開就能美美的。&lt;/p&gt;
 &lt;p&gt;在 Powershell 裡輸入 &lt;code&gt;$PROFILE&lt;/code&gt; 就能取得當前的設定檔位置，通常來說會在 &lt;code&gt;我的文件\WindowsPowerShell&lt;/code&gt; 底下。&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/kRKV112.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2568,6 +2767,7 @@
 &lt;p&gt;接著我們就前往此處去修改 Powershell 的腳本，如果發現並沒有這個檔案，那還請自己建立一個，檔名和路徑請和 &lt;code&gt;$PROFILE&lt;/code&gt; 一致，像我就取 &lt;code&gt;Microsoft.PowerShell_profile.ps1&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/eJ8A5iY.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2577,6 +2777,7 @@
 &lt;p&gt;再次補充：oh-my-posh 改版之後一些語法有改變，如果有在 &lt;code&gt;Set-Theme&lt;/code&gt; 這步的時候遇到「無法辨識…」問題的朋友，可以嘗試改成用 &lt;code&gt;Set-PoshPrompt -Theme Paradox&lt;/code&gt; 試試看。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;接著讓我們重開 Powershell&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/1kYjQSO.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2595,11 +2796,13 @@
 &lt;p&gt;例如 Visual Studio Code 的 Powershell&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/fqtRmwR.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;或是 Visual Studio 的開發人員用 Powershell&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/ulEehB0.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2608,16 +2811,19 @@
 &lt;p&gt;那麼今天就到這裡，最後再把完成品跟預設狀況比對一次吧～&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/JE6BTSU.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/99DaSVP.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;2023 回來更新文章，順便附個現況：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/JOVI7hg.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2665,6 +2871,7 @@
 &lt;p&gt;首先，我們得先到 &lt;a href=&#34;https://getpocket.com/&#34;&gt;Pocket&lt;/a&gt; 申請一個帳號，我個人是直接使用 Google 帳號做登入。成功登入之後應該能到 Pocket 的大廳：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/JHo0YQh.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2674,11 +2881,13 @@
 &lt;p&gt;（如果是手機使用者，這邊就是把目標網頁分享給 Pocket App）&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/tjRP5o2.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;再回到 Pocket …&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/SAlnwW4.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2687,11 +2896,13 @@
 &lt;p&gt;點進去之後可以發現，它和 Notion、Evernote 那些筆記軟體的擷取方式一樣，是&lt;strong&gt;將文章內容擷取出來&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/HwQbPRP.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;當然，作為一個閱讀服務，Pocket 服務該有的都有。&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/nyAVhSd.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2704,6 +2915,7 @@
 &lt;p&gt;稍後閱讀功能的服務還挺多的，我之所以最後選定使用 Pocket，有一大半原因是因為我發現它&lt;strong&gt;能和我的 Kobo 電子書閱讀器同步&lt;/strong&gt;。作為一個通勤搭車每天動輒一兩小時的上班族，搭車時間拿來看看書看看文章真是再愜意不過了。但由於我真的很懶，捷運又常常站著，書還是挺重的不方便帶來帶去，所以後來我還是毅然決然踏入閱讀器的世界，這時候我才發現了 Pocket。&lt;/p&gt;
 &lt;p&gt;利用 Pocket 我就能把早上從 Feedly 看見的部分文章，挪到上下班搭車的時候再用輕便的電子書閱讀，豈不妙哉。&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/cIkoRR1.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2744,6 +2956,7 @@
       <guid>https://igouist.github.io/post/2020/06/electron-net/</guid>
       <description>&lt;p&gt;
 
+
 &lt;img
   src=&#34;https://github.com/ElectronNET/Electron.NET/raw/master/assets/images/electron.net-logo.png&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2760,10 +2973,12 @@
 &lt;p&gt;那麼首先從建立新專案開始，這邊用 .net Core MVC 來測試&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/xf2fOwT.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/O0jwPZF.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2772,6 +2987,7 @@
 &lt;p&gt;建立專案之後，前往 Nuget 先把 &lt;strong&gt;ElectronNET API&lt;/strong&gt; 安裝下來&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/hT5JZu0.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2779,11 +2995,13 @@
 &lt;p&gt;&lt;code&gt;Program.cs&lt;/code&gt; 的部分，加上 &lt;code&gt;.UseElectron(args)&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/Vm7P1ds.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;&lt;code&gt;Startup.cs&lt;/code&gt; 的部分，加上 &lt;code&gt;Task.Run(async () =&amp;gt; await Electron.WindowManager.CreateWindowAsync()&lt;/code&gt;，讓專案啟動時一併啟動 Electron&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/gvsXNx4.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2791,11 +3009,13 @@
 &lt;p&gt;接著打開命令提示字元或 Powershell ，輸入 &lt;code&gt;dotnet tool install ElectronNET.CLI -g&lt;/code&gt; 安裝 ElectronNET 工具。如果有安裝成功應該會看到下圖的回傳。如果已經安裝，就可以直接進到下一步。&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/hf4mg6u.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;接著移動到專案資料夾，並輸入 &lt;code&gt;electronize init&lt;/code&gt; 進行初始化，將會建立資料夾和必需檔案，這一步一定要確認成功並顯示 &lt;code&gt;Everything done&lt;/code&gt;，否則後面怎麼跑也起不來。&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/q6RdjDm.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2806,17 +3026,20 @@
 &lt;p&gt;最後輸入 &lt;code&gt;electronize start&lt;/code&gt; 就可以準備看專案 On 起來囉！&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/HoSdpvU.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;另外除了 &lt;code&gt;electronize start&lt;/code&gt;，環境設置完畢後也可以直接從 Visual Studio 偵錯囉～&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/iFqkq6d.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;成功從桌面應用開起來了！&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/Y89i3HK.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2826,6 +3049,7 @@
 &lt;p&gt;這邊簡單嘗試一次，首先，我們先在 &lt;code&gt;Views/Home/index.cshtml&lt;/code&gt; 加上一個簡單的按鈕&lt;/p&gt;
 &lt;p&gt;並且加上 JavaScript 發送訊息和接收訊息的方法&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/DaNlQgS.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2843,6 +3067,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;});
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著到對應的 &lt;code&gt;Controllers/HomeController&lt;/code&gt; 的 &lt;code&gt;Index()&lt;/code&gt; 也加上接受到訊息之後加工並發出訊息的處理&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/Xw3AX8r.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2862,10 +3087,12 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著就讓我們執行看看，當我們按下按鈕&amp;hellip;&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/qdkrpQ5.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/HYo0DUp.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2878,6 +3105,7 @@
 &lt;p&gt;在專案資料夾下用命令列輸入指令 &lt;code&gt;electronize build /target win&lt;/code&gt; ，其中 &lt;code&gt;/target&lt;/code&gt; 除了 win 也可以指定 osx, liunx 等等&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/4iSSuCC.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -2885,11 +3113,13 @@
 &lt;p&gt;編出來的安裝包和執行檔會在 &lt;code&gt;bin\Desktop&lt;/code&gt; 和 &lt;code&gt;bin\Desktop\win-unpacked&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/JKqNsVl.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;稍微打開看看&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/Ywg2CoQ.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2921,6 +3151,7 @@
 &lt;p&gt;註冊相當簡單，此處就不贅述。稍微介紹一下儀表板的各區塊的功能：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/wd1LZLr.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 
@@ -2928,11 +3159,13 @@
 &lt;p&gt;點擊其中一天更會顯示當天的時間軸，可說是無所遁形。至於它判斷專案名稱的方法是看你編輯的檔案所在的資料夾名稱。&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/2icNzlL.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 
 右上是編寫和測試的所佔時間，不過我在使用的時候常常抓不到測試和建置的時間，因此沒在意過。&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/ic7NGAE.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2940,17 +3173,20 @@
 正左則是當天的時間軸和某幾段時間正在處理的專案，可以清楚看到大概哪個時段在認真 Coding（因為都是公司專案，這邊就先碼一下）&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/Qzu0ucB.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 
 正右則是達到目標的比例，WakaTime 可以到左側選單的 &lt;code&gt;Goal&lt;/code&gt; 設定個人目標，例如每週幾個小時，就可以在這邊看自己當天的達成率如何。&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/nu640EP.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 
 左下則是最近常使用的語言和比例，主要是抓取編輯中檔案的副檔名自動判定。另外也能到 &lt;code&gt;Settings -&amp;gt; Custom Rules&lt;/code&gt; 去設定個人化的規則，例如我個人就會將 .ipynb 計時到 Python 中。&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/Bu5df8N.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2962,11 +3198,13 @@
 &lt;p&gt;首先點選 Wakatime 右上角的 個人頭像，進入 Settings，確認左側在 Account，這時應該能看到自己的 API Key，點選顯示之後先複製下來。&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/pvbaKAT.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;之後打開你的 Visual Studio，上方工具列點選 &lt;code&gt;延伸模組 -&amp;gt; 管理延伸模組&lt;/code&gt;，開啟模組管理員之後選擇 線上，搜尋 Wakatime 並安裝。&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/Aj6q2XL.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -2974,11 +3212,13 @@
 &lt;p&gt;重啟 Visual studio 並安裝完畢後，再度打開時應該會自動跳出設定畫面；如果沒有跳出來，也可以從上方工具列點選 &lt;code&gt;工具 -&amp;gt; WakaTime -&amp;gt; Settings&lt;/code&gt; 進入設定畫面&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/Agrd4QS.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;設定畫面如下，將剛剛複製的 API Key 貼上。如果是在公司或是有需要設定 Proxy 的地方記得也順便填一下&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/eFCfNv4.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3011,10 +3251,12 @@
 &lt;p&gt;照慣例來張效果圖鎮樓
 
 
+
 &lt;img
   src=&#34;https://image.igouist.net/VYg1Siy.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;該同學傳來的圖片是長這樣的（示意圖，非當事 API，用 UBike 開放資源臨演）
+
 
 
 &lt;img
@@ -3023,6 +3265,7 @@
 &lt;p&gt;突然還以為咱們要玩威利在哪裡，這不是欺負我眼睛不好嘛。&lt;/p&gt;
 &lt;p&gt;但畢竟只是小問題，不能開口就要人家給 Swagger 或用個 Postman（API測試神器，之後也來推薦一篇），用圖片描述也是無可厚非，但還是必須顧眼睛。因此現場直接就推薦同學安裝這款 chrome 插件：&lt;a href=&#34;https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc&#34;&gt;Json View&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;安裝之後再度使用瀏覽器打開 API，就會是長這樣的：
+
 
 
 &lt;img
@@ -3045,11 +3288,13 @@
 &lt;p&gt;先來一張成果圖鎮樓
 
 
+
 &lt;img
   src=&#34;https://image.igouist.net/jM07HAC.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;Carbon 的操作相當直覺且簡單，進入 &lt;a href=&#34;https://carbon.now.sh/&#34;&gt;Carbon 的頁面&lt;/a&gt; 後，中央的程式碼區塊可以自由編輯，通常會直接將要做成圖片的程式碼貼於此處。&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/RT4XIqZ.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3061,11 +3306,13 @@
 &lt;p&gt;這邊就直接拿上一篇的 &lt;a href=&#34;https://igouist.github.io/post/2020/05/bandon-4-heroku/&#34;&gt;Line Notify 範例&lt;/a&gt; 的程式碼來試試吧。&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/JvWVrjQ.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;而製作出來的效果就會像這樣子：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/jM07HAC.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3104,11 +3351,13 @@
 &lt;p&gt;到 &lt;a href=&#34;https://feedly.com/&#34;&gt;Feedly&lt;/a&gt; 的首頁進行註冊之後，會先導到添加資訊來源的頁面如下（我的頁面是黑色的，是因為左側選單有黑暗模式可以開，點一下月亮就可以囉）&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/XbpJvdz.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;搜尋框裡面可以輸入 文字、網址和 RSS 網址 來進行搜尋，以本網站為例，貼上網址之後，Feedly 就會去找是否提供 RSS，有的話就會像這樣搜尋到，便可以按下 Follow；可以從圖片中看見現在只有我一個人追蹤我自己（泣）&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/S71J7dM.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3116,11 +3365,13 @@
 &lt;p&gt;按下追隨之後，可以按 + New Feed，&lt;strong&gt;這個 Feed 可以把它看作是一種分類&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/WUrdijS.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;由於本站大多分享程式相關的部分，因此我們這邊建立程式設計的分類&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/qxPHVg0.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3128,11 +3379,13 @@
 &lt;p&gt;加完之後，就可以在左側看見剛剛建好的分類已經來源囉，分類及來源旁邊的數字則是這個分類下的新文章的篇數&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/DIftHjN.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;為了之後說明方便，再多加幾個來源。下面是我一個挺喜歡的部落格&lt;a href=&#34;https://www.playpcesor.com/&#34;&gt;電腦玩物&lt;/a&gt;，分享挺多時間管理和生活流程等等的工具和技巧。像這種大神級只需要輸入名字搜尋就可以追蹤囉&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/29VwdC6.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3144,11 +3397,13 @@
 &lt;p&gt;右上角可以選擇文章排列的模式，例如很像信箱的顯示標題，和我較喜歡的標題內文，另外也還有像卡片格狀排列的模式可以選，建議先選個喜歡的版面會提高每天閱讀的意願。&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/GBsnQU3.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;因此&lt;strong&gt;最主要的活動範圍就會在這個 Today 進行&lt;/strong&gt;，邊滑動邊選擇不同來源的文章來閱讀，也可以從左側選擇某個分類、甚至某個來源的文章來看。若是網站可以擷取的，&lt;strong&gt;點選文章之後就會從右側彈出文章的簡介，全文仍然要回到來源網頁閱讀&lt;/strong&gt;，為了排版舒適以及支持寫手的流量來看這是相當好的做法。故打開文章之後往下拉，可以看見 &lt;strong&gt;VISIT WEBSITE&lt;/strong&gt; 按下去就會到目標文章囉&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/ER63IbJ.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3156,6 +3411,7 @@
 &lt;p&gt;此外也可以看見上面一排工具列，&lt;strong&gt;若是有購買付費服務，就可以和其他像是 Evernote 的工具連動，把文章傳送過去&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;而上方工具列最左側的&lt;strong&gt;書籤圖案則是稍後閱讀 Read Later&lt;/strong&gt;，在這邊選取之後或是在 Today 文章列表有選取的話，&lt;strong&gt;就會記錄到左側選單的 Read Later&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/7GVCm8l.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3167,17 +3423,20 @@
 &lt;p&gt;如果只是訂閱各網站集中起來，那麼和月刊和報紙等也沒什麼太大的差異。Feedly 最吸引我的一點就是對來源管理的方便度。在每個分類右上角的選單會有個管理來源&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/lXgrTi2.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;或是左下角的頭像中也可以進入&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/HKnJ8pH.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;進入之後就會到資源管理的頁面&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/tB4w9J9.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3222,6 +3481,7 @@
 &lt;h3 id=&#34;consolas&#34;&gt;Consolas&lt;/h3&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/az9u0B3.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 
@@ -3229,6 +3489,7 @@
 &lt;p&gt;看起來粗粗圓圓的很放鬆。&lt;/p&gt;
 &lt;h3 id=&#34;firacode&#34;&gt;FiraCode&lt;/h3&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/9OJpMXL.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3239,6 +3500,7 @@
 &lt;h3 id=&#34;更紗黑體&#34;&gt;更紗黑體&lt;/h3&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/yVMe5wC.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 
@@ -3246,6 +3508,7 @@
 &lt;p&gt;至於不想用等寬字體的朋友，都看到這裡了，沒關係。下面這套推薦給你們&lt;/p&gt;
 &lt;h3 id=&#34;ink-free&#34;&gt;Ink Free&lt;/h3&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/EShjvS5.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3263,6 +3526,7 @@
 &lt;/ul&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/m2zfp6K.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -3270,10 +3534,12 @@
 &lt;p&gt;環境相關的字體，例如上方的工具列&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/H5t6Jun.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/9hYcnfn.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3281,11 +3547,13 @@
 &lt;p&gt;按下 &lt;code&gt;Alt + Enter&lt;/code&gt; 的小提示、方法上方的 CodeLen 小提示（N 個參考那個）&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/lHf3SHe.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;自動補完和註解說明等等&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/SaMzVkA.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3303,6 +3571,7 @@
 &lt;p&gt;極實用，我平常主要用到的功能是看&lt;strong&gt;複雜度&lt;/strong&gt;和&lt;strong&gt;自動排版&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/pf897N7.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 
@@ -3314,6 +3583,7 @@
 &lt;/ul&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/sb2440G.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 
@@ -3324,6 +3594,7 @@
 &lt;p&gt;提到複雜度，也可以安裝這套 Code Maintainibility，在看複雜度的時候能夠更快更方便！&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/90Ox0rF.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -3331,17 +3602,20 @@
 &lt;p&gt;安裝之後就可以直接在各個 Function 上方的 CodeLens 直接看到複雜度指標囉！&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/No3C6yH.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;點開來也會顯示各項指標，包括可維護性、霍爾斯特德複雜度等等&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/aOCbIp1.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;也可以在設定之中調整預設顯示的指標&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/amDpQtp.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3353,11 +3627,13 @@
 &lt;p&gt;在指定字數位置&lt;strong&gt;劃出直的輔助線&lt;/strong&gt;，我都用來標示出 100 字元 和 120 字元的位置，用來提醒自己要換行，以保持程式碼可以直直地閱讀下去，而不會為了往右滾動或是因為自動斷行在奇怪地方而中斷。&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/yBffyf3.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 
 可以看見右側有輔助線，通常只要長到碰到該線我就會將該行程式碼做斷行的調整。&lt;/p&gt;
 &lt;p&gt;安裝之後可以在編輯器的任何位置按下右鍵，就可以增加和移除輔助線。
+
 
 
 &lt;img
@@ -3373,6 +3649,7 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;主要是在&lt;strong&gt;括弧的結束部分會顯示出這個括弧所屬的區塊&lt;/strong&gt;（如附圖）。我有看見許多同事都使用替括弧上色的作法，不過我個人不喜歡太過五彩繽紛的感覺，因此強烈推薦這款插件。&lt;/p&gt;
 &lt;p&gt;下載之後可以在 &lt;code&gt;工具 → 選項 → KC Extensions&lt;/code&gt; 裡面調整，有 當上括弧在畫面外時才顯示下括弧的文字，以及一律顯示（我個人都是使用一律顯示）&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/sRCndm3.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3393,10 +3670,12 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;剛安裝下來之後打開 Visual Studio 就會看到一個妹子。
 
 
+
 &lt;img
   src=&#34;https://image.igouist.net/op0y1wf.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;當然這個背景圖是可以自由變更的，打開 &lt;code&gt;工具 → 選項 → ClaudiaIDE&lt;/code&gt; 就會看到以下的設置畫面
+
 
 
 &lt;img
@@ -3406,10 +3685,12 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;像我這麼低調的換個藍底的 VS Logo 就足夠竊喜好一陣子了
 
 
+
 &lt;img
   src=&#34;https://image.igouist.net/gjlxy52.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;順帶一提我同事的背景圖是用這張，嗯……
+
 
 
 &lt;img
@@ -3423,11 +3704,13 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;先來看看原本的工具視窗釘選之後長怎樣：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/s0zVMsN.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;安裝後：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/004mjQq.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3435,8 +3718,10 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;當然如果怕找不到的話，也可以圖文並行（&lt;code&gt;工具 → 選項 → iconizer&lt;/code&gt;）&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/ScUCjeU.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+
 
 
 &lt;img
@@ -3448,6 +3733,7 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;最後來介紹個實用的 Output enhancer：替你的輸出視窗上色&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/KGW1DrK.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -3455,17 +3741,20 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;如果想要更進一步也可以使用他們的另一款整合過的 &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=ViacheslavLozinskyi.MetaOutput-2019&#34;&gt;MetaOutput&lt;/a&gt;（&lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=ViacheslavLozinskyi.MetaOutput-2022&#34;&gt;2022&lt;/a&gt;），輸出視窗就會變為條列式：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/IRBlGGv.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;除了會折疊輸出訊息以外，也能調整哪部分訊息可以省略：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/KQutBi1.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;也可以進行搜尋：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/0lNna9g.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3477,6 +3766,7 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;更改的位置在 &lt;code&gt;工具 &amp;gt; 選項 &amp;gt; 文字編輯器 &amp;gt; C# (看個人使用語言) &amp;gt; 進階&lt;/code&gt; 接著拉至最底找到 &lt;code&gt;編輯器色彩配置&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/lbUP19r.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
@@ -3484,10 +3774,12 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;變更前：
 
 
+
 &lt;img
   src=&#34;https://image.igouist.net/IMr2ViF.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;變更後：
+
 
 
 &lt;img
@@ -3499,11 +3791,13 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;首先讓我們先到 &lt;code&gt;選項 &amp;gt; 文字編輯器 &amp;gt; C# &amp;gt; 進階&lt;/code&gt;，並且往下拉就可以看到內嵌提示。&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/FMERRDD.webp&#34; alt=&#34;image-20210830065440439&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;其中「&lt;strong&gt;顯示內嵌參數名稱&lt;/strong&gt;」勾選起來的話，就會在呼叫方法時顯示該參數的名稱，如下圖的 &lt;code&gt;startIndex&lt;/code&gt; 和 &lt;code&gt;length&lt;/code&gt;：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/7QCEEkY.webp&#34; alt=&#34;image-20210830065736932&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3514,12 +3808,14 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;其中我會關閉第一項「顯示有推斷類型之變數的提示」，它的效果就是每當你使用 &lt;code&gt;var&lt;/code&gt; 的時候就會顯示推測的型別，例如：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/nGyRm6J.webp&#34; alt=&#34;image-20210830071205401&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;可以看到 &lt;code&gt;var&lt;/code&gt; 的後面會補上型別。&lt;del&gt;不過這樣我排版就亂掉了，而且我就是打算把型別丟給 C# 處理才用 var 的所以掰掰&lt;/del&gt;&lt;/p&gt;
 &lt;p&gt;而第二項「&lt;strong&gt;顯示 Lambda 參數類型的提示&lt;/strong&gt;」這個就相當推薦打開了，作用的方式會像這樣：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/RVqvtcJ.webp&#34; alt=&#34;image-20210830071404915&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3530,6 +3826,7 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;&lt;code&gt;工具 &amp;gt; 選項 &amp;gt; 環境 &amp;gt; 字型與色彩&lt;/code&gt; 然後在下拉式選單找到 &lt;code&gt;反白顯示目前的行&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;就可以對游標所在的那行做醒目提示囉！&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/qvh8i8l.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3542,11 +3839,13 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;索引標籤的位置可以在 &lt;code&gt;工具 &amp;gt; 選項 &amp;gt; 環境 &amp;gt; 索引標籤和視窗&lt;/code&gt; 裡進行調整：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/sIRwNBz.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;這邊也強烈建議將 專案/路徑 分組勾選開來，可以幫助我們更快找到開啟的索引：&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/urbQnTd.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3554,10 +3853,12 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;在 Visual Studio 2022 時，可以更進一步打開依專案著色索引的功能：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/4mmuJqs.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/5fVIZlL.webp&#34; alt=&#34;Image&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3570,11 +3871,13 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;因為它也是擴充套件之一，所以一樣讓我們打開 &lt;code&gt;延伸模組 &amp;gt; 管理延伸模組&lt;/code&gt;，並搜尋 &lt;code&gt;One Dark Pro&lt;/code&gt;，找到並安裝下來：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/pXGqoqd.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;下載好之後需要關閉 Visual Studio 安裝一下。&lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/CGuQ6ge.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
@@ -3582,10 +3885,12 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;安裝好了之後重新開啟 Visual Studio，並前往 &lt;code&gt;工具 &amp;gt; 選項&lt;/code&gt;，在左邊找到 &lt;code&gt;環境&lt;/code&gt;，就可以從色彩佈景主題裡選擇 One Dark Pro 囉：&lt;/p&gt;
 &lt;p&gt;
 
+
 &lt;img
   src=&#34;https://image.igouist.net/ZrtztVV.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;
+
 
 &lt;img
   src=&#34;https://image.igouist.net/4oBef8K.webp&#34;style=&#34;aspect-ratio: 16 / 9; width: 100%; height: auto;&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
