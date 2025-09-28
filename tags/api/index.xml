@@ -21,9 +21,9 @@
       <guid>https://igouist.github.io/post/2025/02/jmeter-constant-throughput-timer/</guid>
       <description>&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/XGOmHat.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/XGOmHat.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;我們在之前 &lt;a href=&#34;https://igouist.github.io/post/2022/10/jmeter&#34;&gt;JMeter&lt;/a&gt; 的筆記時，介紹過直接對服務爆打一波的作法：簡單來說就是打好幾輪看看服務撐不撐得住，然後紀錄能吃的最大數量，可以說是非常暴力的做法。&lt;/p&gt;
 &lt;p&gt;但如果我們想要模擬某個固定數值的請求量（例如每分鐘 100 次請求）、又或是需要用固定速率打出去（例如每 5 秒得敲一下），就不能像上次一樣粗暴地全力出擊了。&lt;/p&gt;
 &lt;p&gt;這時候，&lt;strong&gt;我們就可以用 JMeter 提供的 Constant Throughput Timer（固定吞吐量計時器）來限制呼叫頻率&lt;/strong&gt;，馬上來筆記一篇。&lt;/p&gt;
@@ -33,45 +33,45 @@
 &lt;p&gt;先確認一下環境：我們有一組腳本，內容只是簡單地戳一下 API&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/O3yDOx1.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/O3yDOx1.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;現在我們希望可以模擬線上使用者在尖峰時段的使用頻率，並確認我們服務挺得過去，所以需要把這組腳本調整成：&lt;strong&gt;「每分鐘戳 20 次，持續五分鐘」&lt;/strong&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：有時候我們收到的需求會是「持續五分鐘，然後總量為 100」這種，意思是差不多的，反正先確認好 &lt;strong&gt;「每分鐘的數量 x 持續幾分鐘 = 總量」&lt;/strong&gt; 這幾個關鍵數字再說嚕。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;首先讓我們加入一組 Constant Throughput Timer：
 
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/ymK5ZCq.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/ymK5ZCq.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;並且找到 Constant Throughput Timer 裡面的 &lt;strong&gt;Target Throughput（每分鐘呼叫次數）&lt;/strong&gt;，我們這次的需求是每分鐘要戳他個 20 次，這邊就直接放 20.0：
 
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/I29PVrK.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/I29PVrK.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著回到 Thread Group，因為我們這次的場景是用時間來計算的，所以需要&lt;strong&gt;把底下的 Specify Thread Lifetime 打開，並根據要執行的時間來填上秒數&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;因為我們的需求是跑 5 分鐘，所以先丟個 300 秒：
 
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/0eam5FB.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/0eam5FB.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;而且我們這次是用執行時間計算數量的，不希望 Loop Count 影響到我們，直接甩個 Infinite 給他（對，我們就是模擬有個使用者坐在那邊無聊一直按按鈕，而且他節奏感還很好）&lt;/p&gt;
 &lt;p&gt;執行之後就可以確認總量跟每分鐘的吞吐量有沒有符合我們的設置囉：
 
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/h98Pdvd.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/h98Pdvd.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;很好！現在我們已經會使用 Constant Throughput Timer 來控制壓力測試時的吞吐量了。&lt;/p&gt;
 &lt;p&gt;有興趣的朋友可以回去調整各個參數觀察看看，也可以改個 Thread Group 的 Thread 數量看看結果差異，例如當我把上面範例的 Thread 改成 2：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/1iY0YdJ.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/1iY0YdJ.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以看見數量跟吞吐量都有影響（算總數寫報告的時候記得別算錯了 xD）&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;最後整理一下 Constant Throughput Timer 的適用場景，有以下狀況的時候就可以考慮使用：&lt;/p&gt;
@@ -89,9 +89,9 @@
 &lt;p&gt;還有最實際的：
 
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/UttrtAL.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;</description>
+  src=&#34;https://image.igouist.net/UttrtAL.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -102,9 +102,9 @@
       <guid>https://igouist.github.io/post/2022/10/jmeter/</guid>
       <description>&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/sMw5vbw.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/sMw5vbw.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;前陣子協助某支 API 的壓力測試，趁機請 QA 朋朋指導指導一下，因此接觸了這款簡單好用的壓測工具 JMeter，趁現在記憶還在的時候記錄起來。&lt;/p&gt;
 &lt;p&gt;&lt;del&gt;往後其他同事只要說 API 弄好了可以串了，就先幫他打個一萬次壓壓驚，真是貼心&lt;/del&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://jmeter.apache.org/&#34;&gt;JMeter&lt;/a&gt; 是款充滿暴力的壓力測試工具，只要告訴他：你要揍哪支 API？要揍幾拳？揍他個幾輪？它就會忠實地對你指定的 API 爆打一頓。&lt;/p&gt;
@@ -114,34 +114,34 @@
 &lt;p&gt;首先讓我們到 JMeter 官網的 &lt;a href=&#34;https://jmeter.apache.org/download_jmeter.cgi&#34;&gt;Download 頁面&lt;/a&gt; 來下載，這邊我選擇 zip：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/mBnMtJj.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/mBnMtJj.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;下載並解壓縮後，可以在 &lt;code&gt;/bin&lt;/code&gt; 找到 &lt;code&gt;jmeter.bat&lt;/code&gt;：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/N2WX2Ff.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/N2WX2Ff.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;點開之後就會開啟 JMeter 的介面囉！&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/d38R9nN.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/d38R9nN.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h3 id=&#34;更改語言&#34;&gt;更改語言&lt;/h3&gt;
 &lt;p&gt;雖然 JMeter 的中文翻譯有些殘缺，但對英文弱弱的我來說，介面有太多英文會讓心理壓力變得太大，果然還是得先更改語言：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/gTPOjr5.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/gTPOjr5.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著就會看到介面的大部分都變成中文囉：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/qdtnfqJ.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/qdtnfqJ.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h2 id=&#34;批次呼叫指定的-api&#34;&gt;批次呼叫指定的 API&lt;/h2&gt;
 &lt;p&gt;雖然 JMeter 支援了一堆測試功能，例如 TCP 之類的，但身為一個 CRUD 工程師，我們當然要用呼叫 API 來當作範例囉！&lt;/p&gt;
 &lt;p&gt;在先前的 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi/&#34;&gt;API 筆記&lt;/a&gt;，我們已經建立過簡單的「查詢卡片」API：&lt;/p&gt;
@@ -151,23 +151,23 @@
 &lt;p&gt;讓我們回到 JMeter，可以看到預設已經有一組測試計畫了：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/bvkLSBy.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/bvkLSBy.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;而我們將會在測試計畫中加入幾個元素，利用這些元素的組合來達到我們測試 API 的目標。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;首先我們會需要一個執行緒群組（Thread Group）&lt;/strong&gt;，用來告訴 JMeter 我們打算如何規劃這些 Thread 的行動。可以當作我們正在寫一個迴圈，現在才正要訂迴圈的內容而已。&lt;/p&gt;
 &lt;p&gt;讓我們在預設的測試計畫上按右鍵，新增一個執行緒群組：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/iheogno.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/iheogno.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著應該就會看到我們的測試計畫下多了一個群組，並且進入了該群組的設定畫面：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/MOvw1JB.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/MOvw1JB.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這邊要特別注意的是右側的「執行緒屬性」，我們白話一點來說明：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;執行緒數量：要打幾次&lt;/li&gt;
@@ -188,130 +188,130 @@
 &lt;p&gt;在執行緒群組上右鍵 &amp;gt; 新增，可以看到一排能指派給這群組的任務，其中「取樣」就是指我們這次的目標。這邊讓我們選擇「取樣 &amp;gt; HTTP 要求」：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/a2Qsovz.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/a2Qsovz.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著可以看到 HTTP Request 的設定畫面，如同前面所說的，我們這次的目標是 &lt;code&gt;GET https://localhost:44304/card&lt;/code&gt;，因此將 API 的資訊填到對應的欄位中：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/Vm2tW4M.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/Vm2tW4M.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;在 API 的路由等資訊填好後，下方可以設定呼叫時要帶的參數，例如 Body 或上傳檔案等等。&lt;/p&gt;
 &lt;h3 id=&#34;補充設定-http-request-header&#34;&gt;補充：設定 Http Request Header&lt;/h3&gt;
 &lt;p&gt;很多時候我們要測試的 API 會要求在 Header 帶著 Token 才能使用，這邊也記錄一下掛 Header 的做法。&lt;/p&gt;
 &lt;p&gt;對執行緒群組右鍵 &amp;gt; 新增，選擇「設定元素」，裡面就會有一票設定值可以選，這邊選擇「HTTP 標頭管理員」：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/HYbxiCs.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/HYbxiCs.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;例如我們要指定 Post 的 Body 為 Json，就可以掛一個 &lt;code&gt;content-type&lt;/code&gt; = &lt;code&gt;application/json&lt;/code&gt;：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/IAPpOCu.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/IAPpOCu.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這樣就會加到 Header 上囉：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/6Df2gvq.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/6Df2gvq.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;不過我們這次的範例只是一支簡單的查詢卡片，這邊就不用加上啦。讓我們進行下一步吧！&lt;/p&gt;
 &lt;h3 id=&#34;建立-listener&#34;&gt;建立 Listener&lt;/h3&gt;
 &lt;p&gt;當我們的小弟們去解決了目標之後，就必須要回來報告給我們知道。這邊讓我們一樣在執行緒群組上右鍵新增，並且選擇「接聽（Listener）」，先嘗試建立一個「檢視結果樹」：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/PsNUHkJ.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/PsNUHkJ.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;除了檢視結果樹以外也可以新增別的試試看，方便打完 API 之後確認，這邊再加上一個「Summary Report」，現在群組應該會長得像這樣：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/LVfx6r7.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/LVfx6r7.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;等等打完之後再來確認這兩頁的內容。現在讓我們戳戳看 API 吧！&lt;/p&gt;
 &lt;h3 id=&#34;開始執行測試&#34;&gt;開始執行測試&lt;/h3&gt;
 &lt;p&gt;在最上面找到大家都很熟悉的綠色三角，戳下去就會執行這次的測試計畫，也就是照著剛剛的計畫烙一群小弟去揍 API&lt;/p&gt;
 &lt;p&gt;它旁邊還有發現不對勁時使用的 STOP，更旁邊的神奇掃把是用來在結束之後滅證用的清除結果：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/UHKKu0W.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/UHKKu0W.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;總之，用力給他按下綠色三角！&lt;/p&gt;
 &lt;p&gt;這邊就先意思意思揍個一拳，執行之後就可以來看看我們的檢視結果樹：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/rNVpHQD.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/rNVpHQD.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以看到結果樹中會顯示剛剛執行的結果，假設你打了兩百次這邊就會有兩百筆；右側則是這次 API 回傳的結果，通常都是看有沒有好好回 200 OK 就是了 xD&lt;/p&gt;
 &lt;p&gt;此外也可以切換上面的頁籤，看這次 API 回傳的內容：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/OEkzdit.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/OEkzdit.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著切換到剛剛新增過的 Summary Report，可以看 API 回來的時間等資訊：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/BhUNjbc.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/BhUNjbc.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這樣就完成一次測試啦！&lt;/p&gt;
 &lt;p&gt;為了慶祝完成來打個一萬次 API 先（？）&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/DX6uzQW.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/DX6uzQW.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h2 id=&#34;小結&#34;&gt;小結&lt;/h2&gt;
 &lt;p&gt;這次筆記了 JMeter 這套壓力測試工具的簡單使用方式，在大多數對 API 做測試的場合中，只需要新增幾個 JMeter 提供的元件就可以完成任務，可以說是相當方便。&lt;/p&gt;
 &lt;p&gt;同時 JMeter 也提供了更多進階場景時用到的工具，來幫助我們在 Request 發送前後進行處理：例如在這次工作上用到的場景來說，就需要從設定元素中新增 CSV Data Set Config 來從 CSV 讀出需要的資訊，利用 &lt;code&gt;${參數名稱}&lt;/code&gt; 的語法來把參數加到我們的 HTTP 請求：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/442wtcA.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/442wtcA.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/xwrJur8.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/xwrJur8.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/6i8kVCO.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/6i8kVCO.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;又或是新增前置處理器，如 JSR223 PreProcesser 來撰寫 JavaScript 腳本，先對參數進行處理等等：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/Dv3eiya.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/Dv3eiya.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/UZFyHTf.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/UZFyHTf.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;當然除了從 CSV 設定參數以外，JMeter 也提供了簡單的邏輯控制，像是從一數到十這種是完全沒問題的：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/Mdwio69.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/Mdwio69.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;有這些工具可以進行組合，可以說是相當方便。但大多時候我們只會需要用到基本的 Http Request。有興趣嘗試的朋友可以參考 Yuanchieh&amp;rsquo;s Blog 的這篇：&lt;a href=&#34;https://yuanchieh.page/posts/2021/2021-06-26-jmeter-%E4%BD%BF%E7%94%A8%E6%95%99%E5%AD%B8-+-%E8%87%AA%E5%AE%9A%E7%BE%A9%E8%AE%8A%E6%95%B8%E4%BD%BF%E7%94%A8/&#34;&gt;壓測工具：JMeter 使用教學 + 自定義變數使用&lt;/a&gt;，以及官方文件 &lt;a href=&#34;https://jmeter.apache.org/usermanual/index.html&#34;&gt;Apache JMeter - User&amp;rsquo;s Manual&lt;/a&gt; 來試試，這邊就不再贅述。&lt;/p&gt;
 &lt;p&gt;雖然 JMeter 還是有一點小問題，例如那個只有一半的翻譯，還有&lt;a href=&#34;https://stackoverflow.com/questions/53502142/apache-jmeter-showing-different-result-in-windows-and-linux-for-same-test&#34;&gt;跑在 Linux 的表現會比 Windows 好&lt;/a&gt;之類的現象&lt;/p&gt;
 &lt;p&gt;但這無損它是個功能完善又簡單使用的壓力測試工具。需要的時候還是可以打開 JMeter，簡單掛個執行緒群組就揍起來，同事 API 寫好就直接把它打爛，不亦樂乎。&lt;/p&gt;
 &lt;p&gt;&lt;del&gt;雖然我的後端前輩最後跑去用更新更潮的 &lt;a href=&#34;https://k6.io/&#34;&gt;K6&lt;/a&gt; 了，嘖。我筆記都寫完了欸，讓我看看是有多潮……&lt;/del&gt;&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/81n6ddE.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/81n6ddE.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;那麼今天的筆記就到這邊，我們下次見！&lt;/p&gt;
 &lt;h2 id=&#34;相關筆記&#34;&gt;相關筆記&lt;/h2&gt;
 &lt;ul&gt;
@@ -338,9 +338,9 @@
       <guid>https://igouist.github.io/post/2022/06/angle-sharp/</guid>
       <description>&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/DHoF8Yw.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/DHoF8Yw.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;前一次用到 AngleSharp 已經是去年抓網路小說的時候，想不到最近又用上了，乾脆就來筆記一下。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;a href=&#34;https://anglesharp.github.io/&#34;&gt;AngleSharp&lt;/a&gt; 是一款簡單方便的 C# 爬蟲套件&lt;/strong&gt;，撈網頁時支援 &lt;a href=&#34;https://developer.mozilla.org/zh-TW/docs/Web/API/Document/querySelector&#34;&gt;QuerySelector&lt;/a&gt; 的語法來篩選網頁元素，並且撈回來的資料集合也都能用 Linq 操作，讓我們能對爬取的網頁內容快速進行篩選和處理，只需要短短的語法就可以開心抓想要的內容。&lt;/p&gt;
 &lt;p&gt;說到要示範爬蟲，果然還是要用爬蟲界默認的經典範例 &lt;a href=&#34;https://www.ptt.cc/bbs/Beauty/index.html&#34;&gt;PTT 表特版&lt;/a&gt; 來操作（？），接著就讓我們來寫一個簡單的腳本來抓取文章吧！&lt;/p&gt;
@@ -348,9 +348,9 @@
 &lt;p&gt;首先要先從 &lt;a href=&#34;https://www.nuget.org/packages/AngleSharp&#34;&gt;Nuget&lt;/a&gt; 安裝 AngleSharp&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/JeS3P2J.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/JeS3P2J.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;確認安裝完畢後就可以開始撰寫囉～&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;本篇接下來會使用 Linqpad 來進行簡單的範例，使用 VisualStudio 的朋友遇到 &lt;code&gt;Dump()&lt;/code&gt; 之類的語法就請再自己調整一下呦&lt;/p&gt;&lt;/blockquote&gt;
@@ -381,16 +381,16 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以看到抓了一堆東西回來，包含網頁的 Uri、Body 等等：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/EfJewBi.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/EfJewBi.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h2 id=&#34;調整配置準備-cookie&#34;&gt;調整配置、準備 Cookie&lt;/h2&gt;
 &lt;p&gt;在前一個步驟我們雖然把網頁抓回來了，但讓我們看一下 &lt;code&gt;context.Body.InnerHtml&lt;/code&gt; 的內容：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/VTbpoOU.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/VTbpoOU.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;看起來跟我們要的文章列表有點差距啊！這是因為 PTT 會先跳出一個視窗詢問是否滿十八歲，選擇「是」之後會記錄一筆 &lt;code&gt;over18=1&lt;/code&gt; 到 Cookie 中，只有持有這個 Cookie 才能進入到文章列表。&lt;/p&gt;
 &lt;p&gt;因此我們現在要先把答案準備到 Cookie 裡，這時候我們就需要調整一下前面的配置內容。&lt;/p&gt;
 &lt;p&gt;首先先在配置裡加上預設的 Cookies：&lt;/p&gt;
@@ -425,9 +425,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著讓我們來確認爬回來的 HTML：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/hRUlaz3.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/hRUlaz3.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以看到我們成功進到看板囉！&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：另一個很常在配置處理的是使用 LoaderOptions 加上 AngleSharp.Css 提供的 &lt;code&gt;WithCss()&lt;/code&gt; 來抓取 CSS 處理後的結果，例如：&lt;/p&gt;
@@ -458,9 +458,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    .Dump();
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/GIaNgMI.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/GIaNgMI.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以看到我們成功抓了一排標題資訊回來囉！&lt;/p&gt;
 &lt;p&gt;當然 AngleSharp 也提供了 &lt;code&gt;QuerySelector&lt;/code&gt; 來抓取單個元素，這兩個方法用起來和 &lt;a href=&#34;https://developer.mozilla.org/zh-TW/docs/Web/API/Document/querySelector&#34;&gt;JavaScript&lt;/a&gt; 的體驗應該是差不多啦。&lt;/p&gt;
 &lt;p&gt;確定我們有把要的內容抓回來，也不會再用到網頁內容的話，就可以補一行 &lt;code&gt;document.Close();&lt;/code&gt; 把開啟的網頁內容順手清掉囉。&lt;/p&gt;
@@ -469,9 +469,9 @@
 &lt;p&gt;這邊以 Edge 為例，讓我們到目標網頁按下Ｆ１２打開開發人員工具，直接選取目標：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/F2XyfEX.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/F2XyfEX.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;選取目標後就會告訴我們這是哪個元素，我們只需要對該元素右鍵，然後複製它的 Selector 就行啦&lt;/p&gt;
 &lt;p&gt;不過這樣抓到的 Selector 語法通常會比較囉嗦一點，例如這個頁面就是 &lt;code&gt;#main-container &amp;gt; div.r-list-container.action-bar-margin.bbs-screen&lt;/code&gt;，這部份就再自己調整一下囉&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;整理抓取到的內容&#34;&gt;整理抓取到的內容&lt;/h2&gt;
@@ -523,9 +523,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;.Dump();
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/ZnjBF3U.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/ZnjBF3U.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;到這邊我們就成功把網頁的內容抓下來、篩選出我們要的內容囉！&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：除了我們前面使用的 QuerySelector、GetAttribute 以外，AngleSharp 還提供了 &lt;code&gt;GetElementsByTagName&lt;/code&gt;、&lt;code&gt;Children&lt;/code&gt; 等屬性和方法讓我們能方便地在 DOM 中到處抓取元素。&lt;/p&gt;
@@ -536,9 +536,9 @@
 &lt;p&gt;現在讓我們回到文章列表來，只抓第一頁實在沒什麼搞頭。如果我們想要換頁，那麼首先就要先抓出這個換頁按鈕：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/ndkeqwG.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/ndkeqwG.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;利用前面提到的Ｆ１２大法，我們可以拿到這個按鈕的 Selector 語法，讓我們直接丟到 &lt;code&gt;QuerySelector&lt;/code&gt; 裡，並且取得它的 &lt;code&gt;href&lt;/code&gt; 屬性：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; nextPageLink = document
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	.QuerySelector(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;div.btn-group.btn-group-paging &amp;gt; a:nth-child(2)&amp;#34;&lt;/span&gt;)
@@ -667,9 +667,9 @@
       <guid>https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/</guid>
       <description>&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/S72H7sA.webp&#34; alt=&#34;img&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/S72H7sA.webp&#34; alt=&#34;img&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這是俺整理公司新訓內容的第五篇文章，目標是&lt;strong&gt;使用三層式架構 (3-Layer Architecture) 來切分服務的關注點和職責&lt;/strong&gt;。&lt;/p&gt;
 &lt;h2 id=&#34;什麼是分層分層可以吃嗎&#34;&gt;什麼是分層？分層可以吃嗎？&lt;/h2&gt;
 &lt;blockquote&gt;
@@ -686,9 +686,9 @@
 &lt;p&gt;三層式架構顧名思義就是把應用程式分成三層，通常會分成「&lt;strong&gt;展示層、商業邏輯層、資料存取層&lt;/strong&gt;」。&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/RxSrWJm.webp&#34; alt=&#34;分層架構01&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/RxSrWJm.webp&#34; alt=&#34;分層架構01&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;現在讓我們認識一些他們的分工吧！&lt;/p&gt;
 &lt;p&gt;三層式架構的常見分層有：&lt;/p&gt;
 &lt;ol&gt;
@@ -793,9 +793,9 @@
 &lt;p&gt;因為關注點分離成多個層（Layer）了，當物件的設計有符合職責的話，在開發或除錯時，甚至能像查詢表格一樣迅速！&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/CZ0S51s.webp&#34; alt=&#34;分層架構04&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/CZ0S51s.webp&#34; alt=&#34;分層架構04&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;當分層和類別的定義都合乎職責的時候，在接收到需求的同時也就能抓出目標範圍在哪了，例如：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;這次針對某功能的一些判斷邏輯有變動 =&amp;gt; OK，先從 Service 開始看&lt;/li&gt;
@@ -1106,34 +1106,34 @@
 &lt;p&gt;首先，讓我們在方案總管對著方案按下右鍵，選擇 加入 → 新增專案&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/5kRtiNF.webp&#34; alt=&#34;image-20210921153907902&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/5kRtiNF.webp&#34; alt=&#34;image-20210921153907902&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著找到類別庫，由於範例專案是使用 .net Core 3.1 的版本，故選擇 .net Core 為目標的類別庫：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/rh83s9z.webp&#34; alt=&#34;image-20210921154045369&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/rh83s9z.webp&#34; alt=&#34;image-20210921154045369&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著讓我們用專案名稱 + Service 來命名這個專案：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/2TVpn3L.webp&#34; alt=&#34;image-20210921154155709&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/2TVpn3L.webp&#34; alt=&#34;image-20210921154155709&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;下個畫面選擇完版本之後，就可以在解決方案看到多了一個 Service 的專案囉：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/3RBmvbp.webp&#34; alt=&#34;image-20210921154319429&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/3RBmvbp.webp&#34; alt=&#34;image-20210921154319429&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;然後那個 Class1.cs 可以砍掉，我們不會用到。&lt;/p&gt;
 &lt;p&gt;接著請重複以上的步驟，建立 Repository 和 Common 的類別庫：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/OwXJY9F.webp&#34; alt=&#34;image-20210921154728674&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/OwXJY9F.webp&#34; alt=&#34;image-20210921154728674&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：如果想要把專案做排序或整理的朋友，可以對解決方案右鍵，選擇 加入 → 新增方案資料夾，用資料夾去做排序和整理&lt;/p&gt;
 &lt;p&gt;&lt;del&gt;有的時候我都懷疑其他人的分層用 Business 和 Data 命名，該不會是為了排序起來比較好看……？！&lt;/del&gt;&lt;/p&gt;&lt;/blockquote&gt;
@@ -1144,15 +1144,15 @@
 &lt;p&gt;現在讓我們從最外圍開始：對 &lt;code&gt;ProjectN&lt;/code&gt; （或是你 WEB／API 等等所在的專案）右鍵 → 加入 → 專案參考&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/SB841e8.webp&#34; alt=&#34;image-20210921162356712&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/SB841e8.webp&#34; alt=&#34;image-20210921162356712&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;然後讓它參考我們的 Service 層以及共用的 Common：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/fawAtxz.webp&#34; alt=&#34;image-20210921163054655&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/fawAtxz.webp&#34; alt=&#34;image-20210921163054655&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;同樣地，也請各位對 Service 和 Repository 進行同樣的操作加入參考。各層的參考關係現在應該要是這樣的：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;API or APP: Service + Common&lt;/li&gt;
@@ -1169,20 +1169,20 @@
 &lt;p&gt;接著，讓我們開始著手處理介面的部分吧，先讓我們在 &lt;code&gt;Service&lt;/code&gt; 中新增一個叫做 &lt;code&gt;Interface&lt;/code&gt; 的資料夾來放我們的介面。&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/FATU0lt.webp&#34; alt=&#34;image-20210921182347662&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/FATU0lt.webp&#34; alt=&#34;image-20210921182347662&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著因為是做卡片管理的 CRUD，當然要用 Card 當前綴。並且由於習慣的關係，只要是 Interface 我會在最前面加上一個 &lt;code&gt;I&lt;/code&gt; 來標示，所以讓我們在該資料夾下建立一個 &lt;code&gt;ICardService&lt;/code&gt;：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/vr5RTrG.webp&#34; alt=&#34;image-20210921194022072&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/vr5RTrG.webp&#34; alt=&#34;image-20210921194022072&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/CAMytoF.webp&#34; alt=&#34;image-20210921194110374&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/CAMytoF.webp&#34; alt=&#34;image-20210921194110374&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;如此一來就會建立一個空的介面。啊，記得加上 &lt;code&gt;Public&lt;/code&gt; 呦。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 卡片管理服務&lt;/span&gt;
@@ -1275,15 +1275,15 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;不要忘了要回到 Interface 的地方好好 using 進來呦：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/vJSR9Qo.webp&#34; alt=&#34;image-20210921200741002&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/vJSR9Qo.webp&#34; alt=&#34;image-20210921200741002&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;現在我們的 Service 層應該會是這個樣子的：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/ScSGHFK.webp&#34; alt=&#34;image-20210921200831418&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/ScSGHFK.webp&#34; alt=&#34;image-20210921200831418&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著就讓我們用同樣的節奏來處理 Repository 吧。&lt;/p&gt;
 &lt;p&gt;首先仍然是先建立一個 &lt;code&gt;Interface&lt;/code&gt; 資料夾、建立一個 &lt;code&gt;ICardRepository&lt;/code&gt;，並加上我們的 CRUD 五天王：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
@@ -1373,9 +1373,9 @@
 &lt;p&gt;聊得遠了，讓我們回到 ProjectN 的 Repository，目前應該會是長這個樣子：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/iNQdSnm.webp&#34; alt=&#34;image-20210921204201764&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/iNQdSnm.webp&#34; alt=&#34;image-20210921204201764&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;到這邊我們的介面和功能都訂好啦，接著就讓我們開始實作這些介面吧！&lt;/p&gt;
 &lt;h3 id=&#34;實作-repository&#34;&gt;實作 Repository&lt;/h3&gt;
 &lt;blockquote&gt;
@@ -1386,9 +1386,9 @@
 &lt;p&gt;第一步就是建立實作的資料夾，方便和 &lt;code&gt;Interface&lt;/code&gt; 做個區隔，所以這邊在 Repository 建立一個 &lt;code&gt;Implement&lt;/code&gt; 資料夾，並在裡面建立 &lt;code&gt;CardRepository&lt;/code&gt; ：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/mxPAvRb.webp&#34; alt=&#34;image-20210926181827673&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/mxPAvRb.webp&#34; alt=&#34;image-20210926181827673&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;建立之後，別忘記把類別改為 &lt;code&gt;Public&lt;/code&gt; 並告訴他我們要實作介面 &lt;code&gt;ICardRepository&lt;/code&gt;（記得 using）：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;CardRepository&lt;/span&gt; : ICardRepository
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
@@ -1397,9 +1397,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著 IDE 通常都會提醒一下說你有哪些要求沒有做到，這邊就讓我偷懶一下直接讓 IDE 產生空方法：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/nJIaMAR.webp&#34; alt=&#34;image-20210926182828485&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/nJIaMAR.webp&#34; alt=&#34;image-20210926182828485&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;CardRepository&lt;/span&gt; : ICardRepository
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;CardDataModel&amp;gt; GetList(CardSearchCondition info)
@@ -1433,9 +1433,9 @@
 &lt;p&gt;補充：為了避免我之後回來抄的時候想不起來，這邊也放一下資料表目前狀況好了：
 
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/8qhFQBb.webp&#34; alt=&#34;image-20211002135411755&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;&lt;/blockquote&gt;
+  src=&#34;https://image.igouist.net/8qhFQBb.webp&#34; alt=&#34;image-20211002135411755&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;&lt;/blockquote&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 卡片管理&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
@@ -1633,9 +1633,9 @@
 &lt;p&gt;首先一樣先建立實作用的資料夾，並建立 &lt;code&gt;CardService&lt;/code&gt;：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/rJ4rMgs.webp&#34; alt=&#34;image-20211003091808904&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/rJ4rMgs.webp&#34; alt=&#34;image-20211003091808904&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;並且讓 IDE 幫忙把要實作的介面都先列出來：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;CardService&lt;/span&gt; : ICardService
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
@@ -1684,9 +1684,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著是 DTO 的對映部分，先建立 Service 的對映表。我個人習慣跟隨公司慣例開一個 &lt;code&gt;Mappings&lt;/code&gt; 資料夾來放：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/wwEi2pW.webp&#34; alt=&#34;image-20211003094809104&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/wwEi2pW.webp&#34; alt=&#34;image-20211003094809104&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：當專案還有 Mappings, Enum（列舉）和其他設定檔等等，資料夾就會變得挺多的。&lt;/p&gt;
 &lt;p&gt;這種時候，也可以把這類基礎建設相關的都放到 &lt;code&gt;Infrastructure&lt;/code&gt; 資料夾做個整理，閱讀和操作上會比較舒服。&lt;/p&gt;&lt;/blockquote&gt;
@@ -1984,9 +1984,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;測試一下有沒有接上去&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/IHsfTjU.webp&#34; alt=&#34;image-20211003114955056&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/IHsfTjU.webp&#34; alt=&#34;image-20211003114955056&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;打完收工！&lt;/p&gt;
 &lt;h2 id=&#34;自問自答心得篇&#34;&gt;自問自答心得篇&lt;/h2&gt;
 &lt;p&gt;實作結束之後，這邊就留個版面放一些上面沒提到／塞不進去／老人碎碎念的部份。&lt;/p&gt;
@@ -2124,9 +2124,9 @@
       <guid>https://igouist.github.io/post/2021/08/set-default-value-with-model-when-fromuri/</guid>
       <description>&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/TuGp6Lk.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/TuGp6Lk.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;h2 id=&#34;事發緣由&#34;&gt;事發緣由&lt;/h2&gt;
 &lt;p&gt;在 .net Framework 4.6.2 MVC 的 ApiController 中，某個查詢資料列表的方法除了提供查詢條件的參數以外，還有提供選擇性的分頁參數。也就是像這樣子：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-CSharp&#34; data-lang=&#34;CSharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;[HttpGet]&lt;/span&gt;
@@ -2323,9 +2323,9 @@
       <guid>https://igouist.github.io/post/2021/06/zero-width-space/</guid>
       <description>&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/bS6EGIL.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/bS6EGIL.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這週遇到個想不到的坑，特別來記錄一下。故事是這樣的－－&lt;/p&gt;
 &lt;p&gt;在需要呼叫其他 API 服務時，發生了以下怪事：&lt;/p&gt;
 &lt;ul&gt;
@@ -2355,9 +2355,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;$&amp;#34;b:{b}&amp;#34;&lt;/span&gt;.Dump();
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/Z9VihgB.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/Z9VihgB.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;看起來完全一模一樣，連反白都分辨不出來！&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;a.Length.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 4&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;b.Length.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// 3&lt;/span&gt;
@@ -2398,9 +2398,9 @@
       <guid>https://igouist.github.io/post/2021/05/newbie-4-swagger/</guid>
       <description>&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/lzjNys4.webp&#34; alt=&#34;img&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/lzjNys4.webp&#34; alt=&#34;img&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這是俺整理公司新訓內容的第四篇文章，目標是&lt;strong&gt;簡單地使用 Swagger 工具來自動產生可互動的 API 文件&lt;/strong&gt;。&lt;/p&gt;
 &lt;h2 id=&#34;api-文件與-swagger&#34;&gt;API 文件與 Swagger&lt;/h2&gt;
 &lt;p&gt;在 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-3-dapper&#34;&gt;上一篇&lt;/a&gt; 我們建立了一個有簡單的 CRUD 的 Web API 服務，這篇我們就接續著 API 服務往下看吧！&lt;/p&gt;
@@ -2463,9 +2463,9 @@
 &lt;p&gt;首先，直奔 Nuget、搜尋 Swashbuckle，應該可以看到一整排：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/9vn5HUG.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/9vn5HUG.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;我們這個示範專案的環境是 .net Core，所以我們選擇 &lt;strong&gt;&lt;code&gt;Swashbuckle.AspNetCore&lt;/code&gt;&lt;/strong&gt;，安裝了懶人包，就等於裝好了 Swashbuckle 家的 OpenAPI 三劍客 Swagger、SwaggerGen、SwaggerUI，之後的文件產生和進階操作也就不用煩惱了。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;環境不是 .net Core 的 Asp.net Web API 朋友，請安裝 &lt;code&gt;Swashbuckle&lt;/code&gt;，不過整體操作和顯示上並不會相差太多。&lt;/p&gt;
@@ -2476,9 +2476,9 @@
 &lt;/ul&gt;&lt;/blockquote&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/En0Aarn.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/En0Aarn.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;安裝完成之後，就讓我們來註冊 Swagger 服務吧！&lt;/p&gt;
 &lt;p&gt;首先讓我們到 &lt;code&gt;Startup.cs&lt;/code&gt; 的 &lt;code&gt;ConfigureServices&lt;/code&gt;，加上 &lt;code&gt;services.AddSwaggerGen();&lt;/code&gt; 把 Swagger 的服務掛上去：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// This method gets called by the runtime.&lt;/span&gt;
@@ -2499,15 +2499,15 @@
 &lt;p&gt;現在讓我們執行偵錯，&lt;strong&gt;並且到專案目錄底下的 &lt;code&gt;/swagger&lt;/code&gt; 路徑&lt;/strong&gt;（以我為例就是 &lt;code&gt;localhost:44304/swagger&lt;/code&gt;），應該就能看到 Swagger 工具的介面啦！&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/odrQ5IO.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/odrQ5IO.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;並且在上面可以注意到我們&lt;strong&gt;自動生成的 API JSON 文件，也就是前面註冊時看過的 &lt;code&gt;/swagger/v1/swagger.json&lt;/code&gt;&lt;/strong&gt;（以我為例就是 &lt;code&gt;localhost:44304/swagger/v1/swagger.json&lt;/code&gt;）&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/HysAWQu.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/HysAWQu.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這邊大致上就可以了解到，&lt;strong&gt;Swagger 工具就是藉由去掃我們的 &lt;code&gt;ApiController&lt;/code&gt;，產生出對應的 API 規格的 JSON 檔案，再讀取這個 JSON 檔案來產生出 Swagger 的 UI 頁面&lt;/strong&gt;。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：這邊也可以對 Swagger 的 UI 路徑進行設定，不一定要在 &lt;code&gt;/swagger&lt;/code&gt; 底下。只需要在 &lt;code&gt;UseSwaggerUI&lt;/code&gt; 中使用 &lt;code&gt;RoutePrefix&lt;/code&gt; 就可以指定 Swagger UI 的 Route。&lt;/p&gt;
@@ -2523,21 +2523,21 @@
 &lt;p&gt;接著讓我們用 Swagger UI 來測試一下 API 吧，首先讓我們新增一張卡片，選擇新增卡片的 API 並試試 &lt;code&gt;Try it out&lt;/code&gt;，可以看到範例和輸入 Body 的區塊：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/8ruN7w9.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/8ruN7w9.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;執行之後下方就會告訴我們執行結果和回傳：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/UUm4v20.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/UUm4v20.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著試試用 Swagger UI 來 GET 看看是不是真的有新增成功：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/I5eAVZm.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/I5eAVZm.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;確認 Swagger UI 的確和我們的 CardController 銜接在一起了，啟用服務成功！&lt;/p&gt;
 &lt;h2 id=&#34;使用-swaggerdoc-增加專案描述&#34;&gt;使用 SwaggerDoc 增加專案描述&lt;/h2&gt;
 &lt;p&gt;不過現在只是一個可以互動的操作介面而已，離可以取代文件還有一段距離，接著就讓我們一步一步來增加資訊到這個 UI 介面吧。&lt;/p&gt;
@@ -2567,9 +2567,9 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這邊可以填入版本、API 名稱和說明、聯絡方式等資訊，這些資訊會顯示在 Swagger UI 的開頭：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/9v4DssU.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/9v4DssU.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;替自己的服務加上說明是絕對必要的，不過平時會比較常用的也是 &lt;code&gt;Title&lt;/code&gt;、&lt;code&gt;Description&lt;/code&gt; 這些基本欄位，各位再按照自己的服務調整吧。&lt;/p&gt;
 &lt;h2 id=&#34;使用-xml-文件和-includexmlcomments-從註解產生-api-說明&#34;&gt;使用 XML 文件和 IncludeXmlComments 從註解產生 API 說明&lt;/h2&gt;
 &lt;p&gt;我們有了整個服務的說明之後，當然也要替每一支 API 補上說明啦！&lt;/p&gt;
@@ -2577,15 +2577,15 @@
 &lt;p&gt;首先就是要打開 XML 文件，先讓我們從 &lt;code&gt;方案總管&lt;/code&gt; 對我們的專案 &lt;code&gt;右鍵&lt;/code&gt;，選擇 &lt;code&gt;屬性&lt;/code&gt;：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/Iol6yxX.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/Iol6yxX.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;進入屬性頁之後，&lt;strong&gt;到 &lt;code&gt;建置&lt;/code&gt;，找到 &lt;code&gt;XML 文件檔案&lt;/code&gt; 並勾選起來&lt;/strong&gt;，通常會自動幫你填入路徑：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/qWU9iJP.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/qWU9iJP.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：並非使用 Visual Studio 開發的朋友，也可以參考微軟文件的開啟方式：打開 &lt;code&gt;.csproj&lt;/code&gt; 檔案，並找到 &lt;code&gt;PropertyGroup&lt;/code&gt; 加上 &lt;code&gt;GenerateDocumentationFile&lt;/code&gt; ，並設為 true，例如：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-xml&#34; data-lang=&#34;xml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;PropertyGroup&amp;gt;&lt;/span&gt;
@@ -2627,49 +2627,49 @@
 &lt;p&gt;最後也是最重要的一步：&lt;strong&gt;確保你的 ApiController 底下的各 API 有乖乖加上註解&lt;/strong&gt;：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/yVQQIln.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/yVQQIln.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;小提示：搭配 &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=sergeb.GhostDoc&#34;&gt;GhostDoc&lt;/a&gt; 自動產生註解，又快又香！用過就回不去了。&lt;/p&gt;
 &lt;p&gt;相關的說明可以參見：&lt;a href=&#34;https://dotblogs.com.tw/wasichris/2016/01/21/172429&#34;&gt;使用 GhostDoc 自動產出符合語意的註解 - 搞搞就懂&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;確定 &lt;strong&gt;對專案開啟產生 XML、讓 Swagger 讀取 XML、乖乖寫註解&lt;/strong&gt; 三個步驟都有完成之後，就可以開啟 Swagger UI 來看看啦！&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/quHdcGV.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/quHdcGV.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;可以看到每支 API 都有顯示註解的名稱了，讓我們跟沒有的時候比對一下：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/TsroNer.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/TsroNer.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;是不是貼心多了呢？&lt;/p&gt;
 &lt;p&gt;並且如果對參數、傳入和傳出的 Model 都有確實加上註解的話，在 API 的內容頁面就可以直接看到 QueryString 的參數，並且對 Model 點選 Schema 也會顯示 Model 的說明：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/pI9OJQD.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/pI9OJQD.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/kPQRL9m.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/kPQRL9m.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;如此一來參數和回傳，從名稱、說明、型別和範例都有了，這樣才有 API 文件的感覺嘛！&lt;/p&gt;
 &lt;p&gt;除了基本的 &lt;code&gt;summary&lt;/code&gt; 用來標示 API 的用途、&lt;code&gt;param&lt;/code&gt; 用來標記參數名稱之外，比較特別的就是可以加上 &lt;code&gt;remarks&lt;/code&gt; 來替 API 做更詳細的說明，例如：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/E79TDpY.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/E79TDpY.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這樣就會顯示在 Swagger UI 上該 API 點開的內文中：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/ZFDLWsv.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/ZFDLWsv.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;很適合用來進行更詳細的說明和備註。&lt;/p&gt;
 &lt;p&gt;通常我們做到這裡就差不多了已經具備 API 文件該有的部分了，不過資訊當然是多多益善嘛，接著就讓我們來補充一些小東西上去吧～&lt;/p&gt;
 &lt;h2 id=&#34;使用-produces-屬性和-response-註解補充回傳資訊&#34;&gt;使用 Produces 屬性和 response 註解補充回傳資訊&lt;/h2&gt;
@@ -2677,22 +2677,22 @@
 &lt;p&gt;同時，我們也提過 API 可能會根據不同狀況，也會有不同的 HTTP Status 回應，例如 404: 找不到。但讓我們確認一下我們現在的文件…&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/IhWDMBe.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/IhWDMBe.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;看起來預設的 Media type 並沒有作用，並且也只有 200 成功時的狀況。現在就讓我們來補充一下吧！&lt;/p&gt;
 &lt;p&gt;在目標的 Api 方法上加上 &lt;code&gt;[Produces(&amp;quot;application/json&amp;quot;)]&lt;/code&gt; 就可以標示該方法的回傳格式為 &lt;code&gt;application/json&lt;/code&gt;，例如：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/9S1o9sH.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/9S1o9sH.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這樣在 Swagger UI 上該 API 的 Responses 就會標記為指定的格式：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/OjRt09o.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/OjRt09o.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著，讓我們用 &lt;code&gt;ProducesResponseType&lt;/code&gt; 來指定回傳時的型別，以及在註解中使用 &lt;code&gt;&amp;lt;response&amp;gt;&lt;/code&gt; 標籤來替回傳時的 HTTP Status 加上說明吧：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 查詢卡片&lt;/span&gt;
@@ -2718,15 +2718,15 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/I90gVGu.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/I90gVGu.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這樣做的 Swagger UI 就會多出這些 HTTP Status 對應的資訊囉：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/owvkBq4.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/owvkBq4.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;到這邊我們就提供了各種情況對應的回傳啦，隔壁同事如果問你說「為啥我打是回 400 啊？」就可以對他說「&lt;a href=&#34;https://www.urbandictionary.com/define.php?term=RTFW&#34;&gt;RTFW&lt;/a&gt;！」&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;2021.07.03 補充：&lt;/p&gt;
@@ -2738,9 +2738,9 @@
 &lt;p&gt;阿彌陀佛阿彌陀佛，所謂寫一篇文件勝造七級浮屠，這個 Swagger 開下去，還不飛昇當神去了。正是：API 文件寫得好，同事溝通沒煩惱；Swagger 用得好，生文件只要一秒。&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/THIt8EI.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/THIt8EI.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;那麼今天就記錄到這邊，最後就快速整理一下：&lt;/p&gt;
 &lt;p&gt;－ 關於 Swagger －&lt;/p&gt;
 &lt;ul&gt;
@@ -2816,9 +2816,9 @@
       <guid>https://igouist.github.io/post/2021/05/newbie-3-dapper/</guid>
       <description>&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/aIHQL5Z.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/aIHQL5Z.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這是俺整理公司新訓內容的第三篇文章，目標是&lt;strong&gt;在 .NET Core 簡單地使用 Dapper 連線到資料庫並完成 CRUD 的功能&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;接續 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi&#34;&gt;上一篇&lt;/a&gt; 的進度，我們接著要來連線到資料庫中完成我們的 Web Api 的 CRUD 範例。因為從新訓時期到現在工作團隊作業上主要都是使用 Dapper 來做連線資料庫的工作，這邊就直接用 Dapper 來推進吧！&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Dapper 有多好用呢？它輕量、它簡單、它快速&lt;/strong&gt;。總之先把大神們的介紹文直接拿來鎮樓：&lt;/p&gt;
@@ -2898,9 +2898,9 @@
 &lt;p&gt;先讓我們說明一下本篇的示範環境，假設在 Local 的 SQL Server 裡，有著一個 &lt;code&gt;Newbie&lt;/code&gt; 資料庫，其中有一張 &lt;code&gt;Card&lt;/code&gt; 的資料表。其結構如下：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/Gec9WeQ.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/Gec9WeQ.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;CREATE&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;TABLE&lt;/span&gt; [dbo].[Card](
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	[Id] [int] &lt;span style=&#34;color:#66d9ef&#34;&gt;IDENTITY&lt;/span&gt;(&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;,&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;NOT&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;NULL&lt;/span&gt;,
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	[Name] [nvarchar](&lt;span style=&#34;color:#ae81ff&#34;&gt;50&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;NULL&lt;/span&gt;,
@@ -2917,19 +2917,19 @@
 &lt;p&gt;既然今天的主角是 Dapper，當然要&lt;strong&gt;先打開 NuGet 把 Dapper 給安裝下來&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/rT0Nop6.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/rT0Nop6.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/66GtKJA.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/66GtKJA.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/0fuLbQC.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/0fuLbQC.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;恭喜你，你已經完成本篇文章實作的一半了。&lt;/p&gt;
 &lt;hr&gt;
 &lt;h3 id=&#34;建立對應資料表的類別&#34;&gt;建立對應資料表的類別&lt;/h3&gt;
@@ -3527,22 +3527,22 @@
  -Body &amp;#34;{`&amp;#34;name`&amp;#34;: `&amp;#34;mycard`&amp;#34;,`&amp;#34;description`&amp;#34;: `&amp;#34;sample card`&amp;#34;, `&amp;#34;attack`&amp;#34;: 3, `&amp;#34;health`&amp;#34;: 4, `&amp;#34;cost`&amp;#34;: 2 }&amp;#34;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/oQOv7VN.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/oQOv7VN.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;然後讓我們在 SSMS（SQL Server Management Studio）確認一下：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/CuxT7jB.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/CuxT7jB.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著讓我們試試查詢：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Invoke-RestMethod https://localhost:44304/card | ConvertTo-Json
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/XmKRKsm.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/XmKRKsm.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;既然查詢成功了，就針對這筆來試試看修改：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Invoke-RestMethod https://localhost:44304/card/1 `
  -Method &amp;#39;PUT&amp;#39; `
@@ -3550,36 +3550,36 @@
  -Body &amp;#34;{`&amp;#34;name`&amp;#34;: `&amp;#34;ourcard`&amp;#34;,`&amp;#34;description`&amp;#34;: `&amp;#34;sample card`&amp;#34;, `&amp;#34;attack`&amp;#34;: 4, `&amp;#34;health`&amp;#34;: 5, `&amp;#34;cost`&amp;#34;: 3}&amp;#34;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/Xo5JFyP.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/Xo5JFyP.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;一樣在 SSMS 確認一下：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/SxsQdc2.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/SxsQdc2.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;看來我們有成功更新到，讓我們針對這筆來查詢看看：&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Invoke-RestMethod https://localhost:44304/card/1 | ConvertTo-Json
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/iieIxee.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/iieIxee.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;查詢出來的也的確是變動過的結果了。最後，讓我們把這張卡片刪除，回歸乾淨吧！&lt;/p&gt;
 &lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Invoke-RestMethod https://localhost:44304/card/1 `
  -Method &amp;#39;DELETE&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/WcNVRKA.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/WcNVRKA.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;確認資料表的卡片已經消失：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/a5toUnV.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/a5toUnV.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;到這邊我們就宣告完工啦！&lt;/p&gt;
 &lt;h2 id=&#34;小結&#34;&gt;小結&lt;/h2&gt;
 &lt;p&gt;我們把前篇的 Web API 服務利用 Dapper 連接到 SQL Server，並成功完成了基本的 CRUD 功能。&lt;/p&gt;
@@ -3641,9 +3641,9 @@
       <guid>https://igouist.github.io/post/2021/05/newbie-2-webapi/</guid>
       <description>&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/d2xM94x.webp&#34; alt=&#34;Image&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/d2xM94x.webp&#34; alt=&#34;Image&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這是俺整理公司新訓內容的第二篇文章，目標是&lt;strong&gt;對 Api, Restful Api, HTTP 等相關的知識點做個筆記，並用 .net Core 建立一個簡易的 Web Api 專案&lt;/strong&gt;。&lt;/p&gt;
 &lt;h2 id=&#34;前言基本觀念&#34;&gt;前言、基本觀念&lt;/h2&gt;
 &lt;p&gt;我們在 &lt;a href=&#34;https://igouist.github.io/post/2021/04/newbie-1-hello-git&#34;&gt;上一篇&lt;/a&gt; 記錄了新訓第一天的 Git 操作筆記。接著在這篇，我們終於要進入 .net Core 啦！&lt;/p&gt;
@@ -3832,9 +3832,9 @@ GET /api/product/1
 &lt;p&gt;Request 和 Response 的內容，有興趣的朋友可以直接在瀏覽器進入開發人員工具就能看到了，以 Edge 和 Chrome 為例：首先按下 F12 ，並找到網路（Network）的部分，就可以看到進入網頁的各個請求和回應，隨便點開一個就會有 Request 和 Response 的內容囉：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/kdK0xo1.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/kdK0xo1.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;或者是可以直接參考 NotFalse 技術客的這篇 &lt;a href=&#34;https://notfalse.net/39/http-message-format&#34;&gt;HTTP/1.1 — 訊息格式 (Message Format)&lt;/a&gt;，裡面對 HTTP 請求格式的各個部分上色並逐步講解的方式讓我蠻喜歡的，相當清楚。&lt;/p&gt;
 &lt;p&gt;接著就讓我們來看一下訊息的格式，通常會分成三個比較主要的區塊：&lt;strong&gt;Start Line&lt;/strong&gt;、&lt;strong&gt;Header&lt;/strong&gt;、&lt;strong&gt;Body&lt;/strong&gt;：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-JSON&#34; data-lang=&#34;JSON&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;HTTP/&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1.1&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;200&lt;/span&gt; &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;OK&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// Start Line
@@ -3999,35 +3999,35 @@ GET /api/product/1
 &lt;p&gt;首先打開我們的 Visual Studio，建立新的專案。&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/tRvVsFa.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/tRvVsFa.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;我們這次用 .net Core 來進行示範，並且用官方內建的 Web API 框架直接開場，所以這邊選擇 Asp.net Core Web API。&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/lyjhWFS.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/lyjhWFS.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註：這些&lt;strong&gt;建立專案的畫面和選項隨著版本可能會有點不一樣&lt;/strong&gt;，例如說可能會先選擇 .net Core 的 Web 服務之後，後續再勾選 API 的選項等等。例如之前的 &lt;a href=&#34;https://igouist.github.io/post/2019/12/aspnet-connect-db&#34;&gt;Asp.net MVC&lt;/a&gt; 文章中，就需要在選擇範本的時候選擇是 MVC 或 Web API 的範本。就麻煩各位再稍微見機行事一下。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/NCQj9Wf.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/NCQj9Wf.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著輸入專案名稱和選擇專案路徑，我在這邊採用 Newbie/Noob 的 N（而且 Project N 感覺很潮？），各位嘗試的時候可以自由取名，但要注意後續用到 &lt;code&gt;ProjectN&lt;/code&gt; 這個名字的部分必須和你取的名字一致呦。&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/Lbr3qkw.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/Lbr3qkw.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;這是紀錄採用的版本為長期支援的 .net Core 3.1（如果這個步驟有選擇其他版本的朋友，後續安裝套件的時候可能要注意一下版本相容性的問題）&lt;/p&gt;
 &lt;p&gt;建立之後我們的專案結構應該會長這樣：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/lGGHzDN.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/lGGHzDN.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;恭喜各位，到這一步的時候，&lt;strong&gt;Web API 服務已經建好了！&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;del&gt;直接用範本就是這麼爽，謝謝微軟把拔。&lt;/del&gt;&lt;/p&gt;
 &lt;p&gt;我們先來稍微認識一下環境設定相關的成員：&lt;/p&gt;
@@ -4106,23 +4106,23 @@ GET /api/product/1
 &lt;p&gt;現在讓我們直接執行看看：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/61SgLPf.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/61SgLPf.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;由於 &lt;code&gt;Properties/launchSettings.json&lt;/code&gt; 裡有設定了 &lt;code&gt;launchUrl&lt;/code&gt; 就是 &lt;code&gt;weatherforecast&lt;/code&gt;，所以我們應該會直接看到它幫忙打開瀏覽器，並取得（&lt;code&gt;GET&lt;/code&gt;）了 &lt;code&gt;https://localhost:{yourIISPort}/weatherforecast&lt;/code&gt; 的結果：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/4jl7qvd.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/4jl7qvd.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;小提示：如果瀏覽器打開沒有自動排版而是一整陀的朋友，可以先去裝個 &lt;a href=&#34;https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc&#34;&gt;JsonView&lt;/a&gt; 來保護眼睛。安裝前後差異可以參見 &lt;a href=&#34;https://igouist.github.io/post/2020/05/jsonview&#34;&gt;Json View —— 用 Chrome 打開 Json 的正確方式&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;那如果是要用 Powershell 呼叫 API 的朋友，可以使用 &lt;code&gt;Invoke-RestMethod&lt;/code&gt; 來進行呼叫，再用 &lt;code&gt;ConvertTo-Json&lt;/code&gt; 轉換成比較好讀的格式，例如：&lt;code&gt;Invoke-RestMethod https://localhost:{yourIISPort}/weatherforecast | ConvertTo-Json&lt;/code&gt;。注意 yourIISPort 這兒是你啟動後的 port 號，像是 &lt;code&gt;https://localhost:44304/weatherforecast&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/QSp7VRr.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/QSp7VRr.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;備註：Linux 的朋友就直接使用 Curl 來打就行了唄。另外，上面的 Powershell 語法特別感謝這篇 &lt;a href=&#34;https://blog.poychang.net/using-powershell-call-http-request/&#34;&gt;使用 PowerShell 呼叫 Web API 請求&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;到這邊我們就做完了簡單的認識，也確認我們新建的專案確實好好活著囉。&lt;/p&gt;
@@ -4133,21 +4133,21 @@ GET /api/product/1
 &lt;p&gt;因為我這個人喜歡整理、愛好整潔（？）這邊就先讓我們新增一個 &lt;code&gt;Models&lt;/code&gt; 資料夾，用來存放卡片的類別&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/Zoci28m.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/Zoci28m.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;建立 &lt;code&gt;Models&lt;/code&gt; 資料夾之後，在 &lt;code&gt;Models&lt;/code&gt; 裡面新增 &lt;code&gt;Card.cs&lt;/code&gt;：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/EeAPqZv.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/EeAPqZv.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;現在應該會是這個樣子：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/b6hcSaw.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/b6hcSaw.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;接著讓我們打開 &lt;code&gt;Card.cs&lt;/code&gt;，加上卡片的各個欄位：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 卡片&lt;/span&gt;
@@ -4172,9 +4172,9 @@ GET /api/product/1
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;完成卡片類別的建立之後，讓我們前往 &lt;code&gt;Controller&lt;/code&gt;，新建一個 &lt;code&gt;CardController.cs&lt;/code&gt;：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/XRbNmT4.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/XRbNmT4.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;我們打開 &lt;code&gt;CardController.cs&lt;/code&gt;。這個類別裡面現在應該是空空如也：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;CardController&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
@@ -4239,9 +4239,9 @@ GET /api/product/1
 &lt;p&gt;接著讓我們加入新增卡片，還有編輯卡片的方法吧，在這之前我們先建立一個 &lt;code&gt;Parameter&lt;/code&gt; 資料夾，用來放一些傳入的參數，並且新增一個 &lt;code&gt;CardParameter&lt;/code&gt; 來當作我們新增和修改卡片的參數類別：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/fiqBwZM.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/fiqBwZM.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// 卡片參數&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;/summary&amp;gt;&lt;/span&gt;
@@ -4424,9 +4424,9 @@ GET /api/product/1
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Invoke-RestMethod https&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//localhost&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;44304&lt;/span&gt;/card | ConvertTo-Json
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/IvHYdZR.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/IvHYdZR.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;既然卡片已經存在了，讓我們試試看編輯，把「我的卡片」改成「我們的卡片」，&lt;del&gt;打倒富農份子&lt;/del&gt;：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Invoke-RestMethod https&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//localhost&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;44304&lt;/span&gt;/card/&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; `
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; -Method &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;PUT&amp;#39;&lt;/span&gt; `
@@ -4436,15 +4436,15 @@ GET /api/product/1
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Invoke-RestMethod https&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//localhost&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;44304&lt;/span&gt;/card/&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; | ConvertTo-Json
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/FjFHdSt.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/FjFHdSt.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;如果編輯的卡片不存在，會噴出 404：&lt;/p&gt;
 &lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/j6Dom6l.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/j6Dom6l.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;最後讓我們來試試刪除：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Invoke-RestMethod https&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//localhost&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;44304&lt;/span&gt;/card/&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt; `
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; -Method &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;DELETE&amp;#39;&lt;/span&gt;
@@ -4452,9 +4452,9 @@ GET /api/product/1
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Invoke-RestMethod https&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;//localhost&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;44304&lt;/span&gt;/card | ConvertTo-Json
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;
 
-
 &lt;img
-  src=&#34;https://image.igouist.net/0WNEkAm.webp&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;&lt;/p&gt;
+  src=&#34;https://image.igouist.net/0WNEkAm.webp&#34;style=&#34;ZgotmplZ&#34;loading=&#34;lazy&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
 &lt;p&gt;到這邊就確認我們的 API 服務（也就是基本的 CRUD）已經 ON 起來啦！&lt;/p&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;小結&#34;&gt;小結&lt;/h2&gt;
