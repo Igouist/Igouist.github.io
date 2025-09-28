@@ -125,7 +125,7 @@
 
 
 <img
-  src="https://image.igouist.net/00WQGqR.webp" alt="Image"width="600" height="337"loading="lazy" decoding="async">
+  src="https://image.igouist.net/00WQGqR.webp" alt="Image"width="600" height="337" style="width: 100%; height: auto;"loading="lazy" decoding="async">
 </p>
 <h2 id="tldr">TL;DR</h2>
 <p>當發現<strong>需要執行很久的 ServiceBus Trigger Function 有重複執行的情況</strong>出現時，可以嘗試到<a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-bindings-service-bus?tabs=in-process%2Cextensionv5%2Cextensionv3&amp;pivots=programming-language-csharp#hostjson-settings">官方的 Host.json 設定指引</a>，按照 SDK 版本找到對應的「<strong>訊息鎖定最大持續時間</strong>」設定，例如 maxAutoLockRenewalDuration（延伸模組 5.x+）或 maxAutoRenewDuration（Functions 2.x），並加入專案的 Host.json</p>
@@ -167,7 +167,7 @@
 
 
 <img
-  src="https://image.igouist.net/dBFWz2p.webp" alt="Image"width="1033" height="261"loading="lazy" decoding="async">
+  src="https://image.igouist.net/dBFWz2p.webp" alt="Image"width="1033" height="261" style="width: 100%; height: auto;"loading="lazy" decoding="async">
 </p>
 <p><strong>可以發現第一次執行尚未結束的時候，大概經過五分鐘就又執行了第二次！</strong></p>
 <h2 id="調整訊息鎖定最大持續時間">調整訊息鎖定最大持續時間</h2>
@@ -176,7 +176,7 @@
 
 
 <img
-  src="https://image.igouist.net/UY3EhoA.webp" alt="Image"width="586" height="483"loading="lazy" decoding="async">
+  src="https://image.igouist.net/UY3EhoA.webp" alt="Image"width="586" height="483" style="width: 100%; height: auto;"loading="lazy" decoding="async">
 </p>
 <p>幸好天無絕人之路，最終在 <a href="https://stackoverflow.com/questions/62752905/azure-function-service-bus-trigger-running-multiple-times">Stackoverflow</a> 海巡的時候了發現一線生機！</p>
 <p>原來 Azure Functions 的 Service Bus Trigger 有個「<strong>訊息鎖定最大持續時間</strong>」設定！</p>
@@ -188,14 +188,14 @@
 
 
 <img
-  src="https://image.igouist.net/TTpXELd.webp" alt="Image"width="550" height="298"loading="lazy" decoding="async">
+  src="https://image.igouist.net/TTpXELd.webp" alt="Image"width="550" height="298" style="width: 100%; height: auto;"loading="lazy" decoding="async">
 </p>
 <p>接著再重新傳遞一次訊息：</p>
 <p>
 
 
 <img
-  src="https://image.igouist.net/2epGiF9.webp" alt="Image"width="1043" height="257"loading="lazy" decoding="async">
+  src="https://image.igouist.net/2epGiF9.webp" alt="Image"width="1043" height="257" style="width: 100%; height: auto;"loading="lazy" decoding="async">
 </p>
 <p>可以看到過程中沒有重新傳遞訊息了，大功告成！</p>
 <p>總之，學到了調整 ServiceBus Trigger Function 的 Azure Functions Timeout 設定時，或是發現某支 ServiceBus Trigger 的 Functions 執行時間過長，就要一併注意 MaxAutoRenewDuration 的設定，避免重複執行。</p>
