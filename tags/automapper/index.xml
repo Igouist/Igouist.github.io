@@ -280,17 +280,19 @@
 &lt;p&gt;尤其是會將 Mapper 的 Config 集中整理的架構裡更應該要對額外的操作做揭露，這樣對彼此都好。真的。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：AutoMapper 在轉換像是 &lt;code&gt;IEnumerable&amp;lt;T&amp;gt;&lt;/code&gt; 這類的集合時，預設會將來源為 Null 的成員轉換成空集合（而非 Null）&lt;/p&gt;
-&lt;p&gt;如果希望 Null 就好好轉換成 Null 的朋友，可以在建立設定檔時用 &lt;code&gt;cfg.AllowNullCollections = true;&lt;/code&gt; 來讓所有為 Null 的空集合轉換對象都乖乖保持 Null&lt;/p&gt;
-&lt;p&gt;也能夠在 ForMember 的時候使用 AllowNull 來針對欄位指定規則。例如 &lt;code&gt;ForMember(x =&amp;gt; x.Members, y =&amp;gt; y.AllowNull())&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;如果希望 Null 就乖乖轉換成 Null 的朋友，可以在建立設定檔時用 &lt;code&gt;cfg.AllowNullCollections = true;&lt;/code&gt; 來讓亂跑的空集合轉換對象都保持 Null&lt;/p&gt;
+&lt;p&gt;也能夠在 ForMember 的時候使用 AllowNull 來針對欄位指定規則。&lt;br/&gt;例如 &lt;code&gt;ForMember(x =&amp;gt; x.Members, y =&amp;gt; y.AllowNull())&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;需要更詳細說明的朋友，也可以參照官方文檔的 &lt;a href=&#34;https://docs.automapper.org/en/stable/Lists-and-arrays.html#handling-null-collections&#34;&gt;Handling null collections&lt;/a&gt; 一節&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h3 id=&#34;忽略指定的欄位&#34;&gt;忽略指定的欄位&lt;/h3&gt;
-&lt;p&gt;除了會有欄位名稱和來源的不同以外，最常遇到的應該就是兩個類別之間大多數欄位雖然對映，但某幾個欄位是沒有對映的。例如傳送給前端使用時一併送出其他來源的資料，但資料由資料表取出時並沒有這個欄位，必須轉換以後再呼叫別的方法去補上資料。&lt;strong&gt;如果直接使用 Map 來進行轉換，就會發生找不到對映欄位的錯誤。這時候就可以使用 &lt;code&gt;Ignore&lt;/code&gt; 來忽略掉指定的欄位&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;除了會有欄位名稱和來源的不同以外，最常遇到的應該就是兩個類別之間大多數欄位雖然對映，但某幾個欄位是沒有對映的。例如傳送給前端使用時，我們想要一併組裝多個來源的資料，所以資料由資料表取出時並沒有某些欄位，必須等後續的步驟去別的來源補上資料。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;這時候如果直接使用 Map 來進行轉換，就會發生找不到對映欄位的錯誤。此時就可以先用 &lt;code&gt;Ignore&lt;/code&gt; 來忽略掉指定的欄位&lt;/strong&gt;。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    cfg.CreateMap&amp;lt;Card, CardViewModel&amp;gt;()
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       .ForMember(x =&amp;gt; x.ImgUri, y =&amp;gt; y.Ignore())
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    );
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如上述程式碼，可能卡片的圖像位置必須由別的方式取得，這種情況我們在 &lt;code&gt;ForMember&lt;/code&gt; 的時候就可以將其指定為 &lt;code&gt;Ignore&lt;/code&gt; 讓 AutoMapper 不要去嘗試轉換它。除了 &lt;code&gt;Ignore&lt;/code&gt; 以外，AutoMapper 還有配備像是 &lt;code&gt;IgnoreAllPropertiesWithAnInaccessibleSetter&lt;/code&gt; 這種光方法名稱長度就有點強的大殺器，也還有像是 &lt;code&gt;AllowNull&lt;/code&gt; 等更多對欄位操作的方法，這部份請各位在使用時按照需求自行摸索。&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如上述程式碼，可能卡片的圖像位置必須由別的方式取得，這種情況我們在 &lt;code&gt;ForMember&lt;/code&gt; 的時候就可以將其指定為 &lt;code&gt;Ignore&lt;/code&gt; 讓 AutoMapper 不要去嘗試轉換它。&lt;/p&gt;
+&lt;p&gt;除了 &lt;code&gt;Ignore&lt;/code&gt; 以外，AutoMapper 還有 &lt;code&gt;IgnoreAllPropertiesWithAnInaccessibleSetter&lt;/code&gt; 這種光方法名稱長度就有點強的大殺器，也還有像是 &lt;code&gt;AllowNull&lt;/code&gt; 等更多對欄位操作的方法，這部份請各位在使用時按照需求自行摸索。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註(1)：上述舉的例子中有需要從多個來源轉換為一個類別的場合，可以參照 &lt;a href=&#34;https://kevintsengtw.blogspot.com/2014/03/automapper.html&#34;&gt;AutoMapper 兩個物件對映到一個類別 - mrkt 的程式學習筆記&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;

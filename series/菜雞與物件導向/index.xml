@@ -205,9 +205,9 @@
 &lt;p&gt;因此最少知識原則就要求了：&lt;strong&gt;一個物件應該對其他物件應該只有最少的了解&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;到這邊讓我們稍微整理一下：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;只和直接的朋友溝通，不和陌生人說話：物件或方法應該只和自己及直接接觸的對象互動&lt;/li&gt;
-&lt;li&gt;不應該使用其他類別的方法回傳的類別的方法：不該破壞封裝並造成額外且違反邏輯的互動&lt;/li&gt;
-&lt;li&gt;一個物件對其他物件應該只有最少的了解：類別只開放 (Public) 必要的功能，並且類別之間應該只有必要的互動&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;只和直接的朋友溝通，不和陌生人說話&lt;/strong&gt;：&lt;br/&gt;物件或方法應該只和自己及直接接觸的對象互動&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不應該使用其他類別的方法回傳的類別的方法&lt;/strong&gt;：&lt;br/&gt;不該破壞封裝並造成額外且違反邏輯的互動&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;一個物件對其他物件應該只有最少的了解&lt;/strong&gt;：&lt;br/&gt;類別只開放 (Public) 必要的功能，並且類別之間應該只有必要的互動&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;也就是說：&lt;strong&gt;只依賴應該依賴的對象，只開放應該開放的方法&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;聰明的朋友應該能從這邊看出最少知識原則的核心理念了，就是&lt;strong&gt;解除耦合&lt;/strong&gt;。&lt;/p&gt;
@@ -264,11 +264,11 @@
 &lt;img
   src=&#34;https://image.igouist.net/ywiHuis.webp&#34;width=&#34;850&#34; height=&#34;315&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;auto&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
-&lt;p&gt;在聊依賴反轉之前，先讓我們聊聊什麼是依賴，所謂的依賴就是一種「受到某個東西影響、牽制」的狀態。&lt;/p&gt;
+&lt;p&gt;在聊依賴反轉之前，先讓我們聊聊什麼是依賴：&lt;/p&gt;
 &lt;p&gt;例如說如果有個像我一樣的肥宅每天一定要來一片雞排才能療癒身心，那我就是依賴雞排；&lt;br/&gt;
 同樣的，如果有個大叔不抽菸就會全身不舒服，就是對香菸有所依賴。&lt;/p&gt;
-&lt;p&gt;當有「必須要藉由某個人事物來達到目的」的狀況時，就是依賴。&lt;/p&gt;
-&lt;p&gt;而在程式設計裡面的概念也差不多，如果&lt;strong&gt;Ａ模組直接受到Ｂ模組的影響，我們就稱Ａ依賴了Ｂ&lt;/strong&gt;，最明顯的狀況就是Ａ模組需要藉由Ｂ模組的實例來完成某個功能的時候。&lt;/p&gt;
+&lt;p&gt;當有「必須要藉由某個人事物來達到目的、受到某個人事物的影響和牽制」時，就是依賴。&lt;/p&gt;
+&lt;p&gt;而在程式設計裡面的概念也一樣，如果&lt;strong&gt;Ａ模組直接受到Ｂ模組的影響，我們就稱Ａ依賴了Ｂ&lt;/strong&gt;，最明顯的狀況就是Ａ模組需要藉由Ｂ模組的實例來完成某個功能的時候。&lt;/p&gt;
 &lt;p&gt;例如「匯出報表」功能建立了一個「Excel 控制類別」的實例以建立檔案；&lt;br/&gt;
 或是「會員查詢」功能建立了一個「DB 連線」的實例來進入資料庫取得會員資料&lt;/p&gt;
 &lt;p&gt;遇見這種「必須要藉由某個模組的實例來完成想要的動作」的狀況時，就是依賴。&lt;/p&gt;
@@ -312,7 +312,9 @@
 &lt;p&gt;同時也要明白一件重要的事：&lt;strong&gt;並不是高階模組去依賴低階模組。而是高階模組提出它需要的功能，低階模組去實作出這些功能、達成高階模組的目標&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;我們並不是因為有「DB 的連線方法」和「處理會員資料的方法」所以才說「我們有這兩個東西欸，那我們來組成會員查詢功能吧」；而是「我們想做一個會員查詢功能，所以我們需要連線到 DB，然後對這些資料做篩選和處理」&lt;/p&gt;
 &lt;p&gt;就如同我們在介面的例子所提的一樣：「老闆為了製造產品（高階模組的目標），開出了工程師的應徵條件（介面），而小明前來應徵（低階模組的實作）」&lt;/p&gt;
-&lt;p&gt;如此一來，依賴就「反轉」了。原本是 &lt;code&gt;高階模組 → 低階模組&lt;/code&gt; 的關係，變成了 &lt;code&gt;高階模組 → 介面 ← 低階模組&lt;/code&gt;。並不是高階去依賴低階，而是低階去依賴高階要求的功能。&lt;/p&gt;
+&lt;p&gt;如此一來，依賴就「反轉」了。&lt;/p&gt;
+&lt;p&gt;原本是 &lt;code&gt;高階模組 → 低階模組&lt;/code&gt; 的關係，變成了 &lt;code&gt;高階模組 → 介面 ← 低階模組&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;並不是高階模組去依賴低階模組，而是低階模組去依賴高階模組所要求的功能。&lt;/p&gt;
 &lt;p&gt;這也就是依賴反轉原則的第二點：&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;抽象不應該依賴細節；細節應該依賴抽象。&lt;/strong&gt;&lt;/p&gt;&lt;/blockquote&gt;
@@ -327,7 +329,8 @@
 &lt;h2 id=&#34;控制反轉-inversion-of-control-ioc--依賴注入-dependency-injection&#34;&gt;控制反轉 (Inversion of Control, IoC) &amp;amp;&lt;br/&gt; 依賴注入 (Dependency Injection)&lt;/h2&gt;
 &lt;p&gt;即使我們反轉了依賴關係，但總是要建立實例才能使用的呀。所以，只是將對具體的依賴更改為對抽象的依賴，仍然是不夠的，在要使用的瞬間就會遭遇到問題。面對這個問題，大大們提出了許多個解決的方法，今天就介紹一個比較常見的方向：&lt;strong&gt;控制反轉 (Inversion of Control, IoC)&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;思路非常的簡單：既然如此，我們把實例的建立和實例的使用切分開來就好了，&lt;strong&gt;不再是由高階模組去建立並控制低階模組，而是我們讓一個控制反轉中心去建立低階模組，然後高階模組要使用的時候再把這個低階模組交給高階模組使用&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;如此一來，控制權也跟著反轉過來了，高階模組從&lt;strong&gt;主動&lt;/strong&gt;建立低階模組，變成&lt;strong&gt;被動&lt;/strong&gt;接收低階模組；也就是從原先的 &lt;code&gt;高階模組 —(建立)→ 低階模組&lt;/code&gt;，變成了 &lt;code&gt;高階模組 ←(傳遞低階模組)— 控制反轉中心&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;如此一來，控制權也跟著反轉過來了，高階模組從&lt;strong&gt;主動&lt;/strong&gt;建立低階模組，變成&lt;strong&gt;被動&lt;/strong&gt;接收低階模組；&lt;/p&gt;
+&lt;p&gt;也就是從原先的：&lt;code&gt;高階模組 —(建立)→ 低階模組&lt;/code&gt;&lt;br/&gt;變成了：&lt;code&gt;高階模組 ←(傳遞低階模組)— 控制反轉中心&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;控制反轉的概念比較像是：當肚子餓的時候，如果自己煮菜的時候，必須自己備料、自己烹調、才能有東西吃。但如果去餐廳點餐，只要說出自己想要的餐點，店家就會負責備料，廚師就會烹調，最後就把需要的餐點送上桌來吃。&lt;/p&gt;
 &lt;p&gt;也就是說，&lt;strong&gt;高階模組再也不需要關心如何建立，該建立哪個實體，只專注於使用功能，真正達到介面的精神。低階模組也只需要等待控制反轉中心分發，到了崗位就把份內事做好，專心在自己的職責身上即可&lt;/strong&gt;。如此一來就能解除兩者之間的耦合。&lt;/p&gt;
 &lt;p&gt;但是，要怎麼把控制中心建立的低階模組，交給高階模組做使用呢？這時候的實作方式就是我們所謂的 &lt;strong&gt;依賴注入 (Dependency Injection)&lt;/strong&gt; 了。&lt;/p&gt;
@@ -436,7 +439,7 @@
 &lt;p&gt;當我們設計介面的時候，或是像上面遇到必須空實作的時候，就可以思考一下：&lt;strong&gt;這個介面的職責是否單一？這個介面的意圖是什麼？這個介面是否只對一個角色負責、只有一個原因改變？&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;當我們的介面符合單一職責、足夠 &lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;內聚&lt;/a&gt; 的時候，我們自然就能夠說這個介面已經足夠精簡了。&lt;/p&gt;
 &lt;h2 id=&#34;用組合實現功能&#34;&gt;用組合實現功能&lt;/h2&gt;
-&lt;p&gt;有些人可能就會有點疑惑了：「但是我就是需要這個功能呀，如果我不塞在介面，要放去哪呢？」&lt;/p&gt;
+&lt;p&gt;有些人可能就會疑惑了：「但是我就是需要這個功能呀，如果我不塞在介面，要放去哪呢？」&lt;/p&gt;
 &lt;p&gt;很簡單，&lt;strong&gt;放去另一個該職責的介面就可以了&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;和繼承需要注意的部分一樣，濫用介面也是濫用繼承，我們應該用&lt;strong&gt;組合&lt;/strong&gt;去實現功能而不是用繼承去綁死功能。一個資料串列能做的功能可能相當多，但我們並不需要一次就要求實現全部能做的事情，而是將這些工作分組，再從中組合出我們需要的部份。&lt;/p&gt;
 &lt;p&gt;此處以 C# 來說，例如我們很常接觸的 &lt;code&gt;List&lt;/code&gt; 類別，並不是只實作了 &lt;code&gt;IList&lt;/code&gt;，而是實作了 &lt;code&gt;ICollection&amp;lt;T&amp;gt;&lt;/code&gt;, &lt;code&gt;IEnumerable&amp;lt;T&amp;gt;&lt;/code&gt;, &lt;code&gt;IEnumerable&lt;/code&gt;, &lt;code&gt;IList&amp;lt;T&amp;gt;&lt;/code&gt;, &lt;code&gt;IReadOnlyCollection&amp;lt;T&amp;gt;&lt;/code&gt;, &lt;code&gt;IReadOnlyList&amp;lt;T&amp;gt;&lt;/code&gt;, &lt;code&gt;ICollection&lt;/code&gt;, &lt;code&gt;IList&lt;/code&gt; 這些介面，層層堆疊，相互嵌合。&lt;/p&gt;
@@ -504,7 +507,7 @@
 &lt;h2 id=&#34;里氏替換原則-liskov-substitution-principle&#34;&gt;里氏替換原則 (Liskov Substitution Principle)&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;子類別必須能夠替換父類別&lt;/strong&gt;&lt;/p&gt;&lt;/blockquote&gt;
-&lt;p&gt;里氏原則還包含了一個概念：子類別替換父類別後，&lt;strong&gt;不需要改變，也不會發生任何錯誤或異常&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;並且，子類別替換父類別後，&lt;strong&gt;不需要修改，也不該發生任何錯誤或異常&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;從定義就可以看出來，這項原則是來替我們處理繼承問題的。因此，在開始本篇之前，可能需要先對 &lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-4-inheritance&#34;&gt;繼承&lt;/a&gt; 以及 &lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-5-polymorphism&#34;&gt;多型&lt;/a&gt; 有基本的認識。如果可以的話，也請先看過 &lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-7-interface&#34;&gt;介面&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;那麼，就讓我們從很久很久以前開始說起…&lt;/p&gt;
 &lt;h2 id=&#34;我的子類別進入叛逆期了怎麼辦&#34;&gt;我的子類別進入叛逆期了，怎麼辦？&lt;/h2&gt;
@@ -530,11 +533,11 @@
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;熟客們知道一支是二十元，他們順路來買香蕉的時候也只會準備二十元。&lt;br/&gt;
-所以，兒子不能隨便亂漲價到五十元，因為客人也拿不出來，而且臨時漲價還會被留負評&lt;/p&gt;
+所以，兒子不能亂漲價到五十元，因為客人也拿不出來，而且臨時漲價還會被留負評&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;熟客們知道給了錢就可以拿到香蕉，他們給了錢之後就會等著老闆把香蕉給他們。&lt;br/&gt;
-所以，兒子不能今天收了人家二十元，然後只給半支香蕉，客人會很傻眼，攤子會很危險&lt;/p&gt;
+所以，兒子不能收了人家二十元，然後只給半支香蕉，客人會很傻眼，攤子會很危險&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;這些熟客，其實就是我們工程師。&lt;strong&gt;我們預期了這個函式或類別需要準備的輸入參數，也預期了應該要有的輸出結果。如果某一天替換了子類別，卻不是這麼一回事，就會發生很多意料外的錯誤&lt;/strong&gt;。對買香蕉這件事而言：&lt;/p&gt;
@@ -1886,8 +1889,10 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;當有預設值的時候，該參數就會變成可選的，這時候就可以輕鬆決定要傳進來的內容了。當然，如果傳進來的並非只是數量上的差別，而是整個型別都不一樣的話，還是要回歸到多載的做法，建立兩個同名但不同傳入參數類型的方法，可讀性會比較高呦。&lt;/p&gt;
 &lt;p&gt;多載提供的好處在於：&lt;strong&gt;同個目標的函式可以根據傳入的參數不同做不一樣的處理&lt;/strong&gt;。例如當我們寫了一個連線取資料的方法，可以分為&lt;/p&gt;
-&lt;p&gt;(1) 傳入連線的話，就使用連線取得資料&lt;/p&gt;
-&lt;p&gt;(2) 傳入連線字串的話，就先用連線字串開啟連線，再使用連線取得資料&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;傳入連線的話，就使用連線取得資料&lt;/li&gt;
+&lt;li&gt;傳入連線字串的話，就先用連線字串開啟連線，再使用連線取得資料&lt;/li&gt;
+&lt;/ol&gt;
 &lt;p&gt;等等，根據參數的場合來進行處理。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;藉由傳入不同的參數類型和數量，就可以處理不同狀況的內容，既擴展了函式在使用上的彈性，同時也增加函式能派上用場的時機&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;而最重要的是這將讓編寫程式的人員去思考：&lt;strong&gt;我設計的這個方法將能應用在什麼場景？&lt;/strong&gt; 這將會成為一個相當優良的習慣。&lt;/p&gt;
@@ -2022,10 +2027,11 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;再提醒一次：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;類別是定義、是設計圖、是描述；物件是類別產生的實體、是實際上的執行者&lt;/li&gt;
-&lt;li&gt;類別是抽象化的資訊，例如「狗」；物件則是一個特定的實例，例如「叫做阿福的狗」&lt;/li&gt;
-&lt;li&gt;承上，狗的類別用來告訴程式什麼是狗；叫做阿福的物件則是程式根據我們的指示，建立出來的一條指定的狗&lt;/li&gt;
+&lt;li&gt;類別是抽象化的資訊，例如「狗」&lt;/li&gt;
+&lt;li&gt;物件則是一個特定的實例，例如「一隻叫做阿福的狗」&lt;/li&gt;
+&lt;li&gt;承上，狗的類別用來告訴程式什麼是狗；而叫做阿福的物件，則是程式根據我們的指示，從類別建立出來的一條實際的狗&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;到此應該能夠初步掌握物件和類別的概念了。這邊推薦一下可以閱讀保哥的這篇 &lt;a href=&#34;https://blog.miniasp.com/post/2009/08/27/OOP-Basis-What-is-class-and-object&#34;&gt;物件導向基礎：何謂類別(Class)？何謂物件(Object)？&lt;/a&gt;，裡面除了對物件和類別有更易懂的介紹和舉例以外，還有十題概念題可以幫助你搞懂物件和類別的意義與差異，相當值得一看。另外，也可以參考這幾篇的說明：&lt;/p&gt;
+&lt;p&gt;這邊推薦一下可以閱讀保哥的這篇 &lt;a href=&#34;https://blog.miniasp.com/post/2009/08/27/OOP-Basis-What-is-class-and-object&#34;&gt;物件導向基礎：何謂類別(Class)？何謂物件(Object)？&lt;/a&gt;，裡面除了對物件和類別有更易懂的介紹和舉例以外，還有十題概念題可以幫助你搞懂物件和類別的意義與差異，相當值得一看。看完上面這篇之後，推薦再閱讀這幾篇：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://ytyubox.github.io/posts/2020/02/29/oop-discussion/&#34;&gt;有物件導向的世界與沒有物件導向的世界&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://matthung0807.blogspot.com/2017/10/java_24.html&#34;&gt;Java 物件導向的概念 - 菜鳥工程師肉豬&lt;/a&gt;&lt;/li&gt;

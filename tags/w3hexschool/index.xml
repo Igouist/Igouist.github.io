@@ -53,9 +53,9 @@
 &lt;p&gt;因此最少知識原則就要求了：&lt;strong&gt;一個物件應該對其他物件應該只有最少的了解&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;到這邊讓我們稍微整理一下：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;只和直接的朋友溝通，不和陌生人說話：物件或方法應該只和自己及直接接觸的對象互動&lt;/li&gt;
-&lt;li&gt;不應該使用其他類別的方法回傳的類別的方法：不該破壞封裝並造成額外且違反邏輯的互動&lt;/li&gt;
-&lt;li&gt;一個物件對其他物件應該只有最少的了解：類別只開放 (Public) 必要的功能，並且類別之間應該只有必要的互動&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;只和直接的朋友溝通，不和陌生人說話&lt;/strong&gt;：&lt;br/&gt;物件或方法應該只和自己及直接接觸的對象互動&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不應該使用其他類別的方法回傳的類別的方法&lt;/strong&gt;：&lt;br/&gt;不該破壞封裝並造成額外且違反邏輯的互動&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;一個物件對其他物件應該只有最少的了解&lt;/strong&gt;：&lt;br/&gt;類別只開放 (Public) 必要的功能，並且類別之間應該只有必要的互動&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;也就是說：&lt;strong&gt;只依賴應該依賴的對象，只開放應該開放的方法&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;聰明的朋友應該能從這邊看出最少知識原則的核心理念了，就是&lt;strong&gt;解除耦合&lt;/strong&gt;。&lt;/p&gt;
@@ -112,11 +112,11 @@
 &lt;img
   src=&#34;https://image.igouist.net/ywiHuis.webp&#34;width=&#34;850&#34; height=&#34;315&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;auto&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
-&lt;p&gt;在聊依賴反轉之前，先讓我們聊聊什麼是依賴，所謂的依賴就是一種「受到某個東西影響、牽制」的狀態。&lt;/p&gt;
+&lt;p&gt;在聊依賴反轉之前，先讓我們聊聊什麼是依賴：&lt;/p&gt;
 &lt;p&gt;例如說如果有個像我一樣的肥宅每天一定要來一片雞排才能療癒身心，那我就是依賴雞排；&lt;br/&gt;
 同樣的，如果有個大叔不抽菸就會全身不舒服，就是對香菸有所依賴。&lt;/p&gt;
-&lt;p&gt;當有「必須要藉由某個人事物來達到目的」的狀況時，就是依賴。&lt;/p&gt;
-&lt;p&gt;而在程式設計裡面的概念也差不多，如果&lt;strong&gt;Ａ模組直接受到Ｂ模組的影響，我們就稱Ａ依賴了Ｂ&lt;/strong&gt;，最明顯的狀況就是Ａ模組需要藉由Ｂ模組的實例來完成某個功能的時候。&lt;/p&gt;
+&lt;p&gt;當有「必須要藉由某個人事物來達到目的、受到某個人事物的影響和牽制」時，就是依賴。&lt;/p&gt;
+&lt;p&gt;而在程式設計裡面的概念也一樣，如果&lt;strong&gt;Ａ模組直接受到Ｂ模組的影響，我們就稱Ａ依賴了Ｂ&lt;/strong&gt;，最明顯的狀況就是Ａ模組需要藉由Ｂ模組的實例來完成某個功能的時候。&lt;/p&gt;
 &lt;p&gt;例如「匯出報表」功能建立了一個「Excel 控制類別」的實例以建立檔案；&lt;br/&gt;
 或是「會員查詢」功能建立了一個「DB 連線」的實例來進入資料庫取得會員資料&lt;/p&gt;
 &lt;p&gt;遇見這種「必須要藉由某個模組的實例來完成想要的動作」的狀況時，就是依賴。&lt;/p&gt;
@@ -160,7 +160,9 @@
 &lt;p&gt;同時也要明白一件重要的事：&lt;strong&gt;並不是高階模組去依賴低階模組。而是高階模組提出它需要的功能，低階模組去實作出這些功能、達成高階模組的目標&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;我們並不是因為有「DB 的連線方法」和「處理會員資料的方法」所以才說「我們有這兩個東西欸，那我們來組成會員查詢功能吧」；而是「我們想做一個會員查詢功能，所以我們需要連線到 DB，然後對這些資料做篩選和處理」&lt;/p&gt;
 &lt;p&gt;就如同我們在介面的例子所提的一樣：「老闆為了製造產品（高階模組的目標），開出了工程師的應徵條件（介面），而小明前來應徵（低階模組的實作）」&lt;/p&gt;
-&lt;p&gt;如此一來，依賴就「反轉」了。原本是 &lt;code&gt;高階模組 → 低階模組&lt;/code&gt; 的關係，變成了 &lt;code&gt;高階模組 → 介面 ← 低階模組&lt;/code&gt;。並不是高階去依賴低階，而是低階去依賴高階要求的功能。&lt;/p&gt;
+&lt;p&gt;如此一來，依賴就「反轉」了。&lt;/p&gt;
+&lt;p&gt;原本是 &lt;code&gt;高階模組 → 低階模組&lt;/code&gt; 的關係，變成了 &lt;code&gt;高階模組 → 介面 ← 低階模組&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;並不是高階模組去依賴低階模組，而是低階模組去依賴高階模組所要求的功能。&lt;/p&gt;
 &lt;p&gt;這也就是依賴反轉原則的第二點：&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;抽象不應該依賴細節；細節應該依賴抽象。&lt;/strong&gt;&lt;/p&gt;&lt;/blockquote&gt;
@@ -175,7 +177,8 @@
 &lt;h2 id=&#34;控制反轉-inversion-of-control-ioc--依賴注入-dependency-injection&#34;&gt;控制反轉 (Inversion of Control, IoC) &amp;amp;&lt;br/&gt; 依賴注入 (Dependency Injection)&lt;/h2&gt;
 &lt;p&gt;即使我們反轉了依賴關係，但總是要建立實例才能使用的呀。所以，只是將對具體的依賴更改為對抽象的依賴，仍然是不夠的，在要使用的瞬間就會遭遇到問題。面對這個問題，大大們提出了許多個解決的方法，今天就介紹一個比較常見的方向：&lt;strong&gt;控制反轉 (Inversion of Control, IoC)&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;思路非常的簡單：既然如此，我們把實例的建立和實例的使用切分開來就好了，&lt;strong&gt;不再是由高階模組去建立並控制低階模組，而是我們讓一個控制反轉中心去建立低階模組，然後高階模組要使用的時候再把這個低階模組交給高階模組使用&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;如此一來，控制權也跟著反轉過來了，高階模組從&lt;strong&gt;主動&lt;/strong&gt;建立低階模組，變成&lt;strong&gt;被動&lt;/strong&gt;接收低階模組；也就是從原先的 &lt;code&gt;高階模組 —(建立)→ 低階模組&lt;/code&gt;，變成了 &lt;code&gt;高階模組 ←(傳遞低階模組)— 控制反轉中心&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;如此一來，控制權也跟著反轉過來了，高階模組從&lt;strong&gt;主動&lt;/strong&gt;建立低階模組，變成&lt;strong&gt;被動&lt;/strong&gt;接收低階模組；&lt;/p&gt;
+&lt;p&gt;也就是從原先的：&lt;code&gt;高階模組 —(建立)→ 低階模組&lt;/code&gt;&lt;br/&gt;變成了：&lt;code&gt;高階模組 ←(傳遞低階模組)— 控制反轉中心&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;控制反轉的概念比較像是：當肚子餓的時候，如果自己煮菜的時候，必須自己備料、自己烹調、才能有東西吃。但如果去餐廳點餐，只要說出自己想要的餐點，店家就會負責備料，廚師就會烹調，最後就把需要的餐點送上桌來吃。&lt;/p&gt;
 &lt;p&gt;也就是說，&lt;strong&gt;高階模組再也不需要關心如何建立，該建立哪個實體，只專注於使用功能，真正達到介面的精神。低階模組也只需要等待控制反轉中心分發，到了崗位就把份內事做好，專心在自己的職責身上即可&lt;/strong&gt;。如此一來就能解除兩者之間的耦合。&lt;/p&gt;
 &lt;p&gt;但是，要怎麼把控制中心建立的低階模組，交給高階模組做使用呢？這時候的實作方式就是我們所謂的 &lt;strong&gt;依賴注入 (Dependency Injection)&lt;/strong&gt; 了。&lt;/p&gt;
@@ -462,7 +465,7 @@
 &lt;p&gt;當我們設計介面的時候，或是像上面遇到必須空實作的時候，就可以思考一下：&lt;strong&gt;這個介面的職責是否單一？這個介面的意圖是什麼？這個介面是否只對一個角色負責、只有一個原因改變？&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;當我們的介面符合單一職責、足夠 &lt;a href=&#34;https://igouist.github.io/post/2020/09/oo-8-cohesion-and-coupling&#34;&gt;內聚&lt;/a&gt; 的時候，我們自然就能夠說這個介面已經足夠精簡了。&lt;/p&gt;
 &lt;h2 id=&#34;用組合實現功能&#34;&gt;用組合實現功能&lt;/h2&gt;
-&lt;p&gt;有些人可能就會有點疑惑了：「但是我就是需要這個功能呀，如果我不塞在介面，要放去哪呢？」&lt;/p&gt;
+&lt;p&gt;有些人可能就會疑惑了：「但是我就是需要這個功能呀，如果我不塞在介面，要放去哪呢？」&lt;/p&gt;
 &lt;p&gt;很簡單，&lt;strong&gt;放去另一個該職責的介面就可以了&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;和繼承需要注意的部分一樣，濫用介面也是濫用繼承，我們應該用&lt;strong&gt;組合&lt;/strong&gt;去實現功能而不是用繼承去綁死功能。一個資料串列能做的功能可能相當多，但我們並不需要一次就要求實現全部能做的事情，而是將這些工作分組，再從中組合出我們需要的部份。&lt;/p&gt;
 &lt;p&gt;此處以 C# 來說，例如我們很常接觸的 &lt;code&gt;List&lt;/code&gt; 類別，並不是只實作了 &lt;code&gt;IList&lt;/code&gt;，而是實作了 &lt;code&gt;ICollection&amp;lt;T&amp;gt;&lt;/code&gt;, &lt;code&gt;IEnumerable&amp;lt;T&amp;gt;&lt;/code&gt;, &lt;code&gt;IEnumerable&lt;/code&gt;, &lt;code&gt;IList&amp;lt;T&amp;gt;&lt;/code&gt;, &lt;code&gt;IReadOnlyCollection&amp;lt;T&amp;gt;&lt;/code&gt;, &lt;code&gt;IReadOnlyList&amp;lt;T&amp;gt;&lt;/code&gt;, &lt;code&gt;ICollection&lt;/code&gt;, &lt;code&gt;IList&lt;/code&gt; 這些介面，層層堆疊，相互嵌合。&lt;/p&gt;
@@ -616,7 +619,7 @@
 &lt;h2 id=&#34;里氏替換原則-liskov-substitution-principle&#34;&gt;里氏替換原則 (Liskov Substitution Principle)&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;子類別必須能夠替換父類別&lt;/strong&gt;&lt;/p&gt;&lt;/blockquote&gt;
-&lt;p&gt;里氏原則還包含了一個概念：子類別替換父類別後，&lt;strong&gt;不需要改變，也不會發生任何錯誤或異常&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;並且，子類別替換父類別後，&lt;strong&gt;不需要修改，也不該發生任何錯誤或異常&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;從定義就可以看出來，這項原則是來替我們處理繼承問題的。因此，在開始本篇之前，可能需要先對 &lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-4-inheritance&#34;&gt;繼承&lt;/a&gt; 以及 &lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-5-polymorphism&#34;&gt;多型&lt;/a&gt; 有基本的認識。如果可以的話，也請先看過 &lt;a href=&#34;https://igouist.github.io/post/2020/07/oo-7-interface&#34;&gt;介面&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;那麼，就讓我們從很久很久以前開始說起…&lt;/p&gt;
 &lt;h2 id=&#34;我的子類別進入叛逆期了怎麼辦&#34;&gt;我的子類別進入叛逆期了，怎麼辦？&lt;/h2&gt;
@@ -642,11 +645,11 @@
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;熟客們知道一支是二十元，他們順路來買香蕉的時候也只會準備二十元。&lt;br/&gt;
-所以，兒子不能隨便亂漲價到五十元，因為客人也拿不出來，而且臨時漲價還會被留負評&lt;/p&gt;
+所以，兒子不能亂漲價到五十元，因為客人也拿不出來，而且臨時漲價還會被留負評&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;熟客們知道給了錢就可以拿到香蕉，他們給了錢之後就會等著老闆把香蕉給他們。&lt;br/&gt;
-所以，兒子不能今天收了人家二十元，然後只給半支香蕉，客人會很傻眼，攤子會很危險&lt;/p&gt;
+所以，兒子不能收了人家二十元，然後只給半支香蕉，客人會很傻眼，攤子會很危險&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;這些熟客，其實就是我們工程師。&lt;strong&gt;我們預期了這個函式或類別需要準備的輸入參數，也預期了應該要有的輸出結果。如果某一天替換了子類別，卻不是這麼一回事，就會發生很多意料外的錯誤&lt;/strong&gt;。對買香蕉這件事而言：&lt;/p&gt;
@@ -3415,8 +3418,10 @@ VS 中 /// 就會幫忙把參數註解格式打好。例如：&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;當有預設值的時候，該參數就會變成可選的，這時候就可以輕鬆決定要傳進來的內容了。當然，如果傳進來的並非只是數量上的差別，而是整個型別都不一樣的話，還是要回歸到多載的做法，建立兩個同名但不同傳入參數類型的方法，可讀性會比較高呦。&lt;/p&gt;
 &lt;p&gt;多載提供的好處在於：&lt;strong&gt;同個目標的函式可以根據傳入的參數不同做不一樣的處理&lt;/strong&gt;。例如當我們寫了一個連線取資料的方法，可以分為&lt;/p&gt;
-&lt;p&gt;(1) 傳入連線的話，就使用連線取得資料&lt;/p&gt;
-&lt;p&gt;(2) 傳入連線字串的話，就先用連線字串開啟連線，再使用連線取得資料&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;傳入連線的話，就使用連線取得資料&lt;/li&gt;
+&lt;li&gt;傳入連線字串的話，就先用連線字串開啟連線，再使用連線取得資料&lt;/li&gt;
+&lt;/ol&gt;
 &lt;p&gt;等等，根據參數的場合來進行處理。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;藉由傳入不同的參數類型和數量，就可以處理不同狀況的內容，既擴展了函式在使用上的彈性，同時也增加函式能派上用場的時機&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;而最重要的是這將讓編寫程式的人員去思考：&lt;strong&gt;我設計的這個方法將能應用在什麼場景？&lt;/strong&gt; 這將會成為一個相當優良的習慣。&lt;/p&gt;
@@ -3551,10 +3556,11 @@ VS 中 /// 就會幫忙把參數註解格式打好。例如：&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;再提醒一次：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;類別是定義、是設計圖、是描述；物件是類別產生的實體、是實際上的執行者&lt;/li&gt;
-&lt;li&gt;類別是抽象化的資訊，例如「狗」；物件則是一個特定的實例，例如「叫做阿福的狗」&lt;/li&gt;
-&lt;li&gt;承上，狗的類別用來告訴程式什麼是狗；叫做阿福的物件則是程式根據我們的指示，建立出來的一條指定的狗&lt;/li&gt;
+&lt;li&gt;類別是抽象化的資訊，例如「狗」&lt;/li&gt;
+&lt;li&gt;物件則是一個特定的實例，例如「一隻叫做阿福的狗」&lt;/li&gt;
+&lt;li&gt;承上，狗的類別用來告訴程式什麼是狗；而叫做阿福的物件，則是程式根據我們的指示，從類別建立出來的一條實際的狗&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;到此應該能夠初步掌握物件和類別的概念了。這邊推薦一下可以閱讀保哥的這篇 &lt;a href=&#34;https://blog.miniasp.com/post/2009/08/27/OOP-Basis-What-is-class-and-object&#34;&gt;物件導向基礎：何謂類別(Class)？何謂物件(Object)？&lt;/a&gt;，裡面除了對物件和類別有更易懂的介紹和舉例以外，還有十題概念題可以幫助你搞懂物件和類別的意義與差異，相當值得一看。另外，也可以參考這幾篇的說明：&lt;/p&gt;
+&lt;p&gt;這邊推薦一下可以閱讀保哥的這篇 &lt;a href=&#34;https://blog.miniasp.com/post/2009/08/27/OOP-Basis-What-is-class-and-object&#34;&gt;物件導向基礎：何謂類別(Class)？何謂物件(Object)？&lt;/a&gt;，裡面除了對物件和類別有更易懂的介紹和舉例以外，還有十題概念題可以幫助你搞懂物件和類別的意義與差異，相當值得一看。看完上面這篇之後，推薦再閱讀這幾篇：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://ytyubox.github.io/posts/2020/02/29/oop-discussion/&#34;&gt;有物件導向的世界與沒有物件導向的世界&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://matthung0807.blogspot.com/2017/10/java_24.html&#34;&gt;Java 物件導向的概念 - 菜鳥工程師肉豬&lt;/a&gt;&lt;/li&gt;
@@ -3711,17 +3717,19 @@ VS 中 /// 就會幫忙把參數註解格式打好。例如：&lt;/p&gt;
 &lt;p&gt;尤其是會將 Mapper 的 Config 集中整理的架構裡更應該要對額外的操作做揭露，這樣對彼此都好。真的。&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
 &lt;p&gt;補充：AutoMapper 在轉換像是 &lt;code&gt;IEnumerable&amp;lt;T&amp;gt;&lt;/code&gt; 這類的集合時，預設會將來源為 Null 的成員轉換成空集合（而非 Null）&lt;/p&gt;
-&lt;p&gt;如果希望 Null 就好好轉換成 Null 的朋友，可以在建立設定檔時用 &lt;code&gt;cfg.AllowNullCollections = true;&lt;/code&gt; 來讓所有為 Null 的空集合轉換對象都乖乖保持 Null&lt;/p&gt;
-&lt;p&gt;也能夠在 ForMember 的時候使用 AllowNull 來針對欄位指定規則。例如 &lt;code&gt;ForMember(x =&amp;gt; x.Members, y =&amp;gt; y.AllowNull())&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;如果希望 Null 就乖乖轉換成 Null 的朋友，可以在建立設定檔時用 &lt;code&gt;cfg.AllowNullCollections = true;&lt;/code&gt; 來讓亂跑的空集合轉換對象都保持 Null&lt;/p&gt;
+&lt;p&gt;也能夠在 ForMember 的時候使用 AllowNull 來針對欄位指定規則。&lt;br/&gt;例如 &lt;code&gt;ForMember(x =&amp;gt; x.Members, y =&amp;gt; y.AllowNull())&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;需要更詳細說明的朋友，也可以參照官方文檔的 &lt;a href=&#34;https://docs.automapper.org/en/stable/Lists-and-arrays.html#handling-null-collections&#34;&gt;Handling null collections&lt;/a&gt; 一節&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h3 id=&#34;忽略指定的欄位&#34;&gt;忽略指定的欄位&lt;/h3&gt;
-&lt;p&gt;除了會有欄位名稱和來源的不同以外，最常遇到的應該就是兩個類別之間大多數欄位雖然對映，但某幾個欄位是沒有對映的。例如傳送給前端使用時一併送出其他來源的資料，但資料由資料表取出時並沒有這個欄位，必須轉換以後再呼叫別的方法去補上資料。&lt;strong&gt;如果直接使用 Map 來進行轉換，就會發生找不到對映欄位的錯誤。這時候就可以使用 &lt;code&gt;Ignore&lt;/code&gt; 來忽略掉指定的欄位&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;除了會有欄位名稱和來源的不同以外，最常遇到的應該就是兩個類別之間大多數欄位雖然對映，但某幾個欄位是沒有對映的。例如傳送給前端使用時，我們想要一併組裝多個來源的資料，所以資料由資料表取出時並沒有某些欄位，必須等後續的步驟去別的來源補上資料。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;這時候如果直接使用 Map 來進行轉換，就會發生找不到對映欄位的錯誤。此時就可以先用 &lt;code&gt;Ignore&lt;/code&gt; 來忽略掉指定的欄位&lt;/strong&gt;。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    cfg.CreateMap&amp;lt;Card, CardViewModel&amp;gt;()
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       .ForMember(x =&amp;gt; x.ImgUri, y =&amp;gt; y.Ignore())
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    );
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如上述程式碼，可能卡片的圖像位置必須由別的方式取得，這種情況我們在 &lt;code&gt;ForMember&lt;/code&gt; 的時候就可以將其指定為 &lt;code&gt;Ignore&lt;/code&gt; 讓 AutoMapper 不要去嘗試轉換它。除了 &lt;code&gt;Ignore&lt;/code&gt; 以外，AutoMapper 還有配備像是 &lt;code&gt;IgnoreAllPropertiesWithAnInaccessibleSetter&lt;/code&gt; 這種光方法名稱長度就有點強的大殺器，也還有像是 &lt;code&gt;AllowNull&lt;/code&gt; 等更多對欄位操作的方法，這部份請各位在使用時按照需求自行摸索。&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;如上述程式碼，可能卡片的圖像位置必須由別的方式取得，這種情況我們在 &lt;code&gt;ForMember&lt;/code&gt; 的時候就可以將其指定為 &lt;code&gt;Ignore&lt;/code&gt; 讓 AutoMapper 不要去嘗試轉換它。&lt;/p&gt;
+&lt;p&gt;除了 &lt;code&gt;Ignore&lt;/code&gt; 以外，AutoMapper 還有 &lt;code&gt;IgnoreAllPropertiesWithAnInaccessibleSetter&lt;/code&gt; 這種光方法名稱長度就有點強的大殺器，也還有像是 &lt;code&gt;AllowNull&lt;/code&gt; 等更多對欄位操作的方法，這部份請各位在使用時按照需求自行摸索。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;註(1)：上述舉的例子中有需要從多個來源轉換為一個類別的場合，可以參照 &lt;a href=&#34;https://kevintsengtw.blogspot.com/2014/03/automapper.html&#34;&gt;AutoMapper 兩個物件對映到一個類別 - mrkt 的程式學習筆記&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
@@ -4528,7 +4536,7 @@ heroku config:set CHROMEDRIVER_PATH=/app/.chromedriver/bin/chromedriver
       <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/05/jsonview/</guid>
       <description>&lt;p&gt;本來這週已經沒梗了，不過同學來問了個接 API 的問題還附了照片，頓時決定順手推一下好用的瀏覽器插件：&lt;a href=&#34;https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc&#34;&gt;Json View&lt;/a&gt;。&lt;/p&gt;
-&lt;p&gt;Json View 是一款 Chrome 的擴充套件，能幫忙把 Json 格式的資料重新排版，保護妳我的眼睛。&lt;/p&gt;
+&lt;p&gt;Json View 是一款 Chrome 的擴充套件，能把 Json 格式的資料重新排版，保護妳我的眼睛。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;備註：關於 JSON 可以參閱 &lt;a href=&#34;http://miniaspreading.github.io/guide-to-json/1-what-is-json.html&#34;&gt;JSON精要讀書紀錄&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;照慣例來張效果圖鎮樓
@@ -4546,7 +4554,7 @@ heroku config:set CHROMEDRIVER_PATH=/app/.chromedriver/bin/chromedriver
   src=&#34;https://image.igouist.net/kaoOwTt.webp&#34;width=&#34;1214&#34; height=&#34;448&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;auto&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;突然還以為咱們要玩威利在哪裡，這不是欺負我眼睛不好嘛。&lt;/p&gt;
-&lt;p&gt;但畢竟只是小問題，不能開口就要人家給 Swagger 或用個 Postman（API測試神器，之後也來推薦一篇），用圖片描述也是無可厚非，但還是必須顧眼睛。因此現場直接就推薦同學安裝這款 chrome 插件：&lt;a href=&#34;https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc&#34;&gt;Json View&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;但畢竟只是小問題，不能開口就要人家給 Swagger 或用個 Postman（API 測試神器，之後也來推薦一篇），用圖片描述也是無可厚非，但還是必須顧眼睛。因此現場直接就推薦同學安裝這款 chrome 插件：&lt;a href=&#34;https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc&#34;&gt;Json View&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;安裝之後再度使用瀏覽器打開 API，就會是長這樣的：
 
 
@@ -4568,7 +4576,7 @@ heroku config:set CHROMEDRIVER_PATH=/app/.chromedriver/bin/chromedriver
       <description>&lt;p&gt;開始挑戰每週寫文之後，發現最大的敵人根本不是寫文這件事，而是自己的惰性啊。像這次母親節假期過太爽，差點兒就忘記發文…… 所以這週就還是 &lt;del&gt;偷懶&lt;/del&gt; 工具介紹囉。&lt;/p&gt;
 &lt;p&gt;今天要分享的是 &lt;a href=&#34;https://carbon.now.sh/&#34;&gt;Carbon&lt;/a&gt; 這個工具，它能夠&lt;strong&gt;將貼上的程式碼輸出成圖片，並且支援程式碼上色&lt;/strong&gt;，還可以自選字型、背景色等等，產出的圖可以說相當有質感。&lt;/p&gt;
 &lt;p&gt;當傳送圖片比較快或排版比較好的場合（例如Line, Facebook..），或是在部落格和文件中想直接放漂亮圖片，以及&lt;strong&gt;需要示範給對方看可是又不想要對方直接複製貼上&lt;/strong&gt;的時候可謂是相當實用。&lt;/p&gt;
-&lt;p&gt;先來一張成果圖鎮樓
+&lt;p&gt;先來一張成果圖鎮樓：
 
 
 
@@ -4601,7 +4609,7 @@ heroku config:set CHROMEDRIVER_PATH=/app/.chromedriver/bin/chromedriver
   src=&#34;https://image.igouist.net/jM07HAC.webp&#34;width=&#34;1292&#34; height=&#34;998&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;auto&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;這工具對我個人來說挺喜歡的，有時候要傳程式碼給同學都會直接截圖，有了這個之後就可以傳得優雅一點（對我就是想叫你自己打）&lt;/p&gt;
-&lt;p&gt;但還沒有用在部落格的打算，畢竟我身邊問過的人都表示：如果他們找到的網頁不給複製就會直接關掉。這… 我選擇妥協，真香。&lt;/p&gt;
+&lt;p&gt;但還沒有用在部落格的打算，畢竟我身邊問過的人都表示：如果他們找到的網頁不給複製就會直接關掉。這… 我選擇妥協。&lt;/p&gt;
 &lt;p&gt;那麼今天的工具推薦就到這邊，歡迎立馬用你的同學 or 同事來試試看，保證能促進友誼、增加互動呦！&lt;/p&gt;
 &lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
 &lt;ul&gt;
@@ -5044,7 +5052,8 @@ $ git push heroku master
   src=&#34;https://image.igouist.net/LObC4zj.webp&#34;width=&#34;347&#34; height=&#34;273&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;auto&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;從這邊也可以認出 &lt;code&gt;ws.Cells[2, 1].Value&lt;/code&gt; 的第一個數字是&lt;code&gt;從 ↓ 數下來&lt;/code&gt;的，第二個是&lt;code&gt;往 → 數過去&lt;/code&gt;的（很抱歉這樣表示，因為我常弄反行跟列，這樣之後參考比較好理解）&lt;/p&gt;
-&lt;p&gt;另外眼尖的朋友也可以察覺到一個重點，&lt;strong&gt;儲存格是從 1 開始數的：不是 0 ！&lt;/strong&gt; 也就是說 &lt;code&gt;A1&lt;/code&gt; 這一格是 &lt;code&gt;[1, 1]&lt;/code&gt;，不要打成 &lt;code&gt;[0, 0]&lt;/code&gt; 了。當然，對於困擾的朋友，EEPlus 也提供了 &lt;code&gt;ws.Cells[&amp;quot;B1&amp;quot;]&lt;/code&gt; 的寫法，可以用字串傳入的方式直接指定在 Excel 的儲存格位置，比起數格子方便多了，後續也會在示範標註。&lt;/p&gt;
+&lt;p&gt;另外眼尖的朋友也可以察覺到一個重點，&lt;strong&gt;儲存格是從 1 開始數的：不是 0 ！&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;也就是說 &lt;code&gt;A1&lt;/code&gt; 這一格是 &lt;code&gt;[1, 1]&lt;/code&gt;，不要打成 &lt;code&gt;[0, 0]&lt;/code&gt; 了。當然，對於困擾的朋友，EEPlus 也提供了 &lt;code&gt;ws.Cells[&amp;quot;B1&amp;quot;]&lt;/code&gt; 的寫法，可以用字串傳入的方式直接指定在 Excel 的儲存格位置，比起數格子方便多了，後續也會在示範標註。&lt;/p&gt;
 &lt;h2 id=&#34;編輯-excel&#34;&gt;編輯 Excel&lt;/h2&gt;
 &lt;p&gt;編輯時和建立一樣，從 &lt;code&gt;ExcelPackage()&lt;/code&gt; 開始動作，這次我們將檔案直接傳入，如此 Save 的時候就可以不用再傳一次。關於各種操作直接在程式碼上的註解進行說明。&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 特別注意，頁籤和儲存格等操作 是由 1 開始而非 0&lt;/span&gt;
@@ -5373,7 +5382,7 @@ print_order(order)
 &lt;img
   src=&#34;https://image.igouist.net/9OJpMXL.webp&#34;width=&#34;595&#34; height=&#34;301&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;auto&#34; decoding=&#34;async&#34;&gt;
 
-&lt;a href=&#34;https://github.com/tonsky/FiraCode&#34;&gt;FiraCode&lt;/a&gt;，整體看起來就是乾淨優雅，尤其是連字能使得整個 Code 更有滑順的感覺，十分推薦。&lt;/p&gt;
+&lt;a href=&#34;https://github.com/tonsky/FiraCode&#34;&gt;FiraCode&lt;/a&gt;，整體乾淨優雅，尤其是連字能使得整個 Code 更有滑順的感覺，十分推薦。&lt;/p&gt;
 &lt;p&gt;然而，FiraCode 雖然陪伴我一段不短的時間，但還是有一個致命的缺陷：不支援中文！&lt;/p&gt;
 &lt;p&gt;於是後來我基本上都使用下面介紹的這款&lt;/p&gt;
 &lt;h3 id=&#34;更紗黑體&#34;&gt;更紗黑體&lt;/h3&gt;
@@ -5849,8 +5858,9 @@ Edit.RemoveAllGuidelines // 移除輔助線
       <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/03/sikulix/</guid>
       <description>&lt;p&gt;最近因緣際會下開始玩一些自動化測試的小工具，發現即使不是用在正規的測試時也相當實用，畢竟我們這行能讓電腦自動幫我們省事就是一種樂趣嘛。正巧這禮拜比較忙，無法準時推出訂便當系列的續集，因此決定直接紀錄一下試玩 Sikulix 的過程，以後有需要自動化的時候也方便回來參考。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Sikulix 是一款針對圖形介面編寫腳本達到自動操作&lt;/strong&gt;的軟體，操作上相當方便。主要是將目標的圖示等畫面擷取下來，再編寫程式對目標進行操作。它編寫腳本時使用的語言是 &lt;a href=&#34;https://www.jython.org/&#34;&gt;Jython&lt;/a&gt; —— 用 Java 實現的 Python，關於 Jython 的基本操作可以參見 &lt;a href=&#34;https://iowiki.com/jython/jython_overview.html&#34;&gt;Wiki 教程：Jyhton&lt;/a&gt;，對於「實現 Python？」這句話感到疑惑的朋友可以參見 &lt;a href=&#34;https://zhuanlan.zhihu.com/p/58492338&#34;&gt;知乎：各種 Python 實現的簡單介绍與比較&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;此外，本篇對於 Sikulix 的參考主要來自於&lt;a href=&#34;https://ypwalter.blogspot.com/2018/06/sikuli-sikulix.html?view=classic&#34;&gt;【測試】圖形化的自動測試 Sikuli / SikuliX 的相關技巧&lt;/a&gt;以及 &lt;a href=&#34;https://www.tpisoftware.com/tpu/articleDetails/876&#34;&gt;Sikulix 圖形辨識自動化測試開發工具&lt;/a&gt;兩篇，特此感謝。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Sikulix 是一款針對圖形介面編寫腳本達到自動操作&lt;/strong&gt;的軟體，操作上相當方便。主要是將目標的圖示等畫面擷取下來，再編寫程式對目標進行操作。&lt;/p&gt;
+&lt;p&gt;它編寫腳本時使用的語言是 &lt;a href=&#34;https://www.jython.org/&#34;&gt;Jython&lt;/a&gt; —— 用 Java 實現的 Python，關於 Jython 的基本操作可以參見 &lt;a href=&#34;https://iowiki.com/jython/jython_overview.html&#34;&gt;Wiki 教程：Jyhton&lt;/a&gt;，對於「實現 Python？」這句話感到疑惑的朋友可以參見 &lt;a href=&#34;https://zhuanlan.zhihu.com/p/58492338&#34;&gt;知乎：各種 Python 實現的簡單介绍與比較&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;此外，本篇對於 Sikulix 的參考主要來自於&lt;a href=&#34;https://ypwalter.blogspot.com/2018/06/sikuli-sikulix.html?view=classic&#34;&gt;【測試】圖形化的自動測試 Sikuli / SikuliX 的相關技巧&lt;/a&gt; 以及 &lt;a href=&#34;https://www.tpisoftware.com/tpu/articleDetails/876&#34;&gt;Sikulix 圖形辨識自動化測試開發工具&lt;/a&gt; 兩篇，特此感謝。&lt;/p&gt;
 &lt;h2 id=&#34;下載與安裝&#34;&gt;下載與安裝&lt;/h2&gt;
 &lt;p&gt;首先必須先到 &lt;a href=&#34;http://sikulix.com/&#34;&gt;Sikulix.com&lt;/a&gt; 下載；進去後直接點選 Latest stable version 就會進到下載頁面，接著直接下載 IDE 來使用。&lt;/p&gt;
 &lt;p&gt;
@@ -5868,8 +5878,9 @@ Edit.RemoveAllGuidelines // 移除輔助線
   src=&#34;https://image.igouist.net/0ciX1Ur.webp&#34;width=&#34;1010&#34; height=&#34;693&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;auto&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;h2 id=&#34;實作一個小測試&#34;&gt;實作一個小測試&lt;/h2&gt;
-&lt;p&gt;開啟 IDE 之後，可以看見左邊的程式區，右邊的輸出訊息，以及上面一排操作選單。我們先前提過 Sikulix 是一款以圖形操作的自動化工具，因此我們最常用到的會是上方的 螢幕截圖 和 插入圖片 這兩個能把圖放進去的功能。&lt;/p&gt;
-&lt;p&gt;為了做基本的測試，這邊我打開 Windows 內建的小算盤，並且使用上方工具列的螢幕截圖功能。&lt;strong&gt;按下左上角的螢幕截圖後就可以圈選目標&lt;/strong&gt;，這邊我嘗試將計算機的按鈕框選起來。一框選起來之後它就會幫我們把圖放到左邊的程式區準備讓我們使用。（註：如果不想看見圖片的影像，而想要直接看圖的檔名，如圖片是使用插入圖片要以顯示檔案名稱為主的時候，可以從上面工具列的「檢視」中做切換。）&lt;/p&gt;
+&lt;p&gt;開啟 IDE 之後，可以看見左邊的程式區，右邊的輸出訊息，以及上面一排操作選單。我們先前提過 Sikulix 是一款以圖形操作的自動化工具，因此我們最常用到的會是上方的「螢幕截圖」和「插入圖片」這兩個能把圖放進去的功能。&lt;/p&gt;
+&lt;p&gt;為了做基本的測試，這邊我打開 Windows 內建的小算盤，並且使用上方工具列的螢幕截圖功能。&lt;strong&gt;按下左上角的螢幕截圖後就可以圈選目標&lt;/strong&gt;，這邊我嘗試將計算機的按鈕框選起來。一框選起來之後它就會幫我們把圖放到左邊的程式區準備讓我們使用。&lt;/p&gt;
+&lt;p&gt;（註：如果不想看見圖片的影像，而想要直接看圖的檔名，如圖片是使用插入圖片要以顯示檔案名稱為主的時候，可以從上面工具列的「檢視」中做切換。）&lt;/p&gt;
 &lt;p&gt;
 
 
@@ -5890,7 +5901,7 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;img
   src=&#34;https://image.igouist.net/vWYj0Ou.webp&#34;width=&#34;301&#34; height=&#34;208&#34; style=&#34;width: 100%; height: auto;&#34;loading=&#34;auto&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
-&lt;p&gt;可以看見裡面包含我們剛剛的圖片以及一個 py 檔，我們實際在 IDE 左側撰寫的腳本就是這個 py 檔。&lt;/p&gt;
+&lt;p&gt;可以看見裡面有我們剛剛的圖片和一個 py 檔，我們實際在 IDE 撰寫的腳本就是這個 py 檔。&lt;/p&gt;
 &lt;p&gt;接著測試最簡單的 &lt;code&gt;click()&lt;/code&gt; 方法，我們嘗試讓他按下按鈕試試。&lt;/p&gt;
 &lt;p&gt;
 
@@ -5917,7 +5928,7 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;li&gt;&lt;code&gt;Region&lt;/code&gt;：限制尋找範圍的區域&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;Location&lt;/code&gt;：指定座標&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;Offset&lt;/code&gt;：偏移量，平移找東西的時候好用，可參見&lt;a href=&#34;https://answers.launchpad.net/sikuli/+question/446476&#34;&gt;這篇&lt;/a&gt;的「Offset」&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;Show&lt;/code&gt;：顯示該指令在螢幕上會找到的區域，可參見&lt;a href=&#34;http://wyj-learning.blogspot.com/2018/06/sikuli_30.html&#34;&gt;這篇&lt;/a&gt;的「Show &amp;amp; Show in 作用」&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Show&lt;/code&gt;：顯示該指令在螢幕上抓到的區域，可參見&lt;a href=&#34;http://wyj-learning.blogspot.com/2018/06/sikuli_30.html&#34;&gt;這篇&lt;/a&gt;的「Show &amp;amp; Show in」&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;ShowIn&lt;/code&gt;：有時候 Show 會抓到多個符合條件的區域而選了第一個，但那又不是我們要的目標時，用 ShowIn 就能指定該在螢幕上尋找目標的區域&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;這些指令的組合已經足夠完成大部分的日常工作了，但其實 Sikulix 的潛力仍然還有許多，參考資料將附於本段末。&lt;/p&gt;
@@ -5932,7 +5943,9 @@ Edit.RemoveAllGuidelines // 移除輔助線
 &lt;p&gt;關於可以使用的方法和更深的進階操作，請參閱 &lt;a href=&#34;https://blog.csdn.net/sinat_27980131/article/details/51684001&#34;&gt;sikuli入门到进阶&lt;/a&gt;、&lt;a href=&#34;http://wyj-learning.blogspot.com/2018/06/sikuli_30.html&#34;&gt;半工室：Sikuli 使用 - 重點教學&lt;/a&gt; 以及 &lt;a href=&#34;https://sikulix-2014.readthedocs.io/en/latest/toc.html&#34;&gt;SikuliX 官方文件&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;關於一些進一步會遇到的問題，例如怎麼傳值進來腳本，請參閱&lt;a href=&#34;https://ypwalter.blogspot.com/2018/06/sikuli-sikulix.html?view=classic&#34;&gt;【測試】圖形化的自動測試 Sikuli / SikuliX 的相關技巧&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id=&#34;心得&#34;&gt;心得&lt;/h2&gt;
-&lt;p&gt;之前在看自動化操作的時候，關於網頁這種能看見原始碼找到操作點的可以直接使用 &lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-1-selenium&#34;&gt;Selenium&lt;/a&gt;，而像 APP 也可以用工具抓到 Layout 去執行 Appium。然而像操作 Windows 或是一些應用程式等等就無法仰賴前兩者，這時候就是 Sikulix 出場的時候了。由於其是使用辨識圖像的方式進行的，因此只要有圖形化介面的東西都難不倒他，可以說相當實用，尤其是像我偶而會重灌的，就可以把每次會需要經歷的系統經歷錄成腳本，縮短每次環境佈署的時間，像是 &lt;a href=&#34;https://www.youtube.com/watch?v=FxDOlhysFcM&#34;&gt;2010 年 Sikuli 的示範影片&lt;/a&gt; 就是以設定 IP 為範例去操作呢。實際想一想，能用到的地方真的很多呢，例如&lt;/p&gt;
+&lt;p&gt;之前在看自動化操作的時候，關於網頁這種能看見原始碼找到操作點的可以直接使用 &lt;a href=&#34;https://igouist.github.io/post/2020/03/bandon-1-selenium&#34;&gt;Selenium&lt;/a&gt;，而像 APP 也可以用工具抓到 Layout 去執行 Appium。然而像操作 Windows 或是一些應用程式等等就無法仰賴前兩者，這時候就是 Sikulix 出場的時候了。&lt;/p&gt;
+&lt;p&gt;因為 Sikulix 是使用辨識圖像的方式進行的，因此只要有圖形化介面的東西都難不倒他，可以說相當實用，尤其是像我偶而會重灌的，就可以把每次會需要經歷的系統經歷錄成腳本，縮短每次環境佈署的時間，像是 &lt;a href=&#34;https://www.youtube.com/watch?v=FxDOlhysFcM&#34;&gt;2010 年 Sikuli 的示範影片&lt;/a&gt; 就是以設定 IP 為範例去操作呢。&lt;/p&gt;
+&lt;p&gt;實際想一想，能用到的地方真的很多呢，例如…&lt;/p&gt;
 &lt;p&gt;
 
 
@@ -6276,13 +6289,12 @@ Edit.RemoveAllGuidelines // 移除輔助線
       <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/03/bandon-1-selenium/</guid>
       <description>&lt;blockquote&gt;
-&lt;p&gt;2024.10 更新: Line Notify 將於 2025 年 3 月停止服務（&lt;a href=&#34;https://notify-bot.line.me/closing-announce&#34;&gt;LINE Notify 結束服務公告&lt;/a&gt;），有看到這篇的朋朋請選擇一組新的通知服務來串吧 QQ&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;前言：這是參加&lt;a href=&#34;https://www.hexschool.com/2019/11/14/2019-11-14-w3Hexschool-2020-challenge/&#34;&gt;六角鼠年全馬&lt;/a&gt;的第一篇，主要是希望能夠養成寫部落格的習慣。由於我本身並沒有主要技能，因此這次參賽文章會以我最近玩的玩具、使用的套件或是遇到的問題做紀錄。希望能夠派上用場。&lt;/p&gt;
+&lt;p&gt;目標：使用 &lt;strong&gt;Python&lt;/strong&gt; 及 &lt;strong&gt;Selenium&lt;/strong&gt; 連線到訂便當網站，自動輸入帳號密碼登入後，取回網站上的訂單資訊&lt;/p&gt;&lt;/blockquote&gt;
 &lt;blockquote&gt;
-&lt;p&gt;前言：&lt;/p&gt;
-&lt;p&gt;這是參加&lt;a href=&#34;https://www.hexschool.com/2019/11/14/2019-11-14-w3Hexschool-2020-challenge/&#34;&gt;六角鼠年全馬&lt;/a&gt;的第一篇，主要是希望能夠養成寫部落格的習慣。由於我本身並沒有主要技能，因此這次參賽文章會以我最近玩的玩具、使用的套件或是遇到的問題做紀錄。&lt;/p&gt;
-&lt;p&gt;希望能夠派上用場。&lt;/p&gt;
-&lt;p&gt;目標：使用 &lt;strong&gt;Python&lt;/strong&gt; 及 &lt;strong&gt;Selenium&lt;/strong&gt; 連線到訂便當網站，自動輸入帳號密碼登入後，取回網站上的訂單資訊&lt;/p&gt;
-&lt;p&gt;(2020/12/4) 更新: 由於訂便當網站改版，所以程式碼已經不能照抄了。但有興趣的朋友還是能自己摸索做點變動，也能夠照常進行喔，加油～&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;2020.12 更新: 由於訂便當網站改版，所以程式碼已經不能照抄了。但有興趣的朋友還是能自己摸索做點變動，也能夠照常進行喔，加油～&lt;/p&gt;&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;2024.10 更新: Line Notify 將於 2025 年 3 月停止服務（&lt;a href=&#34;https://notify-bot.line.me/closing-announce&#34;&gt;LINE Notify 結束服務公告&lt;/a&gt;），有看到這篇的朋朋請選擇一組新的通知服務來串吧 QQ&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;最近在公司的時候有個莫大的煩惱，就是關於辦公室團購這回事兒。現在待著的公司主要是從 &lt;a href=&#34;https://dinbendon.net/&#34;&gt;Dinbendon&lt;/a&gt; 這套系統來揪團購，舉凡品客、火鍋等都在上面訂過，據我觀察最受歡迎出現最多次的當屬雞排了。煩惱就在於，每次都會錯過雞排的團購，光在辦公室聞著四面八方傳來的雞排香味，就令人無法忍受！因此趁著這個機會，來嘗試能不能像之前的 &lt;a href=&#34;https://igouist.github.io/post/2019/12/ptt-crawler-and-listener/&#34;&gt;PTT&lt;/a&gt; 一樣來弄出一個通知，順便玩玩最近看到的工具。這系列的文章會分成多個部分，主要是以使用的工具來分集。&lt;/p&gt;
 &lt;p&gt;由於在從團購網取得訂單的過程中需要跟網頁進行互動，因此這次要使用的工具是 &lt;strong&gt;&lt;a href=&#34;https://www.selenium.dev/&#34;&gt;Selenium&lt;/a&gt;&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Selenium 是一個對網頁做自動化測試的工具&lt;/strong&gt;，但我個人比較常在爬蟲的時候用到XD。它能夠經由腳本或錄製的方式對瀏覽器進行操作，並且也支援相當多語言可以使用，例如我同事便使用 C# 和 Hangfire 來完成訂便當的目標（對，這麼無聊的人不只我一個），而我則用相對比較熟悉的 Python 來實作。&lt;/p&gt;
