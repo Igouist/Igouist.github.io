@@ -131,7 +131,7 @@
 
 
 <img
-  src="https://image.igouist.net/XGOmHat.webp" alt="Image"width="600" height="334" style="width: 100%; height: auto;"fetchpriority="high" decoding="async">
+  src="https://image.igouist.net/XGOmHat.webp" alt="Image"width="600" height="334" style="width: 100%; height: auto;"loading="auto" decoding="async">
 </p>
 <p>我們在之前 <a href="/post/2022/10/jmeter">JMeter</a> 的筆記時，介紹過直接對服務爆打一波的作法：簡單來說就是打好幾輪看看服務撐不撐得住，然後紀錄能吃的最大數量，可以說是非常暴力的做法。</p>
 <p>但如果我們想要模擬某個固定數值的請求量（例如每分鐘 100 次請求）、又或是需要用固定速率打出去（例如每 5 秒得敲一下），就不能像上次一樣粗暴地全力出擊了。</p>
@@ -144,7 +144,7 @@
 
 
 <img
-  src="https://image.igouist.net/O3yDOx1.webp" alt="Image"width="1888" height="1062" style="width: 100%; height: auto;"fetchpriority="high" decoding="async">
+  src="https://image.igouist.net/O3yDOx1.webp" alt="Image"width="1888" height="1062" style="width: 100%; height: auto;"loading="auto" decoding="async">
 </p>
 <p>現在我們希望可以模擬線上使用者在尖峰時段的使用頻率，並確認我們服務挺得過去，所以需要把這組腳本調整成：<strong>「每分鐘戳 20 次，持續五分鐘」</strong></p>
 <blockquote>
@@ -154,14 +154,14 @@
 
 
 <img
-  src="https://image.igouist.net/ymK5ZCq.webp" alt="Image"width="1669" height="844" style="width: 100%; height: auto;"fetchpriority="high" decoding="async">
+  src="https://image.igouist.net/ymK5ZCq.webp" alt="Image"width="1669" height="844" style="width: 100%; height: auto;"loading="auto" decoding="async">
 </p>
 <p>並且找到 Constant Throughput Timer 裡面的 <strong>Target Throughput（每分鐘呼叫次數）</strong>，我們這次的需求是每分鐘要戳他個 20 次，這邊就直接放 20.0：
 
 
 
 <img
-  src="https://image.igouist.net/I29PVrK.webp" alt="Image"width="969" height="441" style="width: 100%; height: auto;"fetchpriority="high" decoding="async">
+  src="https://image.igouist.net/I29PVrK.webp" alt="Image"width="969" height="441" style="width: 100%; height: auto;"loading="auto" decoding="async">
 </p>
 <p>接著回到 Thread Group，因為我們這次的場景是用時間來計算的，所以需要<strong>把底下的 Specify Thread Lifetime 打開，並根據要執行的時間來填上秒數</strong>。</p>
 <p>因為我們的需求是跑 5 分鐘，所以先丟個 300 秒：
@@ -169,7 +169,7 @@
 
 
 <img
-  src="https://image.igouist.net/0eam5FB.webp" alt="Image"width="1741" height="1163" style="width: 100%; height: auto;"fetchpriority="high" decoding="async">
+  src="https://image.igouist.net/0eam5FB.webp" alt="Image"width="1741" height="1163" style="width: 100%; height: auto;"loading="auto" decoding="async">
 </p>
 <p>而且我們這次是用執行時間計算數量的，不希望 Loop Count 影響到我們，直接甩個 Infinite 給他（對，我們就是模擬有個使用者坐在那邊無聊一直按按鈕，而且他節奏感還很好）</p>
 <p>執行之後就可以確認總量跟每分鐘的吞吐量有沒有符合我們的設置囉：
@@ -177,7 +177,7 @@
 
 
 <img
-  src="https://image.igouist.net/h98Pdvd.webp" alt="Image"width="2698" height="618" style="width: 100%; height: auto;"fetchpriority="high" decoding="async">
+  src="https://image.igouist.net/h98Pdvd.webp" alt="Image"width="2698" height="618" style="width: 100%; height: auto;"loading="auto" decoding="async">
 </p>
 <p>很好！現在我們已經會使用 Constant Throughput Timer 來控制壓力測試時的吞吐量了。</p>
 <p>有興趣的朋友可以回去調整各個參數觀察看看，也可以改個 Thread Group 的 Thread 數量看看結果差異，例如當我把上面範例的 Thread 改成 2：</p>
@@ -185,7 +185,7 @@
 
 
 <img
-  src="https://image.igouist.net/1iY0YdJ.webp" alt="Image"width="2684" height="547" style="width: 100%; height: auto;"fetchpriority="high" decoding="async">
+  src="https://image.igouist.net/1iY0YdJ.webp" alt="Image"width="2684" height="547" style="width: 100%; height: auto;"loading="auto" decoding="async">
 </p>
 <p>可以看見數量跟吞吐量都有影響（算總數寫報告的時候記得別算錯了 xD）</p>
 <hr>
@@ -206,7 +206,7 @@
 
 
 <img
-  src="https://image.igouist.net/UttrtAL.webp" alt="Image"width="600" height="445" style="width: 100%; height: auto;"fetchpriority="high" decoding="async">
+  src="https://image.igouist.net/UttrtAL.webp" alt="Image"width="600" height="445" style="width: 100%; height: auto;"loading="auto" decoding="async">
 </p>
                             <hr/>
                         </div>
