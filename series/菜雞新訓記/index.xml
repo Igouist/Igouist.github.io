@@ -997,7 +997,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#75715e&#34;&gt;// 這邊可能還有其他註冊的服務，Swagger 之類的&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;例如在先前的 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-4-swagger&#34;&gt;Swagger&lt;/a&gt; 我們就在這裡用套件提供的 &lt;code&gt;AddSwaggerGen()&lt;/code&gt; 註冊過 Swagger UI 服務。&lt;/p&gt;
-&lt;h3 id=&#34;使用-addscoped-來註冊介面對應的實作類別&#34;&gt;使用 &lt;code&gt;AddScoped&lt;/code&gt; 來註冊介面對應的實作類別&lt;/h3&gt;
+&lt;h3 id=&#34;使用-addscoped-來註冊介面對應的實作類別&#34;&gt;使用 AddScoped 來註冊介面對應的實作類別&lt;/h3&gt;
 &lt;p&gt;而當我們要註冊我們的介面和實作時，例如說我們有一個 &lt;code&gt;ITestService&lt;/code&gt; 的介面，希望告訴 DI 容器對應的實作是 &lt;code&gt;TestService&lt;/code&gt;，我們就可以&lt;strong&gt;使用 &lt;code&gt;AddScoped&amp;lt;&amp;gt;&lt;/code&gt; 來註冊對應關係&lt;/strong&gt;：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// 註冊 ITestService 的實作為 TestService&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;services.AddScoped&amp;lt;ITestService, TestService&amp;gt;();
@@ -1016,7 +1016,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;當 &lt;code&gt;TestController&lt;/code&gt; 建立的時候，DI 容器就會知道需要 &lt;code&gt;ITestService&lt;/code&gt; 來注入，並找到我們註冊的 &lt;code&gt;TestService&lt;/code&gt;
 來注入到 &lt;code&gt;TestController&lt;/code&gt;。&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;這時候如果 &lt;code&gt;TestService&lt;/code&gt; 也有需要注入的依賴對象，DI 容器就會再回來找我們註冊對應的實作，依此類推，不斷&lt;strong&gt;遞迴&lt;/strong&gt;下去，直到注入都完成為止。&lt;/p&gt;
-&lt;h3 id=&#34;使用-addscoped-和委派來註冊介面對應的實作類別的產生方法&#34;&gt;使用 &lt;code&gt;AddScoped&lt;/code&gt; 和委派來註冊介面對應的實作類別的產生方法&lt;/h3&gt;
+&lt;h3 id=&#34;使用-addscoped-和委派來註冊介面對應的實作類別的產生方法&#34;&gt;使用 AddScoped 和委派來註冊介面對應的實作類別的產生方法&lt;/h3&gt;
 &lt;p&gt;有些朋友可能會有疑問：我的物件建立時還需要做一些處理才能建立，沒辦法直接告訴 &lt;code&gt;AddScoped&lt;/code&gt; 就完事了。&lt;/p&gt;
 &lt;p&gt;不用擔心，&lt;code&gt;AddScoped&lt;/code&gt; 也提供了委派的做法，讓我們可以直接告訴 DI 容器這個實作的產生方法，這個產生過程中我們就能進行一些操作，現在讓我們來示範一次。&lt;/p&gt;
 &lt;p&gt;假設我們的 &lt;code&gt;TestService&lt;/code&gt; 必須要傳遞一個服務 Token 的字串進去，就會像是這樣：&lt;/p&gt;

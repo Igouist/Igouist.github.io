@@ -356,7 +356,7 @@
 </span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 這邊可能還有其他註冊的服務，Swagger 之類的</span>
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>例如在先前的 <a href="/post/2021/05/newbie-4-swagger">Swagger</a> 我們就在這裡用套件提供的 <code>AddSwaggerGen()</code> 註冊過 Swagger UI 服務。</p>
-<h3 id="使用-addscoped-來註冊介面對應的實作類別">使用 <code>AddScoped</code> 來註冊介面對應的實作類別</h3>
+<h3 id="使用-addscoped-來註冊介面對應的實作類別">使用 AddScoped 來註冊介面對應的實作類別</h3>
 <p>而當我們要註冊我們的介面和實作時，例如說我們有一個 <code>ITestService</code> 的介面，希望告訴 DI 容器對應的實作是 <code>TestService</code>，我們就可以<strong>使用 <code>AddScoped&lt;&gt;</code> 來註冊對應關係</strong>：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 註冊 ITestService 的實作為 TestService</span>
 </span></span><span style="display:flex;"><span>services.AddScoped&lt;ITestService, TestService&gt;();
@@ -375,7 +375,7 @@
 </span></span></code></pre></div><p><strong>當 <code>TestController</code> 建立的時候，DI 容器就會知道需要 <code>ITestService</code> 來注入，並找到我們註冊的 <code>TestService</code>
 來注入到 <code>TestController</code>。</strong></p>
 <p>這時候如果 <code>TestService</code> 也有需要注入的依賴對象，DI 容器就會再回來找我們註冊對應的實作，依此類推，不斷<strong>遞迴</strong>下去，直到注入都完成為止。</p>
-<h3 id="使用-addscoped-和委派來註冊介面對應的實作類別的產生方法">使用 <code>AddScoped</code> 和委派來註冊介面對應的實作類別的產生方法</h3>
+<h3 id="使用-addscoped-和委派來註冊介面對應的實作類別的產生方法">使用 AddScoped 和委派來註冊介面對應的實作類別的產生方法</h3>
 <p>有些朋友可能會有疑問：我的物件建立時還需要做一些處理才能建立，沒辦法直接告訴 <code>AddScoped</code> 就完事了。</p>
 <p>不用擔心，<code>AddScoped</code> 也提供了委派的做法，讓我們可以直接告訴 DI 容器這個實作的產生方法，這個產生過程中我們就能進行一些操作，現在讓我們來示範一次。</p>
 <p>假設我們的 <code>TestService</code> 必須要傳遞一個服務 Token 的字串進去，就會像是這樣：</p>
@@ -835,8 +835,8 @@
     <li><a href="#組合根composition-root">組合根（Composition Root）</a></li>
     <li><a href="#net-core-中的依賴注入">.Net Core 中的依賴注入</a>
       <ul>
-        <li><a href="#使用-addscoped-來註冊介面對應的實作類別">使用 <code>AddScoped</code> 來註冊介面對應的實作類別</a></li>
-        <li><a href="#使用-addscoped-和委派來註冊介面對應的實作類別的產生方法">使用 <code>AddScoped</code> 和委派來註冊介面對應的實作類別的產生方法</a></li>
+        <li><a href="#使用-addscoped-來註冊介面對應的實作類別">使用 AddScoped 來註冊介面對應的實作類別</a></li>
+        <li><a href="#使用-addscoped-和委派來註冊介面對應的實作類別的產生方法">使用 AddScoped 和委派來註冊介面對應的實作類別的產生方法</a></li>
         <li><a href="#依賴注入的三種生命週期-transientscopedsingleton">依賴注入的三種生命週期 Transient、Scoped、Singleton</a></li>
         <li><a href="#延伸閱讀">延伸閱讀</a></li>
         <li><a href="#補充net-core-使用-buildserviceprovider-會建立多個實體">補充：.net Core 使用 BuildServiceProvider 會建立多個實體</a></li>
