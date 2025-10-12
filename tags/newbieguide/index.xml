@@ -2921,13 +2921,30 @@
   alt=&#34;img&#34;width=&#34;850&#34; height=&#34;315&#34; style=&#34;width: auto; max-width: 100%; height: auto;&#34;loading=&#34;auto&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;這是俺整理公司新訓內容的第四篇文章，目標是&lt;strong&gt;簡單地使用 Swagger 工具來自動產生可互動的 API 文件&lt;/strong&gt;。&lt;/p&gt;
-&lt;h2 id=&#34;api-文件與-swagger&#34;&gt;API 文件與 Swagger&lt;/h2&gt;
-&lt;p&gt;在 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-3-dapper&#34;&gt;上一篇&lt;/a&gt; 我們建立了一個有簡單的 CRUD 的 Web API 服務，這篇我們就接續著 API 服務往下看吧！&lt;/p&gt;
-&lt;p&gt;之前我們介紹 API 的時候有提過：API 是為了讓兩個服務之間可以溝通、互動所產生的接口。而所有的溝通要有效，都一定要先有共識，隨著溝通的人數越來越多，或是內容的理解要越來越細，就會用文件或契約的方式來達成共識。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;提醒：還不太認識 API 的朋友，可以先閱讀：&lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi/&#34;&gt;菜雞新訓記 (2): 認識 Api &amp;amp; 使用 .net Core 來建立簡單的 Web Api 服務吧&lt;/a&gt; 呦&lt;/p&gt;&lt;/blockquote&gt;
+&lt;div class=&#34;toc&#34;&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#從-api-規格文件開始&#34;&gt;從 API 規格文件開始&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#什麼是-swagger&#34;&gt;什麼是 Swagger？&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#安裝-swashbuckle-及啟用-swagger-ui&#34;&gt;安裝 Swashbuckle 及啟用 Swagger UI&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#使用-swaggerdoc-增加專案描述&#34;&gt;使用 SwaggerDoc 增加專案描述&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#使用-xml-文件和-includexmlcomments-從註解產生-api-說明&#34;&gt;使用 XML 文件和 IncludeXmlComments 從註解產生 API 說明&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#使用-produces-屬性和-response-註解補充回傳資訊&#34;&gt;使用 Produces 屬性和 response 註解補充回傳資訊&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#小結&#34;&gt;小結&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#相關文章&#34;&gt;相關文章&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#參考資料&#34;&gt;參考資料&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#本系列文章&#34;&gt;本系列文章&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/div&gt;
+&lt;h2 id=&#34;從-api-規格文件開始&#34;&gt;從 API 規格文件開始&lt;/h2&gt;
+&lt;p&gt;我們介紹 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi/&#34;&gt;API&lt;/a&gt; 的時候有提過：API 是為了讓兩個服務之間可以溝通、互動所產生的接口。而所有的溝通要有效，都一定要先有共識，&lt;strong&gt;隨著溝通的人數越來越多，或是內容的理解要越來越細，就會用文件或契約的方式來達成共識。&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;回到我們的 API 服務開發來說，就是你除了把服務生出來了，可以跑了以外，還有一個重要的點是：&lt;strong&gt;必須讓所有的使用者（包含幾個月後的你自己）知道怎麼使用這組 API 服務&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;也就來說，就是要寫 &lt;strong&gt;API 規格文件&lt;/strong&gt; 啦！&lt;/p&gt;
 &lt;p&gt;為了能讓服務對接順利，以及省下大部份口沫橫飛解釋的時間，甚至是讓自己和使用者好幾個月之後能夠順利回想起來，我們在開發 API 的時候一定會列出 API 接口的規格和用法。&lt;/p&gt;
-&lt;p&gt;通常一份文件的內容包括但不限於：&lt;strong&gt;用途、路由、參數、回傳值&lt;/strong&gt;等等，更細部的會有例如參數放在 Route, QueryString 還是 Body、參數是否必填、回傳的 JSON 範例等等。例如：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;通常一份 API 文件的內容包括但不限於：用途、路由、參數、回傳值&lt;/strong&gt;，像是參數要放在 Route, QueryString 還是 Body？哪些參數是必填的？回傳的 JSON 範例…等等，都是 API 文件會整理的內容。例如：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-markdown&#34; data-lang=&#34;markdown&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;## GET /card/{id}
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;**查詢指定編號的卡片**
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
@@ -2951,7 +2968,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;404: 找不到
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;當然這邊已經把例子簡化很多了，實際上的 API 文件格式會隨著各地的團隊習慣而改變，用表格和 PDF 等等的狀況也很常見。&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這邊已經把例子簡化很多了，實際上的 API 文件格式會隨著各地的團隊習慣而改變，用表格、PDF 甚至 Word 之類的狀況也很常見。&lt;/p&gt;
 &lt;p&gt;對 API 規格都長怎樣有興趣的朋友，也可以直接在網路上找找一些公開的文件：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://developer.pixnet.pro/#!/doc/pixnetApi/glossaryArea&#34;&gt;痞客幫 API 文件&lt;/a&gt;&lt;/li&gt;
@@ -2961,9 +2978,11 @@
 &lt;/ul&gt;
 &lt;p&gt;不過寫文件畢竟是能登上靠北榜的工作內容之一（靠北榜還包括其他人不寫文件、寫註解、其他人不寫註解等），同時，每次 API 有變動還要一直去維護文件真的很麻煩，所以…&lt;/p&gt;
 &lt;p&gt;我們工程師的美德，就是懶惰！ API 文件什麼的，當然是要用自動產生的啦～&lt;/p&gt;
-&lt;p&gt;今天要介紹的 &lt;strong&gt;Swagger 工具就是幫助我們來自動產生 API 規格文件的好幫手&lt;/strong&gt;，接下來就先讓我們稍微認識一下 Swagger 吧！&lt;/p&gt;
-&lt;p&gt;Swagger 是一套 API 互動文件產生器，主要是讓人跟電腦都能夠理解 API 的功能和內容，而不需要閱讀程式碼。因為 Swagger 已經在 2015 捐贈給 OpenAPI，所以也會看到有人用 OpenAPI 來稱呼它。更精準的說，OpenAPI 是一種規格、一種表達方式，Swagger 則是使用 OpenAPI 的工具。&lt;/p&gt;
-&lt;p&gt;想知道 Swagger 工具的 API 文件長怎樣的朋友，可以到這些地方逛逛按按：&lt;/p&gt;
+&lt;p&gt;今天要介紹的 Swagger 工具就是幫助我們來自動產生 API 規格文件的好幫手，接下來就先讓我們稍微認識一下 Swagger 吧！&lt;/p&gt;
+&lt;h2 id=&#34;什麼是-swagger&#34;&gt;什麼是 Swagger？&lt;/h2&gt;
+&lt;p&gt;先上結論：&lt;strong&gt;Swagger 是一套 API 文件產生器，可以幫我們從 API 產生規格文件，更可以建出一個讓使用者能直接呼叫 API 的網頁。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;原本我們說 Swagger 的時候，可能是指 API 文件格式的規範，也有可能是指自動把程式碼轉換成 API 文件的工具。不過 Swagger 在 2015 捐贈給 OpenAPI 之後，一般都用 OpenAPI 來稱呼 API 文件規範了。而 Swagger 更多時候是指 API 文件產生器和相關的生態系，例如像是把 API 文件轉成可互動網頁的 Swagger UI。&lt;/p&gt;
+&lt;p&gt;想知道用 Swagger 工具產生的 API 文件長怎樣的朋友，可以到這些地方逛逛按按：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;http://petstore.swagger.io/&#34;&gt;Swagger 提供的 Demo 網頁（petstore.swagger.io）&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://tdx.transportdata.tw/api-service/swagger/basic/2998e851-81d0-40f5-b26d-77e2f5ac4118#/&#34;&gt;公車動態的運輸資料服務 TDX (Transport Data eXchange)&lt;/a&gt;&lt;/li&gt;
@@ -2977,7 +2996,7 @@
 &lt;li&gt;&lt;a href=&#34;https://ithelp.ithome.com.tw/articles/10242295&#34;&gt;使用Swagger自動建立清晰明瞭的REST API文件 - 我與 ASP.NET Core 的 30天&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;微軟文件的 &lt;a href=&#34;https://docs.microsoft.com/zh-tw/aspnet/core/tutorials/getting-started-with-nswag?view=aspnetcore-5.0&amp;amp;tabs=visual-studio&#34;&gt;NSwag 與 ASP.NET Core 使用者入門&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/blockquote&gt;
-&lt;h2 id=&#34;安裝-swashbuckle-及啟用-swagger&#34;&gt;安裝 Swashbuckle 及啟用 Swagger&lt;/h2&gt;
+&lt;h2 id=&#34;安裝-swashbuckle-及啟用-swagger-ui&#34;&gt;安裝 Swashbuckle 及啟用 Swagger UI&lt;/h2&gt;
 &lt;p&gt;現在讓我們把鏡頭回到我們在&lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-3-dapper&#34;&gt;上一篇&lt;/a&gt;裡使用 .net Core 預設的 Web API 範本建立的簡易 CRUD 服務。&lt;/p&gt;
 &lt;p&gt;首先，直奔 Nuget、搜尋 Swashbuckle，應該可以看到一整排：&lt;/p&gt;
 &lt;p&gt;
@@ -3310,8 +3329,8 @@
 &lt;p&gt;－ 關於 Swagger －&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;為了提升溝通的效率、確保將來能記得用法，因此我們要寫 API 規格文件&lt;/li&gt;
-&lt;li&gt;為了提升寫文件的效率（和懶惰），因此我們可以嘗試自動產生 API 規格文件&lt;/li&gt;
-&lt;li&gt;Swagger（OpenAPI），是一套 API 互動文件產生器，是幫助我們來自動產生 API 規格文件和測試的好幫手
+&lt;li&gt;為了提升寫文件的效率（和懶惰），因此我們會自動產生 API 規格文件&lt;/li&gt;
+&lt;li&gt;Swagger 是一套 API 互動文件產生器，是幫助我們來自動產生 API 規格文件和測試的好幫手
 &lt;ul&gt;
 &lt;li&gt;在 Dotnet 陣營裡以 Swashbuckle 和 NSwag 最常見&lt;/li&gt;
 &lt;/ul&gt;
