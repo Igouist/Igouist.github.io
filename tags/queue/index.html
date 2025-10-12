@@ -168,6 +168,45 @@
   alt="Image"width="598" height="565" style="width: auto; max-width: 100%; height: auto;"loading="auto" decoding="async">
 </p>
 <p>在工作上遇到在兩個 Azure 工具間建立訊息佇列（Message Queue）的需求，因此接觸到了 Azure Service Bus（中文：服務匯流排 <del>燴牛排？</del>），在前輩的協助下建立了一組簡單的 Demo，這就來筆記一下。</p>
+<div class="toc toc-box">
+    <div class="toc-title">章節目錄</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#什麼是訊息佇列message-queue-mq">什麼是訊息佇列（Message Queue, MQ）</a></li>
+    <li><a href="#建立-azure-service-bus-資源">建立 Azure Service Bus 資源</a></li>
+    <li><a href="#建立佇列queue">建立佇列（Queue）</a></li>
+    <li><a href="#取得-servicebus-的連線字串">取得 ServiceBus 的連線字串</a></li>
+    <li><a href="#將訊息放入佇列">將訊息放入佇列</a>
+      <ul>
+        <li><a href="#傳送一則訊息到佇列">傳送一則訊息到佇列</a></li>
+        <li><a href="#傳送一批訊息到佇列">傳送一批訊息到佇列</a></li>
+        <li><a href="#傳送物件到佇列">傳送物件到佇列</a></li>
+      </ul>
+    </li>
+    <li><a href="#從佇列取出訊息">從佇列取出訊息</a>
+      <ul>
+        <li><a href="#從佇列中讀取一則訊息">從佇列中讀取一則訊息</a></li>
+        <li><a href="#從佇列中持續讀取訊息">從佇列中持續讀取訊息</a></li>
+        <li><a href="#補充在-servicebus-explorer-確認訊息">補充：在 ServiceBus Explorer 確認訊息</a></li>
+      </ul>
+    </li>
+    <li><a href="#建立主題topic">建立主題（Topic）</a>
+      <ul>
+        <li><a href="#將訊息放入主題">將訊息放入主題</a></li>
+        <li><a href="#從主題中讀取訊息">從主題中讀取訊息</a></li>
+      </ul>
+    </li>
+    <li><a href="#稍作整理">稍作整理</a>
+      <ul>
+        <li><a href="#使用-iazureclientfactory-搭配依賴注入來建立-azure-client">使用 IAzureClientFactory 搭配依賴注入來建立 Azure Client</a></li>
+        <li><a href="#將連線字串抽取到-config">將連線字串抽取到 Config</a></li>
+      </ul>
+    </li>
+    <li><a href="#小結">小結</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+</div>
 <h2 id="什麼是訊息佇列message-queue-mq">什麼是訊息佇列（Message Queue, MQ）</h2>
 <p>首先讓我們簡單認識一下訊息佇列。假設我們有生產者和消費者兩個服務，其中<strong>生產者負責產生資料，而消費者負責消費這些資料</strong>：</p>
 <p>

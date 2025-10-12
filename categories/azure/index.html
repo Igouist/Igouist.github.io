@@ -136,6 +136,26 @@
 <p>做完之後靈機一動，對呀！最近上班挺常接觸到 <a href="https://azure.microsoft.com/zh-tw/services/functions/">Azure Functions</a> 這個方便東東，不如就把這個小提醒給架設到 Azure Functions 上吧！</p>
 <p>這樣就省卻了特定主機要開著掛工作排程器的困擾，又可以用香香的 Azure 工具來控制監聽的開關，豈不美哉。</p>
 <p>如此如此這般這般，讓我們開始建立 Azure Functions 服務吧！</p>
+<div class="toc toc-box">
+    <div class="toc-title">章節目錄</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#建立-azure-functions-資源">建立 Azure Functions 資源</a></li>
+    <li><a href="#使用-azure-functions-開發公車到站提醒服務">使用 Azure Functions 開發公車到站提醒服務</a>
+      <ul>
+        <li><a href="#建立-azure-funtcions-專案">建立 Azure Funtcions 專案</a></li>
+        <li><a href="#呼叫-motc-api-查詢公車到站預估時間">呼叫 MOTC Api 查詢公車到站預估時間</a></li>
+        <li><a href="#發送-line-notify">發送 Line Notify</a></li>
+        <li><a href="#組合查詢公車資訊與發送到站通知">組合查詢公車資訊與發送到站通知</a></li>
+        <li><a href="#本機測試-functions">本機測試 Functions</a></li>
+      </ul>
+    </li>
+    <li><a href="#使用-visual-studio-發佈到-azure-functions">使用 Visual Studio 發佈到 Azure Functions</a></li>
+    <li><a href="#小結">小結</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+</div>
 <h2 id="建立-azure-functions-資源">建立 Azure Functions 資源</h2>
 <p><strong>Azure Functions 是 Azure 推出的一款無伺服器（Serverless）服務，簡單來說就是伺服器之類的麻煩事就交給 Azure 去處理，我們只要專心寫功能就好</strong>。對我這種愛寫小腳本的偷懶工程師來說，可以說是香到爆的服務。</p>
 <blockquote>
@@ -206,6 +226,45 @@
   alt="Image"width="598" height="565" style="width: auto; max-width: 100%; height: auto;"loading="auto" decoding="async">
 </p>
 <p>在工作上遇到在兩個 Azure 工具間建立訊息佇列（Message Queue）的需求，因此接觸到了 Azure Service Bus（中文：服務匯流排 <del>燴牛排？</del>），在前輩的協助下建立了一組簡單的 Demo，這就來筆記一下。</p>
+<div class="toc toc-box">
+    <div class="toc-title">章節目錄</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#什麼是訊息佇列message-queue-mq">什麼是訊息佇列（Message Queue, MQ）</a></li>
+    <li><a href="#建立-azure-service-bus-資源">建立 Azure Service Bus 資源</a></li>
+    <li><a href="#建立佇列queue">建立佇列（Queue）</a></li>
+    <li><a href="#取得-servicebus-的連線字串">取得 ServiceBus 的連線字串</a></li>
+    <li><a href="#將訊息放入佇列">將訊息放入佇列</a>
+      <ul>
+        <li><a href="#傳送一則訊息到佇列">傳送一則訊息到佇列</a></li>
+        <li><a href="#傳送一批訊息到佇列">傳送一批訊息到佇列</a></li>
+        <li><a href="#傳送物件到佇列">傳送物件到佇列</a></li>
+      </ul>
+    </li>
+    <li><a href="#從佇列取出訊息">從佇列取出訊息</a>
+      <ul>
+        <li><a href="#從佇列中讀取一則訊息">從佇列中讀取一則訊息</a></li>
+        <li><a href="#從佇列中持續讀取訊息">從佇列中持續讀取訊息</a></li>
+        <li><a href="#補充在-servicebus-explorer-確認訊息">補充：在 ServiceBus Explorer 確認訊息</a></li>
+      </ul>
+    </li>
+    <li><a href="#建立主題topic">建立主題（Topic）</a>
+      <ul>
+        <li><a href="#將訊息放入主題">將訊息放入主題</a></li>
+        <li><a href="#從主題中讀取訊息">從主題中讀取訊息</a></li>
+      </ul>
+    </li>
+    <li><a href="#稍作整理">稍作整理</a>
+      <ul>
+        <li><a href="#使用-iazureclientfactory-搭配依賴注入來建立-azure-client">使用 IAzureClientFactory 搭配依賴注入來建立 Azure Client</a></li>
+        <li><a href="#將連線字串抽取到-config">將連線字串抽取到 Config</a></li>
+      </ul>
+    </li>
+    <li><a href="#小結">小結</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+</div>
 <h2 id="什麼是訊息佇列message-queue-mq">什麼是訊息佇列（Message Queue, MQ）</h2>
 <p>首先讓我們簡單認識一下訊息佇列。假設我們有生產者和消費者兩個服務，其中<strong>生產者負責產生資料，而消費者負責消費這些資料</strong>：</p>
 <p>

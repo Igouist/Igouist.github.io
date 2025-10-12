@@ -144,14 +144,20 @@
 </ul>
 <p>這代表有些較為暴力的操作可能只適用於我目前的狀況，例如直接在檔案裡搜尋 <code>imgur</code> 來抓圖等等（所以如果你是從關鍵字搜尋進來這篇文章的，請從右手邊的文章目錄直接前往你需要的小節）</p>
 <p>這次圖床搬家主要進行了以下步驟：</p>
-<ul>
-<li>建立 Cloudflare R2 資源</li>
-<li>寫個 Powershell 腳本把目前部落格放在 Imgur 的圖片都抓下來</li>
-<li>順便用 WebP 壓縮一下圖片</li>
-<li>把圖片丟到 Cloudflare R2</li>
-<li>回來取代文章內的圖片連結</li>
-<li>使用 VSCode 的 Markdown-image 套件直接上傳圖片到 Cloudflare R2</li>
-</ul>
+<div class="toc toc-box">
+    <div class="toc-title">章節目錄</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#建立-cloudflare-r2-資源">建立 Cloudflare R2 資源</a></li>
+    <li><a href="#弄個-powershell-腳本把部落格的圖片先抓下來">弄個 Powershell 腳本把部落格的圖片先抓下來</a></li>
+    <li><a href="#插件順便用-webp-把圖片做一下壓縮">插件：順便用 WebP 把圖片做一下壓縮</a></li>
+    <li><a href="#上傳圖片到-cloudflare-r2">上傳圖片到 Cloudflare R2</a></li>
+    <li><a href="#使用-vscode-的-markdown-image-延伸模組直接上傳圖片到-cloudflare-r2">使用 VSCode 的 Markdown-image 延伸模組直接上傳圖片到 Cloudflare R2</a></li>
+    <li><a href="#小結">小結</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+</div>
 <p>如此如此，說搬就搬，這篇就紀錄一下這次的圖床搬家過程。</p>……
                                     <p class="readmore"><a href="https://igouist.github.io/post/2025/07/migrate-blog-images-to-cloudflare-r2/">閱讀全文</a></p>
                                 </div>
@@ -281,6 +287,17 @@
 </p>
 <p>WakaTime 是一款紀錄 Coding 時間的好用工具，只要安裝 IDE 的擴充套件，就可以輕鬆地記錄各個語言、編輯器、專案所用的時間。我從 2020 年寫了篇 <a href="/post/2020/06/wakatime/">WakaTime 介紹文章</a> 開始，也一路用到現在 2025 了，已經習慣動不動上去看兩眼的生活。</p>
 <p>但在相對封閉的一些環境進行開發時，我們可能需要先對 WakaTime 調整一些設定才能用得安心，這篇筆記就分享一下最近遇到的三個場景，供有興趣的朋友參考參考。</p>
+<div class="toc toc-box">
+    <div class="toc-title">章節目錄</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#在-wakatime-隱藏敏感資訊檔案名稱專案名稱">在 WakaTime 隱藏敏感資訊（檔案名稱、專案名稱…）</a></li>
+    <li><a href="#開啟-wakatime-離線暫存offline">開啟 WakaTime 離線暫存（Offline）</a></li>
+    <li><a href="#wakatime-卡在初始化initialized試試下載-wakatime-cli">WakaTime 卡在初始化（initialized）？試試下載 WakaTime-CLI</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+</div>
 <h2 id="在-wakatime-隱藏敏感資訊檔案名稱專案名稱">在 WakaTime 隱藏敏感資訊（檔案名稱、專案名稱…）</h2>
 <p>Wakatime 除了會記錄使用的程式語言和 IDE 等工具以外，也會紀錄專案、檔案路徑等等。但有時候我們可能並不希望記錄這些資訊（像是業主委託的專案名稱有點敏感啦、路徑可能有個人姓名之類的），這時就需要調整 Wakatime 的 Config，來把相關的資訊隱藏起來。</p>
 <p>Wakatime 的設定會放在 <code>.wakatime.cfg</code> <br/>（Windows 預設會在 <code>C:\Users\{User}\</code> 或 <code>C:\Users\{User}\.wakatime</code>）</p>
@@ -430,7 +447,27 @@
 <p>畢竟 Linqpad 可以迅速地開始撰寫簡單的 C# 腳本，並且有良好的語法提示、Nuget 支援和方便的資料庫連線，省去我還要開一個 Console 專案自己弄這些東西，更可以存著之後備查，所以一直以來我都愛不釋手。</p>
 <p>但在因緣際會下（其實就是閒逛論壇的時候），發現了微軟把拔出的 <a href="https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.dotnet-interactive-vscode">Polyglot Notebooks</a> 這款 VSCode 擴充套件。當下驚為天人！Linqpad 在我心中的地位就這麼動搖了</p>
 <p><strong>Polyglot Notebooks 可以讓我們直接在 VSCode 上面撰寫簡單的 C#、F#、JavaScirpt 等腳本、迅速驗證想法。甚至可以對程式碼分段、加入 Markdown 文檔，讓我們能更有邏輯、有步驟地撰寫我們的腳本、處理我們的資料。</strong></p>
-<p>它的特色是這麼對我的胃口，看來我以後鐵定是會用到的。現在就來簡單記錄 Polyglot Notebooks 的使用方式吧！</p>……
+<p>它的特色是這麼對我的胃口，看來我以後鐵定是會用到的。現在就來簡單記錄 Polyglot Notebooks 的使用方式吧！</p>
+<div class="toc toc-box">
+    <div class="toc-title">章節目錄</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#安裝及建立檔案">安裝及建立檔案</a></li>
+    <li><a href="#開始撰寫腳本">開始撰寫腳本</a>
+      <ul>
+        <li><a href="#切換腳本語言加入更多儲存格">切換腳本語言、加入更多儲存格</a></li>
+        <li><a href="#插入-markdown-儲存格">插入 Markdown 儲存格</a></li>
+        <li><a href="#印出參數內容--簡單的-linq-操作範例">印出參數內容 &amp; 簡單的 Linq 操作範例</a></li>
+        <li><a href="#安裝-nuget-套件--簡單的呼叫-api-範例">安裝 Nuget 套件 &amp; 簡單的呼叫 API 範例</a></li>
+        <li><a href="#什麼是-magic-commands">什麼是 Magic Commands</a></li>
+        <li><a href="#使用-set-來跨語言傳遞變數">使用 #!set 來跨語言傳遞變數</a></li>
+      </ul>
+    </li>
+    <li><a href="#小結">小結</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+</div>……
                                     <p class="readmore"><a href="https://igouist.github.io/post/2023/01/polyglot-notebooks/">閱讀全文</a></p>
                                 </div>
                             </article>
@@ -462,7 +499,31 @@
 </p>
 <p>前陣子協助某支 API 的壓力測試，趁機請 QA 朋朋指導指導一下，因此接觸了這款簡單好用的壓測工具 JMeter，趁現在記憶還在的時候記錄起來。</p>
 <p><del>往後其他同事只要說 API 弄好了可以串了，就先幫他打個一萬次壓壓驚，真是貼心</del></p>
-<p><a href="https://jmeter.apache.org/">JMeter</a> 是款充滿暴力的壓力測試工具，只要告訴他：你要揍哪支 API？要揍幾拳？揍他個幾輪？它就會忠實地對你指定的 API 爆打一頓。</p>……
+<p><a href="https://jmeter.apache.org/">JMeter</a> 是款充滿暴力的壓力測試工具，只要告訴他：你要揍哪支 API？要揍幾拳？揍他個幾輪？它就會忠實地對你指定的 API 爆打一頓。</p>
+<div class="toc toc-box">
+    <div class="toc-title">章節目錄</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#下載與開啟-jmeter">下載與開啟 JMeter</a>
+      <ul>
+        <li><a href="#更改語言">更改語言</a></li>
+      </ul>
+    </li>
+    <li><a href="#批次呼叫指定的-api">批次呼叫指定的 API</a>
+      <ul>
+        <li><a href="#建立-thread-group">建立 Thread Group</a></li>
+        <li><a href="#建立-http-request">建立 Http Request</a></li>
+        <li><a href="#補充設定-http-request-header">補充：設定 Http Request Header</a></li>
+        <li><a href="#建立-listener">建立 Listener</a></li>
+        <li><a href="#開始執行測試">開始執行測試</a></li>
+      </ul>
+    </li>
+    <li><a href="#小結">小結</a></li>
+    <li><a href="#相關筆記">相關筆記</a></li>
+    <li><a href="#參考資料與延伸閱讀">參考資料與延伸閱讀</a></li>
+  </ul>
+</nav>
+</div>……
                                     <p class="readmore"><a href="https://igouist.github.io/post/2022/10/jmeter/">閱讀全文</a></p>
                                 </div>
                             </article>

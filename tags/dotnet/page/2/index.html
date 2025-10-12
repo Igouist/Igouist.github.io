@@ -239,7 +239,31 @@
 <li><a href="https://dotblogs.com.tw/mrkt/2016/06/10/153606">另一種資料存取對映處理方式的選擇 - Dapper - mrkt 的程式學習筆記</a></li>
 <li><a href="https://www.huanlintalk.com/2014/03/a-micro-orm-dapper.html">好用的微型 ORM：Dapper - Huanlin 學習筆記</a></li>
 </ul>
-<p>那麼按照慣例，我們先來 <del>吹捧今天的主角</del> 說明一點簡單的前因後果吧。想直接實作的朋友，可以跳到<a href="#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a>的小節呦。</p>……
+<p>那麼按照慣例，我們先來 <del>吹捧今天的主角</del> 說明一點簡單的前因後果吧。想直接實作的朋友，可以跳到<a href="#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a>的小節呦。</p>
+<div class="toc toc-box">
+    <div class="toc-title">章節目錄</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言基本觀念">前言、基本觀念</a>
+      <ul>
+        <li><a href="#弱型別與強型別">弱型別與強型別</a></li>
+        <li><a href="#物件關係對映orm">物件關係對映（ORM）</a></li>
+        <li><a href="#dapper">Dapper</a></li>
+      </ul>
+    </li>
+    <li><a href="#正式開工">正式開工</a>
+      <ul>
+        <li><a href="#環境準備建立資料表安裝-dapper">環境準備（建立資料表、安裝 Dapper）</a></li>
+        <li><a href="#建立對應資料表的類別">建立對應資料表的類別</a></li>
+        <li><a href="#使用-dapper-實作-crud">使用 Dapper 實作 CRUD</a></li>
+        <li><a href="#對接與測試">對接與測試</a></li>
+      </ul>
+    </li>
+    <li><a href="#小結">小結</a></li>
+    <li><a href="#本系列文章">本系列文章</a></li>
+  </ul>
+</nav>
+</div>……
                                     <p class="readmore"><a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/">閱讀全文</a></p>
                                 </div>
                             </article>
@@ -270,6 +294,31 @@
   alt="Image"width="850" height="315" style="width: auto; max-width: 100%; height: auto;"loading="auto" decoding="async">
 </p>
 <p>這是俺整理公司新訓內容的第二篇文章，目標是<strong>對 Api, Restful Api, HTTP 等相關的知識點做個筆記，並用 .net Core 建立一個簡易的 Web Api 專案</strong>。</p>
+<div class="toc toc-box">
+    <div class="toc-title">章節目錄</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#前言基本觀念">前言、基本觀念</a>
+      <ul>
+        <li><a href="#什麼是-api">什麼是 API</a></li>
+        <li><a href="#什麼是-restful-api">什麼是 Restful API</a></li>
+        <li><a href="#什麼是-http-request-和-response">什麼是 HTTP Request 和 Response</a></li>
+        <li><a href="#什麼是-http-status-code">什麼是 HTTP Status Code</a></li>
+        <li><a href="#什麼是-stateless">什麼是 Stateless</a></li>
+      </ul>
+    </li>
+    <li><a href="#正式開工">正式開工</a>
+      <ul>
+        <li><a href="#新建-net-core-web-api-專案">新建 .net Core Web API 專案</a></li>
+        <li><a href="#動手實作-crud">動手實作 CRUD</a></li>
+      </ul>
+    </li>
+    <li><a href="#小結">小結</a></li>
+    <li><a href="#本系列文章">本系列文章</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+</div>
 <h2 id="前言基本觀念">前言、基本觀念</h2>
 <p>我們在 <a href="/post/2021/04/newbie-1-hello-git">上一篇</a> 記錄了新訓第一天的 Git 操作筆記。接著在這篇，我們終於要進入 .net Core 啦！</p>
 <p>目前的規劃是先從建立一個可以使用的、最簡單版本的 Web Api 服務開始，再將各個工具擴增進來。所以後續的文章應該都會以這篇的簡易 API 為基底繼續延伸下去（如果順利的話啦）</p>
@@ -388,6 +437,17 @@
                                 <div class="post-content">
                                     <p>聊到將時間從 UTC 轉到台灣時間，居然還是聽到朋友表示使用 +8 小時的做法，驚為天人。這種做法可能會造成後續的問題，例如時區並不會跟著變動，或是遇到日光節約等特殊狀況就容易出事。和西元民國轉換直接 -1911 一樣不穩定。</p>
 <p>這篇就用來記錄一下之前看過比較優雅的時區轉換方式，順便將先前存著的時間處理相關資料整理一下，方便之後需要時可以馬上回來查詢。</p>
+<div class="toc toc-box">
+    <div class="toc-title">章節目錄</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#timezoneinfo-時區資訊">TimeZoneInfo: 時區資訊</a></li>
+    <li><a href="#taiwancalendar-西元年轉民國年---taiwanlunisolarcalendar-國曆轉農曆">TaiwanCalendar: 西元年轉民國年 &amp; <br/> TaiwanLunisolarCalendar: 國曆轉農曆</a></li>
+    <li><a href="#datetimeformatinfo-月週時間的格式">DateTimeFormatInfo: 月、週、時間的格式</a></li>
+    <li><a href="#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+</div>
 <h2 id="timezoneinfo-時區資訊">TimeZoneInfo: 時區資訊</h2>
 <p>轉換方式主要參考自 <a href="https://dotblogs.com.tw/supershowwei/2016/10/17/141620">[食譜好菜] DateTime 具有文化特性的格式化及時區的轉換</a> 及 <a href="https://docs.microsoft.com/zh-tw/dotnet/standard/datetime/converting-between-time-zones">在各時區間轉換時間</a>，感謝前人的指引。</p>
 <blockquote>

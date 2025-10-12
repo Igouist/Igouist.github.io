@@ -125,6 +125,17 @@
 <p>在先前的 <a href="/post/2021/05/newbie-4-swagger">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</a> 中，我們介紹了在 .net Core 環境使用 <strong>Swashbuckle</strong> 套件來產生 Swagger 文檔，並且直接在 Swagger UI 中呼叫 API 來進行測試。</p>
 <p>但很多時候，我們的 API 會需要先驗證才能使用，例如<strong>在 Header 傳遞 Token 來驗證身分</strong>等等。這時候 Swagger UI 就會整個廢掉，打了都會出錯，很不方便。</p>
 <p>因此這篇文章就紀錄一下如何在 Swagger UI 上加入 Authorize Token 的傳遞，讓 Swagger UI 在需要身分驗證的環境也能直接呼叫使用。</p>
+<div class="toc toc-box">
+    <div class="toc-title">章節目錄</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="/post/2021/10/swagger-enable-authorize/#環境佈置">環境佈置</a></li>
+    <li><a href="/post/2021/10/swagger-enable-authorize/#加入-authorize-設置">加入 Authorize 設置</a></li>
+    <li><a href="/post/2021/10/swagger-enable-authorize/#完工測試">完工測試</a></li>
+    <li><a href="/post/2021/10/swagger-enable-authorize/#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+</div>
                                 ……
                             </div>
                             <p class="readmore"><a href="https://igouist.github.io/post/2021/10/swagger-enable-authorize/">閱讀全文</a></p>
@@ -208,6 +219,44 @@
   alt="img"width="850" height="315" style="width: auto; max-width: 100%; height: auto;"loading="auto" decoding="async">
 </p>
 <p>這是俺整理公司新訓內容的第五篇文章，目標是<strong>使用三層式架構 (3-Layer Architecture) 來切分服務的關注點和職責</strong>。</p>
+<div class="toc toc-box">
+    <div class="toc-title">章節目錄</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#什麼是分層分層可以吃嗎">什麼是分層？分層可以吃嗎？</a>
+      <ul>
+        <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#三層式架構">三層式架構</a></li>
+        <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#關於-dto">關於 DTO</a></li>
+        <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#為什麼我們需要分層架構">為什麼我們需要分層架構？</a></li>
+        <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#本節的參考資料">本節的參考資料</a></li>
+      </ul>
+    </li>
+    <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#實作">實作</a>
+      <ul>
+        <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#實作範例的架構與前言">實作範例的架構與前言</a></li>
+        <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#大致上的步驟">大致上的步驟</a></li>
+        <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#範例專案背景">範例專案背景</a></li>
+        <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#建立分層">建立分層</a></li>
+        <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#加入參考">加入參考</a></li>
+        <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#建立介面與-dto">建立介面與 DTO</a></li>
+        <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#實作-repository">實作 Repository</a></li>
+        <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#實作-service">實作 Service</a></li>
+        <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#實作-controller">實作 Controller</a></li>
+      </ul>
+    </li>
+    <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#自問自答心得篇">自問自答心得篇</a>
+      <ul>
+        <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#關於重複建立-dto-的問題">關於重複建立 DTO 的問題</a></li>
+        <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#三層式架構跟-mvc-一樣嗎">三層式架構跟 MVC 一樣嗎？</a></li>
+        <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#service-可以依賴-service-嗎">Service 可以依賴 Service 嗎？</a></li>
+      </ul>
+    </li>
+    <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#小結">小結</a></li>
+    <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#參考資料">參考資料</a></li>
+    <li><a href="/post/2021/10/newbie-5-3-layer-architecture/#本系列文章">本系列文章</a></li>
+  </ul>
+</nav>
+</div>
 <h2 id="什麼是分層分層可以吃嗎">什麼是分層？分層可以吃嗎？</h2>
 <blockquote>
 <p>天地混沌如雞子，商業邏輯生其中。</p>
@@ -474,6 +523,30 @@
 <li><a href="https://www.huanlintalk.com/2014/03/a-micro-orm-dapper.html">好用的微型 ORM：Dapper - Huanlin 學習筆記</a></li>
 </ul>
 <p>那麼按照慣例，我們先來 <del>吹捧今天的主角</del> 說明一點簡單的前因後果吧。想直接實作的朋友，可以跳到<a href="#%E6%AD%A3%E5%BC%8F%E9%96%8B%E5%B7%A5">正式開工</a>的小節呦。</p>
+<div class="toc toc-box">
+    <div class="toc-title">章節目錄</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="/post/2021/05/newbie-3-dapper/#前言基本觀念">前言、基本觀念</a>
+      <ul>
+        <li><a href="/post/2021/05/newbie-3-dapper/#弱型別與強型別">弱型別與強型別</a></li>
+        <li><a href="/post/2021/05/newbie-3-dapper/#物件關係對映orm">物件關係對映（ORM）</a></li>
+        <li><a href="/post/2021/05/newbie-3-dapper/#dapper">Dapper</a></li>
+      </ul>
+    </li>
+    <li><a href="/post/2021/05/newbie-3-dapper/#正式開工">正式開工</a>
+      <ul>
+        <li><a href="/post/2021/05/newbie-3-dapper/#環境準備建立資料表安裝-dapper">環境準備（建立資料表、安裝 Dapper）</a></li>
+        <li><a href="/post/2021/05/newbie-3-dapper/#建立對應資料表的類別">建立對應資料表的類別</a></li>
+        <li><a href="/post/2021/05/newbie-3-dapper/#使用-dapper-實作-crud">使用 Dapper 實作 CRUD</a></li>
+        <li><a href="/post/2021/05/newbie-3-dapper/#對接與測試">對接與測試</a></li>
+      </ul>
+    </li>
+    <li><a href="/post/2021/05/newbie-3-dapper/#小結">小結</a></li>
+    <li><a href="/post/2021/05/newbie-3-dapper/#本系列文章">本系列文章</a></li>
+  </ul>
+</nav>
+</div>
                                 ……
                             </div>
                             <p class="readmore"><a href="https://igouist.github.io/post/2021/05/newbie-3-dapper/">閱讀全文</a></p>
@@ -505,6 +578,31 @@
   alt="Image"width="850" height="315" style="width: auto; max-width: 100%; height: auto;"loading="auto" decoding="async">
 </p>
 <p>這是俺整理公司新訓內容的第二篇文章，目標是<strong>對 Api, Restful Api, HTTP 等相關的知識點做個筆記，並用 .net Core 建立一個簡易的 Web Api 專案</strong>。</p>
+<div class="toc toc-box">
+    <div class="toc-title">章節目錄</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="/post/2021/05/newbie-2-webapi/#前言基本觀念">前言、基本觀念</a>
+      <ul>
+        <li><a href="/post/2021/05/newbie-2-webapi/#什麼是-api">什麼是 API</a></li>
+        <li><a href="/post/2021/05/newbie-2-webapi/#什麼是-restful-api">什麼是 Restful API</a></li>
+        <li><a href="/post/2021/05/newbie-2-webapi/#什麼是-http-request-和-response">什麼是 HTTP Request 和 Response</a></li>
+        <li><a href="/post/2021/05/newbie-2-webapi/#什麼是-http-status-code">什麼是 HTTP Status Code</a></li>
+        <li><a href="/post/2021/05/newbie-2-webapi/#什麼是-stateless">什麼是 Stateless</a></li>
+      </ul>
+    </li>
+    <li><a href="/post/2021/05/newbie-2-webapi/#正式開工">正式開工</a>
+      <ul>
+        <li><a href="/post/2021/05/newbie-2-webapi/#新建-net-core-web-api-專案">新建 .net Core Web API 專案</a></li>
+        <li><a href="/post/2021/05/newbie-2-webapi/#動手實作-crud">動手實作 CRUD</a></li>
+      </ul>
+    </li>
+    <li><a href="/post/2021/05/newbie-2-webapi/#小結">小結</a></li>
+    <li><a href="/post/2021/05/newbie-2-webapi/#本系列文章">本系列文章</a></li>
+    <li><a href="/post/2021/05/newbie-2-webapi/#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+</div>
 <h2 id="前言基本觀念">前言、基本觀念</h2>
 <p>我們在 <a href="/post/2021/04/newbie-1-hello-git">上一篇</a> 記錄了新訓第一天的 Git 操作筆記。接著在這篇，我們終於要進入 .net Core 啦！</p>
 <p>目前的規劃是先從建立一個可以使用的、最簡單版本的 Web Api 服務開始，再將各個工具擴增進來。所以後續的文章應該都會以這篇的簡易 API 為基底繼續延伸下去（如果順利的話啦）</p>

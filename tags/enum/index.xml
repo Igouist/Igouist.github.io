@@ -19,7 +19,21 @@
       <pubDate>Sun, 14 Jun 2020 21:27:00 +0800</pubDate>
       <author>Igouist (Igouist)</author>
       <guid>https://igouist.github.io/post/2020/06/bit-flags-and-enum/</guid>
-      <description>&lt;p&gt;前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。&lt;/p&gt;
+      <description>&lt;div class=&#34;toc toc-box&#34;&gt;
+    &lt;div class=&#34;toc-title&#34;&gt;章節目錄&lt;/div&gt;
+    &lt;nav id=&#34;TableOfContents&#34;&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href=&#34;#enum--flags&#34;&gt;Enum &amp;amp; Flags&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#查詢--and&#34;&gt;查詢 =&amp;gt; AND&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#賦予--or&#34;&gt;賦予 =&amp;gt; OR&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#移除--xor&#34;&gt;移除 =&amp;gt; XOR&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#多項賦予--or-or-or&#34;&gt;多項賦予 =&amp;gt; OR, OR, OR&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#列出內容--foreach-flags&#34;&gt;列出內容 =&amp;gt; Foreach, Flags&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&#34;#延伸閱讀及參考資料&#34;&gt;延伸閱讀及參考資料&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;/div&gt;
+&lt;p&gt;前陣子碰到個資料表儲存方式，因為這種位元運算的方式也常用在權限管理等地方，這邊就順手紀錄一下。&lt;/p&gt;
 &lt;p&gt;平常遇到二元的情形（例如 開／關、有／沒有），我們會直接宣告個 Boolean 來處理。例如 &lt;code&gt;bool isNice = false&lt;/code&gt;。&lt;/p&gt;
 &lt;p&gt;但這次遇到的是同時有多組「有／沒有」的狀況，而我遇到的程式碼並沒有分成多個 Bool 去做處理，而是直接儲存成一個數值。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;這是因為「有／沒有」只佔據一個位元，那麼將多個狀況按照位元順序排列的話，就只需要一個數字就可以紀錄並傳遞給其他系統了。&lt;/strong&gt;&lt;/p&gt;
