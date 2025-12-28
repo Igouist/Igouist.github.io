@@ -12,15 +12,6 @@
     gtag('config', 'G-BWMYD757BP');
     </script>
 
-    
-    <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "lpnoqxbhhj");
-    </script>
-
     <meta name="generator" content="Hugo 0.150.1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -50,13 +41,13 @@
       type="font/woff2"
       crossorigin="anonymous">
 
-    <link defer rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
-    <link defer rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/normalize.css">
     
-    <link defer rel="stylesheet" href="/css/style.css">
-    <link defer rel="alternate" type="application/rss+xml+xml" href="https://igouist.github.io/tags/queue/index.xml" title="伊果的沒人看筆記本" />
-    <script async type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="alternate" type="application/rss+xml+xml" href="https://igouist.github.io/tags/queue/index.xml" title="伊果的沒人看筆記本" />
+    <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     
     
@@ -138,7 +129,7 @@
 
 <img
   src="https://image.igouist.net/00WQGqR.webp"
-  alt="Image"width="600" height="337" style="width: auto; max-width: 100%; height: auto;"loading="auto" decoding="async">
+  alt="Image"width="600" height="337"loading="auto" decoding="async">
 </p>
 <h2 id="tldr">TL;DR</h2>
 <p>當發現<strong>需要執行很久的 ServiceBus Trigger Function 有重複執行的情況</strong>出現時，可以嘗試到<a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-bindings-service-bus?tabs=in-process%2Cextensionv5%2Cextensionv3&amp;pivots=programming-language-csharp#hostjson-settings">官方的 Host.json 設定指引</a>，按照 SDK 版本找到對應的「<strong>訊息鎖定最大持續時間</strong>」設定，例如 maxAutoLockRenewalDuration（延伸模組 5.x+）或 maxAutoRenewDuration（Functions 2.x），並加入專案的 Host.json</p>
@@ -171,7 +162,7 @@
 
 <img
   src="https://image.igouist.net/5Vube9E.webp"
-  alt="Image"width="598" height="565" style="width: auto; max-width: 100%; height: auto;"loading="auto" decoding="async">
+  alt="Image"width="598" height="565"loading="auto" decoding="async">
 </p>
 <p>在工作上遇到在兩個 Azure 工具間建立訊息佇列（Message Queue）的需求，因此接觸到了 Azure Service Bus（中文：服務匯流排 <del>燴牛排？</del>），在前輩的協助下建立了一組簡單的 Demo，這就來筆記一下。</p>
 <div class="toc toc-box">
@@ -220,7 +211,7 @@
 
 <img
   src="https://image.igouist.net/mg4lXJk.webp"
-  alt="Image"width="1200" height="485" style="width: auto; max-width: 100%; height: auto;"loading="auto" decoding="async">
+  alt="Image"width="1200" height="485"loading="auto" decoding="async">
 </p>
 <p>各位也可以這樣理解：生產者就像是壽司師傅，他會不斷的捏壽司出來；而這時候來了一位大胃王顧客，他就是消費者，會不斷地把壽司吃掉</p>
 <p>
@@ -228,7 +219,7 @@
 
 <img
   src="https://image.igouist.net/Sk16WdC.webp"
-  alt="Image"width="1138" height="465" style="width: auto; max-width: 100%; height: auto;"loading="auto" decoding="async">
+  alt="Image"width="1138" height="465"loading="auto" decoding="async">
 </p>
 <p>大概對這兩個角色有點認識就行了。那麼，假設我們有兩組 API 服務：其中一個是負責寫入 Log 的服務，而另一個是產品服務。</p>
 <p>產品服務會將 Log 內容丟給 Log 服務去紀錄 Log，這時候產生了這些日誌資料的產品服務就是生產者，而消費這些日誌資料去寫 Log 的服務就是消費者。</p>
