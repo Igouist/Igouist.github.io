@@ -99,6 +99,54 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2023/01/banner-2-midjourney-and-canva/" title="使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗" >使用 Midjourney AI 繪圖 &amp; Canva 產生 Banner 初體驗</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2023-1-29,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/tools">Tools</a></span>
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/explore">explore</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content"><p>
+
+
+<img
+  src="https://image.igouist.net/MqLSU3f.webp"
+  alt="Image"width="600" height="200"loading="auto" decoding="async">
+</p>
+<p>我們在<a href="/post/2023/01/banner-1-system-drawing/">前一篇</a>嘗試自行產生簡單的文字 Banner，我也用了好一陣子（畢竟三年前的新訓文章還是沒整理完嘛）。</p>
+<p>直到前陣子逛臉書的時候，看到有人說「我都改用 <strong>AI 繪圖工具來產生部落格的配圖</strong>了，還沒有版權問題」當下驚為天人：對呀！這不是很不錯嗎！</p>
+<p>如此如此，這般這般。立馬開始爬文來嘗試神秘的 AI 繪圖囉！</p>
+<h2 id="初嘗試-midjourney">初嘗試 Midjourney</h2>
+<p>在網路搜了一下，發現有大神已經整理 Midjourney 入坑詳細步驟，特此感謝：</p>
+<ul>
+<li><a href="https://blog.akanelee.me/2023/01/22/ai-midjouyney-tutorial-instruction/">AI 繪圖教學，Midjourney 基本操作 · 嫁給 RD 的 UI Designer (akanelee.me)</a></li>
+</ul>
+<p>這邊就稍微紀錄一下，總之先衝到 <a href="https://www.midjourney.com/home/">Midjourney</a>，然後直接註他個冊、登他個入：</p>
+<p>
+
+
+<img
+  src="https://image.igouist.net/L4aChGM.webp"
+  alt="Image"width="777" height="698"loading="auto" decoding="async">
+</p>
+                                ……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2023/01/banner-2-midjourney-and-canva/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2023/01/banner-1-system-drawing/" title="使用 .Net 的 System.Drawing 產生簡單的文字 Banner 初體驗" >使用 .Net 的 System.Drawing 產生簡單的文字 Banner 初體驗</a>
                                 </h1>
                             </header>
@@ -580,42 +628,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/" title="菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions" >菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2022-8-27,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/azure">Azure</a></span>
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/bug">Bug</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content"><p>
-
-
-<img
-  src="https://image.igouist.net/00WQGqR.webp"
-  alt="Image"width="600" height="337"loading="auto" decoding="async">
-</p>
-<h2 id="tldr">TL;DR</h2>
-<p>當發現<strong>需要執行很久的 ServiceBus Trigger Function 有重複執行的情況</strong>出現時，可以嘗試到<a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/functions-bindings-service-bus?tabs=in-process%2Cextensionv5%2Cextensionv3&amp;pivots=programming-language-csharp#hostjson-settings">官方的 Host.json 設定指引</a>，按照 SDK 版本找到對應的「<strong>訊息鎖定最大持續時間</strong>」設定，例如 maxAutoLockRenewalDuration（延伸模組 5.x+）或 maxAutoRenewDuration（Functions 2.x），並加入專案的 Host.json</p>
-<p><strong>因為 ServiceBus 在傳遞訊息之後，如果超過一段時間（MaxAutoRenewDuration）內沒有得到回應，就會解除信件的鎖並嘗試重新傳遞</strong>，這時候如果原先的 Function 仍在執行，就會一前一後重複執行 Function 並發生許多光怪陸離的事，例如寫入兩筆資訊、重複複製資料之類的。</p>
-<p>建議如果調整了有 ServiceBus Trigger Function 的 Azure Functions Timeout 設定時，或是發現某支 ServiceBus Trigger 的 Functions 執行時間過長，就要一併注意 MaxAutoRenewDuration 的設定，避免重複執行的情況出現。</p>
-                                ……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -721,6 +733,11 @@
 <ul class="widget-list">
     
     <li>
+        <small class="date">2026-01-31</small>
+        <a href="https://igouist.github.io/post/2026/01/heptabase/" title="從紙筆到電子白板，我的 Heptabase 使用場景">從紙筆到電子白板，我的 Heptabase 使用場景</a>
+    </li>
+    
+    <li>
         <small class="date">2025-07-31</small>
         <a href="https://igouist.github.io/post/2025/07/migrate-blog-images-to-cloudflare-r2/" title="記一次把部落格圖片從 Imgur 搬到 Cloudflare R2 的過程">記一次把部落格圖片從 Imgur 搬到 Cloudflare R2 的過程</a>
     </li>
@@ -763,11 +780,6 @@
     <li>
         <small class="date">2025-02-01</small>
         <a href="https://igouist.github.io/post/2025/02/jmeter-constant-throughput-timer/" title="JMeter: 使用 Constant Throughput Timer 設置固定吞吐量">JMeter: 使用 Constant Throughput Timer 設置固定吞吐量</a>
-    </li>
-    
-    <li>
-        <small class="date">2025-01-12</small>
-        <a href="https://igouist.github.io/post/2025/01/wakatime-hide-project-name-and-offline-and-initialized/" title="WakaTime: 隱藏敏感資訊、開啟離線暫存、卡在 Initialized 時的參考解法">WakaTime: 隱藏敏感資訊、開啟離線暫存、卡在 Initialized 時的參考解法</a>
     </li>
     
 </ul>
@@ -915,7 +927,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/tools/">tools (27)</a>
+        <a href="https://igouist.github.io/categories/tools/">tools (28)</a>
     </li>
     
     <li>
@@ -1020,6 +1032,8 @@
     
     <a href="https://igouist.github.io/tags/headphone/">headphone</a>
     
+    <a href="https://igouist.github.io/tags/heptabase/">heptabase</a>
+    
     <a href="https://igouist.github.io/tags/heroku/">heroku</a>
     
     <a href="https://igouist.github.io/tags/ide/">ide</a>
@@ -1062,6 +1076,8 @@
     
     <a href="https://igouist.github.io/tags/rrs/">rrs</a>
     
+    <a href="https://igouist.github.io/tags/rss/">rss</a>
+    
     <a href="https://igouist.github.io/tags/selenium/">selenium</a>
     
     <a href="https://igouist.github.io/tags/service-bus/">service-bus</a>
@@ -1092,7 +1108,7 @@
     <section class="widget">
     <h3 class="widget-title">統計資訊</h3>
     <ul class="widget-list">
-        <li>文章總數：107</li>
+        <li>文章總數：108</li>
 
         
         <li>瀏覽次數：<span id="vercount_value_site_pv">-</span></li>
