@@ -99,6 +99,69 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/" title="使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間" >使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2022-9-3,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/powershell">powershell</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content"><p>
+
+
+<img
+  src="https://image.igouist.net/BLYVPi7.webp"
+  alt="Image"width="600" height="600"loading="auto" decoding="async">
+</p>
+<p>事情發生在一個風和日麗的平凡下午：</p>
+<blockquote>
+<p>我：（把手上的事情弄到一個段落再下班吧）<br/>
+<br/>
+～～十分鐘過後～～<br/>
+<br/>
+我：差不多可以走了，公車也差不多要來了叭？<br/>
+公車：（一分鐘前離站）<br/>
+我：(ﾟдﾟ)</p></blockquote>
+<p>這時候才明白愛恨情仇，最傷最痛是後悔。如果我早知道公車快到站了，也許我就不會錯過。</p>
+<p>抱著這股傷痛，決定乾脆寫個小腳本，每天下班提醒我一下，避免重蹈覆轍。</p>
+<p>綜上所述！目標是：<strong>每天下班前十分鐘，告訴我下一班到達的公車時間</strong></p>
+<p>因此至少能夠拆分成三個階段：</p>
+<ul>
+<li>每天下班前十分鐘（定時執行）</li>
+<li>告訴我（通知功能）</li>
+<li>下一班到達的公車時間（查詢資訊）</li>
+</ul>
+<p>那麼，我們開始吧！</p>
+<div class="toc toc-box">
+    <div class="toc-title">章節目錄</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/#使用-motc-api-服務取得公車資訊">使用 MOTC API 服務取得公車資訊</a></li>
+    <li><a href="/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/#使用-powershell-呼叫-api-取得資料">使用 Powershell 呼叫 API 取得資料</a></li>
+    <li><a href="/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/#使用-powershell-彈出通知視窗初版">使用 Powershell 彈出通知視窗（初版）</a></li>
+    <li><a href="/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/#使用-powershell-傳送-line-notify">使用 Powershell 傳送 Line Notify</a></li>
+    <li><a href="/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/#使用-工作排程器-定時執行-powershell-腳本">使用 工作排程器 定時執行 Powershell 腳本</a></li>
+    <li><a href="/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/#後日談">後日談</a></li>
+    <li><a href="/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+</div>
+                                ……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/" title="菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions" >菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions</a>
                                 </h1>
                             </header>
@@ -537,67 +600,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2021/12/automapper-convert-using/" title="AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列" >AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2021-12-5,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content"><p>從朋友那兒聽到了用 <a href="/post/2020/07/automapper">AutoMapper</a> 把串列成員物件攤平成一組串列的問題，發現了 <strong>ConvertUsing</strong> 的好用，這邊就紀錄一下。</p>
-<p>事情是這樣的，首先有一個 <code>Parent</code> 類別，其中包含著兩個成員：<code>Id</code> 和串列的 <code>Child</code> 類別，而 <code>Child</code> 類別則只有一個成員 <code>Val</code>，如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Parent</span>
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;Child&gt; Children { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-</span></span><span style="display:flex;"><span>}
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Child</span>
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>另外還有一個 <code>Target</code> 類別，包含 <code>Id</code> 和 <code>Val</code> 兩個成員：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Target</span>
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>現在的目標是：<strong>將一個有著 Child 串列的 Parent 映射成 Target 串列</strong>。</p>
-<p>也就是說，假設我們的來源是這樣子：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> boo = <span style="color:#66d9ef">new</span> Parent
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    Id = <span style="color:#ae81ff">1</span>,
-</span></span><span style="display:flex;"><span>    Children = <span style="color:#66d9ef">new</span> List&lt;Child&gt;
-</span></span><span style="display:flex;"><span>    {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Child { Val = <span style="color:#ae81ff">1</span> },
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Child { Val = <span style="color:#ae81ff">2</span> },
-</span></span><span style="display:flex;"><span>    }
-</span></span><span style="display:flex;"><span>};
-</span></span></code></pre></div><p>希望可以變成這樣子：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> expect = <span style="color:#66d9ef">new</span> List&lt;Target&gt;
-</span></span><span style="display:flex;"><span>{
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> Target { Id = <span style="color:#ae81ff">1</span>, Val = <span style="color:#ae81ff">1</span> },
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">new</span> Target { Id = <span style="color:#ae81ff">1</span>, Val = <span style="color:#ae81ff">2</span> },
-</span></span><span style="display:flex;"><span>};
-</span></span></code></pre></div><p>我之前遇到的時候，會直覺地將 Child 直接 Map 到 Target，再對 Target 做個 Foreach 來補上 Parent 的 Id。</p>
-<p>這次和朋友討論時，提到了另一個角度：雖然這樣的做法相當直覺快速，但其實並不能保證後續維護的人使用這組 Mappings 時，都知道這裡要補資料；況且此處的對應關係的確是 <code>Parent</code> 到 <code>List&lt;Target&gt;</code>，並非 <code>Child</code> 到 <code>Target</code> 而已，直覺上就怪怪的。若要解決這個問題，可能就要再包裝一層，把 Mapper 隔離出去做個轉換器之類的。</p>
-<p>但想想又覺得 AutoMapper 不可能沒提供這個場景能使用的方法才對，最後餵狗發現 <strong>AutoMapper 確實有提供 <code>ConvertUsing</code> 來讓我們客製化轉換過程</strong>，這邊就紀錄一下。</p>
-                                ……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2021/12/automapper-convert-using/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -703,6 +705,11 @@
 <ul class="widget-list">
     
     <li>
+        <small class="date">2026-02-24</small>
+        <a href="https://igouist.github.io/post/2026/02/automapper-flattening/" title="菜雞抓蟲：AutoMapper 出現奇怪的型別對應錯誤嗎？貼心的慣例式映射可能正在造訪你家">菜雞抓蟲：AutoMapper 出現奇怪的型別對應錯誤嗎？貼心的慣例式映射可能正在造訪你家</a>
+    </li>
+    
+    <li>
         <small class="date">2026-01-31</small>
         <a href="https://igouist.github.io/post/2026/01/heptabase/" title="從紙筆到電子白板，我的 Heptabase 使用場景">從紙筆到電子白板，我的 Heptabase 使用場景</a>
     </li>
@@ -747,11 +754,6 @@
         <a href="https://igouist.github.io/post/2025/04/timberborn/" title="《河狸浮生記》體驗版遊玩心得">《河狸浮生記》體驗版遊玩心得</a>
     </li>
     
-    <li>
-        <small class="date">2025-02-01</small>
-        <a href="https://igouist.github.io/post/2025/02/jmeter-constant-throughput-timer/" title="JMeter: 使用 Constant Throughput Timer 設置固定吞吐量">JMeter: 使用 Constant Throughput Timer 設置固定吞吐量</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -762,6 +764,18 @@
 
 <h3 class="widget-title"><a href="https://igouist.github.io/timeline/">最近動態</a></h3>
 <ul class="widget-list timeline-widget">
+  
+    
+    <li>
+      <small class="date">2026-02-24</small>
+      <a href="https://igouist.github.io/timeline/#t-1771938000">
+        
+        
+        
+          溫柔貼心的好鄰居：AutoMapper
+        
+      </a>
+    </li>
   
     
     <li>
@@ -811,18 +825,6 @@
       </a>
     </li>
   
-    
-    <li>
-      <small class="date">2025-12-29</small>
-      <a href="https://igouist.github.io/timeline/#t-1767016800">
-        
-        
-        
-          霹靂力距
-        
-      </a>
-    </li>
-  
 </ul>
     </section>
 
@@ -853,11 +855,11 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/bug/">bug (4)</a>
+        <a href="https://igouist.github.io/categories/bug/">bug (5)</a>
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (34)</a>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (35)</a>
     </li>
     
     <li>
@@ -1078,7 +1080,7 @@
     <section class="widget">
     <h3 class="widget-title">統計資訊</h3>
     <ul class="widget-list">
-        <li>文章總數：108</li>
+        <li>文章總數：109</li>
 
         
         <li>瀏覽次數：<span id="vercount_value_site_pv">-</span></li>

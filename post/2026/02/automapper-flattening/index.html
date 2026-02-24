@@ -1,0 +1,904 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BWMYD757BP"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-BWMYD757BP');
+    </script>
+
+    <meta name="generator" content="Hugo 0.150.1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>菜雞抓蟲：AutoMapper 出現奇怪的型別對應錯誤嗎？貼心的慣例式映射可能正在造訪你家 | 伊果的沒人看筆記本</title>
+    <meta property="og:title" content="菜雞抓蟲：AutoMapper 出現奇怪的型別對應錯誤嗎？貼心的慣例式映射可能正在造訪你家 - 伊果的沒人看筆記本">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2026-02-24T21:00:00&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2026-02-24T21:00:00&#43;08:00">
+        
+        <meta name="keywords" content="CSharp, AutoMapper">
+    <meta name="description" content="菜雞抓蟲：AutoMapper 出現奇怪的型別對應錯誤嗎？貼心的慣例式映射可能正在造訪你家">
+        <meta name="author" content="Igouist">
+        
+    <meta property="og:url" content="https://igouist.github.io/post/2026/02/automapper-flattening/">
+    <meta property="og:image" content="https://igouist.github.io/me.jpg">
+
+    <link rel="preconnect" href="https://image.igouist.net" crossorigin>
+    
+    
+
+    
+    
+
+    <link rel="preload"
+      href="/fonts/lxgw-wenkai-mono-tc.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous">
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://igouist.github.io/">
+                        伊果的沒人看筆記本
+                    </a>
+                
+                <p class="description">菜雞寫筆記，踩坑全紀錄</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://igouist.github.io/">Home</a>
+                    
+                    <a  href="https://igouist.github.io/categories/csharp-and-dotnet/" title="CSharp">CSharp</a>
+                    
+                    <a  href="https://igouist.github.io/categories/life/" title="Life">Life</a>
+                    
+                    <a  href="https://igouist.github.io/categories/reading/" title="Reading">Reading</a>
+                    
+                    <a  href="https://igouist.github.io/timeline/" title="Timeline">Timeline</a>
+                    
+                    <a  href="https://igouist.github.io/archives/" title="Archives">Archives</a>
+                    
+                    <a  href="https://igouist.github.io/about/" title="About">About</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">菜雞抓蟲：AutoMapper 出現奇怪的型別對應錯誤嗎？貼心的慣例式映射可能正在造訪你家</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2026-2-24,
+                        </date>
+                        
+                        <div class="post-meta">
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/csharp-and-dotnet">CSharp-and-Dotnet</a></span>
+                            
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/bug">Bug</a></span>
+                            
+                        </div>
+                        
+                        
+                        <div class="post-meta">(
+                            <span id="vercount_container_page_pv">
+                                <span id="vercount_value_page_pv">?</span>
+                                <span>&nbsp;read</span>
+                            </span>)
+                        </div>
+                        
+
+                        <div class="post-content">
+                            <p>
+
+
+<img
+  src="https://image.igouist.net/1771938629037.webp"
+  alt=""width="600" height="800"loading="auto" decoding="async">
+</p>
+<p>部門朋朋前陣子忙著把一卡車陳年專案升級到 .Net 8，原本吃著火鍋唱著歌、升級升得好好的，眼看三下五除二就要升級完畢，但就在這一片祥和安寧之中，突然有個專案升級後 API 就原地死去，只留下 AutoMapper 的錯誤訊息，兇案調查也就此開始……</p>
+<hr>
+<p>俗話說得好：不看錯誤訊息的偵探不是好偵探。</p>
+<p>讓我們先看看以下片段（為保護當事欄位，已做混淆處理）：</p>
+<pre tabindex="0"><code>---&gt; AutoMapper.AutoMapperMappingException: Error mapping types.
+
+Mapping types:
+BooDataModel -&gt; BooDto
+NiceProject.Repositories.DataModel.BooDataModel -&gt; NiceProject.Services.Dto.BooDto
+
+Type Map configuration:
+BooDataModel -&gt; BooDto
+NiceProject.Repositories.DataModel.BooDataModel -&gt; NiceProject.Services.Dto.BooDto
+
+Destination Member:
+ProductOrder
+
+---&gt; AutoMapper.AutoMapperMappingException: Missing type map configuration or unsupported mapping.
+
+Mapping types:
+OrderedEnumerable`1 -&gt; Int32
+System.Linq.OrderedEnumerable`1[[Product...]] -&gt; System.Int32
+</code></pre><p>對第一現場進行勘驗，發現幾個值得注意的點：</p>
+<ul>
+<li>來源類別並沒有 ProductOrder 這個欄位，但目標類別有</li>
+<li>MapperConfiguration 並沒有明確要求 Ignore ProductOrder，但原本的版本運行得好好的，升級 .Net 後才出錯</li>
+</ul>
+<p>現在我們已經收集了案發現場的線索，但我們還需要回答一個關鍵的問題：錯誤訊息中的 AutoMapper 在案發時究竟做了什麼？</p>
+<h3 id="automapper-的貼心-flattening">AutoMapper 的貼心 Flattening</h3>
+<p>要繼續說明下去，就要先從 AutoMapper 的一些貼心小舉動開始說起。</p>
+<p><a href="https://docs.automapper.io/en/stable/index.html">AutoMapper</a> 作為型別轉換工具，最吸引人的賣點就是「<strong>基於慣例的映射（Convention-based mapping）</strong>」這代表它預先處理了一些常見的情境，讓我們可以無腦使用。例如從 <code>FooName</code> 直接映射到 <code>fooname</code>（自動處理掉大小寫問題）、或是某些型別會自動幫忙轉型等等。</p>
+<p>這些慣例在大多時候是很實用的，而且也非常省事。但在一些情況可能就會變成未爆彈，例如在 <a href="/post/2020/07/automapper/">之前的 AutoMapper 筆記</a> 介紹過的「2.65 變成 3」之謎：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Boo</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">double</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Foo</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Val { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Foo Sut()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> boo = <span style="color:#66d9ef">new</span> Boo
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Val = <span style="color:#ae81ff">2.65</span>
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt; cfg.CreateMap&lt;Boo, Foo&gt;());
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> mapper = config.CreateMapper();
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> foo = mapper.Map&lt;Foo&gt;(boo);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> foo; <span style="color:#75715e">// 3</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>這次要介紹的就是 AutoMapper 的貼心慣例之一：<strong>Flattening</strong></p>
+<blockquote>
+<p>When you configure a source/destination type pair in AutoMapper, the configurator attempts to match properties and methods on the source type to properties on the destination type. If for any property on the destination type a property, method, or a method prefixed with &ldquo;Get&rdquo; does not exist on the source type, AutoMapper splits the destination member name into individual words (by PascalCase conventions).</p>
+<p>當您在 AutoMapper 中配置來源/目標類型對時，配置器會嘗試將來源類型上的屬性和方法與目標類型上的屬性進行匹配。如果目標類型的任何屬性在來源類型上不存在相應的屬性、方法或以 &ldquo;Get&rdquo; 為前綴的方法，AutoMapper 會將目標成員名稱拆分為單獨的單詞（根據 PascalCase 規範）。</p>
+<p>（<a href="https://docs.automapper.io/en/stable/Flattening.html">Flattening — AutoMapper documentation</a>）</p></blockquote>
+<p>簡單來說，<strong>AutoMapper 在找不到目標的時候，會嘗試把屬性名稱拆成幾個單字，去抓看看有沒有符合的來源</strong>。例如 <code>ItemId</code> 就會拆成 <code>Item</code> 跟 <code>Id</code>，再去來源找看看有沒有這兩個東西。</p>
+<p>用一組 LinqPad 腳本能更直觀理解這個動作：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Source</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> SourceItem Item { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SourceItem</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Target</span> 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> ItemId { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> source = <span style="color:#66d9ef">new</span> Source
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Item = <span style="color:#66d9ef">new</span> SourceItem
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Id = <span style="color:#ae81ff">256</span> <span style="color:#75715e">// 準備了 source.Item.Id</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt; cfg.CreateMap&lt;Source, Target&gt;());
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> mapper = config.CreateMapper();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> target = mapper.Map&lt;Target&gt;(source);
+</span></span><span style="display:flex;"><span>    target.ItemId.Dump(); <span style="color:#75715e">// target.ItemId = 256, 從 source.Item.Id 抓來的</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>現在我們已經知道了 AutoMapper 會幫忙試試看組裝欄位來兜出一個結果，跟我那個嘗試把夢到的東西跟樂透號碼關聯起來的鄰居一樣。但是在來源型別結構多層又複雜，我們又想賦值到扁平化後的型別的時候，Flattening 還是蠻有用的。</p>
+<p>那麼，這個好棒棒慣例跟這次的案情又有什麼關係呢？讓我們看看一個轉型失敗的例子：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Source</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> SourceItem Item { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SourceItem</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">string</span> Id { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Target</span> 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> ItemId { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> source = <span style="color:#66d9ef">new</span> Source
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Item = <span style="color:#66d9ef">new</span> SourceItem
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Id = <span style="color:#e6db74">&#34;NaN&#34;</span> <span style="color:#75715e">// Not a Number 噠！</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt; cfg.CreateMap&lt;Source, Target&gt;());
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> mapper = config.CreateMapper();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> target = mapper.Map&lt;Target&gt;(source);  <span style="color:#75715e">// 爆炸！</span>
+</span></span><span style="display:flex;"><span>    target.ItemId.Dump();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>Error mapping types.
+
+Mapping types:
+Source -&gt; Target
+UserQuery+Source -&gt; UserQuery+Target
+
+Type Map configuration:
+Source -&gt; Target
+UserQuery+Source -&gt; UserQuery+Target
+
+Destination Member:
+ItemId
+</code></pre><p>沒錯，錯誤訊息跟我們開頭看見的非常相似，都是型別映射錯誤！</p>
+<h3 id="走向破案">走向破案</h3>
+<p>現在我們已經有了主要手法的假設了，但這個案子還有另一個疑點：升級前的映射沒有出錯，升級後就出錯了。</p>
+<p>馬上進入粗暴推理階段：我們知道 AutoMapper 會嘗試去找名稱有關的東西來試試看，而開頭場景中轉型失敗的欄位名稱是 <code>ProductOrder</code>，也就是說 AutoMapper 會嘗試去抓 <code>Product</code> 的 <code>Order</code>。</p>
+<p>正好，來源型別的確有一個 <code>IEnumerable&lt;Product&gt; Product</code> 的成員。但是 <code>Order</code> 又是哪裡來的呢？為什麼升級前找不到、升級後反而找到了呢？</p>
+<p>噹噹！讓我們看看 .Net 7 Preview 的介紹：<a href="https://devblogs.microsoft.com/dotnet/announcing-dotnet-7-preview-7/#simplified-ordering-with-system.linq">Order and OrderDescending</a></p>
+<blockquote>
+<p>System.Linq now has the methods <code>Order</code> and <code>OrderDescending</code>, which are there to order an IEnumerable according to T.</p>
+<p>System.Linq 現在具有方法 <code>Order</code> 與 <code>OrderDescending</code> ，可用於根據 T 對 IEnumerable 進行排序。</p></blockquote>
+<p>這樣就有了 <code>Order</code> 這片拼圖，我們的假設也就很明確了：因為升級之後多了 <code>Order()</code> 這個東東，成功滿足了 Flattening 的條件，原本找不到映射來源會保留預設值的 AutoMapper，在看見了 <code>Order</code> 之後覺得「這名字好像有關ㄟ，來試試看」，進而發生了 <code>Error mapping types.</code></p>
+<p>馬上用這組條件測試看看：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Source</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> IEnumerable&lt;Product&gt; Product { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Product</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Target</span> 
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> ProductOrder { <span style="color:#66d9ef">get</span>; <span style="color:#66d9ef">set</span>; }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Main()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> source = <span style="color:#66d9ef">new</span> Source
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Product = <span style="color:#66d9ef">new</span> List&lt;Product&gt; {}
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> config = <span style="color:#66d9ef">new</span> MapperConfiguration(cfg =&gt; cfg.CreateMap&lt;Source, Target&gt;());
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> mapper = config.CreateMapper();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> target = mapper.Map&lt;Target&gt;(source); <span style="color:#75715e">// Error mapping types!</span>
+</span></span><span style="display:flex;"><span>    target.ProductOrder.Dump(); 
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>Error mapping types.
+
+Mapping types:
+Source -&gt; Target
+UserQuery+Source -&gt; UserQuery+Target
+
+Type Map configuration:
+Source -&gt; Target
+UserQuery+Source -&gt; UserQuery+Target
+
+Destination Member:
+ProductOrder
+
+Missing type map configuration or unsupported mapping.
+
+Mapping types:
+OrderedEnumerable`2 -&gt; Int32
+System.Linq.OrderedEnumerable`2[[UserQuery+Product...]] -&gt; System.Int32
+
+Destination Member:
+ProductOrder
+</code></pre><p>重現成功，收工下班。</p>
+<hr>
+<blockquote>
+<p>備註：隨著 AutoMapper 新版本開始收費，我們也正在緩慢地進行搬遷。<br/>如果你也在搬家，這些文章推薦給你：</p>
+<ul>
+<li><a href="https://dotblogs.azurewebsites.net/mrkt/2025/04/12/161408">替換映射工具 - 使用 Mapster | mrkt的程式學習筆記</a></li>
+<li><a href="https://dotblogs.com.tw/mrkt/2025/04/13/011927">另一種映射工具 - Mapperly | mrkt的程式學習筆記</a></li>
+</ul></blockquote>
+                            <hr/>
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h2>其他文章</h2>
+    <ul class="listing">
+        
+        <li><a href="/post/2021/12/automapper-convert-using/">AutoMapper 使用 ConvertUsing 自定義類型轉換，將包含串列成員的物件映射為一組串列</a></li>
+        
+        <li><a href="/post/2020/07/automapper/">AutoMapper —— 類別轉換超省力</a></li>
+        
+        <li><a href="/post/2021/10/swagger-enable-authorize/">在 Swagger UI 加上驗證按鈕，讓 Request Header 傳遞 Authorize Token</a></li>
+        
+        <li><a href="/post/2020/09/csharp-trulp/">C#: 元組 (Tuple)</a></li>
+        
+        <li><a href="/post/2020/08/csharp-timezone/">C#: 時區轉換、民國西元、國曆農曆、中文月份週期</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://igouist.github.io/tags/csharp">CSharp</a></li>
+                                
+                                <li><a href="https://igouist.github.io/tags/automapper">AutoMapper</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Igouist/Igouist.github.io"
+            issue-term="pathname"
+            theme="github-dark"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://igouist.github.io/">
+      <button type="submit" class="submit">&#x1F50E;&#xFE0E;</button>
+</form>
+    </section>
+    
+    
+    
+    <section class="widget">
+        <h3 class="widget-title">系列文</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E6%88%91%E8%A6%81%E8%A8%82%E4%BE%BF%E7%95%B6/">我要訂便當 (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E6%96%B0%E8%A8%93%E8%A8%98/">菜雞新訓記 (8)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/series/%E8%8F%9C%E9%9B%9E%E8%88%87%E7%89%A9%E4%BB%B6%E5%B0%8E%E5%90%91/">菜雞與物件導向 (17)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <small class="date">2026-02-24</small>
+        <a href="https://igouist.github.io/post/2026/02/automapper-flattening/" title="菜雞抓蟲：AutoMapper 出現奇怪的型別對應錯誤嗎？貼心的慣例式映射可能正在造訪你家">菜雞抓蟲：AutoMapper 出現奇怪的型別對應錯誤嗎？貼心的慣例式映射可能正在造訪你家</a>
+    </li>
+    
+    <li>
+        <small class="date">2026-01-31</small>
+        <a href="https://igouist.github.io/post/2026/01/heptabase/" title="從紙筆到電子白板，我的 Heptabase 使用場景">從紙筆到電子白板，我的 Heptabase 使用場景</a>
+    </li>
+    
+    <li>
+        <small class="date">2025-07-31</small>
+        <a href="https://igouist.github.io/post/2025/07/migrate-blog-images-to-cloudflare-r2/" title="記一次把部落格圖片從 Imgur 搬到 Cloudflare R2 的過程">記一次把部落格圖片從 Imgur 搬到 Cloudflare R2 的過程</a>
+    </li>
+    
+    <li>
+        <small class="date">2025-07-07</small>
+        <a href="https://igouist.github.io/post/2025/07/dotnet-add-watermark-and-password-to-pdf-using-pdfsharp/" title="C#: 使用 PDFSharp 在 PDF 加上浮水印和檔案密碼吧">C#: 使用 PDFSharp 在 PDF 加上浮水印和檔案密碼吧</a>
+    </li>
+    
+    <li>
+        <small class="date">2025-06-29</small>
+        <a href="https://igouist.github.io/post/2025/06/dotnet-using-iservicecollection-extensions-to-enforce-registration-constraints/" title=".Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧">.Net: 善用 IServiceCollection Extension 和自製 Builder，讓服務註冊更有約束吧</a>
+    </li>
+    
+    <li>
+        <small class="date">2025-06-14</small>
+        <a href="https://igouist.github.io/post/2025/06/imgur-temporarily-over-capacity-maybe-your-ip-banned/" title="Imgur 一直 temporarily over capacity 嗎？先檢查網路看看吧">Imgur 一直 temporarily over capacity 嗎？先檢查網路看看吧</a>
+    </li>
+    
+    <li>
+        <small class="date">2025-06-14</small>
+        <a href="https://igouist.github.io/post/2025/06/disable-onedrive-sync-and-restore-documents-folder/" title="Windows: 關閉 OneDrive 同步，並把我的文件移回預設路徑">Windows: 關閉 OneDrive 同步，並把我的文件移回預設路徑</a>
+    </li>
+    
+    <li>
+        <small class="date">2025-05-05</small>
+        <a href="https://igouist.github.io/post/2025/05/csharp-convert-html-to-pdf-using-dinktopdf/" title="C#: 使用 DinkToPdf 把 HTML 轉成 PDF 吧">C#: 使用 DinkToPdf 把 HTML 轉成 PDF 吧</a>
+    </li>
+    
+    <li>
+        <small class="date">2025-04-27</small>
+        <a href="https://igouist.github.io/post/2025/04/shin-sangoku-musou-origins/" title="《真三國無雙：起源》白金心得">《真三國無雙：起源》白金心得</a>
+    </li>
+    
+    <li>
+        <small class="date">2025-04-24</small>
+        <a href="https://igouist.github.io/post/2025/04/timberborn/" title="《河狸浮生記》體驗版遊玩心得">《河狸浮生記》體驗版遊玩心得</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        
+
+<h3 class="widget-title"><a href="https://igouist.github.io/timeline/">最近動態</a></h3>
+<ul class="widget-list timeline-widget">
+  
+    
+    <li>
+      <small class="date">2026-02-24</small>
+      <a href="https://igouist.github.io/timeline/#t-1771938000">
+        
+        
+        
+          溫柔貼心的好鄰居：AutoMapper
+        
+      </a>
+    </li>
+  
+    
+    <li>
+      <small class="date">2026-02-15</small>
+      <a href="https://igouist.github.io/timeline/#t-1771139400">
+        
+        
+        
+          部落格與霞鶩文楷
+        
+      </a>
+    </li>
+  
+    
+    <li>
+      <small class="date">2026-01-29</small>
+      <a href="https://igouist.github.io/timeline/#t-1769698800">
+        
+        
+        
+          特定知識與創造力
+        
+      </a>
+    </li>
+  
+    
+    <li>
+      <small class="date">2026-01-26</small>
+      <a href="https://igouist.github.io/timeline/#t-1769432400">
+        
+        
+        
+          《真三國無雙：起源》四英傑 DLC 劇情初通關心得
+        
+      </a>
+    </li>
+  
+    
+    <li>
+      <small class="date">2026-01-06</small>
+      <a href="https://igouist.github.io/timeline/#t-1767668400">
+        
+        
+        
+          陷阱街道
+        
+      </a>
+    </li>
+  
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">轉貼推薦</h3>
+<ul class="widget-list">    
+    
+    <li>
+        <a href="https://igouist.github.io/repost/">每天推薦一篇文章 (101)</a>
+    </li>
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">分類</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://igouist.github.io/categories/android/">android (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/automation/">automation (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/azure/">azure (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/bug/">bug (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/csharp-and-dotnet/">csharp-and-dotnet (35)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/css/">css (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/explore/">explore (3)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/ide/">ide (5)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/life/">life (10)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/murmur/">murmur (1)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/object-oriented/">object-oriented (17)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/powershell/">powershell (2)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/python/">python (7)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/reading/">reading (4)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/tools/">tools (28)</a>
+    </li>
+    
+    <li>
+        <a href="https://igouist.github.io/categories/windows/">windows (3)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友鏈</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://sunnyday0932.github.io/" title="Sian">🌙 Sian</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://www.facebook.com/arthurc.study" title="arthurc">亞瑟的學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://kevintsengtw.blogspot.com/" title="mrkt">mrkt 的程式學習筆記</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://dddtw.hashnode.dev/" title="DDDTW">DDDTW Technical Blog</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://wellss12.github.io/" title="Wells">Wells</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://raychiutw.github.io/" title="ray">Ray&#39;s Notes</a>
+        </li>
+        
+        <li>
+            <a target="_blank" href="https://andrewliang25.github.io/" title="Andrew">Null Playground</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    <section class="widget">
+        <h3 class="widget-title">標籤</h3>
+<div class="tagcloud">
+    
+    <a href="https://igouist.github.io/tags/ai-tools/">ai-tools</a>
+    
+    <a href="https://igouist.github.io/tags/android/">android</a>
+    
+    <a href="https://igouist.github.io/tags/anglesharp/">anglesharp</a>
+    
+    <a href="https://igouist.github.io/tags/api/">api</a>
+    
+    <a href="https://igouist.github.io/tags/appsettings/">appsettings</a>
+    
+    <a href="https://igouist.github.io/tags/automapper/">automapper</a>
+    
+    <a href="https://igouist.github.io/tags/automation/">automation</a>
+    
+    <a href="https://igouist.github.io/tags/azure/">azure</a>
+    
+    <a href="https://igouist.github.io/tags/azure-functions/">azure-functions</a>
+    
+    <a href="https://igouist.github.io/tags/bandon/">bandon</a>
+    
+    <a href="https://igouist.github.io/tags/benchmarkdotnet/">benchmarkdotnet</a>
+    
+    <a href="https://igouist.github.io/tags/bug/">bug</a>
+    
+    <a href="https://igouist.github.io/tags/chrome/">chrome</a>
+    
+    <a href="https://igouist.github.io/tags/cloudflare/">cloudflare</a>
+    
+    <a href="https://igouist.github.io/tags/crawler/">crawler</a>
+    
+    <a href="https://igouist.github.io/tags/csharp/">csharp</a>
+    
+    <a href="https://igouist.github.io/tags/css/">css</a>
+    
+    <a href="https://igouist.github.io/tags/dapper/">dapper</a>
+    
+    <a href="https://igouist.github.io/tags/database/">database</a>
+    
+    <a href="https://igouist.github.io/tags/dotnet/">dotnet</a>
+    
+    <a href="https://igouist.github.io/tags/electron/">electron</a>
+    
+    <a href="https://igouist.github.io/tags/entity-framework/">entity framework</a>
+    
+    <a href="https://igouist.github.io/tags/enum/">enum</a>
+    
+    <a href="https://igouist.github.io/tags/excel/">excel</a>
+    
+    <a href="https://igouist.github.io/tags/game/">game</a>
+    
+    <a href="https://igouist.github.io/tags/git/">git</a>
+    
+    <a href="https://igouist.github.io/tags/headphone/">headphone</a>
+    
+    <a href="https://igouist.github.io/tags/heptabase/">heptabase</a>
+    
+    <a href="https://igouist.github.io/tags/heroku/">heroku</a>
+    
+    <a href="https://igouist.github.io/tags/ide/">ide</a>
+    
+    <a href="https://igouist.github.io/tags/imgur/">imgur</a>
+    
+    <a href="https://igouist.github.io/tags/life/">life</a>
+    
+    <a href="https://igouist.github.io/tags/line/">line</a>
+    
+    <a href="https://igouist.github.io/tags/line-notify/">line-notify</a>
+    
+    <a href="https://igouist.github.io/tags/linux/">linux</a>
+    
+    <a href="https://igouist.github.io/tags/markdown/">markdown</a>
+    
+    <a href="https://igouist.github.io/tags/midjourney/">midjourney</a>
+    
+    <a href="https://igouist.github.io/tags/mysql/">mysql</a>
+    
+    <a href="https://igouist.github.io/tags/newbieguide/">newbieguide</a>
+    
+    <a href="https://igouist.github.io/tags/object-oriented/">object-oriented</a>
+    
+    <a href="https://igouist.github.io/tags/one-drive/">one-drive</a>
+    
+    <a href="https://igouist.github.io/tags/pdf/">pdf</a>
+    
+    <a href="https://igouist.github.io/tags/php/">php</a>
+    
+    <a href="https://igouist.github.io/tags/powershell/">powershell</a>
+    
+    <a href="https://igouist.github.io/tags/ptt/">ptt</a>
+    
+    <a href="https://igouist.github.io/tags/python/">python</a>
+    
+    <a href="https://igouist.github.io/tags/queue/">queue</a>
+    
+    <a href="https://igouist.github.io/tags/reading/">reading</a>
+    
+    <a href="https://igouist.github.io/tags/rrs/">rrs</a>
+    
+    <a href="https://igouist.github.io/tags/rss/">rss</a>
+    
+    <a href="https://igouist.github.io/tags/selenium/">selenium</a>
+    
+    <a href="https://igouist.github.io/tags/service-bus/">service-bus</a>
+    
+    <a href="https://igouist.github.io/tags/soft-skills/">soft-skills</a>
+    
+    <a href="https://igouist.github.io/tags/sqlite/">sqlite</a>
+    
+    <a href="https://igouist.github.io/tags/swagger/">swagger</a>
+    
+    <a href="https://igouist.github.io/tags/tools/">tools</a>
+    
+    <a href="https://igouist.github.io/tags/travel/">travel</a>
+    
+    <a href="https://igouist.github.io/tags/visualstudio/">visualstudio</a>
+    
+    <a href="https://igouist.github.io/tags/vscode/">vscode</a>
+    
+    <a href="https://igouist.github.io/tags/w3hexschool/">w3hexschool</a>
+    
+    <a href="https://igouist.github.io/tags/windows/">windows</a>
+    
+    <a href="https://igouist.github.io/tags/xampp/">xampp</a>
+    
+</div>
+    </section>
+
+    <section class="widget">
+    <h3 class="widget-title">統計資訊</h3>
+    <ul class="widget-list">
+        <li>文章總數：109</li>
+
+        
+        <li>瀏覽次數：<span id="vercount_value_site_pv">-</span></li>
+        
+
+        <li>本站訂閱：<a href="https://igouist.github.io/index.xml" target="_blank"><u>RSS</u> (index.xml)</a></li>
+
+        
+        <li>本文字數：1878</li>
+        
+
+        
+
+        
+        
+        
+    </ul>
+</section>
+
+    <section class="widget">
+    <h3 class="widget-title">工商服務</h3>
+    <ul class="widget-list">
+
+        
+        <a href="https://www.facebook.com/@DDDCommunity.tw/"><img src="https://i.imgur.com/5ItLxex.png" alt="DDDTaiwan" style="width:245px;height:auto;"></a>
+        <br/>
+
+        
+        
+        
+
+        
+        <script async 
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2119949858103459"
+            crossorigin="anonymous"></script>
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-2119949858103459"
+            data-ad-slot="9031038367"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </ul>
+</section>
+
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019-2025 <a href="https://igouist.github.io/">伊果的沒人看筆記本 By Igouist</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        <a href="https://www.flysnow.org/" target="_blank">Theme</a> based on <a href="https://github.com/rujews/maupassant-hugo" target="_blank">maupassant</a>.
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+
+
+<script defer src="https://events.vercount.one/js"></script>
+
+
+
+
+
+<script type='text/javascript'>
+    window.onload = function() {
+      var links = document.links;
+      for (var i = 0, linksLength = links.length; i < linksLength; i++) {
+        if (links[i].hostname != window.location.hostname) {
+          links[i].target = '_blank';
+        }
+      }
+    }
+  </script>
+</body>
+</html>

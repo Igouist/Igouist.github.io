@@ -12,7 +12,228 @@
       <feedId>56200764111934464</feedId>
       <userId>41821085092905984</userId>
     </follow_challenge>
-    <lastBuildDate>Sat, 27 Aug 2022 10:09:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/categories/bug/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 24 Feb 2026 21:00:00 +0800</lastBuildDate><atom:link href="https://igouist.github.io/categories/bug/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>菜雞抓蟲：AutoMapper 出現奇怪的型別對應錯誤嗎？貼心的慣例式映射可能正在造訪你家</title>
+      <link>https://igouist.github.io/post/2026/02/automapper-flattening/</link>
+      <pubDate>Tue, 24 Feb 2026 21:00:00 +0800</pubDate>
+      <author>Igouist (Igouist)</author>
+      <guid>https://igouist.github.io/post/2026/02/automapper-flattening/</guid>
+      <description>&lt;p&gt;
+
+
+&lt;img
+  src=&#34;https://image.igouist.net/1771938629037.webp&#34;
+  alt=&#34;&#34;width=&#34;600&#34; height=&#34;800&#34;loading=&#34;auto&#34; decoding=&#34;async&#34;&gt;
+&lt;/p&gt;
+&lt;p&gt;部門朋朋前陣子忙著把一卡車陳年專案升級到 .Net 8，原本吃著火鍋唱著歌、升級升得好好的，眼看三下五除二就要升級完畢，但就在這一片祥和安寧之中，突然有個專案升級後 API 就原地死去，只留下 AutoMapper 的錯誤訊息，兇案調查也就此開始……&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;俗話說得好：不看錯誤訊息的偵探不是好偵探。&lt;/p&gt;
+&lt;p&gt;讓我們先看看以下片段（為保護當事欄位，已做混淆處理）：&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;---&amp;gt; AutoMapper.AutoMapperMappingException: Error mapping types.
+
+Mapping types:
+BooDataModel -&amp;gt; BooDto
+NiceProject.Repositories.DataModel.BooDataModel -&amp;gt; NiceProject.Services.Dto.BooDto
+
+Type Map configuration:
+BooDataModel -&amp;gt; BooDto
+NiceProject.Repositories.DataModel.BooDataModel -&amp;gt; NiceProject.Services.Dto.BooDto
+
+Destination Member:
+ProductOrder
+
+---&amp;gt; AutoMapper.AutoMapperMappingException: Missing type map configuration or unsupported mapping.
+
+Mapping types:
+OrderedEnumerable`1 -&amp;gt; Int32
+System.Linq.OrderedEnumerable`1[[Product...]] -&amp;gt; System.Int32
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;對第一現場進行勘驗，發現幾個值得注意的點：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;來源類別並沒有 ProductOrder 這個欄位，但目標類別有&lt;/li&gt;
+&lt;li&gt;MapperConfiguration 並沒有明確要求 Ignore ProductOrder，但原本的版本運行得好好的，升級 .Net 後才出錯&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;現在我們已經收集了案發現場的線索，但我們還需要回答一個關鍵的問題：錯誤訊息中的 AutoMapper 在案發時究竟做了什麼？&lt;/p&gt;
+&lt;h3 id=&#34;automapper-的貼心-flattening&#34;&gt;AutoMapper 的貼心 Flattening&lt;/h3&gt;
+&lt;p&gt;要繼續說明下去，就要先從 AutoMapper 的一些貼心小舉動開始說起。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://docs.automapper.io/en/stable/index.html&#34;&gt;AutoMapper&lt;/a&gt; 作為型別轉換工具，最吸引人的賣點就是「&lt;strong&gt;基於慣例的映射（Convention-based mapping）&lt;/strong&gt;」這代表它預先處理了一些常見的情境，讓我們可以無腦使用。例如從 &lt;code&gt;FooName&lt;/code&gt; 直接映射到 &lt;code&gt;fooname&lt;/code&gt;（自動處理掉大小寫問題）、或是某些型別會自動幫忙轉型等等。&lt;/p&gt;
+&lt;p&gt;這些慣例在大多時候是很實用的，而且也非常省事。但在一些情況可能就會變成未爆彈，例如在 &lt;a href=&#34;https://igouist.github.io/post/2020/07/automapper/&#34;&gt;之前的 AutoMapper 筆記&lt;/a&gt; 介紹過的「2.65 變成 3」之謎：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Boo&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt; Val { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Foo&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Val { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Foo Sut()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; boo = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Boo
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Val = &lt;span style=&#34;color:#ae81ff&#34;&gt;2.65&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    };
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt; cfg.CreateMap&amp;lt;Boo, Foo&amp;gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; mapper = config.CreateMapper();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; foo = mapper.Map&amp;lt;Foo&amp;gt;(boo);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; foo; &lt;span style=&#34;color:#75715e&#34;&gt;// 3&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;這次要介紹的就是 AutoMapper 的貼心慣例之一：&lt;strong&gt;Flattening&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;When you configure a source/destination type pair in AutoMapper, the configurator attempts to match properties and methods on the source type to properties on the destination type. If for any property on the destination type a property, method, or a method prefixed with &amp;ldquo;Get&amp;rdquo; does not exist on the source type, AutoMapper splits the destination member name into individual words (by PascalCase conventions).&lt;/p&gt;
+&lt;p&gt;當您在 AutoMapper 中配置來源/目標類型對時，配置器會嘗試將來源類型上的屬性和方法與目標類型上的屬性進行匹配。如果目標類型的任何屬性在來源類型上不存在相應的屬性、方法或以 &amp;ldquo;Get&amp;rdquo; 為前綴的方法，AutoMapper 會將目標成員名稱拆分為單獨的單詞（根據 PascalCase 規範）。&lt;/p&gt;
+&lt;p&gt;（&lt;a href=&#34;https://docs.automapper.io/en/stable/Flattening.html&#34;&gt;Flattening — AutoMapper documentation&lt;/a&gt;）&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;簡單來說，&lt;strong&gt;AutoMapper 在找不到目標的時候，會嘗試把屬性名稱拆成幾個單字，去抓看看有沒有符合的來源&lt;/strong&gt;。例如 &lt;code&gt;ItemId&lt;/code&gt; 就會拆成 &lt;code&gt;Item&lt;/code&gt; 跟 &lt;code&gt;Id&lt;/code&gt;，再去來源找看看有沒有這兩個東西。&lt;/p&gt;
+&lt;p&gt;用一組 LinqPad 腳本能更直觀理解這個動作：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Source&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; SourceItem Item { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;SourceItem&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; Id { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Target&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; ItemId { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Main()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; source = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Source
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Item = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; SourceItem
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Id = &lt;span style=&#34;color:#ae81ff&#34;&gt;256&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 準備了 source.Item.Id&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    };
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt; cfg.CreateMap&amp;lt;Source, Target&amp;gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; mapper = config.CreateMapper();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; target = mapper.Map&amp;lt;Target&amp;gt;(source);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    target.ItemId.Dump(); &lt;span style=&#34;color:#75715e&#34;&gt;// target.ItemId = 256, 從 source.Item.Id 抓來的&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;現在我們已經知道了 AutoMapper 會幫忙試試看組裝欄位來兜出一個結果，跟我那個嘗試把夢到的東西跟樂透號碼關聯起來的鄰居一樣。但是在來源型別結構多層又複雜，我們又想賦值到扁平化後的型別的時候，Flattening 還是蠻有用的。&lt;/p&gt;
+&lt;p&gt;那麼，這個好棒棒慣例跟這次的案情又有什麼關係呢？讓我們看看一個轉型失敗的例子：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Source&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; SourceItem Item { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;SourceItem&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; Id { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Target&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; ItemId { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Main()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; source = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Source
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Item = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; SourceItem
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Id = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;NaN&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// Not a Number 噠！&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    };
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt; cfg.CreateMap&amp;lt;Source, Target&amp;gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; mapper = config.CreateMapper();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; target = mapper.Map&amp;lt;Target&amp;gt;(source);  &lt;span style=&#34;color:#75715e&#34;&gt;// 爆炸！&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    target.ItemId.Dump();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Error mapping types.
+
+Mapping types:
+Source -&amp;gt; Target
+UserQuery+Source -&amp;gt; UserQuery+Target
+
+Type Map configuration:
+Source -&amp;gt; Target
+UserQuery+Source -&amp;gt; UserQuery+Target
+
+Destination Member:
+ItemId
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;沒錯，錯誤訊息跟我們開頭看見的非常相似，都是型別映射錯誤！&lt;/p&gt;
+&lt;h3 id=&#34;走向破案&#34;&gt;走向破案&lt;/h3&gt;
+&lt;p&gt;現在我們已經有了主要手法的假設了，但這個案子還有另一個疑點：升級前的映射沒有出錯，升級後就出錯了。&lt;/p&gt;
+&lt;p&gt;馬上進入粗暴推理階段：我們知道 AutoMapper 會嘗試去找名稱有關的東西來試試看，而開頭場景中轉型失敗的欄位名稱是 &lt;code&gt;ProductOrder&lt;/code&gt;，也就是說 AutoMapper 會嘗試去抓 &lt;code&gt;Product&lt;/code&gt; 的 &lt;code&gt;Order&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;正好，來源型別的確有一個 &lt;code&gt;IEnumerable&amp;lt;Product&amp;gt; Product&lt;/code&gt; 的成員。但是 &lt;code&gt;Order&lt;/code&gt; 又是哪裡來的呢？為什麼升級前找不到、升級後反而找到了呢？&lt;/p&gt;
+&lt;p&gt;噹噹！讓我們看看 .Net 7 Preview 的介紹：&lt;a href=&#34;https://devblogs.microsoft.com/dotnet/announcing-dotnet-7-preview-7/#simplified-ordering-with-system.linq&#34;&gt;Order and OrderDescending&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;System.Linq now has the methods &lt;code&gt;Order&lt;/code&gt; and &lt;code&gt;OrderDescending&lt;/code&gt;, which are there to order an IEnumerable according to T.&lt;/p&gt;
+&lt;p&gt;System.Linq 現在具有方法 &lt;code&gt;Order&lt;/code&gt; 與 &lt;code&gt;OrderDescending&lt;/code&gt; ，可用於根據 T 對 IEnumerable 進行排序。&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;這樣就有了 &lt;code&gt;Order&lt;/code&gt; 這片拼圖，我們的假設也就很明確了：因為升級之後多了 &lt;code&gt;Order()&lt;/code&gt; 這個東東，成功滿足了 Flattening 的條件，原本找不到映射來源會保留預設值的 AutoMapper，在看見了 &lt;code&gt;Order&lt;/code&gt; 之後覺得「這名字好像有關ㄟ，來試試看」，進而發生了 &lt;code&gt;Error mapping types.&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;馬上用這組條件測試看看：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Source&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; IEnumerable&amp;lt;Product&amp;gt; Product { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Product&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Target&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; ProductOrder { &lt;span style=&#34;color:#66d9ef&#34;&gt;get&lt;/span&gt;; &lt;span style=&#34;color:#66d9ef&#34;&gt;set&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; Main()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; source = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Source
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Product = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; List&amp;lt;Product&amp;gt; {}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    };
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; config = &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; MapperConfiguration(cfg =&amp;gt; cfg.CreateMap&amp;lt;Source, Target&amp;gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; mapper = config.CreateMapper();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; target = mapper.Map&amp;lt;Target&amp;gt;(source); &lt;span style=&#34;color:#75715e&#34;&gt;// Error mapping types!&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    target.ProductOrder.Dump(); 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;Error mapping types.
+
+Mapping types:
+Source -&amp;gt; Target
+UserQuery+Source -&amp;gt; UserQuery+Target
+
+Type Map configuration:
+Source -&amp;gt; Target
+UserQuery+Source -&amp;gt; UserQuery+Target
+
+Destination Member:
+ProductOrder
+
+Missing type map configuration or unsupported mapping.
+
+Mapping types:
+OrderedEnumerable`2 -&amp;gt; Int32
+System.Linq.OrderedEnumerable`2[[UserQuery+Product...]] -&amp;gt; System.Int32
+
+Destination Member:
+ProductOrder
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;重現成功，收工下班。&lt;/p&gt;
+&lt;hr&gt;
+&lt;blockquote&gt;
+&lt;p&gt;備註：隨著 AutoMapper 新版本開始收費，我們也正在緩慢地進行搬遷。&lt;br/&gt;如果你也在搬家，這些文章推薦給你：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://dotblogs.azurewebsites.net/mrkt/2025/04/12/161408&#34;&gt;替換映射工具 - 使用 Mapster | mrkt的程式學習筆記&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://dotblogs.com.tw/mrkt/2025/04/13/011927&#34;&gt;另一種映射工具 - Mapperly | mrkt的程式學習筆記&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/blockquote&gt;</description>
+    </item>
+    
     <item>
       <title>菜雞抓蟲：Azure Functions ServiceBus Trigger 執行過久時會重複觸發 Functions</title>
       <link>https://igouist.github.io/post/2022/08/azure-function-servicebus-trigger-max-auto-renew-duration/</link>
