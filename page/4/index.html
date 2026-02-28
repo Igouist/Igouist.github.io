@@ -99,6 +99,65 @@
                         <article class="post">
                             <header>
                                 <h1 class="post-title">
+                                    <a href="https://igouist.github.io/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/" title="使用 Azure Functions &#43; Line Notify 來定時提醒公車到站時間" >使用 Azure Functions &#43; Line Notify 來定時提醒公車到站時間</a>
+                                </h1>
+                            </header>
+                            <date class="post-meta meta-date">
+                                2022-9-12,
+                            </date>
+                            
+                            <div class="post-meta">
+                                
+                                <span class="meta-category"><a href="https://igouist.github.io/categories/azure">azure</a></span>
+                                
+                            </div>
+                            
+                            <div class="post-content"><p>
+
+
+<img
+  src="https://image.igouist.net/WX17auT.webp"
+  alt="Image"width="600" height="1014"loading="auto" decoding="async">
+</p>
+<p>在上週的 <a href="/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler">使用 Powershell + 工作排程器 + Line Notify 來定時提醒公車到站時間</a>，我們利用工作排程器來定時觸發腳本，藉此用 Line 提醒我下班的公車還有多久才來。</p>
+<p>做完之後靈機一動，對呀！最近上班挺常接觸到 <a href="https://azure.microsoft.com/zh-tw/services/functions/">Azure Functions</a> 這個方便東東，不如就把這個小提醒給架設到 Azure Functions 上吧！</p>
+<p>這樣就省卻了特定主機要開著掛工作排程器的困擾，又可以用香香的 Azure 工具來控制監聽的開關，豈不美哉。</p>
+<p>如此如此這般這般，讓我們開始建立 Azure Functions 服務吧！</p>
+<div class="toc toc-box">
+    <div class="toc-title">章節目錄</div>
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/#建立-azure-functions-資源">建立 Azure Functions 資源</a></li>
+    <li><a href="/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/#使用-azure-functions-開發公車到站提醒服務">使用 Azure Functions 開發公車到站提醒服務</a>
+      <ul>
+        <li><a href="/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/#建立-azure-funtcions-專案">建立 Azure Funtcions 專案</a></li>
+        <li><a href="/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/#呼叫-motc-api-查詢公車到站預估時間">呼叫 MOTC Api 查詢公車到站預估時間</a></li>
+        <li><a href="/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/#發送-line-notify">發送 Line Notify</a></li>
+        <li><a href="/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/#組合查詢公車資訊與發送到站通知">組合查詢公車資訊與發送到站通知</a></li>
+        <li><a href="/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/#本機測試-functions">本機測試 Functions</a></li>
+      </ul>
+    </li>
+    <li><a href="/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/#使用-visual-studio-發佈到-azure-functions">使用 Visual Studio 發佈到 Azure Functions</a></li>
+    <li><a href="/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/#小結">小結</a></li>
+    <li><a href="/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/#參考資料">參考資料</a></li>
+  </ul>
+</nav>
+</div>
+<h2 id="建立-azure-functions-資源">建立 Azure Functions 資源</h2>
+<p><strong>Azure Functions 是 Azure 推出的一款無伺服器（Serverless）服務，簡單來說就是伺服器之類的麻煩事就交給 Azure 去處理，我們只要專心寫功能就好</strong>。對我這種愛寫小腳本的偷懶工程師來說，可以說是香到爆的服務。</p>
+<blockquote>
+<p>小提醒：Azure Functions 是一款收費服務，使用前請務必確認<a href="https://azure.microsoft.com/zh-tw/pricing/details/functions/">定價</a>。</p>
+<p>在這篇文章撰寫當下，Azure Functions 有提供每月免費執行一百萬次的授權，對我們每天一次的公車通知來說綽綽有餘了（我們應該不會搭這麼多趟吧…？）</p></blockquote>
+                                ……
+                            </div>
+                            <p class="readmore"><a href="https://igouist.github.io/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/">閱讀全文</a></p>
+                        </article>
+                        <br />
+                        <hr color="#D9D9D9"/>
+                    
+                        <article class="post">
+                            <header>
+                                <h1 class="post-title">
                                     <a href="https://igouist.github.io/post/2022/09/bus-reminder-1-powershell-and-windows-task-scheduler/" title="使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間" >使用 Powershell &#43; 工作排程器 &#43; Line Notify 來定時提醒公車到站時間</a>
                                 </h1>
                             </header>
@@ -561,45 +620,6 @@
                         <br />
                         <hr color="#D9D9D9"/>
                     
-                        <article class="post">
-                            <header>
-                                <h1 class="post-title">
-                                    <a href="https://igouist.github.io/post/2022/03/omni/" title="Omni —— 實用的 Chrome 分頁書籤搜尋欄" >Omni —— 實用的 Chrome 分頁書籤搜尋欄</a>
-                                </h1>
-                            </header>
-                            <date class="post-meta meta-date">
-                                2022-3-13,
-                            </date>
-                            
-                            <div class="post-meta">
-                                
-                                <span class="meta-category"><a href="https://igouist.github.io/categories/tools">Tools</a></span>
-                                
-                            </div>
-                            
-                            <div class="post-content"><p>
-
-
-<img
-  src="https://image.igouist.net/D29Htug.webp"
-  alt="Image"width="712" height="360"loading="auto" decoding="async">
-</p>
-<p><a href="https://chrome.google.com/webstore/detail/omni-bookmark-history-tab/mapjgeachilmcbbokkgcbgpbakaaeehi">Omni</a> 是一款 Chrome 的擴充功能。它能夠讓你用快捷鍵叫出搜尋框，並直接<strong>搜尋當前開啟的分頁、書籤、歷史紀錄</strong>等等。</p>
-<p>這個工具適合：</p>
-<ul>
-<li>習慣分頁開很多的人，尤其是像我這種能分頁分組摺疊之後就開更多</li>
-<li>懶得用滑鼠去找分頁、也懶得 Ctrl Tab 逐個分頁切換的人</li>
-<li>書籤存了一大堆但每次都忘記放在哪裡，最後還是重新搜尋一次的人</li>
-<li>想在瀏覽器有方便的搜尋框（就像 Mac 的 Alfred 或 Windows 的 Powertoy 那樣）</li>
-<li>即使只有三個分頁，還是要在朋友面前打字裝潮的人</li>
-</ul>
-                                ……
-                            </div>
-                            <p class="readmore"><a href="https://igouist.github.io/post/2022/03/omni/">閱讀全文</a></p>
-                        </article>
-                        <br />
-                        <hr color="#D9D9D9"/>
-                    
 
                     
 
@@ -705,6 +725,11 @@
 <ul class="widget-list">
     
     <li>
+        <small class="date">2026-02-28</small>
+        <a href="https://igouist.github.io/post/2026/02/split-pot-and-srp/" title="鴛鴦鍋就是要分成涮肉區和煮湯區才符合單一職責吧？">鴛鴦鍋就是要分成涮肉區和煮湯區才符合單一職責吧？</a>
+    </li>
+    
+    <li>
         <small class="date">2026-02-24</small>
         <a href="https://igouist.github.io/post/2026/02/automapper-flattening/" title="菜雞抓蟲：AutoMapper 出現奇怪的型別對應錯誤嗎？貼心的慣例式映射可能正在造訪你家">菜雞抓蟲：AutoMapper 出現奇怪的型別對應錯誤嗎？貼心的慣例式映射可能正在造訪你家</a>
     </li>
@@ -747,11 +772,6 @@
     <li>
         <small class="date">2025-04-27</small>
         <a href="https://igouist.github.io/post/2025/04/shin-sangoku-musou-origins/" title="《真三國無雙：起源》白金心得">《真三國無雙：起源》白金心得</a>
-    </li>
-    
-    <li>
-        <small class="date">2025-04-24</small>
-        <a href="https://igouist.github.io/post/2025/04/timberborn/" title="《河狸浮生記》體驗版遊玩心得">《河狸浮生記》體驗版遊玩心得</a>
     </li>
     
 </ul>
@@ -879,7 +899,7 @@
     </li>
     
     <li>
-        <a href="https://igouist.github.io/categories/murmur/">murmur (1)</a>
+        <a href="https://igouist.github.io/categories/murmur/">murmur (2)</a>
     </li>
     
     <li>
@@ -1080,7 +1100,7 @@
     <section class="widget">
     <h3 class="widget-title">統計資訊</h3>
     <ul class="widget-list">
-        <li>文章總數：109</li>
+        <li>文章總數：110</li>
 
         
         <li>瀏覽次數：<span id="vercount_value_site_pv">-</span></li>
