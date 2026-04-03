@@ -163,6 +163,7 @@
   src="https://image.igouist.net/I29PVrK.webp"
   alt="Image"width="969" height="441"loading="auto" decoding="async">
 </p>
+<p>圖片可以看到還有另一個選項「Calculate Throughput based on」，這個我們晚點再介紹，先維持在「this thread only」</p>
 <p>接著回到 Thread Group，因為我們這次的場景是用時間來計算的，所以需要<strong>把底下的 Specify Thread Lifetime 打開，並根據要執行的時間來填上秒數</strong>。</p>
 <p>因為我們的需求是跑 5 分鐘，所以先丟個 300 秒：
 
@@ -192,6 +193,42 @@
 </p>
 <p>可以看見數量跟吞吐量都有影響（算總數寫報告的時候記得別算錯了 xD）</p>
 <hr>
+<p>接著讓我們認識一下 Constant Throughput Timer 裡面的 <strong>Calculate Throughput based on</strong></p>
+<p>有時候我們只在乎每分鐘要打多少筆，不是很在乎每個 Threads 實際分配的量（或是不想算數學），這時候就可以調整 Constant Throughput Timer 的模式</p>
+<p>像是把模式改成「All Active Threads」，就能直接訂最終數字（例如每分鐘就是要打到 2000 筆），剩下就讓 JMeter 自己去分配，可說是懶人好幫手</p>
+<p>Constant Throughput Timer 的 Calculate Throughput based on 總共有五個選項：</p>
+<table>
+  <thead>
+      <tr>
+          <th>模式</th>
+          <th>說明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>This Thread Only</strong></td>
+          <td><strong>每個 Thread 各自獨立設定目標吞吐量</strong><br/>例如設定 20/min、開 5 個 Thread → 實際總量 100/min</td>
+      </tr>
+      <tr>
+          <td><strong>All Active Threads</strong></td>
+          <td><strong>目標吞吐量由所有 Thread Group 的所有 Thread 共同分攤</strong><br/>例如設定 20/min、開 5 個 Thread → 每 Thread 各約 4/min，總量仍是 20/min</td>
+      </tr>
+      <tr>
+          <td><strong>All Active Threads<br/> in Current Thread Group</strong></td>
+          <td>同上，但只抓<strong>當前 Thread Group 的 Thread</strong> 來分攤</td>
+      </tr>
+      <tr>
+          <td><strong>All Active Threads (Shared)</strong></td>
+          <td>和 All Active Threads 一樣意思，但<strong>所有 Thread 共用同一個計時器</strong>，請求分配會更均勻</td>
+      </tr>
+      <tr>
+          <td><strong>All Active Threadss<br/> in Current Thread Group (Shared)</strong></td>
+          <td>基本上就是上面兩個加起來：當前 Thread Group 的所有 Thread 共用同一個計時器</td>
+      </tr>
+  </tbody>
+</table>
+<p>可以再根據壓測的場景決定要選擇哪一個模式，供參考。</p>
+<hr>
 <p>最後整理一下 Constant Throughput Timer 的適用場景，有以下狀況的時候就可以考慮使用：</p>
 <ul>
 <li>模擬某個固定數值的請求量（例如每分鐘Ｘ次）</li>
@@ -201,8 +238,11 @@
 <p>各位朋友可以再動手玩玩看。我們下次見～</p>
 <h2 id="參考資料">參考資料</h2>
 <ul>
+<li><a href="https://www.browserstack.com/guide/jmeter-constant-throughput-timer">JMeter Constant Throughput Timer : Tutorial | BrowserStack</a></li>
 <li><a href="https://www.blazemeter.com/blog/jmeter-throughput">How to Use JMeter&rsquo;s Throughput Timer - blazemeter</a></li>
-<li><a href="https://blog.csdn.net/m0_38039437/article/details/104115312">Jmeter 吞吐量定时器 Constant Throughput Timer</a></li>
+<li><a href="https://www.codekru.com/jmeter/constant-throughput-timer-in-jmeter-with-examples">Constant Throughput Timer in Jmeter with examples</a></li>
+<li><a href="https://blog.csdn.net/m0_38039437/article/details/104115312">Jmeter 吞吐量定时器 Constant Throughput Timer (CSDN)</a></li>
+<li><a href="https://www.cnblogs.com/hpzyang/p/13781788.html">jmeter 固定吞吐量控制器 Constant Throughput Timer - 博客園</a></li>
 </ul>
 <p>還有最實際的：
 
@@ -900,7 +940,7 @@
         
             
         
-        <li>累積字數：312912</li>
+        <li>累積字數：313404</li>
         
 
         
@@ -910,7 +950,7 @@
         <li>本站訂閱：<a href="https://igouist.github.io/index.xml" target="_blank"><u>RSS</u> (index.xml)</a></li>
 
         
-        <li>本文字數：932</li>
+        <li>本文字數：1384</li>
         
 
         

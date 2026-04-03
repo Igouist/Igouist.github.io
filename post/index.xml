@@ -1528,6 +1528,7 @@ ProductOrder
   src=&#34;https://image.igouist.net/I29PVrK.webp&#34;
   alt=&#34;Image&#34;width=&#34;969&#34; height=&#34;441&#34;loading=&#34;auto&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
+&lt;p&gt;圖片可以看到還有另一個選項「Calculate Throughput based on」，這個我們晚點再介紹，先維持在「this thread only」&lt;/p&gt;
 &lt;p&gt;接著回到 Thread Group，因為我們這次的場景是用時間來計算的，所以需要&lt;strong&gt;把底下的 Specify Thread Lifetime 打開，並根據要執行的時間來填上秒數&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;因為我們的需求是跑 5 分鐘，所以先丟個 300 秒：
 
@@ -1557,6 +1558,42 @@ ProductOrder
 &lt;/p&gt;
 &lt;p&gt;可以看見數量跟吞吐量都有影響（算總數寫報告的時候記得別算錯了 xD）&lt;/p&gt;
 &lt;hr&gt;
+&lt;p&gt;接著讓我們認識一下 Constant Throughput Timer 裡面的 &lt;strong&gt;Calculate Throughput based on&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;有時候我們只在乎每分鐘要打多少筆，不是很在乎每個 Threads 實際分配的量（或是不想算數學），這時候就可以調整 Constant Throughput Timer 的模式&lt;/p&gt;
+&lt;p&gt;像是把模式改成「All Active Threads」，就能直接訂最終數字（例如每分鐘就是要打到 2000 筆），剩下就讓 JMeter 自己去分配，可說是懶人好幫手&lt;/p&gt;
+&lt;p&gt;Constant Throughput Timer 的 Calculate Throughput based on 總共有五個選項：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;模式&lt;/th&gt;
+          &lt;th&gt;說明&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;This Thread Only&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;每個 Thread 各自獨立設定目標吞吐量&lt;/strong&gt;&lt;br/&gt;例如設定 20/min、開 5 個 Thread → 實際總量 100/min&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;All Active Threads&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;目標吞吐量由所有 Thread Group 的所有 Thread 共同分攤&lt;/strong&gt;&lt;br/&gt;例如設定 20/min、開 5 個 Thread → 每 Thread 各約 4/min，總量仍是 20/min&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;All Active Threads&lt;br/&gt; in Current Thread Group&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;同上，但只抓&lt;strong&gt;當前 Thread Group 的 Thread&lt;/strong&gt; 來分攤&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;All Active Threads (Shared)&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;和 All Active Threads 一樣意思，但&lt;strong&gt;所有 Thread 共用同一個計時器&lt;/strong&gt;，請求分配會更均勻&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;All Active Threadss&lt;br/&gt; in Current Thread Group (Shared)&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;基本上就是上面兩個加起來：當前 Thread Group 的所有 Thread 共用同一個計時器&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;可以再根據壓測的場景決定要選擇哪一個模式，供參考。&lt;/p&gt;
+&lt;hr&gt;
 &lt;p&gt;最後整理一下 Constant Throughput Timer 的適用場景，有以下狀況的時候就可以考慮使用：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;模擬某個固定數值的請求量（例如每分鐘Ｘ次）&lt;/li&gt;
@@ -1566,8 +1603,11 @@ ProductOrder
 &lt;p&gt;各位朋友可以再動手玩玩看。我們下次見～&lt;/p&gt;
 &lt;h2 id=&#34;參考資料&#34;&gt;參考資料&lt;/h2&gt;
 &lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.browserstack.com/guide/jmeter-constant-throughput-timer&#34;&gt;JMeter Constant Throughput Timer : Tutorial | BrowserStack&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://www.blazemeter.com/blog/jmeter-throughput&#34;&gt;How to Use JMeter&amp;rsquo;s Throughput Timer - blazemeter&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://blog.csdn.net/m0_38039437/article/details/104115312&#34;&gt;Jmeter 吞吐量定时器 Constant Throughput Timer&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.codekru.com/jmeter/constant-throughput-timer-in-jmeter-with-examples&#34;&gt;Constant Throughput Timer in Jmeter with examples&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://blog.csdn.net/m0_38039437/article/details/104115312&#34;&gt;Jmeter 吞吐量定时器 Constant Throughput Timer (CSDN)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.cnblogs.com/hpzyang/p/13781788.html&#34;&gt;jmeter 固定吞吐量控制器 Constant Throughput Timer - 博客園&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;還有最實際的：
 
@@ -4293,6 +4333,8 @@ PM 朋朋們又是怎麼運用 Feature Flag 的……&lt;/p&gt;
 &lt;p&gt;這時候也就決定了這次測試的總數（執行緒數量 * 迴圈次數）&lt;/p&gt;
 &lt;p&gt;此外，迴圈次數下的「Same user on each iteration」會讓每次迴圈時都用同一批使用者，如果想要每次都模擬全新的使用者，例如把前面的例子改成三百名使用者，分三批湧進網站，這時候就可以取消勾選。&lt;/p&gt;
 &lt;p&gt;而定時器則是讓我們設定在執行前先延遲多久、執行多久後自動停止，這邊例子不會用到，就不開啟了。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;我們也可以設定 Throughput 來調整打出去的頻率，有興趣的朋友請參考 &lt;a href=&#34;https://igouist.github.io/post/2025/02/jmeter-constant-throughput-timer&#34;&gt;JMeter: 使用 Constant Throughput Timer 設置固定吞吐量&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;現在我們已經把執行緒群組建好了，讓我們指派任務給這個群組吧！&lt;/p&gt;
 &lt;h3 id=&#34;建立-http-request&#34;&gt;建立 Http Request&lt;/h3&gt;
 &lt;p&gt;在執行緒群組上右鍵 &amp;gt; 新增，可以看到一排能指派給這群組的任務，其中「取樣」就是指我們這次的目標。這邊讓我們選擇「取樣 &amp;gt; HTTP 要求」：&lt;/p&gt;
