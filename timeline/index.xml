@@ -2024,6 +2024,62 @@
     </item>
     
     <item>
+      <title>Dotnet 的 DateTime.ToString 在 Alpine 3.19 時區炸裂</title>
+      <link>https://igouist.github.io/timeline/#t-1716796920</link>
+      <pubDate>Mon, 27 May 2024 16:02:00 +0800</pubDate>
+      <author>Igouist (Igouist)</author>
+      <guid>https://igouist.github.io/timeline/#t-1716796920</guid>
+      <description>&lt;p&gt;我們的妙妙 &lt;code&gt;DateTime.ToString()&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Alpine 3.18 的時候是 &lt;code&gt;2024-02-29 12:47:57&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;升到 Alpine 3.19 變成 &lt;code&gt;2024-02-29 12 Minute Minute: 50&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;謝謝 aspnet:6.0-alpine，搭配微軟把拔好棒的 CultureInfo，禮拜一的早上都不無聊了呢&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;梳理一下：我指定了 &lt;code&gt;time.ToString(&amp;quot;yyyy-MM-dd HH:mm:ss&amp;quot;)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;但這個 &lt;code&gt;HH:mm:ss&lt;/code&gt; 的 &lt;code&gt;:&lt;/code&gt; 其實會被換成&lt;a href=&#34;https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/&#34;&gt;文化特性&lt;/a&gt;指定的 TimeSeparator&lt;/p&gt;
+&lt;p&gt;緊接著吃到 Alpine 3.19 的連攜技，此時的 TimeSeparator 會是 &amp;quot;&amp;quot;&lt;/p&gt;
+&lt;p&gt;我的 &lt;code&gt;HH:mm:ss&lt;/code&gt; 就這樣一套打完變成 &lt;code&gt;HHmmss&lt;/code&gt; 囧&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;需要更多資訊的朋友，可以參考 TimeSeparator 以及 Custom format 的頁面說明：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://learn.microsoft.com/en-us/dotnet/api/system.globalization.datetimeformatinfo.timeseparator?view=net-6.0&#34;&gt;DateTimeFormatInfo.TimeSeparator Property&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings#timeSeparator&#34;&gt;The &amp;ldquo;:&amp;rdquo; custom format specifier&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;以及這則相關 issue：&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/dotnet/dotnet-docker/issues/5234&#34;&gt;DateTime format issue with Alpine 3.19 #5234&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;按照 issue 內的操作，就可以重現 Alpine 3.18 和 3.19 的行為差異，並且可以印出 CurrentCulture 並看見 TimeSeparator 變成空值（而非文檔中的 &amp;ldquo;:&amp;quot;）&lt;/p&gt;
+&lt;p&gt;如果有朋友遇到同樣問題並來到這裡，上面 issue 的一段話節錄給你參考：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;I noticed that you are missing the package icu-data-full in your repro Dockerfile. We have this package documented in our Alpine ICU sample Dockerfile. I&amp;rsquo;m not sure why the behavior changed between alpine versions. If you add icu-data-full to your final image layer you should get the correct behavior.&lt;/p&gt;
+&lt;p&gt;我注意到你在重現用的 Dockerfile 裡少了 icu-data-full 套件。我們在 Alpine ICU 的範例 Dockerfile 中有記錄這個套件。我不確定為什麼在不同的 alpine 版本之間行為會改變。若你把 icu-data-full 加到 final image layer，應該就會得到正確的行為。&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;尤其這句 &lt;code&gt;I&#39;m not sure why the behavior changed between alpine versions.&lt;/code&gt; ……真是道盡了我抓蟲的心情。&lt;/p&gt;
+</description>
+      <content:encoded>&lt;p&gt;我們的妙妙 &lt;code&gt;DateTime.ToString()&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Alpine 3.18 的時候是 &lt;code&gt;2024-02-29 12:47:57&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;升到 Alpine 3.19 變成 &lt;code&gt;2024-02-29 12 Minute Minute: 50&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;謝謝 aspnet:6.0-alpine，搭配微軟把拔好棒的 CultureInfo，禮拜一的早上都不無聊了呢&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;梳理一下：我指定了 &lt;code&gt;time.ToString(&amp;quot;yyyy-MM-dd HH:mm:ss&amp;quot;)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;但這個 &lt;code&gt;HH:mm:ss&lt;/code&gt; 的 &lt;code&gt;:&lt;/code&gt; 其實會被換成&lt;a href=&#34;https://igouist.github.io/post/2021/10/csharp-datatime-tostring-cultureinfo/&#34;&gt;文化特性&lt;/a&gt;指定的 TimeSeparator&lt;/p&gt;
+&lt;p&gt;緊接著吃到 Alpine 3.19 的連攜技，此時的 TimeSeparator 會是 &amp;quot;&amp;quot;&lt;/p&gt;
+&lt;p&gt;我的 &lt;code&gt;HH:mm:ss&lt;/code&gt; 就這樣一套打完變成 &lt;code&gt;HHmmss&lt;/code&gt; 囧&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;需要更多資訊的朋友，可以參考 TimeSeparator 以及 Custom format 的頁面說明：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://learn.microsoft.com/en-us/dotnet/api/system.globalization.datetimeformatinfo.timeseparator?view=net-6.0&#34;&gt;DateTimeFormatInfo.TimeSeparator Property&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings#timeSeparator&#34;&gt;The &amp;ldquo;:&amp;rdquo; custom format specifier&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;以及這則相關 issue：&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/dotnet/dotnet-docker/issues/5234&#34;&gt;DateTime format issue with Alpine 3.19 #5234&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;按照 issue 內的操作，就可以重現 Alpine 3.18 和 3.19 的行為差異，並且可以印出 CurrentCulture 並看見 TimeSeparator 變成空值（而非文檔中的 &amp;ldquo;:&amp;quot;）&lt;/p&gt;
+&lt;p&gt;如果有朋友遇到同樣問題並來到這裡，上面 issue 的一段話節錄給你參考：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;I noticed that you are missing the package icu-data-full in your repro Dockerfile. We have this package documented in our Alpine ICU sample Dockerfile. I&amp;rsquo;m not sure why the behavior changed between alpine versions. If you add icu-data-full to your final image layer you should get the correct behavior.&lt;/p&gt;
+&lt;p&gt;我注意到你在重現用的 Dockerfile 裡少了 icu-data-full 套件。我們在 Alpine ICU 的範例 Dockerfile 中有記錄這個套件。我不確定為什麼在不同的 alpine 版本之間行為會改變。若你把 icu-data-full 加到 final image layer，應該就會得到正確的行為。&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;尤其這句 &lt;code&gt;I&#39;m not sure why the behavior changed between alpine versions.&lt;/code&gt; ……真是道盡了我抓蟲的心情。&lt;/p&gt;
+</content:encoded>
+    </item>
+    
+    <item>
       <title>當設計陷入困境時，要不就是缺乏資訊，要不就是前提有誤</title>
       <link>https://igouist.github.io/timeline/#t-1712453340</link>
       <pubDate>Sun, 07 Apr 2024 09:29:00 +0800</pubDate>

@@ -568,6 +568,61 @@
               
                 
                 
+                <div class="timeline-card timeline-box" id="t-1716796920">
+                  <div class="timeline-meta">
+                    <time datetime="2024-05-27T16:02:00&#43;08:00">2024-05-27 16:02</time>
+                      
+                        - <span class="timeline-title">Dotnet 的 DateTime.ToString 在 Alpine 3.19 時區炸裂</span>
+                      
+                  </div>
+                  
+                  
+                  
+                  
+
+                  
+
+                  <div class="timeline-body">
+                    <p>我們的妙妙 <code>DateTime.ToString()</code></p>
+<p>Alpine 3.18 的時候是 <code>2024-02-29 12:47:57</code></p>
+<p>升到 Alpine 3.19 變成 <code>2024-02-29 12 Minute Minute: 50</code></p>
+<p>謝謝 aspnet:6.0-alpine，搭配微軟把拔好棒的 CultureInfo，禮拜一的早上都不無聊了呢</p>
+<hr>
+<p>梳理一下：我指定了 <code>time.ToString(&quot;yyyy-MM-dd HH:mm:ss&quot;)</code></p>
+<p>但這個 <code>HH:mm:ss</code> 的 <code>:</code> 其實會被換成<a href="/post/2021/10/csharp-datatime-tostring-cultureinfo/">文化特性</a>指定的 TimeSeparator</p>
+<p>緊接著吃到 Alpine 3.19 的連攜技，此時的 TimeSeparator 會是 &quot;&quot;</p>
+<p>我的 <code>HH:mm:ss</code> 就這樣一套打完變成 <code>HHmmss</code> 囧</p>
+<hr>
+<p>需要更多資訊的朋友，可以參考 TimeSeparator 以及 Custom format 的頁面說明：</p>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/dotnet/api/system.globalization.datetimeformatinfo.timeseparator?view=net-6.0">DateTimeFormatInfo.TimeSeparator Property</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings#timeSeparator">The &ldquo;:&rdquo; custom format specifier</a></li>
+</ul>
+<p>以及這則相關 issue：</p>
+<p><a href="https://github.com/dotnet/dotnet-docker/issues/5234">DateTime format issue with Alpine 3.19 #5234</a></p>
+<p>按照 issue 內的操作，就可以重現 Alpine 3.18 和 3.19 的行為差異，並且可以印出 CurrentCulture 並看見 TimeSeparator 變成空值（而非文檔中的 &ldquo;:&quot;）</p>
+<p>如果有朋友遇到同樣問題並來到這裡，上面 issue 的一段話節錄給你參考：</p>
+<blockquote>
+<p>I noticed that you are missing the package icu-data-full in your repro Dockerfile. We have this package documented in our Alpine ICU sample Dockerfile. I&rsquo;m not sure why the behavior changed between alpine versions. If you add icu-data-full to your final image layer you should get the correct behavior.</p>
+<p>我注意到你在重現用的 Dockerfile 裡少了 icu-data-full 套件。我們在 Alpine ICU 的範例 Dockerfile 中有記錄這個套件。我不確定為什麼在不同的 alpine 版本之間行為會改變。若你把 icu-data-full 加到 final image layer，應該就會得到正確的行為。</p></blockquote>
+<p>尤其這句 <code>I'm not sure why the behavior changed between alpine versions.</code> ……真是道盡了我抓蟲的心情。</p>
+
+                  </div>
+
+                  
+                  <div class="timeline-actions">
+                    
+                    <a class="copy-link" href="https://igouist.github.io/timeline/#t-1716796920" data-url="https://igouist.github.io/timeline/#t-1716796920" title="點擊複製連結" aria-label="Copy link">🐔</a>
+                  </div>
+                  
+                  
+                  
+                  
+                </div>
+                
+              
+                
+                
                 <div class="timeline-card timeline-box" id="t-1712453340">
                   <div class="timeline-meta">
                     <time datetime="2024-04-07T09:29:00&#43;08:00">2024-04-07 09:29</time>
@@ -1840,7 +1895,9 @@
         
             
         
-        <li>累積字數：418574</li>
+            
+        
+        <li>累積字數：419019</li>
 
         
         <li>瀏覽次數：<span id="vercount_value_site_pv">-</span></li>
@@ -1851,7 +1908,7 @@
         
 
         
-        <li>動態總數：75</li>
+        <li>動態總數：76</li>
         
 
         
@@ -2007,7 +2064,9 @@
         
             
         
-        <li>動態字數：25931</li>
+            
+        
+        <li>動態字數：26376</li>
         
         
         
