@@ -145,6 +145,7 @@
     <li><a href="#實作使用-featurefilter-來根據白名單啟用-api">實作：使用 FeatureFilter 來根據白名單啟用 API</a></li>
     <li><a href="#小結">小結</a></li>
     <li><a href="#參考資料">參考資料</a></li>
+    <li><a href="#補充feature-flag-的退場機制">補充：Feature Flag 的退場機制</a></li>
   </ul>
 </nav>
 </div>
@@ -616,6 +617,75 @@ PM 朋朋們又是怎麼運用 Feature Flag 的……</p>
 </ul>
 </li>
 </ul>
+<h2 id="補充feature-flag-的退場機制">補充：Feature Flag 的退場機制</h2>
+<p>前幾天（2026.04）和同事聊到：如果 Feature Flag 沒有好好管理、年久失修，還散得到處都是的話，會發生什麼事呢？</p>
+<p>稍微找了一些相關資料，回來補充在這一篇。</p>
+<p>首先先來一個經典案例：<a href="https://dougseven.com/2014/04/17/knightmare-a-devops-cautionary-tale/">Knightmare: A DevOps Cautionary Tale</a></p>
+<blockquote>
+<p>對 SMARS 的更新原本是要替換名為「Power Peg」的舊有、未使用程式碼——這項功能 Knight 已經整整 8 年沒用過了（為什麼一段已經死了 8 年的程式碼還會留在程式碼庫中，這是個謎，但這不是重點）。此次更新的程式碼重新利用了一個舊 Flag，該 Flag 原本是用來啟用 Power Peg 功能。這段程式碼經過徹底測試，並已證明能正確且可靠地運作。還能出什麼差錯呢？</p></blockquote>
+<blockquote>
+<p>在東部時間 2012 年 8 月 1 日上午 9:30，市場開盤，Knight 開始代表其客戶處理來自券商交易商的新版零售流動性計畫訂單。那七台已正確部署 SMARS 的伺服器開始正確處理這些訂單。送至第八台伺服器的訂單觸發了疑似被重新用途化的 Flag，並讓早已被棄用的 Power Peg 程式碼死而復生。</p></blockquote>
+<blockquote>
+<p>短短 45 分鐘內，Knight 從美國股票市場最大交易商、NYSE 與 NASDAQ 的重要做市商，變成了破產公司。</p></blockquote>
+<p>只是一個被錯誤打開的開關，就可以導致一間公司的毀滅。可見 Feature Flag 的管理不可不慎，但我們要怎麼管理這些 Flag 呢？</p>
+<p>最重要的就是<strong>要讓這些 Feature Flag 退場</strong>。</p>
+<p>這部份可以參考我們文章開頭引用過的馬丁叔叔這篇：<a href="https://martinfowler.com/articles/feature-toggles.html">Feature Toggles (aka Feature Flags)</a></p>
+<p>簡單筆記一下：<strong>Feature Flag 的生命週期應該根據用途去分類，不同種類應該要有不同的生命週期</strong>，我們可以把 Flag 分為四種：</p>
+<ol>
+<li>Release Toggles（發布切換）
+<ul>
+<li>用途：隱藏還沒做完的功能，讓程式碼可以安心合回主幹，不影響現有使用者</li>
+<li>生命週期：極短，功能上線後就可以拔了</li>
+<li>動態程度低，不是開就是關</li>
+</ul>
+</li>
+</ol>
+<p></p>
+<ol start="2">
+<li>Experiment Toggle（實驗切換）
+<ul>
+<li>用途：做 A/B Testing 或<a href="https://codelove.tw/@tony/post/Zq42b3">金絲雀部署</a>，讓不同使用者看到不同版本</li>
+<li>生命週期：短，實驗結束後移除</li>
+<li>動態程度高，會需要根據實驗設計去對不同實驗者判斷要丟到開還是關</li>
+</ul>
+</li>
+</ol>
+<p></p>
+<ol start="3">
+<li>Ops Toggle（營運切換）
+<ul>
+<li>用途：給維運人員用的緊急開關，在出問題時可以快速關閉功能，降低影響範圍</li>
+<li>生命週期：中到長，就看系統怎麼切，有些會跟著重構或系統整併被拔掉</li>
+<li>動態程度：中，主要看有沒有需要（服務很破的時候可能比較常用到？）</li>
+</ul>
+</li>
+</ol>
+<p></p>
+<ol start="4">
+<li>Permissioning Toggle（權限切換）
+<ul>
+<li>用途：控制哪些使用者能使用哪些功能，例如付費方案、Beta 搶先體驗名單等等</li>
+<li>生命週期：長，甚至永久，功能分級存在多久就活多久</li>
+<li>動態程度高，需要根據使用者身分和請求判斷要丟到開還是關</li>
+</ul>
+</li>
+</ol>
+<hr>
+<p>除了替 Feature Flag 分類，更重要的是在建立 Flag 的時候就想好退場機制。在這篇文章中也提到了一些 Feature Flag 的常見退場作法：</p>
+<blockquote>
+<p>Feature Flags 有快速倍增的傾向，特別是在剛導入時。它們既實用又容易建立，因此常常會被大量新增。然而，開關也是有維護成本的。它們會要求你在程式碼中引入新的抽象層或條件邏輯，也會帶來相當大的測試負擔。</p></blockquote>
+<blockquote>
+<p>精明的團隊會將程式碼庫中的 Feature Toggles 視為一種存貨，而存貨是有持有成本的，因此會盡可能把這些存貨維持在最低。為了讓 feature flags 的數量保持在可管理的範圍內，<strong>團隊必須主動移除那些已不再需要的 feature flags</strong>。</p>
+<p>有些團隊會規定：每當第一次引入一個 Release Toggle 時，就一定要在團隊的 backlog 中新增一個移除 toggle 的任務。另一些團隊則會替他們的 toggles 設定「到期日」。有些團隊甚至會建立「定時炸彈」；如果某個 feature flag 在到期日之後仍然存在，測試就會失敗（甚至應用程式會拒絕啟動！）。</p>
+<p>我們也可以採用精實（Lean）的方法來降低存貨，對系統在任何時間點允許擁有的 feature flags 數量設下上限。一旦達到這個上限，如果有人想新增一個新的 toggle，就必須先花時間移除現有的 flag。</p></blockquote>
+<p>除了上面馬丁叔叔的文章，以下這幾篇也可以作為參考：</p>
+<ul>
+<li><a href="https://www.cloudbees.com/blog/feature-flag-lifecycle">Feature Flag Best Practices: Understanding the Feature Flag Lifecycle</a></li>
+<li><a href="https://www.cloudbees.com/blog/feature-flag-retirement">Your Feature Flag Management Needs to Include Retirement</a></li>
+<li><a href="https://configcat.com/blog/feature-flag-best-practices/">Feature Flag Best Practices: 7 Common Mistakes to Avoid</a></li>
+</ul>
+<p>以上就是 Feature Flag 退場機制的補充，祝福各位不會遇到開關多到變成飛機駕駛艙的狀況。</p>
+<p>那麼，我們下篇見～</p>
                             <hr/>
                         </div>
 
@@ -694,6 +764,7 @@ PM 朋朋們又是怎麼運用 Feature Flag 的……</p>
     <li><a href="#實作使用-featurefilter-來根據白名單啟用-api">實作：使用 FeatureFilter 來根據白名單啟用 API</a></li>
     <li><a href="#小結">小結</a></li>
     <li><a href="#參考資料">參考資料</a></li>
+    <li><a href="#補充feature-flag-的退場機制">補充：Feature Flag 的退場機制</a></li>
   </ul>
 </nav>
             </ul>
@@ -786,6 +857,18 @@ PM 朋朋們又是怎麼運用 Feature Flag 的……</p>
   
     
     <li>
+      <small class="date">2026-04-26</small>
+      <a href="https://igouist.github.io/timeline/#t-1777209000">
+        
+        
+        
+          Feature Flag 的退場機制
+        
+      </a>
+    </li>
+  
+    
+    <li>
       <small class="date">2026-04-18</small>
       <a href="https://igouist.github.io/timeline/#t-1776491400">
         
@@ -828,18 +911,6 @@ PM 朋朋們又是怎麼運用 Feature Flag 的……</p>
         
         
           賭場盈利效應
-        
-      </a>
-    </li>
-  
-    
-    <li>
-      <small class="date">2026-04-01</small>
-      <a href="https://igouist.github.io/timeline/#t-1775013630">
-        
-        
-        
-          CLAUDE
         
       </a>
     </li>
@@ -1683,7 +1754,9 @@ PM 朋朋們又是怎麼運用 Feature Flag 的……</p>
         
             
         
-        <li>累積字數：419406</li>
+            
+        
+        <li>累積字數：422435</li>
 
         
         <li>瀏覽次數：<span id="vercount_value_site_pv">-</span></li>
@@ -1692,7 +1765,7 @@ PM 朋朋們又是怎麼運用 Feature Flag 的……</p>
         <li>本站訂閱：<a href="https://igouist.github.io/index.xml" target="_blank"><u>RSS</u> (index.xml)</a></li>
 
         
-        <li>本文字數：4879</li>
+        <li>本文字數：6414</li>
         
 
         
