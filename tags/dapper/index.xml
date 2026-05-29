@@ -114,7 +114,7 @@
   alt=&#34;Image&#34;width=&#34;850&#34; height=&#34;315&#34;loading=&#34;auto&#34; decoding=&#34;async&#34;&gt;
 &lt;/p&gt;
 &lt;p&gt;這是俺整理公司新訓內容的第三篇文章，目標是&lt;strong&gt;在 .NET Core 簡單地使用 Dapper 連線到資料庫並完成 CRUD 的功能&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;接續 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi&#34;&gt;上一篇&lt;/a&gt; 的進度，我們接著要來連線到資料庫中完成我們的 Web Api 的 CRUD 範例。因為從新訓時期到現在工作團隊作業上主要都是使用 Dapper 來做連線資料庫的工作，這邊就直接用 Dapper 來推進吧！&lt;/p&gt;
+&lt;p&gt;接續 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi/&#34;&gt;上一篇&lt;/a&gt; 的進度，我們接著要來連線到資料庫中完成我們的 Web Api 的 CRUD 範例。因為從新訓時期到現在工作團隊作業上主要都是使用 Dapper 來做連線資料庫的工作，這邊就直接用 Dapper 來推進吧！&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Dapper 有多好用呢？它輕量、它簡單、它快速&lt;/strong&gt;。總之先把大神們的介紹文直接拿來鎮樓：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;https://blog.darkthread.net/blog/dapper/&#34;&gt;短小精悍的.NET ORM神器 &amp;ndash; Dapper - 黑暗執行緒&lt;/a&gt;&lt;/li&gt;
@@ -165,7 +165,7 @@
 &lt;h3 id=&#34;物件關係對映orm&#34;&gt;物件關係對映（ORM）&lt;/h3&gt;
 &lt;p&gt;因為前述的型別問題，大多數人就投向了 ORM 的懷抱。&lt;/p&gt;
 &lt;p&gt;ORM 的全名是物件關係對映（Object Relational Mapping），核心理念是將資料庫的資料映射到物件裡，這樣就可以&lt;strong&gt;在我們的程式語言中像直接操作物件一樣地去操作資料&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;例如說在之前的這篇 &lt;a href=&#34;https://igouist.github.io/post/2019/12/aspnet-connect-db-ef&#34;&gt;Asp.net MVC: Entity Framework 連線資料庫&lt;/a&gt;，就利用了 Entity Framework 這個工具去把資料表和類別對接起來，進而直接在程式碼中對資料進行操作。&lt;/p&gt;
+&lt;p&gt;例如說在之前的這篇 &lt;a href=&#34;https://igouist.github.io/post/2019/12/aspnet-connect-db-ef/&#34;&gt;Asp.net MVC: Entity Framework 連線資料庫&lt;/a&gt;，就利用了 Entity Framework 這個工具去把資料表和類別對接起來，進而直接在程式碼中對資料進行操作。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;關於 ORM 的更多介紹，例如優點和缺點等等，可以參照這兩篇：&lt;/p&gt;
 &lt;ul&gt;
@@ -211,7 +211,7 @@
 &lt;h2 id=&#34;正式開工&#34;&gt;正式開工&lt;/h2&gt;
 &lt;h3 id=&#34;環境準備建立資料表安裝-dapper&#34;&gt;環境準備（建立資料表、安裝 Dapper）&lt;/h3&gt;
 &lt;p&gt;到這邊已經用了兩千字來吹捧 Dapper 了，差不多讓我們把鏡頭轉回到 Web Api 服務上，邊推進邊說明一些簡單的用法吧！&lt;/p&gt;
-&lt;p&gt;接續我們 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi&#34;&gt;上一篇&lt;/a&gt; 的進度，在上一篇裡，我們對外開了一組簡單 CRUD 的 API，用來查增修刪我們的卡片資訊。&lt;/p&gt;
+&lt;p&gt;接續我們 &lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi/&#34;&gt;上一篇&lt;/a&gt; 的進度，在上一篇裡，我們對外開了一組簡單 CRUD 的 API，用來查增修刪我們的卡片資訊。&lt;/p&gt;
 &lt;p&gt;但當時只是開了簡單的服務，資料也是暫存的而已。所以這篇的目標是將我們的 API 服務連到資料庫，真正實現對卡片資料的操作。&lt;/p&gt;
 &lt;p&gt;先讓我們說明一下本篇的示範環境，假設在 Local 的 SQL Server 裡，有著一個 &lt;code&gt;Newbie&lt;/code&gt; 資料庫，其中有一張 &lt;code&gt;Card&lt;/code&gt; 的資料表。其結構如下：&lt;/p&gt;
 &lt;p&gt;
@@ -392,10 +392,10 @@
 &lt;/ul&gt;
 &lt;p&gt;除此之外，如果你的架構已經大量使用非同步，Dapper 也都有提供非同步版本的方法使用，例如 &lt;code&gt;QueryAsync&lt;/code&gt;，這邊的示範專案還在黑暗時代，就不贅述。&lt;/p&gt;
 &lt;p&gt;至於 &lt;code&gt;Query&lt;/code&gt; 系列裡面比較特別的應該就是 &lt;code&gt;QueryMultiple&lt;/code&gt; 了，它能允許同時執行多段 SQL，例如 &lt;code&gt;SELECT * FROM Card; SELECT TOP 1 * FROM Card;&lt;/code&gt; 之類的，並取回一串結果。&lt;/p&gt;
-&lt;p&gt;取得之後再逐一用 &lt;code&gt;Read&amp;lt;T&amp;gt;()&lt;/code&gt; 的方式來把結果轉換成物件，但由於平常開 Function 會需要考慮 &lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle&#34;&gt;單一職責原則&lt;/a&gt; 的關係，很少接觸到有需要在同個方法執行兩段 SQL 並回傳兩個甚至多個不同物件的狀況，這邊就留給有需要的朋友自己嘗試囉。&lt;/p&gt;
+&lt;p&gt;取得之後再逐一用 &lt;code&gt;Read&amp;lt;T&amp;gt;()&lt;/code&gt; 的方式來把結果轉換成物件，但由於平常開 Function 會需要考慮 &lt;a href=&#34;https://igouist.github.io/post/2020/10/oo-10-single-responsibility-principle/&#34;&gt;單一職責原則&lt;/a&gt; 的關係，很少接觸到有需要在同個方法執行兩段 SQL 並回傳兩個甚至多個不同物件的狀況，這邊就留給有需要的朋友自己嘗試囉。&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;回到我們剛剛開好的查詢卡片方法，第二件事就是我們知道了 &lt;strong&gt;&lt;code&gt;Query&amp;lt;T&amp;gt;&lt;/code&gt; 系列可以傳入第二個參數，用來告訴 Dapper 這次 SQL 語法會用到的變數&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;只要丟個物件進去，就算是匿名物件，Dapper 也會幫忙做成 SQL 的參數。有些朋友可能會問：為什麼不直接用 &lt;code&gt;+&lt;/code&gt; 的方式或是直接 &lt;a href=&#34;https://igouist.github.io/post/2020/08/csharp-string-interpolation&#34;&gt;字串插值&lt;/a&gt; 組到 SQL 裡面就好了呢？&lt;/p&gt;
+&lt;p&gt;只要丟個物件進去，就算是匿名物件，Dapper 也會幫忙做成 SQL 的參數。有些朋友可能會問：為什麼不直接用 &lt;code&gt;+&lt;/code&gt; 的方式或是直接 &lt;a href=&#34;https://igouist.github.io/post/2020/08/csharp-string-interpolation/&#34;&gt;字串插值&lt;/a&gt; 組到 SQL 裡面就好了呢？&lt;/p&gt;
 &lt;p&gt;如果真的有這個問題的話，呃，&lt;code&gt;SQL Injection&lt;/code&gt; 先了解一下。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;給那些想瞭解又懶得跳出去查的朋友：&lt;/p&gt;
@@ -961,17 +961,17 @@
 &lt;p&gt;今天就到這邊告一段落。現在這組 Web API 已經是常見的「連接到資料庫進行基本操作」的範本了，接下來我們會針對這組 Web API 服務進行各式各樣的 &lt;del&gt;擺弄&lt;/del&gt; 改造。&lt;/p&gt;
 &lt;p&gt;那麼，我們下次見～&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;本系列下一篇：&lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-4-swagger&#34;&gt;菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;本系列下一篇：&lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-4-swagger/&#34;&gt;菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;本系列文章&#34;&gt;本系列文章&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/04/newbie-0-menu&#34;&gt;菜雞新訓記 (0): 目錄&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/04/newbie-1-hello-git&#34;&gt;菜雞新訓記 (1): 使用 Git 來進行版本控制吧&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi&#34;&gt;菜雞新訓記 (2): 認識 Api &amp;amp; 使用 .net Core 來建立簡單的 Web Api 服務吧&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-3-dapper&#34;&gt;菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-4-swagger&#34;&gt;菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture&#34;&gt;菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/11/newbie-6-dependency-injection&#34;&gt;菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2022/03/newbie-7-fluent-validation&#34;&gt;菜雞新訓記 (7): 使用 FluentValidation 來驗證傳入參數吧&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/04/newbie-0-menu/&#34;&gt;菜雞新訓記 (0): 目錄&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/04/newbie-1-hello-git/&#34;&gt;菜雞新訓記 (1): 使用 Git 來進行版本控制吧&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-2-webapi/&#34;&gt;菜雞新訓記 (2): 認識 Api &amp;amp; 使用 .net Core 來建立簡單的 Web Api 服務吧&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-3-dapper/&#34;&gt;菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/05/newbie-4-swagger/&#34;&gt;菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/10/newbie-5-3-layer-architecture/&#34;&gt;菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/&#34;&gt;菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://igouist.github.io/post/2022/03/newbie-7-fluent-validation/&#34;&gt;菜雞新訓記 (7): 使用 FluentValidation 來驗證傳入參數吧&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description>
     </item>
     

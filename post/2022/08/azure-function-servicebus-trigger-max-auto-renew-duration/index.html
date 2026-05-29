@@ -170,7 +170,7 @@
 <p><strong>因為 ServiceBus 在傳遞訊息之後，如果超過一段時間（MaxAutoRenewDuration）內沒有得到回應，就會解除信件的鎖並嘗試重新傳遞</strong>，這時候如果原先的 Function 仍在執行，就會一前一後重複執行 Function 並發生許多光怪陸離的事，例如寫入兩筆資訊、重複複製資料之類的。</p>
 <p>建議如果調整了有 ServiceBus Trigger Function 的 Azure Functions Timeout 設定時，或是發現某支 ServiceBus Trigger 的 Functions 執行時間過長，就要一併注意 MaxAutoRenewDuration 的設定，避免重複執行的情況出現。</p>
 <h2 id="事發原由">事發原由</h2>
-<p>工作時將一段需要呼叫其他 API、執行相當久的程式片段搬上 <a href="/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/">Azure Functions</a>，並使用 <a href="/post/2022/08/azure-service-bus">Service Bus</a> 來傳遞訊息觸發 Functions 執行，這時卻發現 <strong>Function 被執行了兩次</strong>！</p>
+<p>工作時將一段需要呼叫其他 API、執行相當久的程式片段搬上 <a href="/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/">Azure Functions</a>，並使用 <a href="/post/2022/08/azure-service-bus/">Service Bus</a> 來傳遞訊息觸發 Functions 執行，這時卻發現 <strong>Function 被執行了兩次</strong>！</p>
 <p>現在就讓我們來重建當時的情況吧。首先我們有個 Service Bus Trigger 的 Azure Function，這邊就直接從 Visual Studio 提供的<a href="https://docs.microsoft.com/zh-tw/azure/azure-functions/dotnet-isolated-process-guide">已隔離（Isolated）</a>範本進行建立。</p>
 <p>為了重現執行很久的特點，我們讓它 Delay 個八分鐘，並在開始和結束的時候告訴我們一下：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
@@ -190,7 +190,7 @@
 </span></span><span style="display:flex;"><span>    
 </span></span><span style="display:flex;"><span>    _logger.LogInformation(<span style="color:#e6db74">&#34;結束處理訊息: {myQueueItem}&#34;</span>, myQueueItem);
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>並且簡單地用之前 <a href="/post/2022/08/azure-service-bus">Service Bus 文章</a> 的範例送個 &ldquo;Hello&rdquo; 進去 Queue 裡，準備觸發 Function：</p>
+</span></span></code></pre></div><p>並且簡單地用之前 <a href="/post/2022/08/azure-service-bus/">Service Bus 文章</a> 的範例送個 &ldquo;Hello&rdquo; 進去 Queue 裡，準備觸發 Function：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">async</span> Task Main()
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">var</span> context = <span style="color:#e6db74">&#34;Hello!&#34;</span>;

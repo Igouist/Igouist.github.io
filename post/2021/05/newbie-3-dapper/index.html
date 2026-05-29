@@ -164,7 +164,7 @@
   alt="Image"width="850" height="315"loading="auto" decoding="async">
 </p>
 <p>這是俺整理公司新訓內容的第三篇文章，目標是<strong>在 .NET Core 簡單地使用 Dapper 連線到資料庫並完成 CRUD 的功能</strong>。</p>
-<p>接續 <a href="/post/2021/05/newbie-2-webapi">上一篇</a> 的進度，我們接著要來連線到資料庫中完成我們的 Web Api 的 CRUD 範例。因為從新訓時期到現在工作團隊作業上主要都是使用 Dapper 來做連線資料庫的工作，這邊就直接用 Dapper 來推進吧！</p>
+<p>接續 <a href="/post/2021/05/newbie-2-webapi/">上一篇</a> 的進度，我們接著要來連線到資料庫中完成我們的 Web Api 的 CRUD 範例。因為從新訓時期到現在工作團隊作業上主要都是使用 Dapper 來做連線資料庫的工作，這邊就直接用 Dapper 來推進吧！</p>
 <p><strong>Dapper 有多好用呢？它輕量、它簡單、它快速</strong>。總之先把大神們的介紹文直接拿來鎮樓：</p>
 <ul>
 <li><a href="https://blog.darkthread.net/blog/dapper/">短小精悍的.NET ORM神器 &ndash; Dapper - 黑暗執行緒</a></li>
@@ -215,7 +215,7 @@
 <h3 id="物件關係對映orm">物件關係對映（ORM）</h3>
 <p>因為前述的型別問題，大多數人就投向了 ORM 的懷抱。</p>
 <p>ORM 的全名是物件關係對映（Object Relational Mapping），核心理念是將資料庫的資料映射到物件裡，這樣就可以<strong>在我們的程式語言中像直接操作物件一樣地去操作資料</strong>。</p>
-<p>例如說在之前的這篇 <a href="/post/2019/12/aspnet-connect-db-ef">Asp.net MVC: Entity Framework 連線資料庫</a>，就利用了 Entity Framework 這個工具去把資料表和類別對接起來，進而直接在程式碼中對資料進行操作。</p>
+<p>例如說在之前的這篇 <a href="/post/2019/12/aspnet-connect-db-ef/">Asp.net MVC: Entity Framework 連線資料庫</a>，就利用了 Entity Framework 這個工具去把資料表和類別對接起來，進而直接在程式碼中對資料進行操作。</p>
 <blockquote>
 <p>關於 ORM 的更多介紹，例如優點和缺點等等，可以參照這兩篇：</p>
 <ul>
@@ -261,7 +261,7 @@
 <h2 id="正式開工">正式開工</h2>
 <h3 id="環境準備建立資料表安裝-dapper">環境準備（建立資料表、安裝 Dapper）</h3>
 <p>到這邊已經用了兩千字來吹捧 Dapper 了，差不多讓我們把鏡頭轉回到 Web Api 服務上，邊推進邊說明一些簡單的用法吧！</p>
-<p>接續我們 <a href="/post/2021/05/newbie-2-webapi">上一篇</a> 的進度，在上一篇裡，我們對外開了一組簡單 CRUD 的 API，用來查增修刪我們的卡片資訊。</p>
+<p>接續我們 <a href="/post/2021/05/newbie-2-webapi/">上一篇</a> 的進度，在上一篇裡，我們對外開了一組簡單 CRUD 的 API，用來查增修刪我們的卡片資訊。</p>
 <p>但當時只是開了簡單的服務，資料也是暫存的而已。所以這篇的目標是將我們的 API 服務連到資料庫，真正實現對卡片資料的操作。</p>
 <p>先讓我們說明一下本篇的示範環境，假設在 Local 的 SQL Server 裡，有著一個 <code>Newbie</code> 資料庫，其中有一張 <code>Card</code> 的資料表。其結構如下：</p>
 <p>
@@ -442,10 +442,10 @@
 </ul>
 <p>除此之外，如果你的架構已經大量使用非同步，Dapper 也都有提供非同步版本的方法使用，例如 <code>QueryAsync</code>，這邊的示範專案還在黑暗時代，就不贅述。</p>
 <p>至於 <code>Query</code> 系列裡面比較特別的應該就是 <code>QueryMultiple</code> 了，它能允許同時執行多段 SQL，例如 <code>SELECT * FROM Card; SELECT TOP 1 * FROM Card;</code> 之類的，並取回一串結果。</p>
-<p>取得之後再逐一用 <code>Read&lt;T&gt;()</code> 的方式來把結果轉換成物件，但由於平常開 Function 會需要考慮 <a href="/post/2020/10/oo-10-single-responsibility-principle">單一職責原則</a> 的關係，很少接觸到有需要在同個方法執行兩段 SQL 並回傳兩個甚至多個不同物件的狀況，這邊就留給有需要的朋友自己嘗試囉。</p>
+<p>取得之後再逐一用 <code>Read&lt;T&gt;()</code> 的方式來把結果轉換成物件，但由於平常開 Function 會需要考慮 <a href="/post/2020/10/oo-10-single-responsibility-principle/">單一職責原則</a> 的關係，很少接觸到有需要在同個方法執行兩段 SQL 並回傳兩個甚至多個不同物件的狀況，這邊就留給有需要的朋友自己嘗試囉。</p>
 <hr>
 <p>回到我們剛剛開好的查詢卡片方法，第二件事就是我們知道了 <strong><code>Query&lt;T&gt;</code> 系列可以傳入第二個參數，用來告訴 Dapper 這次 SQL 語法會用到的變數</strong>。</p>
-<p>只要丟個物件進去，就算是匿名物件，Dapper 也會幫忙做成 SQL 的參數。有些朋友可能會問：為什麼不直接用 <code>+</code> 的方式或是直接 <a href="/post/2020/08/csharp-string-interpolation">字串插值</a> 組到 SQL 裡面就好了呢？</p>
+<p>只要丟個物件進去，就算是匿名物件，Dapper 也會幫忙做成 SQL 的參數。有些朋友可能會問：為什麼不直接用 <code>+</code> 的方式或是直接 <a href="/post/2020/08/csharp-string-interpolation/">字串插值</a> 組到 SQL 裡面就好了呢？</p>
 <p>如果真的有這個問題的話，呃，<code>SQL Injection</code> 先了解一下。</p>
 <blockquote>
 <p>給那些想瞭解又懶得跳出去查的朋友：</p>
@@ -1011,17 +1011,17 @@
 <p>今天就到這邊告一段落。現在這組 Web API 已經是常見的「連接到資料庫進行基本操作」的範本了，接下來我們會針對這組 Web API 服務進行各式各樣的 <del>擺弄</del> 改造。</p>
 <p>那麼，我們下次見～</p>
 <blockquote>
-<p>本系列下一篇：<a href="/post/2021/05/newbie-4-swagger">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</a></p></blockquote>
+<p>本系列下一篇：<a href="/post/2021/05/newbie-4-swagger/">菜雞新訓記 (4): 使用 Swagger 來自動產生簡單好看可測試的 API 文件吧</a></p></blockquote>
 <h2 id="本系列文章">本系列文章</h2>
 <ul>
-<li><a href="/post/2021/04/newbie-0-menu">菜雞新訓記 (0): 目錄</a></li>
-<li><a href="/post/2021/04/newbie-1-hello-git">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a></li>
-<li><a href="/post/2021/05/newbie-2-webapi">菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧</a></li>
-<li><a href="/post/2021/05/newbie-3-dapper">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a></li>
-<li><a href="/post/2021/05/newbie-4-swagger">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a></li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a></li>
-<li><a href="/post/2021/11/newbie-6-dependency-injection">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a></li>
-<li><a href="/post/2022/03/newbie-7-fluent-validation">菜雞新訓記 (7): 使用 FluentValidation 來驗證傳入參數吧</a></li>
+<li><a href="/post/2021/04/newbie-0-menu/">菜雞新訓記 (0): 目錄</a></li>
+<li><a href="/post/2021/04/newbie-1-hello-git/">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a></li>
+<li><a href="/post/2021/05/newbie-2-webapi/">菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧</a></li>
+<li><a href="/post/2021/05/newbie-3-dapper/">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a></li>
+<li><a href="/post/2021/05/newbie-4-swagger/">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a></li>
+<li><a href="/post/2021/10/newbie-5-3-layer-architecture/">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a></li>
+<li><a href="/post/2021/11/newbie-6-dependency-injection/">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a></li>
+<li><a href="/post/2022/03/newbie-7-fluent-validation/">菜雞新訓記 (7): 使用 FluentValidation 來驗證傳入參數吧</a></li>
 </ul>
                             <hr/>
                         </div>

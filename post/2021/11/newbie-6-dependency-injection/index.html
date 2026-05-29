@@ -165,11 +165,11 @@
 </p>
 <p>這是俺整理公司新訓內容的第六篇文章，目標是<strong>紀錄什麼是依賴注入（Dependency Injection）</strong>。包含：</p>
 <ul>
-<li><a href="/post/2021/11/newbie-6-dependency-injection#%E7%82%BA%E4%BB%80%E9%BA%BC%E9%9C%80%E8%A6%81%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5">為什麼要依賴注入</a></li>
-<li><a href="/post/2021/11/newbie-6-dependency-injection#%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5%E7%9A%84%E7%A8%AE%E9%A1%9E">依賴注入的種類（建構式注入、屬性注入、方法注入）</a></li>
-<li><a href="/post/2021/11/newbie-6-dependency-injection#%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%89%E7%A8%AE%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F-transientscopedsingleton">.net Core 中依賴注入的生命週期</a></li>
+<li><a href="/post/2021/11/newbie-6-dependency-injection/#%E7%82%BA%E4%BB%80%E9%BA%BC%E9%9C%80%E8%A6%81%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5">為什麼要依賴注入</a></li>
+<li><a href="/post/2021/11/newbie-6-dependency-injection/#%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5%E7%9A%84%E7%A8%AE%E9%A1%9E">依賴注入的種類（建構式注入、屬性注入、方法注入）</a></li>
+<li><a href="/post/2021/11/newbie-6-dependency-injection/#%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5%E7%9A%84%E4%B8%89%E7%A8%AE%E7%94%9F%E5%91%BD%E9%80%B1%E6%9C%9F-transientscopedsingleton">.net Core 中依賴注入的生命週期</a></li>
 </ul>
-<p>並用 <a href="/post/2021/11/newbie-6-dependency-injection#%E5%AF%A6%E4%BD%9C">.net Core 實際跑一次依賴注入</a>，<strong>藉由將控制權轉移給注入容器，解除分層與分層間、類別與類別間的依賴和耦合關係，達到以介面分離實作的目標</strong>。</p>
+<p>並用 <a href="/post/2021/11/newbie-6-dependency-injection/#%E5%AF%A6%E4%BD%9C">.net Core 實際跑一次依賴注入</a>，<strong>藉由將控制權轉移給注入容器，解除分層與分層間、類別與類別間的依賴和耦合關係，達到以介面分離實作的目標</strong>。</p>
 <div class="toc toc-box">
     <div class="toc-title">章節目錄</div>
     <nav id="TableOfContents">
@@ -224,13 +224,13 @@
 <p>「此乃－－依賴注入之計！」</p>
 <h3 id="為什麼需要依賴注入">為什麼需要依賴注入</h3>
 <p>各位好，我們前面引用了民明書坊的《朕的郡縣制哪有這麼耦合》，相信各位對依賴注入應該已經有初步的了解了。說到依賴注入的觀念，就得先從 SOILD 中的依賴反轉原則開始談。</p>
-<p>這部份我們之前在<a href="/post/2020/12/oo-14-dependency-inversion-principle">依賴反轉原則篇</a>已經有詳細的說明，基於江湖道義，接下來就引用該篇的例子來快速帶過一下。</p>
+<p>這部份我們之前在<a href="/post/2020/12/oo-14-dependency-inversion-principle/">依賴反轉原則篇</a>已經有詳細的說明，基於江湖道義，接下來就引用該篇的例子來快速帶過一下。</p>
 <blockquote>
 <p>註：想好好了解的朋友，也可以從依序閱讀這幾篇相關文章後再回到這篇呦：</p>
 <ul>
-<li><a href="/post/2020/07/oo-5-polymorphism">多型</a></li>
-<li><a href="/post/2020/07/oo-7-interface">介面</a></li>
-<li><a href="/post/2020/12/oo-14-dependency-inversion-principle">依賴反轉原則</a></li>
+<li><a href="/post/2020/07/oo-5-polymorphism/">多型</a></li>
+<li><a href="/post/2020/07/oo-7-interface/">介面</a></li>
+<li><a href="/post/2020/12/oo-14-dependency-inversion-principle/">依賴反轉原則</a></li>
 </ul></blockquote>
 <p>讓我們從之前依賴反轉的範例開始吧：假設現在有間小小公司，老闆請來了小明當工程師，並請他開工撰寫產品程式碼。</p>
 <p>當「撰寫產品程式」對「工程師」直接依賴的時候，狀況可能是這樣的：</p>
@@ -259,10 +259,10 @@
 <p>但我們平常開發程式的思維，會習慣從大範圍到小細節、從抽象到具體、從整體目標逐漸拆解成各個步驟的方向去處理，也就是從高階模組往低階模組的方向設計。</p>
 <p>例如說我們需要「會員查詢」功能，才用「DB 連線方法」和「資料篩選方法」等具體方式去達成我們要「會員查詢」這個目標。</p>
 <p>然而以上面工程師的例子來看：低階模組的變更，卻會導致使用它的高階模組連帶受到影響，在我們決定大方向大目標的時候卻被實作細節綁手綁腳，實在是很怪的一件事，和我們上述的習慣是相悖的。</p>
-<p>而依賴的低階模組越多，會被影響的機會就越高、修改的範圍和頻率也會急遽地拉高，變得無法掌握修改程式碼時影響的範圍，最終導致架構變得不穩固、程式碼到處都是不健康的<a href="/post/2020/09/oo-8-cohesion-and-coupling">耦合</a>。</p>
+<p>而依賴的低階模組越多，會被影響的機會就越高、修改的範圍和頻率也會急遽地拉高，變得無法掌握修改程式碼時影響的範圍，最終導致架構變得不穩固、程式碼到處都是不健康的<a href="/post/2020/09/oo-8-cohesion-and-coupling/">耦合</a>。</p>
 <p>面對這樣的困境，依賴反轉原則告訴我們：<br/><strong>高階模組不應該依賴於低階模組。兩者都應該依賴抽象。</strong></p>
-<p>也就是指，我們不要讓高階模組直接去依賴低階模組，而是使用抽象的、具有契約精神的<a href="/post/2020/07/oo-7-interface">介面</a>來對他們進行隔離。</p>
-<p>如此一來，只要介面的契約成立了，高階模組就可以專心做好自己的事情（<a href="/post/2020/10/oo-10-single-responsibility-principle">職責</a>），而不用去管低階模組的方法名稱之類的鳥事、低階模組也只要專注在實作介面要求的契約內容就行了。</p>
+<p>也就是指，我們不要讓高階模組直接去依賴低階模組，而是使用抽象的、具有契約精神的<a href="/post/2020/07/oo-7-interface/">介面</a>來對他們進行隔離。</p>
+<p>如此一來，只要介面的契約成立了，高階模組就可以專心做好自己的事情（<a href="/post/2020/10/oo-10-single-responsibility-principle/">職責</a>），而不用去管低階模組的方法名稱之類的鳥事、低階模組也只要專注在實作介面要求的契約內容就行了。</p>
 <p>在這裡的重要前提是，我們必須了解到：<strong>並不是高階模組去依賴低階模組，而是高階模組提出它需要的功能，低階模組去實作出這些功能、達成高階模組的目標</strong>，這也比較接近我們開發程式時的思維。</p>
 <p>例如前面的會員查詢：我們並不是因為有「DB 的連線方法」和「處理會員資料的方法」所以才說「我們有這兩個東西欸，那我們來組成會員查詢功能吧」；而是「我們想做一個會員查詢功能，所以我們需要連線到 DB，然後對這些資料做篩選和處理」</p>
 <p>而用工程師的例子來看，應該是要這樣的：「老闆為了製造產品（高階模組的目標），開出了工程師的應徵條件（介面），而小明前來應徵（低階模組的實作）」</p>
@@ -432,7 +432,7 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 這邊可能還有其他註冊的服務，Swagger 之類的</span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>例如在先前的 <a href="/post/2021/05/newbie-4-swagger">Swagger</a> 我們就在這裡用套件提供的 <code>AddSwaggerGen()</code> 註冊過 Swagger UI 服務。</p>
+</span></span></code></pre></div><p>例如在先前的 <a href="/post/2021/05/newbie-4-swagger/">Swagger</a> 我們就在這裡用套件提供的 <code>AddSwaggerGen()</code> 註冊過 Swagger UI 服務。</p>
 <h3 id="使用-addscoped-來註冊介面對應的實作類別">使用 AddScoped 來註冊介面對應的實作類別</h3>
 <p>而當我們要註冊我們的介面和實作時，例如說我們有一個 <code>ITestService</code> 的介面，希望告訴 DI 容器對應的實作是 <code>TestService</code>，我們就可以<strong>使用 <code>AddScoped&lt;&gt;</code> 來註冊對應關係</strong>：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">// 註冊 ITestService 的實作為 TestService</span>
@@ -516,7 +516,7 @@
 <li><a href="https://stackoverflow.com/questions/56042989/what-are-the-costs-and-possible-side-effects-of-calling-buildserviceprovider-i">c# - What are the costs and possible side effects of calling BuildServiceProvider() in ConfigureServices() - Stack Overflow</a></li>
 </ul>
 <h2 id="實作">實作</h2>
-<p>現在我們稍微了解了 .net Core 裡的注入方式，接著就延續我們在 <a href="/post/2021/10/newbie-5-3-layer-architecture">分層架構</a> 篇的進度，來把依賴注入導入到我們本系列的 ProjectN 菜雞專案吧。在上一期，我們利用分層的概念將整個流程拆分成 Controller, Service, Repository 三個主要區塊。</p>
+<p>現在我們稍微了解了 .net Core 裡的注入方式，接著就延續我們在 <a href="/post/2021/10/newbie-5-3-layer-architecture/">分層架構</a> 篇的進度，來把依賴注入導入到我們本系列的 ProjectN 菜雞專案吧。在上一期，我們利用分層的概念將整個流程拆分成 Controller, Service, Repository 三個主要區塊。</p>
 <p>其中有直接依賴的部分，會在 Controller 銜接到 Service 以及 Service 銜接到 Repository 的部份。例如：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
@@ -533,10 +533,10 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>可以注意到我們在 <code>CardService</code> 裡面直接 new 了 <code>CardRepository</code> 來使用，這就是直接依賴。</p>
 <blockquote>
-<p>註：前篇分層時用到的 AutoMapper 套件的注入方式，請參見 <a href="/post/2020/07/automapper##%E8%B5%B0%E5%90%91%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5">AutoMapper#走向依賴注入</a>，此處暫且忽略。</p></blockquote>
+<p>註：前篇分層時用到的 AutoMapper 套件的注入方式，請參見 <a href="/post/2020/07/automapper/##%E8%B5%B0%E5%90%91%E4%BE%9D%E8%B3%B4%E6%B3%A8%E5%85%A5">AutoMapper#走向依賴注入</a>，此處暫且忽略。</p></blockquote>
 <p>基於依賴反轉原則，我們會希望達成「CardService 依賴的是 ICardRepository 這個介面，並由 CardRepository 實作該介面，藉由介面隔離實作來解除耦合」的目標。</p>
 <blockquote>
-<p>對這個概念不太熟悉的朋友，可以參照 <a href="/post/2020/07/oo-7-interface">介面</a> 與 <a href="/post/2020/12/oo-14-dependency-inversion-principle">依賴反轉原則</a> 的說明</p></blockquote>
+<p>對這個概念不太熟悉的朋友，可以參照 <a href="/post/2020/07/oo-7-interface/">介面</a> 與 <a href="/post/2020/12/oo-14-dependency-inversion-principle/">依賴反轉原則</a> 的說明</p></blockquote>
 <h3 id="開始重構為建構式注入">開始重構為建構式注入</h3>
 <p>現在讓我們改成使用建構式注入吧：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CardService</span> : ICardService
@@ -563,7 +563,7 @@
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <p>補充：請注意前面提到過的「組合根會直接依賴所有註冊的模組」因此這邊有需要的話記得把參考 using 補上呦。</p>
-<p>並且由於這個範例的組合根在展示層，因此和<a href="/post/2021/10/newbie-5-3-layer-architecture">上篇</a>的三層式架構圖略有不同，展示層也會依賴到資料存取層，還請注意。</p></blockquote>
+<p>並且由於這個範例的組合根在展示層，因此和<a href="/post/2021/10/newbie-5-3-layer-architecture/">上篇</a>的三層式架構圖略有不同，展示層也會依賴到資料存取層，還請注意。</p></blockquote>
 <p>接著讓我們如法炮製，把 Controller 裡直接依賴的 Service 也拆開吧：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#a6e22e">[ApiController]</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">[Route(&#34;[controller]</span><span style="color:#e6db74">&#34;)]
@@ -590,7 +590,7 @@
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 這邊可能還有其他註冊的服務，Swagger 之類的</span>
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>最後再將前面系列用到的一些工具，例如 <a href="/post/2020/07/automapper">AutoMapper</a>, <a href="/post/2021/05/newbie-3-dapper/">Dapper</a> 給注入好（這部分就請根據自己專案的內容調整囉），就完成啦。</p>
+</span></span></code></pre></div><p>最後再將前面系列用到的一些工具，例如 <a href="/post/2020/07/automapper/">AutoMapper</a>, <a href="/post/2021/05/newbie-3-dapper/">Dapper</a> 給注入好（這部分就請根據自己專案的內容調整囉），就完成啦。</p>
 <p>那我們前面有提到，可以用「告訴 DI 容器該物件的產生方法」來做一些額外的事情，這邊就讓我們優化一下。</p>
 <p>我們在先前的 <code>CardRepository</code> 有用私有欄位來存放連線字串：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#75715e">/// &lt;summary&gt;</span>
@@ -792,9 +792,9 @@
 <p>除了<strong>藉由依賴注入去解耦合，避免讓類別成為控制狂</strong>（就是指類別依賴的對象都自己 new 出來，從建立到生命週期都由類別自己控制，最終變成強耦合的狀況）以外，我們使用依賴注入的時候，有時會發生一些令人困惑的事情，這些其實就是讓我們動手重構的好幫手。</p>
 <p>例如說<strong>循環依賴</strong>，當我們發現Ａ類別依賴了Ｂ類別，Ｂ類別又依賴Ａ類別而發生錯誤時，就可以考慮是不是能夠整合這兩個類別，例如抽出一個更高階的類別來統合這兩個類別的動作流程等等。</p>
 <p>又或是像<strong>過度注入</strong>：當我們用建構式注入的時候，有時候會發現其中幾個類別的建構式會變得超級肥，可能光是傳入參數就多達二三十個等等。</p>
-<p>這時候其實就是一種警示：這個類別為什麼會依賴這麼多對象？是不是這個類別的<a href="/post/2020/10/oo-10-single-responsibility-principle">職責</a>太多了？</p>
+<p>這時候其實就是一種警示：這個類別為什麼會依賴這麼多對象？是不是這個類別的<a href="/post/2020/10/oo-10-single-responsibility-principle/">職責</a>太多了？</p>
 <p>諸如此類，依賴注入其實可以<strong>幫助我們重新梳理我們類別的邊界和耦合關係</strong>，讓我們注意到一些需要重構的徵象。這也是最近跟著同事重構的心得哪。</p>
-<p>那麼今天就先到這兒，祝各位解耦順利、斷開魂結。那麼，我們<a href="/post/2022/03/newbie-7-fluent-validation">下次</a>見～</p>
+<p>那麼今天就先到這兒，祝各位解耦順利、斷開魂結。那麼，我們<a href="/post/2022/03/newbie-7-fluent-validation/">下次</a>見～</p>
 <h2 id="參考資料">參考資料</h2>
 <ul>
 <li><a href="https://www.tenlong.com.tw/products/9789864344987">依賴注入：原理、實作與設計模式 (Dependency Injection: Principles, Practices, Patterns, 2/e)</a></li>
@@ -818,14 +818,14 @@
 </ul>
 <h2 id="本系列文章">本系列文章</h2>
 <ul>
-<li><a href="/post/2021/04/newbie-0-menu">菜雞新訓記 (0): 目錄</a></li>
-<li><a href="/post/2021/04/newbie-1-hello-git">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a></li>
-<li><a href="/post/2021/05/newbie-2-webapi">菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧</a></li>
-<li><a href="/post/2021/05/newbie-3-dapper">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a></li>
-<li><a href="/post/2021/05/newbie-4-swagger">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a></li>
-<li><a href="/post/2021/10/newbie-5-3-layer-architecture">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a></li>
-<li><a href="/post/2021/11/newbie-6-dependency-injection">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a></li>
-<li><a href="/post/2022/03/newbie-7-fluent-validation">菜雞新訓記 (7): 使用 FluentValidation 來驗證傳入參數吧</a></li>
+<li><a href="/post/2021/04/newbie-0-menu/">菜雞新訓記 (0): 目錄</a></li>
+<li><a href="/post/2021/04/newbie-1-hello-git/">菜雞新訓記 (1): 使用 Git 來進行版本控制吧</a></li>
+<li><a href="/post/2021/05/newbie-2-webapi/">菜雞新訓記 (2): 認識 Api &amp; 使用 .net Core 來建立簡單的 Web Api 服務吧</a></li>
+<li><a href="/post/2021/05/newbie-3-dapper/">菜雞新訓記 (3): 使用 Dapper 來連線到資料庫 CRUD 吧</a></li>
+<li><a href="/post/2021/05/newbie-4-swagger/">菜雞新訓記 (4): 使用 Swagger 來自動產生可互動的 API 文件吧</a></li>
+<li><a href="/post/2021/10/newbie-5-3-layer-architecture/">菜雞新訓記 (5): 使用 三層式架構 來切分服務的關注點和職責吧</a></li>
+<li><a href="/post/2021/11/newbie-6-dependency-injection/">菜雞新訓記 (6): 使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a></li>
+<li><a href="/post/2022/03/newbie-7-fluent-validation/">菜雞新訓記 (7): 使用 FluentValidation 來驗證傳入參數吧</a></li>
 </ul>
                             <hr/>
                         </div>

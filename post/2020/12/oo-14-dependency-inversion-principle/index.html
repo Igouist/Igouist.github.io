@@ -185,8 +185,8 @@
 或是「會員查詢」功能建立了一個「DB 連線」的實例來進入資料庫取得會員資料</p>
 <p>遇見這種「必須要藉由某個模組的實例來完成想要的動作」的狀況時，就是依賴。</p>
 <h2 id="依賴與耦合">依賴與耦合</h2>
-<p>我們在之前的 <a href="/post/2020/09/oo-8-cohesion-and-coupling">耦合篇</a> 提過，如果模組和另一個模組之間有關連，那這兩者之間就耦合。以此來看，依賴就是一種耦合的關係，那麼，依賴是健康還是不健康的耦合呢？</p>
-<p>現在讓我們用 <a href="/post/2020/07/oo-5-polymorphism">多型篇</a> 用過的「老闆徵工程師」的例子來舉例一下：現在有間小小公司，老闆請來了小明當工程師，並請他開工撰寫產品程式碼。</p>
+<p>我們在之前的 <a href="/post/2020/09/oo-8-cohesion-and-coupling/">耦合篇</a> 提過，如果模組和另一個模組之間有關連，那這兩者之間就耦合。以此來看，依賴就是一種耦合的關係，那麼，依賴是健康還是不健康的耦合呢？</p>
+<p>現在讓我們用 <a href="/post/2020/07/oo-5-polymorphism/">多型篇</a> 用過的「老闆徵工程師」的例子來舉例一下：現在有間小小公司，老闆請來了小明當工程師，並請他開工撰寫產品程式碼。</p>
 <p>當「撰寫產品程式」對「工程師」直接依賴的時候，狀況可能是這樣的：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Product Work()
 </span></span><span style="display:flex;"><span>{
@@ -220,7 +220,7 @@
 <blockquote>
 <p><strong>高階模組不應該依賴於低階模組。兩者都應該依賴抽象。</strong></p></blockquote>
 <p>是的，不應該直接去依賴，而是必須藉由抽象來隔開。不應該直接去受到實作的影響，而是只要關注在所需要的功能。</p>
-<p>這部分其實已經破梗完了，我們在 <a href="/post/2020/07/oo-7-interface">介面篇</a> 已經說明過依賴反轉最基本的思維路線。我們並不是用低階模組的功能直接拼湊出高階模組，讓高階模組直接依賴低階模組然後受到影響；而是把關注點放在需要的功能上，用介面隔開實作，解開他們彼此之間的耦合，介面就是模組之間的抽象層。</p>
+<p>這部分其實已經破梗完了，我們在 <a href="/post/2020/07/oo-7-interface/">介面篇</a> 已經說明過依賴反轉最基本的思維路線。我們並不是用低階模組的功能直接拼湊出高階模組，讓高階模組直接依賴低階模組然後受到影響；而是把關注點放在需要的功能上，用介面隔開實作，解開他們彼此之間的耦合，介面就是模組之間的抽象層。</p>
 <p>同時也要明白一件重要的事：<strong>並不是高階模組去依賴低階模組。而是高階模組提出它需要的功能，低階模組去實作出這些功能、達成高階模組的目標</strong>。</p>
 <p>我們並不是因為有「DB 的連線方法」和「處理會員資料的方法」所以才說「我們有這兩個東西欸，那我們來組成會員查詢功能吧」；而是「我們想做一個會員查詢功能，所以我們需要連線到 DB，然後對這些資料做篩選和處理」</p>
 <p>就如同我們在介面的例子所提的一樣：「老闆為了製造產品（高階模組的目標），開出了工程師的應徵條件（介面），而小明前來應徵（低階模組的實作）」</p>
@@ -230,7 +230,7 @@
 <p>這也就是依賴反轉原則的第二點：</p>
 <blockquote>
 <p><strong>抽象不應該依賴細節；細節應該依賴抽象。</strong></p></blockquote>
-<p>到這邊我們就推完 <a href="/post/2020/07/oo-7-interface">介面篇</a> 的前提了，請大家再回顧一下介面篇的內容。也就是說，上面的例子改用抽象層隔離之後，就會和介面篇的例子相同，變成：</p>
+<p>到這邊我們就推完 <a href="/post/2020/07/oo-7-interface/">介面篇</a> 的前提了，請大家再回顧一下介面篇的內容。也就是說，上面的例子改用抽象層隔離之後，就會和介面篇的例子相同，變成：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> Product Work()
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    IProgrammer programmer = <span style="color:#66d9ef">new</span> Ming();
@@ -247,7 +247,7 @@
 <p>也就是說，<strong>高階模組再也不需要關心如何建立，該建立哪個實體，只專注於使用功能，真正達到介面的精神。低階模組也只需要等待控制反轉中心分發，到了崗位就把份內事做好，專心在自己的職責身上即可</strong>。如此一來就能解除兩者之間的耦合。</p>
 <p>但是，要怎麼把控制中心建立的低階模組，交給高階模組做使用呢？這時候的實作方式就是我們所謂的 <strong>依賴注入 (Dependency Injection)</strong> 了。</p>
 <p>依賴注入說穿了很簡單，就是<strong>用各種姿勢把東西丟進去給類別使用</strong>。</p>
-<p>例如說我們先前提過的 <a href="/post/2020/07/oo-2-constructor-overload">建構式</a>，就是其中一種解決方法。用上面的例子，就會變成：</p>
+<p>例如說我們先前提過的 <a href="/post/2020/07/oo-2-constructor-overload/">建構式</a>，就是其中一種解決方法。用上面的例子，就會變成：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-csharp" data-lang="csharp"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ProductService</span>
 </span></span><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> IProgrammer _programmer;
@@ -266,7 +266,7 @@
 </span></span></code></pre></div><p>在這個例子中，我們利用建構式的方式，從外部傳入該介面的實體來使用。現在撰寫產品程式碼的工作再也不用為了換工程師而改變，也不用因為實作細節或是方法名稱而煩惱，只要照個介面合約使用就可以了。至於要傳遞哪個實體進來，這份工作要交給小明還是小美，就讓控制中心去決定，大家各司其職，落實單一職責。</p>
 <p>當然，注入的方式不只建構式注入，還有設值注入（也就是從外部改變目標的某個屬性值來達到注入）等等；提供 IOC 的方式也不只一種，例如 .net 的 Unity，甚至到了 .net Core 時代 IOC 還直接是內建的功能呢，由於口味眾多，此處暫且按下不表。</p>
 <blockquote>
-<p>補充：下個系列文補了 <a href="/post/2021/11/newbie-6-dependency-injection">使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a>，有興趣的朋友可以接續看看</p></blockquote>
+<p>補充：下個系列文補了 <a href="/post/2021/11/newbie-6-dependency-injection/">使用 依賴注入 (Dependency Injection) 來解除強耦合吧</a>，有興趣的朋友可以接續看看</p></blockquote>
 <h2 id="結語">結語</h2>
 <p>那麼，我們最後再來複習一遍：</p>
 <p><strong>高階模組不應該依賴於低階模組，兩者都應該依賴抽象</strong>。為了解除耦合，必須用介面這種抽象層進行隔離。</p>
@@ -275,7 +275,7 @@
 <p><strong>而控制反轉的具體實現方法是依賴注入</strong>，藉由從建構式傳遞、更改目標的屬性等方式，把低階模組交給高階模組使用者。當我們藉由依賴注入的方式實現控制反轉，就能夠讓物件的設計符合依賴反轉原則。</p>
 <p>這個部份的做法還是挺複雜的，<del>所以才拖稿這麼久</del>，因此決定把原因的順序推過一遍，也算是幫自己重新了解一次。參考資料有蠻多篇我都相當喜歡，想更了解依賴反轉、控制反轉等等的朋友可以再自行閱讀。那麼，我們下次見～</p>
 <blockquote>
-<p>本系列下一篇：<a href="/post/2020/12/oo-15-least-knowledge-principle">菜雞與物件導向 (15): 最少知識原則</a></p></blockquote>
+<p>本系列下一篇：<a href="/post/2020/12/oo-15-least-knowledge-principle/">菜雞與物件導向 (15): 最少知識原則</a></p></blockquote>
 <h2 id="參考資料">參考資料</h2>
 <ul>
 <li><a href="https://notfalse.net/1/dip">依賴倒置原則 (Dependency-Inversion Principle, DIP) - NotFalse 技術客</a></li>
@@ -291,23 +291,23 @@
 </ul>
 <h2 id="同系列文章">同系列文章</h2>
 <ul>
-<li><a href="/post/2020/07/oo-0-object-oriented">菜雞與物件導向 (0): 前言</a></li>
-<li><a href="/post/2020/07/oo-1-class-object">菜雞與物件導向 (1): 類別、物件</a></li>
-<li><a href="/post/2020/07/oo-2-constructor-overload">菜雞與物件導向 (2): 建構式、多載</a></li>
-<li><a href="/post/2020/07/oo-3-encapsulation">菜雞與物件導向 (3): 封裝</a></li>
-<li><a href="/post/2020/07/oo-4-inheritance">菜雞與物件導向 (4): 繼承</a></li>
-<li><a href="/post/2020/07/oo-5-polymorphism">菜雞與物件導向 (5): 多型</a></li>
-<li><a href="/post/2020/07/oo-6-abstract-override">菜雞與物件導向 (6): 抽象、覆寫</a></li>
-<li><a href="/post/2020/07/oo-7-interface">菜雞與物件導向 (7): 介面</a></li>
-<li><a href="/post/2020/09/oo-8-cohesion-and-coupling">菜雞與物件導向 (8): 內聚、耦合</a></li>
-<li><a href="/post/2020/09/oo-9-solid">菜雞與物件導向 (9): SOLID</a></li>
-<li><a href="/post/2020/10/oo-10-single-responsibility-principle">菜雞與物件導向 (10): 單一職責原則</a></li>
-<li><a href="/post/2020/10/oo-11-open-closed-principle">菜雞與物件導向 (11): 開放封閉原則</a></li>
-<li><a href="/post/2020/11/oo-12-liskov-substitution-principle">菜雞與物件導向 (12): 里氏替換原則</a></li>
-<li><a href="/post/2020/11/oo-13-interface-segregation-principle">菜雞與物件導向 (13): 介面隔離原則</a></li>
-<li><a href="/post/2020/12/oo-14-dependency-inversion-principle">菜雞與物件導向 (14): 依賴反轉原則</a></li>
-<li><a href="/post/2020/12/oo-15-least-knowledge-principle">菜雞與物件導向 (15): 最少知識原則</a></li>
-<li><a href="/post/2021/01/oo-ex1-end2020">菜雞與物件導向 (Ex1): 小結</a></li>
+<li><a href="/post/2020/07/oo-0-object-oriented/">菜雞與物件導向 (0): 前言</a></li>
+<li><a href="/post/2020/07/oo-1-class-object/">菜雞與物件導向 (1): 類別、物件</a></li>
+<li><a href="/post/2020/07/oo-2-constructor-overload/">菜雞與物件導向 (2): 建構式、多載</a></li>
+<li><a href="/post/2020/07/oo-3-encapsulation/">菜雞與物件導向 (3): 封裝</a></li>
+<li><a href="/post/2020/07/oo-4-inheritance/">菜雞與物件導向 (4): 繼承</a></li>
+<li><a href="/post/2020/07/oo-5-polymorphism/">菜雞與物件導向 (5): 多型</a></li>
+<li><a href="/post/2020/07/oo-6-abstract-override/">菜雞與物件導向 (6): 抽象、覆寫</a></li>
+<li><a href="/post/2020/07/oo-7-interface/">菜雞與物件導向 (7): 介面</a></li>
+<li><a href="/post/2020/09/oo-8-cohesion-and-coupling/">菜雞與物件導向 (8): 內聚、耦合</a></li>
+<li><a href="/post/2020/09/oo-9-solid/">菜雞與物件導向 (9): SOLID</a></li>
+<li><a href="/post/2020/10/oo-10-single-responsibility-principle/">菜雞與物件導向 (10): 單一職責原則</a></li>
+<li><a href="/post/2020/10/oo-11-open-closed-principle/">菜雞與物件導向 (11): 開放封閉原則</a></li>
+<li><a href="/post/2020/11/oo-12-liskov-substitution-principle/">菜雞與物件導向 (12): 里氏替換原則</a></li>
+<li><a href="/post/2020/11/oo-13-interface-segregation-principle/">菜雞與物件導向 (13): 介面隔離原則</a></li>
+<li><a href="/post/2020/12/oo-14-dependency-inversion-principle/">菜雞與物件導向 (14): 依賴反轉原則</a></li>
+<li><a href="/post/2020/12/oo-15-least-knowledge-principle/">菜雞與物件導向 (15): 最少知識原則</a></li>
+<li><a href="/post/2021/01/oo-ex1-end2020/">菜雞與物件導向 (Ex1): 小結</a></li>
 </ul>
                             <hr/>
                         </div>

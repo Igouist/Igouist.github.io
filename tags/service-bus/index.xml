@@ -31,7 +31,7 @@
 &lt;p&gt;&lt;strong&gt;因為 ServiceBus 在傳遞訊息之後，如果超過一段時間（MaxAutoRenewDuration）內沒有得到回應，就會解除信件的鎖並嘗試重新傳遞&lt;/strong&gt;，這時候如果原先的 Function 仍在執行，就會一前一後重複執行 Function 並發生許多光怪陸離的事，例如寫入兩筆資訊、重複複製資料之類的。&lt;/p&gt;
 &lt;p&gt;建議如果調整了有 ServiceBus Trigger Function 的 Azure Functions Timeout 設定時，或是發現某支 ServiceBus Trigger 的 Functions 執行時間過長，就要一併注意 MaxAutoRenewDuration 的設定，避免重複執行的情況出現。&lt;/p&gt;
 &lt;h2 id=&#34;事發原由&#34;&gt;事發原由&lt;/h2&gt;
-&lt;p&gt;工作時將一段需要呼叫其他 API、執行相當久的程式片段搬上 &lt;a href=&#34;https://igouist.github.io/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/&#34;&gt;Azure Functions&lt;/a&gt;，並使用 &lt;a href=&#34;https://igouist.github.io/post/2022/08/azure-service-bus&#34;&gt;Service Bus&lt;/a&gt; 來傳遞訊息觸發 Functions 執行，這時卻發現 &lt;strong&gt;Function 被執行了兩次&lt;/strong&gt;！&lt;/p&gt;
+&lt;p&gt;工作時將一段需要呼叫其他 API、執行相當久的程式片段搬上 &lt;a href=&#34;https://igouist.github.io/post/2022/09/bus-reminder-2-azure-functions-timetrigger-with-line-notify/&#34;&gt;Azure Functions&lt;/a&gt;，並使用 &lt;a href=&#34;https://igouist.github.io/post/2022/08/azure-service-bus/&#34;&gt;Service Bus&lt;/a&gt; 來傳遞訊息觸發 Functions 執行，這時卻發現 &lt;strong&gt;Function 被執行了兩次&lt;/strong&gt;！&lt;/p&gt;
 &lt;p&gt;現在就讓我們來重建當時的情況吧。首先我們有個 Service Bus Trigger 的 Azure Function，這邊就直接從 Visual Studio 提供的&lt;a href=&#34;https://docs.microsoft.com/zh-tw/azure/azure-functions/dotnet-isolated-process-guide&#34;&gt;已隔離（Isolated）&lt;/a&gt;範本進行建立。&lt;/p&gt;
 &lt;p&gt;為了重現執行很久的特點，我們讓它 Delay 個八分鐘，並在開始和結束的時候告訴我們一下：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/// &amp;lt;summary&amp;gt;&lt;/span&gt;
@@ -51,7 +51,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    _logger.LogInformation(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;結束處理訊息: {myQueueItem}&amp;#34;&lt;/span&gt;, myQueueItem);
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;並且簡單地用之前 &lt;a href=&#34;https://igouist.github.io/post/2022/08/azure-service-bus&#34;&gt;Service Bus 文章&lt;/a&gt; 的範例送個 &amp;ldquo;Hello&amp;rdquo; 進去 Queue 裡，準備觸發 Function：&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;並且簡單地用之前 &lt;a href=&#34;https://igouist.github.io/post/2022/08/azure-service-bus/&#34;&gt;Service Bus 文章&lt;/a&gt; 的範例送個 &amp;ldquo;Hello&amp;rdquo; 進去 Queue 裡，準備觸發 Function：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-csharp&#34; data-lang=&#34;csharp&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;async&lt;/span&gt; Task Main()
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;{
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	&lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; context = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Hello!&amp;#34;&lt;/span&gt;;
@@ -834,7 +834,7 @@
 &lt;p&gt;其餘的朋友可以直接跳到最後的&lt;a href=&#34;#%E5%B0%8F%E7%B5%90&#34;&gt;小結&lt;/a&gt;。&lt;/p&gt;
 &lt;h3 id=&#34;使用-iazureclientfactory-搭配依賴注入來建立-azure-client&#34;&gt;使用 IAzureClientFactory 搭配依賴注入來建立 Azure Client&lt;/h3&gt;
 &lt;blockquote&gt;
-&lt;p&gt;這一小節會用到 .Net Core 的依賴注入，還沒有概念的朋友可以參照 &lt;a href=&#34;https://igouist.github.io/post/2021/11/newbie-6-dependency-injection&#34;&gt;使用 依賴注入 (Dependency Injection) 來解除強耦合吧&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;這一小節會用到 .Net Core 的依賴注入，還沒有概念的朋友可以參照 &lt;a href=&#34;https://igouist.github.io/post/2021/11/newbie-6-dependency-injection/&#34;&gt;使用 依賴注入 (Dependency Injection) 來解除強耦合吧&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;p&gt;在範例中我們總是直接 &lt;code&gt;new ServiceBusClient&lt;/code&gt;。但根據&lt;a href=&#34;https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-performance-improvements?tabs=net-standard-sdk-2#reusing-factories-and-clients&#34;&gt;官方建議&lt;/a&gt;，ServiceBusClient 應該只建立一份並重複使用，以避免重新連線之類的效能損失。&lt;/p&gt;
 &lt;p&gt;針對 &lt;code&gt;ServiceBusClient&lt;/code&gt; 的建立和管理，我們可以使用 &lt;code&gt;IAzureClientFactory&lt;/code&gt; 來讓它自動控制，替我們管理 Client 的實例和連線，用起來就像 &lt;code&gt;HttpClientFactory&lt;/code&gt; 一樣。&lt;/p&gt;
 &lt;p&gt;要使用 &lt;code&gt;IAzureClientFactory&lt;/code&gt;，我們需要先安裝 &lt;code&gt;Microsoft.Extensions.Azure&lt;/code&gt; 套件：&lt;/p&gt;
